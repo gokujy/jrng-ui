@@ -1,6 +1,6 @@
 {
   "name": "jrng-ui",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Standalone Angular UI components for ERP, admin panels, dashboards, and business applications.",
   "repository": {
     "type": "git",
