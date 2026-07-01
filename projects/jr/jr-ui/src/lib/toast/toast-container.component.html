@@ -1,0 +1,26 @@
+<section
+  class="jr-toast-stack"
+  [class]="'jr-toast-stack jr-toast-stack--' + position"
+  aria-live="polite"
+>
+  <article
+    class="jr-toast"
+    [class]="'jr-toast jr-toast--' + toast.type"
+    [attr.role]="toast.type === 'error' ? 'alert' : 'status'"
+    *ngFor="let toast of toastService.toasts()"
+  >
+    <div class="jr-toast__mark" aria-hidden="true"></div>
+    <div class="jr-toast__content">
+      <strong class="jr-toast__title">{{ toast.title }}</strong>
+      <p class="jr-toast__message">{{ toast.message }}</p>
+    </div>
+    <button
+      class="jr-toast__close"
+      type="button"
+      aria-label="Dismiss message"
+      (click)="toastService.remove(toast.id)"
+    >
+      x
+    </button>
+  </article>
+</section>

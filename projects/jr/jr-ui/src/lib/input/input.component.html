@@ -1,0 +1,65 @@
+<label class="jr-input__label" [for]="inputId" *ngIf="label">
+  <span>{{ label }}</span>
+  <span class="jr-input__required" aria-hidden="true" *ngIf="required">*</span>
+</label>
+
+<div
+  class="jr-input__control"
+  [class.jr-input__control--error]="hasError"
+  [class.jr-input__control--success]="hasSuccess"
+  [class.jr-input__control--disabled]="isDisabled"
+  [class.jr-input__control--textarea]="multiline"
+>
+  <span class="jr-input__icon" aria-hidden="true" *ngIf="prefixIcon">{{ prefixIcon }}</span>
+  <span class="jr-input__icon" aria-hidden="true"
+    ><ng-content select="[jrInputPrefix]"></ng-content
+  ></span>
+
+  <textarea
+    *ngIf="multiline; else singleInput"
+    class="jr-input__field jr-input__field--textarea"
+    [id]="inputId"
+    [placeholder]="placeholder"
+    [disabled]="isDisabled"
+    [readOnly]="readonly"
+    [required]="required"
+    [rows]="rows"
+    [value]="value"
+    [attr.aria-invalid]="hasError"
+    [attr.aria-describedby]="messageId"
+    (input)="handleInput($event)"
+    (blur)="handleBlur()"
+  ></textarea>
+
+  <ng-template #singleInput>
+    <input
+      class="jr-input__field"
+      [id]="inputId"
+      [type]="type"
+      [placeholder]="placeholder"
+      [disabled]="isDisabled"
+      [readOnly]="readonly"
+      [required]="required"
+      [value]="value"
+      [attr.aria-invalid]="hasError"
+      [attr.aria-describedby]="messageId"
+      (input)="handleInput($event)"
+      (blur)="handleBlur()"
+    />
+  </ng-template>
+
+  <span class="jr-input__icon" aria-hidden="true"
+    ><ng-content select="[jrInputSuffix]"></ng-content
+  ></span>
+  <span class="jr-input__icon" aria-hidden="true" *ngIf="suffixIcon">{{ suffixIcon }}</span>
+</div>
+
+<p
+  class="jr-input__message"
+  [class.jr-input__message--error]="hasError"
+  [class.jr-input__message--success]="hasSuccess"
+  [id]="messageId"
+  *ngIf="message"
+>
+  {{ message }}
+</p>

@@ -1,0 +1,87 @@
+:root,
+.jr-theme {
+  --jr-color-primary: #4f46e5;
+  --jr-color-primary-strong: #3730a3;
+  --jr-color-primary-soft: #eef2ff;
+  --jr-color-secondary: #2563eb;
+  --jr-color-secondary-soft: #dbeafe;
+  --jr-color-success: #16a34a;
+  --jr-color-success-soft: #dcfce7;
+  --jr-color-danger: #dc2626;
+  --jr-color-danger-soft: #fee2e2;
+  --jr-color-warning: #d97706;
+  --jr-color-warning-soft: #fef3c7;
+  --jr-color-info: #0284c7;
+  --jr-color-info-soft: #e0f2fe;
+
+  --jr-bg-page: #f6f7fb;
+  --jr-bg-surface: #ffffff;
+  --jr-bg-subtle: #f8fafc;
+  --jr-bg-muted: #eef2f7;
+  --jr-text: #111827;
+  --jr-text-muted: #64748b;
+  --jr-text-soft: #94a3b8;
+  --jr-border: #dbe2ea;
+  --jr-border-strong: #cbd5e1;
+
+  --jr-space-1: 0.25rem;
+  --jr-space-2: 0.5rem;
+  --jr-space-3: 0.75rem;
+  --jr-space-4: 1rem;
+  --jr-space-5: 1.25rem;
+  --jr-space-6: 1.5rem;
+  --jr-space-8: 2rem;
+  --jr-space-10: 2.5rem;
+  --jr-space-12: 3rem;
+
+  --jr-radius-sm: 0.375rem;
+  --jr-radius-md: 0.5rem;
+  --jr-radius-lg: 0.75rem;
+  --jr-radius-xl: 1rem;
+  --jr-radius-pill: 999px;
+
+  --jr-shadow-sm: 0 1px 2px rgb(15 23 42 / 8%);
+  --jr-shadow-md: 0 12px 30px rgb(15 23 42 / 12%);
+  --jr-shadow-lg: 0 22px 60px rgb(15 23 42 / 16%);
+
+  --jr-font-xs: 0.75rem;
+  --jr-font-sm: 0.875rem;
+  --jr-font-md: 1rem;
+  --jr-font-lg: 1.125rem;
+  --jr-font-xl: 1.35rem;
+  --jr-font-2xl: 2rem;
+
+  --jr-focus-ring: 0 0 0 3px rgb(79 70 229 / 24%);
+  color-scheme: light;
+}
+
+.jr-dark {
+  --jr-color-primary: #818cf8;
+  --jr-color-primary-strong: #a5b4fc;
+  --jr-color-primary-soft: #312e81;
+  --jr-color-secondary: #60a5fa;
+  --jr-color-secondary-soft: #1e3a8a;
+  --jr-color-success: #4ade80;
+  --jr-color-success-soft: #14532d;
+  --jr-color-danger: #f87171;
+  --jr-color-danger-soft: #7f1d1d;
+  --jr-color-warning: #fbbf24;
+  --jr-color-warning-soft: #78350f;
+  --jr-color-info: #38bdf8;
+  --jr-color-info-soft: #075985;
+
+  --jr-bg-page: #0f172a;
+  --jr-bg-surface: #182235;
+  --jr-bg-subtle: #111827;
+  --jr-bg-muted: #243047;
+  --jr-text: #f8fafc;
+  --jr-text-muted: #cbd5e1;
+  --jr-text-soft: #94a3b8;
+  --jr-border: #334155;
+  --jr-border-strong: #475569;
+
+  --jr-shadow-sm: 0 1px 2px rgb(0 0 0 / 28%);
+  --jr-shadow-md: 0 12px 30px rgb(0 0 0 / 30%);
+  --jr-shadow-lg: 0 22px 60px rgb(0 0 0 / 38%);
+  color-scheme: dark;
+}

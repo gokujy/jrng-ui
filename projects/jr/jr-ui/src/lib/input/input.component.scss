@@ -1,0 +1,106 @@
+:host {
+  color: var(--jr-text, #111827);
+  display: block;
+  font: inherit;
+}
+
+.jr-input__label {
+  align-items: center;
+  color: var(--jr-text, #111827);
+  display: inline-flex;
+  font-size: var(--jr-font-sm, 0.875rem);
+  font-weight: 650;
+  gap: var(--jr-space-1, 0.25rem);
+  margin-bottom: var(--jr-space-2, 0.5rem);
+}
+
+.jr-input__required {
+  color: var(--jr-color-danger, #dc2626);
+}
+
+.jr-input__control {
+  align-items: center;
+  background: var(--jr-bg-surface, #ffffff);
+  border: 1px solid var(--jr-border, #dbe2ea);
+  border-radius: var(--jr-radius-md, 0.5rem);
+  display: flex;
+  gap: var(--jr-space-2, 0.5rem);
+  min-height: 2.75rem;
+  padding: 0 var(--jr-space-3, 0.75rem);
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background-color 160ms ease;
+
+  &:focus-within {
+    border-color: var(--jr-color-primary, #4f46e5);
+    box-shadow: var(--jr-focus-ring, 0 0 0 3px rgb(79 70 229 / 24%));
+  }
+}
+
+.jr-input__control--textarea {
+  align-items: flex-start;
+  padding-block: var(--jr-space-2, 0.5rem);
+}
+
+.jr-input__control--error {
+  border-color: var(--jr-color-danger, #dc2626);
+}
+
+.jr-input__control--success {
+  border-color: var(--jr-color-success, #16a34a);
+}
+
+.jr-input__control--disabled {
+  background: var(--jr-bg-muted, #eef2f7);
+  opacity: 0.72;
+}
+
+.jr-input__field {
+  background: transparent;
+  border: 0;
+  color: var(--jr-text, #111827);
+  flex: 1;
+  font: inherit;
+  font-size: var(--jr-font-sm, 0.875rem);
+  min-width: 0;
+  outline: none;
+
+  &::placeholder {
+    color: var(--jr-text-soft, #94a3b8);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.jr-input__field--textarea {
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.jr-input__icon {
+  align-items: center;
+  color: var(--jr-text-muted, #64748b);
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+
+.jr-input__icon:empty {
+  display: none;
+}
+
+.jr-input__message {
+  color: var(--jr-text-muted, #64748b);
+  font-size: var(--jr-font-xs, 0.75rem);
+  margin: var(--jr-space-2, 0.5rem) 0 0;
+}
+
+.jr-input__message--error {
+  color: var(--jr-color-danger, #dc2626);
+}
+
+.jr-input__message--success {
+  color: var(--jr-color-success, #16a34a);
+}

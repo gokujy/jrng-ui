@@ -1,0 +1,42 @@
+<div
+  class="jr-dialog__backdrop"
+  *ngIf="open"
+  (mousedown)="handleBackdropClick($event)"
+  aria-hidden="false"
+>
+  <section
+    #dialogPanel
+    class="jr-dialog"
+    [class]="'jr-dialog jr-dialog--' + size"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="title || 'Dialog'"
+    tabindex="-1"
+  >
+    <header class="jr-dialog__header">
+      <div>
+        <h2 class="jr-dialog__title" *ngIf="title">{{ title }}</h2>
+        <ng-content select="[jrDialogHeader]"></ng-content>
+      </div>
+
+      <button
+        class="jr-dialog__close"
+        type="button"
+        aria-label="Close dialog"
+        *ngIf="showCloseButton"
+        (click)="close('close-button')"
+      >
+        x
+      </button>
+    </header>
+
+    <div class="jr-dialog__body">
+      <ng-content></ng-content>
+      <ng-content select="[jrDialogBody]"></ng-content>
+    </div>
+
+    <footer class="jr-dialog__footer">
+      <ng-content select="[jrDialogFooter]"></ng-content>
+    </footer>
+  </section>
+</div>

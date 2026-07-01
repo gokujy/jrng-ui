@@ -1,0 +1,554 @@
+<jr-toast-container />
+
+<header class="site-header">
+  <a class="brand" href="#top" aria-label="JR UI home">
+    <span class="brand__mark">J</span>
+    <span>JR UI</span>
+  </a>
+
+  <nav class="site-nav" aria-label="Documentation">
+    <a href="#design">Design System</a>
+    <a href="#components">Components</a>
+    <a href="#dashboard">Dashboard</a>
+    <a href="#docs">Docs</a>
+  </nav>
+
+  <div class="site-actions">
+    <a href="https://github.com" target="_blank" rel="noreferrer">GitHub</a>
+    <jr-button size="sm" variant="primary">Get Started</jr-button>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero-shell">
+    <div class="hero section">
+      <div class="hero__copy">
+        <span class="pill">Phase 1 business component release</span>
+        <h1><span>JR UI</span> Lightweight Angular UI Kit</h1>
+        <p>
+          Modern, clean, fast components for ERP, admin panels, dashboards, and business
+          applications. Purpose-built for Indian enterprise workflows.
+        </p>
+        <div class="hero__actions">
+          <jr-button variant="primary" size="lg">View Components</jr-button>
+          <jr-button variant="outline" size="lg">Get Started</jr-button>
+        </div>
+        <div class="hero__meta">
+          <span>SSR optimized</span>
+          <span>Angular 21 ready</span>
+          <span>MIT licensed</span>
+        </div>
+      </div>
+
+      <div class="hero-card" aria-label="Dashboard preview">
+        <div class="window-bar">
+          <span></span>
+          <span></span>
+          <span></span>
+          <strong>JR ERP Analytics</strong>
+        </div>
+        <div class="preview-topline">
+          <div>
+            <small>Operations KPI</small>
+            <strong>JULY 2026</strong>
+          </div>
+          <jr-button size="sm">Export</jr-button>
+        </div>
+        <div class="preview-stats">
+          <div>
+            <small>Total orders</small>
+            <strong>8,412</strong>
+            <span class="up">+12.4%</span>
+          </div>
+          <div>
+            <small>Open invoices</small>
+            <strong>1,284</strong>
+            <span class="up">+7.1%</span>
+          </div>
+          <div>
+            <small>Cash flow</small>
+            <strong>Rs. 28.1L</strong>
+            <span class="down">-2.8%</span>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card__head">
+            <strong>Monthly revenue</strong>
+            <small>Last 8 months</small>
+          </div>
+          <div class="bars">
+            <span style="--h: 38%"></span>
+            <span style="--h: 52%"></span>
+            <span style="--h: 44%"></span>
+            <span style="--h: 70%"></span>
+            <span style="--h: 55%"></span>
+            <span style="--h: 82%"></span>
+            <span style="--h: 66%"></span>
+            <span style="--h: 88%"></span>
+          </div>
+        </div>
+        <div class="floating-note">
+          <strong>Rs. 2,84,000</strong>
+          <span>Collected today</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="design">
+    <div class="section-heading">
+      <span class="kicker">Design System</span>
+      <h2>A design system built for enterprise</h2>
+      <p>
+        Semantic tokens, compact spacing, and thoughtful defaults. Every component shares the same
+        palette, typography, radius, and elevation language.
+      </p>
+    </div>
+
+    <div class="palette-grid">
+      <div class="token-card token-card--primary">
+        <strong>Primary</strong>
+        <span>#4f46e5</span>
+        <small>Brand, CTA</small>
+      </div>
+      <div class="token-card token-card--accent">
+        <strong>Accent</strong>
+        <span>#2563eb</span>
+        <small>Links, focus</small>
+      </div>
+      <div class="token-card token-card--success">
+        <strong>Success</strong>
+        <span>#16a34a</span>
+        <small>Completed</small>
+      </div>
+      <div class="token-card token-card--warning">
+        <strong>Warning</strong>
+        <span>#d97706</span>
+        <small>Attention</small>
+      </div>
+      <div class="token-card token-card--info">
+        <strong>Info</strong>
+        <span>#0284c7</span>
+        <small>Updates</small>
+      </div>
+      <div class="token-card token-card--danger">
+        <strong>Danger</strong>
+        <span>#dc2626</span>
+        <small>Errors</small>
+      </div>
+    </div>
+
+    <div class="foundation-grid">
+      <article class="foundation-card">
+        <span class="kicker">Typography</span>
+        <h3>Display 4xl</h3>
+        <h4>Heading 2xl</h4>
+        <p>Body - The quick brown fox jumps over the lazy dog.</p>
+        <small>Label - status and helper text</small>
+      </article>
+
+      <article class="foundation-card">
+        <span class="kicker">Spacing scale</span>
+        <div class="spacing-bars">
+          <span style="--w: 16px">1</span>
+          <span style="--w: 32px">2</span>
+          <span style="--w: 48px">3</span>
+          <span style="--w: 64px">4</span>
+          <span style="--w: 96px">5</span>
+        </div>
+      </article>
+
+      <article class="foundation-card">
+        <span class="kicker">Border radius</span>
+        <div class="radius-row">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </article>
+
+      <article class="foundation-card">
+        <span class="kicker">Elevation</span>
+        <div class="shadow-row">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </article>
+
+      <article class="foundation-card theme-card">
+        <span class="kicker">Light Theme</span>
+        <strong>Rs. 42,80,000</strong>
+        <jr-button size="sm">Review</jr-button>
+      </article>
+
+      <article class="foundation-card theme-card jr-dark">
+        <span class="kicker">Dark Theme</span>
+        <strong>Rs. 42,80,000</strong>
+        <jr-button size="sm">Review</jr-button>
+      </article>
+    </div>
+  </section>
+
+  <section class="section docs-section" id="components">
+    <span id="docs" class="anchor-target"></span>
+    <div class="section-heading">
+      <span class="kicker">Components</span>
+      <h2>Five foundational components</h2>
+      <p>
+        Every component ships with focused states, variants, forms integration, and practical APIs
+        for ERP screens.
+      </p>
+    </div>
+
+    <article class="doc-card" id="button-doc">
+      <div class="doc-card__header">
+        <div>
+          <h3>Button</h3>
+          <p>Trigger actions and workflows with variants, sizes, and loading states.</p>
+        </div>
+        <code>jr/button</code>
+      </div>
+      <div class="component-preview">
+        <jr-button *ngFor="let variant of buttonVariants" [variant]="variant">{{
+          variant
+        }}</jr-button>
+        <jr-button variant="secondary" disabled>Disabled</jr-button>
+        <jr-button variant="secondary" loading>Loading</jr-button>
+      </div>
+      <pre><code>import {{ '{' }} ButtonComponent {{ '}' }} from 'jr/button';
+
+&lt;jr-button variant="primary" size="md"&gt;Save&lt;/jr-button&gt;</code></pre>
+      <table class="props-table">
+        <thead>
+          <tr>
+            <th>Prop</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>variant</td>
+            <td>primary | secondary | outline | ghost | danger | success</td>
+            <td>primary</td>
+            <td>Visual style</td>
+          </tr>
+          <tr>
+            <td>size</td>
+            <td>sm | md | lg</td>
+            <td>md</td>
+            <td>Button height and spacing</td>
+          </tr>
+          <tr>
+            <td>loading</td>
+            <td>boolean</td>
+            <td>false</td>
+            <td>Blocks press and shows spinner</td>
+          </tr>
+        </tbody>
+      </table>
+    </article>
+
+    <article class="doc-card">
+      <div class="doc-card__header">
+        <div>
+          <h3>Input</h3>
+          <p>Text fields for forms with labels, hints, validation messages, and CVA support.</p>
+        </div>
+        <code>jr/input</code>
+      </div>
+      <div class="input-preview">
+        <jr-input label="Email" type="email" [formControl]="emailControl" success="Verified" />
+        <jr-input label="Amount" type="number" placeholder="0.00" error="Amount is required" />
+        <jr-input label="Search" type="search" placeholder="Search invoice..." prefixIcon="/" />
+        <jr-input
+          label="Notes"
+          multiline
+          [formControl]="textareaControl"
+          hint="Visible to approvers"
+        />
+      </div>
+      <pre><code>import {{ '{' }} InputComponent {{ '}' }} from 'jr/input';
+
+&lt;jr-input label="Email" type="email" [formControl]="email" /&gt;</code></pre>
+      <table class="props-table">
+        <thead>
+          <tr>
+            <th>Prop</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>type</td>
+            <td>text | password | search | email | number</td>
+            <td>text</td>
+            <td>HTML input type</td>
+          </tr>
+          <tr>
+            <td>error</td>
+            <td>string</td>
+            <td>-</td>
+            <td>Error message text</td>
+          </tr>
+          <tr>
+            <td>multiline</td>
+            <td>boolean</td>
+            <td>false</td>
+            <td>Textarea mode</td>
+          </tr>
+        </tbody>
+      </table>
+    </article>
+
+    <article class="doc-card">
+      <div class="doc-card__header">
+        <div>
+          <h3>Card</h3>
+          <p>Flexible container for grouping content, KPIs, action panels, and summaries.</p>
+        </div>
+        <code>jr/card</code>
+      </div>
+      <div class="card-preview">
+        <div class="mini-card">
+          <small>Bank card</small>
+          <strong>Account connected</strong>
+          <span>Verified vendor onboarding</span>
+        </div>
+        <div class="mini-card">
+          <small>Revenue</small>
+          <strong>Rs. 48.2L</strong>
+          <span class="up">+9.8%</span>
+        </div>
+        <div class="mini-card">
+          <small>Work queue</small>
+          <strong>248</strong>
+          <span>Pending reviews</span>
+        </div>
+        <div class="mini-card action">
+          <small>Upgrade plan</small>
+          <strong>Business Pro</strong>
+          <jr-button size="sm">Upgrade</jr-button>
+        </div>
+      </div>
+      <pre><code>import {{ '{' }} CardComponent {{ '}' }} from 'jr/card';
+
+&lt;jr-card title="Revenue" variant="elevated"&gt;...&lt;/jr-card&gt;</code></pre>
+      <table class="props-table">
+        <thead>
+          <tr>
+            <th>Prop</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>variant</td>
+            <td>default | elevated | bordered | soft</td>
+            <td>default</td>
+            <td>Card treatment</td>
+          </tr>
+          <tr>
+            <td>title</td>
+            <td>string</td>
+            <td>-</td>
+            <td>Header title</td>
+          </tr>
+          <tr>
+            <td>clickable</td>
+            <td>boolean</td>
+            <td>false</td>
+            <td>Action-card affordance</td>
+          </tr>
+        </tbody>
+      </table>
+    </article>
+
+    <article class="doc-card">
+      <div class="doc-card__header">
+        <div>
+          <h3>Dialog</h3>
+          <p>Modal workflows for confirmations, forms, and focused decisions.</p>
+        </div>
+        <code>jr/dialog</code>
+      </div>
+      <div class="dialog-preview">
+        <div class="dialog-sample">
+          <strong>Delete invoice?</strong>
+          <p>Removed records cannot be restored.</p>
+          <div><button>Cancel</button><button class="danger">Delete</button></div>
+        </div>
+        <div class="dialog-sample">
+          <strong>New customer</strong>
+          <input placeholder="Customer name" />
+          <input placeholder="GSTIN" />
+          <div><button>Cancel</button><button>Create</button></div>
+        </div>
+        <div class="dialog-sample">
+          <strong>System alert</strong>
+          <p>Background sync has paused for 3 records.</p>
+          <div><button class="warning">Acknowledge</button></div>
+        </div>
+      </div>
+      <pre><code>import {{ '{' }} DialogComponent {{ '}' }} from 'jr/dialog';
+
+&lt;jr-dialog title="Confirm" [(open)]="open"&gt;...&lt;/jr-dialog&gt;</code></pre>
+    </article>
+
+    <article class="doc-card">
+      <div class="doc-card__header">
+        <div>
+          <h3>Toast</h3>
+          <p>Transient notifications for feedback, validation, and async outcomes.</p>
+        </div>
+        <code>jr/toast</code>
+      </div>
+      <div class="toast-preview">
+        <button class="toast-chip success" (click)="showToast('success')">Payment received</button>
+        <button class="toast-chip danger" (click)="showToast('error')">Failed to sync</button>
+        <button class="toast-chip warning" (click)="showToast('warning')">Low stock</button>
+        <button class="toast-chip info" (click)="showToast('info')">Report ready</button>
+      </div>
+      <pre><code>import {{ '{' }} ToastContainerComponent, ToastService {{ '}' }} from 'jr/toast';
+
+this.toast.show({{ '{' }} type: 'success', message: 'Saved' {{ '}' }});</code></pre>
+    </article>
+  </section>
+
+  <section class="section" id="dashboard">
+    <div class="section-heading">
+      <span class="kicker">Admin Preview</span>
+      <h2>A real ERP dashboard, built with JR UI</h2>
+      <p>
+        Every element below is composed with the Phase 1 component set. It gives the library an
+        immediate business-app feel.
+      </p>
+    </div>
+
+    <div class="erp-shell">
+      <aside>
+        <strong>JR ERP</strong>
+        <span>Overview</span>
+        <span>Invoices</span>
+        <span>Customers</span>
+        <span>Inventory</span>
+        <span>Reports</span>
+        <span>Settings</span>
+      </aside>
+      <section>
+        <div class="erp-toolbar">
+          <jr-input
+            placeholder="Search invoices, customers, SKUs..."
+            prefixIcon="/"
+            [formControl]="searchControl"
+          />
+          <jr-button variant="ghost" size="sm">Export</jr-button>
+          <jr-button variant="primary" size="sm" (jrPress)="openForm()">New invoice</jr-button>
+        </div>
+        <div class="erp-grid">
+          <div><small>Revenue</small><strong>Rs. 52.8L</strong><span class="up">+8.2%</span></div>
+          <div><small>Orders</small><strong>1,284</strong><span class="up">+4.4%</span></div>
+          <div><small>Pending</small><strong>248</strong><span class="down">-1.2%</span></div>
+          <div><small>Vendors</small><strong>8,247</strong><span class="up">+2.1%</span></div>
+        </div>
+        <div class="erp-content">
+          <div class="erp-table">
+            <div><strong>Recent invoices</strong><a>View all</a></div>
+            <span>INV-4024</span><span>Aster Retail</span><span>Rs. 42,000</span
+            ><span class="paid">Paid</span> <span>INV-4025</span><span>Northwind</span
+            ><span>Rs. 88,400</span><span class="pending">Pending</span> <span>INV-4026</span
+            ><span>Green Foods</span><span>Rs. 24,100</span><span class="paid">Paid</span>
+            <span>INV-4027</span><span>Patel Purchase</span><span>Rs. 66,800</span
+            ><span class="failed">Failed</span>
+          </div>
+          <div class="erp-side-card">
+            <strong>Cash flow snapshot</strong>
+            <div class="mini-bars">
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <button class="toast-chip success" (click)="showToast('success')">Create report</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div>
+    <span class="brand__mark">J</span>
+    <strong>JR UI</strong>
+    <p>Lightweight Angular UI kit for Indian ERP and admin applications.</p>
+  </div>
+  <div>
+    <strong>Product</strong>
+    <a href="#components">Components</a>
+    <a href="#design">Design System</a>
+    <a href="#dashboard">Dashboard</a>
+  </div>
+  <div>
+    <strong>Resources</strong>
+    <a href="#docs">Documentation</a>
+    <a href="#button-doc">Examples</a>
+    <a href="#top">Get Started</a>
+  </div>
+</footer>
+
+<jr-dialog
+  title="Confirm archive"
+  size="sm"
+  [open]="confirmDialogOpen"
+  (openChange)="confirmDialogOpen = $event"
+>
+  <p>Archive the selected supplier record?</p>
+  <jr-button jrDialogFooter variant="ghost" (jrPress)="confirmDialogOpen = false">Cancel</jr-button>
+  <jr-button
+    jrDialogFooter
+    variant="danger"
+    (jrPress)="confirmDialogOpen = false; showToast('success')"
+  >
+    Archive
+  </jr-button>
+</jr-dialog>
+
+<jr-dialog
+  title="Create invoice"
+  size="lg"
+  [open]="formDialogOpen"
+  (openChange)="formDialogOpen = $event"
+>
+  <div class="modal-grid">
+    <jr-input label="Customer" placeholder="Customer name" />
+    <jr-input label="Invoice value" type="number" placeholder="0.00" />
+    <jr-input label="Notes" multiline placeholder="Internal notes" />
+  </div>
+  <jr-button jrDialogFooter variant="ghost" (jrPress)="formDialogOpen = false">Cancel</jr-button>
+  <jr-button
+    jrDialogFooter
+    variant="primary"
+    (jrPress)="formDialogOpen = false; showToast('success')"
+  >
+    Save invoice
+  </jr-button>
+</jr-dialog>
+
+<jr-dialog
+  title="Export warning"
+  size="md"
+  [open]="alertDialogOpen"
+  (openChange)="alertDialogOpen = $event"
+>
+  <p>Some rows contain missing tax IDs and will be excluded from the export.</p>
+  <jr-button jrDialogFooter variant="primary" (jrPress)="alertDialogOpen = false"
+    >Understood</jr-button
+  >
+</jr-dialog>
