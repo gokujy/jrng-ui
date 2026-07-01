@@ -7,4 +7,4 @@ export {
   type JrDialogOpenOptions,
   type JrDialogRequest,
   type JrDialogSize,
-} from 'jr';
+} from 'jrng-ui';

@@ -1,16 +1,16 @@
 {
-  "name": "jr-ui-workspace",
+  "name": "jrng-ui-workspace",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng build jr-ui && ng serve docs",
-    "build": "ng build jr-ui && ng build docs",
-    "build:lib": "ng build jr-ui",
+    "start": "ng build jrng-ui && ng serve docs",
+    "build": "ng build jrng-ui && ng build docs",
+    "build:lib": "ng build jrng-ui",
     "build:docs": "ng build docs",
     "watch": "ng build --watch --configuration development",
-    "test": "ng build jr-ui && ng test --watch=false",
-    "test:lib": "ng test jr-ui --watch=false",
-    "test:docs": "ng build jr-ui && ng test docs --watch=false"
+    "test": "ng build jrng-ui && ng test --watch=false",
+    "test:lib": "ng test jrng-ui --watch=false",
+    "test:docs": "ng build jrng-ui && ng test docs --watch=false"
   },
   "private": true,
   "packageManager": "npm@11.6.2",

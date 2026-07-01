@@ -3,12 +3,14 @@
 Standalone Angular UI components for ERP, admin panels, dashboards, and business
 applications.
 
+Repository: https://github.com/gokujy/jrng-ui
+
 ```bash
-npm install jr
+npm install jrng-ui
 ```
 
 ```ts
-import { ButtonComponent } from 'jr/button';
+import { ButtonComponent } from 'jrng-ui/button';
 ```
 
 ```html
@@ -18,7 +20,7 @@ import { ButtonComponent } from 'jr/button';
 Theme:
 
 ```scss
-@use 'jr/theme';
+@use 'jrng-ui/theme';
 ```
 
 Components exported in Phase 1:

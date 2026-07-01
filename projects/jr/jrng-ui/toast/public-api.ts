@@ -7,4 +7,4 @@ export {
   type JrToastOptions,
   type JrToastPosition,
   type JrToastType,
-} from 'jr';
+} from 'jrng-ui';

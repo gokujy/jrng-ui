@@ -210,7 +210,7 @@
           <h3>Button</h3>
           <p>Trigger actions and workflows with variants, sizes, and loading states.</p>
         </div>
-        <code>jr/button</code>
+        <code>jrng-ui/button</code>
       </div>
       <div class="component-preview">
         <jr-button *ngFor="let variant of buttonVariants" [variant]="variant">{{
@@ -219,7 +219,7 @@
         <jr-button variant="secondary" disabled>Disabled</jr-button>
         <jr-button variant="secondary" loading>Loading</jr-button>
       </div>
-      <pre><code>import {{ '{' }} ButtonComponent {{ '}' }} from 'jr/button';
+      <pre><code>import {{ '{' }} ButtonComponent {{ '}' }} from 'jrng-ui/button';
 
 &lt;jr-button variant="primary" size="md"&gt;Save&lt;/jr-button&gt;</code></pre>
       <table class="props-table">
@@ -260,7 +260,7 @@
           <h3>Input</h3>
           <p>Text fields for forms with labels, hints, validation messages, and CVA support.</p>
         </div>
-        <code>jr/input</code>
+        <code>jrng-ui/input</code>
       </div>
       <div class="input-preview">
         <jr-input label="Email" type="email" [formControl]="emailControl" success="Verified" />
@@ -273,7 +273,7 @@
           hint="Visible to approvers"
         />
       </div>
-      <pre><code>import {{ '{' }} InputComponent {{ '}' }} from 'jr/input';
+      <pre><code>import {{ '{' }} InputComponent {{ '}' }} from 'jrng-ui/input';
 
 &lt;jr-input label="Email" type="email" [formControl]="email" /&gt;</code></pre>
       <table class="props-table">
@@ -314,7 +314,7 @@
           <h3>Card</h3>
           <p>Flexible container for grouping content, KPIs, action panels, and summaries.</p>
         </div>
-        <code>jr/card</code>
+        <code>jrng-ui/card</code>
       </div>
       <div class="card-preview">
         <div class="mini-card">
@@ -338,7 +338,7 @@
           <jr-button size="sm">Upgrade</jr-button>
         </div>
       </div>
-      <pre><code>import {{ '{' }} CardComponent {{ '}' }} from 'jr/card';
+      <pre><code>import {{ '{' }} CardComponent {{ '}' }} from 'jrng-ui/card';
 
 &lt;jr-card title="Revenue" variant="elevated"&gt;...&lt;/jr-card&gt;</code></pre>
       <table class="props-table">
@@ -379,7 +379,7 @@
           <h3>Dialog</h3>
           <p>Modal workflows for confirmations, forms, and focused decisions.</p>
         </div>
-        <code>jr/dialog</code>
+        <code>jrng-ui/dialog</code>
       </div>
       <div class="dialog-preview">
         <div class="dialog-sample">
@@ -399,7 +399,7 @@
           <div><button class="warning">Acknowledge</button></div>
         </div>
       </div>
-      <pre><code>import {{ '{' }} DialogComponent {{ '}' }} from 'jr/dialog';
+      <pre><code>import {{ '{' }} DialogComponent {{ '}' }} from 'jrng-ui/dialog';
 
 &lt;jr-dialog title="Confirm" [(open)]="open"&gt;...&lt;/jr-dialog&gt;</code></pre>
     </article>
@@ -410,7 +410,7 @@
           <h3>Toast</h3>
           <p>Transient notifications for feedback, validation, and async outcomes.</p>
         </div>
-        <code>jr/toast</code>
+        <code>jrng-ui/toast</code>
       </div>
       <div class="toast-preview">
         <button class="toast-chip success" (click)="showToast('success')">Payment received</button>
@@ -418,7 +418,7 @@
         <button class="toast-chip warning" (click)="showToast('warning')">Low stock</button>
         <button class="toast-chip info" (click)="showToast('info')">Report ready</button>
       </div>
-      <pre><code>import {{ '{' }} ToastContainerComponent, ToastService {{ '}' }} from 'jr/toast';
+      <pre><code>import {{ '{' }} ToastContainerComponent, JrToastService {{ '}' }} from 'jrng-ui/toast';
 
 this.toast.show({{ '{' }} type: 'success', message: 'Saved' {{ '}' }});</code></pre>
     </article>

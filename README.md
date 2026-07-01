@@ -3,21 +3,23 @@
 JR UI is a lightweight Angular standalone component library for ERP, admin panels,
 dashboards, and business applications.
 
-Package name: `jr`
+Package name: `jrng-ui`
+
+Repository: https://github.com/gokujy/jrng-ui
 
 ## Installation
 
 Publishing is not configured yet. After publishing, install with:
 
 ```bash
-npm install jr
+npm install jrng-ui
 ```
 
-Inside this workspace, build the library first so the local `jr` path alias
-resolves from `dist/jr/jr-ui`.
+Inside this workspace, build the library first so the local `jrng-ui` path alias
+resolves from `dist/jr/jrng-ui`.
 
 ```ts
-import { ButtonComponent } from 'jr/button';
+import { ButtonComponent } from 'jrng-ui/button';
 ```
 
 ## Theme Setup
@@ -25,7 +27,7 @@ import { ButtonComponent } from 'jr/button';
 Add the JR UI theme once in your global stylesheet:
 
 ```scss
-@use 'jr/theme';
+@use 'jrng-ui/theme';
 ```
 
 The default theme is light. Wrap any section or app root with `.jr-dark` to use
@@ -43,7 +45,7 @@ Standalone components can be imported directly into Angular components.
 
 ```ts
 import { Component } from '@angular/core';
-import { ButtonComponent } from 'jr/button';
+import { ButtonComponent } from 'jrng-ui/button';
 
 @Component({
   selector: 'app-example',
@@ -86,12 +88,12 @@ npm run test:docs
 ```
 
 The docs app imports the local package through secondary entrypoints such as
-`jr/button`, so `npm start`, `npm test`, and the docs-specific scripts build the
+`jrng-ui/button`, so `npm start`, `npm test`, and the docs-specific scripts build the
 library first.
 
 ## Workspace
 
-- Library source: `projects/jr/jr-ui/src/lib`
-- Public API: `projects/jr/jr-ui/src/public-api.ts`
+- Library source: `projects/jr/jrng-ui/src/lib`
+- Public API: `projects/jr/jrng-ui/src/public-api.ts`
 - Docs app: `projects/docs/src/app`
-- Theme tokens: `projects/jr/jr-ui/src/lib/theme/jr-theme.scss`
+- Theme tokens: `projects/jr/jrng-ui/src/lib/theme/jr-theme.scss`

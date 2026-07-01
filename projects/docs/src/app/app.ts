@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { ButtonComponent, JrButtonSize, JrButtonVariant } from 'jr/button';
-import { DialogComponent } from 'jr/dialog';
-import { InputComponent } from 'jr/input';
-import { ToastContainerComponent, ToastService } from 'jr/toast';
+import { ButtonComponent, JrButtonSize, JrButtonVariant } from 'jrng-ui/button';
+import { DialogComponent } from 'jrng-ui/dialog';
+import { InputComponent } from 'jrng-ui/input';
+import { JrToastService, ToastContainerComponent } from 'jrng-ui/toast';
 
 @Component({
   selector: 'app-root',
@@ -20,7 +20,7 @@ import { ToastContainerComponent, ToastService } from 'jr/toast';
   styleUrl: './app.scss',
 })
 export class App {
-  private readonly toastService = inject(ToastService);
+  private readonly toastService = inject(JrToastService);
 
   readonly buttonVariants: readonly JrButtonVariant[] = [
     'primary',

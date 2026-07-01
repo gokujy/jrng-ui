@@ -7,20 +7,20 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "jr-ui": {
+    "jrng-ui": {
       "projectType": "library",
-      "root": "projects/jr/jr-ui",
-      "sourceRoot": "projects/jr/jr-ui/src",
+      "root": "projects/jr/jrng-ui",
+      "sourceRoot": "projects/jr/jrng-ui/src",
       "prefix": "jr",
       "architect": {
         "build": {
           "builder": "@angular/build:ng-packagr",
           "configurations": {
             "production": {
-              "tsConfig": "projects/jr/jr-ui/tsconfig.lib.prod.json"
+              "tsConfig": "projects/jr/jrng-ui/tsconfig.lib.prod.json"
             },
             "development": {
-              "tsConfig": "projects/jr/jr-ui/tsconfig.lib.json"
+              "tsConfig": "projects/jr/jrng-ui/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "production"
@@ -28,7 +28,7 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "tsConfig": "projects/jr/jr-ui/tsconfig.spec.json"
+            "tsConfig": "projects/jr/jrng-ui/tsconfig.spec.json"
           }
         }
       }
