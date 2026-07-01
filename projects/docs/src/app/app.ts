@@ -57,6 +57,17 @@ export class App {
     });
   }
 
+  focusSection(sectionId: string): void {
+    const target = document.getElementById(sectionId);
+
+    if (!target) {
+      return;
+    }
+
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    target.focus({ preventScroll: true });
+  }
+
   openConfirm(): void {
     this.confirmDialogOpen = true;
   }

@@ -1,37 +1,51 @@
 <jr-toast-container />
 
 <header class="site-header">
-  <a class="brand" href="#top" aria-label="JR UI home">
+  <a class="brand" href="#top" aria-label="JRNG UI home" (click)="focusSection('top'); $event.preventDefault()">
     <span class="brand__mark">J</span>
-    <span>JR UI</span>
+    <span>JRNG UI</span>
   </a>
 
   <nav class="site-nav" aria-label="Documentation">
-    <a href="#design">Design System</a>
-    <a href="#components">Components</a>
-    <a href="#dashboard">Dashboard</a>
-    <a href="#docs">Docs</a>
+    <a href="#design" (click)="focusSection('design'); $event.preventDefault()">Design System</a>
+    <a href="#components" (click)="focusSection('components'); $event.preventDefault()">Components</a>
+    <a href="#dashboard" (click)="focusSection('dashboard'); $event.preventDefault()">Dashboard</a>
+    <a href="#docs" (click)="focusSection('docs'); $event.preventDefault()">Docs</a>
   </nav>
 
   <div class="site-actions">
-    <a href="https://github.com" target="_blank" rel="noreferrer">GitHub</a>
-    <jr-button size="sm" variant="primary">Get Started</jr-button>
+    <a href="https://github.com/gokujy/jrng-ui" target="_blank" rel="noreferrer">GitHub</a>
+    <a
+      class="docs-button docs-button--primary docs-button--sm"
+      href="https://www.npmjs.com/package/jrng-ui"
+      target="_blank"
+      rel="noreferrer"
+      >Get Started</a
+    >
   </div>
 </header>
 
-<main id="top">
+<main id="top" tabindex="-1">
   <section class="hero-shell">
     <div class="hero section">
       <div class="hero__copy">
         <span class="pill">Phase 1 business component release</span>
-        <h1><span>JR UI</span> Lightweight Angular UI Kit</h1>
+        <h1><span>JRNG UI</span> Lightweight Angular UI Kit</h1>
         <p>
           Modern, clean, fast components for ERP, admin panels, dashboards, and business
           applications. Purpose-built for Indian enterprise workflows.
         </p>
         <div class="hero__actions">
-          <jr-button variant="primary" size="lg">View Components</jr-button>
-          <jr-button variant="outline" size="lg">Get Started</jr-button>
+          <jr-button variant="primary" size="lg" (jrPress)="focusSection('components')"
+            >View Components</jr-button
+          >
+          <a
+            class="docs-button docs-button--outline docs-button--lg"
+            href="https://www.npmjs.com/package/jrng-ui"
+            target="_blank"
+            rel="noreferrer"
+            >Get Started</a
+          >
         </div>
         <div class="hero__meta">
           <span>SSR optimized</span>
@@ -52,7 +66,7 @@
             <small>Operations KPI</small>
             <strong>JULY 2026</strong>
           </div>
-          <jr-button size="sm">Export</jr-button>
+          <jr-button size="sm" (jrPress)="showToast('info')">Export</jr-button>
         </div>
         <div class="preview-stats">
           <div>
@@ -95,7 +109,7 @@
     </div>
   </section>
 
-  <section class="section" id="design">
+  <section class="section" id="design" tabindex="-1">
     <div class="section-heading">
       <span class="kicker">Design System</span>
       <h2>A design system built for enterprise</h2>
@@ -182,19 +196,19 @@
       <article class="foundation-card theme-card">
         <span class="kicker">Light Theme</span>
         <strong>Rs. 42,80,000</strong>
-        <jr-button size="sm">Review</jr-button>
+        <jr-button size="sm" (jrPress)="showToast('info')">Review</jr-button>
       </article>
 
       <article class="foundation-card theme-card jr-dark">
         <span class="kicker">Dark Theme</span>
         <strong>Rs. 42,80,000</strong>
-        <jr-button size="sm">Review</jr-button>
+        <jr-button size="sm" (jrPress)="showToast('info')">Review</jr-button>
       </article>
     </div>
   </section>
 
-  <section class="section docs-section" id="components">
-    <span id="docs" class="anchor-target"></span>
+  <section class="section docs-section" id="components" tabindex="-1">
+    <span id="docs" class="anchor-target" tabindex="-1"></span>
     <div class="section-heading">
       <span class="kicker">Components</span>
       <h2>Five foundational components</h2>
@@ -204,7 +218,7 @@
       </p>
     </div>
 
-    <article class="doc-card" id="button-doc">
+    <article class="doc-card" id="button-doc" tabindex="-1">
       <div class="doc-card__header">
         <div>
           <h3>Button</h3>
@@ -213,7 +227,11 @@
         <code>jrng-ui/button</code>
       </div>
       <div class="component-preview">
-        <jr-button *ngFor="let variant of buttonVariants" [variant]="variant">{{
+        <jr-button
+          *ngFor="let variant of buttonVariants"
+          [variant]="variant"
+          (jrPress)="showToast('info')"
+          >{{
           variant
         }}</jr-button>
         <jr-button variant="secondary" disabled>Disabled</jr-button>
@@ -335,7 +353,7 @@
         <div class="mini-card action">
           <small>Upgrade plan</small>
           <strong>Business Pro</strong>
-          <jr-button size="sm">Upgrade</jr-button>
+          <jr-button size="sm" (jrPress)="showToast('success')">Upgrade</jr-button>
         </div>
       </div>
       <pre><code>import {{ '{' }} CardComponent {{ '}' }} from 'jrng-ui/card';
@@ -424,10 +442,10 @@ this.toast.show({{ '{' }} type: 'success', message: 'Saved' {{ '}' }});</code></
     </article>
   </section>
 
-  <section class="section" id="dashboard">
+  <section class="section" id="dashboard" tabindex="-1">
     <div class="section-heading">
       <span class="kicker">Admin Preview</span>
-      <h2>A real ERP dashboard, built with JR UI</h2>
+      <h2>A real ERP dashboard, built with JRNG UI</h2>
       <p>
         Every element below is composed with the Phase 1 component set. It gives the library an
         immediate business-app feel.
@@ -451,7 +469,7 @@ this.toast.show({{ '{' }} type: 'success', message: 'Saved' {{ '}' }});</code></
             prefixIcon="/"
             [formControl]="searchControl"
           />
-          <jr-button variant="ghost" size="sm">Export</jr-button>
+          <jr-button variant="ghost" size="sm" (jrPress)="showToast('info')">Export</jr-button>
           <jr-button variant="primary" size="sm" (jrPress)="openForm()">New invoice</jr-button>
         </div>
         <div class="erp-grid">
@@ -486,20 +504,22 @@ this.toast.show({{ '{' }} type: 'success', message: 'Saved' {{ '}' }});</code></
 <footer class="footer">
   <div>
     <span class="brand__mark">J</span>
-    <strong>JR UI</strong>
+    <strong>JRNG UI</strong>
     <p>Lightweight Angular UI kit for Indian ERP and admin applications.</p>
   </div>
   <div>
     <strong>Product</strong>
-    <a href="#components">Components</a>
-    <a href="#design">Design System</a>
-    <a href="#dashboard">Dashboard</a>
+    <a href="#components" (click)="focusSection('components'); $event.preventDefault()">Components</a>
+    <a href="#design" (click)="focusSection('design'); $event.preventDefault()">Design System</a>
+    <a href="#dashboard" (click)="focusSection('dashboard'); $event.preventDefault()">Dashboard</a>
   </div>
   <div>
     <strong>Resources</strong>
-    <a href="#docs">Documentation</a>
-    <a href="#button-doc">Examples</a>
-    <a href="#top">Get Started</a>
+    <a href="#docs" (click)="focusSection('docs'); $event.preventDefault()">Documentation</a>
+    <a href="#button-doc" (click)="focusSection('button-doc'); $event.preventDefault()">Examples</a>
+    <a href="https://www.npmjs.com/package/jrng-ui" target="_blank" rel="noreferrer"
+      >Get Started</a
+    >
   </div>
 </footer>
 
