@@ -31,7 +31,6 @@ export class App {
     { label: 'Components', path: '/components' },
     { label: 'Themes', path: '/themes' },
     { label: 'GitHub', href: 'https://github.com/jrng-ui/jrng-ui' },
-    { label: 'Support', path: '/support' },
   ];
 
   toggleMobileMenu(): void {
