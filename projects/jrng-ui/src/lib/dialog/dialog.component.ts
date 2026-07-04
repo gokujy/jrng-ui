@@ -1,17 +1,19 @@
-import { DOCUMENT } from '@angular/common';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import {
   booleanAttribute,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  DestroyRef,
   ElementRef,
   EventEmitter,
-  HostListener,
   inject,
   Input,
   OnChanges,
   OnDestroy,
   Output,
+  PLATFORM_ID,
+  Renderer2,
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
@@ -36,6 +38,9 @@ export class JrDialogComponent implements OnChanges, OnDestroy {
   private readonly documentRef = inject(DOCUMENT);
   private readonly bodyScrollLock = inject(JBodyScrollLockService);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
+  private readonly renderer = inject(Renderer2);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   private previouslyFocused: HTMLElement | null = null;
   private scrollLocked = false;
 
@@ -110,6 +115,20 @@ export class JrDialogComponent implements OnChanges, OnDestroy {
     ].join(' ');
   }
 
+  constructor() {
+    if (!this.isBrowser) {
+      return;
+    }
+
+    const removeKeydownListener = this.renderer.listen(this.documentRef, 'keydown', (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        this.handleEscape(event);
+      }
+    });
+
+    this.destroyRef.onDestroy(removeKeydownListener);
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['visible']) {
       this.visible ? this.handleOpened() : this.handleClosed('api', false);
@@ -122,7 +141,6 @@ export class JrDialogComponent implements OnChanges, OnDestroy {
     }
   }
 
-  @HostListener('document:keydown.escape', ['$event'])
   handleEscape(event: Event): void {
     if (!this.visible || !this.closeOnEscape) {
       return;
@@ -159,8 +177,9 @@ export class JrDialogComponent implements OnChanges, OnDestroy {
   }
 
   private handleOpened(): void {
+    const HTMLElementCtor = this.documentRef.defaultView?.HTMLElement;
     this.previouslyFocused =
-      this.documentRef.activeElement instanceof HTMLElement ? this.documentRef.activeElement : null;
+      HTMLElementCtor && this.documentRef.activeElement instanceof HTMLElementCtor ? this.documentRef.activeElement : null;
     if (this.modal && !this.scrollLocked) {
       this.bodyScrollLock.lock();
       this.scrollLocked = true;

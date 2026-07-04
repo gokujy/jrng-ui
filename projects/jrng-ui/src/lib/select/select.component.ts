@@ -1,4 +1,4 @@
-import { CommonModule, DOCUMENT } from '@angular/common';
+import { DOCUMENT, NgTemplateOutlet, isPlatformBrowser } from '@angular/common';
 import {
   booleanAttribute,
   ChangeDetectionStrategy,
@@ -11,6 +11,7 @@ import {
   inject,
   Input,
   Output,
+  PLATFORM_ID,
   TemplateRef,
   ViewChild,
 } from '@angular/core';
@@ -42,7 +43,7 @@ export interface JSelectItemContext {
 
 @Component({
   selector: 'j-select',
-  imports: [CommonModule, JClickOutsideDirective],
+  imports: [NgTemplateOutlet, JClickOutsideDirective],
   templateUrl: './select.component.html',
   styleUrl: './select.component.scss',
   providers: [
@@ -58,6 +59,7 @@ export class JSelectComponent implements ControlValueAccessor {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
   private readonly hostRef = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly documentRef = inject(DOCUMENT);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   @ViewChild('triggerButton') private triggerButton?: ElementRef<HTMLButtonElement>;
   @ViewChild('filterInput') private filterInput?: ElementRef<HTMLInputElement>;
@@ -415,7 +417,7 @@ export class JSelectComponent implements ControlValueAccessor {
   }
 
   private positionOverlay(): void {
-    if (!this.appendToBody) {
+    if (!this.isBrowser || !this.appendToBody) {
       return;
     }
 
@@ -427,7 +429,7 @@ export class JSelectComponent implements ControlValueAccessor {
   }
 
   private appendOverlayToBody(): void {
-    if (!this.appendToBody || !this.panelRef?.nativeElement) {
+    if (!this.isBrowser || !this.appendToBody || !this.panelRef?.nativeElement || !this.documentRef.body) {
       return;
     }
 

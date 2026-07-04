@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { DestroyRef, Injectable, inject, signal } from '@angular/core';
 
 export type JToastSeverity = 'success' | 'error' | 'warning' | 'info';
 export type JToastPosition = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' | 'top-center' | 'bottom-center';
@@ -39,10 +39,15 @@ export type JrToastOptions = JToastOptions;
 
 @Injectable({ providedIn: 'root' })
 export class JrToastService {
+  private readonly destroyRef = inject(DestroyRef);
   private readonly toastList = signal<readonly JToast[]>([]);
   private readonly timers = new Map<string, ReturnType<typeof setTimeout>>();
 
   readonly toasts = this.toastList.asReadonly();
+
+  constructor() {
+    this.destroyRef.onDestroy(() => this.clear());
+  }
 
   success(message: string, title = 'Success', options?: JToastOptions | number): JToast {
     return this.show(this.normalizeShortcut('success', message, title, options));

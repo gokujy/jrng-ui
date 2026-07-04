@@ -1,12 +1,26 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  PLATFORM_ID,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 
 @Component({
   selector: 'j-copy-button',
   imports: [],
   template: `
-    <button type="button" class="j-copy-button" [attr.aria-label]="ariaLabel" (click)="copy()">
-      <span aria-hidden="true">{{ copiedState ? '✓' : '⧉' }}</span>
-      <span>{{ copiedState ? copiedLabel : label }}</span>
+    <button type="button" class="j-copy-button" [attr.aria-label]="ariaLabel()" (click)="copy()">
+      @if (copiedState()) {
+        <span aria-hidden="true">&#10003;</span>
+      } @else {
+        <span aria-hidden="true">&#10697;</span>
+      }
+      <span>{{ copiedState() ? copiedLabel() : label() }}</span>
     </button>
   `,
   styles: [
@@ -34,23 +48,51 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JCopyButtonComponent {
-  @Input() text = '';
-  @Input() label = 'Copy';
-  @Input() copiedLabel = 'Copied';
-  @Input() ariaLabel = 'Copy to clipboard';
-  @Output() copied = new EventEmitter<string>();
+  private readonly documentRef = inject(DOCUMENT);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  private resetTimer: ReturnType<typeof setTimeout> | null = null;
 
-  copiedState = false;
+  readonly text = input('');
+  readonly label = input('Copy');
+  readonly copiedLabel = input('Copied');
+  readonly ariaLabel = input('Copy to clipboard');
+  readonly copied = output<string>();
+
+  readonly copiedState = signal(false);
+
+  constructor() {
+    this.destroyRef.onDestroy(() => this.clearResetTimer());
+  }
 
   async copy(): Promise<void> {
-    if (navigator?.clipboard) {
-      await navigator.clipboard.writeText(this.text);
+    const text = this.text();
+    const clipboard = this.isBrowser ? this.documentRef.defaultView?.navigator.clipboard : null;
+
+    if (clipboard) {
+      await clipboard.writeText(text);
     }
 
-    this.copiedState = true;
-    this.copied.emit(this.text);
-    window.setTimeout(() => {
-      this.copiedState = false;
+    this.copiedState.set(true);
+    this.copied.emit(text);
+    this.clearResetTimer();
+
+    if (!this.isBrowser) {
+      return;
+    }
+
+    this.resetTimer = setTimeout(() => {
+      this.copiedState.set(false);
+      this.resetTimer = null;
     }, 1600);
+  }
+
+  private clearResetTimer(): void {
+    if (!this.resetTimer) {
+      return;
+    }
+
+    clearTimeout(this.resetTimer);
+    this.resetTimer = null;
   }
 }

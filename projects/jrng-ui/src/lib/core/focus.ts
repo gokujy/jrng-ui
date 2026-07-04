@@ -25,8 +25,14 @@ export function jFocusFirst(root: ParentNode): boolean {
   return true;
 }
 
-export function jRememberFocus(documentRef: Document = document): () => void {
-  const activeElement = documentRef.activeElement instanceof HTMLElement ? documentRef.activeElement : null;
+export function jRememberFocus(documentRef?: Document | null): () => void {
+  if (!documentRef) {
+    return () => undefined;
+  }
+
+  const HTMLElementCtor = documentRef.defaultView?.HTMLElement;
+  const activeElement =
+    HTMLElementCtor && documentRef.activeElement instanceof HTMLElementCtor ? documentRef.activeElement : null;
 
   return () => {
     activeElement?.focus();

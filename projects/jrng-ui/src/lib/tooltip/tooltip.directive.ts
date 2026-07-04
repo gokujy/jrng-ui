@@ -1,14 +1,16 @@
-import { DOCUMENT } from '@angular/common';
-import { Directive, ElementRef, HostListener, inject, Input, numberAttribute, OnDestroy } from '@angular/core';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { DestroyRef, Directive, ElementRef, HostListener, Input, PLATFORM_ID, inject, numberAttribute } from '@angular/core';
 
 export type JTooltipPosition = 'top' | 'right' | 'bottom' | 'left';
 
 @Directive({
   selector: '[jTooltip]',
 })
-export class JTooltipDirective implements OnDestroy {
+export class JTooltipDirective {
   private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly documentRef = inject(DOCUMENT);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   private tooltipElement: HTMLElement | null = null;
   private showTimer: ReturnType<typeof setTimeout> | null = null;
   private hideTimer: ReturnType<typeof setTimeout> | null = null;
@@ -19,15 +21,17 @@ export class JTooltipDirective implements OnDestroy {
   @Input({ transform: numberAttribute }) hideDelay = 0;
   @Input() tooltipDisabled = false;
 
-  ngOnDestroy(): void {
-    this.clearTimers();
-    this.removeTooltip();
+  constructor() {
+    this.destroyRef.onDestroy(() => {
+      this.clearTimers();
+      this.removeTooltip();
+    });
   }
 
   @HostListener('mouseenter')
   @HostListener('focusin')
   show(): void {
-    if (this.tooltipDisabled || !this.tooltip) {
+    if (!this.isBrowser || this.tooltipDisabled || !this.tooltip) {
       return;
     }
     this.clearTimers();
@@ -37,11 +41,19 @@ export class JTooltipDirective implements OnDestroy {
   @HostListener('mouseleave')
   @HostListener('focusout')
   hide(): void {
+    if (!this.isBrowser) {
+      return;
+    }
+
     this.clearTimers();
     this.hideTimer = setTimeout(() => this.removeTooltip(), this.hideDelay);
   }
 
   private createTooltip(): void {
+    if (!this.isBrowser || !this.documentRef.body) {
+      return;
+    }
+
     this.removeTooltip();
     const element = this.documentRef.createElement('div');
     element.className = `j-tooltip j-tooltip--${this.tooltipPosition}`;
@@ -53,7 +65,7 @@ export class JTooltipDirective implements OnDestroy {
   }
 
   private positionTooltip(): void {
-    if (!this.tooltipElement) {
+    if (!this.isBrowser || !this.tooltipElement) {
       return;
     }
     const host = this.elementRef.nativeElement.getBoundingClientRect();

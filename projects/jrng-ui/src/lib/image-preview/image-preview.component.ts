@@ -1,11 +1,15 @@
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   EventEmitter,
-  HostListener,
   Input,
   Output,
+  PLATFORM_ID,
+  Renderer2,
   booleanAttribute,
+  inject,
 } from '@angular/core';
 
 @Component({
@@ -95,13 +99,31 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JImagePreviewComponent {
+  private readonly documentRef = inject(DOCUMENT);
+  private readonly renderer = inject(Renderer2);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+
   @Input() src = '';
   @Input() alt = '';
   @Input({ transform: booleanAttribute }) visible = false;
   @Output() visibleChange = new EventEmitter<boolean>();
   @Output() closed = new EventEmitter<void>();
 
-  @HostListener('document:keydown.escape', ['$event'])
+  constructor() {
+    if (!this.isBrowser) {
+      return;
+    }
+
+    const removeKeydownListener = this.renderer.listen(this.documentRef, 'keydown', (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        this.handleEscape(event);
+      }
+    });
+
+    this.destroyRef.onDestroy(removeKeydownListener);
+  }
+
   handleEscape(event: Event): void {
     if (!this.visible) {
       return;

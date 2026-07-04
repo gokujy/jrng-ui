@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { NgClass, NgStyle, NgTemplateOutlet } from '@angular/common';
 import {
   AfterContentInit,
   ChangeDetectionStrategy,
@@ -45,7 +45,9 @@ export type JTableSortDirection = 'asc' | 'desc';
 @Component({
   selector: 'j-table',
   imports: [
-    CommonModule,
+    NgClass,
+    NgStyle,
+    NgTemplateOutlet,
     JActionMenuComponent,
     JColumnFilterComponent,
     JPaginatorComponent,

@@ -1,11 +1,15 @@
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import {
   booleanAttribute,
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   EventEmitter,
-  HostListener,
   Input,
   Output,
+  PLATFORM_ID,
+  Renderer2,
+  inject,
 } from '@angular/core';
 
 export type JDrawerPosition = 'left' | 'right' | 'top' | 'bottom';
@@ -123,6 +127,11 @@ export type JDrawerPosition = 'left' | 'right' | 'top' | 'bottom';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JDrawerComponent {
+  private readonly documentRef = inject(DOCUMENT);
+  private readonly renderer = inject(Renderer2);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+
   @Input({ transform: booleanAttribute }) visible = false;
   @Input() header = '';
   @Input() position: JDrawerPosition = 'right';
@@ -142,7 +151,20 @@ export class JDrawerComponent {
     return ['j-drawer', `j-drawer--${this.position}`, this.styleClass].filter(Boolean).join(' ');
   }
 
-  @HostListener('document:keydown.escape', ['$event'])
+  constructor() {
+    if (!this.isBrowser) {
+      return;
+    }
+
+    const removeKeydownListener = this.renderer.listen(this.documentRef, 'keydown', (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        this.handleEscape(event);
+      }
+    });
+
+    this.destroyRef.onDestroy(removeKeydownListener);
+  }
+
   handleEscape(event: Event): void {
     if (!this.visible || !this.closeOnEscape) {
       return;
