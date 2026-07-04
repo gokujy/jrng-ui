@@ -13,21 +13,33 @@ export interface JStepItem {
   readonly description?: string;
   readonly disabled?: boolean;
   readonly completed?: boolean;
+  readonly error?: boolean;
 }
 
 @Component({
   selector: 'j-stepper',
   imports: [],
   template: `
-    <nav class="j-stepper" aria-label="Progress">
+    <nav
+      class="j-stepper"
+      [class.j-stepper--vertical]="orientation === 'vertical'"
+      [class.j-stepper--horizontal]="orientation === 'horizontal'"
+      data-jc-name="stepper"
+      data-jc-section="root"
+      aria-label="Progress"
+    >
       @for (item of items; track item.label || $index; let index = $index) {
         <button
           type="button"
           class="j-stepper__step"
           [class.is-active]="index === activeIndex"
           [class.is-completed]="isCompleted(item, index)"
+          [class.is-error]="item.error"
           [disabled]="isDisabled(item, index)"
           [attr.aria-current]="index === activeIndex ? 'step' : null"
+          [attr.data-j-active]="index === activeIndex ? 'true' : null"
+          [attr.data-j-disabled]="isDisabled(item, index) ? 'true' : null"
+          [attr.data-j-invalid]="item.error ? 'true' : null"
           (click)="activate(index)"
         >
           <span class="j-stepper__marker">{{ isCompleted(item, index) ? '✓' : index + 1 }}</span>
@@ -50,6 +62,11 @@ export interface JStepItem {
         overflow-x: auto;
       }
 
+      .j-stepper--vertical {
+        flex-direction: column;
+        overflow-x: visible;
+      }
+
       .j-stepper__step {
         align-items: center;
         background: var(--j-color-surface, #ffffff);
@@ -69,6 +86,10 @@ export interface JStepItem {
       .j-stepper__step.is-active {
         border-color: var(--j-color-primary, #4f46e5);
         box-shadow: inset 0 0 0 1px var(--j-color-primary, #4f46e5);
+      }
+
+      .j-stepper__step.is-error {
+        border-color: var(--j-color-danger);
       }
 
       .j-stepper__step:disabled {
@@ -97,6 +118,11 @@ export interface JStepItem {
         color: var(--j-color-on-primary, #ffffff);
       }
 
+      .j-stepper__step.is-error .j-stepper__marker {
+        background: var(--j-color-danger);
+        color: var(--j-color-danger-foreground, #ffffff);
+      }
+
       .j-stepper__text {
         display: grid;
         gap: var(--j-spacing-2xs, 0.125rem);
@@ -113,6 +139,7 @@ export class JStepperComponent {
   @Input() items: readonly JStepItem[] = [];
   @Input({ transform: numberAttribute }) activeIndex = 0;
   @Input({ transform: booleanAttribute }) linear = false;
+  @Input() orientation: 'horizontal' | 'vertical' = 'horizontal';
   @Output() activeIndexChange = new EventEmitter<number>();
 
   activate(index: number): void {

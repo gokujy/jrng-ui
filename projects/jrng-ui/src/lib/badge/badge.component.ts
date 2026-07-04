@@ -1,10 +1,20 @@
-import { booleanAttribute, ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { booleanAttribute, ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { JPassThrough, jMergePartClasses } from '../core/pass-through';
 import { JSeverity, JSize } from '../core/types';
 
 @Component({
   selector: 'j-badge',
   imports: [],
-  template: `<span [class]="badgeClasses">{{ value }}<ng-content></ng-content></span>`,
+  template: `
+    <span
+      [class]="badgeClasses()"
+      data-jc-name="badge"
+      data-jc-section="root"
+      [attr.data-j-active]="active() ? 'true' : null"
+    >
+      {{ value() }}<ng-content></ng-content>
+    </span>
+  `,
   styles: [
     `
       .j-badge {
@@ -81,19 +91,24 @@ import { JSeverity, JSize } from '../core/types';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JBadgeComponent {
-  @Input() value = '';
-  @Input() severity: JSeverity = 'primary';
-  @Input() size: JSize = 'md';
-  @Input({ transform: booleanAttribute }) rounded = true;
+  readonly value = input('');
+  readonly severity = input<JSeverity>('primary');
+  readonly size = input<JSize>('md');
+  readonly styleClass = input('');
+  readonly pt = input<JPassThrough | null>(null);
+  readonly rounded = input(true, { transform: booleanAttribute });
+  readonly active = input(false, { transform: booleanAttribute });
 
-  get badgeClasses(): string {
-    return [
-      'j-badge',
-      `j-badge--${this.severity}`,
-      `j-badge--${this.size}`,
-      this.rounded ? 'j-badge--rounded' : '',
-    ]
-      .filter(Boolean)
-      .join(' ');
-  }
+  readonly badgeClasses = computed(() =>
+    jMergePartClasses(
+      [
+        'j-badge',
+        `j-badge--${this.severity()}`,
+        `j-badge--${this.size()}`,
+        this.rounded() ? 'j-badge--rounded' : '',
+      ],
+      this.styleClass(),
+      this.pt(),
+    ),
+  );
 }

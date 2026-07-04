@@ -7,7 +7,7 @@ import { JTableColumn, JTableComponent, JTableRow } from './table.component';
   imports: [JTableComponent],
   template: `
     <j-table
-      caption="Invoices"
+      caption="Records"
       [columns]="columns"
       [value]="rows"
       [selectable]="selectable"
@@ -26,14 +26,14 @@ class TableHostComponent {
   sortField = '';
   page = 1;
   columns: readonly JTableColumn[] = [
-    { field: 'invoice', header: 'Invoice', sortable: true },
-    { field: 'customer', header: 'Customer' },
+    { field: 'code', header: 'Code', sortable: true },
+    { field: 'name', header: 'Name' },
     { field: 'amount', header: 'Amount', sortable: true, align: 'end' },
   ];
   rows: readonly JTableRow[] = [
-    { id: 1, invoice: 'INV-3', customer: 'Aster', amount: 300 },
-    { id: 2, invoice: 'INV-1', customer: 'Northwind', amount: 100 },
-    { id: 3, invoice: 'INV-2', customer: 'Patel', amount: 200 },
+    { id: 1, code: 'REC-3', name: 'Record Gamma', amount: 300 },
+    { id: 2, code: 'REC-1', name: 'Record Alpha', amount: 100 },
+    { id: 3, code: 'REC-2', name: 'Record Beta', amount: 200 },
   ];
 }
 
@@ -63,9 +63,9 @@ describe('JTableComponent', () => {
   }
 
   it('renders headers and rows', () => {
-    expect(fixture.nativeElement.textContent).toContain('Invoices');
+    expect(fixture.nativeElement.textContent).toContain('Records');
     expect(bodyRows().length).toBe(3);
-    expect(fixture.nativeElement.textContent).toContain('INV-3');
+    expect(fixture.nativeElement.textContent).toContain('REC-3');
   });
 
   it('sorts sortable columns and emits sortChange', () => {
@@ -76,7 +76,7 @@ describe('JTableComponent', () => {
     detectHostChanges();
 
     expect(host.sortField).toBe('amount');
-    expect(bodyRows()[0]?.textContent).toContain('INV-1');
+    expect(bodyRows()[0]?.textContent).toContain('REC-1');
     expect(amountSort.closest('th')?.getAttribute('aria-sort')).toBe('ascending');
   });
 
@@ -84,13 +84,13 @@ describe('JTableComponent', () => {
     bodyRows()[0]?.click();
     fixture.detectChanges();
 
-    expect(host.selected?.['invoice']).toBe('INV-3');
+    expect(host.selected?.['code']).toBe('REC-3');
     expect(bodyRows()[0]?.classList).toContain('is-active');
 
     bodyRows()[1]?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
     fixture.detectChanges();
 
-    expect(host.selected?.['invoice']).toBe('INV-1');
+    expect(host.selected?.['code']).toBe('REC-1');
   });
 
   it('renders empty state', () => {
@@ -113,6 +113,6 @@ describe('JTableComponent', () => {
     detectHostChanges();
 
     expect(host.page).toBe(2);
-    expect(fixture.nativeElement.textContent).toContain('INV-2');
+    expect(fixture.nativeElement.textContent).toContain('REC-2');
   });
 });

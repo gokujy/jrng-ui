@@ -1,5 +1,6 @@
-import { booleanAttribute, ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { booleanAttribute, ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { jCreateId } from '../core/id';
+import { JPassThrough, jMergePartClasses } from '../core/pass-through';
 import { JSize } from '../core/types';
 import { JInputVariant } from '../input/input.component';
 
@@ -7,23 +8,29 @@ import { JInputVariant } from '../input/input.component';
   selector: 'j-form-field',
   imports: [],
   template: `
-    <div [class]="fieldClasses">
-      @if (label) {
-        <label class="j-form-field__label" [for]="forId">
-          <span>{{ label }}</span>
-          @if (required) {
+    <div
+      [class]="fieldClasses()"
+      data-jc-name="form-field"
+      data-jc-section="root"
+      [attr.data-j-disabled]="disabled() ? 'true' : null"
+      [attr.data-j-invalid]="invalid() ? 'true' : null"
+    >
+      @if (label()) {
+        <label class="j-form-field__label" data-jc-section="label" [for]="forId()">
+          <span>{{ label() }}</span>
+          @if (required()) {
             <span class="j-form-field__required" aria-hidden="true">*</span>
           }
         </label>
       }
       <ng-content></ng-content>
-      @if (invalid && error) {
+      @if (invalid() && error()) {
         <p class="j-form-field__message j-form-field__message--error" [id]="errorId">
-          {{ error }}
+          {{ error() }}
         </p>
       }
-      @if (hint && !(invalid && error)) {
-        <p class="j-form-field__message" [id]="hintId">{{ hint }}</p>
+      @if (hint() && !(invalid() && error())) {
+        <p class="j-form-field__message" [id]="hintId">{{ hint() }}</p>
       }
     </div>
   `,
@@ -62,31 +69,35 @@ import { JInputVariant } from '../input/input.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JFormFieldComponent {
-  @Input() forId = '';
-  @Input() label = '';
-  @Input() hint = '';
-  @Input() error = '';
-  @Input() styleClass = '';
-  @Input() size: JSize = 'md';
-  @Input() variant: JInputVariant = 'outlined';
-  @Input({ transform: booleanAttribute }) invalid = false;
-  @Input({ transform: booleanAttribute }) required = false;
-  @Input({ transform: booleanAttribute }) fluid = false;
-  @Input({ transform: booleanAttribute }) fullWidth = false;
+  readonly forId = input('');
+  readonly label = input('');
+  readonly hint = input('');
+  readonly error = input('');
+  readonly styleClass = input('');
+  readonly size = input<JSize>('md');
+  readonly variant = input<JInputVariant>('outlined');
+  readonly pt = input<JPassThrough | null>(null);
+  readonly invalid = input(false, { transform: booleanAttribute });
+  readonly disabled = input(false, { transform: booleanAttribute });
+  readonly required = input(false, { transform: booleanAttribute });
+  readonly fluid = input(false, { transform: booleanAttribute });
+  readonly fullWidth = input(false, { transform: booleanAttribute });
 
   readonly hintId = jCreateId('j-form-field-hint');
   readonly errorId = jCreateId('j-form-field-error');
 
-  get fieldClasses(): string {
-    return [
-      'j-form-field',
-      `j-form-field--${this.size}`,
-      `j-form-field--${this.variant}`,
-      this.invalid ? 'is-invalid' : '',
-      this.fluid || this.fullWidth ? 'j-form-field--fluid' : '',
-      this.styleClass,
-    ]
-      .filter(Boolean)
-      .join(' ');
-  }
+  readonly fieldClasses = computed(() =>
+    jMergePartClasses(
+      [
+        'j-form-field',
+        `j-form-field--${this.size()}`,
+        `j-form-field--${this.variant()}`,
+        this.invalid() ? 'is-invalid' : '',
+        this.disabled() ? 'is-disabled' : '',
+        this.fluid() || this.fullWidth() ? 'j-form-field--fluid' : '',
+      ],
+      this.styleClass(),
+      this.pt(),
+    ),
+  );
 }

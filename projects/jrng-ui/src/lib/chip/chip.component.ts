@@ -12,14 +12,20 @@ import { JSeverity, JSize } from '../core/types';
   selector: 'j-chip',
   imports: [],
   template: `
-    <span [class]="chipClasses">
+    <span
+      [class]="chipClasses"
+      data-jc-name="chip"
+      data-jc-section="root"
+      data-jc-extend="remove"
+    >
       <ng-content></ng-content>
       @if (label) {
-        <span>{{ label }}</span>
+        <span data-jc-section="label">{{ label }}</span>
       }
       @if (removable) {
         <button
           class="j-chip__remove"
+          data-jc-section="remove"
           type="button"
           [attr.aria-label]="removeAriaLabel"
           (click)="remove.emit()"

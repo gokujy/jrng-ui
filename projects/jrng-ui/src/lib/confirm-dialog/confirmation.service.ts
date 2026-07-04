@@ -10,6 +10,7 @@ export interface JConfirmationOptions {
   readonly rejectLabel?: string;
   readonly acceptButtonSeverity?: JSeverity;
   readonly rejectButtonSeverity?: JSeverity;
+  readonly target?: HTMLElement | null;
   readonly accept?: () => void;
   readonly reject?: () => void;
 }

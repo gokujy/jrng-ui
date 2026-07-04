@@ -66,7 +66,7 @@ Use `j-form-field` as a lightweight wrapper when a native or custom projected co
   label="Search"
   type="search"
   prefixIcon="/"
-  placeholder="Search invoices"
+  placeholder="Search records"
   [(value)]="search"
 />
 ```
@@ -106,12 +106,12 @@ Use `j-form-field` as a lightweight wrapper when a native or custom projected co
 
 ```html
 <j-input-number
-  label="Invoice value"
+  label="Record value"
   mode="currency"
-  currency="INR"
+  currency="USD"
   [min]="0"
   [step]="100"
-  [formControl]="invoiceValue"
+  [formControl]="recordValue"
 />
 ```
 
@@ -121,9 +121,9 @@ Use `j-form-field` as a lightweight wrapper when a native or custom projected co
 
 ```html
 <j-input-mask
-  label="GSTIN"
-  mask="99AAAAA9999A9Z9"
-  [formControl]="gstin"
+  label="Reference code"
+  mask="AAA-9999"
+  [formControl]="referenceCode"
   hint="Mask enforcement is pending"
 />
 ```
@@ -134,7 +134,7 @@ Use `j-icon-field` to compose icon-prefixed controls. It does not own a value.
 
 ```html
 <j-icon-field prefixIcon="search">
-  <j-input placeholder="Search customers" [formControl]="search" fluid />
+  <j-input placeholder="Search records" [formControl]="search" fluid />
 </j-icon-field>
 ```
 

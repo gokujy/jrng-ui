@@ -1,27 +1,27 @@
-import {
-  booleanAttribute,
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-} from '@angular/core';
+import { booleanAttribute, ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { JPassThrough, jMergePartClasses } from '../core/pass-through';
 import { JSeverity, JSize } from '../core/types';
 
 @Component({
   selector: 'j-tag',
   imports: [],
   template: `
-    <span [class]="tagClasses">
-      <span class="j-tag__label">{{ label }}<ng-content></ng-content></span>
-      @if (removable) {
+    <span
+      [class]="tagClasses()"
+      data-jc-name="tag"
+      data-jc-section="root"
+      data-jc-extend="remove"
+    >
+      <span class="j-tag__label" data-jc-section="label">{{ label() }}<ng-content></ng-content></span>
+      @if (removable()) {
         <button
           class="j-tag__remove"
+          data-jc-section="remove"
           type="button"
-          aria-label="Remove"
+          [attr.aria-label]="removeLabel()"
           (click)="remove.emit($event)"
         >
-          ×
+          x
         </button>
       }
     </span>
@@ -66,6 +66,7 @@ import { JSeverity, JSize } from '../core/types';
         align-items: center;
         background: transparent;
         border: 0;
+        border-radius: var(--j-radius-full);
         color: inherit;
         cursor: pointer;
         display: inline-flex;
@@ -74,6 +75,11 @@ import { JSeverity, JSize } from '../core/types';
         justify-content: center;
         padding: 0;
         width: 1rem;
+      }
+
+      .j-tag__remove:focus-visible {
+        box-shadow: var(--j-focus-ring);
+        outline: none;
       }
 
       .j-tag--primary {
@@ -122,22 +128,27 @@ import { JSeverity, JSize } from '../core/types';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JTagComponent {
-  @Input() label = '';
-  @Input() severity: JSeverity = 'neutral';
-  @Input() size: JSize = 'md';
-  @Input({ transform: booleanAttribute }) rounded = false;
-  @Input({ transform: booleanAttribute }) removable = false;
+  readonly label = input('');
+  readonly severity = input<JSeverity>('neutral');
+  readonly size = input<JSize>('md');
+  readonly styleClass = input('');
+  readonly removeLabel = input('Remove');
+  readonly pt = input<JPassThrough | null>(null);
+  readonly rounded = input(false, { transform: booleanAttribute });
+  readonly removable = input(false, { transform: booleanAttribute });
 
-  @Output() remove = new EventEmitter<MouseEvent>();
+  readonly remove = output<MouseEvent>();
 
-  get tagClasses(): string {
-    return [
-      'j-tag',
-      `j-tag--${this.severity}`,
-      `j-tag--${this.size}`,
-      this.rounded ? 'j-tag--rounded' : '',
-    ]
-      .filter(Boolean)
-      .join(' ');
-  }
+  readonly tagClasses = computed(() =>
+    jMergePartClasses(
+      [
+        'j-tag',
+        `j-tag--${this.severity()}`,
+        `j-tag--${this.size()}`,
+        this.rounded() ? 'j-tag--rounded' : '',
+      ],
+      this.styleClass(),
+      this.pt(),
+    ),
+  );
 }

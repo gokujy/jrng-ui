@@ -44,11 +44,32 @@
   justify-content: flex-end;
 }
 
+.j-dialog__backdrop--top-left {
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.j-dialog__backdrop--top-right {
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+.j-dialog__backdrop--bottom-left {
+  align-items: flex-end;
+  justify-content: flex-start;
+}
+
+.j-dialog__backdrop--bottom-right {
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
 .j-dialog {
-  background: var(--j-color-surface);
-  border: 1px solid var(--j-color-border);
-  border-radius: var(--j-radius-lg);
-  box-shadow: var(--j-shadow-lg);
+  background: var(--j-dialog-bg);
+  border: 1px solid var(--j-dialog-border-color);
+  border-radius: var(--j-dialog-radius);
+  box-shadow: var(--j-dialog-shadow);
+  color: var(--j-dialog-color);
   display: flex;
   flex-direction: column;
   max-height: calc(100vh - 2rem);
@@ -90,7 +111,17 @@
 }
 
 .j-dialog.is-resizable {
-  resize: both;
+  min-height: 12rem;
+  min-width: 17.5rem;
+  position: relative;
+}
+
+.j-dialog.is-draggable {
+  will-change: transform;
+}
+
+.j-dialog.is-headless {
+  padding: 0;
 }
 
 .j-dialog__header,
@@ -107,6 +138,11 @@
   justify-content: space-between;
 }
 
+.j-dialog__header.is-draggable {
+  cursor: grab;
+  user-select: none;
+}
+
 .j-dialog__title {
   font-size: var(--j-font-size-xl);
   letter-spacing: 0;
@@ -118,6 +154,10 @@
   flex: 1;
   line-height: var(--j-line-height-normal);
   overflow: auto;
+}
+
+.j-dialog__body.is-headless {
+  padding: 0;
 }
 
 .j-dialog__footer {
@@ -149,6 +189,25 @@
 .j-dialog__close:focus-visible {
   box-shadow: var(--j-focus-ring);
   outline: none;
+}
+
+.j-dialog__resize {
+  bottom: 0.375rem;
+  cursor: nwse-resize;
+  height: 1rem;
+  position: absolute;
+  right: 0.375rem;
+  width: 1rem;
+}
+
+.j-dialog__resize::before {
+  background:
+    linear-gradient(135deg, transparent 45%, var(--j-color-border) 45%, var(--j-color-border) 55%, transparent 55%),
+    linear-gradient(135deg, transparent 62%, var(--j-color-border) 62%, var(--j-color-border) 72%, transparent 72%);
+  content: '';
+  display: block;
+  height: 100%;
+  width: 100%;
 }
 
 @media (max-width: 640px) {

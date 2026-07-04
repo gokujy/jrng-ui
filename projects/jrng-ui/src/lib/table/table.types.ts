@@ -27,12 +27,16 @@ export interface JTableColumn {
   readonly header: string;
   readonly sortable?: boolean;
   readonly filterable?: boolean;
+  readonly editable?: boolean;
+  readonly reorderable?: boolean;
+  readonly resizable?: boolean;
   readonly width?: string;
   readonly minWidth?: string;
   readonly align?: JTableColumnAlign;
   readonly type?: JTableColumnType;
   readonly visible?: boolean;
   readonly frozen?: boolean;
+  readonly frozenAlign?: 'left' | 'right';
   readonly templateKey?: string;
   readonly actions?: readonly JTableAction[];
 }
@@ -56,6 +60,7 @@ export interface JTableLazyLoadEvent {
   readonly rows: number;
   readonly sortField?: string;
   readonly sortOrder?: JTableSortOrder;
+  readonly multiSortMeta?: readonly JTableSort[];
   readonly filters?: Record<string, unknown>;
   readonly globalFilter?: string;
 }
@@ -70,6 +75,27 @@ export interface JTableRowClickEvent {
   readonly row: JTableRow;
   readonly index: number;
   readonly originalEvent: MouseEvent | KeyboardEvent;
+}
+
+export interface JTableEditEvent {
+  readonly row: JTableRow;
+  readonly column?: JTableColumn;
+  readonly field?: string;
+  readonly value?: unknown;
+  readonly index: number;
+  readonly originalEvent?: Event;
+}
+
+export interface JTableReorderEvent {
+  readonly dragIndex: number;
+  readonly dropIndex: number;
+  readonly value: readonly JTableRow[];
+}
+
+export interface JTableColumnReorderEvent {
+  readonly dragIndex: number;
+  readonly dropIndex: number;
+  readonly columns: readonly JTableColumn[];
 }
 
 export interface JTableActionEvent {

@@ -45,17 +45,18 @@
 
 .j-toast {
   align-items: flex-start;
-  background: var(--j-color-surface);
+  background: var(--j-color-card);
   border: 1px solid var(--j-color-border);
-  border-radius: var(--j-radius-md);
+  border-radius: var(--j-radius-lg);
   box-shadow: var(--j-shadow-lg);
-  color: var(--j-color-text);
+  color: var(--j-color-card-foreground);
   display: grid;
   gap: var(--j-spacing-md);
   grid-template-columns: auto 1fr auto;
   min-height: 4rem;
   padding: var(--j-spacing-lg);
   pointer-events: auto;
+  touch-action: pan-y;
 }
 
 .j-toast__mark {
@@ -81,6 +82,10 @@
   background: var(--j-color-info);
 }
 
+.j-toast--neutral .j-toast__mark {
+  background: var(--j-color-muted-foreground);
+}
+
 .j-toast__title {
   display: block;
   font-size: var(--j-font-size-sm);
@@ -88,10 +93,42 @@
 }
 
 .j-toast__message {
-  color: var(--j-color-text-muted);
+  color: var(--j-color-muted-foreground);
   font-size: var(--j-font-size-sm);
   line-height: var(--j-line-height-normal);
   margin: var(--j-spacing-xs) 0 0;
+}
+
+.j-toast__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--j-spacing-sm);
+  margin-top: var(--j-spacing-md);
+}
+
+.j-toast__action {
+  border: 1px solid var(--j-color-border);
+  border-radius: var(--j-radius-sm);
+  cursor: pointer;
+  font: inherit;
+  min-height: 2rem;
+  padding: 0 var(--j-spacing-md);
+}
+
+.j-toast__action--primary {
+  background: var(--j-color-primary);
+  border-color: var(--j-color-primary);
+  color: var(--j-color-primary-foreground);
+}
+
+.j-toast__action--secondary {
+  background: var(--j-color-muted);
+  color: var(--j-color-foreground);
+}
+
+.j-toast__action--ghost {
+  background: transparent;
+  color: var(--j-color-muted-foreground);
 }
 
 .j-toast__close {
@@ -99,7 +136,7 @@
   background: transparent;
   border: 0;
   border-radius: var(--j-radius-sm);
-  color: var(--j-color-text-muted);
+  color: var(--j-color-muted-foreground);
   cursor: pointer;
   display: inline-flex;
   font: inherit;
@@ -109,6 +146,11 @@
 }
 
 .j-toast__close:focus-visible {
+  box-shadow: var(--j-focus-ring);
+  outline: none;
+}
+
+.j-toast__action:focus-visible {
   box-shadow: var(--j-focus-ring);
   outline: none;
 }

@@ -21,9 +21,15 @@ export type JSliderValue = number | readonly [number, number];
   selector: 'j-slider',
   imports: [],
   template: `
-    <div [class]="rootClasses">
+    <div
+      [class]="rootClasses"
+      data-jc-name="slider"
+      data-jc-section="root"
+      [attr.data-j-disabled]="isDisabled ? 'true' : null"
+      [attr.data-j-invalid]="hasError ? 'true' : null"
+    >
       @if (label) {
-        <label class="j-slider__label" [id]="labelId">
+        <label class="j-slider__label" data-jc-section="label" [id]="labelId">
           <span>{{ label }}</span>
           @if (required) {
             <span class="j-slider__required" aria-hidden="true">*</span>
@@ -31,10 +37,12 @@ export type JSliderValue = number | readonly [number, number];
         </label>
       }
 
-      <div class="j-slider__control">
+      <div class="j-slider__control" data-jc-section="control">
         <input
           class="j-slider__range"
+          data-jc-section="thumb"
           type="range"
+          [attr.orient]="vertical ? 'vertical' : null"
           [id]="id"
           [min]="min"
           [max]="max"
@@ -50,7 +58,9 @@ export type JSliderValue = number | readonly [number, number];
         @if (range) {
           <input
             class="j-slider__range"
+            data-jc-section="thumb"
             type="range"
+            [attr.orient]="vertical ? 'vertical' : null"
             [min]="min"
             [max]="max"
             [step]="step"
@@ -64,12 +74,14 @@ export type JSliderValue = number | readonly [number, number];
         }
       </div>
 
-      <div class="j-slider__values" aria-hidden="true">
+      @if (tooltip || showValue) {
+        <div class="j-slider__values" data-jc-section="value" aria-hidden="true">
         <span>{{ lowerValue }}</span>
         @if (range) {
           <span>{{ upperValue }}</span>
         }
-      </div>
+        </div>
+      }
 
       @if (hasError && error) {
         <p class="j-slider__message j-slider__message--error" [id]="errorId">{{ error }}</p>
@@ -101,6 +113,15 @@ export type JSliderValue = number | readonly [number, number];
       .j-slider__control {
         display: grid;
         gap: var(--j-spacing-sm);
+      }
+
+      .j-slider--vertical .j-slider__control {
+        min-height: 10rem;
+      }
+
+      .j-slider--vertical .j-slider__range {
+        writing-mode: vertical-lr;
+        width: auto;
       }
 
       .j-slider__range {
@@ -160,7 +181,11 @@ export class JSliderComponent implements ControlValueAccessor {
   @Input({ transform: numberAttribute }) max = 100;
   @Input({ transform: numberAttribute }) step = 1;
   @Input({ transform: booleanAttribute }) range = false;
+  @Input({ transform: booleanAttribute }) vertical = false;
+  @Input({ transform: booleanAttribute }) tooltip = false;
+  @Input({ transform: booleanAttribute }) showValue = true;
   @Input({ transform: booleanAttribute }) invalid = false;
+  @Input({ transform: booleanAttribute }) readonly = false;
   @Input({ transform: booleanAttribute }) required = false;
 
   @Output() valueChange = new EventEmitter<JSliderValue>();
@@ -194,6 +219,7 @@ export class JSliderComponent implements ControlValueAccessor {
       'j-slider',
       `j-slider--${this.size}`,
       this.range ? 'j-slider--range' : '',
+      this.vertical ? 'j-slider--vertical' : '',
       this.hasError ? 'is-invalid' : '',
       this.isDisabled ? 'is-disabled' : '',
       this.styleClass,
@@ -228,6 +254,9 @@ export class JSliderComponent implements ControlValueAccessor {
   }
 
   handleLowerInput(event: Event): void {
+    if (this.readonly) {
+      return;
+    }
     const target = event.target as HTMLInputElement;
     this.lowerValue = this.clamp(Number(target.value));
     this.normalizeRange();
@@ -235,6 +264,9 @@ export class JSliderComponent implements ControlValueAccessor {
   }
 
   handleUpperInput(event: Event): void {
+    if (this.readonly) {
+      return;
+    }
     const target = event.target as HTMLInputElement;
     this.upperValue = this.clamp(Number(target.value));
     this.normalizeRange();

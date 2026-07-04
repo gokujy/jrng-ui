@@ -20,7 +20,15 @@ export type JAccordionActiveIndex = number | readonly number[] | null;
   selector: 'j-accordion-panel',
   imports: [],
   template: `
-    <section class="j-accordion-panel" [class.is-active]="active" [class.is-disabled]="disabled">
+    <section
+      class="j-accordion-panel"
+      [class.is-active]="active"
+      [class.is-disabled]="disabled"
+      data-jc-name="accordion"
+      data-jc-section="panel"
+      [attr.data-j-active]="active ? 'true' : null"
+      [attr.data-j-disabled]="disabled ? 'true' : null"
+    >
       <h3 class="j-accordion-panel__header">
         <button
           type="button"
@@ -104,7 +112,7 @@ export class JAccordionPanelComponent {
 @Component({
   selector: 'j-accordion',
   imports: [],
-  template: `<div class="j-accordion"><ng-content></ng-content></div>`,
+  template: `<div class="j-accordion" data-jc-name="accordion" data-jc-section="root"><ng-content></ng-content></div>`,
   styles: [
     `
       .j-accordion {

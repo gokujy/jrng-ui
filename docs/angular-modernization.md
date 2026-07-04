@@ -21,7 +21,7 @@ New components should prefer:
 - `computed()` for derived classes, labels, filtered options, and similar values.
 - `inject()` instead of constructor injection where practical.
 
-Existing components can be migrated gradually when the change is low risk and does not break public APIs.
+Existing components can be updated gradually when the change is low risk and does not break public APIs.
 
 ## Forms
 

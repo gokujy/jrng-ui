@@ -13,11 +13,12 @@ export function jNormalizeSelectionOptions(
   options: readonly JSelectionOptionSource[],
   optionLabel = 'label',
   optionValue = 'value',
+  optionDisabled = 'disabled',
 ): readonly JNormalizedSelectionOption[] {
   return options.map((option) => ({
     label: jResolveSelectionLabel(option, optionLabel, optionValue),
     value: jResolveSelectionValue(option, optionLabel, optionValue),
-    disabled: jResolveSelectionDisabled(option),
+    disabled: jResolveSelectionDisabled(option, optionDisabled),
     source: option,
   }));
 }
@@ -50,8 +51,8 @@ function jResolveSelectionValue(
   return option;
 }
 
-function jResolveSelectionDisabled(option: JSelectionOptionSource): boolean {
-  return jIsSelectionRecord(option) && option['disabled'] === true;
+function jResolveSelectionDisabled(option: JSelectionOptionSource, optionDisabled: string): boolean {
+  return jIsSelectionRecord(option) && (option[optionDisabled] === true || option['disabled'] === true);
 }
 
 function jIsSelectionRecord(value: JSelectionOptionSource): value is JSelectionOptionRecord {

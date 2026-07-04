@@ -1,19 +1,20 @@
 import {
   booleanAttribute,
   ChangeDetectionStrategy,
+  computed,
   Component,
-  EventEmitter,
-  Input,
-  Output,
+  input,
+  output,
 } from '@angular/core';
-import { JSeverity, JSize, JVariant } from '../core/types';
+import { JPassThrough, jMergePartClasses } from '../core/pass-through';
+import { JSeverity } from '../core/types';
 
 export type JButtonType = 'button' | 'submit' | 'reset';
 export type JButtonIconPosition = 'left' | 'right';
-export type JButtonVariant = JVariant;
+export type JButtonVariant = 'filled' | 'outline' | 'outlined' | 'ghost' | 'soft' | 'link' | 'text';
 export type JButtonSeverity = JSeverity;
-export type JButtonSize = JSize;
-export type JrButtonVariant = JButtonVariant | JButtonSeverity | 'outline' | 'ghost';
+export type JButtonSize = 'sm' | 'md' | 'lg' | 'xl';
+export type JrButtonVariant = JButtonVariant | JButtonSeverity;
 export type JrButtonSize = JButtonSize;
 export type JrButtonType = 'button' | 'submit' | 'reset';
 
@@ -25,32 +26,33 @@ export type JrButtonType = 'button' | 'submit' | 'reset';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JrButtonComponent {
-  @Input() label = '';
-  @Input() type: JButtonType = 'button';
-  @Input() severity: JButtonSeverity = 'primary';
-  @Input() variant: JButtonVariant | JrButtonVariant = 'filled';
-  @Input() size: JButtonSize = 'md';
-  @Input() icon = '';
-  @Input() iconPosition: JButtonIconPosition = 'left';
-  @Input() styleClass = '';
-  @Input() ariaLabel = '';
-  @Input({ transform: booleanAttribute }) disabled = false;
-  @Input({ transform: booleanAttribute }) loading = false;
-  @Input({ transform: booleanAttribute }) rounded = false;
-  @Input({ transform: booleanAttribute }) outlined = false;
-  @Input({ transform: booleanAttribute }) text = false;
-  @Input({ transform: booleanAttribute }) raised = false;
+  readonly label = input('');
+  readonly type = input<JButtonType>('button');
+  readonly severity = input<JButtonSeverity>('primary');
+  readonly variant = input<JButtonVariant | JrButtonVariant>('filled');
+  readonly size = input<JButtonSize>('md');
+  readonly icon = input('');
+  readonly iconPosition = input<JButtonIconPosition>('left');
+  readonly styleClass = input('');
+  readonly ariaLabel = input('');
+  readonly pt = input<JPassThrough | null>(null);
+  readonly disabled = input(false, { transform: booleanAttribute });
+  readonly loading = input(false, { transform: booleanAttribute });
+  readonly rounded = input(false, { transform: booleanAttribute });
+  readonly outlined = input(false, { transform: booleanAttribute });
+  readonly text = input(false, { transform: booleanAttribute });
+  readonly raised = input(false, { transform: booleanAttribute });
+  readonly fullWidth = input(false, { transform: booleanAttribute });
+  readonly iconOnly = input(false, { transform: booleanAttribute });
 
-  @Output() clicked = new EventEmitter<MouseEvent>();
-  @Output() jrPress = new EventEmitter<MouseEvent>();
+  readonly clicked = output<MouseEvent>();
+  /** @deprecated Use clicked instead. */
+  readonly jrPress = output<MouseEvent>();
 
-  get isBlocked(): boolean {
-    return this.disabled || this.loading;
-  }
+  readonly isBlocked = computed(() => this.disabled() || this.loading());
 
-  get resolvedSeverity(): JButtonSeverity {
-    const legacySeverity = this.variant;
-
+  readonly resolvedSeverity = computed<JButtonSeverity>(() => {
+    const legacySeverity = this.variant();
     if (
       legacySeverity === 'primary' ||
       legacySeverity === 'secondary' ||
@@ -63,38 +65,47 @@ export class JrButtonComponent {
       return legacySeverity;
     }
 
-    return this.severity;
-  }
+    return this.severity();
+  });
 
-  get resolvedVariant(): JButtonVariant {
-    if (this.text || this.variant === 'text' || this.variant === 'ghost') {
-      return 'text';
+  readonly resolvedVariant = computed<JButtonVariant>(() => {
+    const variant = this.variant();
+
+    if (this.text() || variant === 'text') {
+      return 'link';
     }
 
-    if (this.outlined || this.variant === 'outlined' || this.variant === 'outline') {
-      return 'outlined';
+    if (variant === 'ghost' || variant === 'soft' || variant === 'link') {
+      return variant;
+    }
+
+    if (this.outlined() || variant === 'outlined' || variant === 'outline') {
+      return 'outline';
     }
 
     return 'filled';
-  }
+  });
 
-  get buttonClasses(): string {
-    return [
+  readonly buttonClasses = computed(() =>
+    jMergePartClasses(
+      [
       'j-button',
-      `j-button--${this.resolvedSeverity}`,
-      `j-button--${this.resolvedVariant}`,
-      `j-button--${this.size}`,
-      this.rounded ? 'j-button--rounded' : '',
-      this.raised ? 'j-button--raised' : '',
-      this.loading ? 'is-loading' : '',
-      this.styleClass,
-    ]
-      .filter(Boolean)
-      .join(' ');
-  }
+      `j-button--${this.resolvedSeverity()}`,
+      `j-button--${this.resolvedVariant()}`,
+      `j-button--${this.size()}`,
+      this.rounded() ? 'j-button--rounded' : '',
+      this.raised() ? 'j-button--raised' : '',
+      this.fullWidth() ? 'j-button--full' : '',
+      this.iconOnly() ? 'j-button--icon-only' : '',
+      this.loading() ? 'is-loading' : '',
+    ],
+      this.styleClass(),
+      this.pt(),
+    ),
+  );
 
   handleClick(event: MouseEvent): void {
-    if (this.isBlocked) {
+    if (this.isBlocked()) {
       event.preventDefault();
       event.stopImmediatePropagation();
       return;

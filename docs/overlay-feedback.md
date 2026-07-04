@@ -1,18 +1,22 @@
 # JRNG UI Overlay And Feedback
 
-JRNG UI overlay components are standalone Angular APIs with `j-*` selectors/classes and no PrimeNG dependency.
+JRNG UI overlay and feedback components are standalone Angular APIs with `j-*` selectors, `.j-*` classes, original styling, SSR-safe listener cleanup, focus handling, and design-token-driven visuals.
 
 ## Imports
 
 ```ts
 import { JDialogComponent } from 'jrng-ui/dialog';
+import { JDynamicDialogComponent } from 'jrng-ui/dynamic-dialog';
 import { JDrawerComponent } from 'jrng-ui/drawer';
+import { JBottomSheetComponent } from 'jrng-ui/bottom-sheet';
 import { JToastContainerComponent, JToastService } from 'jrng-ui/toast';
 import { JConfirmDialogComponent, JConfirmationService } from 'jrng-ui/confirm-dialog';
+import { JConfirmPopupComponent } from 'jrng-ui/confirm-popup';
 import { JTooltipDirective } from 'jrng-ui/tooltip';
 import { JPopoverComponent } from 'jrng-ui/popover';
 import { JOverlayPanelComponent } from 'jrng-ui/overlay-panel';
-import { JMenuComponent, JMenuItem } from 'jrng-ui/menu';
+import { JNotificationCenterComponent } from 'jrng-ui/notification-center';
+import { JCommandPaletteComponent, JCommandPaletteItem } from 'jrng-ui/command-palette';
 ```
 
 Root imports are also supported from `jrng-ui`.
@@ -28,115 +32,165 @@ Root imports are also supported from `jrng-ui`.
   [modal]="true"
   [dismissableMask]="true"
   [closeOnEscape]="true"
+  draggable
+  resizable
 >
   <form>...</form>
-  <j-button jDialogFooter variant="text" (clicked)="dialogVisible = false">Cancel</j-button>
+  <j-button jDialogFooter variant="ghost" (clicked)="dialogVisible = false">Cancel</j-button>
   <j-button jDialogFooter>Save</j-button>
 </j-dialog>
 ```
 
-Implemented: content projection, header/footer slots, modal mask, escape close, focus trap, body scroll lock, and focus restore.
+`j-dialog` supports focus trap, focus restore, escape close, dismissable mask, header/footer projection, `sm | md | lg | xl | full` sizes, multiple positions, optional drag/resize, headless mode, body scroll lock, z-index management, and `model()`-backed `[(visible)]`.
+
+## j-dynamic-dialog
+
+```html
+<j-dynamic-dialog />
+```
+
+```ts
+dialog.open({
+  title: 'Invoice ready',
+  message: 'The invoice can now be reviewed.',
+  size: 'md',
+});
+```
 
 ## j-drawer
 
 ```html
-<j-drawer header="Filters" position="right" [(visible)]="filtersOpen">
+<j-drawer
+  header="Filters"
+  position="right"
+  [(visible)]="filtersOpen"
+  [snapPoints]="['45%', '82%']"
+>
   ...
   <j-button jDrawerFooter (clicked)="filtersOpen = false">Apply</j-button>
 </j-drawer>
 ```
 
-Supported positions: `left`, `right`, `top`, `bottom`.
+Supported positions are `left`, `right`, `top`, and `bottom`. The drawer includes focus trap, focus restore, escape close, body scroll lock, drag handle, gesture close, and mobile bottom-sheet styling.
+
+## j-bottom-sheet
+
+```html
+<j-bottom-sheet header="Order actions" [(visible)]="actionsOpen" [snapPoints]="['40%', '80%']">
+  <button>Archive</button>
+  <button>Duplicate</button>
+</j-bottom-sheet>
+```
 
 ## Toasts
 
-Place a toast container once in the app shell:
+Place one or more toast containers in the app shell:
 
 ```html
 <j-toast position="top-right" />
+<j-toast position="bottom-center" />
 ```
 
 Use the service:
 
 ```ts
-toast.success('Invoice saved', 'Saved');
-toast.error('Export failed', 'Error', { life: 8000 });
+toast.success('Customer saved', 'Saved');
+toast.error('Upload failed', 'Error', { life: 8000 });
 toast.show({
   severity: 'info',
   summary: 'Report ready',
   detail: 'The file is available for download.',
   sticky: true,
-  closable: true,
-  position: 'bottom-right',
+  actions: [{ label: 'Open', style: 'primary', command: () => this.openReport() }],
+  cancelAction: { label: 'Dismiss', command: () => undefined },
 });
-toast.clear();
 ```
 
-## Confirm Dialog
+Promise toast:
 
-Place the dialog once:
+```ts
+toast.promise(loadOrders(), {
+  loading: { summary: 'Loading orders', sticky: true },
+  success: { summary: 'Orders loaded' },
+  error: { summary: 'Orders unavailable' },
+});
+```
+
+Toasts support stacked positions, rich severities, actions, cancel action, sticky mode, duration, pause on hover, swipe dismiss, and custom templates.
+
+## Confirm Dialog And Popup
+
+Place one dialog and one popup host:
 
 ```html
 <j-confirm-dialog />
+<j-confirm-popup />
 ```
 
-Request confirmations from code:
+Dialog request:
 
 ```ts
 confirmation.confirm({
-  header: 'Delete invoice?',
-  message: 'Removed invoices cannot be restored.',
-  icon: '!',
+  header: 'Delete task?',
+  message: 'This task will be removed.',
   severity: 'danger',
   acceptLabel: 'Delete',
   rejectLabel: 'Cancel',
-  accept: () => this.deleteInvoice(),
+  accept: () => this.deleteTask(),
+});
+```
+
+Anchored popup request:
+
+```ts
+confirmation.confirm({
+  target: buttonElement,
+  header: 'Archive order?',
+  message: 'The order will move out of the active list.',
+  accept: () => this.archiveOrder(),
 });
 ```
 
 ## Tooltip
 
 ```html
-<button jTooltip="Export report" tooltipPosition="bottom" [showDelay]="250">Export</button>
+<button jTooltip="Export orders" tooltipPosition="bottom" [showDelay]="250">Export</button>
 ```
 
 Inputs: `tooltipPosition`, `showDelay`, `hideDelay`, `tooltipDisabled`.
 
-## Popover
-
-`j-popover` is a lightweight projected overlay. It exposes `show()`, `hide()`, and `toggle()`.
+## Popover And Overlay Panel
 
 ```html
-<j-popover [(visible)]="helpOpen" position="bottom">
-  Help content
-</j-popover>
-```
-
-Current limit: automatic anchor positioning is not implemented yet.
-
-## Overlay Panel
-
-```html
-<j-overlay-panel #panel>
+<button #trigger type="button" (click)="panel.toggle(trigger)">More</button>
+<j-overlay-panel #panel position="bottom">
   <button>Archive</button>
   <button>Export</button>
 </j-overlay-panel>
 ```
 
-Current limit: automatic anchor positioning is not implemented yet; use local layout or wrapper positioning.
+`j-popover` and `j-overlay-panel` support anchored positioning, outside click close, escape close, z-index management, and `[(visible)]`.
 
-## Menu
+## Notification Center
+
+```html
+<button #bell type="button" (click)="notifications.visible.set(true)">Notifications</button>
+<j-notification-center #notifications [target]="bell" />
+```
+
+The notification center reads active toasts from `JToastService` and provides a compact generic review surface.
+
+## Command Palette
 
 ```ts
-items: readonly JMenuItem[] = [
-  { label: 'Edit', icon: 'edit', command: () => this.edit() },
-  { separator: true },
-  { label: 'Delete', icon: 'trash', disabled: false, command: () => this.delete() },
+commands: readonly JCommandPaletteItem[] = [
+  { label: 'Create customer', group: 'Customers', icon: '+', command: () => this.createCustomer() },
+  { label: 'Open invoices', group: 'Invoices', keywords: ['billing'] },
 ];
 ```
 
 ```html
-<j-menu [model]="items" popup [(visible)]="menuOpen" />
+<j-command-palette [commands]="commands" shortcut="k" (command)="handleCommand($event)" />
 ```
 
-`j-menu` supports arrow-key navigation, `Enter`/space activation, disabled items, separators, and popup visibility.
+The command palette supports `Ctrl/Meta + K`, search, groups, icons, keyboard navigation, empty state, and command execution.

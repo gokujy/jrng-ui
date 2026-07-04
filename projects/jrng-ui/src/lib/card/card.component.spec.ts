@@ -15,7 +15,7 @@ import { JrCardComponent, JrCardVariant } from './card.component';
   `,
 })
 class CardHostComponent {
-  title = 'Revenue';
+  title = 'Metric';
   subtitle = 'Quarter to date';
   variant: JrCardVariant = 'default';
   clickable = false;
@@ -45,7 +45,7 @@ describe('JrCardComponent', () => {
   }
 
   it('renders title, subtitle, and projected content', () => {
-    expect(card().textContent).toContain('Revenue');
+    expect(card().textContent).toContain('Metric');
     expect(card().textContent).toContain('Quarter to date');
     expect(card().textContent).toContain('Custom header');
     expect(card().textContent).toContain('Main body');

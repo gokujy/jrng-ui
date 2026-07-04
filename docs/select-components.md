@@ -1,6 +1,6 @@
 # JRNG UI Select Components
 
-These components are standalone Angular controls built without PrimeNG or PrimeIcons. Value-owning controls implement `ControlValueAccessor`, so they work with `formControlName` and `[formControl]`.
+These components are standalone Angular controls with JRNG-owned styling and behavior. Value-owning controls implement `ControlValueAccessor`, so they work with `formControlName` and `[formControl]`.
 
 ## Imports
 
@@ -112,14 +112,14 @@ Custom option template:
 
 ```html
 <j-autocomplete
-  label="Customer"
-  [suggestions]="customers"
+  label="Record"
+  [suggestions]="records"
   optionLabel="name"
   optionValue="id"
-  [formControl]="customerId"
+  [formControl]="recordId"
   dropdown
   forceSelection
-  (completeMethod)="searchCustomers($event)"
+  (completeMethod)="searchRecords($event)"
 />
 ```
 
@@ -148,7 +148,7 @@ With `forceSelection`, unmatched text is cleared on blur.
 Projected content is also supported:
 
 ```html
-<j-chip removable>GST verified</j-chip>
+<j-chip removable>Verified</j-chip>
 ```
 
 ## j-chips

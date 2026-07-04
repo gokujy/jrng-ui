@@ -1,4 +1,5 @@
-import { booleanAttribute, ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { booleanAttribute, ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { JPassThrough, jMergePartClasses } from '../core/pass-through';
 
 export type JrCardVariant = 'default' | 'elevated' | 'bordered' | 'soft';
 
@@ -10,30 +11,50 @@ export type JrCardVariant = 'default' | 'elevated' | 'bordered' | 'soft';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JrCardComponent {
-  @Input() header = '';
-  @Input() subheader = '';
-  @Input() title = '';
-  @Input() subtitle = '';
-  @Input() variant: JrCardVariant = 'default';
-  @Input() styleClass = '';
-  @Input({ transform: booleanAttribute }) clickable = false;
+  readonly header = input('');
+  readonly subheader = input('');
+  readonly title = input('');
+  readonly subtitle = input('');
+  readonly footer = input('');
+  readonly variant = input<JrCardVariant>('default');
+  readonly styleClass = input('');
+  readonly pt = input<JPassThrough | null>(null);
+  readonly clickable = input(false, { transform: booleanAttribute });
+  readonly elevated = input(false, { transform: booleanAttribute });
+  readonly bordered = input(false, { transform: booleanAttribute });
+  readonly interactive = input(false, { transform: booleanAttribute });
+  readonly compact = input(false, { transform: booleanAttribute });
+  readonly skeleton = input(false, { transform: booleanAttribute });
 
-  get resolvedHeader(): string {
-    return this.header || this.title;
-  }
+  readonly resolvedHeader = computed(() => this.header() || this.title());
 
-  get resolvedSubheader(): string {
-    return this.subheader || this.subtitle;
-  }
+  readonly resolvedSubheader = computed(() => this.subheader() || this.subtitle());
 
-  get cardClasses(): string {
-    return [
+  readonly isInteractive = computed(() => this.interactive() || this.clickable());
+
+  readonly resolvedVariant = computed<JrCardVariant>(() => {
+    if (this.elevated()) {
+      return 'elevated';
+    }
+
+    if (this.bordered()) {
+      return 'bordered';
+    }
+
+    return this.variant();
+  });
+
+  readonly cardClasses = computed(() =>
+    jMergePartClasses(
+      [
       'j-card',
-      `j-card--${this.variant}`,
-      this.clickable ? 'j-card--clickable' : '',
-      this.styleClass,
-    ]
-      .filter(Boolean)
-      .join(' ');
-  }
+      `j-card--${this.resolvedVariant()}`,
+      this.isInteractive() ? 'j-card--interactive' : '',
+      this.compact() ? 'j-card--compact' : '',
+      this.skeleton() ? 'is-loading' : '',
+    ],
+      this.styleClass(),
+      this.pt(),
+    ),
+  );
 }

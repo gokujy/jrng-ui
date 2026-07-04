@@ -1,793 +1,390 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, inject, signal } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { DOCUMENT, NgTemplateOutlet, isPlatformBrowser } from '@angular/common';
 import {
-  JAccordionComponent,
-  JAccordionPanelComponent,
-  JAutocompleteComponent,
-  JBadgeComponent,
-  JCheckboxComponent,
-  JConfirmationService,
-  JDatePickerComponent,
-  JFileUploadComponent,
-  JFieldsetComponent,
-  JMultiselectComponent,
-  JPanelComponent,
-  JPasswordComponent,
-  JRadioGroupComponent,
-  JRatingComponent,
-  JSelectComponent,
-  JSliderComponent,
-  JSwitchComponent,
-  JTableColumn,
-  JTableComponent,
-  JTablePageChange,
-  JTableRow,
-  JTableSelection,
-  JTableSort,
-  JTabComponent,
-  JTabsComponent,
-  JTextareaComponent,
-  JrButtonComponent,
-  JrDialogComponent,
-  JrInputComponent,
-  JInputNumberComponent,
-  JrToastService,
-} from 'jrng-ui';
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  PLATFORM_ID,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { JBadgeComponent } from 'jrng-ui/badge';
+import { JButtonComponent } from 'jrng-ui/button';
+import { JCardComponent } from 'jrng-ui/card';
+import { JInputComponent } from 'jrng-ui/input';
 
-type ShowcasePage =
-  | 'introduction'
-  | 'theme'
-  | 'button'
-  | 'inputs'
-  | 'select'
-  | 'selection'
-  | 'date-picker'
-  | 'dialog'
-  | 'toast'
-  | 'confirm-dialog'
-  | 'table'
-  | 'layout'
-  | 'file-upload'
-  | 'accessibility'
-  | 'migration';
+type SitePage = 'home' | 'docs' | 'components' | 'themes' | 'support';
 
 interface PageMeta {
-  readonly title: string;
   readonly eyebrow: string;
+  readonly title: string;
   readonly intro: string;
 }
 
-interface ApiRow {
-  readonly input: string;
-  readonly type: string;
-  readonly notes: string;
+interface LinkCard {
+  readonly title: string;
+  readonly description: string;
 }
 
-interface MigrationRow {
-  readonly prime: string;
-  readonly jrng: string;
-  readonly notes: string;
+interface ComponentCategory {
+  readonly title: string;
+  readonly description: string;
+  readonly items: readonly string[];
 }
 
-function isShowcasePage(value: unknown): value is ShowcasePage {
-  return (
-    value === 'introduction' ||
-    value === 'theme' ||
-    value === 'button' ||
-    value === 'inputs' ||
-    value === 'select' ||
-    value === 'selection' ||
-    value === 'date-picker' ||
-    value === 'dialog' ||
-    value === 'toast' ||
-    value === 'confirm-dialog' ||
-    value === 'table' ||
-    value === 'layout' ||
-    value === 'file-upload' ||
-    value === 'accessibility' ||
-    value === 'migration'
-  );
+interface FeatureItem {
+  readonly title: string;
+  readonly description: string;
+}
+
+function isSitePage(value: unknown): value is SitePage {
+  return value === 'home' || value === 'docs' || value === 'components' || value === 'themes' || value === 'support';
 }
 
 @Component({
-  selector: 'app-code-card',
-  imports: [CommonModule],
+  selector: 'app-code-block',
+  imports: [],
   template: `
-    <article class="example-card">
-      <h2>Code usage</h2>
-      <pre><code>{{ code }}</code></pre>
-    </article>
+    <div class="j-code-block">
+      <button type="button" (click)="copy()">{{ copied() ? 'Copied' : 'Copy' }}</button>
+      <pre><code>{{ code() }}</code></pre>
+    </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CodeCardComponent {
-  @Input() code = '';
-}
+export class CodeBlockComponent {
+  private readonly documentRef = inject(DOCUMENT);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  private copyTimer: number | undefined;
 
-@Component({
-  selector: 'app-api-table',
-  imports: [CommonModule],
-  template: `
-    <article class="example-card">
-      <h2>API</h2>
-      <table class="showcase-table">
-        <thead>
-          <tr>
-            <th>Input/API</th>
-            <th>Type</th>
-            <th>Notes</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let row of rows">
-            <td><code>{{ row.input }}</code></td>
-            <td>{{ row.type }}</td>
-            <td>{{ row.notes }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </article>
-  `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-})
-export class ApiTableComponent {
-  @Input() rows: readonly ApiRow[] = [];
+  readonly code = input('');
+  readonly copied = signal(false);
+
+  constructor() {
+    this.destroyRef.onDestroy(() => {
+      if (this.copyTimer !== undefined) {
+        this.documentRef.defaultView?.clearTimeout(this.copyTimer);
+      }
+    });
+  }
+
+  copy(): void {
+    if (!this.isBrowser) {
+      return;
+    }
+
+    const windowRef = this.documentRef.defaultView;
+    const clipboard = windowRef?.navigator.clipboard;
+    void clipboard?.writeText(this.code()).then(() => {
+      this.copied.set(true);
+      this.copyTimer = windowRef?.setTimeout(() => this.copied.set(false), 1200);
+    });
+  }
 }
 
 @Component({
   selector: 'app-showcase-page',
-  imports: [
-    ApiTableComponent,
-    CommonModule,
-    CodeCardComponent,
-    ReactiveFormsModule,
-    RouterLink,
-    JAccordionComponent,
-    JAccordionPanelComponent,
-    JAutocompleteComponent,
-    JBadgeComponent,
-    JCheckboxComponent,
-    JDatePickerComponent,
-    JFileUploadComponent,
-    JFieldsetComponent,
-    JMultiselectComponent,
-    JPanelComponent,
-    JPasswordComponent,
-    JRadioGroupComponent,
-    JRatingComponent,
-    JSelectComponent,
-    JSliderComponent,
-    JSwitchComponent,
-    JTableComponent,
-    JTabComponent,
-    JTabsComponent,
-    JTextareaComponent,
-    JrButtonComponent,
-    JrDialogComponent,
-    JrInputComponent,
-    JInputNumberComponent,
-  ],
+  imports: [RouterLink, NgTemplateOutlet, CodeBlockComponent, JButtonComponent, JInputComponent, JCardComponent, JBadgeComponent],
   template: `
-    <section class="page-hero">
-      <span class="page-hero__eyebrow">{{ meta().eyebrow }}</span>
-      <h1>{{ meta().title }}</h1>
-      <p>{{ meta().intro }}</p>
-    </section>
-
-    <ng-container [ngSwitch]="currentPage()">
-      <section *ngSwitchCase="'introduction'" class="showcase-grid showcase-grid--three">
-        <article class="example-card">
-          <h2>Public entrypoints</h2>
-          <p>Every example imports from the package entrypoints used by consumers.</p>
-          <pre><code>import {{ '{' }} JButtonComponent {{ '}' }} from 'jrng-ui/button';</code></pre>
-        </article>
-        <article class="example-card">
-          <h2>Standalone Angular</h2>
-          <p>Components are standalone and work with strict templates and Reactive Forms.</p>
-          <j-badge value="Angular 21" severity="info" />
-        </article>
-        <article class="example-card">
-          <h2>Migration view</h2>
-          <p>Use the migration page as the first BDMS replacement checklist.</p>
-          <a class="showcase-link" routerLink="/migration">Open mapping</a>
-        </article>
-      </section>
-
-      <section *ngSwitchCase="'theme'" class="stack">
-        <article class="example-card">
-          <h2>Default Light Theme</h2>
-          <div class="token-grid">
-            <span style="--token: var(--j-color-primary)">Primary</span>
-            <span style="--token: var(--j-color-secondary)">Secondary</span>
-            <span style="--token: var(--j-color-success)">Success</span>
-            <span style="--token: var(--j-color-warning)">Warning</span>
-            <span style="--token: var(--j-color-danger)">Danger</span>
-            <span style="--token: var(--j-color-info)">Info</span>
+    @switch (currentPage()) {
+      @case ('home') {
+        <section class="j-home-hero">
+          <div class="j-home-hero__content">
+            <span class="j-page-eyebrow">Angular UI Library</span>
+            <h1>JRNG UI</h1>
+            <p>A modern Angular UI component library for building clean, fast, and accessible web applications.</p>
+            <div class="j-hero-actions">
+              <a class="j-button-link j-button-link--primary" routerLink="/docs">Get Started</a>
+              <a class="j-button-link" routerLink="/components">Components</a>
+              <a class="j-button-link" [href]="githubLink" target="_blank" rel="noopener noreferrer">GitHub</a>
+            </div>
           </div>
-        </article>
-        <article class="example-card">
-          <h2>Token override</h2>
-          <p>Override CSS variables at app root, a feature module shell, or a theme host.</p>
-          <pre><code>{{ code.theme }}</code></pre>
-        </article>
-      </section>
+          <j-card title="Reusable primitives" subtitle="Generic controls for application screens" elevated>
+            <div class="j-preview-form">
+              <j-badge value="Active" severity="success" />
+              <j-input label="Email" placeholder="Enter email" />
+              <j-button label="Save" />
+            </div>
+          </j-card>
+        </section>
 
-      <section *ngSwitchCase="'button'" class="stack">
-        <article class="example-card">
-          <h2>Basic example</h2>
-          <div class="example-row">
-            <j-button label="Save" />
-            <j-button label="Cancel" severity="secondary" variant="outlined" />
-            <j-button label="Delete" severity="danger" />
+        <section class="j-page-section j-page-section--narrow" aria-labelledby="install-heading">
+          <div class="j-section-heading">
+            <span class="j-page-eyebrow">Install</span>
+            <h2 id="install-heading">Add JRNG UI to an Angular project</h2>
           </div>
-        </article>
-        <article class="example-card">
-          <h2>States, sizes, and severity</h2>
-          <div class="example-row">
-            <j-button *ngFor="let size of sizes" [label]="size" [size]="size" />
-            <j-button label="Disabled" disabled />
-            <j-button label="Loading" loading />
+          <app-code-block [code]="installCode" />
+        </section>
+
+        <section class="j-page-section" aria-labelledby="usage-heading">
+          <div class="j-section-heading">
+            <span class="j-page-eyebrow">Usage</span>
+            <h2 id="usage-heading">Import standalone components</h2>
           </div>
-          <div class="example-row">
-            <j-button *ngFor="let severity of severities" [label]="severity" [severity]="severity" />
+          <div class="j-two-column">
+            <app-code-block [code]="typescriptUsageCode" />
+            <app-code-block [code]="htmlUsageCode" />
           </div>
-        </article>
-        <app-code-card [code]="code.button" />
-        <app-api-table [rows]="api['button']" />
-      </section>
+        </section>
 
-      <section *ngSwitchCase="'inputs'" class="stack">
-        <article class="example-card">
-          <h2>Basic and Reactive Forms</h2>
-          <div class="form-grid">
-            <j-input label="Customer email" placeholder="finance@example.com" [formControl]="emailControl" clearable />
-            <j-password label="Password" [formControl]="passwordControl" feedback />
-            <j-input-number label="Invoice amount" mode="currency" currency="INR" [formControl]="amountControl" />
-            <j-textarea label="Notes" [rows]="4" showCount [maxLength]="120" [formControl]="notesControl" />
+        <section class="j-page-section" aria-labelledby="features-heading">
+          <div class="j-section-heading">
+            <span class="j-page-eyebrow">Highlights</span>
+            <h2 id="features-heading">Built for clean application interfaces</h2>
           </div>
-        </article>
-        <article class="example-card">
-          <h2>Disabled and invalid</h2>
-          <div class="form-grid">
-            <j-input label="Disabled" value="Locked value" disabled />
-            <j-input label="Invalid" error="Name is required" required />
+          <div class="j-card-grid j-card-grid--three">
+            @for (feature of features; track feature.title) {
+              <article class="j-info-card">
+                <h3>{{ feature.title }}</h3>
+                <p>{{ feature.description }}</p>
+              </article>
+            }
           </div>
-        </article>
-        <app-code-card [code]="code.inputs" />
-        <app-api-table [rows]="api['inputs']" />
-      </section>
+        </section>
 
-      <section *ngSwitchCase="'select'" class="stack">
-        <article class="example-card">
-          <h2>Select and multiselect</h2>
-          <div class="form-grid">
-            <j-select
-              label="Status"
-              placeholder="Select status"
-              [options]="statusOptions"
-              [formControl]="statusControl"
-              searchable
-              clearable
-            />
-            <j-multiselect
-              label="Departments"
-              placeholder="Select departments"
-              [options]="departmentOptions"
-              [formControl]="departmentsControl"
-              displayChips
-              searchable
-              clearable
-            />
-            <j-autocomplete
-              label="City"
-              placeholder="Start typing"
-              [suggestions]="cityOptions"
-              [formControl]="cityControl"
-              dropdown
-            />
-            <j-select label="Invalid select" [options]="statusOptions" error="Status is required" required />
+        <section class="j-page-section" aria-labelledby="preview-heading">
+          <div class="j-section-heading">
+            <span class="j-page-eyebrow">Preview</span>
+            <h2 id="preview-heading">Small interface sample</h2>
           </div>
-        </article>
-        <app-code-card [code]="code.select" />
-        <app-api-table [rows]="api['select']" />
-      </section>
-
-      <section *ngSwitchCase="'selection'" class="stack">
-        <article class="example-card">
-          <h2>Checkbox, radio, switch, rating, and slider</h2>
-          <div class="selection-grid">
-            <j-checkbox label="Accept terms" [formControl]="termsControl" />
-            <j-checkbox label="Indeterminate" indeterminate />
-            <j-switch label="Notifications" [formControl]="notificationsControl" onLabel="On" offLabel="Off" />
-            <j-radio-group label="Priority" [options]="priorityOptions" [formControl]="priorityControl" direction="horizontal" />
-            <j-rating label="Risk" [formControl]="ratingControl" cancel />
-            <j-slider label="Discount" [formControl]="discountControl" [min]="0" [max]="50" />
+          <div class="j-preview-panel">
+            <j-card title="Order summary" subtitle="Current period" bordered>
+              <div class="j-preview-toolbar">
+                <j-button label="Create order" />
+                <j-badge value="Ready" severity="info" />
+              </div>
+              <j-input label="Customer" placeholder="Search customers" />
+              <div class="j-table-preview" role="img" aria-label="Table preview placeholder">
+                <div class="j-table-preview__row j-table-preview__row--header">
+                  <span>Product</span>
+                  <span>Status</span>
+                  <span>Total</span>
+                </div>
+                @for (row of tablePreviewRows; track row.product) {
+                  <div class="j-table-preview__row">
+                    <span>{{ row.product }}</span>
+                    <span>{{ row.status }}</span>
+                    <span>{{ row.total }}</span>
+                  </div>
+                }
+              </div>
+            </j-card>
           </div>
-        </article>
-        <app-code-card [code]="code.selection" />
-        <app-api-table [rows]="api['selection']" />
-      </section>
+        </section>
 
-      <section *ngSwitchCase="'date-picker'" class="stack">
-        <article class="example-card">
-          <h2>Native-backed date picker</h2>
-          <div class="form-grid">
-            <j-date-picker label="Due date" [formControl]="dueDateControl" showIcon showButtonBar showClear />
-            <j-date-picker label="Disabled" value="2026-07-04" disabled />
-            <j-date-picker label="Invalid" error="Date is required" required />
+        <section class="j-page-section j-support-strip" aria-labelledby="home-support-heading">
+          <div>
+            <span class="j-page-eyebrow">Optional support</span>
+            <h2 id="home-support-heading">Support JRNG UI</h2>
+            <p>
+              JRNG UI is free to use. Your optional ₹100 support helps improve components, documentation, examples,
+              and future updates.
+            </p>
+            <small>Optional support contribution. Docs, components, and examples are free to access.</small>
           </div>
-        </article>
-        <app-code-card [code]="code.datePicker" />
-        <app-api-table [rows]="api['datePicker']" />
-      </section>
+          <a class="j-button-link j-button-link--primary" [href]="supportLink" target="_blank" rel="noopener noreferrer">
+            Support JRNG UI ₹100
+          </a>
+        </section>
+      }
 
-      <section *ngSwitchCase="'dialog'" class="stack">
-        <article class="example-card">
-          <h2>Dialog examples</h2>
-          <div class="example-row">
-            <j-button label="Open medium dialog" (clicked)="dialogOpen = true" />
-            <j-button label="Open full dialog" severity="secondary" (clicked)="fullDialogOpen = true" />
+      @case ('docs') {
+        <ng-container [ngTemplateOutlet]="pageHero" />
+        <section class="j-page-section">
+          <div class="j-docs-layout">
+            <nav class="j-docs-jump" aria-label="Documentation sections">
+              @for (section of docsSections; track section.title) {
+                <a [href]="'/docs#' + slug(section.title)">{{ section.title }}</a>
+              }
+            </nav>
+            <div class="j-docs-content">
+              @for (section of docsSections; track section.title) {
+                <article class="j-info-card" [id]="slug(section.title)">
+                  <h2>{{ section.title }}</h2>
+                  <p>{{ section.description }}</p>
+                </article>
+              }
+            </div>
           </div>
-        </article>
-        <app-code-card [code]="code.dialog" />
-        <app-api-table [rows]="api['dialog']" />
-      </section>
+        </section>
+      }
 
-      <section *ngSwitchCase="'toast'" class="stack">
-        <article class="example-card">
-          <h2>Toast service</h2>
-          <div class="example-row">
-            <j-button label="Success" severity="success" (clicked)="toast.success('Record saved', 'Success')" />
-            <j-button label="Info" severity="info" (clicked)="toast.info('Sync completed', 'Info')" />
-            <j-button label="Warning" severity="warning" (clicked)="toast.warning('Low inventory', 'Warning')" />
-            <j-button label="Error" severity="danger" (clicked)="toast.error('Export failed', 'Error')" />
+      @case ('components') {
+        <ng-container [ngTemplateOutlet]="pageHero" />
+        <section class="j-page-section">
+          <div class="j-card-grid">
+            @for (category of componentCategories; track category.title) {
+              <article class="j-info-card">
+                <h2>{{ category.title }}</h2>
+                <p>{{ category.description }}</p>
+                <ul class="j-clean-list">
+                  @for (item of category.items; track item) {
+                    <li>{{ item }}</li>
+                  }
+                </ul>
+              </article>
+            }
           </div>
-        </article>
-        <app-code-card [code]="code.toast" />
-        <app-api-table [rows]="api['toast']" />
-      </section>
+        </section>
+      }
 
-      <section *ngSwitchCase="'confirm-dialog'" class="stack">
-        <article class="example-card">
-          <h2>Confirm dialog service</h2>
-          <div class="example-row">
-            <j-button label="Archive supplier" severity="warning" (clicked)="confirmArchive()" />
-            <j-button label="Delete invoice" severity="danger" (clicked)="confirmDelete()" />
+      @case ('themes') {
+        <ng-container [ngTemplateOutlet]="pageHero" />
+        <section class="j-page-section">
+          <div class="j-card-grid j-card-grid--three">
+            @for (item of themeSections; track item.title) {
+              <article class="j-info-card">
+                <h2>{{ item.title }}</h2>
+                <p>{{ item.description }}</p>
+              </article>
+            }
           </div>
-          <p class="muted">{{ confirmationResult }}</p>
-        </article>
-        <app-code-card [code]="code.confirmDialog" />
-        <app-api-table [rows]="api['confirmDialog']" />
-      </section>
-
-      <section *ngSwitchCase="'table'" class="stack">
-        <article class="example-card">
-          <h2>Sortable, pageable, selectable table</h2>
-          <j-table
-            [value]="invoiceRows"
-            [columns]="invoiceColumns"
-            [rows]="3"
-            [totalRecords]="invoiceRows.length"
-            paginator
-            selectionMode="checkbox"
-            [selection]="selectedRows"
-            striped
-            responsive
-            (selectionChange)="selectedRows = $event"
-            (sortChange)="lastSort = $event"
-            (pageChange)="lastPage = $event"
-          />
-          <p class="muted">Sort: {{ lastSort?.field || 'none' }}. Page: {{ lastPage?.page || 1 }}.</p>
-        </article>
-        <article class="example-card">
-          <h2>Loading and empty states</h2>
-          <div class="showcase-grid">
-            <j-table [value]="[]" [columns]="invoiceColumns" loading />
-            <j-table [value]="[]" [columns]="invoiceColumns" emptyMessage="No invoices match this filter." />
+        </section>
+        <section class="j-page-section j-page-section--narrow">
+          <div class="j-section-heading">
+            <span class="j-page-eyebrow">Theme setup</span>
+            <h2>Import styles once</h2>
           </div>
-        </article>
-        <app-code-card [code]="code.table" />
-        <app-api-table [rows]="api['table']" />
+          <app-code-block [code]="themeCode" />
+        </section>
+      }
+
+      @case ('support') {
+        <ng-container [ngTemplateOutlet]="pageHero" />
+        <section class="j-page-section j-support-page" aria-labelledby="support-heading">
+          <article class="j-info-card">
+            <span class="j-page-eyebrow">Optional contribution</span>
+            <h2 id="support-heading">Support JRNG UI</h2>
+            <p>
+              JRNG UI is free to use. Optional support helps improve components, documentation, examples, and future
+              updates.
+            </p>
+            <p>There are no payment walls. Docs, components, examples, and usage guides remain free to access.</p>
+            <a class="j-button-link j-button-link--primary" [href]="supportLink" target="_blank" rel="noopener noreferrer">
+              Support JRNG UI ₹100
+            </a>
+            <small>No extra user data is collected by this website for support contributions.</small>
+          </article>
+        </section>
+      }
+    }
+
+    <ng-template #pageHero>
+      <section class="j-page-hero">
+        <span class="j-page-eyebrow">{{ meta().eyebrow }}</span>
+        <h1>{{ meta().title }}</h1>
+        <p>{{ meta().intro }}</p>
       </section>
-
-      <section *ngSwitchCase="'layout'" class="stack">
-        <article class="example-card">
-          <h2>Tabs</h2>
-          <j-tabs [(selectedIndex)]="selectedTab">
-            <j-tab header="Overview">Overview content for dashboard panels.</j-tab>
-            <j-tab header="Activity">Activity content with audit records.</j-tab>
-            <j-tab header="Disabled" disabled>Disabled content.</j-tab>
-          </j-tabs>
-        </article>
-        <article class="example-card">
-          <h2>Accordion, panel, and fieldset</h2>
-          <div class="showcase-grid">
-            <j-accordion [activeIndex]="0">
-              <j-accordion-panel header="Purchase order">PO review checklist.</j-accordion-panel>
-              <j-accordion-panel header="Tax validation">GST and ledger validation.</j-accordion-panel>
-            </j-accordion>
-            <j-panel header="Toggleable panel" toggleable>Panel body content.</j-panel>
-            <j-fieldset legend="Filters" toggleable>Fieldset content for grouped controls.</j-fieldset>
-          </div>
-        </article>
-        <app-code-card [code]="code.layout" />
-        <app-api-table [rows]="api['layout']" />
-      </section>
-
-      <section *ngSwitchCase="'file-upload'" class="stack">
-        <article class="example-card">
-          <h2>Upload examples</h2>
-          <div class="showcase-grid">
-            <j-file-upload multiple accept=".pdf,.xlsx" [maxFileSize]="2000000" (filesChange)="handleFiles($event)" />
-            <j-file-upload mode="basic" chooseLabel="Choose invoice" />
-          </div>
-          <p class="muted">{{ fileMessage }}</p>
-        </article>
-        <app-code-card [code]="code.fileUpload" />
-        <app-api-table [rows]="api['fileUpload']" />
-      </section>
-
-      <section *ngSwitchCase="'accessibility'" class="stack">
-        <article class="example-card">
-          <h2>Visual checks</h2>
-          <ul class="check-list">
-            <li>Use Tab and Shift+Tab across every demo page.</li>
-            <li>Use Enter and Space on buttons, toggles, radio options, tabs, and table rows.</li>
-            <li>Use Escape on select overlays and dialogs.</li>
-            <li>Resize below 640px to check table, dialog, and sidebar behavior.</li>
-          </ul>
-        </article>
-        <article class="example-card">
-          <h2>ARIA and form associations</h2>
-          <p>Controls expose labels, invalid state, and described-by links where validation text is present.</p>
-          <j-input label="Accessible invalid field" error="This error is linked with aria-describedby." />
-        </article>
-        <app-code-card [code]="code.accessibility" />
-      </section>
-
-      <section *ngSwitchCase="'migration'" class="stack">
-        <article class="example-card">
-          <h2>PrimeNG to JRNG mapping</h2>
-          <table class="showcase-table">
-            <thead>
-              <tr>
-                <th>PrimeNG</th>
-                <th>JRNG UI</th>
-                <th>Migration note</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let row of migrationRows">
-                <td><code>{{ row.prime }}</code></td>
-                <td><code>{{ row.jrng }}</code></td>
-                <td>{{ row.notes }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </article>
-      </section>
-    </ng-container>
-
-    <j-dialog header="Create invoice" [(visible)]="dialogOpen" size="md">
-      <div class="form-grid">
-        <j-input label="Customer" placeholder="Customer name" />
-        <j-input-number label="Amount" mode="currency" currency="INR" />
-      </div>
-      <j-button jDialogFooter label="Cancel" variant="text" (clicked)="dialogOpen = false" />
-      <j-button jDialogFooter label="Save" (clicked)="dialogOpen = false; toast.success('Invoice saved')" />
-    </j-dialog>
-
-    <j-dialog header="Full screen review" [(visible)]="fullDialogOpen" size="full">
-      <p>This dialog uses the full-size option and is useful for dense mobile workflows.</p>
-      <j-button jDialogFooter label="Close" (clicked)="fullDialogOpen = false" />
-    </j-dialog>
+    </ng-template>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ShowcasePageComponent {
   private readonly route = inject(ActivatedRoute);
-  readonly toast = inject(JrToastService);
-  private readonly confirmation = inject(JConfirmationService);
 
-  readonly currentPage = signal<ShowcasePage>('introduction');
+  readonly currentPage = signal<SitePage>('home');
+  readonly githubLink = 'https://github.com/jrng-ui/jrng-ui';
+  readonly supportLink = 'https://rzp.io/rzp/9nKAyUq';
 
-  readonly sizes = ['sm', 'md', 'lg'] as const;
-  readonly severities = ['primary', 'secondary', 'success', 'warning', 'danger', 'info', 'neutral'] as const;
+  readonly installCode = 'npm install jrng-ui';
+  readonly typescriptUsageCode = `import { JButtonComponent } from 'jrng-ui/button';
+import { JInputComponent } from 'jrng-ui/input';`;
+  readonly htmlUsageCode = `<j-button label="Save"></j-button>
+<j-input label="Email" placeholder="Enter email"></j-input>`;
+  readonly themeCode = `@use 'jrng-ui/styles';
 
-  readonly emailControl = new FormControl<string>('finance@jr.example', { nonNullable: true });
-  readonly passwordControl = new FormControl<string>('Bdms@2026', { nonNullable: true });
-  readonly amountControl = new FormControl<number | null>(128400);
-  readonly notesControl = new FormControl<string>('Approve after tax review.', { nonNullable: true });
-  readonly statusControl = new FormControl<string>('active', { nonNullable: true });
-  readonly departmentsControl = new FormControl<readonly string[]>(['finance'], { nonNullable: true });
-  readonly cityControl = new FormControl<string>('ahmedabad', { nonNullable: true });
-  readonly termsControl = new FormControl<boolean>(true, { nonNullable: true });
-  readonly notificationsControl = new FormControl<boolean>(true, { nonNullable: true });
-  readonly priorityControl = new FormControl<string>('high', { nonNullable: true });
-  readonly ratingControl = new FormControl<number>(3, { nonNullable: true });
-  readonly discountControl = new FormControl<number>(12, { nonNullable: true });
-  readonly dueDateControl = new FormControl<string | null>('2026-07-04');
+/* Optional angular.json style path */
+"styles": ["node_modules/jrng-ui/theme/jrng-ui.css", "src/styles.scss"]`;
 
-  readonly statusOptions = [
-    { label: 'Active', value: 'active' },
-    { label: 'Inactive', value: 'inactive' },
-    { label: 'Pending', value: 'pending' },
-  ] as const;
-
-  readonly departmentOptions = [
-    { label: 'Finance', value: 'finance' },
-    { label: 'Operations', value: 'operations' },
-    { label: 'Sales', value: 'sales' },
-    { label: 'Compliance', value: 'compliance' },
-  ] as const;
-
-  readonly cityOptions = [
-    { label: 'Ahmedabad', value: 'ahmedabad' },
-    { label: 'Bengaluru', value: 'bengaluru' },
-    { label: 'Mumbai', value: 'mumbai' },
-    { label: 'Pune', value: 'pune' },
-  ] as const;
-
-  readonly priorityOptions = [
-    { label: 'Low', value: 'low' },
-    { label: 'Medium', value: 'medium' },
-    { label: 'High', value: 'high' },
-  ] as const;
-
-  readonly invoiceColumns: readonly JTableColumn[] = [
-    { field: 'id', header: 'Invoice', sortable: true },
-    { field: 'customer', header: 'Customer', sortable: true },
-    { field: 'amount', header: 'Amount', type: 'number', sortable: true, align: 'end' },
-    { field: 'status', header: 'Status', type: 'tag' },
-  ];
-
-  readonly invoiceRows: readonly JTableRow[] = [
-    { id: 'INV-4024', customer: 'Aster Retail', amount: 42000, status: 'Paid' },
-    { id: 'INV-4025', customer: 'Northwind', amount: 88400, status: 'Pending' },
-    { id: 'INV-4026', customer: 'Green Foods', amount: 24100, status: 'Paid' },
-    { id: 'INV-4027', customer: 'Patel Purchase', amount: 66800, status: 'Failed' },
-    { id: 'INV-4028', customer: 'Orbit Supply', amount: 110000, status: 'Pending' },
-  ];
-
-  selectedRows: JTableSelection = [];
-  lastSort: JTableSort | null = null;
-  lastPage: JTablePageChange | null = null;
-  dialogOpen = false;
-  fullDialogOpen = false;
-  selectedTab = 0;
-  fileMessage = 'No files selected.';
-  confirmationResult = 'No confirmation action yet.';
-
-  readonly migrationRows: readonly MigrationRow[] = [
-    { prime: 'p-button', jrng: 'j-button', notes: 'Map severity, variant, size, disabled, and loading states.' },
-    { prime: 'p-inputText', jrng: 'j-input', notes: 'Use CVA with formControlName or [formControl].' },
-    { prime: 'p-select / p-dropdown', jrng: 'j-select', notes: 'Primitive and object option arrays are supported.' },
-    { prime: 'p-calendar / p-datepicker', jrng: 'j-date-picker', notes: 'Current implementation uses a native date input fallback.' },
-    { prime: 'p-table', jrng: 'j-table', notes: 'Core sort, page, selection, loading, and empty states are available.' },
-    { prime: 'p-dialog', jrng: 'j-dialog', notes: 'Use [(visible)] and projected footer buttons.' },
-    { prime: 'p-toast', jrng: 'j-toast', notes: 'Use JrToastService methods and one global j-toast container.' },
-    { prime: 'p-confirmDialog', jrng: 'j-confirm-dialog', notes: 'Use JConfirmationService.confirm(options).' },
-    { prime: 'p-tabView', jrng: 'j-tabs', notes: 'Use j-tabs with projected j-tab panels.' },
-    { prime: 'p-fieldset', jrng: 'j-fieldset', notes: 'Legend and toggleable modes are supported.' },
-    { prime: 'p-rating', jrng: 'j-rating', notes: 'Use CVA and optional clear/cancel behavior.' },
-  ];
-
-  readonly pageMeta: Record<ShowcasePage, PageMeta> = {
-    introduction: {
-      eyebrow: 'Showcase',
-      title: 'JRNG UI component showcase',
-      intro: 'A routed demo app for visually testing the JRNG UI replacement library before BDMS migration.',
+  readonly pageMeta: Record<SitePage, PageMeta> = {
+    home: {
+      eyebrow: 'Home',
+      title: 'JRNG UI',
+      intro: 'A modern Angular UI component library for building clean, fast, and accessible web applications.',
     },
-    theme: {
-      eyebrow: 'Theme',
-      title: 'Theme tokens and global styles',
-      intro: 'Inspect CSS variables, semantic colors, spacing, focus rings, and app-level token overrides.',
+    docs: {
+      eyebrow: 'Documentation',
+      title: 'Documentation',
+      intro: 'Start with installation, theme setup, configuration, accessibility, and component usage patterns.',
     },
-    button: {
-      eyebrow: 'Action',
-      title: 'Button',
-      intro: 'PrimeNG-like action buttons with severity, variant, size, disabled, and loading states.',
+    components: {
+      eyebrow: 'Components',
+      title: 'Component Catalog',
+      intro: 'Explore generic component categories for forms, data, overlays, navigation, layout, media, and advanced screens.',
     },
-    inputs: {
-      eyebrow: 'Forms',
-      title: 'Inputs',
-      intro: 'Text, password, number, and textarea controls with Reactive Forms support.',
+    themes: {
+      eyebrow: 'Themes',
+      title: 'Theme System',
+      intro: 'Use light and dark modes, design tokens, CSS variables, and component tokens to shape the interface.',
     },
-    select: {
-      eyebrow: 'Forms',
-      title: 'Select components',
-      intro: 'Select, multiselect, and autocomplete patterns for common business forms.',
-    },
-    selection: {
-      eyebrow: 'Forms',
-      title: 'Checkbox, radio, switch',
-      intro: 'Selection controls with CVA support, keyboard behavior, labels, and invalid states.',
-    },
-    'date-picker': {
-      eyebrow: 'Forms',
-      title: 'DatePicker',
-      intro: 'Initial date picker API with native input fallback and Reactive Forms support.',
-    },
-    dialog: {
-      eyebrow: 'Overlay',
-      title: 'Dialog',
-      intro: 'Modal workflows with focus trap, Escape close, scroll lock, and small-screen behavior.',
-    },
-    toast: {
-      eyebrow: 'Feedback',
-      title: 'Toast',
-      intro: 'Global toast container and service shortcuts for transient user feedback.',
-    },
-    'confirm-dialog': {
-      eyebrow: 'Feedback',
-      title: 'ConfirmDialog',
-      intro: 'Service-driven confirmation dialog for destructive and approval actions.',
-    },
-    table: {
-      eyebrow: 'Data',
-      title: 'Table',
-      intro: 'Data table with sorting, pagination, selection, loading, and responsive mode.',
-    },
-    layout: {
-      eyebrow: 'Layout',
-      title: 'Tabs, accordion, panel',
-      intro: 'Common layout and content containers for admin screens.',
-    },
-    'file-upload': {
-      eyebrow: 'Advanced',
-      title: 'FileUpload',
-      intro: 'Basic and advanced upload surfaces with file lists, validation, and events.',
-    },
-    accessibility: {
-      eyebrow: 'Quality',
-      title: 'Accessibility checklist',
-      intro: 'Manual visual and keyboard checks for focus, ARIA, overlays, forms, and responsive behavior.',
-    },
-    migration: {
-      eyebrow: 'Migration',
-      title: 'PrimeNG to JRNG mapping',
-      intro: 'Replacement map for the most common PrimeNG components used during BDMS migration.',
+    support: {
+      eyebrow: 'Support',
+      title: 'Support JRNG UI',
+      intro: 'Support is optional and helps improve the free component library, documentation, examples, and future updates.',
     },
   };
 
-  readonly api: Record<string, readonly ApiRow[]> = {
-    button: [
-      { input: 'label', type: 'string', notes: 'Text label when content is not projected.' },
-      { input: 'severity', type: 'JSeverity', notes: 'primary, secondary, success, warning, danger, info, neutral.' },
-      { input: 'variant', type: 'filled | outlined | text', notes: 'Visual treatment.' },
-      { input: 'loading', type: 'boolean', notes: 'Blocks click output and shows loading state.' },
-    ],
-    inputs: [
-      { input: 'label', type: 'string', notes: 'Associates visible label with control.' },
-      { input: 'error', type: 'string', notes: 'Sets invalid styling and described-by text.' },
-      { input: 'fluid', type: 'boolean', notes: 'Expands control to full container width.' },
-    ],
-    select: [
-      { input: 'options', type: 'readonly unknown[]', notes: 'Primitive or object option sources.' },
-      { input: 'searchable', type: 'boolean', notes: 'Adds filter input to the overlay.' },
-      { input: 'clearable', type: 'boolean', notes: 'Adds clear action when a value is selected.' },
-    ],
-    selection: [
-      { input: 'formControl', type: 'Reactive Forms', notes: 'All shown controls implement CVA.' },
-      { input: 'disabled', type: 'boolean', notes: 'Also supported through Angular forms disabled state.' },
-      { input: 'size', type: 'sm | md | lg', notes: 'Where implemented by the component.' },
-    ],
-    datePicker: [
-      { input: 'dataType', type: 'date | string', notes: 'Controls emitted value shape.' },
-      { input: 'showButtonBar', type: 'boolean', notes: 'Shows Today and Clear buttons.' },
-      { input: 'minDate / maxDate', type: 'Date | string', notes: 'Pass-through constraints for date input.' },
-    ],
-    dialog: [
-      { input: 'visible', type: 'boolean', notes: 'Two-way bind with [(visible)].' },
-      { input: 'size', type: 'sm | md | lg | xl | full', notes: 'Controls dialog width and full-screen mode.' },
-      { input: 'closeOnEscape', type: 'boolean', notes: 'Escape closes the dialog by default.' },
-    ],
-    toast: [
-      { input: 'success/error/info/warning', type: 'service methods', notes: 'Shortcut methods on JrToastService.' },
-      { input: 'life', type: 'number', notes: 'Auto-dismiss time in milliseconds.' },
-      { input: 'sticky', type: 'boolean', notes: 'Keeps toast visible until closed.' },
-    ],
-    confirmDialog: [
-      { input: 'confirm(options)', type: 'service method', notes: 'Shows the current confirmation request.' },
-      { input: 'accept / reject', type: 'callbacks', notes: 'Called before the dialog closes.' },
-      { input: 'acceptLabel / rejectLabel', type: 'string', notes: 'Custom action labels.' },
-    ],
-    table: [
-      { input: 'value', type: 'readonly JTableRow[]', notes: 'Rows to render.' },
-      { input: 'columns', type: 'readonly JTableColumn[]', notes: 'Column model.' },
-      { input: 'lazy', type: 'boolean', notes: 'Emits lazyLoad instead of local processing.' },
-      { input: 'selectionMode', type: 'single | multiple | checkbox | none', notes: 'Selection behavior.' },
-    ],
-    layout: [
-      { input: 'selectedIndex', type: 'number', notes: 'Controls active tab.' },
-      { input: 'activeIndex', type: 'number | number[] | null', notes: 'Controls accordion panels.' },
-      { input: 'toggleable', type: 'boolean', notes: 'Panel and fieldset collapse support.' },
-    ],
-    fileUpload: [
-      { input: 'multiple', type: 'boolean', notes: 'Allows multiple selected files.' },
-      { input: 'accept', type: 'string', notes: 'Native file accept filter.' },
-      { input: 'maxFileSize', type: 'number', notes: 'Client-side size validation.' },
-    ],
-  };
+  readonly features: readonly FeatureItem[] = [
+    { title: 'Modern Angular standalone components', description: 'Import only the components needed by each screen.' },
+    { title: 'Clean j-* selectors', description: 'Selectors are short, predictable, and easy to scan in templates.' },
+    { title: 'Premium dashboard-friendly design', description: 'Calm spacing, subtle borders, rounded cards, and clear hierarchy.' },
+    { title: 'Light and dark theme support', description: 'Themes are token-driven and ready for application-level toggles.' },
+    { title: 'Design tokens', description: 'Primitive, semantic, and component tokens keep customization maintainable.' },
+    { title: 'Accessible components', description: 'Semantic structure, focus states, ARIA, and keyboard patterns are built in.' },
+    { title: 'Reactive Forms support', description: 'Form controls are designed to work with Angular Reactive Forms.' },
+    { title: 'SSR-safe and zoneless-friendly', description: 'Browser APIs are guarded and interactions avoid unnecessary assumptions.' },
+    { title: 'Secondary entrypoints', description: 'Use focused imports such as jrng-ui/button and jrng-ui/input.' },
+  ];
 
-  readonly code = {
-    theme: `@use 'jrng-ui/theme';
+  readonly docsSections: readonly LinkCard[] = [
+    { title: 'Getting Started', description: 'Install the package and import standalone components from secondary entrypoints.' },
+    { title: 'Installation', description: 'Add the npm package and include the JRNG UI styles once in the Angular workspace.' },
+    { title: 'Theme Setup', description: 'Enable light or dark mode and connect the token system to global styles.' },
+    { title: 'Configuration', description: 'Configure defaults for theme mode, density, locale, overlays, and animation.' },
+    { title: 'Components', description: 'Review component categories, selectors, imports, variants, and examples.' },
+    { title: 'Forms', description: 'Use ControlValueAccessor components with Reactive Forms and validation states.' },
+    { title: 'Data', description: 'Build tables, grids, paginated views, charts, trees, and virtualized lists.' },
+    { title: 'Overlay', description: 'Use dialogs, drawers, popovers, tooltips, toasts, and confirmation flows.' },
+    { title: 'Navigation', description: 'Compose menus, tabs, breadcrumbs, accordions, steppers, sidebars, and topbars.' },
+    { title: 'Layout', description: 'Build application shells, page headers, containers, stacks, and responsive grids.' },
+    { title: 'Advanced', description: 'Explore editor, upload, gallery, carousel, Kanban, Gantt, and scheduler components.' },
+    { title: 'Accessibility', description: 'Follow keyboard, screen reader, contrast, focus, and reduced-motion guidance.' },
+    { title: 'API Reference', description: 'Use API tables for inputs, outputs, pass-through attributes, and theme tokens.' },
+  ];
 
-:root {
-  --j-color-primary: #2563eb;
-  --j-radius-md: 0.5rem;
-}`,
-    button: `import { JButtonComponent } from 'jrng-ui/button';
+  readonly componentCategories: readonly ComponentCategory[] = [
+    { title: 'Basic', description: 'Foundational display and feedback components.', items: ['Button', 'Card', 'Badge', 'Tag', 'Avatar', 'Divider', 'Loader', 'Skeleton', 'Empty State'] },
+    { title: 'Forms', description: 'Inputs and form controls for Angular Reactive Forms.', items: ['Input', 'Textarea', 'Password', 'Select', 'Multiselect', 'Checkbox', 'Radio Group', 'Switch', 'Date Picker'] },
+    { title: 'Data', description: 'Components for displaying, filtering, and navigating data.', items: ['Table', 'Data Grid', 'Paginator', 'Data View', 'Tree', 'Tree Table', 'Chart', 'Virtual Scroller'] },
+    { title: 'Overlay', description: 'Layered interaction and feedback components.', items: ['Dialog', 'Drawer', 'Popover', 'Tooltip', 'Toast', 'Confirm Dialog', 'Command Palette'] },
+    { title: 'Navigation', description: 'Navigation components for application structure.', items: ['Menu', 'Menubar', 'Breadcrumb', 'Tabs', 'Accordion', 'Stepper', 'Sidebar Nav', 'Topbar'] },
+    { title: 'Layout', description: 'Reusable page and application layout blocks.', items: ['App Shell', 'Dashboard Layout', 'Page Header', 'Container', 'Stack', 'Grid Layout', 'Splitter'] },
+    { title: 'Media', description: 'Content and media presentation controls.', items: ['Image', 'Image Preview', 'Gallery', 'Carousel', 'Video Player', 'File Preview'] },
+    { title: 'Advanced', description: 'Productivity components for complex application screens.', items: ['Editor', 'File Upload', 'Dropzone', 'Kanban', 'Gantt', 'Calendar Scheduler'] },
+  ];
 
-<j-button label="Save" severity="primary" size="md" />
-<j-button label="Cancel" variant="outlined" severity="secondary" />`,
-    inputs: `const email = new FormControl('', { nonNullable: true });
+  readonly themeSections: readonly LinkCard[] = [
+    { title: 'Light theme', description: 'The default theme uses clean surfaces, soft borders, and accessible contrast.' },
+    { title: 'Dark theme', description: 'Add the j-dark class to enable dark semantic tokens for supported surfaces.' },
+    { title: 'Design tokens', description: 'Primitive, semantic, and component tokens provide a stable customization model.' },
+    { title: 'Customization', description: 'Override CSS variables at application, layout, or component scope.' },
+    { title: 'CSS variables', description: 'Theme values are exposed through predictable --j-* custom properties.' },
+    { title: 'Component tokens', description: 'Tune component-specific values such as height, radius, border, shadow, and color.' },
+  ];
 
-<j-input label="Email" [formControl]="email" clearable />
-<j-textarea label="Notes" [rows]="4" showCount />`,
-    select: `<j-select
-  label="Status"
-  [options]="statusOptions"
-  formControlName="status"
-  searchable
-  clearable
-/>`,
-    selection: `<j-checkbox label="Accept" formControlName="accepted" />
-<j-radio-group [options]="priorityOptions" formControlName="priority" />
-<j-switch formControlName="enabled" />`,
-    datePicker: `<j-date-picker
-  label="Due date"
-  formControlName="dueDate"
-  showIcon
-  showButtonBar
-  showClear
-/>`,
-    dialog: `<j-dialog header="Create invoice" [(visible)]="open" size="md">
-  ...
-  <j-button jDialogFooter label="Save" />
-</j-dialog>`,
-    toast: `constructor(private toast: JrToastService) {}
-
-this.toast.success('Record saved', 'Success');`,
-    confirmDialog: `this.confirmation.confirm({
-  header: 'Archive supplier',
-  message: 'Archive this supplier?',
-  accept: () => this.archive()
-});`,
-    table: `<j-table
-  [value]="rows"
-  [columns]="columns"
-  [rows]="10"
-  paginator
-  selectionMode="checkbox"
-/>`,
-    layout: `<j-tabs [(selectedIndex)]="selectedIndex">
-  <j-tab header="Overview">...</j-tab>
-</j-tabs>
-
-<j-accordion [activeIndex]="0">
-  <j-accordion-panel header="Details">...</j-accordion-panel>
-</j-accordion>`,
-    fileUpload: `<j-file-upload
-  multiple
-  accept=".pdf,.xlsx"
-  [maxFileSize]="2000000"
-  (filesChange)="files = $event"
-/>`,
-    accessibility: `<j-input
-  label="Email"
-  error="Email is required"
-  required
-/>`,
-  } as const;
+  readonly tablePreviewRows = [
+    { product: 'Product Alpha', status: 'Ready', total: '$128.00' },
+    { product: 'Product Beta', status: 'Pending', total: '$86.00' },
+    { product: 'Product Gamma', status: 'Complete', total: '$214.00' },
+  ] as const;
 
   constructor() {
     this.route.data.pipe(takeUntilDestroyed()).subscribe((data) => {
       const page = data['page'];
-      this.currentPage.set(isShowcasePage(page) ? page : 'introduction');
+      this.currentPage.set(isSitePage(page) ? page : 'home');
     });
   }
 
@@ -795,43 +392,7 @@ this.toast.success('Record saved', 'Success');`,
     return this.pageMeta[this.currentPage()];
   }
 
-  handleFiles(files: readonly File[]): void {
-    this.fileMessage = files.length ? `${files.length} file(s) selected.` : 'No files selected.';
-  }
-
-  confirmArchive(): void {
-    this.confirmation.confirm({
-      header: 'Archive supplier',
-      message: 'Archive this supplier record?',
-      icon: '!',
-      severity: 'warning',
-      acceptLabel: 'Archive',
-      rejectLabel: 'Cancel',
-      accept: () => {
-        this.confirmationResult = 'Supplier archived.';
-        this.toast.success('Supplier archived');
-      },
-      reject: () => {
-        this.confirmationResult = 'Archive cancelled.';
-      },
-    });
-  }
-
-  confirmDelete(): void {
-    this.confirmation.confirm({
-      header: 'Delete invoice',
-      message: 'Delete this invoice permanently?',
-      icon: '!',
-      severity: 'danger',
-      acceptLabel: 'Delete',
-      rejectLabel: 'Keep',
-      accept: () => {
-        this.confirmationResult = 'Invoice deleted.';
-        this.toast.error('Invoice deleted');
-      },
-      reject: () => {
-        this.confirmationResult = 'Delete cancelled.';
-      },
-    });
+  slug(value: string): string {
+    return value.toLowerCase().replaceAll(' ', '-');
   }
 }

@@ -1,20 +1,70 @@
-<div [ngClass]="tableClasses">
-  <div class="j-table__scroll" [ngStyle]="scrollStyles">
-    <table>
+<div
+  [ngClass]="tableClasses"
+  data-jc-name="table"
+  data-jc-section="root"
+  data-jc-extend="header body row cell paginator"
+  [attr.data-j-loading]="loading ? 'true' : null"
+>
+  @if (toolbarTemplate || showGlobalFilter || showColumnManager || showExport || showTableState) {
+    <div class="j-table__toolbar" data-jc-section="toolbar">
+      @if (toolbarTemplate) {
+        <ng-container [ngTemplateOutlet]="toolbarTemplate" [ngTemplateOutletContext]="tableContext" />
+      }
+      @if (showGlobalFilter) {
+        <label class="j-table__search">
+          <span class="j-hidden-accessible">Search table</span>
+          <input
+            type="search"
+            [value]="globalFilter"
+            placeholder="Search"
+            (input)="handleGlobalFilter($any($event.target).value)"
+          />
+        </label>
+      }
+      @if (showColumnManager) {
+        <details class="j-table__columns" data-jc-section="column-manager">
+          <summary>Columns</summary>
+          <div class="j-table__columns-panel">
+            @for (column of columnManagerColumns; track column.field) {
+              <label>
+                <input
+                  type="checkbox"
+                  [checked]="!hiddenColumnFields.has(column.field) && column.visible !== false"
+                  (change)="toggleColumnVisibility(column, $event)"
+                />
+                <span>{{ column.header }}</span>
+              </label>
+            }
+          </div>
+        </details>
+      }
+      @if (showExport) {
+        <button class="j-table__tool-button" type="button" (click)="exportCSV()">Export CSV</button>
+      }
+      @if (showTableState) {
+        <button class="j-table__tool-button" type="button" (click)="saveState()">Save state</button>
+        <button class="j-table__tool-button" type="button" (click)="restoreState()">Restore</button>
+      }
+    </div>
+  }
+
+  <div class="j-table__scroll" data-jc-section="scroll" [ngStyle]="scrollStyles">
+    <table data-jc-section="table" role="table">
       @if (caption) {
-        <caption>
+        <caption data-jc-section="caption">
           {{
             caption
           }}
         </caption>
       }
 
-      <thead>
-        <tr>
+      <thead data-jc-section="header">
+        <tr data-jc-section="header-row">
           @if (selectionMode === 'checkbox') {
-            <th scope="col" class="j-table__select-cell">
+            <th scope="col" class="j-table__select-cell" data-jc-section="selection-header">
               <input
                 type="checkbox"
+                data-jc-section="selection-control"
                 aria-label="Select all visible rows"
                 [checked]="allPageRowsSelected()"
                 (change)="toggleAllPageRows($event)"
@@ -22,13 +72,22 @@
             </th>
           }
 
-          @for (column of resolvedColumns; track column.field) {
+          @if (expandableRows) {
+            <th scope="col" class="j-table__expand-cell" data-jc-section="expansion-header"></th>
+          }
+
+          @for (column of resolvedColumns; track column.field; let columnIndex = $index) {
             <th
               scope="col"
+              data-jc-section="header-cell"
               [class]="columnClass(column)"
               [style.width]="column.width || null"
               [style.min-width]="column.minWidth || null"
               [attr.aria-sort]="ariaSort(column)"
+              [attr.draggable]="reorderableColumns || column.reorderable ? 'true' : null"
+              (dragstart)="startColumnDrag(columnIndex)"
+              (dragover)="$event.preventDefault()"
+              (drop)="dropColumn(columnIndex, $event)"
             >
               @if (headerTemplateFor(column); as headerTemplate) {
                 <ng-container
@@ -38,7 +97,10 @@
                 <button
                   type="button"
                   class="j-table__sort"
+                  data-jc-section="sort"
+                  [attr.data-j-active]="sortOrderFor(column) ? 'true' : null"
                   [disabled]="!column.sortable"
+                  [attr.data-j-disabled]="!column.sortable ? 'true' : null"
                   (click)="toggleSort(column)"
                 >
                   <span>{{ column.header }}</span>
@@ -55,15 +117,18 @@
                   (filterChange)="handleFilterChange($event)"
                 />
               }
+              @if (resizableColumns || column.resizable) {
+                <span class="j-table__resize-handle" data-jc-section="resize" aria-hidden="true"></span>
+              }
             </th>
           }
         </tr>
       </thead>
 
-      <tbody>
+      <tbody data-jc-section="body">
         @if (loading) {
-          <tr>
-            <td class="j-table__state" [attr.colspan]="colspan">
+          <tr data-jc-section="state-row" data-j-loading="true">
+            <td class="j-table__state" data-jc-section="loading" [attr.colspan]="colspan">
               <j-table-skeleton [rows]="3" [columns]="resolvedColumns.length || 1" />
               <span class="j-table__state-label">{{ loadingMessage }}</span>
             </td>
@@ -71,8 +136,8 @@
         }
 
         @if (!loading && !hasRows) {
-          <tr>
-            <td class="j-table__state" [attr.colspan]="colspan">
+          <tr data-jc-section="state-row">
+            <td class="j-table__state" data-jc-section="empty" [attr.colspan]="colspan">
               <j-table-empty-state [message]="emptyMessage" />
             </td>
           </tr>
@@ -80,17 +145,26 @@
 
         @for (row of visibleRows; track rowId(row, rowIndex); let rowIndex = $index) {
           <tr
+            data-jc-section="row"
             [class.is-active]="isSelected(row)"
+            [attr.data-j-selected]="isSelected(row) ? 'true' : null"
+            [attr.data-j-active]="isSelected(row) ? 'true' : null"
             [attr.tabindex]="selectable ? 0 : null"
             [attr.aria-selected]="selectable ? isSelected(row) : null"
+            [attr.draggable]="reorderableRows ? 'true' : null"
             (click)="handleRowClick(row, rowIndex, $event)"
+            (contextmenu)="handleContextMenu(row, rowIndex, $event)"
             (dblclick)="handleRowDoubleClick(row, rowIndex, $event)"
             (keydown)="handleRowKeydown($event, row)"
+            (dragstart)="startRowDrag(rowIndex)"
+            (dragover)="$event.preventDefault()"
+            (drop)="dropRow(rowIndex, $event)"
           >
             @if (selectionMode === 'checkbox') {
-              <td class="j-table__select-cell">
+              <td class="j-table__select-cell" data-jc-section="selection-cell">
                 <input
                   type="checkbox"
+                  data-jc-section="selection-control"
                   aria-label="Select row"
                   [checked]="isSelected(row)"
                   (click)="$event.stopPropagation()"
@@ -98,56 +172,101 @@
                 />
               </td>
             }
+            @if (expandableRows) {
+              <td class="j-table__expand-cell" data-jc-section="expansion-cell">
+                <button
+                  type="button"
+                  class="j-table__expand-button"
+                  [attr.aria-expanded]="isExpanded(row, rowIndex)"
+                  (click)="toggleRowExpansion(row, rowIndex, $event)"
+                >
+                  {{ isExpanded(row, rowIndex) ? '-' : '+' }}
+                </button>
+              </td>
+            }
             @for (column of resolvedColumns; track column.field) {
-              <td [class]="columnClass(column)" [attr.data-label]="column.header">
-                @switch (column.type || 'text') {
-                  @case ('action') {
-                    <j-action-menu
-                      [actions]="column.actions || []"
-                      [row]="row"
-                      [rowIndex]="rowIndex"
-                      (actionClick)="handleActionClick($event)"
-                    />
-                  }
-                  @case ('badge') {
-                    <span class="j-table__badge">
-                      {{ formattedCellValue(row, column) }}
-                    </span>
-                  }
-                  @case ('tag') {
-                    <span class="j-table__tag">
-                      {{ formattedCellValue(row, column) }}
-                    </span>
-                  }
-                  @case ('boolean') {
-                    <span class="j-table__boolean">
-                      {{ formattedCellValue(row, column) }}
-                    </span>
-                  }
-                  @default {
-                    @if (cellTemplateFor(column); as cellTemplate) {
-                      <ng-container
-                        *ngTemplateOutlet="
-                          cellTemplate;
-                          context: cellContext(row, column, rowIndex)
-                        "
-                      ></ng-container>
-                    } @else {
-                      {{ formattedCellValue(row, column) }}
+              <td
+                data-jc-section="cell"
+                [class]="columnClass(column)"
+                [attr.data-label]="column.header"
+                (dblclick)="startCellEdit(row, column, rowIndex, $event)"
+              >
+                @if (isEditingCell(row, column, rowIndex)) {
+                  <input
+                    class="j-table__edit-input"
+                    [value]="formattedCellValue(row, column)"
+                    (blur)="commitCellEdit(row, column, rowIndex, $event)"
+                    (keydown)="handleCellEditKeydown(row, column, rowIndex, $event)"
+                  />
+                } @else {
+                  @switch (column.type || 'text') {
+                    @case ('action') {
+                      <j-action-menu
+                        [actions]="column.actions || []"
+                        [row]="row"
+                        [rowIndex]="rowIndex"
+                        (actionClick)="handleActionClick($event)"
+                      />
+                    }
+                    @case ('badge') {
+                      <span class="j-table__badge" data-jc-section="badge">
+                        {{ formattedCellValue(row, column) }}
+                      </span>
+                    }
+                    @case ('tag') {
+                      <span class="j-table__tag" data-jc-section="tag">
+                        {{ formattedCellValue(row, column) }}
+                      </span>
+                    }
+                    @case ('boolean') {
+                      <span class="j-table__boolean" data-jc-section="boolean">
+                        {{ formattedCellValue(row, column) }}
+                      </span>
+                    }
+                    @default {
+                      @if (cellTemplateFor(column); as cellTemplate) {
+                        <ng-container
+                          *ngTemplateOutlet="
+                            cellTemplate;
+                            context: cellContext(row, column, rowIndex)
+                          "
+                        ></ng-container>
+                      } @else {
+                        {{ formattedCellValue(row, column) }}
+                      }
                     }
                   }
                 }
               </td>
             }
           </tr>
+          @if (expandableRows && isExpanded(row, rowIndex)) {
+            <tr class="j-table__expanded-row" data-jc-section="expanded-row">
+              <td [attr.colspan]="colspan">
+                @if (expandedRowTemplate) {
+                  <ng-container
+                    [ngTemplateOutlet]="expandedRowTemplate"
+                    [ngTemplateOutletContext]="{ $implicit: row, row, index: rowIndex }"
+                  />
+                }
+              </td>
+            </tr>
+          }
         }
       </tbody>
+
+      @if (footerTemplate) {
+        <tfoot data-jc-section="footer">
+          <ng-container [ngTemplateOutlet]="footerTemplate" [ngTemplateOutletContext]="{ columns: resolvedColumns, rows: visibleRows }" />
+        </tfoot>
+      }
     </table>
   </div>
 
   @if (paginator) {
     <j-paginator
       class="j-table__paginator"
+      data-jc-section="paginator"
       [first]="normalizedFirst"
       [rows]="rows"
       [totalRecords]="totalItems"

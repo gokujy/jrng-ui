@@ -1,12 +1,11 @@
 # jrng-ui
 
-Standalone Angular UI components for ERP, admin panels, dashboards, and business
-applications.
+Premium standalone Angular UI components for dashboards, forms, data workflows,
+and application shells.
 
 - Package: `jrng-ui`
 - Angular peer version: `^21.2.0`
 - License: MIT
-- Repository: https://github.com/gokujy/jrng-ui
 
 ## Installation
 
@@ -19,7 +18,7 @@ npm install jrng-ui
 
 ## Add the Theme
 
-Add the JR UI theme once in your global stylesheet, usually `src/styles.scss`.
+Add the JRNG UI theme once in your global stylesheet, usually `src/styles.scss`.
 
 ```scss
 @use 'jrng-ui/theme';
@@ -54,7 +53,7 @@ import { ButtonComponent } from 'jrng-ui/button';
 @Component({
   selector: 'app-example',
   imports: [ButtonComponent],
-  template: `<j-button variant="primary" (jrPress)="save()">Save</j-button>`,
+  template: `<j-button severity="primary" (clicked)="save()">Save</j-button>`,
 })
 export class ExampleComponent {
   save(): void {
@@ -74,14 +73,14 @@ import { ButtonComponent, InputComponent } from 'jrng-ui';
 
 | Component | Import           | Selector             | Use for                                |
 | --------- | ---------------- | -------------------- | -------------------------------------- |
-| Button    | `jrng-ui/button` | `jr-button`          | Actions, submits, toolbar buttons      |
+| Button    | `jrng-ui/button` | `j-button`           | Actions, submits, toolbar buttons      |
 | Input     | `jrng-ui/input`  | `j-input`            | Text fields, search, email, number      |
 | Textarea  | `jrng-ui/textarea` | `j-textarea`       | Multi-line text fields                  |
 | Select    | `jrng-ui/select` | `j-select`           | Single-value dropdowns and forms        |
 | Table     | `jrng-ui/table`  | `j-table`            | Data grids, sorting, pagination         |
-| Card      | `jrng-ui/card`   | `jr-card`            | KPI blocks, panels, grouped content    |
-| Dialog    | `jrng-ui/dialog` | `jr-dialog`          | Modals, confirmations, focused forms   |
-| Toast     | `jrng-ui/toast`  | `jr-toast-container` | App notifications and feedback         |
+| Card      | `jrng-ui/card`   | `j-card`             | Metric blocks, panels, grouped content |
+| Dialog    | `jrng-ui/dialog` | `j-dialog`           | Modals, confirmations, focused forms   |
+| Toast     | `jrng-ui/toast`  | `j-toast`            | App notifications and feedback         |
 
 ## Button
 
@@ -90,23 +89,24 @@ import { ButtonComponent } from 'jrng-ui/button';
 ```
 
 ```html
-<j-button variant="primary" size="md" (jrPress)="save()">Save</j-button>
-<j-button variant="danger" [loading]="isDeleting">Delete</j-button>
-<j-button variant="outline" fullWidth>Continue</j-button>
+<j-button severity="primary" size="md" (clicked)="save()">Save</j-button>
+<j-button severity="danger" [loading]="isDeleting">Delete</j-button>
+<j-button severity="secondary" variant="outlined">Continue</j-button>
 ```
 
 | Input                      | Type                                                            | Default   |
 | -------------------------- | --------------------------------------------------------------- | --------- |
-| `variant`                  | `primary \| secondary \| outline \| ghost \| danger \| success` | `primary` |
+| `severity`                 | `primary \| secondary \| success \| warning \| danger \| info \| neutral` | `primary` |
+| `variant`                  | `filled \| outlined \| text`                                    | `filled`  |
 | `size`                     | `sm \| md \| lg`                                                | `md`      |
 | `type`                     | `button \| submit \| reset`                                     | `button`  |
 | `disabled`                 | `boolean`                                                       | `false`   |
 | `loading`                  | `boolean`                                                       | `false`   |
-| `fullWidth`                | `boolean`                                                       | `false`   |
-| `iconBefore` / `iconAfter` | `string`                                                        | `''`      |
+| `icon`                     | `string`                                                        | `''`      |
+| `iconPosition`             | `left \| right`                                                 | `left`    |
 | `ariaLabel`                | `string`                                                        | `''`      |
 
-Output: `(jrPress)` emits a `MouseEvent`. It is not emitted while the button is
+Output: `(clicked)` emits a `MouseEvent`. It is not emitted while the button is
 disabled or loading.
 
 ## Input
@@ -124,7 +124,7 @@ import { JTextareaComponent } from 'jrng-ui/textarea';
   imports: [ReactiveFormsModule, InputComponent, JTextareaComponent],
   template: `
     <j-input label="Email" type="email" [formControl]="email" />
-    <j-textarea label="Notes" [rows]="4" hint="Visible to approvers" />
+    <j-textarea label="Notes" [rows]="4" hint="Visible to reviewers" />
   `,
 })
 export class FormComponent {
@@ -187,25 +187,25 @@ import { JTableColumn, JTableRow, TableComponent } from 'jrng-ui/table';
 
 ```html
 <j-table
-  caption="Recent invoices"
+  caption="Recent records"
   [columns]="columns"
-  [rows]="rows"
+  [value]="rows"
   selectable
   paginator
   [pageSize]="10"
-  (rowSelect)="openInvoice($event)"
+  (rowSelect)="openRecord($event)"
 />
 ```
 
 ```ts
 columns: readonly JTableColumn[] = [
-  { field: 'invoice', header: 'Invoice', sortable: true },
-  { field: 'customer', header: 'Customer' },
+  { field: 'code', header: 'Code', sortable: true },
+  { field: 'name', header: 'Name' },
   { field: 'amount', header: 'Amount', sortable: true, align: 'end' },
 ];
 
 rows: readonly JTableRow[] = [
-  { id: 1, invoice: 'INV-4024', customer: 'Aster Retail', amount: 'Rs. 42,000' },
+  { id: 1, code: 'REC-1001', name: 'Record Alpha', amount: '42,000' },
 ];
 ```
 
@@ -247,8 +247,8 @@ import { CardComponent } from 'jrng-ui/card';
 ```
 
 ```html
-<j-card title="Revenue" subtitle="This month" variant="elevated">
-  <strong>Rs. 48.2L</strong>
+<j-card title="Metric" subtitle="This month" variant="elevated">
+  <strong>48.2k</strong>
   <span jCardFooter>Updated just now</span>
 </j-card>
 ```
@@ -270,17 +270,17 @@ import { DialogComponent } from 'jrng-ui/dialog';
 ```
 
 ```html
-<jr-dialog
-  title="Archive supplier"
+<j-dialog
+  header="Archive record"
   size="sm"
-  [(open)]="archiveOpen"
+  [(visible)]="archiveOpen"
   (jrClose)="handleClose($event)"
 >
-  <p>Archive the selected supplier record?</p>
+  <p>Archive the selected record?</p>
 
-  <j-button jrDialogFooter variant="ghost" (jrPress)="archiveOpen = false"> Cancel </j-button>
-  <j-button jrDialogFooter variant="danger" (jrPress)="archive()"> Archive </j-button>
-</jr-dialog>
+  <j-button jDialogFooter variant="text" (clicked)="archiveOpen = false"> Cancel </j-button>
+  <j-button jDialogFooter severity="danger" (clicked)="archive()"> Archive </j-button>
+</j-dialog>
 ```
 
 | Input             | Type                   | Default |
@@ -295,8 +295,8 @@ import { DialogComponent } from 'jrng-ui/dialog';
 Outputs: `(openChange)` emits the new open state. `(jrClose)` emits
 `close-button`, `backdrop`, `escape`, or `api`.
 
-Projection slots: `[jrDialogHeader]`, default body content, `[jrDialogBody]`,
-and `[jrDialogFooter]`.
+Projection slots: `[jDialogHeader]`, default body content, `[jDialogBody]`,
+and `[jDialogFooter]`.
 
 ## Toast
 
@@ -311,15 +311,15 @@ import { ToastContainerComponent, ToastService } from 'jrng-ui/toast';
   selector: 'app-root',
   imports: [ButtonComponent, ToastContainerComponent],
   template: `
-    <jr-toast-container position="top-right" />
-    <j-button (jrPress)="saved()">Save</j-button>
+    <j-toast position="top-right" />
+    <j-button (clicked)="saved()">Save</j-button>
   `,
 })
 export class AppComponent {
   private readonly toast = inject(ToastService);
 
   saved(): void {
-    this.toast.success('Invoice saved successfully');
+    this.toast.success('Record saved successfully');
   }
 }
 ```
@@ -335,7 +335,7 @@ toast.info('Export started');
 toast.clear();
 ```
 
-`jr-toast-container` supports `position`: `top-right`, `top-left`,
+`j-toast` supports `position`: `top-right`, `top-left`,
 `bottom-right`, or `bottom-left`.
 
 ## Secondary Entrypoints

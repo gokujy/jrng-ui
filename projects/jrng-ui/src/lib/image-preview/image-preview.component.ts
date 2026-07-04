@@ -3,42 +3,26 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
-  EventEmitter,
-  Input,
-  Output,
   PLATFORM_ID,
   Renderer2,
   booleanAttribute,
   inject,
+  input,
+  model,
+  output,
+  signal,
 } from '@angular/core';
 
 @Component({
   selector: 'j-image-preview',
   imports: [],
   template: `
-    @if (visible) {
-      <div
-        class="j-image-preview"
-        role="dialog"
-        aria-modal="true"
-        [attr.aria-label]="alt || 'Image preview'"
-      >
-        <button
-          type="button"
-          class="j-image-preview__backdrop"
-          aria-label="Close preview"
-          (click)="close()"
-        ></button>
+    @if (visible()) {
+      <div class="j-image-preview" data-jc-name="image-preview" data-jc-section="root" role="dialog" aria-modal="true" [attr.aria-label]="alt() || 'Image preview'">
+        <button type="button" class="j-image-preview__backdrop" aria-label="Close preview" (click)="close()"></button>
         <div class="j-image-preview__content">
-          <button
-            type="button"
-            class="j-image-preview__close"
-            aria-label="Close preview"
-            (click)="close()"
-          >
-            ×
-          </button>
-          <img [src]="src" [alt]="alt" />
+          <button type="button" class="j-image-preview__close" aria-label="Close preview" (click)="close()">x</button>
+          <img [src]="src()" [alt]="alt()" />
         </div>
       </div>
     }
@@ -61,15 +45,15 @@ import {
 
       .j-image-preview__content {
         display: grid;
-        inset: var(--j-spacing-3xl, 2rem);
+        inset: var(--j-spacing-6, 2rem);
         place-items: center;
         pointer-events: none;
         position: absolute;
       }
 
       .j-image-preview__content img {
-        background: var(--j-color-surface, #ffffff);
-        border-radius: var(--j-radius-md, 0.5rem);
+        background: var(--j-color-card);
+        border-radius: var(--j-radius-lg);
         max-height: 100%;
         max-width: 100%;
         object-fit: contain;
@@ -77,21 +61,21 @@ import {
       }
 
       .j-image-preview__close {
-        background: var(--j-color-surface, #ffffff);
-        border: 0;
-        border-radius: var(--j-radius-full, 999px);
-        color: var(--j-color-text, #111827);
+        background: var(--j-color-card);
+        border: 1px solid var(--j-color-border);
+        border-radius: var(--j-radius-full);
+        color: var(--j-color-foreground);
         cursor: pointer;
         font: inherit;
         height: 2.5rem;
-        position: absolute;
         inset-block-start: 0;
         inset-inline-end: 0;
+        position: absolute;
         width: 2.5rem;
       }
 
       .j-image-preview__close:focus-visible {
-        box-shadow: var(--j-focus-ring, 0 0 0 3px rgb(79 70 229 / 24%));
+        box-shadow: var(--j-focus-ring);
         outline: none;
       }
     `,
@@ -104,11 +88,10 @@ export class JImagePreviewComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
-  @Input() src = '';
-  @Input() alt = '';
-  @Input({ transform: booleanAttribute }) visible = false;
-  @Output() visibleChange = new EventEmitter<boolean>();
-  @Output() closed = new EventEmitter<void>();
+  readonly src = input('');
+  readonly alt = input('');
+  readonly visible = model(false);
+  readonly closed = output<void>();
 
   constructor() {
     if (!this.isBrowser) {
@@ -116,26 +99,17 @@ export class JImagePreviewComponent {
     }
 
     const removeKeydownListener = this.renderer.listen(this.documentRef, 'keydown', (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        this.handleEscape(event);
+      if (event.key === 'Escape' && this.visible()) {
+        event.preventDefault();
+        this.close();
       }
     });
 
     this.destroyRef.onDestroy(removeKeydownListener);
   }
 
-  handleEscape(event: Event): void {
-    if (!this.visible) {
-      return;
-    }
-
-    event.preventDefault();
-    this.close();
-  }
-
   close(): void {
-    this.visible = false;
-    this.visibleChange.emit(false);
+    this.visible.set(false);
     this.closed.emit();
   }
 }
@@ -144,22 +118,17 @@ export class JImagePreviewComponent {
   selector: 'j-image',
   imports: [JImagePreviewComponent],
   template: `
-    <span class="j-image" [style.width]="width || null" [style.height]="height || null">
-      @if (preview) {
-        <button
-          type="button"
-          class="j-image__button"
-          [attr.aria-label]="'Preview image: ' + alt"
-          (click)="openPreview()"
-        >
-          <img [src]="currentSrc" [alt]="alt" (error)="useFallback()" />
+    <span class="j-image" [class]="styleClass()" data-jc-name="image" data-jc-section="root" [style.width]="width() || null" [style.height]="height() || null">
+      @if (preview()) {
+        <button type="button" class="j-image__button" [attr.aria-label]="'Preview image: ' + alt()" (click)="openPreview()">
+          <img [src]="currentSrc()" [alt]="alt()" [attr.loading]="loading()" (error)="useFallback()" />
         </button>
       } @else {
-        <img [src]="currentSrc" [alt]="alt" (error)="useFallback()" />
+        <img [src]="currentSrc()" [alt]="alt()" [attr.loading]="loading()" (error)="useFallback()" />
       }
     </span>
 
-    <j-image-preview [src]="currentSrc" [alt]="alt" [(visible)]="previewVisible" />
+    <j-image-preview [src]="currentSrc()" [alt]="alt()" [visible]="previewVisible()" (visibleChange)="previewVisible.set($event)" />
   `,
   styles: [
     `
@@ -170,6 +139,7 @@ export class JImagePreviewComponent {
       }
 
       .j-image {
+        border-radius: var(--j-radius-md);
         overflow: hidden;
       }
 
@@ -181,8 +151,7 @@ export class JImagePreviewComponent {
       }
 
       .j-image__button:focus-visible {
-        border-radius: var(--j-radius-sm, 0.375rem);
-        box-shadow: var(--j-focus-ring, 0 0 0 3px rgb(79 70 229 / 24%));
+        box-shadow: var(--j-focus-ring);
         outline: none;
       }
 
@@ -197,27 +166,29 @@ export class JImagePreviewComponent {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JImageComponent {
-  @Input() src = '';
-  @Input() alt = '';
-  @Input() width = '';
-  @Input() height = '';
-  @Input({ transform: booleanAttribute }) preview = false;
-  @Input() fallback = '';
+  readonly src = input('');
+  readonly alt = input('');
+  readonly width = input('');
+  readonly height = input('');
+  readonly loading = input<'lazy' | 'eager'>('lazy');
+  readonly preview = input(false, { transform: booleanAttribute });
+  readonly fallback = input('');
+  readonly styleClass = input('');
 
-  currentSrc = '';
-  previewVisible = false;
+  readonly currentSrc = signal('');
+  readonly previewVisible = signal(false);
 
   ngOnChanges(): void {
-    this.currentSrc = this.src;
+    this.currentSrc.set(this.src());
   }
 
   openPreview(): void {
-    this.previewVisible = true;
+    this.previewVisible.set(true);
   }
 
   useFallback(): void {
-    if (this.fallback && this.currentSrc !== this.fallback) {
-      this.currentSrc = this.fallback;
+    if (this.fallback() && this.currentSrc() !== this.fallback()) {
+      this.currentSrc.set(this.fallback());
     }
   }
 }

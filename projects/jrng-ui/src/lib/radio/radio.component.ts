@@ -26,6 +26,7 @@ import { JSize } from '../core/types';
         [checked]="selected"
         [disabled]="isDisabled"
         [required]="required"
+        [readOnly]="readonly"
         [attr.aria-invalid]="invalid ? 'true' : null"
         (change)="handleChange()"
         (blur)="handleBlur()"
@@ -131,6 +132,7 @@ export class JRadioComponent implements ControlValueAccessor {
   @Input() size: JSize = 'md';
   @Input({ transform: booleanAttribute }) required = false;
   @Input({ transform: booleanAttribute }) invalid = false;
+  @Input({ transform: booleanAttribute }) readonly = false;
 
   @Output() valueChange = new EventEmitter<unknown>();
 
@@ -182,6 +184,9 @@ export class JRadioComponent implements ControlValueAccessor {
   }
 
   handleChange(): void {
+    if (this.readonly) {
+      return;
+    }
     this.selectedValue = this.value;
     this.onChange(this.value);
     this.valueChange.emit(this.value);

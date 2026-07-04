@@ -3,16 +3,16 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  EventEmitter,
   forwardRef,
   inject,
   Input,
   numberAttribute,
-  Output,
+  output,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { jAriaDescribedBy } from '../core/aria';
 import { jCreateId } from '../core/id';
+import { JPassThrough, jMergePartClasses } from '../core/pass-through';
 import { JSize } from '../core/types';
 import { JInputVariant } from '../input/input.component';
 
@@ -23,19 +23,28 @@ export type JInputNumberMode = 'decimal' | 'currency';
   imports: [],
   template: `
     @if (label) {
-      <label class="j-input-number__label" [for]="id">
+      <label class="j-input-number__label" data-jc-name="input-number" data-jc-section="label" [for]="id">
         <span>{{ label }}</span>
         @if (required) {
           <span class="j-input-number__required" aria-hidden="true">*</span>
         }
       </label>
     }
-    <div [class]="controlClasses">
-      @if (mode === 'currency') {
-        <span class="j-input-number__prefix">{{ currency }}</span>
+    <div
+      [class]="controlClasses"
+      data-jc-name="input-number"
+      data-jc-section="root"
+      data-jc-extend="prefix suffix clear"
+      [attr.data-j-disabled]="isDisabled ? 'true' : null"
+      [attr.data-j-invalid]="hasError ? 'true' : null"
+      [attr.data-j-active]="value !== null ? 'true' : null"
+    >
+      @if (resolvedPrefix) {
+        <span class="j-input-number__prefix" data-jc-section="prefix">{{ resolvedPrefix }}</span>
       }
       <input
         class="j-input-number__field"
+        data-jc-section="input"
         [id]="id"
         [name]="name || null"
         type="number"
@@ -52,6 +61,21 @@ export type JInputNumberMode = 'decimal' | 'currency';
         (input)="handleInput($event)"
         (blur)="handleBlur()"
       />
+      @if (suffix) {
+        <span class="j-input-number__suffix" data-jc-section="suffix">{{ suffix }}</span>
+      }
+      @if (clearable && value !== null) {
+        <button
+          class="j-input-number__clear"
+          data-jc-section="clear"
+          type="button"
+          aria-label="Clear"
+          [disabled]="isDisabled || readonly"
+          (click)="clearValue()"
+        >
+          x
+        </button>
+      }
     </div>
     @if (hasError && error) {
       <p class="j-input-number__message j-input-number__message--error" [id]="errorId">
@@ -123,8 +147,18 @@ export type JInputNumberMode = 'decimal' | 'currency';
         outline: none;
       }
 
-      .j-input-number__prefix {
+      .j-input-number__prefix,
+      .j-input-number__suffix {
         color: var(--j-color-text-muted);
+      }
+
+      .j-input-number__clear {
+        background: transparent;
+        border: 0;
+        color: var(--j-color-muted-foreground);
+        cursor: pointer;
+        font: inherit;
+        padding: 0;
       }
 
       .j-input-number__message {
@@ -153,12 +187,15 @@ export class JInputNumberComponent implements ControlValueAccessor {
   @Input() hint = '';
   @Input() error = '';
   @Input() styleClass = '';
+  @Input() pt: JPassThrough | null = null;
   @Input({ alias: 'aria-describedby' }) ariaDescribedby = '';
   @Input() size: JSize = 'md';
   @Input() variant: JInputVariant = 'outlined';
   @Input() mode: JInputNumberMode = 'decimal';
-  @Input() currency = 'INR';
-  @Input() locale = 'en-IN';
+  @Input() currency = '';
+  @Input() prefix = '';
+  @Input() suffix = '';
+  @Input() locale = '';
   @Input({ transform: numberAttribute }) min = Number.NaN;
   @Input({ transform: numberAttribute }) max = Number.NaN;
   @Input({ transform: numberAttribute }) step = 1;
@@ -167,10 +204,12 @@ export class JInputNumberComponent implements ControlValueAccessor {
   @Input({ transform: booleanAttribute }) readonly = false;
   @Input({ transform: booleanAttribute }) invalid = false;
   @Input({ transform: booleanAttribute }) required = false;
+  @Input({ transform: booleanAttribute }) clearable = false;
   @Input({ transform: booleanAttribute }) fluid = false;
   @Input({ transform: booleanAttribute }) fullWidth = false;
 
-  @Output() valueChange = new EventEmitter<number | null>();
+  readonly valueChange = output<number | null>();
+  readonly clear = output<void>();
 
   readonly hintId = jCreateId('j-input-number-hint');
   readonly errorId = jCreateId('j-input-number-error');
@@ -210,22 +249,27 @@ export class JInputNumberComponent implements ControlValueAccessor {
     return Number.isNaN(this.max) ? null : this.max;
   }
 
+  get resolvedPrefix(): string {
+    return this.prefix || (this.mode === 'currency' ? this.currency : '');
+  }
+
   get displayValue(): string {
     return this.value == null ? '' : String(this.value);
   }
 
   get controlClasses(): string {
-    return [
-      'j-input-number',
-      `j-input-number--${this.size}`,
-      `j-input-number--${this.variant}`,
-      this.hasError ? 'is-invalid' : '',
-      this.isDisabled ? 'is-disabled' : '',
-      this.fluid || this.fullWidth ? 'j-input-number--fluid' : '',
+    return jMergePartClasses(
+      [
+        'j-input-number',
+        `j-input-number--${this.size}`,
+        `j-input-number--${this.variant}`,
+        this.hasError ? 'is-invalid' : '',
+        this.isDisabled ? 'is-disabled' : '',
+        this.fluid || this.fullWidth ? 'j-input-number--fluid' : '',
+      ],
       this.styleClass,
-    ]
-      .filter(Boolean)
-      .join(' ');
+      this.pt,
+    );
   }
 
   writeValue(value: number | string | null | undefined): void {
@@ -233,7 +277,7 @@ export class JInputNumberComponent implements ControlValueAccessor {
       this.value = null;
     } else {
       const parsed = Number(value);
-      this.value = Number.isNaN(parsed) ? null : parsed;
+      this.value = this.clamp(Number.isNaN(parsed) ? null : parsed);
     }
     this.changeDetectorRef.markForCheck();
   }
@@ -254,12 +298,34 @@ export class JInputNumberComponent implements ControlValueAccessor {
   handleInput(event: Event): void {
     const target = event.target as HTMLInputElement;
     const parsed = target.value === '' ? null : Number(target.value);
-    this.value = parsed == null || Number.isNaN(parsed) ? null : parsed;
+    this.value = this.clamp(parsed == null || Number.isNaN(parsed) ? null : parsed);
     this.onChange(this.value);
     this.valueChange.emit(this.value);
   }
 
   handleBlur(): void {
     this.onTouched();
+  }
+
+  clearValue(): void {
+    if (this.isDisabled || this.readonly || this.value === null) {
+      return;
+    }
+
+    this.value = null;
+    this.onChange(this.value);
+    this.valueChange.emit(this.value);
+    this.clear.emit();
+    this.changeDetectorRef.markForCheck();
+  }
+
+  private clamp(value: number | null): number | null {
+    if (value === null) {
+      return null;
+    }
+
+    const min = this.minValue;
+    const max = this.maxValue;
+    return Math.min(max ?? value, Math.max(min ?? value, value));
   }
 }

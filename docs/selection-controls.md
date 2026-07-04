@@ -1,54 +1,22 @@
-# JRNG UI Selection Controls
+# Selection Controls
 
-Selection controls are standalone Angular components. Each value-owning control implements `ControlValueAccessor`, supports Reactive Forms, honors disabled state from Angular forms, and uses `j-*` selectors/classes without PrimeNG dependencies.
+jrng-ui selection controls are standalone Angular components. Value-owning controls support `ControlValueAccessor`, reactive forms, disabled state from Angular forms, and accessible keyboard interaction.
 
-## Imports
-
-```ts
-import { ReactiveFormsModule } from '@angular/forms';
-import { JCheckboxComponent } from 'jrng-ui/checkbox';
-import { JRadioComponent } from 'jrng-ui/radio';
-import { JRadioGroupComponent } from 'jrng-ui/radio-group';
-import { JSwitchComponent } from 'jrng-ui/switch';
-import { JRatingComponent } from 'jrng-ui/rating';
-import { JSliderComponent } from 'jrng-ui/slider';
-```
-
-Root imports are also supported from `jrng-ui`.
-
-## j-checkbox
-
-Boolean mode:
+## Checkbox
 
 ```html
 <j-checkbox label="Active" [formControl]="active" />
+<j-checkbox label="Select all" [indeterminate]="partiallySelected" [formControl]="allSelected" />
 ```
 
-Array selection mode:
+Array mode:
 
 ```html
 <j-checkbox label="Email" value="email" [formControl]="channels" />
 <j-checkbox label="SMS" value="sms" [formControl]="channels" />
 ```
 
-Indeterminate:
-
-```html
-<j-checkbox label="Select all" [indeterminate]="partiallySelected" [formControl]="allSelected" />
-```
-
-## j-radio
-
-Standalone radio works as a CVA when you need direct composition.
-
-```html
-<j-radio name="status" value="active" [formControl]="status">Active</j-radio>
-<j-radio name="status" value="inactive" [formControl]="status">Inactive</j-radio>
-```
-
-## j-radio-group
-
-Use `j-radio-group` for option-driven radio controls.
+## Radio Group
 
 ```html
 <j-radio-group
@@ -56,34 +24,18 @@ Use `j-radio-group` for option-driven radio controls.
   [options]="statuses"
   optionLabel="label"
   optionValue="value"
+  direction="horizontal"
   [formControl]="status"
 />
 ```
 
-```ts
-statuses = [
-  { label: 'Active', value: 'active' },
-  { label: 'Inactive', value: 'inactive' },
-];
-```
+`j-radio` is also available for direct composition.
 
-Horizontal layout:
-
-```html
-<j-radio-group label="Priority" [options]="priorities" direction="horizontal" [formControl]="priority" />
-```
-
-## j-switch
-
-Boolean mode:
+## Switch
 
 ```html
 <j-switch label="Enabled" [formControl]="enabled" />
-```
 
-Custom true/false values:
-
-```html
 <j-switch
   [trueValue]="'Y'"
   [falseValue]="'N'"
@@ -93,30 +45,67 @@ Custom true/false values:
 />
 ```
 
-## j-rating
+## Toggle Button
+
+```html
+<j-toggle-button
+  onLabel="Enabled"
+  offLabel="Disabled"
+  onIcon="check"
+  offIcon="close"
+  [formControl]="enabled"
+/>
+```
+
+## Select Button
+
+```html
+<j-select-button
+  [options]="priorities"
+  optionLabel="label"
+  optionValue="value"
+  [formControl]="priority"
+/>
+
+<j-select-button
+  [options]="filters"
+  optionLabel="label"
+  optionValue="value"
+  multiple
+  [formControl]="activeFilters"
+/>
+```
+
+## Rating
 
 ```html
 <j-rating label="Score" [max]="5" cancel [formControl]="score" />
-```
-
-Readonly:
-
-```html
 <j-rating [max]="10" [formControl]="score" readonly />
 ```
 
-## j-slider
-
-Single value:
+## Slider
 
 ```html
 <j-slider label="Discount" [min]="0" [max]="100" [step]="5" [formControl]="discount" />
+<j-slider label="Price range" [min]="0" [max]="100000" [step]="1000" range tooltip [formControl]="priceRange" />
+<j-slider label="Level" vertical [formControl]="level" />
 ```
 
-Range value:
+## Knob
 
 ```html
-<j-slider label="Price range" [min]="0" [max]="100000" [step]="1000" range [formControl]="priceRange" />
+<j-knob label="Progress" [min]="0" [max]="100" [step]="5" [formControl]="progress" />
 ```
 
-`j-slider` emits a number in single-value mode and `[number, number]` in range mode.
+## Color Picker
+
+```html
+<j-color-picker
+  label="Accent color"
+  [presetColors]="['#111827', '#4f46e5', '#16a34a', '#d97706']"
+  clearable
+  [formControl]="accentColor"
+/>
+```
+
+`j-color-picker` includes a swatch trigger, simple popover picker, hex input, presets, and clear support.

@@ -1,13 +1,14 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { JPassThrough, jMergePartClasses } from '../core/pass-through';
 import { JSeverity, JSize } from '../core/types';
 
 @Component({
   selector: 'j-status-chip',
   imports: [],
   template: `
-    <span [class]="chipClasses">
-      <span class="j-status-chip__dot" aria-hidden="true"></span>
-      <span>{{ label }}</span>
+    <span [class]="chipClasses()" data-jc-name="status-chip" data-jc-section="root">
+      <span class="j-status-chip__dot" data-jc-section="dot" aria-hidden="true"></span>
+      <span data-jc-section="label">{{ label() }}</span>
     </span>
   `,
   styles: [
@@ -95,13 +96,17 @@ import { JSeverity, JSize } from '../core/types';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JStatusChipComponent {
-  @Input() label = '';
-  @Input() severity: JSeverity = 'neutral';
-  @Input() size: JSize = 'md';
+  readonly label = input('');
+  readonly severity = input<JSeverity>('neutral');
+  readonly size = input<JSize>('md');
+  readonly styleClass = input('');
+  readonly pt = input<JPassThrough | null>(null);
 
-  get chipClasses(): string {
-    return ['j-status-chip', `j-status-chip--${this.severity}`, `j-status-chip--${this.size}`].join(
-      ' ',
-    );
-  }
+  readonly chipClasses = computed(() =>
+    jMergePartClasses(
+      ['j-status-chip', `j-status-chip--${this.severity()}`, `j-status-chip--${this.size()}`],
+      this.styleClass(),
+      this.pt(),
+    ),
+  );
 }

@@ -1,5 +1,5 @@
 @if (label) {
-  <label class="j-input__label" [for]="id">
+  <label class="j-input__label" data-jc-name="input" data-jc-section="label" [for]="id">
     <span>{{ label }}</span>
     @if (required) {
       <span class="j-input__required" aria-hidden="true">*</span>
@@ -7,16 +7,28 @@
   </label>
 }
 
-<div [class]="controlClasses">
+<div
+  [class]="controlClasses"
+  data-jc-name="input"
+  data-jc-section="root"
+  data-jc-extend="prefix suffix clear"
+  [attr.data-j-disabled]="isDisabled ? 'true' : null"
+  [attr.data-j-invalid]="hasError ? 'true' : null"
+  [attr.data-j-active]="value ? 'true' : null"
+>
   @if (prefixIcon) {
-    <span class="j-input__icon" aria-hidden="true">{{ prefixIcon }}</span>
+    <span class="j-input__icon" data-jc-section="prefix" aria-hidden="true">{{ prefixIcon }}</span>
   }
-  <span class="j-input__icon" aria-hidden="true"
+  <span class="j-input__icon" data-jc-section="prefix" aria-hidden="true"
     ><ng-content select="[jInputPrefix]"></ng-content
   ></span>
 
   <input
     class="j-input__field"
+    data-jc-section="input"
+    [attr.data-j-disabled]="isDisabled ? 'true' : null"
+    [attr.data-j-invalid]="hasError ? 'true' : null"
+    [attr.data-j-active]="value ? 'true' : null"
     [id]="id"
     [name]="name || null"
     [type]="type"
@@ -34,6 +46,7 @@
   @if (clearable && value) {
     <button
       class="j-input__clear"
+      data-jc-section="clear"
       type="button"
       aria-label="Clear"
       [disabled]="isDisabled || readonly"
@@ -43,19 +56,19 @@
     </button>
   }
 
-  <span class="j-input__icon" aria-hidden="true"
+  <span class="j-input__icon" data-jc-section="suffix" aria-hidden="true"
     ><ng-content select="[jInputSuffix]"></ng-content
   ></span>
   @if (suffixIcon) {
-    <span class="j-input__icon" aria-hidden="true">{{ suffixIcon }}</span>
+    <span class="j-input__icon" data-jc-section="suffix" aria-hidden="true">{{ suffixIcon }}</span>
   }
 </div>
 
 @if (hasError && error) {
-  <p class="j-input__message j-input__message--error" [id]="errorId">
+  <p class="j-input__message j-input__message--error" data-jc-section="message" [id]="errorId">
     {{ error }}
   </p>
 }
 @if (hint && !hasError) {
-  <p class="j-input__message" [id]="hintId">{{ hint }}</p>
+  <p class="j-input__message" data-jc-section="message" [id]="hintId">{{ hint }}</p>
 }

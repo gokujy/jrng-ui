@@ -29,31 +29,6 @@
   --j-focus-ring: 0 0 0 3px rgb(79 70 229 / 24%);
   --j-disabled-opacity: 0.62;
 
-  /* Compatibility aliases for early components; new code should use --j-* tokens. */
-  --jr-color-primary: var(--j-color-primary);
-  --jr-color-primary-strong: var(--j-color-primary-active);
-  --jr-color-primary-soft: var(--j-color-primary-soft);
-  --jr-color-secondary: var(--j-color-secondary);
-  --jr-color-secondary-soft: var(--j-color-secondary-soft);
-  --jr-color-success: var(--j-color-success);
-  --jr-color-success-soft: var(--j-color-success-soft);
-  --jr-color-danger: var(--j-color-danger);
-  --jr-color-danger-soft: var(--j-color-danger-soft);
-  --jr-color-warning: var(--j-color-warning);
-  --jr-color-warning-soft: var(--j-color-warning-soft);
-  --jr-color-info: var(--j-color-info);
-  --jr-color-info-soft: var(--j-color-info-soft);
-  --jr-bg-page: var(--j-color-page);
-  --jr-bg-surface: var(--j-color-surface);
-  --jr-bg-subtle: var(--j-color-surface-muted);
-  --jr-bg-muted: var(--j-color-surface-subtle);
-  --jr-text: var(--j-color-text);
-  --jr-text-muted: var(--j-color-text-muted);
-  --jr-text-soft: var(--j-color-text-soft);
-  --jr-border: var(--j-color-border);
-  --jr-border-strong: var(--j-color-border-strong);
-  --jr-focus-ring: var(--j-focus-ring);
-
   color-scheme: light;
 }
 

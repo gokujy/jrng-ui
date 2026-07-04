@@ -7,6 +7,7 @@ import {
   forwardRef,
   inject,
   Input,
+  numberAttribute,
   Output,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -16,20 +17,29 @@ import { jCreateId } from '../core/id';
   selector: 'j-chips',
   imports: [],
   template: `
-    <div [class]="rootClasses" (click)="input.focus()">
+    <div
+      [class]="rootClasses"
+      data-jc-name="chips"
+      data-jc-section="root"
+      data-jc-extend="chip input remove"
+      [attr.data-j-disabled]="isDisabled ? 'true' : null"
+      [attr.data-j-invalid]="hasError ? 'true' : null"
+      (click)="input.focus()"
+    >
       @if (label) {
-        <label class="j-chips__label" [for]="id">
+        <label class="j-chips__label" data-jc-section="label" [for]="id">
           <span>{{ label }}</span>
           @if (required) {
             <span class="j-chips__required" aria-hidden="true">*</span>
           }
         </label>
       }
-      <div class="j-chips">
+      <div class="j-chips" data-jc-section="control">
         @for (item of value; track item; let i = $index) {
-          <span class="j-chips__chip">
+          <span class="j-chips__chip" data-jc-section="chip">
             {{ item }}
             <button
+              data-jc-section="remove"
               type="button"
               [disabled]="isDisabled || readonly"
               (click)="removeAt(i); $event.stopPropagation()"
@@ -41,6 +51,7 @@ import { jCreateId } from '../core/id';
         <input
           #input
           class="j-chips__input"
+          data-jc-section="input"
           [id]="id"
           type="text"
           [placeholder]="value.length ? '' : placeholder"
@@ -160,6 +171,8 @@ export class JChipsComponent implements ControlValueAccessor {
   @Input() error = '';
   @Input() styleClass = '';
   @Input() separator = ',';
+  @Input() separators: readonly string[] = [];
+  @Input({ transform: numberAttribute }) max = 0;
   @Input({ transform: booleanAttribute }) invalid = false;
   @Input({ transform: booleanAttribute }) required = false;
   @Input({ transform: booleanAttribute }) readonly = false;
@@ -219,11 +232,14 @@ export class JChipsComponent implements ControlValueAccessor {
     const target = event.target as HTMLInputElement;
     this.draft = target.value;
 
-    if (this.separator && this.draft.includes(this.separator)) {
-      const parts = this.draft.split(this.separator);
-      parts.slice(0, -1).forEach((part) => this.addValue(part));
-      this.draft = parts.at(-1) ?? '';
-      target.value = this.draft;
+    for (const separator of this.separatorList) {
+      if (separator && this.draft.includes(separator)) {
+        const parts = this.draft.split(separator);
+        parts.slice(0, -1).forEach((part) => this.addValue(part));
+        this.draft = parts.at(-1) ?? '';
+        target.value = this.draft;
+        return;
+      }
     }
   }
 
@@ -256,7 +272,11 @@ export class JChipsComponent implements ControlValueAccessor {
 
   private addValue(rawValue: string): void {
     const next = rawValue.trim();
-    if (!next || (!this.allowDuplicate && this.value.includes(next))) {
+    if (
+      !next ||
+      (this.max > 0 && this.value.length >= this.max) ||
+      (!this.allowDuplicate && this.value.includes(next))
+    ) {
       return;
     }
     this.commit([...this.value, next]);
@@ -268,5 +288,9 @@ export class JChipsComponent implements ControlValueAccessor {
     this.onChange(this.value);
     this.valueChange.emit(this.value);
     this.changeDetectorRef.markForCheck();
+  }
+
+  private get separatorList(): readonly string[] {
+    return this.separators.length ? this.separators : [this.separator].filter(Boolean);
   }
 }

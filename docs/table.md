@@ -1,6 +1,6 @@
 # JRNG UI Table
 
-`j-table` is the main data grid component for JRNG UI. It is an independent Angular table implementation with PrimeNG-like practical coverage, not a PrimeNG wrapper.
+`j-table` is the main data grid component for JRNG UI. It is an independent Angular table implementation for sortable, pageable, accessible data views.
 
 ## Imports
 
@@ -23,15 +23,15 @@ import { JPaginatorComponent } from 'jrng-ui/paginator';
 
 ```ts
 columns = [
-  { field: 'invoice', header: 'Invoice', sortable: true },
-  { field: 'customer', header: 'Customer', filterable: true },
+  { field: 'code', header: 'Code', sortable: true },
+  { field: 'name', header: 'Name', filterable: true },
   { field: 'amount', header: 'Amount', type: 'number', align: 'end', sortable: true },
   { field: 'status', header: 'Status', type: 'tag' },
 ];
 
 rows = [
-  { id: 1, invoice: 'INV-1001', customer: 'Aster Retail', amount: 42000, status: 'Paid' },
-  { id: 2, invoice: 'INV-1002', customer: 'Northwind', amount: 88400, status: 'Pending' },
+  { id: 1, code: 'REC-1001', name: 'Record Alpha', amount: 42000, status: 'Complete' },
+  { id: 2, code: 'REC-1002', name: 'Record Beta', amount: 88400, status: 'Pending' },
 ];
 ```
 
@@ -96,7 +96,7 @@ rows = [
   [first]="first"
   [rows]="25"
   [totalRecords]="totalRecords"
-  (lazyLoad)="loadInvoices($event)"
+  (lazyLoad)="loadRecords($event)"
 />
 ```
 
@@ -131,7 +131,7 @@ Supported modes are `single`, `multiple`, `checkbox`, and `none`.
 
 ```ts
 columns = [
-  { field: 'invoice', header: 'Invoice' },
+  { field: 'code', header: 'Code' },
   {
     field: 'actions',
     header: 'Actions',
@@ -158,10 +158,10 @@ Column templates can be declared with `j-column`:
 
 ```html
 <j-table [value]="rows">
-  <j-column field="customer" header="Customer" sortable>
+  <j-column field="name" header="Name" sortable>
     <ng-template let-row>
-      <strong>{{ row.customer }}</strong>
-      <small>{{ row.gstin }}</small>
+      <strong>{{ row.name }}</strong>
+      <small>{{ row.code }}</small>
     </ng-template>
   </j-column>
 </j-table>
@@ -176,7 +176,7 @@ Or by using keyed templates with an input column model:
   </ng-template>
 
   <ng-template jTableHeader="amount" let-column>
-    {{ column.header }} (INR)
+    {{ column.header }} total
   </ng-template>
 </j-table>
 ```
@@ -218,4 +218,3 @@ Or by using keyed templates with an input column model:
 - Frozen rows and columns
 - CSV export
 - Advanced filter match modes and menus
-

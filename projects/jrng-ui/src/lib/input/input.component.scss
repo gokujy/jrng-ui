@@ -21,9 +21,9 @@
 
 .j-input {
   align-items: center;
-  background: var(--j-color-surface);
-  border: 1px solid var(--j-color-border);
-  border-radius: var(--j-radius-md);
+  background: var(--j-input-bg);
+  border: 1px solid var(--j-input-border-color);
+  border-radius: var(--j-input-radius);
   display: flex;
   gap: var(--j-spacing-sm);
   padding-inline: var(--j-spacing-md);
@@ -35,15 +35,15 @@
 }
 
 .j-input--sm {
-  min-height: 2rem;
+  min-height: var(--j-input-height-sm);
 }
 
 .j-input--md {
-  min-height: 2.5rem;
+  min-height: var(--j-input-height-md);
 }
 
 .j-input--lg {
-  min-height: 3rem;
+  min-height: var(--j-input-height-lg);
 }
 
 .j-input--fluid {
@@ -52,7 +52,7 @@
 
 .j-input:focus-within {
   border-color: var(--j-color-primary);
-  box-shadow: var(--j-focus-ring);
+  box-shadow: var(--j-control-focus-ring);
 }
 
 .j-input.is-invalid {
@@ -67,7 +67,7 @@
 .j-input__field {
   background: transparent;
   border: 0;
-  color: var(--j-color-text);
+  color: var(--j-input-color);
   flex: 1;
   font: inherit;
   font-size: var(--j-font-size-sm);
@@ -76,7 +76,7 @@
 }
 
 .j-input__field::placeholder {
-  color: var(--j-color-text-soft);
+  color: var(--j-input-placeholder-color);
 }
 
 .j-input__icon {

@@ -17,22 +17,32 @@ import { JSize } from '../core/types';
   selector: 'j-rating',
   imports: [],
   template: `
-    <div [class]="rootClasses" role="radiogroup" [attr.aria-label]="ariaLabel || label || 'Rating'">
+    <div
+      [class]="rootClasses"
+      data-jc-name="rating"
+      data-jc-section="root"
+      role="radiogroup"
+      [attr.aria-label]="ariaLabel || label || 'Rating'"
+      [attr.data-j-disabled]="isDisabled ? 'true' : null"
+      [attr.data-j-invalid]="invalid ? 'true' : null"
+    >
       @if (label) {
-        <span class="j-rating__label">{{ label }}</span>
+        <span class="j-rating__label" data-jc-section="label">{{ label }}</span>
       }
       @if (cancel && !readonly) {
-        <button class="j-rating__clear" type="button" [disabled]="isDisabled" (click)="setValue(0)">
+        <button class="j-rating__clear" data-jc-section="clear" type="button" [disabled]="isDisabled" (click)="setValue(0)">
           Clear
         </button>
       }
       @for (star of stars; track star) {
         <button
           class="j-rating__star"
+          data-jc-section="item"
           type="button"
           role="radio"
           [disabled]="isDisabled || readonly"
           [class.is-active]="star <= value"
+          [attr.data-j-active]="star <= value ? 'true' : null"
           [attr.aria-checked]="star === value"
           [attr.aria-label]="star + ' of ' + stars.length"
           (click)="setValue(star)"
@@ -117,6 +127,7 @@ export class JRatingComponent implements ControlValueAccessor {
   @Input({ transform: numberAttribute }) max = 5;
   @Input({ transform: booleanAttribute }) readonly = false;
   @Input({ transform: booleanAttribute }) cancel = false;
+  @Input({ transform: booleanAttribute }) invalid = false;
 
   @Output() valueChange = new EventEmitter<number>();
 
@@ -142,6 +153,7 @@ export class JRatingComponent implements ControlValueAccessor {
       `j-rating--${this.size}`,
       this.isDisabled ? 'is-disabled' : '',
       this.readonly ? 'is-readonly' : '',
+      this.invalid ? 'is-invalid' : '',
       this.styleClass,
     ]
       .filter(Boolean)

@@ -1,5 +1,6 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { DestroyRef, Directive, ElementRef, HostListener, Input, PLATFORM_ID, inject, numberAttribute } from '@angular/core';
+import { JZIndexManagerService } from '../core/z-index-manager.service';
 
 export type JTooltipPosition = 'top' | 'right' | 'bottom' | 'left';
 
@@ -10,6 +11,7 @@ export class JTooltipDirective {
   private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly documentRef = inject(DOCUMENT);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly zIndexManager = inject(JZIndexManagerService);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   private tooltipElement: HTMLElement | null = null;
   private showTimer: ReturnType<typeof setTimeout> | null = null;
@@ -59,6 +61,9 @@ export class JTooltipDirective {
     element.className = `j-tooltip j-tooltip--${this.tooltipPosition}`;
     element.textContent = this.tooltip;
     element.setAttribute('role', 'tooltip');
+    element.setAttribute('data-jc-name', 'tooltip');
+    element.setAttribute('data-jc-section', 'root');
+    element.setAttribute('data-j-open', 'true');
     this.documentRef.body.appendChild(element);
     this.tooltipElement = element;
     this.positionTooltip();
@@ -90,12 +95,12 @@ export class JTooltipDirective {
       position: 'fixed',
       top: `${Math.max(4, top)}px`,
       left: `${Math.max(4, left)}px`,
-      zIndex: '1300',
+      zIndex: String(this.zIndexManager.next(1300)),
       pointerEvents: 'none',
-      background: 'var(--j-color-text)',
-      color: 'var(--j-color-surface)',
-      padding: 'var(--j-spacing-xs) var(--j-spacing-sm)',
-      borderRadius: 'var(--j-radius-sm)',
+      background: 'var(--j-color-foreground)',
+      color: 'var(--j-color-background)',
+      padding: 'var(--j-spacing-1) var(--j-spacing-2)',
+      borderRadius: 'var(--j-radius-md)',
       fontSize: 'var(--j-font-size-xs)',
       boxShadow: 'var(--j-shadow-md)',
     });

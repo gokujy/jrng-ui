@@ -24,6 +24,10 @@ let nextTabId = 0;
     @if (!closed && (!lazy || initialized)) {
       <section
         class="j-tab"
+        data-jc-name="tabs"
+        data-jc-section="panel"
+        [attr.data-j-selected]="active ? 'true' : null"
+        [attr.data-j-active]="active ? 'true' : null"
         role="tabpanel"
         [id]="panelId"
         [attr.aria-labelledby]="tabId"
@@ -72,16 +76,20 @@ export class JTabComponent {
   selector: 'j-tabs',
   imports: [],
   template: `
-    <div class="j-tabs">
-      <div class="j-tabs__list" role="tablist" (keydown)="handleKeydown($event)">
+    <div class="j-tabs" [class.is-scrollable]="scrollable" data-jc-name="tabs" data-jc-section="root" data-jc-extend="tab panel close">
+      <div class="j-tabs__list" data-jc-section="list" role="tablist" [attr.aria-orientation]="orientation" (keydown)="handleKeydown($event)">
         @for (tab of visibleTabs; track tab.id; let index = $index) {
           <button
             type="button"
             class="j-tabs__tab"
+            data-jc-section="tab"
             role="tab"
             [id]="tab.tabId"
             [class.is-active]="tab.active"
             [disabled]="tab.disabled"
+            [attr.data-j-selected]="tab.active ? 'true' : null"
+            [attr.data-j-active]="tab.active ? 'true' : null"
+            [attr.data-j-disabled]="tab.disabled ? 'true' : null"
             [attr.aria-selected]="tab.active"
             [attr.aria-controls]="tab.panelId"
             [attr.tabindex]="tab.active ? 0 : -1"
@@ -91,6 +99,7 @@ export class JTabComponent {
             @if (tab.closable) {
               <span
                 class="j-tabs__close"
+                data-jc-section="close"
                 role="button"
                 tabindex="0"
                 [attr.aria-label]="'Close ' + tab.title"
@@ -103,7 +112,7 @@ export class JTabComponent {
           </button>
         }
       </div>
-      <div class="j-tabs__panels">
+      <div class="j-tabs__panels" data-jc-section="panels">
         <ng-content></ng-content>
       </div>
     </div>
@@ -118,6 +127,10 @@ export class JTabComponent {
         border-bottom: 1px solid var(--j-color-border, #dbe2ea);
         display: flex;
         gap: var(--j-spacing-xs, 0.25rem);
+        overflow-x: hidden;
+      }
+
+      .j-tabs.is-scrollable .j-tabs__list {
         overflow-x: auto;
       }
 
@@ -174,6 +187,8 @@ export class JTabsComponent implements AfterContentInit, OnChanges {
 
   @Input({ transform: numberAttribute }) selectedIndex = 0;
   @Input({ transform: booleanAttribute }) lazy = false;
+  @Input({ transform: booleanAttribute }) scrollable = true;
+  @Input() orientation: 'horizontal' | 'vertical' = 'horizontal';
   @Output() selectedIndexChange = new EventEmitter<number>();
   @Output() tabClose = new EventEmitter<number>();
 

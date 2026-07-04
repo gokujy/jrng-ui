@@ -1,13 +1,17 @@
+import { NgTemplateOutlet } from '@angular/common';
 import {
   booleanAttribute,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ContentChild,
   EventEmitter,
   forwardRef,
   inject,
   Input,
+  numberAttribute,
   Output,
+  TemplateRef,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { jAriaDescribedBy } from '../core/aria';
@@ -24,13 +28,32 @@ import { JInputVariant } from '../input/input.component';
 
 export type JMultiselectOption = JSelectionOptionSource;
 
+export interface JMultiselectItemContext {
+  readonly $implicit: JSelectionOptionSource;
+  readonly option: JSelectionOptionSource;
+  readonly label: string;
+  readonly value: unknown;
+  readonly selected: boolean;
+  readonly disabled: boolean;
+}
+
 @Component({
   selector: 'j-multiselect',
-  imports: [JClickOutsideDirective],
+  imports: [JClickOutsideDirective, NgTemplateOutlet],
   template: `
-    <div [class]="rootClasses" jClickOutside (jClickOutside)="close()">
+    <div
+      [class]="rootClasses"
+      data-jc-name="multiselect"
+      data-jc-section="root"
+      data-jc-extend="panel option filter chips"
+      [attr.data-j-open]="isOpen ? 'true' : null"
+      [attr.data-j-disabled]="isDisabled ? 'true' : null"
+      [attr.data-j-invalid]="hasError ? 'true' : null"
+      jClickOutside
+      (jClickOutside)="close()"
+    >
       @if (label) {
-        <label class="j-multiselect__label" [for]="id">
+        <label class="j-multiselect__label" data-jc-section="label" [for]="id">
           <span>{{ label }}</span>
           @if (required) {
             <span class="j-multiselect__required" aria-hidden="true">*</span>
@@ -40,6 +63,7 @@ export type JMultiselectOption = JSelectionOptionSource;
 
       <button
         class="j-multiselect"
+        data-jc-section="trigger"
         type="button"
         role="combobox"
         [id]="id"
@@ -53,32 +77,31 @@ export type JMultiselectOption = JSelectionOptionSource;
         (blur)="onTouched()"
       >
         @if (displayChips && selectedOptions.length) {
-          <span class="j-multiselect__chips">
-            @for (option of selectedOptions; track option.value) {
-              <span class="j-multiselect__chip">{{ option.label }}</span>
+          <span class="j-multiselect__chips" data-jc-section="chips">
+            @for (option of visibleSelectedOptions; track option.value) {
+              <span class="j-multiselect__chip" data-jc-section="chip">{{ option.label }}</span>
+            }
+            @if (selectedOverflowCount > 0) {
+              <span class="j-multiselect__chip" data-jc-section="overflow">+{{ selectedOverflowCount }}</span>
             }
           </span>
         } @else {
-          <span class="j-multiselect__value" [class.is-placeholder]="!selectedOptions.length">
+          <span class="j-multiselect__value" data-jc-section="value" [class.is-placeholder]="!selectedOptions.length">
             {{ selectedText }}
           </span>
         }
         @if (canClear) {
-          <span class="j-multiselect__clear" (click)="clearAll($event)">x</span>
+          <span class="j-multiselect__clear" data-jc-section="clear" (click)="clearAll($event)">x</span>
         }
-        <span class="j-multiselect__indicator" aria-hidden="true"></span>
+        <span class="j-multiselect__indicator" data-jc-section="indicator" aria-hidden="true"></span>
       </button>
 
       @if (isOpen) {
-        <div
-          class="j-multiselect__panel"
-          [id]="listboxId"
-          role="listbox"
-          aria-multiselectable="true"
-        >
+        <div class="j-multiselect__panel" data-jc-section="panel" [id]="listboxId" role="listbox" aria-multiselectable="true">
           @if (filter || searchable) {
             <input
               class="j-multiselect__filter"
+              data-jc-section="filter"
               type="text"
               [placeholder]="filterPlaceholder"
               [value]="filterText"
@@ -87,214 +110,84 @@ export type JMultiselectOption = JSelectionOptionSource;
             />
           }
           @if (showSelectAll) {
-            <button class="j-multiselect__utility" type="button" (click)="toggleSelectAll()">
-              {{ allVisibleSelected ? 'Clear visible' : 'Select visible' }}
-            </button>
+            <div class="j-multiselect__utilities" data-jc-section="utilities">
+              <button class="j-multiselect__utility" type="button" (click)="selectAllVisible()">{{ selectAllLabel }}</button>
+              <button class="j-multiselect__utility" type="button" (click)="unselectAllVisible()">{{ unselectAllLabel }}</button>
+            </div>
           }
-          @if (!visibleOptions.length) {
-            <div class="j-multiselect__empty">{{ emptyMessage }}</div>
+          @if (loading) {
+            <div class="j-multiselect__empty" data-jc-section="loading" data-j-loading="true">{{ loadingMessage }}</div>
+          }
+          @if (!loading && !visibleOptions.length) {
+            <div class="j-multiselect__empty" data-jc-section="empty">{{ emptyMessage }}</div>
           }
           @for (option of visibleOptions; track option.value; let i = $index) {
             <button
               class="j-multiselect__option"
+              data-jc-section="option"
               type="button"
               role="option"
               [disabled]="option.disabled"
               [class.is-active]="i === activeIndex"
+              [class.is-selected]="isSelected(option)"
+              [attr.data-j-selected]="isSelected(option) ? 'true' : null"
+              [attr.data-j-active]="i === activeIndex ? 'true' : null"
+              [attr.data-j-disabled]="option.disabled ? 'true' : null"
               [attr.aria-selected]="isSelected(option)"
               (click)="toggleOption(option)"
             >
-              <span
-                class="j-multiselect__box"
-                [class.is-selected]="isSelected(option)"
-                aria-hidden="true"
-              ></span>
-              <span>{{ option.label }}</span>
+              <span class="j-multiselect__box" [class.is-selected]="isSelected(option)" aria-hidden="true"></span>
+              @if (itemTemplate) {
+                <ng-container
+                  [ngTemplateOutlet]="itemTemplate"
+                  [ngTemplateOutletContext]="itemContext(option)"
+                ></ng-container>
+              } @else {
+                <span>{{ option.label }}</span>
+              }
             </button>
           }
         </div>
       }
 
       @if (hasError && error) {
-        <p class="j-multiselect__message j-multiselect__message--error" [id]="errorId">
+        <p class="j-multiselect__message j-multiselect__message--error" data-jc-section="message" [id]="errorId">
           {{ error }}
         </p>
       }
       @if (hint && !hasError) {
-        <p class="j-multiselect__message" [id]="hintId">{{ hint }}</p>
+        <p class="j-multiselect__message" data-jc-section="message" [id]="hintId">{{ hint }}</p>
       }
     </div>
   `,
   styles: [
     `
-      :host {
-        display: block;
-      }
-
-      .j-multiselect {
-        align-items: center;
-        background: var(--j-color-surface);
-        border: 1px solid var(--j-color-border);
-        border-radius: var(--j-radius-md);
-        color: var(--j-color-text);
-        cursor: pointer;
-        display: flex;
-        font: inherit;
-        gap: var(--j-spacing-sm);
-        min-height: 2.5rem;
-        padding: var(--j-spacing-xs) var(--j-spacing-md);
-        text-align: left;
-        width: 100%;
-      }
-
-      .j-multiselect-field {
-        display: block;
-        position: relative;
-      }
-
-      .j-multiselect__label {
-        display: inline-flex;
-        font-size: var(--j-font-size-sm);
-        font-weight: var(--j-font-weight-semibold);
-        gap: var(--j-spacing-xs);
-        margin-bottom: var(--j-spacing-sm);
-      }
-
-      .j-multiselect__required,
-      .j-multiselect__message--error {
-        color: var(--j-color-danger);
-      }
-
-      .j-multiselect-field--filled .j-multiselect {
-        background: var(--j-color-surface-muted);
-      }
-
-      .j-multiselect:focus-visible,
-      .j-multiselect-field.is-open .j-multiselect {
-        border-color: var(--j-color-primary);
-        box-shadow: var(--j-focus-ring);
-        outline: none;
-      }
-
-      .j-multiselect-field.is-invalid .j-multiselect {
-        border-color: var(--j-color-danger);
-      }
-
-      .j-multiselect-field.is-disabled {
-        opacity: var(--j-disabled-opacity);
-      }
-
-      .j-multiselect__value,
-      .j-multiselect__chips {
-        flex: 1;
-        min-width: 0;
-      }
-
-      .j-multiselect__value.is-placeholder {
-        color: var(--j-color-text-muted);
-      }
-
-      .j-multiselect__chips {
-        display: flex;
-        flex-wrap: wrap;
-        gap: var(--j-spacing-xs);
-      }
-
-      .j-multiselect__chip {
-        background: var(--j-color-surface-muted);
-        border-radius: var(--j-radius-full);
-        font-size: var(--j-font-size-xs);
-        padding: 0 var(--j-spacing-sm);
-      }
-
-      .j-multiselect__clear {
-        color: var(--j-color-text-muted);
-      }
-
-      .j-multiselect__indicator {
-        border-bottom: 2px solid currentColor;
-        border-right: 2px solid currentColor;
-        height: 0.45rem;
-        opacity: 0.62;
-        transform: rotate(45deg) translateY(-2px);
-        width: 0.45rem;
-      }
-
-      .j-multiselect__panel {
-        background: var(--j-color-surface);
-        border: 1px solid var(--j-color-border);
-        border-radius: var(--j-radius-md);
-        box-shadow: var(--j-shadow-lg);
-        left: 0;
-        margin-top: var(--j-spacing-xs);
-        max-height: 18rem;
-        min-width: 100%;
-        overflow: auto;
-        padding: var(--j-spacing-xs);
-        position: absolute;
-        top: 100%;
-        z-index: var(--j-z-index-dropdown);
-      }
-
-      .j-multiselect__filter,
-      .j-multiselect__utility,
-      .j-multiselect__option {
-        font: inherit;
-        width: 100%;
-      }
-
-      .j-multiselect__filter {
-        border: 1px solid var(--j-color-border);
-        border-radius: var(--j-radius-sm);
-        min-height: 2rem;
-        outline: none;
-        padding: 0 var(--j-spacing-sm);
-      }
-
-      .j-multiselect__utility,
-      .j-multiselect__option {
-        background: transparent;
-        border: 0;
-        border-radius: var(--j-radius-sm);
-        color: var(--j-color-text);
-        cursor: pointer;
-        display: flex;
-        gap: var(--j-spacing-sm);
-        padding: var(--j-spacing-sm) var(--j-spacing-md);
-        text-align: left;
-      }
-
-      .j-multiselect__option:hover,
-      .j-multiselect__option.is-active {
-        background: var(--j-color-surface-muted);
-      }
-
-      .j-multiselect__box {
-        border: 1px solid var(--j-color-border);
-        border-radius: var(--j-radius-xs);
-        height: 1rem;
-        width: 1rem;
-      }
-
-      .j-multiselect__box.is-selected {
-        background: var(--j-color-primary);
-        border-color: var(--j-color-primary);
-        box-shadow: inset 0 0 0 3px var(--j-color-surface);
-      }
-
-      .j-multiselect__empty,
-      .j-multiselect__message {
-        color: var(--j-color-text-muted);
-        font-size: var(--j-font-size-xs);
-      }
-
-      .j-multiselect__empty {
-        padding: var(--j-spacing-md);
-      }
-
-      .j-multiselect__message {
-        margin: var(--j-spacing-sm) 0 0;
-      }
+      :host { display: block; }
+      .j-multiselect-field { display: block; position: relative; }
+      .j-multiselect__label { display: inline-flex; font-size: var(--j-font-size-sm); font-weight: var(--j-font-weight-semibold); gap: var(--j-spacing-xs); margin-bottom: var(--j-spacing-sm); }
+      .j-multiselect__required, .j-multiselect__message--error { color: var(--j-color-danger); }
+      .j-multiselect { align-items: center; background: var(--j-color-surface); border: 1px solid var(--j-color-border); border-radius: var(--j-radius-md); color: var(--j-color-text); cursor: pointer; display: flex; font: inherit; gap: var(--j-spacing-sm); min-height: 2.5rem; padding: var(--j-spacing-xs) var(--j-spacing-md); text-align: left; width: 100%; }
+      .j-multiselect-field--filled .j-multiselect { background: var(--j-color-surface-muted); }
+      .j-multiselect:focus-visible, .j-multiselect-field.is-open .j-multiselect { border-color: var(--j-color-primary); box-shadow: var(--j-focus-ring); outline: none; }
+      .j-multiselect-field.is-invalid .j-multiselect { border-color: var(--j-color-danger); }
+      .j-multiselect-field.is-disabled { opacity: var(--j-disabled-opacity); }
+      .j-multiselect__value, .j-multiselect__chips { flex: 1; min-width: 0; }
+      .j-multiselect__value.is-placeholder { color: var(--j-color-text-muted); }
+      .j-multiselect__chips { display: flex; flex-wrap: wrap; gap: var(--j-spacing-xs); }
+      .j-multiselect__chip { background: var(--j-color-surface-muted); border-radius: var(--j-radius-full); font-size: var(--j-font-size-xs); padding: 0 var(--j-spacing-sm); }
+      .j-multiselect__clear { color: var(--j-color-text-muted); }
+      .j-multiselect__indicator { border-bottom: 2px solid currentColor; border-right: 2px solid currentColor; height: 0.45rem; opacity: 0.62; transform: rotate(45deg) translateY(-2px); width: 0.45rem; }
+      .j-multiselect__panel { background: var(--j-color-surface); border: 1px solid var(--j-color-border); border-radius: var(--j-radius-md); box-shadow: var(--j-shadow-lg); left: 0; margin-top: var(--j-spacing-xs); max-height: 18rem; min-width: 100%; overflow: auto; padding: var(--j-spacing-xs); position: absolute; top: 100%; z-index: var(--j-z-index-dropdown); }
+      .j-multiselect__filter, .j-multiselect__utility, .j-multiselect__option { font: inherit; width: 100%; }
+      .j-multiselect__filter { border: 1px solid var(--j-color-border); border-radius: var(--j-radius-sm); min-height: 2rem; outline: none; padding: 0 var(--j-spacing-sm); }
+      .j-multiselect__utilities { display: grid; gap: var(--j-spacing-xs); grid-template-columns: 1fr 1fr; margin-block: var(--j-spacing-xs); }
+      .j-multiselect__utility, .j-multiselect__option { background: transparent; border: 0; border-radius: var(--j-radius-sm); color: var(--j-color-text); cursor: pointer; display: flex; gap: var(--j-spacing-sm); padding: var(--j-spacing-sm) var(--j-spacing-md); text-align: left; }
+      .j-multiselect__option:hover, .j-multiselect__option.is-active { background: var(--j-color-surface-muted); }
+      .j-multiselect__box { border: 1px solid var(--j-color-border); border-radius: var(--j-radius-xs); height: 1rem; width: 1rem; }
+      .j-multiselect__box.is-selected { background: var(--j-color-primary); border-color: var(--j-color-primary); box-shadow: inset 0 0 0 3px var(--j-color-surface); }
+      .j-multiselect__empty, .j-multiselect__message { color: var(--j-color-text-muted); font-size: var(--j-font-size-xs); }
+      .j-multiselect__empty { padding: var(--j-spacing-md); }
+      .j-multiselect__message { margin: var(--j-spacing-sm) 0 0; }
     `,
   ],
   providers: [
@@ -309,19 +202,26 @@ export type JMultiselectOption = JSelectionOptionSource;
 export class JMultiselectComponent implements ControlValueAccessor {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
+  @ContentChild('jMultiselectItem', { read: TemplateRef }) itemTemplate?: TemplateRef<JMultiselectItemContext>;
+
   @Input() id = jCreateId('j-multiselect');
   @Input() label = '';
   @Input() options: readonly JMultiselectOption[] = [];
   @Input() optionLabel = 'label';
   @Input() optionValue = 'value';
+  @Input() optionDisabled = 'disabled';
   @Input() placeholder = 'Select';
   @Input() error = '';
   @Input() hint = '';
   @Input() filterPlaceholder = 'Search';
   @Input() emptyMessage = 'No options found';
+  @Input() loadingMessage = 'Loading...';
+  @Input() selectAllLabel = 'Select all';
+  @Input() unselectAllLabel = 'Unselect all';
   @Input() styleClass = '';
   @Input() size: JSize = 'md';
   @Input() variant: JInputVariant = 'outlined';
+  @Input({ transform: numberAttribute }) maxSelectedLabels = 3;
   @Input({ transform: booleanAttribute }) readonly = false;
   @Input({ transform: booleanAttribute }) invalid = false;
   @Input({ transform: booleanAttribute }) required = false;
@@ -330,6 +230,7 @@ export class JMultiselectComponent implements ControlValueAccessor {
   @Input({ transform: booleanAttribute }) clearable = false;
   @Input({ transform: booleanAttribute }) displayChips = false;
   @Input({ transform: booleanAttribute }) showSelectAll = true;
+  @Input({ transform: booleanAttribute }) loading = false;
 
   @Output() valueChange = new EventEmitter<readonly unknown[]>();
   @Output() selectionChange = new EventEmitter<readonly JNormalizedSelectionOption[]>();
@@ -357,7 +258,7 @@ export class JMultiselectComponent implements ControlValueAccessor {
   }
 
   get normalizedOptions(): readonly JNormalizedSelectionOption[] {
-    return jNormalizeSelectionOptions(this.options, this.optionLabel, this.optionValue);
+    return jNormalizeSelectionOptions(this.options, this.optionLabel, this.optionValue, this.optionDisabled);
   }
 
   get visibleOptions(): readonly JNormalizedSelectionOption[] {
@@ -373,9 +274,18 @@ export class JMultiselectComponent implements ControlValueAccessor {
     );
   }
 
+  get visibleSelectedOptions(): readonly JNormalizedSelectionOption[] {
+    return this.selectedOptions.slice(0, this.maxSelectedLabels);
+  }
+
+  get selectedOverflowCount(): number {
+    return Math.max(0, this.selectedOptions.length - this.visibleSelectedOptions.length);
+  }
+
   get selectedText(): string {
     return this.selectedOptions.length
-      ? this.selectedOptions.map((option) => option.label).join(', ')
+      ? this.selectedOptions.map((option) => option.label).slice(0, this.maxSelectedLabels).join(', ') +
+          (this.selectedOverflowCount ? ` +${this.selectedOverflowCount}` : '')
       : this.placeholder;
   }
 
@@ -389,11 +299,6 @@ export class JMultiselectComponent implements ControlValueAccessor {
 
   get canClear(): boolean {
     return this.clearable && this.value.length > 0 && !this.isDisabled && !this.readonly;
-  }
-
-  get allVisibleSelected(): boolean {
-    const selectable = this.visibleOptions.filter((option) => !option.disabled);
-    return selectable.length > 0 && selectable.every((option) => this.isSelected(option));
   }
 
   get rootClasses(): string {
@@ -500,21 +405,20 @@ export class JMultiselectComponent implements ControlValueAccessor {
     this.commitValue(nextValue);
   }
 
-  toggleSelectAll(): void {
-    const selectable = this.visibleOptions.filter((option) => !option.disabled);
-    const visibleValues = selectable.map((option) => option.value);
-    const nextValue = this.allVisibleSelected
-      ? this.value.filter(
-          (value) =>
-            !visibleValues.some((visibleValue) => jSameSelectionValue(visibleValue, value)),
-        )
-      : [
-          ...this.value,
-          ...visibleValues.filter(
-            (value) => !this.value.some((selected) => jSameSelectionValue(selected, value)),
-          ),
-        ];
+  selectAllVisible(): void {
+    const nextValue = [
+      ...this.value,
+      ...this.visibleOptions
+        .filter((option) => !option.disabled)
+        .map((option) => option.value)
+        .filter((value) => !this.value.some((selected) => jSameSelectionValue(selected, value))),
+    ];
     this.commitValue(nextValue);
+  }
+
+  unselectAllVisible(): void {
+    const visibleValues = this.visibleOptions.map((option) => option.value);
+    this.commitValue(this.value.filter((value) => !visibleValues.some((visible) => jSameSelectionValue(visible, value))));
   }
 
   clearAll(event?: Event): void {
@@ -525,6 +429,17 @@ export class JMultiselectComponent implements ControlValueAccessor {
 
   isSelected(option: JNormalizedSelectionOption): boolean {
     return this.value.some((value) => jSameSelectionValue(value, option.value));
+  }
+
+  itemContext(option: JNormalizedSelectionOption): JMultiselectItemContext {
+    return {
+      $implicit: option.source,
+      option: option.source,
+      label: option.label,
+      value: option.value,
+      selected: this.isSelected(option),
+      disabled: option.disabled,
+    };
   }
 
   private commitValue(value: readonly unknown[]): void {

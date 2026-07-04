@@ -29,7 +29,9 @@ import { JSize } from '../core/types';
         [name]="name || null"
         [checked]="checked"
         [disabled]="isDisabled"
+        [readOnly]="readonly"
         [required]="required"
+        [attr.aria-checked]="indeterminate ? 'mixed' : checked"
         [attr.aria-invalid]="hasError ? 'true' : null"
         [attr.aria-describedby]="describedBy"
         (change)="handleChange($event)"
@@ -176,6 +178,7 @@ export class JCheckboxComponent implements ControlValueAccessor {
   @Input() size: JSize = 'md';
   @Input({ transform: booleanAttribute }) required = false;
   @Input({ transform: booleanAttribute }) invalid = false;
+  @Input({ transform: booleanAttribute }) readonly = false;
   @Input({ transform: booleanAttribute }) indeterminate = false;
   @Input({ transform: booleanAttribute }) hasProjectedLabel = true;
 
@@ -245,6 +248,10 @@ export class JCheckboxComponent implements ControlValueAccessor {
   }
 
   handleChange(event: Event): void {
+    if (this.readonly) {
+      (event.target as HTMLInputElement).checked = this.checked;
+      return;
+    }
     const target = event.target as HTMLInputElement;
     this.checked = target.checked;
     this.indeterminate = false;

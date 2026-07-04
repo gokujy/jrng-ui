@@ -44,8 +44,8 @@ import { JImageComponent } from 'jrng-ui/image';
 
 ```html
 <j-image
-  src="/assets/customer.png"
-  alt="Customer profile"
+  src="/assets/profile.png"
+  alt="Profile preview"
   width="160px"
   height="120px"
   fallback="/assets/fallback.png"
@@ -61,8 +61,8 @@ import { JImagePreviewComponent } from 'jrng-ui/image-preview';
 
 ```html
 <j-image-preview
-  src="/assets/receipt.png"
-  alt="Receipt"
+  src="/assets/document.png"
+  alt="Document preview"
   [(visible)]="previewOpen"
 />
 ```
@@ -73,9 +73,9 @@ import { JImagePreviewComponent } from 'jrng-ui/image-preview';
 import { JAvatarGroupComponent, JAvatarGroupItem } from 'jrng-ui/avatar-group';
 
 users: readonly JAvatarGroupItem[] = [
-  { label: 'Asha Patel', image: '/assets/asha.png' },
-  { label: 'Ravi Shah' },
-  { label: 'Meera Singh' },
+  { label: 'User Alpha', image: '/assets/user-alpha.png' },
+  { label: 'User Beta' },
+  { label: 'User Gamma' },
 ];
 ```
 
@@ -91,8 +91,8 @@ import { JCopyButtonComponent } from 'jrng-ui/copy-button';
 
 ```html
 <j-copy-button
-  text="INV-2026-001"
-  ariaLabel="Copy invoice number"
+  text="REC-2026-001"
+  ariaLabel="Copy record number"
   (copied)="showCopied($event)"
 />
 ```
@@ -134,7 +134,7 @@ import { JEditorComponent } from 'jrng-ui/editor';
 ```html
 <j-editor
   label="Notes"
-  placeholder="Enter internal notes"
+  placeholder="Enter private notes"
   [formControl]="notes"
 />
 ```
@@ -148,4 +148,3 @@ import { JEditorComponent } from 'jrng-ui/editor';
 - Image zoom controls and rotation
 - Rich text toolbar/editor engine
 - Color format conversion helpers beyond native hex values
-

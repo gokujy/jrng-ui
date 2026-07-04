@@ -1,7 +1,9 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import {
+  booleanAttribute,
   ChangeDetectionStrategy,
   Component,
+  computed,
   DestroyRef,
   PLATFORM_ID,
   inject,
@@ -9,18 +11,29 @@ import {
   output,
   signal,
 } from '@angular/core';
+import { JPassThrough, jMergePartClasses } from '../core/pass-through';
 
 @Component({
   selector: 'j-copy-button',
   imports: [],
   template: `
-    <button type="button" class="j-copy-button" [attr.aria-label]="ariaLabel()" (click)="copy()">
+    <button
+      type="button"
+      [class]="buttonClasses()"
+      data-jc-name="copy-button"
+      data-jc-section="root"
+      [attr.data-j-active]="copiedState() ? 'true' : null"
+      [attr.data-j-disabled]="disabled() ? 'true' : null"
+      [disabled]="disabled()"
+      [attr.aria-label]="ariaLabel()"
+      (click)="copy()"
+    >
       @if (copiedState()) {
-        <span aria-hidden="true">&#10003;</span>
+        <span data-jc-section="icon" aria-hidden="true">&#10003;</span>
       } @else {
-        <span aria-hidden="true">&#10697;</span>
+        <span data-jc-section="icon" aria-hidden="true">&#10697;</span>
       }
-      <span>{{ copiedState() ? copiedLabel() : label() }}</span>
+      <span data-jc-section="label">{{ copiedState() ? copiedLabel() : label() }}</span>
     </button>
   `,
   styles: [
@@ -43,6 +56,11 @@ import {
         box-shadow: var(--j-focus-ring, 0 0 0 3px rgb(79 70 229 / 24%));
         outline: none;
       }
+
+      .j-copy-button:disabled {
+        cursor: not-allowed;
+        opacity: var(--j-disabled-opacity);
+      }
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -57,15 +75,23 @@ export class JCopyButtonComponent {
   readonly label = input('Copy');
   readonly copiedLabel = input('Copied');
   readonly ariaLabel = input('Copy to clipboard');
+  readonly styleClass = input('');
+  readonly pt = input<JPassThrough | null>(null);
+  readonly disabled = input(false, { transform: booleanAttribute });
   readonly copied = output<string>();
 
   readonly copiedState = signal(false);
+  readonly buttonClasses = computed(() => jMergePartClasses('j-copy-button', this.styleClass(), this.pt()));
 
   constructor() {
     this.destroyRef.onDestroy(() => this.clearResetTimer());
   }
 
   async copy(): Promise<void> {
+    if (this.disabled()) {
+      return;
+    }
+
     const text = this.text();
     const clipboard = this.isBrowser ? this.documentRef.defaultView?.navigator.clipboard : null;
 

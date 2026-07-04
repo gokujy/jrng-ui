@@ -18,6 +18,7 @@ import {
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { jAriaDescribedBy } from '../core/aria';
 import { JClickOutsideDirective } from '../core/click-outside.directive';
+import { jCreateTypeahead } from '../core/focus';
 import { jCreateId } from '../core/id';
 import { JSize } from '../core/types';
 import { JInputVariant } from '../input/input.component';
@@ -30,7 +31,22 @@ export interface JSelectOption {
   readonly label: string;
   readonly value: unknown;
   readonly disabled?: boolean;
+  readonly group?: string;
+  readonly source: JSelectOptionSource;
 }
+
+export interface JSelectGroupItem {
+  readonly type: 'group';
+  readonly label: string;
+}
+
+export interface JSelectOptionItem {
+  readonly type: 'option';
+  readonly option: JSelectOption;
+  readonly optionIndex: number;
+}
+
+export type JSelectListItem = JSelectGroupItem | JSelectOptionItem;
 
 export interface JSelectItemContext {
   readonly $implicit: JSelectOptionSource;
@@ -65,12 +81,16 @@ export class JSelectComponent implements ControlValueAccessor {
   @ViewChild('filterInput') private filterInput?: ElementRef<HTMLInputElement>;
   @ViewChild('panel') private panelRef?: ElementRef<HTMLElement>;
   @ContentChild('jSelectItem', { read: TemplateRef }) itemTemplate?: TemplateRef<JSelectItemContext>;
+  @ContentChild('jSelectSelectedItem', { read: TemplateRef }) selectedItemTemplate?: TemplateRef<JSelectItemContext>;
 
   @Input() id = jCreateId('j-select');
   @Input() label = '';
   @Input() options: readonly JSelectOptionSource[] = [];
   @Input() optionLabel = 'label';
   @Input() optionValue = 'value';
+  @Input() optionDisabled = 'disabled';
+  @Input() groupLabel = 'label';
+  @Input() groupOptions = 'items';
   @Input() placeholder = '';
   @Input() error = '';
   @Input() hint = '';
@@ -87,6 +107,7 @@ export class JSelectComponent implements ControlValueAccessor {
   @Input({ transform: booleanAttribute }) clearable = false;
   @Input({ transform: booleanAttribute }) loading = false;
   @Input({ transform: booleanAttribute }) filter = false;
+  @Input({ transform: booleanAttribute }) virtualScroll = false;
 
   @Output() valueChange = new EventEmitter<unknown>();
   @Output() selectionChange = new EventEmitter<JSelectOption | null>();
@@ -108,6 +129,7 @@ export class JSelectComponent implements ControlValueAccessor {
   overlayLeft = 0;
   overlayTop = 0;
   overlayWidth = 0;
+  private readonly typeahead = jCreateTypeahead<JSelectOption>();
 
   private onChange: (value: unknown) => void = () => undefined;
   private onTouched: () => void = () => undefined;
@@ -131,11 +153,7 @@ export class JSelectComponent implements ControlValueAccessor {
   }
 
   get normalizedOptions(): readonly JSelectOption[] {
-    return this.options.map((option) => ({
-      label: this.resolveLabel(option),
-      value: this.resolveValue(option),
-      disabled: this.resolveDisabled(option),
-    }));
+    return this.options.flatMap((option) => this.normalizeOptionSource(option));
   }
 
   get visibleOptions(): readonly JSelectOption[] {
@@ -146,6 +164,22 @@ export class JSelectComponent implements ControlValueAccessor {
     }
 
     return this.normalizedOptions.filter((option) => option.label.toLowerCase().includes(query));
+  }
+
+  get visibleItems(): readonly JSelectListItem[] {
+    const items: JSelectListItem[] = [];
+    let currentGroup = '';
+
+    this.visibleOptions.forEach((option, optionIndex) => {
+      if (option.group && option.group !== currentGroup) {
+        currentGroup = option.group;
+        items.push({ type: 'group', label: option.group });
+      }
+
+      items.push({ type: 'option', option, optionIndex });
+    });
+
+    return items;
   }
 
   get selectedOption(): JSelectOption | null {
@@ -295,6 +329,9 @@ export class JSelectComponent implements ControlValueAccessor {
       case 'Tab':
         this.close();
         break;
+      default:
+        this.handleTypeahead(event);
+        break;
     }
   }
 
@@ -339,8 +376,8 @@ export class JSelectComponent implements ControlValueAccessor {
 
   itemContext(option: JSelectOption, index: number): JSelectItemContext {
     return {
-      $implicit: this.options[index],
-      option: this.options[index],
+      $implicit: option.source,
+      option: option.source,
       label: option.label,
       value: option.value,
       selected: this.sameValue(option.value, this.value),
@@ -405,7 +442,64 @@ export class JSelectComponent implements ControlValueAccessor {
   }
 
   private resolveDisabled(option: JSelectOptionSource): boolean {
-    return this.isRecord(option) && option['disabled'] === true;
+    return this.isRecord(option) && (option[this.optionDisabled] === true || option['disabled'] === true);
+  }
+
+  private normalizeOptionSource(option: JSelectOptionSource): readonly JSelectOption[] {
+    if (!this.isRecord(option)) {
+      return [
+        {
+          label: this.resolveLabel(option),
+          value: this.resolveValue(option),
+          disabled: false,
+          source: option,
+        },
+      ];
+    }
+
+    const groupOptions = option[this.groupOptions] ?? option['options'] ?? option['items'];
+
+    if (Array.isArray(groupOptions)) {
+      const group = String(option[this.groupLabel] ?? option['label'] ?? '');
+      return groupOptions.map((child) => ({
+        label: this.resolveLabel(child as JSelectOptionSource),
+        value: this.resolveValue(child as JSelectOptionSource),
+        disabled: this.resolveDisabled(child as JSelectOptionSource),
+        group,
+        source: child as JSelectOptionSource,
+      }));
+    }
+
+    return [
+      {
+        label: this.resolveLabel(option),
+        value: this.resolveValue(option),
+        disabled: this.resolveDisabled(option),
+        source: option,
+      },
+    ];
+  }
+
+  private handleTypeahead(event: KeyboardEvent): void {
+    if (!this.isOpen || event.key.length !== 1 || event.ctrlKey || event.metaKey || event.altKey) {
+      return;
+    }
+
+    const nextIndex = this.typeahead.search(
+      event.key,
+      this.visibleOptions.map((option) => ({
+        item: option,
+        text: option.label,
+        disabled: option.disabled,
+      })),
+      this.activeIndex,
+    );
+
+    if (nextIndex >= 0) {
+      event.preventDefault();
+      this.activeIndex = nextIndex;
+      this.changeDetectorRef.markForCheck();
+    }
   }
 
   private sameValue(left: unknown, right: unknown): boolean {

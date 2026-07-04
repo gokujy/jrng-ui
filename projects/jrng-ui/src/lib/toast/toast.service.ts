@@ -1,9 +1,15 @@
 import { DestroyRef, Injectable, inject, signal } from '@angular/core';
 
-export type JToastSeverity = 'success' | 'error' | 'warning' | 'info';
+export type JToastSeverity = 'success' | 'error' | 'warning' | 'info' | 'neutral';
 export type JToastPosition = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' | 'top-center' | 'bottom-center';
 export type JrToastType = JToastSeverity;
 export type JrToastPosition = JToastPosition;
+
+export interface JToastAction {
+  readonly label: string;
+  readonly style?: 'primary' | 'secondary' | 'ghost';
+  readonly command: (toast: JToast) => void;
+}
 
 export interface JToast {
   readonly id: string;
@@ -18,6 +24,9 @@ export interface JToast {
   readonly sticky: boolean;
   readonly closable: boolean;
   readonly position: JToastPosition;
+  readonly actions: readonly JToastAction[];
+  readonly cancelAction?: JToastAction;
+  readonly createdAt: number;
 }
 
 export interface JToastOptions {
@@ -32,6 +41,8 @@ export interface JToastOptions {
   readonly sticky?: boolean;
   readonly closable?: boolean;
   readonly position?: JToastPosition;
+  readonly actions?: readonly JToastAction[];
+  readonly cancelAction?: JToastAction;
 }
 
 export type JrToast = JToast;
@@ -42,6 +53,9 @@ export class JrToastService {
   private readonly destroyRef = inject(DestroyRef);
   private readonly toastList = signal<readonly JToast[]>([]);
   private readonly timers = new Map<string, ReturnType<typeof setTimeout>>();
+  private readonly timerEndsAt = new Map<string, number>();
+  private readonly remaining = new Map<string, number>();
+  private nextId = 0;
 
   readonly toasts = this.toastList.asReadonly();
 
@@ -68,7 +82,7 @@ export class JrToastService {
   show(options: JToastOptions): JToast {
     const severity = options.severity ?? options.type ?? 'info';
     const toast: JToast = {
-      id: `j-toast-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+      id: `j-toast-${++this.nextId}`,
       severity,
       type: severity,
       summary: options.summary ?? options.title ?? this.defaultTitle(severity),
@@ -80,16 +94,72 @@ export class JrToastService {
       sticky: options.sticky ?? false,
       closable: options.closable ?? true,
       position: options.position ?? 'top-right',
+      actions: options.actions ?? [],
+      cancelAction: options.cancelAction,
+      createdAt: Date.now(),
     };
 
     this.toastList.update((items) => [...items, toast]);
 
     if (!toast.sticky && toast.life > 0) {
-      const timer = setTimeout(() => this.remove(toast.id), toast.life);
-      this.timers.set(toast.id, timer);
+      this.startTimer(toast.id, toast.life);
     }
 
     return toast;
+  }
+
+  promise<T>(
+    promise: Promise<T>,
+    messages: {
+      readonly loading?: JToastOptions;
+      readonly success?: JToastOptions | ((value: T) => JToastOptions);
+      readonly error?: JToastOptions | ((error: unknown) => JToastOptions);
+    },
+  ): Promise<T> {
+    const loading = this.show({
+      severity: 'info',
+      summary: 'Loading',
+      detail: '',
+      sticky: true,
+      ...(messages.loading ?? {}),
+    });
+
+    return promise.then(
+      (value) => {
+        this.remove(loading.id);
+        const options = typeof messages.success === 'function' ? messages.success(value) : messages.success;
+        this.show({ severity: 'success', summary: 'Success', ...(options ?? {}) });
+        return value;
+      },
+      (error) => {
+        this.remove(loading.id);
+        const options = typeof messages.error === 'function' ? messages.error(error) : messages.error;
+        this.show({ severity: 'error', summary: 'Error', ...(options ?? {}) });
+        throw error;
+      },
+    );
+  }
+
+  pause(id: string): void {
+    const timer = this.timers.get(id);
+    if (!timer) {
+      return;
+    }
+    clearTimeout(timer);
+    this.timers.delete(id);
+    const remainingMs = Math.max(0, (this.timerEndsAt.get(id) ?? Date.now()) - Date.now());
+    this.remaining.set(id, remainingMs);
+    this.timerEndsAt.delete(id);
+  }
+
+  resume(id: string): void {
+    const toast = this.toastList().find((item) => item.id === id);
+    const remainingMs = this.remaining.get(id);
+    if (!toast || toast.sticky || remainingMs == null || remainingMs <= 0) {
+      return;
+    }
+    this.remaining.delete(id);
+    this.startTimer(id, remainingMs);
   }
 
   remove(id: string): void {
@@ -98,6 +168,8 @@ export class JrToastService {
       clearTimeout(timer);
       this.timers.delete(id);
     }
+    this.timerEndsAt.delete(id);
+    this.remaining.delete(id);
     this.toastList.update((items) => items.filter((toast) => toast.id !== id));
   }
 
@@ -106,7 +178,14 @@ export class JrToastService {
       clearTimeout(timer);
     }
     this.timers.clear();
+    this.timerEndsAt.clear();
+    this.remaining.clear();
     this.toastList.set([]);
+  }
+
+  runAction(toast: JToast, action: JToastAction): void {
+    action.command(toast);
+    this.remove(toast.id);
   }
 
   private normalizeShortcut(
@@ -126,7 +205,14 @@ export class JrToastService {
       error: 'Error',
       warning: 'Warning',
       info: 'Info',
+      neutral: 'Notification',
     };
     return titles[severity];
+  }
+
+  private startTimer(id: string, duration: number): void {
+    const timer = setTimeout(() => this.remove(id), duration);
+    this.timers.set(id, timer);
+    this.timerEndsAt.set(id, Date.now() + duration);
   }
 }

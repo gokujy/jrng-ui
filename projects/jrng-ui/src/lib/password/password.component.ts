@@ -3,15 +3,16 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  EventEmitter,
   forwardRef,
   inject,
   Input,
-  Output,
+  output,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { jAriaDescribedBy } from '../core/aria';
 import { jCreateId } from '../core/id';
+import { JRNG_LOCALE } from '../core/locale';
+import { JPassThrough, jMergePartClasses } from '../core/pass-through';
 import { JSize } from '../core/types';
 import { JInputVariant } from '../input/input.component';
 
@@ -20,16 +21,25 @@ import { JInputVariant } from '../input/input.component';
   imports: [],
   template: `
     @if (label) {
-      <label class="j-password__label" [for]="id">
+      <label class="j-password__label" data-jc-name="password" data-jc-section="label" [for]="id">
         <span>{{ label }}</span>
         @if (required) {
           <span class="j-password__required" aria-hidden="true">*</span>
         }
       </label>
     }
-    <div [class]="controlClasses">
+    <div
+      [class]="controlClasses"
+      data-jc-name="password"
+      data-jc-section="root"
+      data-jc-extend="toggle clear meter"
+      [attr.data-j-disabled]="isDisabled ? 'true' : null"
+      [attr.data-j-invalid]="hasError ? 'true' : null"
+      [attr.data-j-active]="value ? 'true' : null"
+    >
       <input
         class="j-password__field"
+        data-jc-section="input"
         [id]="id"
         [name]="name || null"
         [type]="visible ? 'text' : 'password'"
@@ -43,21 +53,36 @@ import { JInputVariant } from '../input/input.component';
         (input)="handleInput($event)"
         (blur)="handleBlur()"
       />
+      @if (clearable && value) {
+        <button
+          class="j-password__clear"
+          data-jc-section="clear"
+          type="button"
+          [attr.aria-label]="locale.clear"
+          [disabled]="isDisabled || readonly"
+          (click)="clearValue()"
+        >
+          x
+        </button>
+      }
       @if (toggleMask) {
         <button
           class="j-password__toggle"
+          data-jc-section="toggle"
           type="button"
+          [attr.aria-label]="visible ? locale.hidePassword : locale.showPassword"
           [disabled]="isDisabled"
           (click)="visible = !visible"
         >
-          {{ visible ? 'Hide' : 'Show' }}
+          {{ visible ? locale.hidePassword : locale.showPassword }}
         </button>
       }
     </div>
     @if (feedback && value) {
-      <div class="j-password__meter" aria-hidden="true">
+      <div class="j-password__meter" data-jc-section="meter" aria-hidden="true">
         <span [style.width.%]="strength"></span>
       </div>
+      <p class="j-password__message" data-jc-section="feedback">{{ strengthLabel }}</p>
     }
     @if (hasError && error) {
       <p class="j-password__message j-password__message--error" [id]="errorId">{{ error }}</p>
@@ -127,7 +152,8 @@ import { JInputVariant } from '../input/input.component';
         outline: none;
       }
 
-      .j-password__toggle {
+      .j-password__toggle,
+      .j-password__clear {
         background: transparent;
         border: 0;
         color: var(--j-color-primary);
@@ -169,6 +195,7 @@ import { JInputVariant } from '../input/input.component';
 })
 export class JPasswordComponent implements ControlValueAccessor {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
+  readonly locale = inject(JRNG_LOCALE);
 
   @Input() id = jCreateId('j-password');
   @Input() name = '';
@@ -177,18 +204,21 @@ export class JPasswordComponent implements ControlValueAccessor {
   @Input() hint = '';
   @Input() error = '';
   @Input() styleClass = '';
+  @Input() pt: JPassThrough | null = null;
   @Input({ alias: 'aria-describedby' }) ariaDescribedby = '';
   @Input() size: JSize = 'md';
   @Input() variant: JInputVariant = 'outlined';
   @Input({ transform: booleanAttribute }) readonly = false;
   @Input({ transform: booleanAttribute }) invalid = false;
   @Input({ transform: booleanAttribute }) required = false;
+  @Input({ transform: booleanAttribute }) clearable = false;
   @Input({ transform: booleanAttribute }) toggleMask = true;
   @Input({ transform: booleanAttribute }) feedback = false;
   @Input({ transform: booleanAttribute }) fluid = false;
   @Input({ transform: booleanAttribute }) fullWidth = false;
 
-  @Output() valueChange = new EventEmitter<string>();
+  readonly valueChange = output<string>();
+  readonly clear = output<void>();
 
   readonly hintId = jCreateId('j-password-hint');
   readonly errorId = jCreateId('j-password-error');
@@ -222,17 +252,18 @@ export class JPasswordComponent implements ControlValueAccessor {
   }
 
   get controlClasses(): string {
-    return [
-      'j-password',
-      `j-password--${this.size}`,
-      `j-password--${this.variant}`,
-      this.hasError ? 'is-invalid' : '',
-      this.isDisabled ? 'is-disabled' : '',
-      this.fluid || this.fullWidth ? 'j-password--fluid' : '',
+    return jMergePartClasses(
+      [
+        'j-password',
+        `j-password--${this.size}`,
+        `j-password--${this.variant}`,
+        this.hasError ? 'is-invalid' : '',
+        this.isDisabled ? 'is-disabled' : '',
+        this.fluid || this.fullWidth ? 'j-password--fluid' : '',
+      ],
       this.styleClass,
-    ]
-      .filter(Boolean)
-      .join(' ');
+      this.pt,
+    );
   }
 
   get strength(): number {
@@ -241,6 +272,18 @@ export class JPasswordComponent implements ControlValueAccessor {
     if (/[0-9]/.test(this.value)) score += 20;
     if (/[^A-Za-z0-9]/.test(this.value)) score += 20;
     return Math.min(score, 100);
+  }
+
+  get strengthLabel(): string {
+    if (this.strength >= 80) {
+      return this.locale.passwordStrong;
+    }
+
+    if (this.strength >= 50) {
+      return this.locale.passwordMedium;
+    }
+
+    return this.locale.passwordWeak;
   }
 
   writeValue(value: string | null | undefined): void {
@@ -270,5 +313,17 @@ export class JPasswordComponent implements ControlValueAccessor {
 
   handleBlur(): void {
     this.onTouched();
+  }
+
+  clearValue(): void {
+    if (this.isDisabled || this.readonly || !this.value) {
+      return;
+    }
+
+    this.value = '';
+    this.onChange(this.value);
+    this.valueChange.emit(this.value);
+    this.clear.emit();
+    this.changeDetectorRef.markForCheck();
   }
 }

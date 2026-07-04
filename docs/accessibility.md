@@ -1,6 +1,6 @@
 # Accessibility and Responsive Behavior
 
-JRNG UI components are built as standalone Angular components using native HTML controls where practical. The library avoids PrimeNG dependencies and uses `j-*` selectors/classes.
+JRNG UI components are built as standalone Angular components using native HTML controls where practical. The library uses `j-*` selectors and `.j-*` classes.
 
 ## Accessibility Baseline
 
@@ -117,15 +117,15 @@ This improves support for right-to-left layouts without duplicating CSS. Some ex
 Use explicit labels when visible text is not enough:
 
 ```html
-<j-button icon="+" ariaLabel="Create invoice" />
-<j-copy-button text="INV-2026-001" ariaLabel="Copy invoice number" />
-<j-avatar-group [items]="users" ariaLabel="Assigned reviewers" />
+<j-button icon="+" ariaLabel="Create record" />
+<j-copy-button text="REC-2026-001" ariaLabel="Copy record number" />
+<j-avatar-group [items]="users" ariaLabel="Assigned users" />
 ```
 
 For images:
 
 ```html
-<j-image src="/receipt.png" alt="Uploaded GST receipt" preview />
+<j-image src="/document.png" alt="Uploaded document preview" preview />
 ```
 
 Decorative icons and spinners are marked with `aria-hidden` where used internally.
@@ -137,4 +137,3 @@ Decorative icons and spinners are marked with `aria-hidden` where used internall
 - Add richer RTL visual verification in the docs/showcase app.
 - Add full focus restoration to every non-modal overlay that opens from a trigger.
 - Add advanced table accessibility for virtual scroll, row grouping, and column reordering when those features are implemented.
-

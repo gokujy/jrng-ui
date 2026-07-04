@@ -1,22 +1,64 @@
 <section
   class="j-toast-stack"
   [class]="'j-toast-stack j-toast-stack--' + position"
+  data-jc-name="toast"
+  data-jc-section="root"
+  data-jc-extend="item close"
   aria-live="polite"
 >
   @for (toast of visibleToasts(); track toast.id) {
     <article
       class="j-toast"
       [class]="'j-toast j-toast--' + toast.severity"
+      data-jc-name="toast"
+      data-jc-section="item"
+      data-j-active="true"
       [attr.role]="toast.severity === 'error' ? 'alert' : 'status'"
+      (mouseenter)="toastService.pause(toast.id)"
+      (mouseleave)="toastService.resume(toast.id)"
+      (pointerdown)="startSwipe(toast, $event)"
+      (pointerup)="endSwipe(toast, $event)"
     >
-      <div class="j-toast__mark" aria-hidden="true"></div>
-      <div class="j-toast__content">
-        <strong class="j-toast__title">{{ toast.summary }}</strong>
-        <p class="j-toast__message">{{ toast.detail }}</p>
-      </div>
+      @if (toastTemplate) {
+        <ng-container
+          [ngTemplateOutlet]="toastTemplate"
+          [ngTemplateOutletContext]="templateContext(toast)"
+        />
+      } @else {
+        <div class="j-toast__mark" data-jc-section="mark" aria-hidden="true"></div>
+        <div class="j-toast__content" data-jc-section="content">
+          <strong class="j-toast__title" data-jc-section="title">{{ toast.summary }}</strong>
+          @if (toast.detail) {
+            <p class="j-toast__message" data-jc-section="message">{{ toast.detail }}</p>
+          }
+          @if (toast.actions.length || toast.cancelAction) {
+            <div class="j-toast__actions" data-jc-section="actions">
+              @for (action of toast.actions; track action.label) {
+                <button
+                  type="button"
+                  [class]="'j-toast__action j-toast__action--' + (action.style || 'secondary')"
+                  (click)="toastService.runAction(toast, action)"
+                >
+                  {{ action.label }}
+                </button>
+              }
+              @if (toast.cancelAction) {
+                <button
+                  type="button"
+                  class="j-toast__action j-toast__action--ghost"
+                  (click)="toastService.runAction(toast, toast.cancelAction)"
+                >
+                  {{ toast.cancelAction.label }}
+                </button>
+              }
+            </div>
+          }
+        </div>
+      }
       @if (toast.closable) {
         <button
           class="j-toast__close"
+          data-jc-section="close"
           type="button"
           aria-label="Dismiss message"
           (click)="toastService.remove(toast.id)"

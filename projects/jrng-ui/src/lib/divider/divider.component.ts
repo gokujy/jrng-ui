@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { JPassThrough, jMergePartClasses } from '../core/pass-through';
 
 export type JDividerLayout = 'horizontal' | 'vertical';
 
@@ -6,9 +7,11 @@ export type JDividerLayout = 'horizontal' | 'vertical';
   selector: 'j-divider',
   imports: [],
   template: `<div
-    [class]="dividerClasses"
+    [class]="dividerClasses()"
+    data-jc-name="divider"
+    data-jc-section="root"
     role="separator"
-    [attr.aria-orientation]="layout"
+    [attr.aria-orientation]="layout()"
   ></div>`,
   styles: [
     `
@@ -32,9 +35,11 @@ export type JDividerLayout = 'horizontal' | 'vertical';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JDividerComponent {
-  @Input() layout: JDividerLayout = 'horizontal';
+  readonly layout = input<JDividerLayout>('horizontal');
+  readonly styleClass = input('');
+  readonly pt = input<JPassThrough | null>(null);
 
-  get dividerClasses(): string {
-    return `j-divider j-divider--${this.layout}`;
-  }
+  readonly dividerClasses = computed(() =>
+    jMergePartClasses(['j-divider', `j-divider--${this.layout()}`], this.styleClass(), this.pt()),
+  );
 }

@@ -175,6 +175,7 @@ export class JRadioGroupComponent implements ControlValueAccessor {
   @Input() direction: JRadioGroupDirection = 'vertical';
   @Input({ transform: booleanAttribute }) required = false;
   @Input({ transform: booleanAttribute }) invalid = false;
+  @Input({ transform: booleanAttribute }) readonly = false;
 
   @Output() valueChange = new EventEmitter<unknown>();
   @Output() selectionChange = new EventEmitter<JNormalizedSelectionOption | null>();
@@ -240,7 +241,7 @@ export class JRadioGroupComponent implements ControlValueAccessor {
   }
 
   selectOption(option: JNormalizedSelectionOption, index: number): void {
-    if (this.isDisabled || option.disabled) {
+    if (this.isDisabled || this.readonly || option.disabled) {
       return;
     }
     this.value = option.value;

@@ -1,15 +1,19 @@
-import { ChangeDetectionStrategy, Component, Input, numberAttribute } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, numberAttribute } from '@angular/core';
+import { JPassThrough, jMergePartClasses } from '../core/pass-through';
 
 @Component({
   selector: 'j-progress-spinner',
   imports: [],
   template: `<span
-    class="j-progress-spinner"
+    [class]="spinnerClasses()"
+    data-jc-name="progress-spinner"
+    data-jc-section="root"
+    data-j-loading="true"
     role="status"
-    [attr.aria-label]="label"
-    [style.width.px]="size"
-    [style.height.px]="size"
-    [style.border-width.px]="strokeWidth"
+    [attr.aria-label]="label()"
+    [style.width.px]="size()"
+    [style.height.px]="size()"
+    [style.border-width.px]="strokeWidth()"
   ></span>`,
   styles: [
     `
@@ -32,7 +36,13 @@ import { ChangeDetectionStrategy, Component, Input, numberAttribute } from '@ang
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JProgressSpinnerComponent {
-  @Input({ transform: numberAttribute }) size = 32;
-  @Input({ transform: numberAttribute }) strokeWidth = 4;
-  @Input() label = 'Loading';
+  readonly size = input(32, { transform: numberAttribute });
+  readonly strokeWidth = input(4, { transform: numberAttribute });
+  readonly label = input('Loading');
+  readonly styleClass = input('');
+  readonly pt = input<JPassThrough | null>(null);
+
+  readonly spinnerClasses = computed(() =>
+    jMergePartClasses('j-progress-spinner', this.styleClass(), this.pt()),
+  );
 }

@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, Input, numberAttribute } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, numberAttribute } from '@angular/core';
+import { JPassThrough, jMergePartClasses } from '../core/pass-through';
 import { JSize } from '../core/types';
 
 export interface JAvatarGroupItem {
@@ -11,11 +12,18 @@ export interface JAvatarGroupItem {
   selector: 'j-avatar-group',
   imports: [],
   template: `
-    <span class="j-avatar-group" [attr.aria-label]="ariaLabel || null">
-      @for (item of visibleItems; track item.image || item.ariaLabel || item.label || $index) {
+    <span
+      [class]="groupClasses()"
+      data-jc-name="avatar-group"
+      data-jc-section="root"
+      data-jc-extend="item overflow"
+      [attr.aria-label]="ariaLabel() || null"
+    >
+      @for (item of visibleItems(); track item.image || item.ariaLabel || item.label || $index) {
         <span
           class="j-avatar-group__item"
-          [class]="itemClasses"
+          data-jc-section="item"
+          [class]="itemClasses()"
           [attr.aria-label]="item.ariaLabel || item.label || null"
         >
           @if (item.image) {
@@ -26,8 +34,15 @@ export interface JAvatarGroupItem {
           }
         </span>
       }
-      @if (overflowCount > 0) {
-        <span class="j-avatar-group__item" [class]="itemClasses"> +{{ overflowCount }} </span>
+      @if (overflowCount() > 0) {
+        <span
+          class="j-avatar-group__item"
+          data-jc-section="overflow"
+          [class]="itemClasses()"
+          [attr.aria-label]="overflowCount() + ' more'"
+        >
+          +{{ overflowCount() }}
+        </span>
       }
       <ng-content></ng-content>
     </span>
@@ -81,22 +96,20 @@ export interface JAvatarGroupItem {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JAvatarGroupComponent {
-  @Input() items: readonly JAvatarGroupItem[] = [];
-  @Input() size: JSize = 'md';
-  @Input({ transform: numberAttribute }) max = 5;
-  @Input() ariaLabel = '';
+  readonly items = input<readonly JAvatarGroupItem[]>([]);
+  readonly size = input<JSize>('md');
+  readonly max = input(5, { transform: numberAttribute });
+  readonly ariaLabel = input('');
+  readonly styleClass = input('');
+  readonly pt = input<JPassThrough | null>(null);
 
-  get visibleItems(): readonly JAvatarGroupItem[] {
-    return this.items.slice(0, Math.max(0, this.max));
-  }
+  readonly visibleItems = computed(() => this.items().slice(0, Math.max(0, this.max())));
 
-  get overflowCount(): number {
-    return Math.max(0, this.items.length - this.visibleItems.length);
-  }
+  readonly overflowCount = computed(() => Math.max(0, this.items().length - this.visibleItems().length));
 
-  get itemClasses(): string {
-    return `j-avatar-group__item--${this.size}`;
-  }
+  readonly groupClasses = computed(() => jMergePartClasses('j-avatar-group', this.styleClass(), this.pt()));
+
+  readonly itemClasses = computed(() => `j-avatar-group__item--${this.size()}`);
 
   initials(value: string): string {
     return value

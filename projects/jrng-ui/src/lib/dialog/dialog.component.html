@@ -1,29 +1,55 @@
-@if (visible) {
-  <div class="j-dialog__portal">
-    <div [class]="backdropClasses" (mousedown)="handleBackdropClick($event)">
+@if (visible()) {
+  <div
+    class="j-dialog__portal"
+    data-jc-name="dialog"
+    data-jc-section="portal"
+    data-j-open="true"
+    [style.z-index]="zIndex || null"
+  >
+    <div
+      [class]="backdropClasses"
+      data-jc-name="dialog"
+      data-jc-section="backdrop"
+      data-j-open="true"
+      (mousedown)="handleBackdropClick($event)"
+    >
       <section
         #dialogPanel
         jFocusTrap
         [class]="dialogClasses"
+        data-jc-name="dialog"
+        data-jc-section="root"
+        data-jc-extend="header body footer close"
+        data-j-open="true"
         role="dialog"
         [attr.aria-modal]="modal ? 'true' : 'false'"
         [attr.aria-labelledby]="header ? titleId : null"
         [attr.aria-label]="header ? null : 'Dialog'"
-        [style.width]="width || null"
-        [style.height]="height || null"
+        [style.width]="panelWidth || null"
+        [style.height]="panelHeight || null"
+        [style.transform]="draggable ? 'translate(' + dragX + 'px, ' + dragY + 'px)' : null"
         tabindex="-1"
+        (pointermove)="moveDrag($event); moveResize($event)"
+        (pointerup)="endDrag(); endResize()"
+        (pointercancel)="endDrag(); endResize()"
       >
-        @if (header || closable) {
-          <header class="j-dialog__header">
-            <div class="j-dialog__heading">
+        @if (!headless && (header || closable)) {
+          <header
+            class="j-dialog__header"
+            data-jc-section="header"
+            [class.is-draggable]="draggable"
+            (pointerdown)="startDrag($event)"
+          >
+            <div class="j-dialog__heading" data-jc-section="heading">
               @if (header) {
-                <h2 class="j-dialog__title" [id]="titleId">{{ header }}</h2>
+                <h2 class="j-dialog__title" data-jc-section="title" [id]="titleId">{{ header }}</h2>
               }
               <ng-content select="[jDialogHeader], [jrDialogHeader]"></ng-content>
             </div>
             @if (closable) {
               <button
                 class="j-dialog__close"
+                data-jc-section="close"
                 type="button"
                 aria-label="Close dialog"
                 (click)="close('close-button')"
@@ -33,13 +59,23 @@
             }
           </header>
         }
-        <div class="j-dialog__body">
+        <div class="j-dialog__body" data-jc-section="body" [class.is-headless]="headless">
           <ng-content></ng-content>
           <ng-content select="[jDialogBody], [jrDialogBody]"></ng-content>
         </div>
-        <footer class="j-dialog__footer">
-          <ng-content select="[jDialogFooter], [jrDialogFooter]"></ng-content>
-        </footer>
+        @if (!headless) {
+          <footer class="j-dialog__footer" data-jc-section="footer">
+            <ng-content select="[jDialogFooter], [jrDialogFooter]"></ng-content>
+          </footer>
+        }
+        @if (resizable) {
+          <span
+            class="j-dialog__resize"
+            data-jc-section="resize"
+            aria-hidden="true"
+            (pointerdown)="startResize($event)"
+          ></span>
+        }
       </section>
     </div>
   </div>

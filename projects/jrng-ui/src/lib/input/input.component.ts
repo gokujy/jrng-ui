@@ -3,15 +3,15 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  EventEmitter,
   forwardRef,
   inject,
   Input,
-  Output,
+  output,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { jAriaDescribedBy } from '../core/aria';
 import { jCreateId } from '../core/id';
+import { JPassThrough, jMergePartClasses } from '../core/pass-through';
 import { JSize } from '../core/types';
 
 export type JInputType = 'text' | 'password' | 'search' | 'email' | 'number' | 'tel' | 'url';
@@ -46,6 +46,7 @@ export class JrInputComponent implements ControlValueAccessor {
   @Input() prefixIcon = '';
   @Input() suffixIcon = '';
   @Input() styleClass = '';
+  @Input() pt: JPassThrough | null = null;
   @Input({ alias: 'aria-describedby' }) ariaDescribedby = '';
   @Input() size: JSize = 'md';
   @Input() variant: JInputVariant = 'outlined';
@@ -56,8 +57,8 @@ export class JrInputComponent implements ControlValueAccessor {
   @Input({ transform: booleanAttribute }) fluid = false;
   @Input({ transform: booleanAttribute }) fullWidth = false;
 
-  @Output() valueChange = new EventEmitter<string>();
-  @Output() clear = new EventEmitter<void>();
+  readonly valueChange = output<string>();
+  readonly clear = output<void>();
 
   readonly hintId = jCreateId('j-input-hint');
   readonly errorId = jCreateId('j-input-error');
@@ -99,17 +100,18 @@ export class JrInputComponent implements ControlValueAccessor {
   }
 
   get controlClasses(): string {
-    return [
-      'j-input',
-      `j-input--${this.size}`,
-      `j-input--${this.variant}`,
-      this.hasError ? 'is-invalid' : '',
-      this.isDisabled ? 'is-disabled' : '',
-      this.fluid || this.fullWidth ? 'j-input--fluid' : '',
+    return jMergePartClasses(
+      [
+        'j-input',
+        `j-input--${this.size}`,
+        `j-input--${this.variant}`,
+        this.hasError ? 'is-invalid' : '',
+        this.isDisabled ? 'is-disabled' : '',
+        this.fluid || this.fullWidth ? 'j-input--fluid' : '',
+      ],
       this.styleClass,
-    ]
-      .filter(Boolean)
-      .join(' ');
+      this.pt,
+    );
   }
 
   writeValue(value: string | number | null | undefined): void {

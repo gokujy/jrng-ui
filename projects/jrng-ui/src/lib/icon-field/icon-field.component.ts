@@ -1,22 +1,28 @@
-import { booleanAttribute, ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { booleanAttribute, ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { JPassThrough, jMergePartClasses } from '../core/pass-through';
 
 @Component({
   selector: 'j-icon-field',
   imports: [],
   template: `
-    <div [class]="fieldClasses">
-      @if (prefixIcon) {
-        <span class="j-icon-field__icon" aria-hidden="true">{{ prefixIcon }}</span>
+    <div
+      [class]="fieldClasses()"
+      data-jc-name="icon-field"
+      data-jc-section="root"
+      data-jc-extend="prefix suffix"
+    >
+      @if (prefixIcon()) {
+        <span class="j-icon-field__icon" data-jc-section="prefix" aria-hidden="true">{{ prefixIcon() }}</span>
       }
-      <span class="j-icon-field__icon" aria-hidden="true"
+      <span class="j-icon-field__icon" data-jc-section="prefix" aria-hidden="true"
         ><ng-content select="[jIconFieldPrefix]"></ng-content
       ></span>
-      <div class="j-icon-field__content"><ng-content></ng-content></div>
-      <span class="j-icon-field__icon" aria-hidden="true"
+      <div class="j-icon-field__content" data-jc-section="content"><ng-content></ng-content></div>
+      <span class="j-icon-field__icon" data-jc-section="suffix" aria-hidden="true"
         ><ng-content select="[jIconFieldSuffix]"></ng-content
       ></span>
-      @if (suffixIcon) {
-        <span class="j-icon-field__icon" aria-hidden="true">{{ suffixIcon }}</span>
+      @if (suffixIcon()) {
+        <span class="j-icon-field__icon" data-jc-section="suffix" aria-hidden="true">{{ suffixIcon() }}</span>
       }
     </div>
   `,
@@ -50,19 +56,18 @@ import { booleanAttribute, ChangeDetectionStrategy, Component, Input } from '@an
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JIconFieldComponent {
-  @Input() prefixIcon = '';
-  @Input() suffixIcon = '';
-  @Input() styleClass = '';
-  @Input({ transform: booleanAttribute }) fluid = false;
-  @Input({ transform: booleanAttribute }) fullWidth = false;
+  readonly prefixIcon = input('');
+  readonly suffixIcon = input('');
+  readonly styleClass = input('');
+  readonly pt = input<JPassThrough | null>(null);
+  readonly fluid = input(false, { transform: booleanAttribute });
+  readonly fullWidth = input(false, { transform: booleanAttribute });
 
-  get fieldClasses(): string {
-    return [
-      'j-icon-field',
-      this.fluid || this.fullWidth ? 'j-icon-field--fluid' : '',
-      this.styleClass,
-    ]
-      .filter(Boolean)
-      .join(' ');
-  }
+  readonly fieldClasses = computed(() =>
+    jMergePartClasses(
+      ['j-icon-field', this.fluid() || this.fullWidth() ? 'j-icon-field--fluid' : ''],
+      this.styleClass(),
+      this.pt(),
+    ),
+  );
 }

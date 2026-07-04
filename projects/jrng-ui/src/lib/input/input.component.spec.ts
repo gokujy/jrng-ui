@@ -9,7 +9,7 @@ import { JrInputComponent } from './input.component';
   template: `
     <j-input
       label="Email"
-      placeholder="name@company.com"
+      placeholder="user@example.com"
       [formControl]="control"
       [error]="error"
       [clearable]="clearable"
@@ -55,11 +55,11 @@ describe('JrInputComponent', () => {
   });
 
   it('updates the form control from user input', () => {
-    field().value = 'ops@jr.test';
+    field().value = 'user@example.test';
     field().dispatchEvent(new Event('input'));
     fixture.detectChanges();
 
-    expect(host.control.value).toBe('ops@jr.test');
+    expect(host.control.value).toBe('user@example.test');
   });
 
   it('associates errors through aria-describedby', () => {

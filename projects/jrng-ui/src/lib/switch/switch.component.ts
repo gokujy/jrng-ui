@@ -25,6 +25,7 @@ import { JSize } from '../core/types';
         [id]="id"
         [checked]="checked"
         [disabled]="isDisabled"
+        [readOnly]="readonly"
         [attr.aria-checked]="checked"
         [attr.aria-invalid]="invalid ? 'true' : null"
         (change)="handleChange($event)"
@@ -157,6 +158,7 @@ export class JSwitchComponent implements ControlValueAccessor {
   @Input() styleClass = '';
   @Input() size: JSize = 'md';
   @Input({ transform: booleanAttribute }) invalid = false;
+  @Input({ transform: booleanAttribute }) readonly = false;
 
   @Output() valueChange = new EventEmitter<unknown>();
 
@@ -206,6 +208,10 @@ export class JSwitchComponent implements ControlValueAccessor {
   }
 
   handleChange(event: Event): void {
+    if (this.readonly) {
+      (event.target as HTMLInputElement).checked = this.checked;
+      return;
+    }
     const target = event.target as HTMLInputElement;
     this.checked = target.checked;
     this.value = this.checked ? this.trueValue : this.falseValue;

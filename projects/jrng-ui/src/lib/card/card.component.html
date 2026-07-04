@@ -1,27 +1,46 @@
 <article
-  [class]="cardClasses"
-  [attr.role]="clickable ? 'button' : null"
-  [attr.tabindex]="clickable ? '0' : null"
+  [class]="cardClasses()"
+  data-jc-name="card"
+  data-jc-section="root"
+  data-jc-extend="header body footer actions"
+  [attr.data-j-active]="isInteractive() ? 'true' : null"
+  [attr.data-j-loading]="skeleton() ? 'true' : null"
+  [attr.role]="isInteractive() ? 'button' : null"
+  [attr.tabindex]="isInteractive() ? '0' : null"
 >
-  @if (resolvedHeader || resolvedSubheader) {
-    <header class="j-card__header">
-      @if (resolvedHeader) {
-        <h3 class="j-card__title">{{ resolvedHeader }}</h3>
+  @if (skeleton()) {
+    <div class="j-card__skeleton" data-jc-section="skeleton" aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  } @else {
+    @if (resolvedHeader() || resolvedSubheader()) {
+      <header class="j-card__header" data-jc-section="header">
+        @if (resolvedHeader()) {
+          <h3 class="j-card__title" data-jc-section="title">{{ resolvedHeader() }}</h3>
+        }
+        @if (resolvedSubheader()) {
+          <p class="j-card__subtitle" data-jc-section="subtitle">{{ resolvedSubheader() }}</p>
+        }
+      </header>
+    }
+
+    <ng-content select="[jCardHeader]"></ng-content>
+
+    <section class="j-card__body" data-jc-section="body">
+      <ng-content></ng-content>
+      <ng-content select="[jCardBody]"></ng-content>
+    </section>
+
+    <footer class="j-card__footer" data-jc-section="footer">
+      @if (footer()) {
+        <span>{{ footer() }}</span>
       }
-      @if (resolvedSubheader) {
-        <p class="j-card__subtitle">{{ resolvedSubheader }}</p>
-      }
-    </header>
+      <ng-content select="[jCardFooter]"></ng-content>
+      <div class="j-card__actions" data-jc-section="actions">
+        <ng-content select="[jCardActions]"></ng-content>
+      </div>
+    </footer>
   }
-
-  <ng-content select="[jCardHeader]"></ng-content>
-
-  <section class="j-card__body">
-    <ng-content></ng-content>
-    <ng-content select="[jCardBody]"></ng-content>
-  </section>
-
-  <footer class="j-card__footer">
-    <ng-content select="[jCardFooter]"></ng-content>
-  </footer>
 </article>

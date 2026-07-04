@@ -1,10 +1,12 @@
 import {
   booleanAttribute,
   ChangeDetectionStrategy,
+  computed,
   Component,
-  Input,
+  input,
   numberAttribute,
 } from '@angular/core';
+import { JPassThrough, jMergePartClasses } from '../core/pass-through';
 import { JSeverity } from '../core/types';
 
 @Component({
@@ -12,14 +14,21 @@ import { JSeverity } from '../core/types';
   imports: [],
   template: `
     <div
-      class="j-progress-bar"
+      [class]="barClasses()"
+      data-jc-name="progress-bar"
+      data-jc-section="root"
+      [attr.data-j-loading]="indeterminate() ? 'true' : null"
       role="progressbar"
-      [attr.aria-label]="label || null"
+      [attr.aria-label]="label() || null"
       [attr.aria-valuemin]="0"
       [attr.aria-valuemax]="100"
-      [attr.aria-valuenow]="indeterminate ? null : normalizedValue"
+      [attr.aria-valuenow]="indeterminate() ? null : normalizedValue()"
     >
-      <span [class]="fillClasses" [style.width.%]="indeterminate ? null : normalizedValue"></span>
+      <span
+        [class]="fillClasses()"
+        data-jc-section="fill"
+        [style.width.%]="indeterminate() ? null : normalizedValue()"
+      ></span>
     </div>
   `,
   styles: [
@@ -80,22 +89,24 @@ import { JSeverity } from '../core/types';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JProgressBarComponent {
-  @Input({ transform: numberAttribute }) value = 0;
-  @Input() severity: JSeverity = 'primary';
-  @Input() label = '';
-  @Input({ transform: booleanAttribute }) indeterminate = false;
+  readonly value = input(0, { transform: numberAttribute });
+  readonly severity = input<JSeverity>('primary');
+  readonly label = input('');
+  readonly styleClass = input('');
+  readonly pt = input<JPassThrough | null>(null);
+  readonly indeterminate = input(false, { transform: booleanAttribute });
 
-  get normalizedValue(): number {
-    return Math.min(100, Math.max(0, this.value));
-  }
+  readonly normalizedValue = computed(() => Math.min(100, Math.max(0, this.value())));
 
-  get fillClasses(): string {
-    return [
+  readonly barClasses = computed(() => jMergePartClasses('j-progress-bar', this.styleClass(), this.pt()));
+
+  readonly fillClasses = computed(() =>
+    [
       'j-progress-bar__fill',
-      `j-progress-bar__fill--${this.severity}`,
-      this.indeterminate ? 'j-progress-bar__fill--indeterminate' : '',
+      `j-progress-bar__fill--${this.severity()}`,
+      this.indeterminate() ? 'j-progress-bar__fill--indeterminate' : '',
     ]
       .filter(Boolean)
-      .join(' ');
-  }
+      .join(' '),
+  );
 }

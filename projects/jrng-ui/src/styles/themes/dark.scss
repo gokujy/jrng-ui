@@ -1,0 +1,59 @@
+@layer j-theme {
+  .j-dark,
+  .j-theme-dark,
+  [data-j-theme='dark'] {
+    color-scheme: dark;
+
+    --j-color-background: #0b1120;
+    --j-color-foreground: var(--j-color-slate-50);
+    --j-color-muted: #111827;
+    --j-color-muted-foreground: var(--j-color-slate-400);
+    --j-color-card: #121a2b;
+    --j-color-card-foreground: var(--j-color-slate-50);
+    --j-color-popover: #151f32;
+    --j-color-popover-foreground: var(--j-color-slate-50);
+    --j-color-border: #273449;
+    --j-color-input: #334155;
+    --j-color-ring: rgb(129 140 248 / 34%);
+
+    --j-color-primary: #818cf8;
+    --j-color-primary-hover: #a5b4fc;
+    --j-color-primary-active: #c7d2fe;
+    --j-color-primary-soft: #312e81;
+    --j-color-primary-foreground: #111827;
+
+    --j-color-secondary: #e2e8f0;
+    --j-color-secondary-hover: #f8fafc;
+    --j-color-secondary-soft: #1e293b;
+    --j-color-secondary-foreground: #0f172a;
+
+    --j-color-success: #34d399;
+    --j-color-success-soft: #064e3b;
+    --j-color-success-foreground: #052e1a;
+    --j-color-warning: #fbbf24;
+    --j-color-warning-soft: #78350f;
+    --j-color-warning-foreground: #111827;
+    --j-color-danger: #f87171;
+    --j-color-danger-soft: #7f1d1d;
+    --j-color-danger-foreground: #111827;
+    --j-color-info: #38bdf8;
+    --j-color-info-soft: #075985;
+    --j-color-info-foreground: #082f49;
+
+    --j-color-surface: var(--j-color-card);
+    --j-color-surface-muted: var(--j-color-muted);
+    --j-color-surface-subtle: #1f2a3d;
+    --j-color-page: var(--j-color-background);
+    --j-color-border-strong: #475569;
+    --j-color-text: var(--j-color-foreground);
+    --j-color-text-muted: var(--j-color-muted-foreground);
+    --j-color-text-soft: var(--j-color-slate-500);
+    --j-color-on-primary: var(--j-color-primary-foreground);
+    --j-color-on-danger: var(--j-color-danger-foreground);
+    --j-focus-ring: 0 0 0 3px var(--j-color-ring);
+    --j-shadow-focus: var(--j-focus-ring);
+    --j-shadow-sm: 0 1px 2px rgb(0 0 0 / 32%);
+    --j-shadow-md: 0 12px 30px rgb(0 0 0 / 34%);
+    --j-shadow-lg: 0 24px 64px rgb(0 0 0 / 44%);
+  }
+}

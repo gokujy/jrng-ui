@@ -40,12 +40,12 @@ import { JAccordionComponent, JAccordionPanelComponent } from 'jrng-ui/accordion
 
 ```html
 <j-accordion [multiple]="true" [(activeIndex)]="openPanels">
-  <j-accordion-panel header="Customer">
-    Customer fields
+  <j-accordion-panel header="Profile">
+    Profile fields
   </j-accordion-panel>
 
-  <j-accordion-panel header="Billing" [disabled]="billingLocked">
-    Billing fields
+  <j-accordion-panel header="Settings" [disabled]="settingsLocked">
+    Settings fields
   </j-accordion-panel>
 </j-accordion>
 ```
@@ -59,7 +59,7 @@ import { JPanelComponent } from 'jrng-ui/panel';
 ```
 
 ```html
-<j-panel header="Invoice summary" toggleable [(collapsed)]="summaryCollapsed">
+<j-panel header="Record summary" toggleable [(collapsed)]="summaryCollapsed">
   Panel content
 </j-panel>
 ```
@@ -71,8 +71,8 @@ import { JFieldsetComponent } from 'jrng-ui/fieldset';
 ```
 
 ```html
-<j-fieldset legend="Tax details" toggleable [(collapsed)]="taxCollapsed">
-  GST and tax fields
+<j-fieldset legend="Advanced details" toggleable [(collapsed)]="detailsCollapsed">
+  Advanced fields
 </j-fieldset>
 ```
 
@@ -105,7 +105,7 @@ Toolbar supports `jToolbarStart`, default center projection, and `jToolbarEnd`.
 import { JStepperComponent, JStepItem } from 'jrng-ui/stepper';
 
 steps: readonly JStepItem[] = [
-  { label: 'Customer', completed: true },
+  { label: 'Details', completed: true },
   { label: 'Items' },
   { label: 'Review', disabled: false },
 ];
@@ -126,8 +126,8 @@ import { JBreadcrumbComponent, JBreadcrumbItem } from 'jrng-ui/breadcrumb';
 
 home: JBreadcrumbItem = { label: 'Home', icon: '⌂', url: '/' };
 items: readonly JBreadcrumbItem[] = [
-  { label: 'Finance', command: event => openFinance(event.item) },
-  { label: 'Invoices' },
+  { label: 'Records', command: event => openRecords(event.item) },
+  { label: 'Current' },
 ];
 ```
 
@@ -168,8 +168,7 @@ Current splitter support is layout-only. Drag resizing is intentionally pending.
 ## Pending Advanced Items
 
 - Drag-resizable splitter gutters
-- RouterLink integration for breadcrumb without requiring app-specific router imports
+- RouterLink integration for breadcrumb without requiring application router imports
 - Tab drag reorder
 - Accordion custom header templates
 - Stepper projected step templates
-

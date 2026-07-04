@@ -1,29 +1,87 @@
 <j-toast />
 <j-confirm-dialog />
 
-<div class="showcase-shell">
-  <aside class="showcase-sidebar">
-    <a class="showcase-brand" routerLink="/introduction" aria-label="JRNG UI showcase home">
-      <span class="showcase-brand__mark">J</span>
-      <span>
+<div class="j-site-shell">
+  <header class="j-site-header">
+    <a class="j-site-brand" routerLink="/" aria-label="JRNG UI home" (click)="closeMobileMenu()">
+      <span class="j-site-brand__mark">J</span>
+      <span class="j-site-brand__text">
         <strong>JRNG UI</strong>
-        <small>Showcase</small>
+        <small>Angular components</small>
       </span>
     </a>
 
-    <nav class="showcase-nav" aria-label="Showcase pages">
-      <a
-        *ngFor="let item of primaryNav"
-        [routerLink]="item.path"
-        routerLinkActive="is-active"
-        [routerLinkActiveOptions]="{ exact: true }"
-      >
-        {{ item.label }}
-      </a>
+    <nav class="j-site-nav" aria-label="Primary navigation">
+      @for (item of navItems; track item.label) {
+        @if (item.path) {
+          <a [routerLink]="item.path" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: item.path === '/' }">
+            {{ item.label }}
+          </a>
+        } @else {
+          <a [href]="item.href" target="_blank" rel="noopener noreferrer">
+            {{ item.label }}
+          </a>
+        }
+      }
     </nav>
-  </aside>
 
-  <main class="showcase-main">
+    <div class="j-site-actions">
+      <button type="button" class="j-site-action" (click)="toggleDarkMode()">
+        {{ darkMode() ? 'Light' : 'Dark' }}
+      </button>
+      <button type="button" class="j-site-action" (click)="toggleDensity()">
+        {{ density() === 'compact' ? 'Comfort' : 'Compact' }}
+      </button>
+      <button
+        type="button"
+        class="j-site-menu-button"
+        aria-label="Toggle navigation"
+        [attr.aria-expanded]="mobileMenuOpen()"
+        aria-controls="site-mobile-menu"
+        (click)="toggleMobileMenu()"
+      >
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  @if (mobileMenuOpen()) {
+    <nav id="site-mobile-menu" class="j-site-mobile-nav" aria-label="Mobile navigation">
+      @for (item of navItems; track item.label) {
+        @if (item.path) {
+          <a
+            [routerLink]="item.path"
+            routerLinkActive="is-active"
+            [routerLinkActiveOptions]="{ exact: item.path === '/' }"
+            (click)="closeMobileMenu()"
+          >
+            {{ item.label }}
+          </a>
+        } @else {
+          <a [href]="item.href" target="_blank" rel="noopener noreferrer" (click)="closeMobileMenu()">
+            {{ item.label }}
+          </a>
+        }
+      }
+    </nav>
+  }
+
+  <main class="j-site-main">
     <router-outlet />
   </main>
+
+  <footer class="j-site-footer">
+    <div>
+      <strong>JRNG UI</strong>
+      <p>A modern Angular UI component library for clean, accessible web applications.</p>
+    </div>
+    <nav aria-label="Footer navigation">
+      <a routerLink="/docs">Docs</a>
+      <a routerLink="/components">Components</a>
+      <a routerLink="/themes">Themes</a>
+      <a routerLink="/support">Support</a>
+      <a href="https://github.com/jrng-ui/jrng-ui" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </nav>
+  </footer>
 </div>

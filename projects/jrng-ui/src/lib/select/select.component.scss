@@ -156,6 +156,14 @@
   width: 100%;
 }
 
+.j-select__group {
+  color: var(--j-color-muted-foreground);
+  font-size: var(--j-font-size-xs);
+  font-weight: var(--j-font-weight-semibold);
+  padding: var(--j-spacing-sm) var(--j-spacing-md) var(--j-spacing-xs);
+  text-transform: uppercase;
+}
+
 .j-select__option:hover,
 .j-select__option.is-active {
   background: var(--j-color-surface-muted);

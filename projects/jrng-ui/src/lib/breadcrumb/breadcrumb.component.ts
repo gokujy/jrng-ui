@@ -1,4 +1,6 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
+import { ChangeDetectionStrategy, Component, ContentChild, Input, TemplateRef, output } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 export interface JBreadcrumbItem {
   readonly label: string;
@@ -16,42 +18,57 @@ export interface JBreadcrumbClickEvent {
 
 @Component({
   selector: 'j-breadcrumb',
-  imports: [],
+  imports: [NgTemplateOutlet, RouterLink],
   template: `
-    <nav class="j-breadcrumb" aria-label="Breadcrumb">
-      <ol class="j-breadcrumb__list">
+    <nav class="j-breadcrumb" data-jc-name="breadcrumb" data-jc-section="root" aria-label="Breadcrumb">
+      <ol class="j-breadcrumb__list" data-jc-section="list">
         @if (home) {
-          <li class="j-breadcrumb__item">
+          <li class="j-breadcrumb__item" data-jc-section="item">
             <a
               class="j-breadcrumb__link"
               [href]="home.url || null"
+              [routerLink]="home.routerLink || null"
               [class.is-disabled]="home.disabled"
+              [attr.data-j-disabled]="home.disabled ? 'true' : null"
               (click)="handleClick(home, $event)"
             >
               @if (home.icon) {
-                <span aria-hidden="true">{{ home.icon }}</span>
+                <span class="j-breadcrumb__icon" aria-hidden="true">{{ home.icon }}</span>
               }
               <span>{{ home.label }}</span>
             </a>
           </li>
         }
         @for (item of model; track item.url || item.routerLink || item.label || $index; let last = $last) {
-          <li class="j-breadcrumb__item">
-            <span class="j-breadcrumb__separator" aria-hidden="true">/</span>
+          <li class="j-breadcrumb__item" data-jc-section="item">
+            <span class="j-breadcrumb__separator" data-jc-section="separator" aria-hidden="true">
+              @if (separatorTemplate) {
+                <ng-container [ngTemplateOutlet]="separatorTemplate" />
+              } @else {
+                /
+              }
+            </span>
             @if (!last) {
               <a
                 class="j-breadcrumb__link"
                 [href]="item.url || null"
+                [routerLink]="item.routerLink || null"
                 [class.is-disabled]="item.disabled"
+                [attr.data-j-disabled]="item.disabled ? 'true' : null"
                 (click)="handleClick(item, $event)"
               >
                 @if (item.icon) {
-                  <span aria-hidden="true">{{ item.icon }}</span>
+                  <span class="j-breadcrumb__icon" aria-hidden="true">{{ item.icon }}</span>
                 }
                 <span>{{ item.label }}</span>
               </a>
             } @else {
-              <span class="j-breadcrumb__current" aria-current="page">{{ item.label }}</span>
+              <span class="j-breadcrumb__current" data-jc-section="current" aria-current="page">
+                @if (item.icon) {
+                  <span class="j-breadcrumb__icon" aria-hidden="true">{{ item.icon }}</span>
+                }
+                <span>{{ item.label }}</span>
+              </span>
             }
           </li>
         }
@@ -62,42 +79,47 @@ export interface JBreadcrumbClickEvent {
     `
       .j-breadcrumb__list {
         align-items: center;
-        color: var(--j-color-text-muted, #64748b);
+        color: var(--j-color-muted-foreground);
         display: flex;
         flex-wrap: wrap;
-        font-size: var(--j-font-size-sm, 0.875rem);
-        gap: var(--j-spacing-sm, 0.5rem);
+        font-size: var(--j-font-size-sm);
+        gap: var(--j-spacing-2);
         list-style: none;
         margin: 0;
         padding: 0;
       }
 
       .j-breadcrumb__item,
-      .j-breadcrumb__link {
+      .j-breadcrumb__link,
+      .j-breadcrumb__current {
         align-items: center;
         display: inline-flex;
-        gap: var(--j-spacing-sm, 0.5rem);
+        gap: var(--j-spacing-2);
       }
 
       .j-breadcrumb__link {
-        color: var(--j-color-primary, #4f46e5);
+        border-radius: var(--j-radius-sm);
+        color: var(--j-color-primary);
         text-decoration: none;
       }
 
+      .j-breadcrumb__link:hover {
+        text-decoration: underline;
+      }
+
       .j-breadcrumb__link:focus-visible {
-        border-radius: var(--j-radius-sm, 0.375rem);
-        box-shadow: var(--j-focus-ring, 0 0 0 3px rgb(79 70 229 / 24%));
+        box-shadow: var(--j-focus-ring);
         outline: none;
       }
 
       .j-breadcrumb__link.is-disabled {
-        color: var(--j-color-text-soft, #94a3b8);
+        color: var(--j-color-muted-foreground);
         pointer-events: none;
       }
 
       .j-breadcrumb__current {
-        color: var(--j-color-text, #111827);
-        font-weight: var(--j-font-weight-medium, 550);
+        color: var(--j-color-foreground);
+        font-weight: var(--j-font-weight-medium);
       }
     `,
   ],
@@ -106,7 +128,8 @@ export interface JBreadcrumbClickEvent {
 export class JBreadcrumbComponent {
   @Input() model: readonly JBreadcrumbItem[] = [];
   @Input() home?: JBreadcrumbItem;
-  @Output() itemClick = new EventEmitter<JBreadcrumbClickEvent>();
+  @ContentChild('jBreadcrumbSeparator', { read: TemplateRef }) separatorTemplate?: TemplateRef<unknown>;
+  readonly itemClick = output<JBreadcrumbClickEvent>();
 
   handleClick(item: JBreadcrumbItem, originalEvent: MouseEvent): void {
     if (item.disabled) {
@@ -118,7 +141,7 @@ export class JBreadcrumbComponent {
     item.command?.(event);
     this.itemClick.emit(event);
 
-    if (!item.url) {
+    if (!item.url && !item.routerLink) {
       originalEvent.preventDefault();
     }
   }

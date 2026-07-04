@@ -1,15 +1,19 @@
-import { ChangeDetectionStrategy, Component, Input, numberAttribute } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, numberAttribute } from '@angular/core';
+import { JPassThrough, jMergePartClasses } from '../core/pass-through';
 
 @Component({
   selector: 'j-loader',
   imports: [],
   template: `<span
-    class="j-loader"
+    [class]="loaderClasses()"
+    data-jc-name="loader"
+    data-jc-section="root"
+    data-j-loading="true"
     role="status"
-    [attr.aria-label]="label"
-    [style.width.px]="size"
-    [style.height.px]="size"
-    [style.border-width.px]="strokeWidth"
+    [attr.aria-label]="label()"
+    [style.width.px]="size()"
+    [style.height.px]="size()"
+    [style.border-width.px]="strokeWidth()"
   ></span>`,
   styles: [
     `
@@ -32,7 +36,11 @@ import { ChangeDetectionStrategy, Component, Input, numberAttribute } from '@ang
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JLoaderComponent {
-  @Input({ transform: numberAttribute }) size = 24;
-  @Input({ transform: numberAttribute }) strokeWidth = 3;
-  @Input() label = 'Loading';
+  readonly size = input(24, { transform: numberAttribute });
+  readonly strokeWidth = input(3, { transform: numberAttribute });
+  readonly label = input('Loading');
+  readonly styleClass = input('');
+  readonly pt = input<JPassThrough | null>(null);
+
+  readonly loaderClasses = computed(() => jMergePartClasses('j-loader', this.styleClass(), this.pt()));
 }

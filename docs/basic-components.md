@@ -14,13 +14,19 @@ import { JButtonComponent } from 'jrng-ui/button';
 
 ```html
 <j-button label="Save" severity="primary" (clicked)="save()" />
-<j-button severity="danger" variant="outlined" icon="!" iconPosition="left">Delete</j-button>
+<j-button label="Archive" severity="neutral" variant="soft" />
+<j-button label="Delete" severity="danger" variant="outline" />
+<j-button label="Open details" variant="link" />
 <j-button label="Loading" loading />
+<j-button icon="+" iconOnly ariaLabel="Add item" rounded />
+<j-button label="Continue" size="xl" fullWidth />
 ```
 
 `j-button` renders a native `button` internally. It emits `clicked` only when it
 is not disabled or loading. Native Angular `(click)` bindings can still listen on
-the host for enabled clicks.
+the host for enabled clicks. Supported severities are `primary`, `secondary`,
+`neutral`, `success`, `warning`, `danger`, and `info`. Supported visual variants
+are `filled`, `outline`, `ghost`, `soft`, and `link`.
 
 ## Card
 
@@ -29,11 +35,22 @@ import { JCardComponent } from 'jrng-ui/card';
 ```
 
 ```html
-<j-card header="Revenue" subheader="This month">
-  <strong>Rs. 42.8L</strong>
-  <j-button jCardFooter label="Review" size="sm" />
+<j-card header="Orders" subheader="This month" elevated>
+  <strong>42.8k</strong>
+  <div jCardActions>
+    <j-button label="Review" size="sm" />
+  </div>
 </j-card>
+
+<j-card header="Project" subheader="Updated today" bordered interactive compact>
+  <p>Project activity and summary content.</p>
+</j-card>
+
+<j-card skeleton />
 ```
+
+Cards support projected `[jCardHeader]`, `[jCardBody]`, `[jCardFooter]`, and
+`[jCardActions]` sections.
 
 ## Badge
 
@@ -54,7 +71,7 @@ import { JTagComponent } from 'jrng-ui/tag';
 
 ```html
 <j-tag label="Approved" severity="success" />
-<j-tag label="GST pending" severity="warning" removable (remove)="removeTag()" />
+<j-tag label="Review pending" severity="warning" removable (remove)="removeTag()" />
 ```
 
 ## Avatar
@@ -64,8 +81,22 @@ import { JAvatarComponent } from 'jrng-ui/avatar';
 ```
 
 ```html
-<j-avatar label="JR" />
-<j-avatar image="/assets/user.jpg" ariaLabel="Jay Rathod" size="lg" />
+<j-avatar label="User One" initials="UO" />
+<j-avatar image="/assets/user.jpg" ariaLabel="User profile" size="lg" status="online" />
+```
+
+## Avatar Group
+
+```ts
+import { JAvatarGroupComponent } from 'jrng-ui/avatar-group';
+```
+
+```html
+<j-avatar-group
+  [items]="teamMembers"
+  [max]="4"
+  ariaLabel="Team members"
+/>
 ```
 
 ## Divider
@@ -86,7 +117,7 @@ import { JLoaderComponent } from 'jrng-ui/loader';
 ```
 
 ```html
-<j-loader [size]="24" [strokeWidth]="3" label="Loading invoices" />
+<j-loader [size]="24" [strokeWidth]="3" label="Loading records" />
 ```
 
 ## Progress Spinner
@@ -119,6 +150,11 @@ import { JSkeletonComponent } from 'jrng-ui/skeleton';
 ```html
 <j-skeleton width="18rem" height="1rem" />
 <j-skeleton width="3rem" height="3rem" shape="circle" />
+<j-skeleton variant="text" width="14rem" />
+<j-skeleton variant="avatar" />
+<j-skeleton variant="card" />
+<j-skeleton variant="table" [rows]="5" />
+<j-skeleton variant="text" [animated]="false" />
 ```
 
 ## Empty State
@@ -128,9 +164,11 @@ import { JEmptyStateComponent } from 'jrng-ui/empty-state';
 ```
 
 ```html
-<j-empty-state title="No invoices found" description="Try changing filters." icon="∅">
-  <j-button label="Create invoice" />
+<j-empty-state title="No orders found" description="Try changing filters." icon="empty">
+  <j-button jEmptyStateAction label="Create order" />
 </j-empty-state>
+
+<j-empty-state title="No tasks" description="Create a task to get started." compact />
 ```
 
 ## Icon
@@ -152,3 +190,24 @@ import { JIconComponent, JIconRegistry } from 'jrng-ui/icon';
 Built-in icon names include `check`, `close`, `info`, `warning`, `search`, and
 `chevron-down`. Applications can register additional SVG paths through
 `JIconRegistry`.
+
+## Copy Button
+
+```ts
+import { JCopyButtonComponent } from 'jrng-ui/copy-button';
+```
+
+```html
+<j-copy-button text="INV-1001" label="Copy invoice number" />
+```
+
+## Status Chip
+
+```ts
+import { JStatusChipComponent } from 'jrng-ui/status-chip';
+```
+
+```html
+<j-status-chip label="Active" severity="success" />
+<j-status-chip label="Pending" severity="warning" size="sm" />
+```
