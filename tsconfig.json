@@ -8,8 +8,8 @@
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "paths": {
-      "jrng-ui": ["dist/jr/jrng-ui"],
-      "jrng-ui/*": ["dist/jr/jrng-ui/*"]
+      "jrng-ui": ["dist/jrng-ui"],
+      "jrng-ui/*": ["dist/jrng-ui/*"]
     },
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
@@ -29,10 +29,10 @@
   "files": [],
   "references": [
     {
-      "path": "./projects/jr/jrng-ui/tsconfig.lib.json"
+      "path": "./projects/jrng-ui/tsconfig.lib.json"
     },
     {
-      "path": "./projects/jr/jrng-ui/tsconfig.spec.json"
+      "path": "./projects/jrng-ui/tsconfig.spec.json"
     },
     {
       "path": "./projects/docs/tsconfig.app.json"

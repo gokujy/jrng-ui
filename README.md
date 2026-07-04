@@ -30,16 +30,16 @@ If your app uses plain CSS configuration, include the compiled theme file in
 
 ```json
 {
-  "styles": ["node_modules/jrng-ui/theme/jr-theme.css", "src/styles.css"]
+  "styles": ["node_modules/jrng-ui/theme/jrng-ui.css", "src/styles.css"]
 }
 ```
 
-The default theme is light. Wrap any section or app root with `.jr-dark` to use
-dark tokens.
+The default theme is light. Wrap any section or app root with `.j-theme-dark` to use
+dark tokens when dark theme support is enabled.
 
 ```html
-<section class="jr-dark">
-  <jr-button variant="primary">Save</jr-button>
+<section class="j-theme-dark">
+  <j-button variant="primary">Save</j-button>
 </section>
 ```
 
@@ -54,7 +54,7 @@ import { ButtonComponent } from 'jrng-ui/button';
 @Component({
   selector: 'app-example',
   imports: [ButtonComponent],
-  template: `<jr-button variant="primary" (jrPress)="save()">Save</jr-button>`,
+  template: `<j-button variant="primary" (jrPress)="save()">Save</j-button>`,
 })
 export class ExampleComponent {
   save(): void {
@@ -75,7 +75,10 @@ import { ButtonComponent, InputComponent } from 'jrng-ui';
 | Component | Import           | Selector             | Use for                                |
 | --------- | ---------------- | -------------------- | -------------------------------------- |
 | Button    | `jrng-ui/button` | `jr-button`          | Actions, submits, toolbar buttons      |
-| Input     | `jrng-ui/input`  | `jr-input`           | Text fields, search, numbers, textarea |
+| Input     | `jrng-ui/input`  | `j-input`            | Text fields, search, email, number      |
+| Textarea  | `jrng-ui/textarea` | `j-textarea`       | Multi-line text fields                  |
+| Select    | `jrng-ui/select` | `j-select`           | Single-value dropdowns and forms        |
+| Table     | `jrng-ui/table`  | `j-table`            | Data grids, sorting, pagination         |
 | Card      | `jrng-ui/card`   | `jr-card`            | KPI blocks, panels, grouped content    |
 | Dialog    | `jrng-ui/dialog` | `jr-dialog`          | Modals, confirmations, focused forms   |
 | Toast     | `jrng-ui/toast`  | `jr-toast-container` | App notifications and feedback         |
@@ -87,9 +90,9 @@ import { ButtonComponent } from 'jrng-ui/button';
 ```
 
 ```html
-<jr-button variant="primary" size="md" (jrPress)="save()">Save</jr-button>
-<jr-button variant="danger" [loading]="isDeleting">Delete</jr-button>
-<jr-button variant="outline" fullWidth>Continue</jr-button>
+<j-button variant="primary" size="md" (jrPress)="save()">Save</j-button>
+<j-button variant="danger" [loading]="isDeleting">Delete</j-button>
+<j-button variant="outline" fullWidth>Continue</j-button>
 ```
 
 | Input                      | Type                                                            | Default   |
@@ -108,19 +111,20 @@ disabled or loading.
 
 ## Input
 
-`jr-input` implements `ControlValueAccessor`, so it works with Angular forms.
+`j-input` and `j-textarea` implement `ControlValueAccessor`, so they work with Angular forms.
 
 ```ts
 import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { InputComponent } from 'jrng-ui/input';
+import { JTextareaComponent } from 'jrng-ui/textarea';
 
 @Component({
   selector: 'app-form',
-  imports: [ReactiveFormsModule, InputComponent],
+  imports: [ReactiveFormsModule, InputComponent, JTextareaComponent],
   template: `
-    <jr-input label="Email" type="email" [formControl]="email" />
-    <jr-input label="Notes" multiline [rows]="4" hint="Visible to approvers" />
+    <j-input label="Email" type="email" [formControl]="email" />
+    <j-textarea label="Notes" [rows]="4" hint="Visible to approvers" />
   `,
 })
 export class FormComponent {
@@ -133,13 +137,105 @@ export class FormComponent {
 | `type`                       | `text \| password \| search \| email \| number` | `text`  |
 | `label`                      | `string`                                        | `''`    |
 | `placeholder`                | `string`                                        | `''`    |
-| `hint` / `error` / `success` | `string`                                        | `''`    |
+| `hint` / `error`             | `string`                                        | `''`    |
 | `prefixIcon` / `suffixIcon`  | `string`                                        | `''`    |
 | `readonly`                   | `boolean`                                       | `false` |
 | `required`                   | `boolean`                                       | `false` |
 | `disabled`                   | `boolean`                                       | `false` |
-| `multiline`                  | `boolean`                                       | `false` |
-| `rows`                       | `number`                                        | `3`     |
+| `clearable`                  | `boolean`                                       | `false` |
+
+## Select
+
+`j-select` implements `ControlValueAccessor`, so it works with Angular reactive
+forms.
+
+```ts
+import { Component } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { JSelectOption, SelectComponent } from 'jrng-ui/select';
+
+@Component({
+  selector: 'app-status-filter',
+  imports: [ReactiveFormsModule, SelectComponent],
+  template: `<j-select label="Status" placeholder="All statuses" [options]="statuses" [formControl]="status" />`,
+})
+export class StatusFilterComponent {
+  status = new FormControl('', { nonNullable: true });
+  statuses: readonly JSelectOption[] = [
+    { label: 'Pending', value: 'pending' },
+    { label: 'Approved', value: 'approved' },
+  ];
+}
+```
+
+| Input                        | Type                       | Default |
+| ---------------------------- | -------------------------- | ------- |
+| `label`                      | `string`                   | `''`    |
+| `placeholder`                | `string`                   | `''`    |
+| `options`                    | `readonly JSelectOption[]` | `[]`    |
+| `hint` / `error` / `success` | `string`                   | `''`    |
+| `required`                   | `boolean`                  | `false` |
+| `disabled`                   | `boolean`                  | `false` |
+
+Output: `(valueChange)` emits the selected string value.
+
+## Table
+
+```ts
+import { JTableColumn, JTableRow, TableComponent } from 'jrng-ui/table';
+```
+
+```html
+<j-table
+  caption="Recent invoices"
+  [columns]="columns"
+  [rows]="rows"
+  selectable
+  paginator
+  [pageSize]="10"
+  (rowSelect)="openInvoice($event)"
+/>
+```
+
+```ts
+columns: readonly JTableColumn[] = [
+  { field: 'invoice', header: 'Invoice', sortable: true },
+  { field: 'customer', header: 'Customer' },
+  { field: 'amount', header: 'Amount', sortable: true, align: 'end' },
+];
+
+rows: readonly JTableRow[] = [
+  { id: 1, invoice: 'INV-4024', customer: 'Aster Retail', amount: 'Rs. 42,000' },
+];
+```
+
+| Input               | Type                      | Default             |
+| ------------------- | ------------------------- | ------------------- |
+| `columns`           | `readonly JTableColumn[]` | `[]`                |
+| `rows`              | `readonly JTableRow[]`    | `[]`                |
+| `caption`           | `string`                  | `''`                |
+| `emptyMessage`      | `string`                  | `No records found.` |
+| `loading`           | `boolean`                 | `false`             |
+| `rowKey`            | `string`                  | `id`                |
+| `striped`           | `boolean`                 | `false`             |
+| `hoverable`         | `boolean`                 | `true`              |
+| `selectable`        | `boolean`                 | `false`             |
+| `paginator`         | `boolean`                 | `false`             |
+| `page` / `pageSize` | `number`                  | `1` / `10`          |
+
+Outputs: `(rowSelect)` emits the selected row, `(sortChange)` emits
+`{ field, direction }`, and `(pageChange)` emits `{ page, pageSize }`.
+
+Custom cell templates can be projected with a `#jTableCell` template reference.
+
+```html
+<j-table [columns]="columns" [rows]="rows">
+  <ng-template #jTableCell let-value="value" let-column="column">
+    <strong *ngIf="column.field === 'amount'; else plain">{{ value }}</strong>
+    <ng-template #plain>{{ value }}</ng-template>
+  </ng-template>
+</j-table>
+```
 
 ## Card
 
@@ -148,10 +244,10 @@ import { CardComponent } from 'jrng-ui/card';
 ```
 
 ```html
-<jr-card title="Revenue" subtitle="This month" variant="elevated">
+<j-card title="Revenue" subtitle="This month" variant="elevated">
   <strong>Rs. 48.2L</strong>
-  <span jrCardFooter>Updated just now</span>
-</jr-card>
+  <span jCardFooter>Updated just now</span>
+</j-card>
 ```
 
 | Input       | Type                                      | Default   |
@@ -161,8 +257,8 @@ import { CardComponent } from 'jrng-ui/card';
 | `variant`   | `default \| elevated \| bordered \| soft` | `default` |
 | `clickable` | `boolean`                                 | `false`   |
 
-Projection slots: `[jrCardHeader]`, default body content, `[jrCardBody]`, and
-`[jrCardFooter]`.
+Projection slots: `[jCardHeader]`, default body content, `[jCardBody]`, and
+`[jCardFooter]`.
 
 ## Dialog
 
@@ -179,8 +275,8 @@ import { DialogComponent } from 'jrng-ui/dialog';
 >
   <p>Archive the selected supplier record?</p>
 
-  <jr-button jrDialogFooter variant="ghost" (jrPress)="archiveOpen = false"> Cancel </jr-button>
-  <jr-button jrDialogFooter variant="danger" (jrPress)="archive()"> Archive </jr-button>
+  <j-button jrDialogFooter variant="ghost" (jrPress)="archiveOpen = false"> Cancel </j-button>
+  <j-button jrDialogFooter variant="danger" (jrPress)="archive()"> Archive </j-button>
 </jr-dialog>
 ```
 
@@ -213,7 +309,7 @@ import { ToastContainerComponent, ToastService } from 'jrng-ui/toast';
   imports: [ButtonComponent, ToastContainerComponent],
   template: `
     <jr-toast-container position="top-right" />
-    <jr-button (jrPress)="saved()">Save</jr-button>
+    <j-button (jrPress)="saved()">Save</j-button>
   `,
 })
 export class AppComponent {
@@ -244,6 +340,8 @@ toast.clear();
 ```ts
 import { ButtonComponent } from 'jrng-ui/button';
 import { InputComponent } from 'jrng-ui/input';
+import { SelectComponent } from 'jrng-ui/select';
+import { TableComponent } from 'jrng-ui/table';
 import { CardComponent } from 'jrng-ui/card';
 import { DialogComponent, DialogService } from 'jrng-ui/dialog';
 import { ToastContainerComponent, ToastService } from 'jrng-ui/toast';
@@ -268,12 +366,13 @@ the library first.
 
 Workspace paths:
 
-- Library source: `projects/jr/jrng-ui/src/lib`
-- Public API: `projects/jr/jrng-ui/src/public-api.ts`
-- Package metadata: `projects/jr/jrng-ui/package.json`
+- Library source: `projects/jrng-ui/src/lib`
+- Public API: `projects/jrng-ui/src/public-api.ts`
+- Package metadata: `projects/jrng-ui/package.json`
 - Docs app: `projects/docs/src/app`
-- Theme tokens: `projects/jr/jrng-ui/src/lib/theme/jr-theme.scss`
+- Theme tokens: `projects/jrng-ui/src/styles/jrng-ui.scss`
 
 ## License
 
 MIT
+

@@ -1,0 +1,111 @@
+:host {
+  color: var(--j-color-text);
+  display: block;
+  font: inherit;
+}
+
+.j-input__label {
+  align-items: center;
+  color: var(--j-color-text);
+  display: inline-flex;
+  font-size: var(--j-font-size-sm);
+  font-weight: var(--j-font-weight-semibold);
+  gap: var(--j-spacing-xs);
+  margin-bottom: var(--j-spacing-sm);
+}
+
+.j-input__required,
+.j-input__message--error {
+  color: var(--j-color-danger);
+}
+
+.j-input {
+  align-items: center;
+  background: var(--j-color-surface);
+  border: 1px solid var(--j-color-border);
+  border-radius: var(--j-radius-md);
+  display: flex;
+  gap: var(--j-spacing-sm);
+  padding-inline: var(--j-spacing-md);
+  transition: var(--j-transition-colors), var(--j-transition-shadow);
+}
+
+.j-input--filled {
+  background: var(--j-color-surface-muted);
+}
+
+.j-input--sm {
+  min-height: 2rem;
+}
+
+.j-input--md {
+  min-height: 2.5rem;
+}
+
+.j-input--lg {
+  min-height: 3rem;
+}
+
+.j-input--fluid {
+  width: 100%;
+}
+
+.j-input:focus-within {
+  border-color: var(--j-color-primary);
+  box-shadow: var(--j-focus-ring);
+}
+
+.j-input.is-invalid {
+  border-color: var(--j-color-danger);
+}
+
+.j-input.is-disabled {
+  background: var(--j-color-surface-subtle);
+  opacity: var(--j-disabled-opacity);
+}
+
+.j-input__field {
+  background: transparent;
+  border: 0;
+  color: var(--j-color-text);
+  flex: 1;
+  font: inherit;
+  font-size: var(--j-font-size-sm);
+  min-width: 0;
+  outline: none;
+}
+
+.j-input__field::placeholder {
+  color: var(--j-color-text-soft);
+}
+
+.j-input__icon {
+  align-items: center;
+  color: var(--j-color-text-muted);
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+
+.j-input__icon:empty {
+  display: none;
+}
+
+.j-input__clear {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: var(--j-color-text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  height: 1.5rem;
+  justify-content: center;
+  padding: 0;
+  width: 1.5rem;
+}
+
+.j-input__message {
+  color: var(--j-color-text-muted);
+  font-size: var(--j-font-size-xs);
+  margin: var(--j-spacing-sm) 0 0;
+}

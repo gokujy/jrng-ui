@@ -1,0 +1,29 @@
+<section
+  class="j-toast-stack"
+  [class]="'j-toast-stack j-toast-stack--' + position"
+  aria-live="polite"
+>
+  @for (toast of visibleToasts(); track toast.id) {
+    <article
+      class="j-toast"
+      [class]="'j-toast j-toast--' + toast.severity"
+      [attr.role]="toast.severity === 'error' ? 'alert' : 'status'"
+    >
+      <div class="j-toast__mark" aria-hidden="true"></div>
+      <div class="j-toast__content">
+        <strong class="j-toast__title">{{ toast.summary }}</strong>
+        <p class="j-toast__message">{{ toast.detail }}</p>
+      </div>
+      @if (toast.closable) {
+        <button
+          class="j-toast__close"
+          type="button"
+          aria-label="Dismiss message"
+          (click)="toastService.remove(toast.id)"
+        >
+          x
+        </button>
+      }
+    </article>
+  }
+</section>

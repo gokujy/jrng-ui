@@ -1,0 +1,159 @@
+<div [ngClass]="tableClasses">
+  <div class="j-table__scroll" [ngStyle]="scrollStyles">
+    <table>
+      @if (caption) {
+        <caption>
+          {{
+            caption
+          }}
+        </caption>
+      }
+
+      <thead>
+        <tr>
+          @if (selectionMode === 'checkbox') {
+            <th scope="col" class="j-table__select-cell">
+              <input
+                type="checkbox"
+                aria-label="Select all visible rows"
+                [checked]="allPageRowsSelected()"
+                (change)="toggleAllPageRows($event)"
+              />
+            </th>
+          }
+
+          @for (column of resolvedColumns; track column.field) {
+            <th
+              scope="col"
+              [class]="columnClass(column)"
+              [style.width]="column.width || null"
+              [style.min-width]="column.minWidth || null"
+              [attr.aria-sort]="ariaSort(column)"
+            >
+              @if (headerTemplateFor(column); as headerTemplate) {
+                <ng-container
+                  *ngTemplateOutlet="headerTemplate; context: headerContext(column)"
+                ></ng-container>
+              } @else {
+                <button
+                  type="button"
+                  class="j-table__sort"
+                  [disabled]="!column.sortable"
+                  (click)="toggleSort(column)"
+                >
+                  <span>{{ column.header }}</span>
+                  @if (column.sortable) {
+                    <j-sort-icon [order]="sortOrderFor(column)" />
+                  }
+                </button>
+              }
+              @if (column.filterable) {
+                <j-column-filter
+                  [field]="column.field"
+                  [label]="column.header"
+                  [value]="filterValue(column.field)"
+                  (filterChange)="handleFilterChange($event)"
+                />
+              }
+            </th>
+          }
+        </tr>
+      </thead>
+
+      <tbody>
+        @if (loading) {
+          <tr>
+            <td class="j-table__state" [attr.colspan]="colspan">
+              <j-table-skeleton [rows]="3" [columns]="resolvedColumns.length || 1" />
+              <span class="j-table__state-label">{{ loadingMessage }}</span>
+            </td>
+          </tr>
+        }
+
+        @if (!loading && !hasRows) {
+          <tr>
+            <td class="j-table__state" [attr.colspan]="colspan">
+              <j-table-empty-state [message]="emptyMessage" />
+            </td>
+          </tr>
+        }
+
+        @for (row of visibleRows; track rowId(row, rowIndex); let rowIndex = $index) {
+          <tr
+            [class.is-active]="isSelected(row)"
+            [attr.tabindex]="selectable ? 0 : null"
+            [attr.aria-selected]="selectable ? isSelected(row) : null"
+            (click)="handleRowClick(row, rowIndex, $event)"
+            (dblclick)="handleRowDoubleClick(row, rowIndex, $event)"
+            (keydown)="handleRowKeydown($event, row)"
+          >
+            @if (selectionMode === 'checkbox') {
+              <td class="j-table__select-cell">
+                <input
+                  type="checkbox"
+                  aria-label="Select row"
+                  [checked]="isSelected(row)"
+                  (click)="$event.stopPropagation()"
+                  (change)="handleCheckboxChange(row, $event)"
+                />
+              </td>
+            }
+            @for (column of resolvedColumns; track column.field) {
+              <td [class]="columnClass(column)" [attr.data-label]="column.header">
+                @switch (column.type || 'text') {
+                  @case ('action') {
+                    <j-action-menu
+                      [actions]="column.actions || []"
+                      [row]="row"
+                      [rowIndex]="rowIndex"
+                      (actionClick)="handleActionClick($event)"
+                    />
+                  }
+                  @case ('badge') {
+                    <span class="j-table__badge">
+                      {{ formattedCellValue(row, column) }}
+                    </span>
+                  }
+                  @case ('tag') {
+                    <span class="j-table__tag">
+                      {{ formattedCellValue(row, column) }}
+                    </span>
+                  }
+                  @case ('boolean') {
+                    <span class="j-table__boolean">
+                      {{ formattedCellValue(row, column) }}
+                    </span>
+                  }
+                  @default {
+                    @if (cellTemplateFor(column); as cellTemplate) {
+                      <ng-container
+                        *ngTemplateOutlet="
+                          cellTemplate;
+                          context: cellContext(row, column, rowIndex)
+                        "
+                      ></ng-container>
+                    } @else {
+                      {{ formattedCellValue(row, column) }}
+                    }
+                  }
+                }
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  @if (paginator) {
+    <j-paginator
+      class="j-table__paginator"
+      [first]="normalizedFirst"
+      [rows]="rows"
+      [totalRecords]="totalItems"
+      [rowsPerPageOptions]="rowsPerPageOptions"
+      [showCurrentPageReport]="true"
+      (pageChange)="handlePageChange($event)"
+    />
+  }
+</div>

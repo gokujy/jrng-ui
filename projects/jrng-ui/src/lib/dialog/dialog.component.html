@@ -1,0 +1,46 @@
+@if (visible) {
+  <div class="j-dialog__portal">
+    <div [class]="backdropClasses" (mousedown)="handleBackdropClick($event)">
+      <section
+        #dialogPanel
+        jFocusTrap
+        [class]="dialogClasses"
+        role="dialog"
+        [attr.aria-modal]="modal ? 'true' : 'false'"
+        [attr.aria-labelledby]="header ? titleId : null"
+        [attr.aria-label]="header ? null : 'Dialog'"
+        [style.width]="width || null"
+        [style.height]="height || null"
+        tabindex="-1"
+      >
+        @if (header || closable) {
+          <header class="j-dialog__header">
+            <div class="j-dialog__heading">
+              @if (header) {
+                <h2 class="j-dialog__title" [id]="titleId">{{ header }}</h2>
+              }
+              <ng-content select="[jDialogHeader], [jrDialogHeader]"></ng-content>
+            </div>
+            @if (closable) {
+              <button
+                class="j-dialog__close"
+                type="button"
+                aria-label="Close dialog"
+                (click)="close('close-button')"
+              >
+                x
+              </button>
+            }
+          </header>
+        }
+        <div class="j-dialog__body">
+          <ng-content></ng-content>
+          <ng-content select="[jDialogBody], [jrDialogBody]"></ng-content>
+        </div>
+        <footer class="j-dialog__footer">
+          <ng-content select="[jDialogFooter], [jrDialogFooter]"></ng-content>
+        </footer>
+      </section>
+    </div>
+  </div>
+}

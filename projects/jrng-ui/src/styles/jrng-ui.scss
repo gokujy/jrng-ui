@@ -1,0 +1,82 @@
+@use './colors';
+@use './spacing';
+@use './radius';
+@use './typography';
+@use './shadow';
+@use './z-index';
+@use './transition';
+@use './breakpoints';
+
+.j-app {
+  background: var(--j-color-page);
+  color: var(--j-color-text);
+  font-family: var(--j-font-family);
+}
+
+.j-surface {
+  background: var(--j-color-surface);
+  color: var(--j-color-text);
+}
+
+.j-focus-ring {
+  outline: none;
+}
+
+.j-focus-ring:focus-visible {
+  box-shadow: var(--j-focus-ring);
+}
+
+.j-disabled,
+.is-disabled {
+  cursor: not-allowed;
+  opacity: var(--j-disabled-opacity);
+}
+
+.j-sr-only {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+.j-ripple {
+  overflow: hidden;
+  position: relative;
+}
+
+.j-ripple::after {
+  background: currentColor;
+  border-radius: var(--j-radius-full);
+  content: '';
+  height: 0;
+  left: var(--j-ripple-x, 50%);
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  top: var(--j-ripple-y, 50%);
+  transform: translate(-50%, -50%);
+  width: 0;
+}
+
+.j-ripple.is-rippling::after {
+  animation: j-ripple var(--j-duration-slow) var(--j-ease-standard);
+}
+
+@keyframes j-ripple {
+  from {
+    height: 0;
+    opacity: 0.18;
+    width: 0;
+  }
+
+  to {
+    height: 12rem;
+    opacity: 0;
+    width: 12rem;
+  }
+}

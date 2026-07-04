@@ -1,0 +1,113 @@
+<div [class]="rootClasses" jClickOutside (jClickOutside)="handleOutsideClick()">
+  @if (label) {
+    <label class="j-select-field__label" [for]="id">
+      <span>{{ label }}</span>
+      @if (required) {
+        <span class="j-select-field__required" aria-hidden="true">*</span>
+      }
+    </label>
+  }
+
+  <button
+    #triggerButton
+    class="j-select"
+    type="button"
+    role="combobox"
+    [id]="id"
+    [disabled]="isDisabled"
+    [attr.aria-expanded]="isOpen"
+    [attr.aria-controls]="panelId"
+    [attr.aria-activedescendant]="activeDescendant"
+    [attr.aria-invalid]="hasError ? 'true' : null"
+    [attr.aria-describedby]="describedBy"
+    [attr.aria-required]="required ? 'true' : null"
+    (click)="toggle()"
+    (keydown)="handleKeydown($event)"
+    (blur)="handleButtonBlur()"
+  >
+    <span class="j-select__value" [class.is-placeholder]="!displayLabel">
+      {{ displayLabel || placeholder || 'Select' }}
+    </span>
+    @if (loading) {
+      <span class="j-select__loader" aria-hidden="true"></span>
+    }
+    @if (canClear) {
+      <span
+        class="j-select__clear"
+        aria-label="Clear"
+        role="button"
+        tabindex="-1"
+        (click)="clearValue($event)"
+      >
+        x
+      </span>
+    }
+    <span class="j-select__indicator" aria-hidden="true"></span>
+  </button>
+
+  @if (isOpen) {
+    <div
+      #panel
+      class="j-select__panel"
+      [class.j-select__panel--fixed]="appendToBody"
+      [style.left.px]="appendToBody ? overlayLeft : null"
+      [style.top.px]="appendToBody ? overlayTop : null"
+      [style.width.px]="appendToBody ? overlayWidth : null"
+      [id]="listboxId"
+      role="listbox"
+      (mousedown)="$event.stopPropagation()"
+      (touchstart)="$event.stopPropagation()"
+    >
+      @if (searchable || filter) {
+        <input
+          #filterInput
+          class="j-select__filter"
+          type="text"
+          [id]="filterId"
+          [attr.aria-label]="filterPlaceholder || 'Filter options'"
+          [placeholder]="filterPlaceholder"
+          [value]="filterText"
+          (input)="handleFilterInput($event)"
+          (keydown)="handleKeydown($event)"
+        />
+      }
+      @if (!loading && visibleOptions.length === 0) {
+        <div class="j-select__empty">{{ emptyMessage }}</div>
+      }
+      @if (loading) {
+        <div class="j-select__empty">Loading...</div>
+      }
+      @for (option of visibleOptions; track option.value; let i = $index) {
+        <button
+          class="j-select__option"
+          type="button"
+          role="option"
+          [id]="optionId(i)"
+          [disabled]="option.disabled"
+          [class.is-active]="i === activeIndex"
+          [class.is-selected]="isSelected(option)"
+          [attr.aria-selected]="isSelected(option)"
+          (click)="selectOption(option)"
+        >
+          @if (itemTemplate) {
+            <ng-container
+              [ngTemplateOutlet]="itemTemplate"
+              [ngTemplateOutletContext]="itemContext(option, i)"
+            ></ng-container>
+          } @else {
+            {{ option.label }}
+          }
+        </button>
+      }
+    </div>
+  }
+
+  @if (hasError && error) {
+    <p class="j-select-field__message j-select-field__message--error" [id]="errorId">
+      {{ error }}
+    </p>
+  }
+  @if (hint && !hasError) {
+    <p class="j-select-field__message" [id]="hintId">{{ hint }}</p>
+  }
+</div>

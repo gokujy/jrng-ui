@@ -1,0 +1,61 @@
+@if (label) {
+  <label class="j-input__label" [for]="id">
+    <span>{{ label }}</span>
+    @if (required) {
+      <span class="j-input__required" aria-hidden="true">*</span>
+    }
+  </label>
+}
+
+<div [class]="controlClasses">
+  @if (prefixIcon) {
+    <span class="j-input__icon" aria-hidden="true">{{ prefixIcon }}</span>
+  }
+  <span class="j-input__icon" aria-hidden="true"
+    ><ng-content select="[jInputPrefix]"></ng-content
+  ></span>
+
+  <input
+    class="j-input__field"
+    [id]="id"
+    [name]="name || null"
+    [type]="type"
+    [placeholder]="placeholder"
+    [disabled]="isDisabled"
+    [readOnly]="readonly"
+    [required]="required"
+    [value]="value"
+    [attr.aria-invalid]="hasError ? 'true' : null"
+    [attr.aria-describedby]="describedBy"
+    (input)="handleInput($event)"
+    (blur)="handleBlur()"
+  />
+
+  @if (clearable && value) {
+    <button
+      class="j-input__clear"
+      type="button"
+      aria-label="Clear"
+      [disabled]="isDisabled || readonly"
+      (click)="clearValue()"
+    >
+      x
+    </button>
+  }
+
+  <span class="j-input__icon" aria-hidden="true"
+    ><ng-content select="[jInputSuffix]"></ng-content
+  ></span>
+  @if (suffixIcon) {
+    <span class="j-input__icon" aria-hidden="true">{{ suffixIcon }}</span>
+  }
+</div>
+
+@if (hasError && error) {
+  <p class="j-input__message j-input__message--error" [id]="errorId">
+    {{ error }}
+  </p>
+}
+@if (hint && !hasError) {
+  <p class="j-input__message" [id]="hintId">{{ hint }}</p>
+}

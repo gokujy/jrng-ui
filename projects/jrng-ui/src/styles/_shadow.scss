@@ -1,0 +1,19 @@
+:root,
+.j-theme {
+  --j-shadow-none: none;
+  --j-shadow-sm: 0 1px 2px rgb(15 23 42 / 8%);
+  --j-shadow-md: 0 12px 30px rgb(15 23 42 / 12%);
+  --j-shadow-lg: 0 22px 60px rgb(15 23 42 / 16%);
+  --j-shadow-focus: var(--j-focus-ring);
+
+  --jr-shadow-sm: var(--j-shadow-sm);
+  --jr-shadow-md: var(--j-shadow-md);
+  --jr-shadow-lg: var(--j-shadow-lg);
+}
+
+.j-theme-dark,
+[data-j-theme='dark'] {
+  --j-shadow-sm: 0 1px 2px rgb(0 0 0 / 28%);
+  --j-shadow-md: 0 12px 30px rgb(0 0 0 / 30%);
+  --j-shadow-lg: 0 22px 60px rgb(0 0 0 / 38%);
+}

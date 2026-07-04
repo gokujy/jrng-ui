@@ -1,0 +1,24 @@
+:root,
+.j-theme {
+  --j-spacing-0: 0;
+  --j-spacing-2xs: 0.125rem;
+  --j-spacing-xs: 0.25rem;
+  --j-spacing-sm: 0.5rem;
+  --j-spacing-md: 0.75rem;
+  --j-spacing-lg: 1rem;
+  --j-spacing-xl: 1.25rem;
+  --j-spacing-2xl: 1.5rem;
+  --j-spacing-3xl: 2rem;
+  --j-spacing-4xl: 2.5rem;
+  --j-spacing-5xl: 3rem;
+
+  --jr-space-1: var(--j-spacing-xs);
+  --jr-space-2: var(--j-spacing-sm);
+  --jr-space-3: var(--j-spacing-md);
+  --jr-space-4: var(--j-spacing-lg);
+  --jr-space-5: var(--j-spacing-xl);
+  --jr-space-6: var(--j-spacing-2xl);
+  --jr-space-8: var(--j-spacing-3xl);
+  --jr-space-10: var(--j-spacing-4xl);
+  --jr-space-12: var(--j-spacing-5xl);
+}

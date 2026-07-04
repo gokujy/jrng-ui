@@ -1,0 +1,11 @@
+:root,
+.j-theme {
+  --j-z-index-base: 0;
+  --j-z-index-dropdown: 1000;
+  --j-z-index-sticky: 1020;
+  --j-z-index-overlay: 1040;
+  --j-z-index-modal: 1060;
+  --j-z-index-popover: 1080;
+  --j-z-index-toast: 1100;
+  --j-z-index-tooltip: 1120;
+}

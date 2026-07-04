@@ -1,0 +1,192 @@
+:host {
+  display: block;
+}
+
+.j-select-field {
+  color: var(--j-color-text);
+  display: block;
+  position: relative;
+}
+
+.j-select-field__label {
+  display: inline-flex;
+  font-size: var(--j-font-size-sm);
+  font-weight: var(--j-font-weight-semibold);
+  gap: var(--j-spacing-xs);
+  margin-block-end: var(--j-spacing-sm);
+}
+
+.j-select-field__required,
+.j-select-field__message--error {
+  color: var(--j-color-danger);
+}
+
+.j-select {
+  align-items: center;
+  background: var(--j-color-surface);
+  border: 1px solid var(--j-color-border);
+  border-radius: var(--j-radius-md);
+  color: var(--j-color-text);
+  cursor: pointer;
+  display: flex;
+  font: inherit;
+  gap: var(--j-spacing-sm);
+  min-height: 2.5rem;
+  padding: 0 var(--j-spacing-md);
+  text-align: start;
+  transition: var(--j-transition-colors), var(--j-transition-shadow);
+  width: 100%;
+}
+
+.j-select-field--filled .j-select {
+  background: var(--j-color-surface-muted);
+}
+
+.j-select-field--sm .j-select {
+  min-height: 2.125rem;
+}
+
+.j-select-field--lg .j-select {
+  min-height: 3rem;
+}
+
+.j-select:focus-visible,
+.j-select-field.is-open .j-select {
+  border-color: var(--j-color-primary);
+  box-shadow: var(--j-focus-ring);
+  outline: none;
+}
+
+.j-select-field.is-invalid .j-select {
+  border-color: var(--j-color-danger);
+}
+
+.j-select-field.is-disabled {
+  opacity: var(--j-disabled-opacity);
+}
+
+.j-select__value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.j-select__value.is-placeholder {
+  color: var(--j-color-text-muted);
+}
+
+.j-select__clear {
+  align-items: center;
+  color: var(--j-color-text-muted);
+  display: inline-flex;
+  height: 1.25rem;
+  justify-content: center;
+  width: 1.25rem;
+}
+
+.j-select__indicator {
+  border-bottom: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+  height: 0.45rem;
+  opacity: 0.62;
+  transform: rotate(45deg) translateY(-2px);
+  width: 0.45rem;
+}
+
+.j-select__loader {
+  animation: j-select-spin var(--j-duration-slow) linear infinite;
+  border: 2px solid var(--j-color-border);
+  border-top-color: var(--j-color-primary);
+  border-radius: var(--j-radius-full);
+  height: 1rem;
+  width: 1rem;
+}
+
+.j-select__panel {
+  background: var(--j-color-surface);
+  border: 1px solid var(--j-color-border);
+  border-radius: var(--j-radius-md);
+  box-shadow: var(--j-shadow-lg);
+  inset-inline-start: 0;
+  margin-block-start: var(--j-spacing-xs);
+  max-height: 16rem;
+  min-width: 100%;
+  overflow: auto;
+  padding: var(--j-spacing-xs);
+  position: absolute;
+  top: 100%;
+  z-index: var(--j-z-index-dropdown);
+}
+
+.j-select__panel--fixed {
+  margin-block-start: 0;
+  position: fixed;
+}
+
+.j-select__filter {
+  background: var(--j-color-surface);
+  border: 1px solid var(--j-color-border);
+  border-radius: var(--j-radius-sm);
+  color: var(--j-color-text);
+  font: inherit;
+  margin-block-end: var(--j-spacing-xs);
+  min-height: 2rem;
+  outline: none;
+  padding: 0 var(--j-spacing-sm);
+  width: 100%;
+}
+
+.j-select__filter:focus {
+  border-color: var(--j-color-primary);
+  box-shadow: var(--j-focus-ring);
+}
+
+.j-select__option {
+  background: transparent;
+  border: 0;
+  border-radius: var(--j-radius-sm);
+  color: var(--j-color-text);
+  cursor: pointer;
+  display: block;
+  font: inherit;
+  padding: var(--j-spacing-sm) var(--j-spacing-md);
+  text-align: start;
+  width: 100%;
+}
+
+.j-select__option:hover,
+.j-select__option.is-active {
+  background: var(--j-color-surface-muted);
+}
+
+.j-select__option.is-selected {
+  color: var(--j-color-primary);
+  font-weight: var(--j-font-weight-semibold);
+}
+
+.j-select__option:disabled {
+  cursor: not-allowed;
+  opacity: var(--j-disabled-opacity);
+}
+
+.j-select__empty,
+.j-select-field__message {
+  color: var(--j-color-text-muted);
+  font-size: var(--j-font-size-xs);
+}
+
+.j-select__empty {
+  padding: var(--j-spacing-md);
+}
+
+.j-select-field__message {
+  margin: var(--j-spacing-sm) 0 0;
+}
+
+@keyframes j-select-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

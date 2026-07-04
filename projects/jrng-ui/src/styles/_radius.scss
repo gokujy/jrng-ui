@@ -1,0 +1,16 @@
+:root,
+.j-theme {
+  --j-radius-none: 0;
+  --j-radius-xs: 0.25rem;
+  --j-radius-sm: 0.375rem;
+  --j-radius-md: 0.5rem;
+  --j-radius-lg: 0.75rem;
+  --j-radius-xl: 1rem;
+  --j-radius-full: 999px;
+
+  --jr-radius-sm: var(--j-radius-sm);
+  --jr-radius-md: var(--j-radius-md);
+  --jr-radius-lg: var(--j-radius-lg);
+  --jr-radius-xl: var(--j-radius-xl);
+  --jr-radius-pill: var(--j-radius-full);
+}

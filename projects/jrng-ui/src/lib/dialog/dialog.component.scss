@@ -1,0 +1,172 @@
+:host {
+  color: var(--j-color-text);
+}
+
+.j-dialog__portal {
+  position: relative;
+  z-index: var(--j-z-index-modal);
+}
+
+.j-dialog__backdrop {
+  background: transparent;
+  display: flex;
+  inset: 0;
+  padding: var(--j-spacing-lg);
+  position: fixed;
+}
+
+.j-dialog__backdrop.is-modal {
+  background: rgb(15 23 42 / 56%);
+}
+
+.j-dialog__backdrop--center {
+  align-items: center;
+  justify-content: center;
+}
+
+.j-dialog__backdrop--top {
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.j-dialog__backdrop--bottom {
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.j-dialog__backdrop--left {
+  align-items: stretch;
+  justify-content: flex-start;
+}
+
+.j-dialog__backdrop--right {
+  align-items: stretch;
+  justify-content: flex-end;
+}
+
+.j-dialog {
+  background: var(--j-color-surface);
+  border: 1px solid var(--j-color-border);
+  border-radius: var(--j-radius-lg);
+  box-shadow: var(--j-shadow-lg);
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 2rem);
+  outline: none;
+  overflow: hidden;
+  width: 100%;
+}
+
+.j-dialog--sm {
+  max-width: 26rem;
+}
+
+.j-dialog--md {
+  max-width: 34rem;
+}
+
+.j-dialog--lg {
+  max-width: 46rem;
+}
+
+.j-dialog--xl {
+  max-width: 64rem;
+}
+
+.j-dialog--full {
+  border-radius: 0;
+  height: 100%;
+  max-height: none;
+  max-width: none;
+  width: 100%;
+}
+
+.j-dialog--left,
+.j-dialog--right {
+  border-radius: 0;
+  height: 100%;
+  max-height: none;
+  max-width: min(32rem, 92vw);
+}
+
+.j-dialog.is-resizable {
+  resize: both;
+}
+
+.j-dialog__header,
+.j-dialog__body,
+.j-dialog__footer {
+  padding: var(--j-spacing-lg);
+}
+
+.j-dialog__header {
+  align-items: flex-start;
+  border-bottom: 1px solid var(--j-color-border);
+  display: flex;
+  gap: var(--j-spacing-md);
+  justify-content: space-between;
+}
+
+.j-dialog__title {
+  font-size: var(--j-font-size-xl);
+  letter-spacing: 0;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.j-dialog__body {
+  flex: 1;
+  line-height: var(--j-line-height-normal);
+  overflow: auto;
+}
+
+.j-dialog__footer {
+  align-items: center;
+  border-top: 1px solid var(--j-color-border);
+  display: flex;
+  gap: var(--j-spacing-md);
+  justify-content: flex-end;
+}
+
+.j-dialog__footer:empty {
+  display: none;
+}
+
+.j-dialog__close {
+  align-items: center;
+  background: var(--j-color-surface-muted);
+  border: 0;
+  border-radius: var(--j-radius-full);
+  color: var(--j-color-text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  height: 2rem;
+  justify-content: center;
+  width: 2rem;
+}
+
+.j-dialog__close:focus-visible {
+  box-shadow: var(--j-focus-ring);
+  outline: none;
+}
+
+@media (max-width: 640px) {
+  .j-dialog__backdrop {
+    padding: var(--j-spacing-sm);
+  }
+
+  .j-dialog--full {
+    border-radius: 0;
+    height: 100dvh;
+    max-height: 100dvh;
+  }
+
+  .j-dialog--sm,
+  .j-dialog--md,
+  .j-dialog--lg,
+  .j-dialog--xl {
+    max-height: calc(100dvh - var(--j-spacing-lg));
+    max-width: 100%;
+  }
+}
