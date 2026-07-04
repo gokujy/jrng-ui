@@ -1,0 +1,15 @@
+:root,
+.j-theme {
+  --j-duration-instant: 0ms;
+  --j-duration-fast: 120ms;
+  --j-duration-normal: 160ms;
+  --j-duration-slow: 240ms;
+  --j-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --j-ease-emphasized: cubic-bezier(0.2, 0, 0, 1.2);
+  --j-transition-colors:
+    background-color var(--j-duration-normal) var(--j-ease-standard),
+    border-color var(--j-duration-normal) var(--j-ease-standard),
+    color var(--j-duration-normal) var(--j-ease-standard);
+  --j-transition-shadow: box-shadow var(--j-duration-normal) var(--j-ease-standard);
+  --j-transition-transform: transform var(--j-duration-normal) var(--j-ease-standard);
+}

@@ -1,82 +1,64 @@
-import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { ButtonComponent, JrButtonSize, JrButtonVariant } from 'jrng-ui/button';
-import { DialogComponent } from 'jrng-ui/dialog';
-import { InputComponent } from 'jrng-ui/input';
-import { JrToastService, ToastContainerComponent } from 'jrng-ui/toast';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { ChangeDetectionStrategy, Component, PLATFORM_ID, inject, signal } from '@angular/core';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { JConfirmDialogComponent } from 'jrng-ui/confirm-dialog';
+import { JrToastContainerComponent } from 'jrng-ui/toast';
+
+interface SiteNavItem {
+  readonly label: string;
+  readonly path?: string;
+  readonly href?: string;
+}
 
 @Component({
   selector: 'app-root',
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    ButtonComponent,
-    DialogComponent,
-    InputComponent,
-    ToastContainerComponent,
-  ],
+  imports: [RouterLink, RouterLinkActive, RouterOutlet, JConfirmDialogComponent, JrToastContainerComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
-  private readonly toastService = inject(JrToastService);
+  private readonly documentRef = inject(DOCUMENT);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
-  readonly buttonVariants: readonly JrButtonVariant[] = [
-    'primary',
-    'secondary',
-    'outline',
-    'ghost',
-    'danger',
-    'success',
+  readonly mobileMenuOpen = signal(false);
+  readonly darkMode = signal(false);
+  readonly density = signal<'comfortable' | 'compact'>('comfortable');
+
+  readonly navItems: readonly SiteNavItem[] = [
+    { label: 'Home', path: '/' },
+    { label: 'Docs', path: '/docs' },
+    { label: 'Components', path: '/components' },
+    { label: 'Themes', path: '/themes' },
+    { label: 'GitHub', href: 'https://github.com/jrng-ui/jrng-ui' },
+    { label: 'Support', path: '/support' },
   ];
-  readonly buttonSizes: readonly JrButtonSize[] = ['sm', 'md', 'lg'];
-  readonly searchControl = new FormControl<string>('', { nonNullable: true });
-  readonly emailControl = new FormControl<string>('finance@jr.example', { nonNullable: true });
-  readonly textareaControl = new FormControl<string>('Approve purchase order after tax review.', {
-    nonNullable: true,
-  });
 
-  confirmDialogOpen = false;
-  formDialogOpen = false;
-  alertDialogOpen = false;
-
-  showToast(type: 'success' | 'error' | 'warning' | 'info'): void {
-    const messages = {
-      success: 'Quarterly forecast was saved.',
-      error: 'Invoice export failed validation.',
-      warning: 'Inventory threshold is below target.',
-      info: 'Approval queue synced moments ago.',
-    };
-
-    this.toastService.show({
-      type,
-      title: type.charAt(0).toUpperCase() + type.slice(1),
-      message: messages[type],
-      duration: 4000,
-    });
+  toggleMobileMenu(): void {
+    this.mobileMenuOpen.update((value) => !value);
   }
 
-  focusSection(sectionId: string): void {
-    const target = document.getElementById(sectionId);
+  closeMobileMenu(): void {
+    this.mobileMenuOpen.set(false);
+  }
 
-    if (!target) {
+  toggleDarkMode(): void {
+    this.darkMode.update((value) => !value);
+    this.syncDocumentClasses();
+  }
+
+  toggleDensity(): void {
+    this.density.update((value) => (value === 'comfortable' ? 'compact' : 'comfortable'));
+    this.syncDocumentClasses();
+  }
+
+  private syncDocumentClasses(): void {
+    if (!this.isBrowser) {
       return;
     }
 
-    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    target.focus({ preventScroll: true });
-  }
-
-  openConfirm(): void {
-    this.confirmDialogOpen = true;
-  }
-
-  openForm(): void {
-    this.formDialogOpen = true;
-  }
-
-  openAlert(): void {
-    this.alertDialogOpen = true;
+    const root = this.documentRef.documentElement;
+    root.classList.toggle('j-dark', this.darkMode());
+    root.classList.toggle('j-density-compact', this.density() === 'compact');
   }
 }

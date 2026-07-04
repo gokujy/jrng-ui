@@ -1,0 +1,133 @@
+# Layout And Page Components
+
+jrng-ui includes generic application layout components and React-style composition blocks for dashboards, auth screens, settings pages, and empty or error states.
+
+## App Shell
+
+`j-app-shell` provides header, sidebar, content, and footer regions with responsive mobile overlay behavior.
+
+```ts
+import { JAppShellComponent } from 'jrng-ui/app-shell';
+```
+
+```html
+<j-app-shell [(sidebarCollapsed)]="collapsed" [(sidebarOpen)]="sidebarOpen">
+  <div jShellHeader>Product Dashboard</div>
+  <nav jShellSidebar>Navigation</nav>
+  <main>Page content</main>
+  <div jShellFooter>Footer content</div>
+</j-app-shell>
+```
+
+## Page Header
+
+`j-page-header` supports title, description, breadcrumbs, actions, and tabs slot.
+
+```ts
+import { JPageHeaderBreadcrumb, JPageHeaderComponent } from 'jrng-ui/page-header';
+
+readonly breadcrumbs: JPageHeaderBreadcrumb[] = [
+  { label: 'Projects', url: '/projects' },
+  { label: 'Tasks' },
+];
+```
+
+```html
+<j-page-header title="Tasks" description="Track project work." [breadcrumbs]="breadcrumbs">
+  <div jPageActions>
+    <j-button label="New task" />
+  </div>
+  <div jPageTabs>
+    <j-tabs [tabs]="tabs" />
+  </div>
+</j-page-header>
+```
+
+## Section Header And Footer
+
+```html
+<j-section-header title="Orders" description="Review recent orders.">
+  <j-button label="Export" variant="outline" />
+</j-section-header>
+
+<j-section-footer>
+  <span>Showing 20 orders</span>
+  <j-button label="Next" />
+</j-section-footer>
+```
+
+## Auth Layout
+
+`j-auth-layout` supports split and centered authentication layouts.
+
+```html
+<j-auth-layout variant="split">
+  <aside jAuthAside>Welcome content</aside>
+  <form>Sign in form</form>
+</j-auth-layout>
+
+<j-auth-layout variant="centered">
+  <form>Create account form</form>
+</j-auth-layout>
+```
+
+## Layout Primitives
+
+Use `j-container`, `j-stack`, and `j-grid-layout` to compose pages without generic global utility classes.
+
+```html
+<j-container size="xl">
+  <j-stack gap="var(--j-spacing-5)">
+    <j-page-header title="Customers" description="Manage customer records." />
+    <j-grid-layout [columns]="3" minItemWidth="18rem">
+      <j-card title="Customer activity" />
+      <j-card title="Invoices" />
+      <j-card title="Orders" />
+    </j-grid-layout>
+  </j-stack>
+</j-container>
+```
+
+## Sidebar Layouts
+
+```html
+<j-sidebar-layout>
+  <aside jSidebar>Filters</aside>
+  <section>Results</section>
+</j-sidebar-layout>
+
+<j-responsive-sidebar [(open)]="filtersOpen" title="Filters">
+  Filter content
+</j-responsive-sidebar>
+```
+
+## Splitter
+
+`j-splitter` arranges projected panes horizontally or vertically.
+
+```html
+<j-splitter orientation="horizontal" [gutterSize]="12">
+  <section>List</section>
+  <section>Detail</section>
+</j-splitter>
+```
+
+## Generic Page States
+
+```html
+<j-error-page code="404" title="Page not found" description="The requested page is unavailable.">
+  <j-button label="Go back" />
+</j-error-page>
+
+<j-empty-page icon="empty" title="No projects" description="Create a project to get started.">
+  <j-button label="New project" />
+</j-empty-page>
+
+<j-maintenance-page detail="Try again later.">
+  <j-button label="Refresh" />
+</j-maintenance-page>
+```
+
+## Design Rules
+
+Use generic examples such as User, Product, Customer, Order, Invoice, Project, Task, and Team. Component selectors use the `j-*` prefix and CSS classes use the `.j-*` prefix. Do not copy source code, CSS, docs, examples, naming, or exact visual design from external UI libraries.

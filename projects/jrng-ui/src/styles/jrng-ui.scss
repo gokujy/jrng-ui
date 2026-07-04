@@ -1,0 +1,156 @@
+@use './tokens/primitive';
+@use './themes/light';
+@use './themes/dark';
+@use './tokens/component';
+
+@layer j-theme, j-base, j-components, j-utilities;
+
+@layer j-base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  .j-app {
+    background: var(--j-color-background);
+    color: var(--j-color-foreground);
+    font-family: var(--j-font-family);
+    line-height: var(--j-line-height-normal);
+    min-height: 100%;
+    text-rendering: optimizeLegibility;
+  }
+
+  .j-surface {
+    background: var(--j-color-card);
+    border: 1px solid var(--j-color-border);
+    border-radius: var(--j-card-radius);
+    color: var(--j-color-card-foreground);
+    box-shadow: var(--j-card-shadow);
+  }
+
+  .j-focus-ring {
+    outline: none;
+  }
+
+  .j-focus-ring:focus-visible {
+    box-shadow: var(--j-focus-ring);
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+  }
+
+  @media (forced-colors: active) {
+    .j-focus-ring:focus-visible,
+    :where(button, [href], input, select, textarea, [tabindex]:not([tabindex='-1'])):focus-visible {
+      box-shadow: none;
+      outline: 2px solid CanvasText;
+      outline-offset: 2px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 1ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+      transition-duration: 1ms !important;
+    }
+  }
+}
+
+@layer j-utilities {
+  .j-disabled,
+  .is-disabled {
+    cursor: not-allowed;
+    opacity: var(--j-disabled-opacity);
+  }
+
+  .j-sr-only {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+
+  .j-hidden-accessible {
+    border: 0;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+
+  .j-hidden-focusable:not(:focus, :focus-within) {
+    border: 0;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+
+  .j-hidden-focusable:focus,
+  .j-hidden-focusable:focus-within {
+    clip: auto;
+    clip-path: none;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    position: static;
+    white-space: normal;
+    width: auto;
+  }
+
+  .j-ripple {
+    overflow: hidden;
+    position: relative;
+  }
+
+  .j-ripple::after {
+    background: currentColor;
+    border-radius: var(--j-radius-full);
+    content: '';
+    height: 0;
+    left: var(--j-ripple-x, 50%);
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    top: var(--j-ripple-y, 50%);
+    transform: translate(-50%, -50%);
+    width: 0;
+  }
+
+  .j-ripple.is-rippling::after {
+    animation: j-ripple var(--j-duration-slow) var(--j-ease-standard);
+  }
+
+  @keyframes j-ripple {
+    from {
+      height: 0;
+      opacity: 0.18;
+      width: 0;
+    }
+
+    to {
+      height: 12rem;
+      opacity: 0;
+      width: 12rem;
+    }
+  }
+}

@@ -1,6 +1,26 @@
 {
   "name": "jrng-ui-workspace",
   "version": "0.0.0",
+  "description": "A modern, premium Angular UI component library for building clean, fast, and accessible web applications.",
+  "homepage": "https://jrngui.dev/",
+  "keywords": [
+    "angular",
+    "ui",
+    "components",
+    "component-library",
+    "standalone-components",
+    "design-system",
+    "accessibility",
+    "reactive-forms",
+    "ssr",
+    "zoneless",
+    "dashboard"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jrng-ui/jrng-ui.git"
+  },
+  "license": "MIT",
   "scripts": {
     "ng": "ng",
     "start": "ng build jrng-ui && ng serve docs",

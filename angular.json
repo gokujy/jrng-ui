@@ -9,18 +9,18 @@
   "projects": {
     "jrng-ui": {
       "projectType": "library",
-      "root": "projects/jr/jrng-ui",
-      "sourceRoot": "projects/jr/jrng-ui/src",
-      "prefix": "jr",
+      "root": "projects/jrng-ui",
+      "sourceRoot": "projects/jrng-ui/src",
+      "prefix": "j",
       "architect": {
         "build": {
           "builder": "@angular/build:ng-packagr",
           "configurations": {
             "production": {
-              "tsConfig": "projects/jr/jrng-ui/tsconfig.lib.prod.json"
+              "tsConfig": "projects/jrng-ui/tsconfig.lib.prod.json"
             },
             "development": {
-              "tsConfig": "projects/jr/jrng-ui/tsconfig.lib.json"
+              "tsConfig": "projects/jrng-ui/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "production"
@@ -28,7 +28,7 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "tsConfig": "projects/jr/jrng-ui/tsconfig.spec.json"
+            "tsConfig": "projects/jrng-ui/tsconfig.spec.json"
           }
         }
       }
