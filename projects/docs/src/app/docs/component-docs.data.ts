@@ -1,0 +1,709 @@
+import { ComponentDoc, ComponentGroup, DocsApiRow, DocsEventRow } from './docs-types';
+
+const prop = (name: string, type: string, defaultValue: string, description: string): DocsApiRow => ({
+  name,
+  type,
+  defaultValue,
+  description,
+});
+
+const event = (eventName: string, payload: string, description: string): DocsEventRow => ({
+  event: eventName,
+  payload,
+  description,
+});
+
+const formNotes = [
+  'Use it when collecting user input in forms, filters, settings screens, or small editing flows.',
+  'Pair it with a visible label and a short hint when users may not know the expected value.',
+] as const;
+
+const noOutputs = [] as const;
+
+export const componentGroups: readonly ComponentGroup[] = [
+  { name: 'Forms', icon: 'text-cursor-input', slugs: ['input', 'textarea', 'select', 'checkbox', 'radio', 'switch'] },
+  { name: 'Buttons', icon: 'mouse-pointer-click', slugs: ['button', 'icon-button'] },
+  { name: 'Data Display', icon: 'table', slugs: ['card', 'badge', 'tag', 'table'] },
+  { name: 'Feedback', icon: 'message-square', slugs: ['toast', 'progress', 'skeleton'] },
+  { name: 'Navigation', icon: 'route', slugs: ['tabs', 'breadcrumb', 'menu', 'sidebar'] },
+  { name: 'Overlay', icon: 'panel-top', slugs: ['dialog', 'tooltip', 'popover'] },
+];
+
+export const componentDocs: readonly ComponentDoc[] = [
+  {
+    slug: 'input',
+    name: 'Input',
+    category: 'Forms',
+    icon: 'text-cursor-input',
+    selector: 'j-input',
+    importPath: 'jrng-ui/input',
+    status: 'Stable',
+    description: 'A text field for short values such as names, emails, search terms, and identifiers.',
+    whenToUse: 'Use Input when a user should type one short value. Use Textarea for multi-line content.',
+    code: {
+      importCode: `import { JInputComponent } from 'jrng-ui/input';`,
+      basic: `<j-input label="Email" placeholder="name@example.com"></j-input>`,
+      variants: `<j-input label="Outlined" variant="outlined"></j-input>
+<j-input label="Filled" variant="filled"></j-input>`,
+      sizes: `<j-input label="Small" size="sm"></j-input>
+<j-input label="Medium" size="md"></j-input>
+<j-input label="Large" size="lg"></j-input>`,
+      states: `<j-input label="Disabled" disabled></j-input>
+<j-input label="Read only" readonly value="INV-2048"></j-input>
+<j-input label="Email" invalid error="Enter a valid email"></j-input>
+<j-input label="Search" type="search" clearable value="orders"></j-input>`,
+      angular: `import { FormControl, ReactiveFormsModule } from '@angular/forms';
+
+email = new FormControl('');
+
+// template
+<j-input label="Email" [formControl]="email"></j-input>`,
+    },
+    usage: formNotes,
+    variants: ['outlined for standard forms', 'filled for denser application surfaces'],
+    sizes: ['sm for compact filters', 'md for normal forms', 'lg for prominent fields'],
+    states: ['default', 'disabled', 'readonly', 'invalid/error', 'clearable'],
+    inputs: [
+      prop('label', 'string', "''", 'Visible label for the input.'),
+      prop('placeholder', 'string', "''", 'Hint shown inside the empty field.'),
+      prop('type', 'text | password | search | email | number | tel | url', "'text'", 'Native input type.'),
+      prop('value', 'string | number | null', "''", 'Current value for simple binding.'),
+      prop('size', 'sm | md | lg', "'md'", 'Control density and height.'),
+      prop('variant', 'outlined | filled', "'outlined'", 'Visual style.'),
+      prop('invalid', 'boolean', 'false', 'Applies error styling.'),
+      prop('error', 'string', "''", 'Error message displayed below the field.'),
+      prop('hint', 'string', "''", 'Helper message displayed below the field.'),
+      prop('clearable', 'boolean', 'false', 'Shows a clear button when the input has a value.'),
+      prop('disabled', 'boolean', 'false', 'Disables user interaction.'),
+      prop('readonly', 'boolean', 'false', 'Keeps the value visible but not editable.'),
+    ],
+    outputs: [event('valueChange', 'string', 'Emits whenever the typed value changes.'), event('clear', 'void', 'Emits when the clear button is used.')],
+    accessibility: ['Always provide a label or an equivalent accessible label.', 'Use error text with invalid state so the problem is visible to screen reader and sighted users.'],
+    bestPractices: ['Use the correct input type for email, search, telephone, and URL fields.', 'Keep placeholders short; do not use them as the only label.'],
+    commonMistakes: ['Using Input for long notes instead of Textarea.', 'Showing an error color without an error message.'],
+  },
+  {
+    slug: 'textarea',
+    name: 'Textarea',
+    category: 'Forms',
+    icon: 'panel-top',
+    selector: 'j-textarea',
+    importPath: 'jrng-ui/textarea',
+    status: 'Stable',
+    description: 'A multi-line text field for comments, notes, descriptions, and messages.',
+    whenToUse: 'Use Textarea when the expected answer can be more than one line.',
+    code: {
+      importCode: `import { JTextareaComponent } from 'jrng-ui/textarea';`,
+      basic: `<j-textarea label="Notes" placeholder="Add customer notes"></j-textarea>`,
+      variants: `<j-textarea label="Outlined" variant="outlined"></j-textarea>
+<j-textarea label="Filled" variant="filled"></j-textarea>`,
+      sizes: `<j-textarea label="Small" size="sm"></j-textarea>
+<j-textarea label="Large" size="lg"></j-textarea>`,
+      states: `<j-textarea label="Disabled" disabled></j-textarea>
+<j-textarea label="Bio" invalid error="Bio is required"></j-textarea>
+<j-textarea label="Message" showCount [maxLength]="120"></j-textarea>`,
+    },
+    usage: formNotes,
+    variants: ['outlined for normal forms', 'filled for quieter surfaces'],
+    sizes: ['sm, md, and lg adjust typography and spacing'],
+    states: ['default', 'disabled', 'readonly', 'invalid/error', 'character count', 'clearable'],
+    inputs: [
+      prop('label', 'string', "''", 'Visible label.'),
+      prop('rows', 'number', '3', 'Initial number of visible lines.'),
+      prop('maxLength', 'number', '0', 'Maximum character count when provided.'),
+      prop('showCount', 'boolean', 'false', 'Shows the current character count.'),
+      prop('autoResize', 'boolean', 'false', 'Grows the textarea height as content grows.'),
+      prop('invalid', 'boolean', 'false', 'Applies error styling.'),
+    ],
+    outputs: [event('valueChange', 'string', 'Emits when the text changes.'), event('clear', 'void', 'Emits when cleared.')],
+    accessibility: ['Use a visible label and link invalid state to a clear error message.'],
+    bestPractices: ['Set a sensible row count so the field does not dominate the form.', 'Use maxLength only when there is a real storage or product limit.'],
+  },
+  {
+    slug: 'select',
+    name: 'Select',
+    category: 'Forms',
+    icon: 'list-check',
+    selector: 'j-select',
+    importPath: 'jrng-ui/select',
+    status: 'Stable',
+    description: 'A dropdown control for choosing one value from a list.',
+    whenToUse: 'Use Select when the user should choose one item and the available options are known.',
+    code: {
+      importCode: `import { JSelectComponent } from 'jrng-ui/select';`,
+      basic: `<j-select label="Status" [options]="statuses" placeholder="Choose status"></j-select>`,
+      variants: `<j-select label="Searchable" searchable [options]="products"></j-select>
+<j-select label="Object options" [options]="teams" optionLabel="name" optionValue="id"></j-select>`,
+      sizes: `<j-select label="Small" size="sm" [options]="statuses"></j-select>
+<j-select label="Large" size="lg" [options]="statuses"></j-select>`,
+      states: `<j-select label="Loading" loading [options]="statuses"></j-select>
+<j-select label="Disabled" disabled [options]="statuses"></j-select>
+<j-select label="Required" invalid error="Choose a status" [options]="statuses"></j-select>`,
+      angular: `statuses = ['Draft', 'Published', 'Archived'];
+teams = [
+  { id: 'design', name: 'Design' },
+  { id: 'engineering', name: 'Engineering' }
+];`,
+    },
+    usage: ['Use it for short lists, status pickers, assignment fields, and filters.', 'Enable searchable for longer option lists.'],
+    variants: ['primitive options', 'object options with optionLabel and optionValue', 'searchable lists'],
+    sizes: ['sm for table filters', 'md for standard forms', 'lg for prominent selection flows'],
+    states: ['default', 'open', 'disabled', 'readonly', 'loading', 'empty', 'invalid/error'],
+    inputs: [
+      prop('options', 'readonly unknown[]', '[]', 'Option values to show.'),
+      prop('optionLabel', 'string', "'label'", 'Object property used as the visible label.'),
+      prop('optionValue', 'string', "'value'", 'Object property used as the selected value.'),
+      prop('searchable', 'boolean', 'false', 'Shows a filter input in the panel.'),
+      prop('clearable', 'boolean', 'false', 'Allows clearing the selected value.'),
+      prop('loading', 'boolean', 'false', 'Shows a loading state.'),
+    ],
+    outputs: [
+      event('valueChange', 'unknown', 'Emits the selected value.'),
+      event('selectionChange', 'JSelectOption | null', 'Emits selected option metadata.'),
+      event('opened / closed', 'void', 'Emits when the panel opens or closes.'),
+    ],
+    accessibility: ['The trigger uses combobox semantics and keyboard interaction.', 'Keep option labels short enough to scan.'],
+    bestPractices: ['Avoid hundreds of options without search or virtualization.', 'Use native radio buttons when there are only two or three visible choices.'],
+  },
+  {
+    slug: 'checkbox',
+    name: 'Checkbox',
+    category: 'Forms',
+    icon: 'square',
+    selector: 'j-checkbox',
+    importPath: 'jrng-ui/checkbox',
+    status: 'Stable',
+    description: 'A binary or multi-select control for yes/no values and checklist choices.',
+    whenToUse: 'Use Checkbox when each option can be turned on independently.',
+    code: {
+      importCode: `import { JCheckboxComponent } from 'jrng-ui/checkbox';`,
+      basic: `<j-checkbox label="Send receipt"></j-checkbox>`,
+      sizes: `<j-checkbox label="Small" size="sm"></j-checkbox>
+<j-checkbox label="Large" size="lg"></j-checkbox>`,
+      states: `<j-checkbox label="Checked" [(ngModel)]="checked"></j-checkbox>
+<j-checkbox label="Indeterminate" indeterminate></j-checkbox>
+<j-checkbox label="Disabled" disabled></j-checkbox>`,
+    },
+    usage: ['Use for checklists, optional settings, feature toggles in forms, and terms acceptance.'],
+    variants: ['boolean value', 'array value for multi-select groups', 'indeterminate state for partial selection'],
+    sizes: ['sm, md, and lg'],
+    states: ['unchecked', 'checked', 'indeterminate', 'disabled', 'invalid'],
+    inputs: [prop('label', 'string', "''", 'Visible label.'), prop('value', 'unknown', 'true', 'Value used when bound to an array.'), prop('indeterminate', 'boolean', 'false', 'Shows partial selection.'), prop('invalid', 'boolean', 'false', 'Applies error styling.')],
+    outputs: [event('valueChange', 'boolean | readonly unknown[]', 'Emits the next checked value.')],
+    accessibility: ['Use clear label text. For indeterminate state, the control exposes aria-checked as mixed.'],
+    bestPractices: ['Use Switch for immediate on/off settings. Use Checkbox for form choices users review before submit.'],
+  },
+  {
+    slug: 'radio',
+    name: 'Radio',
+    category: 'Forms',
+    icon: 'circle-dot',
+    selector: 'j-radio',
+    importPath: 'jrng-ui/radio',
+    status: 'Stable',
+    description: 'A single-choice control used inside a group of mutually exclusive options.',
+    whenToUse: 'Use Radio when all options should be visible and the user must choose only one.',
+    code: {
+      importCode: `import { JRadioComponent } from 'jrng-ui/radio';`,
+      basic: `<j-radio name="plan" label="Starter" value="starter"></j-radio>`,
+      states: `<j-radio name="plan" label="Selected" value="pro" [(ngModel)]="plan"></j-radio>
+<j-radio name="plan" label="Disabled" value="enterprise" disabled></j-radio>`,
+    },
+    usage: ['Use for small option sets such as billing cadence, visibility, or priority.'],
+    variants: ['single radio', 'radio group with shared name'],
+    sizes: ['sm, md, and lg'],
+    states: ['selected', 'unselected', 'disabled', 'invalid'],
+    inputs: [prop('name', 'string', "''", 'Shared group name.'), prop('label', 'string', "''", 'Visible option label.'), prop('value', 'unknown', "''", 'Value emitted when selected.'), prop('disabled', 'boolean', 'false', 'Disables the option.')],
+    outputs: [event('valueChange', 'unknown', 'Emits the selected value.')],
+    accessibility: ['Group related radios with a clear question or fieldset label.'],
+    bestPractices: ['Prefer Select when the list is long. Prefer Switch for a single on/off setting.'],
+  },
+  {
+    slug: 'switch',
+    name: 'Switch',
+    category: 'Forms',
+    icon: 'toggle-left',
+    selector: 'j-switch',
+    importPath: 'jrng-ui/switch',
+    status: 'Stable',
+    description: 'An on/off control for settings that take effect immediately.',
+    whenToUse: 'Use Switch for a single setting like notifications, compact mode, or publishing state.',
+    code: {
+      importCode: `import { JSwitchComponent } from 'jrng-ui/switch';`,
+      basic: `<j-switch label="Email notifications"></j-switch>`,
+      sizes: `<j-switch label="Small" size="sm"></j-switch>
+<j-switch label="Large" size="lg"></j-switch>`,
+      states: `<j-switch label="On" [(ngModel)]="enabled"></j-switch>
+<j-switch label="Disabled" disabled></j-switch>
+<j-switch onLabel="Enabled" offLabel="Disabled"></j-switch>`,
+    },
+    usage: ['Use for settings where toggling immediately changes behavior.'],
+    variants: ['static label', 'dynamic on/off labels', 'custom trueValue and falseValue'],
+    sizes: ['sm, md, and lg'],
+    states: ['off', 'on', 'disabled', 'readonly', 'invalid'],
+    inputs: [prop('label', 'string', "''", 'Static label.'), prop('onLabel / offLabel', 'string', "''", 'Text shown from current state when label is empty.'), prop('trueValue / falseValue', 'unknown', 'true / false', 'Values written to Angular forms.')],
+    outputs: [event('valueChange', 'unknown', 'Emits the trueValue or falseValue.')],
+    accessibility: ['The input uses role switch and aria-checked. Keep the label clear.'],
+    bestPractices: ['Do not use Switch for choices that need form review before saving; use Checkbox instead.'],
+  },
+  {
+    slug: 'button',
+    name: 'Button',
+    category: 'Buttons',
+    icon: 'mouse-pointer-click',
+    selector: 'j-button',
+    importPath: 'jrng-ui/button',
+    status: 'Stable',
+    description: 'An action control for submitting forms, saving changes, opening overlays, or running commands.',
+    whenToUse: 'Use Button when the user intentionally performs an action.',
+    code: {
+      importCode: `import { JButtonComponent } from 'jrng-ui/button';`,
+      basic: `<j-button label="Save changes"></j-button>`,
+      variants: `<j-button label="Primary"></j-button>
+<j-button label="Secondary" severity="secondary"></j-button>
+<j-button label="Outline" variant="outline"></j-button>
+<j-button label="Ghost" variant="ghost"></j-button>`,
+      sizes: `<j-button label="Small" size="sm"></j-button>
+<j-button label="Medium" size="md"></j-button>
+<j-button label="Large" size="lg"></j-button>`,
+      states: `<j-button label="Disabled" disabled></j-button>
+<j-button label="Saving" loading></j-button>
+<j-button label="Full width" fullWidth></j-button>`,
+    },
+    usage: ['Use one primary action per focused area and secondary buttons for supporting actions.'],
+    variants: ['filled', 'outline', 'ghost', 'soft', 'link'],
+    sizes: ['sm, md, lg, xl'],
+    states: ['default', 'disabled', 'loading', 'full width', 'icon only'],
+    inputs: [prop('label', 'string', "''", 'Text label.'), prop('severity', 'primary | secondary | neutral | success | warning | danger | info', "'primary'", 'Action intent.'), prop('variant', 'filled | outline | ghost | soft | link', "'filled'", 'Visual treatment.'), prop('loading', 'boolean', 'false', 'Shows a spinner and blocks clicks.'), prop('iconOnly', 'boolean', 'false', 'Optimizes dimensions for icon-only buttons.')],
+    outputs: [event('clicked', 'MouseEvent', 'Emits when activated and not disabled or loading.')],
+    accessibility: ['Icon-only buttons need ariaLabel. Loading buttons expose busy state.'],
+    bestPractices: ['Use destructive severity only for actions with destructive outcomes.', 'Keep labels verb-first: Save, Create, Delete, Export.'],
+  },
+  {
+    slug: 'icon-button',
+    name: 'Icon Button',
+    category: 'Buttons',
+    icon: 'settings',
+    selector: 'j-button',
+    importPath: 'jrng-ui/button',
+    status: 'Stable',
+    description: 'A compact button style for toolbar and row actions where an icon carries the command.',
+    whenToUse: 'Use Icon Button for repeated utility actions such as search, filter, settings, edit, or close.',
+    code: {
+      importCode: `import { JButtonComponent } from 'jrng-ui/button';`,
+      basic: `<j-button iconOnly ariaLabel="Search">
+  <j-icon name="search"></j-icon>
+</j-button>`,
+      variants: `<j-button iconOnly variant="ghost" ariaLabel="Settings">
+  <j-icon name="settings"></j-icon>
+</j-button>`,
+      states: `<j-button iconOnly ariaLabel="Loading" loading></j-button>
+<j-button iconOnly ariaLabel="Disabled" disabled>
+  <j-icon name="settings"></j-icon>
+</j-button>`,
+    },
+    usage: ['Use in toolbars, compact tables, cards, and overlay headers.'],
+    variants: ['filled icon button', 'ghost icon button', 'outline icon button'],
+    sizes: ['sm, md, lg, xl'],
+    states: ['default', 'hover/focus', 'disabled', 'loading'],
+    inputs: [prop('iconOnly', 'boolean', 'false', 'Applies icon-only sizing.'), prop('ariaLabel', 'string', "''", 'Required accessible label when no text label is visible.'), prop('variant', 'JButtonVariant', "'filled'", 'Visual treatment.')],
+    outputs: [event('clicked', 'MouseEvent', 'Emits when activated.')],
+    accessibility: ['Always provide ariaLabel because there is no visible text.'],
+    bestPractices: ['Use familiar Lucide icons and tooltips for commands that are not universally obvious.'],
+  },
+  {
+    slug: 'card',
+    name: 'Card',
+    category: 'Data Display',
+    icon: 'layers',
+    selector: 'j-card',
+    importPath: 'jrng-ui/card',
+    status: 'Stable',
+    description: 'A surface that groups related content, actions, or metrics.',
+    whenToUse: 'Use Card to contain a coherent piece of information, not as a general page wrapper.',
+    code: {
+      importCode: `import { JCardComponent } from 'jrng-ui/card';`,
+      basic: `<j-card title="Order summary" subtitle="Current month">
+  <p>42 orders created.</p>
+</j-card>`,
+      variants: `<j-card title="Elevated" elevated></j-card>
+<j-card title="Bordered" bordered></j-card>
+<j-card title="Soft" variant="soft"></j-card>`,
+      states: `<j-card title="Loading" skeleton></j-card>
+<j-card title="Interactive" interactive></j-card>`,
+    },
+    usage: ['Use cards for repeated items, dashboard widgets, and short content groups.'],
+    variants: ['default', 'elevated', 'bordered', 'soft'],
+    sizes: ['Use compact for denser lists and default for standard content.'],
+    states: ['default', 'interactive', 'loading skeleton'],
+    inputs: [prop('title / header', 'string', "''", 'Main heading.'), prop('subtitle / subheader', 'string', "''", 'Secondary text.'), prop('variant', 'default | elevated | bordered | soft', "'default'", 'Surface style.'), prop('compact', 'boolean', 'false', 'Reduces spacing.')],
+    outputs: noOutputs,
+    accessibility: ['Use semantic headings inside cards when the card starts a section.'],
+    bestPractices: ['Do not nest cards inside cards. Put repeated card items in a grid or list.'],
+  },
+  {
+    slug: 'badge',
+    name: 'Badge',
+    category: 'Data Display',
+    icon: 'badge',
+    selector: 'j-badge',
+    importPath: 'jrng-ui/badge',
+    status: 'Stable',
+    description: 'A small count or status indicator.',
+    whenToUse: 'Use Badge for compact values such as counts, unread items, or short state labels.',
+    code: {
+      importCode: `import { JBadgeComponent } from 'jrng-ui/badge';`,
+      basic: `<j-badge value="12"></j-badge>`,
+      variants: `<j-badge value="Active" severity="success"></j-badge>
+<j-badge value="Warning" severity="warning"></j-badge>
+<j-badge value="Error" severity="danger"></j-badge>`,
+      sizes: `<j-badge value="Sm" size="sm"></j-badge>
+<j-badge value="Lg" size="lg"></j-badge>`,
+    },
+    usage: ['Use for short, low-detail indicators near labels or controls.'],
+    variants: ['primary, secondary, success, warning, danger, info, neutral'],
+    sizes: ['sm, md, lg'],
+    states: ['active marker through the active input'],
+    inputs: [prop('value', 'string', "''", 'Displayed text.'), prop('severity', 'JSeverity', "'primary'", 'Color intent.'), prop('rounded', 'boolean', 'true', 'Uses pill shape.')],
+    outputs: noOutputs,
+    accessibility: ['Do not communicate status by color alone; use readable text too.'],
+    bestPractices: ['Keep badge text very short. Use Tag when the label is content, not a count.'],
+  },
+  {
+    slug: 'tag',
+    name: 'Tag',
+    category: 'Data Display',
+    icon: 'tag',
+    selector: 'j-tag',
+    importPath: 'jrng-ui/tag',
+    status: 'Stable',
+    description: 'A labeled pill for categories, filters, and removable labels.',
+    whenToUse: 'Use Tag to show metadata or selected filters.',
+    code: {
+      importCode: `import { JTagComponent } from 'jrng-ui/tag';`,
+      basic: `<j-tag label="Design"></j-tag>`,
+      variants: `<j-tag label="Success" severity="success"></j-tag>
+<j-tag label="Danger" severity="danger"></j-tag>
+<j-tag label="Removable" removable></j-tag>`,
+      sizes: `<j-tag label="Small" size="sm"></j-tag>
+<j-tag label="Large" size="lg"></j-tag>`,
+    },
+    usage: ['Use for facets, categories, labels, and selected chips.'],
+    variants: ['severity colors', 'rounded', 'removable'],
+    sizes: ['sm, md, lg'],
+    states: ['default', 'removable'],
+    inputs: [prop('label', 'string', "''", 'Tag text.'), prop('removable', 'boolean', 'false', 'Shows a remove button.'), prop('removeLabel', 'string', "'Remove'", 'Accessible label for remove button.')],
+    outputs: [event('remove', 'MouseEvent', 'Emits when the remove button is clicked.')],
+    accessibility: ['Use a specific removeLabel when many tags are shown, for example Remove Design filter.'],
+    bestPractices: ['Avoid long tag text. Wrap tags to multiple lines in narrow containers.'],
+  },
+  {
+    slug: 'table',
+    name: 'Table',
+    category: 'Data Display',
+    icon: 'table',
+    selector: 'j-table',
+    importPath: 'jrng-ui/table',
+    status: 'Stable',
+    description: 'A data table for structured rows and columns with sorting, pagination, selection, and states.',
+    whenToUse: 'Use Table for comparable data where users need to scan across columns.',
+    code: {
+      importCode: `import { JTableComponent, JTableColumn } from 'jrng-ui/table';`,
+      basic: `<j-table [value]="orders" [columns]="columns"></j-table>`,
+      variants: `<j-table [value]="orders" [columns]="columns" striped paginator [rows]="10"></j-table>`,
+      states: `<j-table [value]="[]" [columns]="columns" emptyMessage="No orders found"></j-table>
+<j-table [value]="orders" [columns]="columns" loading></j-table>`,
+      angular: `columns: JTableColumn[] = [
+  { field: 'order', header: 'Order', sortable: true },
+  { field: 'status', header: 'Status' },
+  { field: 'total', header: 'Total', align: 'end' }
+];`,
+    },
+    usage: ['Use for orders, users, files, tasks, invoices, and audit logs.'],
+    variants: ['striped', 'hoverable', 'paginated', 'sortable', 'selectable', 'lazy-loaded'],
+    sizes: ['Rows are controlled through table density and surrounding layout.'],
+    states: ['default', 'loading', 'empty', 'filtered empty', 'selected rows'],
+    inputs: [prop('value', 'readonly JTableRow[]', '[]', 'Rows to render.'), prop('columns', 'readonly JTableColumn[]', '[]', 'Column definitions.'), prop('paginator', 'boolean', 'false', 'Shows pagination controls.'), prop('loading', 'boolean', 'false', 'Shows loading rows.'), prop('selectionMode', 'single | multiple | checkbox | none', "'none'", 'Selection behavior.')],
+    outputs: [event('sortChange', 'JTableSort', 'Emits when sorting changes.'), event('pageChange', 'JTablePageChange', 'Emits when page changes.'), event('rowClick', 'JTableRowClickEvent', 'Emits when a row is clicked.')],
+    accessibility: ['Use clear column headers and do not hide critical actions behind hover-only UI.'],
+    bestPractices: ['Use pagination or lazy loading for large datasets.', 'Keep column labels short and align numeric columns to the end.'],
+  },
+  {
+    slug: 'toast',
+    name: 'Toast',
+    category: 'Feedback',
+    icon: 'message-square-more',
+    selector: 'j-toast',
+    importPath: 'jrng-ui/toast',
+    status: 'Stable',
+    description: 'A temporary message stack for success, error, warning, and info feedback.',
+    whenToUse: 'Use Toast after background actions such as saving, deleting, uploading, or exporting.',
+    code: {
+      importCode: `import { JrToastContainerComponent, JrToastService } from 'jrng-ui/toast';`,
+      basic: `<j-toast position="top-right"></j-toast>`,
+      variants: `toast.success('Order saved');
+toast.error('Could not save order');
+toast.warning('Review required');
+toast.info('Export started');`,
+      states: `toast.show({
+  severity: 'success',
+  summary: 'Saved',
+  detail: 'The order was updated.',
+  life: 3000
+});`,
+    },
+    usage: ['Place one toast container near the app root and call the service from workflows.'],
+    variants: ['success', 'error', 'warning', 'info', 'neutral'],
+    sizes: ['Toast size is content-based. Keep content concise.'],
+    states: ['visible', 'dismissed', 'sticky', 'with actions'],
+    inputs: [prop('position', 'JToastPosition', "'top-right'", 'Stack position.')],
+    outputs: noOutputs,
+    accessibility: ['Messages use live-region semantics. Keep error messages clear and actionable.'],
+    bestPractices: ['Do not use toast for critical confirmation that blocks the user; use Dialog instead.'],
+  },
+  {
+    slug: 'progress',
+    name: 'Progress',
+    category: 'Feedback',
+    icon: 'loader-circle',
+    selector: 'j-progress-bar',
+    importPath: 'jrng-ui/progress-bar',
+    status: 'Stable',
+    description: 'A visual indicator for determinate or indeterminate progress.',
+    whenToUse: 'Use Progress when the user is waiting for upload, import, setup, or processing work.',
+    code: {
+      importCode: `import { JProgressBarComponent } from 'jrng-ui/progress-bar';`,
+      basic: `<j-progress-bar [value]="64" label="Upload progress"></j-progress-bar>`,
+      variants: `<j-progress-bar [value]="72" severity="success"></j-progress-bar>
+<j-progress-bar [value]="42" severity="warning"></j-progress-bar>
+<j-progress-bar indeterminate label="Loading"></j-progress-bar>`,
+    },
+    usage: ['Use determinate progress when you know the percentage and indeterminate when work has started but duration is unknown.'],
+    variants: ['determinate', 'indeterminate', 'severity colors'],
+    sizes: ['Progress bar height is fixed by component styling; wrap with labels for context.'],
+    states: ['0%', 'in progress', 'complete', 'indeterminate'],
+    inputs: [prop('value', 'number', '0', 'Progress percentage from 0 to 100.'), prop('indeterminate', 'boolean', 'false', 'Shows a looping loading indicator.'), prop('label', 'string', "''", 'Accessible label.')],
+    outputs: noOutputs,
+    accessibility: ['Provide a label for screen readers. Determinate progress exposes aria-valuenow.'],
+    bestPractices: ['Show nearby text for long-running work, not just the bar.'],
+  },
+  {
+    slug: 'skeleton',
+    name: 'Skeleton',
+    category: 'Feedback',
+    icon: 'panel-top',
+    selector: 'j-skeleton',
+    importPath: 'jrng-ui/skeleton',
+    status: 'Stable',
+    description: 'A placeholder used while content is loading.',
+    whenToUse: 'Use Skeleton when the layout is known but content has not loaded yet.',
+    code: {
+      importCode: `import { JSkeletonComponent } from 'jrng-ui/skeleton';`,
+      basic: `<j-skeleton width="12rem"></j-skeleton>`,
+      variants: `<j-skeleton variant="text"></j-skeleton>
+<j-skeleton variant="avatar"></j-skeleton>
+<j-skeleton variant="card"></j-skeleton>
+<j-skeleton variant="table" [rows]="3"></j-skeleton>`,
+      states: `<j-skeleton animation="pulse"></j-skeleton>
+<j-skeleton [animated]="false"></j-skeleton>`,
+    },
+    usage: ['Use for cards, tables, avatars, and text blocks while data is loading.'],
+    variants: ['rectangle', 'text', 'avatar', 'card', 'table'],
+    sizes: ['Use width and height for custom dimensions.'],
+    states: ['wave animation', 'pulse animation', 'static'],
+    inputs: [prop('variant', 'rectangle | text | avatar | card | table', "'rectangle'", 'Skeleton layout preset.'), prop('width / height', 'string', "'100%' / '1rem'", 'Custom dimensions.'), prop('rows', 'number', '4', 'Rows for table skeleton.')],
+    outputs: noOutputs,
+    accessibility: ['Skeletons are aria-hidden. Pair the loading region with status text if loading is important.'],
+    bestPractices: ['Match the approximate shape of the content to avoid layout shift.'],
+  },
+  {
+    slug: 'tabs',
+    name: 'Tabs',
+    category: 'Navigation',
+    icon: 'panel-top',
+    selector: 'j-tabs',
+    importPath: 'jrng-ui/tabs',
+    status: 'Stable',
+    description: 'A tab set that switches between related panels without leaving the page.',
+    whenToUse: 'Use Tabs for sibling views at the same level, such as Overview, Activity, and Settings.',
+    code: {
+      importCode: `import { JTabsComponent, JTabComponent } from 'jrng-ui/tabs';`,
+      basic: `<j-tabs>
+  <j-tab header="Overview">Overview content</j-tab>
+  <j-tab header="Activity">Activity content</j-tab>
+</j-tabs>`,
+      variants: `<j-tabs [selectedIndex]="1" lazy>
+  <j-tab header="Details">Details</j-tab>
+  <j-tab header="Settings">Settings</j-tab>
+</j-tabs>`,
+    },
+    usage: ['Use for a small number of related panels.'],
+    variants: ['default', 'lazy', 'scrollable', 'closable tabs'],
+    sizes: ['Tabs use standard control sizing.'],
+    states: ['active', 'disabled', 'closable'],
+    inputs: [prop('selectedIndex', 'number', '0', 'Active tab index.'), prop('lazy', 'boolean', 'false', 'Renders tab content after activation.'), prop('scrollable', 'boolean', 'true', 'Allows horizontal scrolling.')],
+    outputs: [event('selectedIndexChange', 'number', 'Emits when the active tab changes.'), event('tabClose', 'number', 'Emits when a closable tab is closed.')],
+    accessibility: ['Tabs use tablist, tab, and tabpanel roles with keyboard navigation.'],
+    bestPractices: ['Avoid using tabs as a replacement for primary app navigation.'],
+  },
+  {
+    slug: 'breadcrumb',
+    name: 'Breadcrumb',
+    category: 'Navigation',
+    icon: 'route',
+    selector: 'j-breadcrumb',
+    importPath: 'jrng-ui/breadcrumb',
+    status: 'Stable',
+    description: 'A path indicator that helps users understand where they are in a hierarchy.',
+    whenToUse: 'Use Breadcrumb in deep pages where users may need to go back to a parent section.',
+    code: {
+      importCode: `import { JBreadcrumbComponent } from 'jrng-ui/breadcrumb';`,
+      basic: `<j-breadcrumb [home]="home" [model]="items"></j-breadcrumb>`,
+      angular: `home = { label: 'Home', routerLink: '/' };
+items = [
+  { label: 'Docs', routerLink: '/docs' },
+  { label: 'Components' }
+];`,
+    },
+    usage: ['Use in nested admin, documentation, or file-manager pages.'],
+    variants: ['home item', 'router links', 'custom separator template'],
+    sizes: ['Breadcrumb is compact by default.'],
+    states: ['link', 'current page', 'disabled'],
+    inputs: [prop('home', 'JBreadcrumbItem', 'undefined', 'Optional first item.'), prop('model', 'readonly JBreadcrumbItem[]', '[]', 'Breadcrumb items.')],
+    outputs: [event('itemClick', 'JBreadcrumbClickEvent', 'Emits when a breadcrumb item is clicked.')],
+    accessibility: ['The current item exposes aria-current page.'],
+    bestPractices: ['Keep labels short and use real page names.'],
+  },
+  {
+    slug: 'menu',
+    name: 'Menu',
+    category: 'Navigation',
+    icon: 'menu',
+    selector: 'j-menu',
+    importPath: 'jrng-ui/menu',
+    status: 'Stable',
+    description: 'A vertical action or navigation menu with optional submenus and badges.',
+    whenToUse: 'Use Menu for action lists, profile menus, contextual commands, and compact navigation.',
+    code: {
+      importCode: `import { JMenuComponent, JMenuItem } from 'jrng-ui/menu';`,
+      basic: `<j-menu [model]="items" ariaLabel="Project actions"></j-menu>`,
+      angular: `items: JMenuItem[] = [
+  { label: 'Edit', icon: 'Edit' },
+  { label: 'Archive', badge: 'New' },
+  { separator: true },
+  { label: 'Delete', disabled: true }
+];`,
+    },
+    usage: ['Use inline for navigation or popup mode for contextual commands.'],
+    variants: ['inline', 'popup', 'nested submenu', 'separator', 'badge'],
+    sizes: ['Menu items use standard compact action sizing.'],
+    states: ['focused', 'disabled', 'open submenu', 'popup visible'],
+    inputs: [prop('model', 'readonly JMenuItem[]', '[]', 'Menu item tree.'), prop('popup', 'boolean', 'false', 'Uses popup positioning.'), prop('visible', 'boolean', 'false', 'Controls popup visibility.')],
+    outputs: [event('itemClick', '{ item: JMenuItem; originalEvent: Event }', 'Emits when a leaf item is activated.'), event('visibleChange', 'boolean', 'Emits popup visibility changes.')],
+    accessibility: ['Menu uses menu roles and supports keyboard navigation.'],
+    bestPractices: ['Use concise item labels and separators for distinct command groups.'],
+  },
+  {
+    slug: 'sidebar',
+    name: 'Sidebar',
+    category: 'Navigation',
+    icon: 'panel-left-open',
+    selector: 'j-responsive-sidebar',
+    importPath: 'jrng-ui/responsive-sidebar',
+    status: 'Stable',
+    description: 'A responsive side navigation container that becomes an overlay on smaller screens.',
+    whenToUse: 'Use Sidebar for persistent secondary navigation or filters.',
+    code: {
+      importCode: `import { JResponsiveSidebarComponent } from 'jrng-ui/responsive-sidebar';`,
+      basic: `<j-responsive-sidebar title="Workspace" [(open)]="sidebarOpen">
+  <a routerLink="/docs">Docs</a>
+</j-responsive-sidebar>`,
+    },
+    usage: ['Use for app sections, settings navigation, and responsive filter panels.'],
+    variants: ['desktop aside', 'mobile overlay with mask'],
+    sizes: ['Width is controlled by layout and responsive styles.'],
+    states: ['open', 'closed', 'mobile overlay'],
+    inputs: [prop('open', 'boolean', 'false', 'Controls visibility on mobile.'), prop('title', 'string', "'Navigation'", 'Header title.'), prop('styleClass', 'string', "''", 'Custom root class.')],
+    outputs: [event('openChange', 'boolean', 'Emits when the model changes.')],
+    accessibility: ['Provide clear navigation labels inside the sidebar.'],
+    bestPractices: ['Keep sidebar navigation scannable and grouped.'],
+  },
+  {
+    slug: 'dialog',
+    name: 'Dialog',
+    category: 'Overlay',
+    icon: 'message-square',
+    selector: 'j-dialog',
+    importPath: 'jrng-ui/dialog',
+    status: 'Stable',
+    description: 'A modal or positioned overlay for focused tasks and confirmations.',
+    whenToUse: 'Use Dialog when the user must complete or dismiss a focused task before returning.',
+    code: {
+      importCode: `import { JDialogComponent } from 'jrng-ui/dialog';`,
+      basic: `<j-dialog header="Edit profile" [(visible)]="visible">
+  Dialog content
+</j-dialog>`,
+      variants: `<j-dialog header="Small" size="sm" [(visible)]="visible"></j-dialog>
+<j-dialog header="Right panel" position="right" [(visible)]="visible"></j-dialog>`,
+    },
+    usage: ['Use for edit forms, confirmations, detail previews, and short workflows.'],
+    variants: ['modal', 'non-modal', 'sizes sm to full', 'positions', 'draggable', 'resizable'],
+    sizes: ['sm, md, lg, xl, full'],
+    states: ['open', 'closed', 'dismissable backdrop', 'not closable'],
+    inputs: [prop('visible', 'boolean', 'false', 'Controls dialog visibility.'), prop('header', 'string', "''", 'Dialog title.'), prop('size', 'sm | md | lg | xl | full', "'md'", 'Width preset.'), prop('dismissableMask', 'boolean', 'true', 'Allows backdrop click close.')],
+    outputs: [event('visibleChange', 'boolean', 'Emits when visibility changes.'), event('opened', 'void', 'Emits on open.'), event('closed', 'JDialogCloseReason', 'Emits after close.')],
+    accessibility: ['Dialogs trap focus and should return focus to the trigger after close.'],
+    bestPractices: ['Use clear primary and secondary actions. Do not place long full-page workflows inside a small dialog.'],
+  },
+  {
+    slug: 'tooltip',
+    name: 'Tooltip',
+    category: 'Overlay',
+    icon: 'info',
+    selector: '[jTooltip]',
+    importPath: 'jrng-ui/tooltip',
+    status: 'Stable',
+    description: 'A small helper message shown on hover or focus.',
+    whenToUse: 'Use Tooltip for short clarification, especially on icon buttons.',
+    code: {
+      importCode: `import { JTooltipDirective } from 'jrng-ui/tooltip';`,
+      basic: `<button jTooltip="Refresh data" tooltipPosition="top">Refresh</button>`,
+      variants: `<button jTooltip="More details" tooltipPosition="right">Info</button>`,
+    },
+    usage: ['Use for brief, non-critical supporting text.'],
+    variants: ['top', 'right', 'bottom', 'left'],
+    sizes: ['Tooltip size is content-based.'],
+    states: ['hidden', 'visible on hover/focus', 'disabled'],
+    inputs: [prop('jTooltip', 'string', "''", 'Tooltip text.'), prop('tooltipPosition', 'top | right | bottom | left', "'top'", 'Preferred placement.'), prop('tooltipDisabled', 'boolean', 'false', 'Disables the tooltip.')],
+    outputs: noOutputs,
+    accessibility: ['Tooltip appears on focus as well as hover. Do not put essential instructions only in a tooltip.'],
+    bestPractices: ['Keep tooltip text under one sentence.'],
+  },
+  {
+    slug: 'popover',
+    name: 'Popover',
+    category: 'Overlay',
+    icon: 'message-square-more',
+    selector: 'j-popover',
+    importPath: 'jrng-ui/popover',
+    status: 'Beta',
+    description: 'A lightweight floating panel anchored to a target.',
+    whenToUse: 'Use Popover for short contextual content, small forms, or additional details.',
+    code: {
+      importCode: `import { JPopoverComponent } from 'jrng-ui/popover';`,
+      basic: `<j-popover [(visible)]="visible" position="bottom">
+  Popover content
+</j-popover>`,
+      variants: `<j-popover position="top"></j-popover>
+<j-popover position="right"></j-popover>`,
+    },
+    usage: ['Use when Dialog is too heavy and Tooltip is too small.'],
+    variants: ['top', 'right', 'bottom', 'left', 'dismissable'],
+    sizes: ['Content-based with a minimum width.'],
+    states: ['open', 'closed', 'dismissed on outside click', 'escape close'],
+    inputs: [prop('visible', 'boolean', 'false', 'Controls visibility.'), prop('position', 'top | right | bottom | left', "'bottom'", 'Preferred placement.'), prop('dismissable', 'boolean', 'true', 'Closes on outside click.')],
+    outputs: [event('opened', 'void', 'Emits when shown.'), event('closed', 'void', 'Emits when hidden.')],
+    accessibility: ['Use for contextual content and keep keyboard dismissal available.'],
+    bestPractices: ['Do not use Popover for destructive confirmations; use Dialog.'],
+  },
+];

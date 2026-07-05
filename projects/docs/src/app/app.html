@@ -78,10 +78,11 @@
     </div>
     <nav aria-label="Footer navigation">
       <a routerLink="/docs">Docs</a>
-      <a routerLink="/components">Components</a>
+      <a routerLink="/docs/components">Components</a>
+      <a routerLink="/docs/charts">Charts</a>
       <a routerLink="/themes">Themes</a>
-      <a routerLink="/support">Support</a>
-      <a href="https://github.com/jrng-ui/jrng-ui" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a [href]="githubUrl" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a [href]="npmUrl" target="_blank" rel="noopener noreferrer">npm</a>
     </nav>
   </footer>
 </div>

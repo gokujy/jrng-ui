@@ -1,6 +1,6 @@
 {
   "name": "jrng-ui",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "description": "A modern, premium Angular UI component library for building clean, fast, and accessible web applications.",
   "homepage": "https://jrngui.dev/",
   "keywords": [
@@ -18,7 +18,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jrng-ui/jrng-ui.git"
+    "url": "git+https://github.com/gokujy/jrng-ui.git"
   },
   "license": "MIT",
   "peerDependencies": {
