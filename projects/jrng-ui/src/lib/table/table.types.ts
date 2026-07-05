@@ -11,6 +11,8 @@ export type JTableColumnType =
   | 'action'
   | 'custom';
 export type JTableSelectionMode = 'single' | 'multiple' | 'checkbox' | 'none';
+export type JTableSize = 'small' | 'medium' | 'large';
+export type JTableExportRows = 'all' | 'page' | 'selected';
 export type JTableRow = Readonly<Record<string, unknown>>;
 
 export interface JTableAction {
@@ -39,6 +41,36 @@ export interface JTableColumn {
   readonly frozenAlign?: 'left' | 'right';
   readonly templateKey?: string;
   readonly actions?: readonly JTableAction[];
+}
+
+export interface JTableExportOptions {
+  readonly rows?: JTableExportRows;
+  readonly visibleColumnsOnly?: boolean;
+  readonly filename?: string;
+}
+
+export interface JTableConfig {
+  readonly pagination?: boolean;
+  readonly sortable?: boolean;
+  readonly multiSort?: boolean;
+  readonly filterRow?: boolean;
+  readonly columnFilter?: boolean;
+  readonly headerFilter?: boolean;
+  readonly globalSearch?: boolean;
+  readonly reorderableRows?: boolean;
+  readonly lockableRows?: boolean;
+  readonly reorderableColumns?: boolean;
+  readonly resizableColumns?: boolean;
+  readonly frozenColumns?: boolean;
+  readonly maximizable?: boolean;
+  readonly exportable?: boolean;
+  readonly stateful?: boolean;
+  readonly columnManager?: boolean;
+  readonly size?: JTableSize;
+  readonly pageSize?: number;
+  readonly rowsPerPageOptions?: readonly number[];
+  readonly selectionMode?: JTableSelectionMode;
+  readonly export?: JTableExportOptions;
 }
 
 export interface JTableSort {
@@ -96,6 +128,50 @@ export interface JTableColumnReorderEvent {
   readonly dragIndex: number;
   readonly dropIndex: number;
   readonly columns: readonly JTableColumn[];
+}
+
+export interface JTableColumnResizeEvent {
+  readonly column: JTableColumn;
+  readonly field: string;
+  readonly width: string;
+}
+
+export interface JTableColumnVisibilityChangeEvent {
+  readonly column: JTableColumn;
+  readonly field: string;
+  readonly visible: boolean;
+  readonly visibleColumns: readonly JTableColumn[];
+}
+
+export interface JTableRowLockEvent {
+  readonly row: JTableRow;
+  readonly index: number;
+  readonly key: string;
+}
+
+export interface JTableExportEvent {
+  readonly filename: string;
+  readonly options: JTableExportOptions;
+  readonly rows: readonly JTableRow[];
+  readonly columns: readonly JTableColumn[];
+  readonly csv: string;
+  defaultPrevented: boolean;
+  preventDefault(): void;
+}
+
+export interface JTableState {
+  readonly first: number;
+  readonly rows: number;
+  readonly sortField: string;
+  readonly sortOrder: JTableSortOrder;
+  readonly multiSortMeta: readonly JTableSort[];
+  readonly filters: Record<string, unknown>;
+  readonly globalFilter: string;
+  readonly hiddenColumns: readonly string[];
+  readonly columnOrder: readonly string[];
+  readonly columnWidths: Record<string, string>;
+  readonly lockedRows: readonly string[];
+  readonly size: JTableSize;
 }
 
 export interface JTableActionEvent {

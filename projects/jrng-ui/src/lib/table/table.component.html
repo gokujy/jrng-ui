@@ -5,7 +5,7 @@
   data-jc-extend="header body row cell paginator"
   [attr.data-j-loading]="loading ? 'true' : null"
 >
-  @if (toolbarTemplate || showGlobalFilter || showColumnManager || showExport || showTableState) {
+  @if (toolbarTemplate || showGlobalFilter || showColumnManager || showExport || showTableState || maximizable) {
     <div class="j-table__toolbar" data-jc-section="toolbar">
       @if (toolbarTemplate) {
         <ng-container [ngTemplateOutlet]="toolbarTemplate" [ngTemplateOutletContext]="tableContext" />
@@ -20,26 +20,37 @@
             (input)="handleGlobalFilter($any($event.target).value)"
           />
         </label>
+        <button class="j-table__tool-button" type="button" (click)="applyFilters()">Apply filters</button>
+        <button class="j-table__tool-button" type="button" (click)="resetFilters()">Reset filters</button>
       }
       @if (showColumnManager) {
         <details class="j-table__columns" data-jc-section="column-manager">
-          <summary>Columns</summary>
+          <summary>Table config</summary>
           <div class="j-table__columns-panel">
             @for (column of columnManagerColumns; track column.field) {
-              <label>
-                <input
-                  type="checkbox"
-                  [checked]="!hiddenColumnFields.has(column.field) && column.visible !== false"
-                  (change)="toggleColumnVisibility(column, $event)"
-                />
-                <span>{{ column.header }}</span>
-              </label>
+              <div class="j-table__column-config">
+                <label>
+                  <input
+                    type="checkbox"
+                    [checked]="!hiddenColumnFields.has(column.field) && column.visible !== false"
+                    (change)="toggleColumnVisibility(column, $event)"
+                  />
+                  <span>{{ column.header }}</span>
+                </label>
+                <small>{{ column.field }}</small>
+              </div>
             }
+            <button class="j-table__tool-button" type="button" (click)="resetColumns()">Reset columns</button>
           </div>
         </details>
       }
       @if (showExport) {
         <button class="j-table__tool-button" type="button" (click)="exportCSV()">Export CSV</button>
+      }
+      @if (maximizable) {
+        <button class="j-table__tool-button" type="button" [attr.aria-pressed]="maximized" (click)="setMaximized(!maximized)">
+          {{ maximized ? 'Minimize' : 'Maximize' }}
+        </button>
       }
       @if (showTableState) {
         <button class="j-table__tool-button" type="button" (click)="saveState()">Save state</button>
@@ -75,6 +86,9 @@
           @if (expandableRows) {
             <th scope="col" class="j-table__expand-cell" data-jc-section="expansion-header"></th>
           }
+          @if (lockableRows) {
+            <th scope="col" class="j-table__lock-cell" data-jc-section="lock-header">Lock</th>
+          }
 
           @for (column of resolvedColumns; track column.field; let columnIndex = $index) {
             <th
@@ -99,17 +113,17 @@
                   class="j-table__sort"
                   data-jc-section="sort"
                   [attr.data-j-active]="sortOrderFor(column) ? 'true' : null"
-                  [disabled]="!column.sortable"
-                  [attr.data-j-disabled]="!column.sortable ? 'true' : null"
+                  [disabled]="!isColumnSortable(column)"
+                  [attr.data-j-disabled]="!isColumnSortable(column) ? 'true' : null"
                   (click)="toggleSort(column)"
                 >
                   <span>{{ column.header }}</span>
-                  @if (column.sortable) {
+                  @if (isColumnSortable(column)) {
                     <j-sort-icon [order]="sortOrderFor(column)" />
                   }
                 </button>
               }
-              @if (column.filterable) {
+              @if (filterRow && isColumnFilterable(column)) {
                 <j-column-filter
                   [field]="column.field"
                   [label]="column.header"
@@ -118,7 +132,12 @@
                 />
               }
               @if (resizableColumns || column.resizable) {
-                <span class="j-table__resize-handle" data-jc-section="resize" aria-hidden="true"></span>
+                <span
+                  class="j-table__resize-handle"
+                  data-jc-section="resize"
+                  aria-hidden="true"
+                  (pointerdown)="startColumnResize($event, column)"
+                ></span>
               }
             </th>
           }
@@ -147,7 +166,9 @@
           <tr
             data-jc-section="row"
             [class.is-active]="isSelected(row)"
+            [class.is-locked]="isRowLocked(row, rowIndex)"
             [attr.data-j-selected]="isSelected(row) ? 'true' : null"
+            [attr.data-j-locked]="isRowLocked(row, rowIndex) ? 'true' : null"
             [attr.data-j-active]="isSelected(row) ? 'true' : null"
             [attr.tabindex]="selectable ? 0 : null"
             [attr.aria-selected]="selectable ? isSelected(row) : null"
@@ -184,6 +205,19 @@
                 </button>
               </td>
             }
+            @if (lockableRows) {
+              <td class="j-table__lock-cell" data-jc-section="lock-cell">
+                <button
+                  type="button"
+                  class="j-table__lock-button"
+                  [attr.aria-pressed]="isRowLocked(row, rowIndex)"
+                  [attr.aria-label]="isRowLocked(row, rowIndex) ? 'Unlock row' : 'Lock row'"
+                  (click)="toggleRowLock(row, rowIndex, $event)"
+                >
+                  {{ isRowLocked(row, rowIndex) ? 'Unlock' : 'Lock' }}
+                </button>
+              </td>
+            }
             @for (column of resolvedColumns; track column.field) {
               <td
                 data-jc-section="cell"
@@ -202,6 +236,7 @@
                   @switch (column.type || 'text') {
                     @case ('action') {
                       <j-action-menu
+                        popup
                         [actions]="column.actions || []"
                         [row]="row"
                         [rowIndex]="rowIndex"

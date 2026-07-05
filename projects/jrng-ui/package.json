@@ -25,10 +25,14 @@
     "@angular/common": "^21.2.0",
     "@angular/core": "^21.2.0",
     "@angular/forms": "^21.2.0",
-    "chart.js": "^4.0.0"
+    "chart.js": "^4.0.0",
+    "driver.js": "^1.6.0"
   },
   "peerDependenciesMeta": {
     "chart.js": {
+      "optional": true
+    },
+    "driver.js": {
       "optional": true
     }
   },

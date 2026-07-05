@@ -30,10 +30,19 @@ import { JStatusChipComponent } from 'jrng-ui/status-chip';
 import { JSwitchComponent } from 'jrng-ui/switch';
 import { JTabComponent, JTabsComponent } from 'jrng-ui/tabs';
 import { JTagComponent } from 'jrng-ui/tag';
-import { JActionMenuComponent, JColumnFilterComponent, JTableAction, JTableColumn, JTableComponent } from 'jrng-ui/table';
+import {
+  JActionMenuComponent,
+  JColumnFilterComponent,
+  JTableAction,
+  JTableColumn,
+  JTableComponent,
+  JTableConfig,
+  JTableExportEvent,
+} from 'jrng-ui/table';
 import { JTextareaComponent } from 'jrng-ui/textarea';
 import { JTimelineComponent, JTimelineItem } from 'jrng-ui/timeline';
 import { JTooltipDirective } from 'jrng-ui/tooltip';
+import { JTourStepDirective } from 'jrng-ui/tour';
 import { JrToastContainerComponent, JrToastService } from 'jrng-ui/toast';
 import { JRippleDirective } from 'jrng-ui';
 import { ComponentDoc } from './docs-types';
@@ -81,6 +90,7 @@ type DetailTab = 'preview' | 'code';
     JTextareaComponent,
     JTimelineComponent,
     JTooltipDirective,
+    JTourStepDirective,
     JRippleDirective,
     JrToastContainerComponent,
     JCurrencyFormatPipe,
@@ -257,13 +267,13 @@ type DetailTab = 'preview' | 'code';
                   <j-table
                     [value]="orders"
                     [columns]="orderColumns"
+                    [config]="tableConfig"
+                    selectionMode="checkbox"
                     striped
                     hover
-                    paginator
                     [rows]="3"
-                    showGlobalFilter
-                    showColumnManager
-                    showExport
+                    stateKey="docs-orders-table"
+                    (onExport)="handleTableExport($event)"
                   />
                 }
                 @case ('action-menu') {
@@ -449,6 +459,30 @@ type DetailTab = 'preview' | 'code';
                   <div class="j-preview-row">
                     <button class="j-doc-preview-button" type="button" jRipple>Ripple button</button>
                     <button class="j-doc-preview-button" type="button" [jRipple]="false">Disabled ripple</button>
+                  </div>
+                }
+                @case ('tour-guide') {
+                  <div class="j-preview-stack">
+                    <div class="j-preview-row">
+                      <button
+                        id="createBtn"
+                        class="j-doc-preview-button"
+                        type="button"
+                        jTourStep="create-button"
+                        tourTitle="Create"
+                        tourDescription="Click here to create a new record.">
+                        Create
+                      </button>
+                      <button
+                        class="j-doc-preview-button"
+                        type="button"
+                        jTourStep="filter-button"
+                        tourTitle="Filter"
+                        tourDescription="Narrow the table to the records that matter.">
+                        Filter
+                      </button>
+                    </div>
+                    <p class="j-preview-note">Install driver.js and start the tour from JTourService when these targets are rendered.</p>
                   </div>
                 }
                 @case ('timeline') {
@@ -667,10 +701,30 @@ export class ComponentDetailViewComponent {
 
   readonly orderColumns: readonly JTableColumn[] = [
     { field: 'order', header: 'Order', sortable: true },
-    { field: 'customer', header: 'Customer' },
-    { field: 'status', header: 'Status' },
-    { field: 'total', header: 'Total', align: 'end' },
+    { field: 'customer', header: 'Customer', filterable: true, resizable: true },
+    { field: 'status', header: 'Status', filterable: true },
+    { field: 'total', header: 'Total', align: 'end', sortable: true },
+    { field: 'actions', header: 'Actions', type: 'action', actions: [{ key: 'view', label: 'View' }, { key: 'delete', label: 'Delete', severity: 'danger' }] },
   ];
+
+  readonly tableConfig: JTableConfig = {
+    pagination: true,
+    sortable: true,
+    multiSort: true,
+    filterRow: true,
+    columnFilter: true,
+    globalSearch: true,
+    columnManager: true,
+    exportable: true,
+    stateful: true,
+    reorderableRows: true,
+    lockableRows: true,
+    reorderableColumns: true,
+    resizableColumns: true,
+    maximizable: true,
+    size: 'medium',
+    export: { rows: 'selected', visibleColumnsOnly: true },
+  };
 
   readonly orders = [
     { order: '#1008', customer: 'Acme Inc.', status: 'Ready', total: '$428.00' },
@@ -739,5 +793,10 @@ export class ComponentDetailViewComponent {
       acceptLabel: severity === 'danger' ? 'Delete' : 'Continue',
       rejectLabel: 'Cancel',
     });
+  }
+
+  handleTableExport(event: JTableExportEvent): void {
+    event.preventDefault();
+    this.toast.info(`${event.rows.length} row(s) prepared for export.`, 'Export event', { position: 'bottom-right' });
   }
 }

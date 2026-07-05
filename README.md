@@ -64,6 +64,7 @@ Dark mode is enabled by adding `j-dark` to a root element.
 - Angular standalone components and directives
 - Secondary entrypoints such as `jrng-ui/button` and `jrng-ui/input`
 - Forms, buttons, overlays, feedback, navigation, business utilities, and data table components
+- Optional Tour Guide wrapper through `JTourService` and `jTourStep` for apps that install `driver.js`
 - Token-driven light and dark themes
 - CSS variables for component customization
 - Accessibility-focused states, labels, keyboard behavior, and focus rings

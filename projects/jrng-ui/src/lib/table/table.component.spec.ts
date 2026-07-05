@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { JTableColumn, JTableComponent, JTableRow } from './table.component';
+import { JTableColumn, JTableComponent, JTableConfig, JTableExportEvent, JTableRow } from './table.component';
 
 @Component({
   imports: [JTableComponent],
@@ -144,5 +144,66 @@ describe('JTableComponent', () => {
 
     expect(csv).toContain('Code,Name,Amount');
     expect(csv).toContain('REC-3,Record Gamma,300');
+  });
+
+  it('applies enterprise table config', () => {
+    const table = fixture.debugElement.query(By.directive(JTableComponent)).componentInstance as JTableComponent;
+    const config: JTableConfig = {
+      pagination: true,
+      multiSort: true,
+      globalSearch: true,
+      columnManager: true,
+      exportable: true,
+      stateful: true,
+      reorderableRows: true,
+      lockableRows: true,
+      reorderableColumns: true,
+      resizableColumns: true,
+      maximizable: true,
+      size: 'small',
+    };
+
+    table.config = config;
+    table.ngOnChanges({ config: { currentValue: config, previousValue: null, firstChange: true, isFirstChange: () => true } });
+
+    expect(table.paginator).toBe(true);
+    expect(table.sortMode).toBe('multiple');
+    expect(table.showGlobalFilter).toBe(true);
+    expect(table.showColumnManager).toBe(true);
+    expect(table.showExport).toBe(true);
+    expect(table.showTableState).toBe(true);
+    expect(table.lockableRows).toBe(true);
+    expect(table.maximizable).toBe(true);
+    expect(table.size).toBe('small');
+  });
+
+  it('emits row lock aliases', () => {
+    const table = fixture.debugElement.query(By.directive(JTableComponent)).componentInstance as JTableComponent;
+    const locks: unknown[] = [];
+    const onLocks: unknown[] = [];
+    table.lockableRows = true;
+    table.rowLock.subscribe((event) => locks.push(event));
+    table.onRowLock.subscribe((event) => onLocks.push(event));
+
+    table.toggleRowLock(host.rows[0] as JTableRow, 0);
+
+    expect(locks.length).toBe(1);
+    expect(onLocks.length).toBe(1);
+    expect(table.isRowLocked(host.rows[0] as JTableRow, 0)).toBe(true);
+  });
+
+  it('emits export before download and allows prevention', () => {
+    const table = fixture.debugElement.query(By.directive(JTableComponent)).componentInstance as JTableComponent;
+    const exportEvents: JTableExportEvent[] = [];
+    table.export.subscribe((event) => {
+      event.preventDefault();
+      exportEvents.push(event);
+    });
+
+    const csv = table.exportCSV();
+
+    expect(csv).toContain('REC-3');
+    expect(exportEvents[0]?.defaultPrevented).toBe(true);
+    expect(exportEvents[0]?.rows.length).toBe(3);
   });
 });

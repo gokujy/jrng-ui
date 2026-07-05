@@ -69,6 +69,16 @@
     --j-table-header-color: var(--j-color-muted-foreground);
     --j-table-row-hover-bg: color-mix(in srgb, var(--j-color-primary) 5%, transparent);
 
+    --j-tour-overlay-color: rgb(15 23 42 / 58%);
+    --j-tour-popover-bg: var(--j-color-popover);
+    --j-tour-popover-color: var(--j-color-popover-foreground);
+    --j-tour-popover-border: var(--j-color-border);
+    --j-tour-popover-radius: var(--j-radius-lg);
+    --j-tour-button-bg: var(--j-color-muted);
+    --j-tour-button-color: var(--j-color-foreground);
+    --j-tour-primary-button-bg: var(--j-color-primary);
+    --j-tour-primary-button-color: var(--j-color-primary-foreground);
+
     --j-skeleton-bg: var(--j-color-surface-subtle);
     --j-skeleton-shimmer-color: rgb(255 255 255 / 42%);
   }

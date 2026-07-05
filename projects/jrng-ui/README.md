@@ -48,6 +48,7 @@ Or include the compiled CSS in `angular.json`.
 - Standalone Angular components and directives
 - Secondary entrypoints for focused imports
 - Forms, buttons, overlays, feedback, navigation, business utilities, and data table components
+- Optional Tour Guide wrapper through `JTourService` and `jTourStep` for apps that install `driver.js`
 - Token-driven light and dark themes
 - CSS variables for customization
 - Accessibility-focused interaction states

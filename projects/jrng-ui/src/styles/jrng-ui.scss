@@ -160,3 +160,69 @@
     }
   }
 }
+
+@layer j-components {
+  .driver-overlay {
+    background: var(--j-tour-overlay-color, rgb(15 23 42 / 58%)) !important;
+  }
+
+  .driver-popover {
+    background: var(--j-tour-popover-bg, var(--j-color-popover, #ffffff));
+    border: 1px solid var(--j-tour-popover-border, var(--j-color-border, #e2e8f0));
+    border-radius: var(--j-tour-popover-radius, var(--j-radius-lg, 0.75rem));
+    box-shadow: var(--j-shadow-lg, 0 16px 40px rgb(15 23 42 / 18%));
+    color: var(--j-tour-popover-color, var(--j-color-popover-foreground, #111827));
+    font-family: var(--j-font-family, inherit);
+    max-width: min(22rem, calc(100vw - 2rem));
+    padding: var(--j-spacing-4, 1rem);
+  }
+
+  .driver-popover-title {
+    color: var(--j-tour-popover-color, var(--j-color-popover-foreground, #111827));
+    font-size: var(--j-font-size-lg, 1.125rem);
+    font-weight: var(--j-font-weight-semibold, 600);
+    line-height: var(--j-line-height-tight, 1.25);
+  }
+
+  .driver-popover-description {
+    color: var(--j-color-muted-foreground, #64748b);
+    font-size: var(--j-font-size-sm, 0.875rem);
+    line-height: var(--j-line-height-relaxed, 1.625);
+  }
+
+  .driver-popover-footer {
+    align-items: center;
+    gap: var(--j-spacing-2, 0.5rem);
+    margin-top: var(--j-spacing-4, 1rem);
+  }
+
+  .driver-popover-close-btn {
+    color: var(--j-color-muted-foreground, #64748b);
+  }
+
+  .driver-popover button {
+    border-radius: var(--j-radius-md, 0.5rem);
+    font-family: var(--j-font-family, inherit);
+    font-weight: var(--j-font-weight-semibold, 600);
+  }
+
+  .driver-popover-prev-btn,
+  .driver-popover-next-btn {
+    background: var(--j-tour-button-bg, var(--j-color-muted, #f1f5f9));
+    border: 1px solid var(--j-tour-popover-border, var(--j-color-border, #e2e8f0));
+    color: var(--j-tour-button-color, var(--j-color-foreground, #111827));
+    text-shadow: none;
+  }
+
+  .driver-popover-next-btn {
+    background: var(--j-tour-primary-button-bg, var(--j-color-primary, #2563eb));
+    border-color: var(--j-tour-primary-button-bg, var(--j-color-primary, #2563eb));
+    color: var(--j-tour-primary-button-color, var(--j-color-primary-foreground, #ffffff));
+  }
+
+  .driver-popover button:focus-visible,
+  .driver-popover-close-btn:focus-visible {
+    box-shadow: var(--j-focus-ring, 0 0 0 3px rgb(37 99 235 / 28%));
+    outline: none;
+  }
+}

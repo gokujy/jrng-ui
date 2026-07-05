@@ -695,11 +695,22 @@ import { JSelectComponent } from 'jrng-ui/select';`,
     {
       title: 'Tour Guide',
       body: [
-        'Tour Guide support is reserved for the optional Driver.js wrapper in the v0.0.6 release line.',
-        'Do not install Driver.js unless your app uses tours. When implemented, Driver.js should remain an optional peer dependency.',
+        'JRNG UI includes an optional Tour Guide wrapper for short onboarding and feature walkthroughs.',
+        'Install Driver.js only in applications that use tours. App code should use JTourService and jTourStep rather than direct Driver.js APIs.',
       ],
-      codeLabel: 'Terminal',
-      code: 'npm install driver.js',
+      codeLabel: 'TypeScript',
+      code: `npm install driver.js
+
+this.jTour.start({
+  id: 'dashboard-intro-v1',
+  steps: [
+    {
+      element: '#createBtn',
+      title: 'Create',
+      description: 'Click here to create a new record.'
+    }
+  ]
+});`,
     },
     {
       title: 'Changelog',

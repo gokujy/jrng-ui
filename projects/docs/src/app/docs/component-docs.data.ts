@@ -66,7 +66,7 @@ export const componentGroups: readonly ComponentGroup[] = [
   { name: 'Feedback', icon: 'message-square', slugs: ['toast', 'progress', 'skeleton', 'copy-button'] },
   { name: 'Navigation', icon: 'route', slugs: ['tabs', 'breadcrumb', 'menu', 'sidebar'] },
   { name: 'Overlay', icon: 'panel-top', slugs: ['dialog', 'confirm-dialog', 'drawer', 'tooltip', 'popover'] },
-  { name: 'Utilities', icon: 'wrench', slugs: ['ripple', 'timeline', 'file-upload', 'formatting'] },
+  { name: 'Utilities', icon: 'wrench', slugs: ['ripple', 'timeline', 'file-upload', 'formatting', 'tour-guide'] },
 ];
 
 export const componentDocs: readonly ComponentDoc[] = [
@@ -453,31 +453,59 @@ teams = [
     description: 'A data table for structured rows and columns with sorting, pagination, selection, and states.',
     whenToUse: 'Use Table for comparable data where users need to scan across columns.',
     code: {
-      importCode: `import { JTableComponent, JTableColumn } from 'jrng-ui/table';`,
+      importCode: `import { JTableComponent, JTableColumn, JTableConfig } from 'jrng-ui/table';`,
       basic: `<j-table [value]="orders" [columns]="columns"></j-table>`,
       variants: `<j-table [value]="orders" [columns]="columns" striped paginator [rows]="10"></j-table>
 <j-table [value]="orders" [columns]="columns" showGlobalFilter showColumnManager showExport></j-table>
-<j-table [value]="orders" [columns]="columns" sortMode="multiple" selectionMode="checkbox"></j-table>`,
+<j-table [value]="orders" [columns]="columns" sortMode="multiple" selectionMode="checkbox"></j-table>
+<j-table [value]="orders" [columns]="columns" [config]="tableConfig"></j-table>`,
       states: `<j-table [value]="[]" [columns]="columns" emptyMessage="No orders found"></j-table>
-<j-table [value]="orders" [columns]="columns" loading></j-table>`,
+<j-table [value]="orders" [columns]="columns" loading></j-table>
+<j-table [value]="orders" [columns]="columns" lockableRows maximizable></j-table>`,
       angular: `columns: JTableColumn[] = [
   { field: 'order', header: 'Order', sortable: true },
-  { field: 'status', header: 'Status' },
-  { field: 'total', header: 'Total', align: 'end' }
-];`,
+  { field: 'status', header: 'Status', filterable: true },
+  { field: 'total', header: 'Total', align: 'end' },
+  { field: 'actions', header: 'Actions', type: 'action', actions }
+];
+
+tableConfig: JTableConfig = {
+  pagination: true,
+  sortable: true,
+  multiSort: true,
+  filterRow: true,
+  columnFilter: true,
+  globalSearch: true,
+  reorderableRows: true,
+  lockableRows: true,
+  reorderableColumns: true,
+  resizableColumns: true,
+  frozenColumns: true,
+  maximizable: true,
+  exportable: true,
+  stateful: true,
+  columnManager: true,
+  size: 'medium',
+  export: { rows: 'selected', visibleColumnsOnly: true }
+};`,
     },
     usage: ['Use for orders, users, files, tasks, invoices, and audit logs.'],
-    variants: ['striped', 'hoverable', 'paginated', 'sortable', 'multi-sortable', 'selectable', 'lazy-loaded', 'exportable'],
-    sizes: ['Rows are controlled through table density and surrounding layout.'],
-    states: ['default', 'loading', 'empty', 'filtered empty', 'selected rows'],
-    inputs: [prop('value', 'readonly JTableRow[]', '[]', 'Rows to render.'), prop('columns', 'readonly JTableColumn[]', '[]', 'Column definitions.'), prop('paginator', 'boolean', 'false', 'Shows pagination controls.'), prop('loading', 'boolean', 'false', 'Shows loading rows.'), prop('selectionMode', 'single | multiple | checkbox | none', "'none'", 'Selection behavior.'), prop('showGlobalFilter', 'boolean', 'false', 'Shows a toolbar search input.'), prop('showColumnManager', 'boolean', 'false', 'Allows users to hide or show columns.'), prop('showExport', 'boolean', 'false', 'Shows CSV export action.'), prop('showTableState', 'boolean', 'false', 'Shows save and restore state actions.'), prop('expandableRows / rowEditing / cellEditing', 'boolean', 'false', 'Enables advanced row expansion and editing workflows.')],
-    outputs: [event('sortChange', 'JTableSort', 'Emits when sorting changes.'), event('pageChange', 'JTablePageChange', 'Emits when page changes.'), event('filterChange', 'JTableFilterChange', 'Emits when global or column filters change.'), event('lazyLoad', 'JTableLazyLoadEvent', 'Emits when lazy data should be fetched.'), event('rowClick', 'JTableRowClickEvent', 'Emits when a row is clicked.'), event('rowReorder / columnReorder', 'JTableReorderEvent / JTableColumnReorderEvent', 'Emits after drag reorder operations.')],
+    variants: ['basic table', 'pagination', 'sorting', 'multi sorting', 'filter row', 'column filter', 'global search', 'row actions', 'row reorder', 'row lock/unlock', 'column show/hide', 'column reorder', 'column resize', 'maximize/minimize', 'stateful table', 'export event'],
+    sizes: ['small', 'medium', 'large'],
+    states: ['default', 'loading skeleton', 'empty table', 'filtered empty', 'selected rows', 'locked rows', 'maximized'],
+    inputs: [prop('value', 'readonly JTableRow[]', '[]', 'Rows to render.'), prop('columns', 'readonly JTableColumn[]', '[]', 'Column definitions and header metadata.'), prop('config', 'JTableConfig', 'null', 'Object API for enterprise table behavior.'), prop('paginator', 'boolean', 'false', 'Shows pagination controls.'), prop('loading', 'boolean', 'false', 'Shows loading rows.'), prop('selectionMode', 'single | multiple | checkbox | none', "'none'", 'Selection behavior.'), prop('filterRow', 'boolean', 'true', 'Shows column filter controls for filterable columns.'), prop('lockableRows', 'boolean', 'false', 'Shows row lock/unlock controls.'), prop('maximizable', 'boolean', 'false', 'Shows maximize/minimize control with Escape support.'), prop('showGlobalFilter / showColumnManager / showExport / showTableState', 'boolean', 'false', 'Toolbar controls.'), prop('exportConfig', 'JTableExportOptions', '{}', 'CSV export mode, filename, and visible-column behavior.'), prop('size', 'small | medium | large', "'medium'", 'Table density.')],
+    outputs: [event('sortChange / onSortChange', 'JTableSort', 'Emits when sorting changes.'), event('pageChange / onPageChange', 'JTablePageChange', 'Emits when page changes.'), event('filterChange / onFilterChange', 'JTableFilterChange', 'Emits when global or column filters change.'), event('export / onExport', 'JTableExportEvent', 'Emits before CSV download; call preventDefault for server export.'), event('rowClick / onRowClick', 'JTableRowClickEvent', 'Emits when a row is clicked.'), event('rowDoubleClick / onRowDoubleClick', 'JTableRowClickEvent', 'Emits when a row is double-clicked.'), event('selectionChange / onSelectionChange', 'JTableSelection', 'Emits selection model changes.'), event('rowReorder / onRowReorder', 'JTableReorderEvent', 'Emits after row drag reorder.'), event('rowLock / onRowLock', 'JTableRowLockEvent', 'Emits when a row is locked.'), event('rowUnlock / onRowUnlock', 'JTableRowLockEvent', 'Emits when a row is unlocked.'), event('columnReorder / onColumnReorder', 'JTableColumnReorderEvent', 'Emits after column drag reorder.'), event('columnResize / onColumnResize', 'JTableColumnResizeEvent', 'Emits after column resize.'), event('columnVisibilityChange / onColumnVisibilityChange', 'JTableColumnVisibilityChangeEvent', 'Emits when a column is shown or hidden.'), event('stateSave / onStateSave', 'JTableState', 'Emits after state is saved.'), event('stateRestore / onStateRestore', 'JTableState', 'Emits after state is restored.'), event('maximize / onMaximize', 'void', 'Emits when expanded table mode opens.'), event('minimize / onMinimize', 'void', 'Emits when expanded table mode closes.')],
     cssVariables: [
       cssVar('--j-table-bg', 'var(--j-color-card, #ffffff)', 'Table surface background.'),
       cssVar('--j-table-header-bg', 'var(--j-color-muted, #f8fafc)', 'Header row background.'),
+      cssVar('--j-table-header-color', 'var(--j-color-muted-foreground, #64748b)', 'Header text color.'),
       cssVar('--j-table-border-color', 'var(--j-color-border, #e2e8f0)', 'Row and column border color.'),
-      cssVar('--j-table-hover-bg', 'color-mix(in srgb, var(--j-color-primary) 6%, transparent)', 'Hover row background.'),
+      cssVar('--j-table-row-hover-bg', 'color-mix(in srgb, var(--j-color-primary) 6%, transparent)', 'Hover row background.'),
       cssVar('--j-table-selected-bg', 'color-mix(in srgb, var(--j-color-primary) 12%, transparent)', 'Selected row background.'),
+      cssVar('--j-table-filter-bg', 'var(--j-color-card, #ffffff)', 'Toolbar and filter area background.'),
+      cssVar('--j-table-locked-bg', 'color-mix(in srgb, var(--j-color-warning) 10%, var(--j-table-bg))', 'Locked row background.'),
+      cssVar('--j-table-action-color', 'var(--j-color-foreground, #111827)', 'Action menu text color inside table cells.'),
+      cssVar('--j-table-resize-handle-color', 'var(--j-color-border, #e2e8f0)', 'Column resize handle color.'),
     ],
     accessibility: ['Use clear column headers and do not hide critical actions behind hover-only UI.'],
     bestPractices: ['Use pagination or lazy loading for large datasets.', 'Keep column labels short and align numeric columns to the end.'],
@@ -1116,6 +1144,102 @@ confirmDelete(): void {
     ],
     accessibility: ['The directive does not add semantics; use it only on elements that are already accessible.'],
     bestPractices: ['Respect disabled states and avoid using ripple as the only interaction feedback.'],
+  },
+  {
+    slug: 'tour-guide',
+    name: 'Tour Guide',
+    category: 'Utilities',
+    icon: 'route',
+    selector: 'JTourService, [jTourStep]',
+    importPath: 'jrng-ui/tour',
+    status: 'New',
+    description: 'Optional guided onboarding tours powered internally by Driver.js and exposed through JRNG UI service and directive APIs.',
+    whenToUse: 'Use Tour Guide for short product onboarding, feature introductions, and release walkthroughs where a few highlighted UI elements help users get started.',
+    code: {
+      importCode: `import { JTourService, JTourStepDirective, JTourConfig } from 'jrng-ui/tour';`,
+      basic: `npm install driver.js`,
+      variants: `<button
+  type="button"
+  jTourStep="create-button"
+  tourTitle="Create"
+  tourDescription="Click here to create a new record.">
+  Create
+</button>`,
+      states: `this.jTour.start({
+  id: 'dashboard-intro-v1',
+  steps: [
+    {
+      element: '#createBtn',
+      title: 'Create',
+      description: 'Click here to create a new record.',
+      side: 'bottom',
+      align: 'start'
+    }
+  ],
+  onComplete: (event) => this.saveCompletedTour(event.tourId),
+  onSkip: (event) => this.saveSkippedTour(event.tourId)
+});`,
+      angular: `import { Component, inject } from '@angular/core';
+import { JTourService, JTourStepDirective } from 'jrng-ui/tour';
+
+@Component({
+  standalone: true,
+  imports: [JTourStepDirective],
+  template: \`
+    <button
+      id="createBtn"
+      type="button"
+      jTourStep="create-button"
+      tourTitle="Create"
+      tourDescription="Click here to create a new record.">
+      Create
+    </button>
+  \`
+})
+export class DashboardComponent {
+  private readonly jTour = inject(JTourService);
+
+  startTour(): void {
+    this.jTour.start({
+      id: 'dashboard-intro-v1',
+      steps: ['create-button']
+    });
+  }
+}`,
+    },
+    usage: ['Install driver.js only in apps that use tours.', 'Use the service for tour control and callbacks.', 'Use jTourStep when template metadata is easier to maintain than CSS selectors.'],
+    variants: ['service-based tour', 'directive-based step metadata', 'selector-based step', 'per-step placement', 'completion callback', 'skip callback'],
+    sizes: ['not size-based'],
+    states: ['inactive', 'active', 'highlighted step', 'completed', 'skipped', 'destroyed'],
+    inputs: [
+      prop('JTourConfig.id', 'string', 'undefined', 'Application-defined tour identifier.'),
+      prop('JTourConfig.steps', 'readonly JTourStepInput[]', '[]', 'Tour steps as config objects or registered jTourStep IDs.'),
+      prop('JTourStep.element', 'string | Element', 'undefined', 'Element selector or element reference to highlight.'),
+      prop('JTourStep.title / description', 'string', 'undefined', 'Popover heading and body text.'),
+      prop('JTourStep.side / align', 'top | right | bottom | left | over / start | center | end', 'undefined', 'Preferred popover placement.'),
+      prop('jTourStep', 'string', "''", 'Registers an element as reusable tour step metadata.'),
+      prop('tourTitle / tourDescription', 'string', "''", 'Directive metadata used when the step ID is referenced by a tour.'),
+    ],
+    outputs: [
+      event('events$', 'JTourEvent', 'Observable stream for start, navigation, completion, skip, destroy, highlight, and deselect events.'),
+      event('onStart / onNext / onPrevious', 'JTourEvent', 'Per-tour callbacks for lifecycle and navigation.'),
+      event('onComplete / onSkip / onDestroy', 'JTourEvent', 'Per-tour callbacks for app-managed persistence or analytics.'),
+      event('onHighlightStarted / onDeselected', 'JTourEvent', 'Per-tour callbacks for highlighted and deselected steps.'),
+    ],
+    cssVariables: [
+      cssVar('--j-tour-overlay-color', 'rgb(15 23 42 / 58%)', 'Tour overlay color.'),
+      cssVar('--j-tour-popover-bg', 'var(--j-color-popover, #ffffff)', 'Tour popover background.'),
+      cssVar('--j-tour-popover-color', 'var(--j-color-popover-foreground, #111827)', 'Tour popover text color.'),
+      cssVar('--j-tour-popover-border', 'var(--j-color-border, #e2e8f0)', 'Tour popover border color.'),
+      cssVar('--j-tour-popover-radius', 'var(--j-radius-lg, 0.75rem)', 'Tour popover corner radius.'),
+      cssVar('--j-tour-button-bg', 'var(--j-color-muted, #f1f5f9)', 'Secondary tour button background.'),
+      cssVar('--j-tour-button-color', 'var(--j-color-foreground, #111827)', 'Secondary tour button text color.'),
+      cssVar('--j-tour-primary-button-bg', 'var(--j-color-primary, #2563eb)', 'Primary tour button background.'),
+      cssVar('--j-tour-primary-button-color', 'var(--j-color-primary-foreground, #ffffff)', 'Primary tour button text color.'),
+    ],
+    accessibility: ['Keep tours short and allow users to close or skip them.', 'Use clear titles and descriptions that make sense when read by assistive technology.', 'Do not depend on tours as the only way to discover critical controls.'],
+    bestPractices: ['Keep completed/skipped persistence in the application, not the component library.', 'Prefer stable element IDs or jTourStep IDs over brittle selectors.', 'JRNG UI uses Driver.js internally while keeping app code on JRNG APIs.'],
+    commonMistakes: ['Do not add driver.js unless the app uses tours.', 'Do not call start before the target elements are rendered.'],
   },
   {
     slug: 'timeline',
