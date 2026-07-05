@@ -22,6 +22,6 @@ describe('App', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.showcase-brand')?.textContent).toContain('JRNG UI');
+    expect(compiled.querySelector('.j-site-brand')?.textContent).toContain('JRNG UI');
   });
 });

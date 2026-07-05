@@ -150,7 +150,8 @@ export class CodeBlockComponent {
             <p>A modern Angular UI component library for building clean, fast, and accessible web applications.</p>
             <div class="j-hero-actions">
               <a class="j-button-link j-button-link--primary" routerLink="/docs">Get Started</a>
-              <a class="j-button-link" routerLink="/components">Components</a>
+              <a class="j-button-link" routerLink="/docs/components">Components</a>
+              <a class="j-button-link" [href]="npmLink" target="_blank" rel="noopener noreferrer">npm</a>
               <a class="j-button-link" [href]="githubLink" target="_blank" rel="noopener noreferrer">GitHub</a>
             </div>
           </div>
@@ -485,7 +486,8 @@ export class ShowcasePageComponent {
 
   readonly currentPage = signal<SitePage>('home');
   readonly currentComponent = signal('button');
-  readonly githubLink = 'https://github.com/jrng-ui/jrng-ui';
+  readonly githubLink = 'https://github.com/gokujy/jrng-ui';
+  readonly npmLink = 'https://www.npmjs.com/package/jrng-ui';
 
   readonly activeComponent = computed(() => this.componentDocs.find((doc) => doc.slug === this.currentComponent()) ?? this.componentDocs[0]);
 

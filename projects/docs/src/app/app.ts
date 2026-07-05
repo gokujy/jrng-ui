@@ -18,6 +18,9 @@ interface SiteNavItem {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
+  readonly githubUrl = 'https://github.com/gokujy/jrng-ui';
+  readonly npmUrl = 'https://www.npmjs.com/package/jrng-ui';
+
   private readonly documentRef = inject(DOCUMENT);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
@@ -28,9 +31,11 @@ export class App {
   readonly navItems: readonly SiteNavItem[] = [
     { label: 'Home', path: '/' },
     { label: 'Docs', path: '/docs' },
-    { label: 'Components', path: '/components' },
+    { label: 'Components', path: '/docs/components' },
+    { label: 'Charts', path: '/docs/charts' },
     { label: 'Themes', path: '/themes' },
-    { label: 'GitHub', href: 'https://github.com/jrng-ui/jrng-ui' },
+    { label: 'GitHub', href: this.githubUrl },
+    { label: 'npm', href: this.npmUrl },
   ];
 
   toggleMobileMenu(): void {
