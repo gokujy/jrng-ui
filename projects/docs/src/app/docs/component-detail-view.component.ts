@@ -10,7 +10,10 @@ import { JCopyButtonComponent } from 'jrng-ui/copy-button';
 import { JDialogComponent } from 'jrng-ui/dialog';
 import { JDrawerComponent } from 'jrng-ui/drawer';
 import { JEmptyStateComponent } from 'jrng-ui/empty-state';
+import { JFilterBarComponent } from 'jrng-ui/filter-bar';
+import { JFilePreviewComponent } from 'jrng-ui/file-preview';
 import { JFileUploadComponent } from 'jrng-ui/file-upload';
+import { JCurrencyFormatPipe, JDateTimeFormatPipe, JFileSizeFormatPipe, JPercentFormatPipe, JTextTruncatePipe } from 'jrng-ui/formatting';
 import { JIconComponent } from 'jrng-ui/icon';
 import { JInputComponent } from 'jrng-ui/input';
 import { JMenuComponent, JMenuItem } from 'jrng-ui/menu';
@@ -52,6 +55,8 @@ type DetailTab = 'preview' | 'code';
     JDialogComponent,
     JDrawerComponent,
     JEmptyStateComponent,
+    JFilterBarComponent,
+    JFilePreviewComponent,
     JFileUploadComponent,
     JIconComponent,
     JInputComponent,
@@ -78,6 +83,11 @@ type DetailTab = 'preview' | 'code';
     JTooltipDirective,
     JRippleDirective,
     JrToastContainerComponent,
+    JCurrencyFormatPipe,
+    JDateTimeFormatPipe,
+    JFileSizeFormatPipe,
+    JPercentFormatPipe,
+    JTextTruncatePipe,
   ],
   template: `
     <article class="j-doc-detail">
@@ -257,13 +267,24 @@ type DetailTab = 'preview' | 'code';
                   />
                 }
                 @case ('action-menu') {
-                  <j-action-menu [actions]="rowActions" [row]="orders[0]" />
+                  <j-action-menu popup [actions]="rowActions" [row]="orders[0]" />
                 }
                 @case ('column-filter') {
                   <div class="j-preview-grid">
                     <j-column-filter field="status" label="Status" />
                     <j-column-filter field="customer" label="Customer" value="Acme" />
                   </div>
+                }
+                @case ('filter-bar') {
+                  <j-filter-bar
+                    [statuses]="statuses"
+                    showDateRange
+                    showExport
+                    showAdvancedToggle
+                    (apply)="showToast('success')"
+                  >
+                    <div jFilterBarAdvanced class="j-doc-muted">Advanced filters can host app-specific controls.</div>
+                  </j-filter-bar>
                 }
                 @case ('metric-card') {
                   <div class="j-preview-grid j-preview-grid--cards">
@@ -281,18 +302,20 @@ type DetailTab = 'preview' | 'code';
                 }
                 @case ('status-chip') {
                   <div class="j-preview-row">
-                    <j-status-chip label="Ready" severity="success" />
-                    <j-status-chip label="Review" severity="warning" />
-                    <j-status-chip label="Blocked" severity="danger" />
-                    <j-status-chip label="Queued" severity="info" />
-                    <j-status-chip label="Neutral" severity="neutral" />
+                    <j-status-chip status="active" />
+                    <j-status-chip status="pending" />
+                    <j-status-chip status="approved" />
+                    <j-status-chip status="rejected" />
+                    <j-status-chip status="overdue" />
                   </div>
                 }
                 @case ('page-header') {
                   <j-page-header
                     title="Orders"
-                    description="Review fulfillment, exceptions, and exportable operational data."
+                    subtitle="Review fulfillment, exceptions, and exportable operational data."
+                    showBack
                     [breadcrumbs]="pageHeaderBreadcrumbs"
+                    (back)="showToast('success')"
                   >
                     <j-button jPageActions label="Export" variant="outline" />
                     <j-button jPageActions label="Create order" />
@@ -324,6 +347,7 @@ type DetailTab = 'preview' | 'code';
                   <div class="j-preview-grid">
                     <j-skeleton variant="text" />
                     <j-skeleton variant="avatar" />
+                    <j-skeleton variant="button" width="8rem" />
                     <j-skeleton variant="card" />
                     <j-skeleton variant="table" [rows]="3" />
                   </div>
@@ -431,7 +455,19 @@ type DetailTab = 'preview' | 'code';
                   <j-timeline [value]="timelineItems" />
                 }
                 @case ('file-upload') {
-                  <j-file-upload title="Upload documents" description="Drag files here or choose from your device." multiple />
+                  <div class="j-preview-stack">
+                    <j-file-upload title="Upload documents" description="Drag files here or choose from your device." multiple />
+                    <j-file-preview fileName="statement.pdf" [fileSize]="245760" description="Uploaded 2 minutes ago" url="#" />
+                  </div>
+                }
+                @case ('formatting') {
+                  <div class="j-format-demo">
+                    <span>Date/time <strong>{{ sampleDate | jDateTimeFormat }}</strong></span>
+                    <span>Currency <strong>{{ 42800 | jCurrencyFormat: 'USD' }}</strong></span>
+                    <span>Percent <strong>{{ 0.128 | jPercentFormat }}</strong></span>
+                    <span>File size <strong>{{ 2457600 | jFileSizeFormat }}</strong></span>
+                    <span>Truncate <strong>{{ longText | jTruncate: 36 }}</strong></span>
+                  </div>
                 }
               }
             </div>
@@ -661,6 +697,9 @@ export class ComponentDetailViewComponent {
     { title: 'Approved', content: 'Manager approved the request.', opposite: '10:15', severity: 'success' },
     { title: 'Queued', content: 'Waiting for fulfillment.', opposite: '11:20', severity: 'warning' },
   ];
+
+  readonly sampleDate = new Date(2026, 6, 5, 14, 30);
+  readonly longText = 'Quarterly operations report with regional summaries and exception details';
 
   readonly pageHeaderBreadcrumbs = [
     { label: 'Home', url: '/' },

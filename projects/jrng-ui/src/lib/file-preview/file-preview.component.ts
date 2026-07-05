@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, booleanAttribute, computed, input, output } from '@angular/core';
 
 @Component({
   selector: 'j-file-preview',
@@ -17,9 +17,12 @@ import { ChangeDetectionStrategy, Component, computed, input, output } from '@an
       </div>
       <div class="j-file-preview__actions">
         @if (url()) {
-          <a [href]="url()" target="_blank" rel="noreferrer">Open</a>
+          <a [href]="url()" target="_blank" rel="noreferrer" (click)="preview.emit()">{{ previewLabel() }}</a>
         }
-        <button type="button" (click)="remove.emit()">Remove</button>
+        <button type="button" (click)="download.emit()">{{ downloadLabel() }}</button>
+        @if (removable()) {
+          <button type="button" (click)="remove.emit()">{{ removeLabel() }}</button>
+        }
       </div>
     </article>
   `,
@@ -27,10 +30,10 @@ import { ChangeDetectionStrategy, Component, computed, input, output } from '@an
     `
       .j-file-preview {
         align-items: center;
-        background: var(--j-color-card);
-        border: 1px solid var(--j-color-border);
+        background: var(--j-file-preview-bg, var(--j-color-card, #ffffff));
+        border: 1px solid var(--j-file-preview-border-color, var(--j-color-border, #e2e8f0));
         border-radius: var(--j-radius-lg);
-        color: var(--j-color-card-foreground);
+        color: var(--j-file-preview-color, var(--j-color-card-foreground, #111827));
         display: grid;
         gap: var(--j-spacing-3);
         grid-template-columns: 3rem minmax(0, 1fr) auto;
@@ -73,6 +76,22 @@ import { ChangeDetectionStrategy, Component, computed, input, output } from '@an
         font: inherit;
         text-decoration: none;
       }
+
+      .j-file-preview__actions a:focus-visible,
+      .j-file-preview__actions button:focus-visible {
+        box-shadow: var(--j-focus-ring);
+        outline: none;
+      }
+
+      @media (max-width: 640px) {
+        .j-file-preview {
+          grid-template-columns: 3rem minmax(0, 1fr);
+        }
+
+        .j-file-preview__actions {
+          grid-column: 1 / -1;
+        }
+      }
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -83,9 +102,15 @@ export class JFilePreviewComponent {
   readonly fileSize = input(0);
   readonly description = input('');
   readonly url = input('');
+  readonly previewLabel = input('Preview');
+  readonly downloadLabel = input('Download');
+  readonly removeLabel = input('Remove');
+  readonly removable = input(true, { transform: booleanAttribute });
   readonly styleClass = input('');
 
   readonly remove = output<void>();
+  readonly preview = output<void>();
+  readonly download = output<void>();
 
   readonly name = computed(() => this.file()?.name || this.fileName());
   readonly extension = computed(() => this.name().split('.').pop()?.slice(0, 4).toUpperCase() || 'FILE');

@@ -58,6 +58,8 @@ export * from './lib/error-page/error-page.component';
 export * from './lib/fieldset/fieldset.component';
 export * from './lib/file-preview/file-preview.component';
 export * from './lib/file-upload/file-upload.component';
+export * from './lib/filter-bar/filter-bar.component';
+export * from './lib/formatting/formatting.pipes';
 export * from './lib/form-field/form-field.component';
 export * from './lib/float-label/float-label.component';
 export * from './lib/gantt/gantt.component';

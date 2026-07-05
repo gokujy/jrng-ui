@@ -61,12 +61,12 @@ const surfaceCssVariables = [
 export const componentGroups: readonly ComponentGroup[] = [
   { name: 'Forms', icon: 'text-cursor-input', slugs: ['input', 'textarea', 'select', 'checkbox', 'radio', 'switch'] },
   { name: 'Buttons', icon: 'mouse-pointer-click', slugs: ['button', 'icon-button'] },
-  { name: 'Data Display', icon: 'table', slugs: ['card', 'badge', 'tag', 'table', 'action-menu', 'column-filter'] },
+  { name: 'Data Display', icon: 'table', slugs: ['card', 'badge', 'tag', 'table', 'action-menu', 'column-filter', 'filter-bar'] },
   { name: 'Business', icon: 'briefcase-business', slugs: ['metric-card', 'stat-card', 'status-chip', 'page-header', 'empty-state'] },
   { name: 'Feedback', icon: 'message-square', slugs: ['toast', 'progress', 'skeleton', 'copy-button'] },
   { name: 'Navigation', icon: 'route', slugs: ['tabs', 'breadcrumb', 'menu', 'sidebar'] },
   { name: 'Overlay', icon: 'panel-top', slugs: ['dialog', 'confirm-dialog', 'drawer', 'tooltip', 'popover'] },
-  { name: 'Utilities', icon: 'wrench', slugs: ['ripple', 'timeline', 'file-upload'] },
+  { name: 'Utilities', icon: 'wrench', slugs: ['ripple', 'timeline', 'file-upload', 'formatting'] },
 ];
 
 export const componentDocs: readonly ComponentDoc[] = [
@@ -494,17 +494,23 @@ teams = [
     whenToUse: 'Use Action Menu when each table row exposes a small set of commands such as view, edit, duplicate, or delete.',
     code: {
       importCode: `import { JActionMenuComponent, JTableAction } from 'jrng-ui/table';`,
-      basic: `<j-action-menu [actions]="actions" [row]="row" (actionClick)="runAction($event)"></j-action-menu>`,
+      basic: `<j-action-menu popup [actions]="actions" [row]="row" (actionClick)="runAction($event)"></j-action-menu>`,
       angular: `actions: JTableAction[] = [
-  { key: 'edit', label: 'Edit' },
+  { key: 'view', label: 'View', icon: 'View' },
+  { key: 'edit', label: 'Edit', icon: 'Edit' },
+  { key: 'download', label: 'Download', icon: 'Download' },
+  { key: 'duplicate', label: 'Duplicate', icon: 'Copy' },
+  { key: 'approve', label: 'Approve', severity: 'success' },
+  { key: 'reject', label: 'Reject', severity: 'warning' },
+  { key: 'archive', label: 'Archive', disabled: true },
   { key: 'delete', label: 'Delete', severity: 'danger' }
 ];`,
     },
     usage: ['Use inside table cells or compact list rows.', 'Keep commands short and disable actions that are unavailable.'],
-    variants: ['default actions', 'icons', 'disabled actions', 'danger actions'],
+    variants: ['inline actions', 'popup menu', 'icons', 'disabled actions', 'danger actions'],
     sizes: ['Uses compact action sizing for dense data surfaces.'],
     states: ['default', 'hover', 'focused', 'disabled'],
-    inputs: [prop('actions', 'readonly JTableAction[]', '[]', 'Actions rendered for the row.'), prop('row', 'JTableRow', '{}', 'Current row data.'), prop('rowIndex', 'number', '0', 'Index of the row in the table.')],
+    inputs: [prop('actions', 'readonly JTableAction[]', '[]', 'Actions rendered for the row.'), prop('row', 'JTableRow', '{}', 'Current row data.'), prop('rowIndex', 'number', '0', 'Index of the row in the table.'), prop('popup', 'boolean', 'false', 'Renders an overflow trigger with popup menu.'), prop('ariaLabel', 'string', "'Row actions'", 'Accessible label.')],
     outputs: [event('actionClick', 'JTableActionEvent', 'Emits when an action is activated.')],
     cssVariables: surfaceCssVariables,
     accessibility: ['The action group exposes a row actions label and uses native buttons.'],
@@ -533,6 +539,47 @@ teams = [
     cssVariables: formCssVariables,
     accessibility: ['The visible label is screen-reader only so table headers stay compact.'],
     bestPractices: ['Pair column filters with clear table empty states so users understand filtered results.'],
+  },
+  {
+    slug: 'filter-bar',
+    name: 'Filter Bar',
+    category: 'Data Display',
+    icon: 'list-filter',
+    selector: 'j-filter-bar',
+    importPath: 'jrng-ui/filter-bar',
+    status: 'New',
+    description: 'A responsive business filter surface with search, status, date range, reset, apply, export, and advanced filter slots.',
+    whenToUse: 'Use Filter Bar above tables, audit logs, reports, and list pages that need repeatable search and filtering controls.',
+    code: {
+      importCode: `import { JFilterBarComponent } from 'jrng-ui/filter-bar';`,
+      basic: `<j-filter-bar
+  [statuses]="statuses"
+  showDateRange
+  showExport
+  showAdvancedToggle
+  (filterChange)="filters = $event"
+  (apply)="load($event)"
+  (reset)="resetFilters()"
+  (export)="exportRows($event)">
+</j-filter-bar>`,
+      variants: `<j-filter-bar searchPlaceholder="Search orders" [statuses]="['Draft', 'Paid', 'Overdue']">
+  <j-select jFilterBarFilters label="Team" [options]="teams"></j-select>
+  <div jFilterBarAdvanced>Advanced controls go here.</div>
+</j-filter-bar>`,
+    },
+    usage: ['Use for list pages where users repeatedly search, apply filters, reset filters, and export data.'],
+    variants: ['search only', 'status filter', 'date range', 'advanced slot', 'export action'],
+    sizes: ['Responsive grid collapses to one column on narrow screens.'],
+    states: ['idle', 'edited filters', 'advanced expanded', 'reset'],
+    inputs: [prop('statuses', 'readonly string[]', '[]', 'Status select options.'), prop('showDateRange', 'boolean', 'false', 'Shows start and end date inputs.'), prop('showExport', 'boolean', 'false', 'Shows export button.'), prop('showAdvancedToggle', 'boolean', 'false', 'Shows advanced filter toggle.')],
+    outputs: [event('filterChange', 'JFilterBarValue', 'Emits on search, status, date, or advanced changes.'), event('apply', 'JFilterBarValue', 'Emits when Apply is pressed.'), event('reset', 'void', 'Emits when Reset is pressed.'), event('export', 'JFilterBarValue', 'Emits when Export is pressed.')],
+    cssVariables: [
+      cssVar('--j-filter-bar-bg', 'var(--j-color-card, #ffffff)', 'Filter bar background.'),
+      cssVar('--j-filter-bar-border-color', 'var(--j-color-border, #e2e8f0)', 'Filter bar border color.'),
+      cssVar('--j-filter-bar-primary-bg', 'var(--j-color-primary, #2563eb)', 'Apply button background.'),
+    ],
+    accessibility: ['Search, status, and date controls use labels and native inputs/selects.'],
+    bestPractices: ['Emit filters to application state and keep server-side export behavior in the app.'],
   },
   {
     slug: 'metric-card',
@@ -595,16 +642,18 @@ teams = [
     whenToUse: 'Use Status Chip for workflow states such as Ready, Review, Blocked, Queued, or Archived.',
     code: {
       importCode: `import { JStatusChipComponent } from 'jrng-ui/status-chip';`,
-      basic: `<j-status-chip label="Ready" severity="success"></j-status-chip>`,
-      variants: `<j-status-chip label="Review" severity="warning"></j-status-chip>
-<j-status-chip label="Blocked" severity="danger"></j-status-chip>
-<j-status-chip label="Queued" severity="info"></j-status-chip>`,
+      basic: `<j-status-chip status="active"></j-status-chip>`,
+      variants: `<j-status-chip status="pending"></j-status-chip>
+<j-status-chip status="approved"></j-status-chip>
+<j-status-chip status="rejected"></j-status-chip>
+<j-status-chip status="overdue"></j-status-chip>
+<j-status-chip label="Custom" [colorMap]="colors" status="custom"></j-status-chip>`,
     },
     usage: ['Use in tables, detail headers, cards, timeline items, and workflow summaries.'],
-    variants: ['primary', 'secondary', 'success', 'warning', 'danger', 'info', 'neutral'],
+    variants: ['active', 'inactive', 'pending', 'approved', 'rejected', 'draft', 'paid', 'unpaid', 'overdue', 'completed', 'failed', 'custom color map'],
     sizes: ['sm, md, lg'],
     states: ['static status display'],
-    inputs: [prop('label', 'string', "''", 'Visible status text.'), prop('severity', 'JSeverity', "'neutral'", 'Status intent.'), prop('size', 'sm | md | lg', "'md'", 'Chip density.')],
+    inputs: [prop('label', 'string', "''", 'Visible status text override.'), prop('status', 'JBusinessStatus | string', "''", 'Business status alias.'), prop('severity', 'JSeverity', "'neutral'", 'Fallback status intent.'), prop('colorMap', 'Record<string, JStatusChipColor>', '{}', 'Custom status colors.'), prop('size', 'sm | md | lg', "'md'", 'Chip density.')],
     outputs: noOutputs,
     accessibility: ['Use readable label text; color only supports the label.'],
     bestPractices: ['Keep labels short and consistent with workflow terminology.'],
@@ -621,17 +670,17 @@ teams = [
     whenToUse: 'Use Page Header at the top of admin pages, record details, and settings views.',
     code: {
       importCode: `import { JPageHeaderComponent } from 'jrng-ui/page-header';`,
-      basic: `<j-page-header title="Orders" description="Review fulfillment and exceptions">
-  <j-button jPageActions label="Export" variant="outline"></j-button>
-  <j-button jPageActions label="Create order"></j-button>
+      basic: `<j-page-header title="Orders" subtitle="Review fulfillment and exceptions" showBack (back)="goBack()">
+  <j-button jPageSecondaryActions label="Export" variant="outline"></j-button>
+  <j-button jPagePrimaryAction label="Create order"></j-button>
 </j-page-header>`,
     },
     usage: ['Use to standardize title, context, and actions across business app pages.'],
-    variants: ['breadcrumbs', 'actions slot', 'tabs slot'],
+    variants: ['breadcrumbs', 'back button', 'primary action', 'secondary actions', 'right-side action slot', 'tabs slot'],
     sizes: ['Responsive layout collapses actions below the title on narrow screens.'],
     states: ['with breadcrumbs', 'with actions', 'with tabs'],
-    inputs: [prop('title', 'string', "''", 'Page title.'), prop('description', 'string', "''", 'Supporting text.'), prop('breadcrumbs', 'readonly JPageHeaderBreadcrumb[]', '[]', 'Breadcrumb path.'), prop('styleClass', 'string', "''", 'Custom class.')],
-    outputs: noOutputs,
+    inputs: [prop('title', 'string', "''", 'Page title.'), prop('subtitle', 'string', "''", 'Supporting text.'), prop('description', 'string', "''", 'Legacy supporting text alias.'), prop('breadcrumbs', 'readonly JPageHeaderBreadcrumb[]', '[]', 'Breadcrumb path.'), prop('showBack', 'boolean', 'false', 'Shows a back button.'), prop('styleClass', 'string', "''", 'Custom class.')],
+    outputs: [event('back', 'void', 'Emits when the back button is activated.')],
     accessibility: ['Breadcrumbs use nav semantics and current page marking.'],
     bestPractices: ['Keep one primary action visible and group secondary actions separately.'],
   },
@@ -734,13 +783,14 @@ toast.info('Export started');`,
       basic: `<j-skeleton width="12rem"></j-skeleton>`,
       variants: `<j-skeleton variant="text"></j-skeleton>
 <j-skeleton variant="avatar"></j-skeleton>
+<j-skeleton variant="button" width="8rem"></j-skeleton>
 <j-skeleton variant="card"></j-skeleton>
 <j-skeleton variant="table" [rows]="3"></j-skeleton>`,
       states: `<j-skeleton animation="pulse"></j-skeleton>
 <j-skeleton [animated]="false"></j-skeleton>`,
     },
     usage: ['Use for cards, tables, avatars, and text blocks while data is loading.'],
-    variants: ['rectangle', 'text', 'avatar', 'card', 'table'],
+    variants: ['rectangle', 'text', 'avatar', 'button', 'card', 'table'],
     sizes: ['Use width and height for custom dimensions.'],
     states: ['wave animation', 'pulse animation', 'static'],
     inputs: [prop('variant', 'rectangle | text | avatar | card | table', "'rectangle'", 'Skeleton layout preset.'), prop('width / height', 'string', "'100%' / '1rem'", 'Custom dimensions.'), prop('rows', 'number', '4', 'Rows for table skeleton.')],
@@ -762,14 +812,16 @@ toast.info('Export started');`,
       importCode: `import { JCopyButtonComponent } from 'jrng-ui/copy-button';`,
       basic: `<j-copy-button text="npm install jrng-ui"></j-copy-button>`,
       states: `<j-copy-button text="INV-2048" copiedLabel="Copied ID"></j-copy-button>
+<j-copy-button text="support@example.com" label="Copy email"></j-copy-button>
+<j-copy-button text="+1 555 0100" label="Copy phone"></j-copy-button>
 <j-copy-button text="Disabled" disabled></j-copy-button>`,
     },
     usage: ['Use near code snippets, IDs, share links, API keys, and generated references.'],
     variants: ['default label', 'custom copied label', 'disabled'],
     sizes: ['Uses compact button sizing.'],
     states: ['default', 'copied', 'disabled'],
-    inputs: [prop('text', 'string', "''", 'Text written to the clipboard.'), prop('label', 'string', "'Copy'", 'Default button label.'), prop('copiedLabel', 'string', "'Copied'", 'Feedback label after copying.'), prop('ariaLabel', 'string', "'Copy to clipboard'", 'Accessible label.')],
-    outputs: [event('copied', 'string', 'Emits copied text after activation.')],
+    inputs: [prop('text', 'string', "''", 'Text written to the clipboard.'), prop('label', 'string', "'Copy'", 'Default button label.'), prop('copiedLabel', 'string', "'Copied'", 'Feedback label after copying.'), prop('failedLabel', 'string', "'Copy failed'", 'Feedback label after failure.'), prop('ariaLabel', 'string', "'Copy to clipboard'", 'Accessible label.')],
+    outputs: [event('copied', 'string', 'Emits copied text after activation.'), event('copyFailed', 'unknown', 'Emits clipboard failure details.')],
     cssVariables: buttonCssVariables,
     accessibility: ['Provide an ariaLabel that names the value when several copy buttons appear together.'],
     bestPractices: ['Keep copied feedback short and avoid copying hidden sensitive data unexpectedly.'],
@@ -930,19 +982,20 @@ items = [
       angular: `constructor(private readonly confirmation: JConfirmationService) {}
 
 confirmDelete(): void {
-  this.confirmation.confirm({
-    header: 'Delete record',
+  this.confirmation.delete({
+    title: 'Delete record',
     message: 'This action cannot be undone.',
-    acceptLabel: 'Delete',
-    rejectLabel: 'Cancel'
+    confirmText: 'Delete',
+    cancelText: 'Cancel',
+    closeOnOverlayClick: false
   });
 }`,
     },
     usage: ['Place one j-confirm-dialog near the app root.', 'Call JConfirmationService from the workflow that needs confirmation.'],
-    variants: ['custom header', 'custom message', 'accept and reject callbacks', 'custom labels'],
+    variants: ['delete', 'approve', 'reject', 'logout', 'unsaved changes', 'custom message', 'accept and reject callbacks'],
     sizes: ['Fixed dialog width suitable for short confirmations.'],
     states: ['closed', 'open', 'accepted', 'rejected'],
-    inputs: [],
+    inputs: [prop('title / header', 'string', "''", 'Dialog title.'), prop('message', 'string', "''", 'Dialog message.'), prop('confirmText / acceptLabel', 'string', "'OK'", 'Confirm button label.'), prop('cancelText / rejectLabel', 'string', "'Cancel'", 'Cancel button label.'), prop('severity', 'info | warning | danger | success', "'info'", 'Confirmation intent.'), prop('closeOnOverlayClick', 'boolean', 'true', 'Allows backdrop click close.'), prop('closeOnEscape', 'boolean', 'true', 'Allows Escape close.')],
     outputs: [],
     cssVariables: [
       cssVar('--j-overlay-backdrop-bg', 'rgb(15 23 42 / 56%)', 'Confirmation backdrop color.'),
@@ -1079,14 +1132,16 @@ confirmDelete(): void {
       basic: `<j-timeline [value]="events"></j-timeline>`,
       angular: `events: JTimelineItem[] = [
   { title: 'Created', content: 'Order was created.', opposite: '09:00', severity: 'info' },
-  { title: 'Approved', content: 'Manager approved it.', opposite: '10:15', severity: 'success' }
+  { title: 'Updated', content: 'Customer address changed.', opposite: '09:30', icon: 'U' },
+  { title: 'Approved', content: 'Manager approved it.', opposite: '10:15', severity: 'success' },
+  { title: 'File uploaded', content: 'statement.pdf was attached.', opposite: '10:40', color: '#7c3aed' }
 ];`,
     },
     usage: ['Use for audit trails, fulfillment progress, approvals, and release history.'],
-    variants: ['vertical', 'horizontal', 'custom content template', 'opposite template'],
+    variants: ['created', 'updated', 'approved', 'rejected', 'status changed', 'comment added', 'file uploaded', 'custom icon', 'custom color', 'compact mode'],
     sizes: ['Timeline size follows content and layout.'],
     states: ['neutral event', 'success', 'warning', 'danger', 'info'],
-    inputs: [prop('value', 'readonly JTimelineItem[]', '[]', 'Timeline items.'), prop('layout', 'vertical | horizontal', "'vertical'", 'Timeline orientation.'), prop('styleClass', 'string', "''", 'Custom root class.')],
+    inputs: [prop('value', 'readonly JTimelineItem[]', '[]', 'Timeline items.'), prop('layout', 'vertical | horizontal', "'vertical'", 'Timeline orientation.'), prop('compact', 'boolean', 'false', 'Reduces item spacing for activity logs.'), prop('styleClass', 'string', "''", 'Custom root class.')],
     outputs: [],
     cssVariables: surfaceCssVariables,
     accessibility: ['Timeline renders as an ordered list so the event order is meaningful.'],
@@ -1103,19 +1158,57 @@ confirmDelete(): void {
     description: 'A file upload queue with drag-and-drop, validation, progress, and manual upload events.',
     whenToUse: 'Use File Upload for attachments, imports, documents, and media queues.',
     code: {
-      importCode: `import { JFileUploadComponent } from 'jrng-ui/file-upload';`,
+      importCode: `import { JFileUploadComponent } from 'jrng-ui/file-upload';
+import { JFilePreviewComponent } from 'jrng-ui/file-preview';`,
       basic: `<j-file-upload multiple accept=".csv,.xlsx" (upload)="uploadFiles($event)"></j-file-upload>`,
       states: `<j-file-upload mode="basic" chooseLabel="Choose file"></j-file-upload>
-<j-file-upload [maxFileSize]="5000000"></j-file-upload>`,
+<j-file-upload [maxFileSize]="5000000"></j-file-upload>
+<j-file-preview fileName="statement.pdf" [fileSize]="245760" url="/files/statement.pdf"></j-file-preview>`,
     },
     usage: ['Use auto mode for immediate workflows and customUpload for application-managed uploads.'],
-    variants: ['basic', 'advanced', 'multiple files', 'manual upload', 'auto upload'],
+    variants: ['basic', 'advanced', 'single file', 'multiple files', 'drag and drop', 'manual upload', 'auto upload', 'preview and download actions'],
     sizes: ['The upload surface fills its container width.'],
     states: ['empty queue', 'drag over', 'uploading', 'complete', 'error', 'cancelled'],
     inputs: [prop('mode', 'basic | advanced', "'advanced'", 'Upload UI mode.'), prop('multiple', 'boolean', 'false', 'Allows more than one file.'), prop('accept', 'string', "''", 'Accepted file types.'), prop('maxFileSize', 'number', '0', 'Maximum file size in bytes.')],
-    outputs: [event('filesChange', 'readonly File[]', 'Emits current files.'), event('upload', 'JFileUploadEvent', 'Emits when upload starts.'), event('remove', 'File', 'Emits when a file is removed.'), event('cancelUpload / retryUpload', 'JFileUploadItemEvent', 'Emits queue item actions.')],
+    outputs: [event('filesChange', 'readonly File[]', 'Emits current files.'), event('upload', 'JFileUploadEvent', 'Emits when upload starts.'), event('remove', 'File', 'Emits when a file is removed.'), event('previewFile / downloadFile', 'JFileUploadItem', 'Emits file preview and download actions.'), event('cancelUpload / retryUpload', 'JFileUploadItemEvent', 'Emits queue item actions.')],
     cssVariables: surfaceCssVariables,
     accessibility: ['Use clear title and description text so the upload constraints are visible.'],
     bestPractices: ['Validate file type and size before sending data to your API.'],
+  },
+  {
+    slug: 'formatting',
+    name: 'Formatting Utilities',
+    category: 'Utilities',
+    icon: 'text',
+    selector: 'pipes',
+    importPath: 'jrng-ui/formatting',
+    status: 'New',
+    description: 'Standalone pipes for common business formatting: date, time, date-time, currency, number, percentage, file size, and text truncation.',
+    whenToUse: 'Use formatting pipes in reusable Angular screens when values need consistent display formatting.',
+    code: {
+      importCode: `import {
+  JCurrencyFormatPipe,
+  JDateTimeFormatPipe,
+  JFileSizeFormatPipe,
+  JPercentFormatPipe,
+  JTextTruncatePipe
+} from 'jrng-ui/formatting';`,
+      basic: `<span>{{ createdAt | jDateTimeFormat }}</span>
+<span>{{ total | jCurrencyFormat: 'USD' }}</span>
+<span>{{ conversionRate | jPercentFormat }}</span>
+<span>{{ fileSize | jFileSizeFormat }}</span>
+<span>{{ description | jTruncate: 80 }}</span>`,
+      variants: `<span>{{ dueDate | jDateFormat: 'en-GB' }}</span>
+<span>{{ startTime | jTimeFormat }}</span>
+<span>{{ amount | jNumberFormat: 'en-US': { maximumFractionDigits: 2 } }}</span>`,
+    },
+    usage: ['Use in tables, cards, details pages, and exports previews.'],
+    variants: ['date', 'time', 'date-time', 'currency', 'number', 'percent', 'file size', 'truncate'],
+    sizes: ['Pipes do not render layout.'],
+    states: ['empty values return an empty string', 'invalid dates return an empty string'],
+    inputs: [prop('value', 'Date | string | number', "''", 'Input value passed to the pipe.'), prop('locale', 'string', 'browser default', 'Optional Intl locale.'), prop('options', 'Intl options', '{}', 'Optional Intl formatting options.')],
+    outputs: noOutputs,
+    accessibility: ['Formatting should not remove meaning; use labels and table headers around formatted values.'],
+    bestPractices: ['Pass currency and locale explicitly when product requirements need a specific display format.'],
   },
 ];

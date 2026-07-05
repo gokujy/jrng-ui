@@ -980,6 +980,31 @@ code {
   min-width: min(24rem, 80vw);
 }
 
+.j-doc-muted {
+  color: var(--j-color-muted-foreground);
+  font-size: var(--j-font-size-sm);
+}
+
+.j-format-demo {
+  display: grid;
+  gap: var(--j-spacing-3);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.j-format-demo span {
+  background: var(--j-color-card);
+  border: 1px solid var(--j-color-border);
+  border-radius: var(--j-radius-md);
+  color: var(--j-color-muted-foreground);
+  display: grid;
+  gap: var(--j-spacing-1);
+  padding: var(--j-spacing-3);
+}
+
+.j-format-demo strong {
+  color: var(--j-color-foreground);
+}
+
 .j-doc-topic-nav {
   display: grid;
   gap: var(--j-spacing-1);
@@ -1047,6 +1072,10 @@ code {
   .j-chart-preview-grid--states,
   .j-doc-grid-sections,
   .j-chart-type-list {
+    grid-template-columns: 1fr;
+  }
+
+  .j-format-demo {
     grid-template-columns: 1fr;
   }
 

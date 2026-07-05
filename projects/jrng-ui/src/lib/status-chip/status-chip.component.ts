@@ -2,23 +2,49 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 import { JPassThrough, jMergePartClasses } from '../core/pass-through';
 import { JSeverity, JSize } from '../core/types';
 
+export type JBusinessStatus =
+  | 'active'
+  | 'inactive'
+  | 'pending'
+  | 'approved'
+  | 'rejected'
+  | 'draft'
+  | 'paid'
+  | 'unpaid'
+  | 'overdue'
+  | 'completed'
+  | 'failed';
+
+export interface JStatusChipColor {
+  readonly background?: string;
+  readonly border?: string;
+  readonly color?: string;
+}
+
 @Component({
   selector: 'j-status-chip',
   imports: [],
   template: `
-    <span [class]="chipClasses()" data-jc-name="status-chip" data-jc-section="root">
+    <span
+      [class]="chipClasses()"
+      [style.--j-status-chip-bg]="customColor()?.background || null"
+      [style.--j-status-chip-border]="customColor()?.border || null"
+      [style.--j-status-chip-color]="customColor()?.color || null"
+      data-jc-name="status-chip"
+      data-jc-section="root"
+    >
       <span class="j-status-chip__dot" data-jc-section="dot" aria-hidden="true"></span>
-      <span data-jc-section="label">{{ label() }}</span>
+      <span data-jc-section="label">{{ displayLabel() }}</span>
     </span>
   `,
   styles: [
     `
       .j-status-chip {
         align-items: center;
-        background: var(--j-status-chip-bg);
-        border: 1px solid var(--j-status-chip-border);
+        background: var(--j-status-chip-bg, var(--j-color-muted, #f1f5f9));
+        border: 1px solid var(--j-status-chip-border, transparent);
         border-radius: var(--j-radius-full, 999px);
-        color: var(--j-status-chip-color);
+        color: var(--j-status-chip-color, var(--j-color-foreground, #111827));
         display: inline-flex;
         font-weight: var(--j-font-weight-semibold, 650);
         gap: var(--j-spacing-sm, 0.5rem);
@@ -97,16 +123,54 @@ import { JSeverity, JSize } from '../core/types';
 })
 export class JStatusChipComponent {
   readonly label = input('');
+  readonly status = input<JBusinessStatus | string>('');
   readonly severity = input<JSeverity>('neutral');
   readonly size = input<JSize>('md');
+  readonly colorMap = input<Record<string, JStatusChipColor>>({});
   readonly styleClass = input('');
   readonly pt = input<JPassThrough | null>(null);
 
+  readonly normalizedStatus = computed(() => this.status().trim().toLowerCase());
+  readonly displayLabel = computed(() => this.label() || toTitleCase(this.normalizedStatus()));
+  readonly resolvedSeverity = computed(() => {
+    const status = this.normalizedStatus();
+    if (!status) {
+      return this.severity();
+    }
+    return statusSeverityMap[status] ?? this.severity();
+  });
+  readonly customColor = computed(() => {
+    const status = this.normalizedStatus();
+    return status ? this.colorMap()[status] : undefined;
+  });
+
   readonly chipClasses = computed(() =>
     jMergePartClasses(
-      ['j-status-chip', `j-status-chip--${this.severity()}`, `j-status-chip--${this.size()}`],
+      ['j-status-chip', `j-status-chip--${this.resolvedSeverity()}`, `j-status-chip--${this.size()}`],
       this.styleClass(),
       this.pt(),
     ),
   );
+}
+
+const statusSeverityMap: Record<string, JSeverity> = {
+  active: 'success',
+  approved: 'success',
+  paid: 'success',
+  completed: 'success',
+  pending: 'warning',
+  draft: 'neutral',
+  inactive: 'neutral',
+  unpaid: 'warning',
+  overdue: 'danger',
+  rejected: 'danger',
+  failed: 'danger',
+};
+
+function toTitleCase(value: string): string {
+  return value
+    .split(/[\s_-]+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
 }
