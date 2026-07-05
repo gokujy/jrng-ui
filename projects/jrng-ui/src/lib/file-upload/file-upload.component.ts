@@ -101,7 +101,7 @@ export interface JFileUploadItemEvent {
         <ul class="j-file-upload__list" data-jc-section="queue">
           @for (item of queue(); track item.id) {
             <li [attr.data-j-active]="item.status === 'uploading' ? 'true' : null">
-              <div class="j-file-upload__preview" aria-hidden="true">{{ previewLabel(item.file) }}</div>
+              <div class="j-file-upload__preview" aria-hidden="true">{{ filePreviewLabel(item.file) }}</div>
               <div class="j-file-upload__meta">
                 <span>{{ item.file.name }}</span>
                 <small>{{ formatSize(item.file.size) }} - {{ item.status }}</small>
@@ -117,6 +117,8 @@ export interface JFileUploadItemEvent {
                 @if (item.status === 'uploading') {
                   <button type="button" (click)="cancel(item)">Cancel</button>
                 }
+                <button type="button" (click)="previewFile.emit(item)">Preview</button>
+                <button type="button" (click)="downloadFile.emit(item)">Download</button>
                 <button type="button" (click)="removeItem(item)">Remove</button>
               </div>
             </li>
@@ -136,10 +138,10 @@ export interface JFileUploadItemEvent {
   styles: [
     `
       .j-file-upload {
-        background: var(--j-color-card);
-        border: 1px dashed var(--j-color-border);
+        background: var(--j-file-upload-bg, var(--j-color-card, #ffffff));
+        border: 1px dashed var(--j-file-upload-border-color, var(--j-color-border, #e2e8f0));
         border-radius: var(--j-radius-lg);
-        color: var(--j-color-card-foreground);
+        color: var(--j-file-upload-color, var(--j-color-card-foreground, #111827));
         display: grid;
         gap: var(--j-spacing-4);
         padding: var(--j-spacing-4);
@@ -202,7 +204,7 @@ export interface JFileUploadItemEvent {
       }
 
       .j-file-upload__drop {
-        background: var(--j-color-muted);
+        background: var(--j-file-upload-drop-bg, var(--j-color-muted, #f1f5f9));
         border-radius: var(--j-radius-lg);
         display: grid;
         min-height: 8rem;
@@ -257,14 +259,26 @@ export interface JFileUploadItemEvent {
       }
 
       .j-file-upload__progress span {
-        background: var(--j-color-primary);
+        background: var(--j-file-upload-progress-color, var(--j-color-primary, #2563eb));
         display: block;
         height: 100%;
       }
 
       .j-file-upload__error,
       .j-file-upload__errors {
-        color: var(--j-color-danger);
+        color: var(--j-file-upload-error-color, var(--j-color-danger, #dc2626));
+      }
+
+      @media (max-width: 640px) {
+        .j-file-upload__header,
+        .j-file-upload__list li {
+          align-items: stretch;
+          grid-template-columns: 1fr;
+        }
+
+        .j-file-upload__header {
+          display: grid;
+        }
       }
     `,
   ],
@@ -292,6 +306,8 @@ export class JFileUploadComponent {
   readonly remove = output<File>();
   readonly cancelUpload = output<JFileUploadItemEvent>();
   readonly retryUpload = output<JFileUploadItemEvent>();
+  readonly previewFile = output<JFileUploadItem>();
+  readonly downloadFile = output<JFileUploadItem>();
 
   readonly queue = signal<readonly JFileUploadItem[]>([]);
   readonly errors = signal<readonly JFileUploadError[]>([]);
@@ -383,7 +399,7 @@ export class JFileUploadComponent {
     return `${(size / 1024 / 1024).toFixed(1)} MB`;
   }
 
-  previewLabel(file: File): string {
+  filePreviewLabel(file: File): string {
     return file.type.startsWith('image/') ? 'IMG' : file.name.split('.').pop()?.slice(0, 4).toUpperCase() || 'FILE';
   }
 

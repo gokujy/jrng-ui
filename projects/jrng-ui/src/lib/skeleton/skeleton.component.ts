@@ -3,7 +3,7 @@ import { JPassThrough, jMergePartClasses } from '../core/pass-through';
 
 export type JSkeletonShape = 'rectangle' | 'rounded' | 'circle';
 export type JSkeletonAnimation = 'pulse' | 'wave' | 'none';
-export type JSkeletonVariant = 'rectangle' | 'text' | 'avatar' | 'card' | 'table';
+export type JSkeletonVariant = 'rectangle' | 'text' | 'avatar' | 'button' | 'card' | 'table';
 
 @Component({
   selector: 'j-skeleton',
@@ -39,7 +39,7 @@ export type JSkeletonVariant = 'rectangle' | 'text' | 'avatar' | 'card' | 'table
   styles: [
     `
       .j-skeleton {
-        background: var(--j-color-surface-subtle);
+        background: var(--j-skeleton-bg, var(--j-color-surface-subtle));
         display: block;
         min-height: 1rem;
         overflow: hidden;
@@ -60,6 +60,10 @@ export type JSkeletonVariant = 'rectangle' | 'text' | 'avatar' | 'card' | 'table
         border-radius: var(--j-radius-full);
       }
 
+      .j-skeleton--button {
+        border-radius: var(--j-radius-md, 0.5rem);
+      }
+
       .j-skeleton--card {
         background: transparent;
         border-radius: var(--j-card-radius);
@@ -77,7 +81,7 @@ export type JSkeletonVariant = 'rectangle' | 'text' | 'avatar' | 'card' | 'table
 
       .j-skeleton__line,
       .j-skeleton__row {
-        background: var(--j-color-surface-subtle);
+        background: var(--j-skeleton-bg, var(--j-color-surface-subtle));
         border-radius: var(--j-radius-sm);
         display: block;
         height: 1rem;
@@ -108,7 +112,7 @@ export type JSkeletonVariant = 'rectangle' | 'text' | 'avatar' | 'card' | 'table
       .j-skeleton--wave .j-skeleton__line::after,
       .j-skeleton--wave .j-skeleton__row::after {
         animation: j-skeleton-wave 1.4s linear infinite;
-        background: linear-gradient(90deg, transparent, rgb(255 255 255 / 42%), transparent);
+        background: linear-gradient(90deg, transparent, var(--j-skeleton-shimmer-color, rgb(255 255 255 / 42%)), transparent);
         content: '';
         inset: 0;
         position: absolute;
@@ -124,6 +128,17 @@ export type JSkeletonVariant = 'rectangle' | 'text' | 'avatar' | 'card' | 'table
       @keyframes j-skeleton-wave {
         to {
           transform: translateX(100%);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .j-skeleton--pulse,
+        .j-skeleton--pulse .j-skeleton__line,
+        .j-skeleton--pulse .j-skeleton__row,
+        .j-skeleton--wave::after,
+        .j-skeleton--wave .j-skeleton__line::after,
+        .j-skeleton--wave .j-skeleton__row::after {
+          animation: none;
         }
       }
     `,
@@ -170,6 +185,10 @@ export class JSkeletonComponent {
 
     if (this.variant() === 'text') {
       return this.height() === '1rem' ? '0.875rem' : this.height();
+    }
+
+    if (this.variant() === 'button') {
+      return this.height() === '1rem' ? '2.25rem' : this.height();
     }
 
     return this.height();

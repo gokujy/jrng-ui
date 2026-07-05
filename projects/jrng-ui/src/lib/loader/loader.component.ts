@@ -18,10 +18,10 @@ import { JPassThrough, jMergePartClasses } from '../core/pass-through';
   styles: [
     `
       .j-loader {
-        animation: j-loader-spin var(--j-duration-slow) linear infinite;
-        border-color: var(--j-color-border-strong);
+        animation: j-loader-spin var(--j-loader-duration, var(--j-duration-slow, 700ms)) linear infinite;
+        border-color: var(--j-loader-track-color, var(--j-color-border-strong, #cbd5e1));
         border-radius: var(--j-radius-full);
-        border-right-color: var(--j-color-primary);
+        border-right-color: var(--j-loader-color, var(--j-color-primary, #2563eb));
         border-style: solid;
         display: inline-flex;
       }
@@ -29,6 +29,12 @@ import { JPassThrough, jMergePartClasses } from '../core/pass-through';
       @keyframes j-loader-spin {
         to {
           transform: rotate(360deg);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .j-loader {
+          animation: none;
         }
       }
     `,

@@ -250,9 +250,21 @@
     --j-input-height-lg: var(--j-control-height-lg);
     --j-input-radius: var(--j-control-radius);
     --j-input-bg: var(--j-control-bg);
-    --j-input-color: var(--j-control-color);
+    --j-input-text-color: var(--j-control-color);
+    --j-input-color: var(--j-input-text-color);
     --j-input-border-color: var(--j-control-border-color);
+    --j-input-focus-border-color: var(--j-color-primary);
+    --j-input-focus-shadow-color: var(--j-color-ring);
     --j-input-placeholder-color: var(--j-control-placeholder-color);
+    --j-input-helper-color: var(--j-color-text-muted);
+    --j-input-error-color: var(--j-color-danger);
+    --j-input-success-color: var(--j-color-success);
+    --j-input-warning-color: var(--j-color-warning);
+    --j-input-clear-color: var(--j-color-text-muted);
+    --j-input-icon-color: var(--j-color-text-muted);
+    --j-ripple-color: currentColor;
+    --j-ripple-opacity: 0.18;
+    --j-ripple-duration: var(--j-duration-slow);
     --j-card-radius: var(--j-radius-lg);
     --j-card-bg: var(--j-color-card);
     --j-card-color: var(--j-color-card-foreground);
@@ -263,12 +275,15 @@
     --j-dialog-color: var(--j-color-popover-foreground);
     --j-dialog-border-color: var(--j-color-border);
     --j-dialog-shadow: var(--j-shadow-lg);
+    --j-overlay-backdrop-bg: rgb(15 23 42 / 56%);
     --j-table-bg: var(--j-color-card);
     --j-table-color: var(--j-color-card-foreground);
     --j-table-border-color: var(--j-color-border);
     --j-table-header-bg: var(--j-color-muted);
     --j-table-header-color: var(--j-color-muted-foreground);
     --j-table-row-hover-bg: color-mix(in srgb, var(--j-color-primary) 5%, transparent);
+    --j-skeleton-bg: var(--j-color-surface-subtle);
+    --j-skeleton-shimmer-color: rgb(255 255 255 / 42%);
   }
 }
 @layer j-theme, j-base, j-components, j-utilities;
@@ -377,7 +392,7 @@
     position: relative;
   }
   .j-ripple::after {
-    background: currentColor;
+    background: var(--j-ripple-color, currentColor);
     border-radius: var(--j-radius-full);
     content: "";
     height: 0;
@@ -390,12 +405,17 @@
     width: 0;
   }
   .j-ripple.is-rippling::after {
-    animation: j-ripple var(--j-duration-slow) var(--j-ease-standard);
+    animation: j-ripple var(--j-ripple-duration, var(--j-duration-slow)) var(--j-ease-standard);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .j-ripple.is-rippling::after {
+      animation: none;
+    }
   }
   @keyframes j-ripple {
     from {
       height: 0;
-      opacity: 0.18;
+      opacity: var(--j-ripple-opacity, 0.18);
       width: 0;
     }
     to {

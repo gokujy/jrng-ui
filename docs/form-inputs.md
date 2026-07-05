@@ -41,7 +41,7 @@ Most controls support `id`, `name`, `label`, `placeholder`, `hint`, `error`, `re
 Use `j-form-field` as a lightweight wrapper when a native or custom projected control needs shared label, hint, error, and required indicator rendering.
 
 ```html
-<j-form-field label="Reference" forId="reference" hint="Shown on internal reports">
+<j-form-field label="Reference" forId="reference" hint="Shown on reports">
   <input id="reference" class="j-input" />
 </j-form-field>
 ```
@@ -54,7 +54,7 @@ Use `j-form-field` as a lightweight wrapper when a native or custom projected co
 <j-input
   label="Email"
   type="email"
-  placeholder="name@company.com"
+  placeholder="name@example.com"
   [formControl]="email"
   required
   clearable

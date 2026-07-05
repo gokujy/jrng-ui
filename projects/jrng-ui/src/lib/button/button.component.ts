@@ -6,6 +6,7 @@ import {
   input,
   output,
 } from '@angular/core';
+import { JRippleDirective } from '../core/ripple.directive';
 import { JPassThrough, jMergePartClasses } from '../core/pass-through';
 import { JSeverity } from '../core/types';
 
@@ -20,7 +21,7 @@ export type JrButtonType = 'button' | 'submit' | 'reset';
 
 @Component({
   selector: 'j-button',
-  imports: [],
+  imports: [JRippleDirective],
   templateUrl: './button.component.html',
   styleUrl: './button.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -45,9 +46,7 @@ export class JrButtonComponent {
   readonly fullWidth = input(false, { transform: booleanAttribute });
   readonly iconOnly = input(false, { transform: booleanAttribute });
 
-  readonly clicked = output<MouseEvent>();
-  /** @deprecated Use clicked instead. */
-  readonly jrPress = output<MouseEvent>();
+  readonly onClick = output<MouseEvent>();
 
   readonly isBlocked = computed(() => this.disabled() || this.loading());
 
@@ -111,7 +110,6 @@ export class JrButtonComponent {
       return;
     }
 
-    this.clicked.emit(event);
-    this.jrPress.emit(event);
+    this.onClick.emit(event);
   }
 }

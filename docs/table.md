@@ -85,6 +85,35 @@ rows = [
 
 `sortOrder` is `1`, `-1`, or `0`.
 
+For multi-column sorting, set `sortMode="multiple"` and listen to `sortChange`.
+
+```html
+<j-table
+  [value]="rows"
+  [columns]="columns"
+  sortMode="multiple"
+  [multiSortMeta]="multiSort"
+  (sortChange)="sort = $event"
+/>
+```
+
+## Filtering and Toolbar
+
+```html
+<j-table
+  [value]="rows"
+  [columns]="columns"
+  showGlobalFilter
+  showColumnManager
+  showExport
+  showTableState
+  stateKey="orders-table"
+  (filterChange)="filters = $event.filters"
+/>
+```
+
+Set `filterable: true` on a column to show the column filter control.
+
 ## Lazy Loading
 
 ```html
@@ -126,6 +155,26 @@ Lazy load events use this shape:
 ```
 
 Supported modes are `single`, `multiple`, `checkbox`, and `none`.
+
+## Expansion, Editing, and Reorder
+
+```html
+<j-table
+  [value]="rows"
+  [columns]="columns"
+  expandableRows
+  cellEditing
+  reorderableRows
+  reorderableColumns
+  (cellEditSave)="saveCell($event)"
+  (rowReorder)="rows = $event.value"
+  (columnReorder)="columns = $event.columns"
+>
+  <ng-template #jTableExpandedRow let-row>
+    <p>{{ row.name }} details</p>
+  </ng-template>
+</j-table>
+```
 
 ## Row Actions
 
@@ -201,6 +250,7 @@ Or by using keyed templates with an input column model:
 - Empty state
 - Pagination
 - Single-column sorting
+- Multi-column sorting
 - Lazy loading event support
 - Row actions
 - Custom cell templates
@@ -208,13 +258,16 @@ Or by using keyed templates with an input column model:
 - Selection support
 - Responsive layout
 - Basic text column filters
-
-## Pending Advanced Items
-
-- Virtual scroll
-- Row grouping
-- Column resize behavior
-- Column reorder behavior
-- Frozen rows and columns
+- Global filter toolbar
+- Column manager
+- State save and restore
 - CSV export
-- Advanced filter match modes and menus
+- Row expansion
+- Cell and row edit events
+- Row and column reorder events
+- Frozen row and column styling hooks
+
+## Not Included
+
+- Virtual scroll is handled by `j-virtual-scroller`.
+- Row grouping and advanced filter match-mode menus are not part of the current table API.

@@ -1,5 +1,5 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, TemplateRef, contentChild, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, TemplateRef, booleanAttribute, contentChild, input } from '@angular/core';
 
 export type JTimelineAlign = 'vertical' | 'horizontal';
 export type JTimelineSeverity = 'success' | 'warning' | 'danger' | 'info' | 'neutral';
@@ -10,6 +10,7 @@ export interface JTimelineItem {
   readonly opposite?: string;
   readonly icon?: string;
   readonly severity?: JTimelineSeverity;
+  readonly color?: string;
   readonly data?: unknown;
 }
 
@@ -27,6 +28,7 @@ export interface JTimelineItemContext {
       class="j-timeline"
       [class]="styleClass()"
       [class.j-timeline--horizontal]="layout() === 'horizontal'"
+      [class.j-timeline--compact]="compact()"
       data-jc-name="timeline"
       data-jc-section="root"
     >
@@ -40,7 +42,11 @@ export interface JTimelineItemContext {
             }
           </div>
           <div class="j-timeline__axis" aria-hidden="true">
-            <span class="j-timeline__marker" [class]="'j-timeline__marker j-timeline__marker--' + (item.severity || 'neutral')">
+            <span
+              class="j-timeline__marker"
+              [class]="'j-timeline__marker j-timeline__marker--' + (item.severity || 'neutral')"
+              [style.--j-timeline-marker-color]="item.color || null"
+            >
               @if (item.icon) {
                 {{ item.icon }}
               }
@@ -110,22 +116,22 @@ export interface JTimelineItemContext {
       }
 
       .j-timeline__marker--success {
-        background: var(--j-color-success);
+        background: var(--j-timeline-marker-color, var(--j-color-success));
         color: var(--j-color-success-foreground, white);
       }
 
       .j-timeline__marker--warning {
-        background: var(--j-color-warning);
+        background: var(--j-timeline-marker-color, var(--j-color-warning));
         color: var(--j-color-warning-foreground, white);
       }
 
       .j-timeline__marker--danger {
-        background: var(--j-color-danger);
+        background: var(--j-timeline-marker-color, var(--j-color-danger));
         color: var(--j-color-danger-foreground, white);
       }
 
       .j-timeline__marker--info {
-        background: var(--j-color-info);
+        background: var(--j-timeline-marker-color, var(--j-color-info));
         color: var(--j-color-info-foreground, white);
       }
 
@@ -139,6 +145,24 @@ export interface JTimelineItemContext {
       .j-timeline__content p {
         color: var(--j-color-muted-foreground);
         margin: var(--j-spacing-1) 0 0;
+      }
+
+      .j-timeline--compact {
+        gap: var(--j-spacing-2);
+      }
+
+      .j-timeline--compact .j-timeline__item {
+        gap: var(--j-spacing-2);
+        grid-template-columns: minmax(5rem, 0.35fr) auto minmax(0, 1fr);
+      }
+
+      .j-timeline--compact .j-timeline__marker {
+        height: 1.5rem;
+        width: 1.5rem;
+      }
+
+      .j-timeline--compact .j-timeline__content {
+        padding: var(--j-spacing-3);
       }
 
       .j-timeline--horizontal {
@@ -161,6 +185,7 @@ export interface JTimelineItemContext {
 export class JTimelineComponent {
   readonly value = input<readonly JTimelineItem[]>([]);
   readonly layout = input<JTimelineAlign>('vertical');
+  readonly compact = input(false, { transform: booleanAttribute });
   readonly styleClass = input('');
 
   readonly contentTemplate = contentChild<unknown, TemplateRef<JTimelineItemContext>>('jTimelineContent', { read: TemplateRef });

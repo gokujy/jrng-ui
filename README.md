@@ -1,6 +1,10 @@
 # JRNG UI
 
-A modern, premium Angular UI component library for building clean, fast, and accessible web applications.
+[![npm version](https://img.shields.io/npm/v/jrng-ui.svg)](https://www.npmjs.com/package/jrng-ui)
+[![npm downloads](https://img.shields.io/npm/dm/jrng-ui.svg)](https://www.npmjs.com/package/jrng-ui)
+[![license](https://img.shields.io/npm/l/jrng-ui.svg)](LICENSE)
+
+JRNG UI is a standalone Angular component library for business and admin applications.
 
 ## Install
 
@@ -8,21 +12,30 @@ A modern, premium Angular UI component library for building clean, fast, and acc
 npm install jrng-ui
 ```
 
-## Usage
+## Quick Start
 
 Import standalone components from secondary entrypoints.
 
 ```ts
+import { Component } from '@angular/core';
 import { JButtonComponent } from 'jrng-ui/button';
 import { JInputComponent } from 'jrng-ui/input';
+
+@Component({
+  selector: 'app-example',
+  standalone: true,
+  imports: [JButtonComponent, JInputComponent],
+  template: `
+    <j-input label="Email" placeholder="name@example.com"></j-input>
+    <j-button label="Save" (onClick)="save()"></j-button>
+  `,
+})
+export class ExampleComponent {
+  save(): void {}
+}
 ```
 
-```html
-<j-button label="Save"></j-button>
-<j-input label="Email" placeholder="Enter email"></j-input>
-```
-
-## Styles
+## Theme Setup
 
 Add JRNG UI styles once in your global stylesheet.
 
@@ -30,7 +43,7 @@ Add JRNG UI styles once in your global stylesheet.
 @use 'jrng-ui/styles';
 ```
 
-If you prefer configuring global styles in `angular.json`, include the compiled CSS file.
+Or include the compiled CSS in `angular.json`.
 
 ```json
 {
@@ -38,24 +51,31 @@ If you prefer configuring global styles in `angular.json`, include the compiled 
 }
 ```
 
-## Documentation
+Dark mode is enabled by adding `j-dark` to a root element.
 
-Full documentation, examples, theming guides, and component APIs are available at:
-
-https://jrngui.dev/
+```html
+<main class="j-dark">
+  <j-button label="Save" (onClick)="save()"></j-button>
+</main>
+```
 
 ## Features
 
-- Modern Angular standalone components
-- `j-*` component selectors
-- Premium dashboard-friendly design
-- Light and dark theme support
-- Design tokens
-- Accessibility-focused patterns
-- Reactive Forms support
-- SSR-safe implementation
-- Zoneless-friendly behavior
-- Secondary entrypoints
+- Angular standalone components and directives
+- Secondary entrypoints such as `jrng-ui/button` and `jrng-ui/input`
+- Forms, buttons, overlays, feedback, navigation, business utilities, and data table components
+- Optional Tour Guide wrapper through `JTourService` and `jTourStep` for apps that install `driver.js`
+- Token-driven light and dark themes
+- CSS variables for component customization
+- Accessibility-focused states, labels, keyboard behavior, and focus rings
+- Reactive Forms support where form controls apply
+- Optional peer dependencies for optional features
+
+## Links
+
+- Docs: https://jrngui.dev/
+- GitHub: https://github.com/gokujy/jrng-ui
+- npm: https://www.npmjs.com/package/jrng-ui
 
 ## License
 

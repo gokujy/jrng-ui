@@ -43,7 +43,7 @@
     (blur)="handleBlur()"
   />
 
-  @if (clearable && value) {
+  @if (showClear) {
     <button
       class="j-input__clear"
       data-jc-section="clear"
@@ -52,7 +52,7 @@
       [disabled]="isDisabled || readonly"
       (click)="clearValue()"
     >
-      x
+      <span aria-hidden="true">&times;</span>
     </button>
   }
 

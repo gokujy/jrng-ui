@@ -5,7 +5,7 @@ and showcase pages must stay reusable across applications and teams.
 
 ## No Project-Specific References
 
-Do not include app names, company names, client names, internal project names,
+Do not include private app, organization, or project names,
 private domain names, real people, or organization-specific workflows in code,
 docs, comments, examples, route labels, screenshots, prompts, or component
 descriptions.
@@ -58,7 +58,7 @@ Use generic domains such as `example.com` for email examples.
 
 Docs should prefer simple event names:
 
-- `clicked`
+- `onClick`
 - `valueChange`
 - `selectionChange`
 - `opened`

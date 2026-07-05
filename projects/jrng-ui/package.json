@@ -1,6 +1,6 @@
 {
   "name": "jrng-ui",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "A modern, premium Angular UI component library for building clean, fast, and accessible web applications.",
   "homepage": "https://jrngui.dev/",
   "keywords": [
@@ -25,10 +25,14 @@
     "@angular/common": "^21.2.0",
     "@angular/core": "^21.2.0",
     "@angular/forms": "^21.2.0",
-    "chart.js": "^4.0.0"
+    "chart.js": "^4.0.0",
+    "driver.js": "^1.6.0"
   },
   "peerDependenciesMeta": {
     "chart.js": {
+      "optional": true
+    },
+    "driver.js": {
       "optional": true
     }
   },

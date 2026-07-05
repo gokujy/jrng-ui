@@ -1,4 +1,4 @@
-import { ComponentDoc, ComponentGroup, DocsApiRow, DocsEventRow } from './docs-types';
+import { ComponentDoc, ComponentGroup, DocsApiRow, DocsCssVariableRow, DocsEventRow } from './docs-types';
 
 const prop = (name: string, type: string, defaultValue: string, description: string): DocsApiRow => ({
   name,
@@ -13,6 +13,12 @@ const event = (eventName: string, payload: string, description: string): DocsEve
   description,
 });
 
+const cssVar = (variable: string, fallback: string, description: string): DocsCssVariableRow => ({
+  variable,
+  fallback,
+  description,
+});
+
 const formNotes = [
   'Use it when collecting user input in forms, filters, settings screens, or small editing flows.',
   'Pair it with a visible label and a short hint when users may not know the expected value.',
@@ -20,13 +26,47 @@ const formNotes = [
 
 const noOutputs = [] as const;
 
+const formCssVariables = [
+  cssVar('--j-input-bg', 'var(--j-color-card, #ffffff)', 'Input surface background.'),
+  cssVar('--j-input-text-color', 'var(--j-color-foreground, #111827)', 'Typed text color.'),
+  cssVar('--j-input-placeholder-color', 'var(--j-color-muted-foreground, #64748b)', 'Placeholder text color.'),
+  cssVar('--j-input-border-color', 'var(--j-color-border, #d1d5db)', 'Default input border color.'),
+  cssVar('--j-input-focus-border-color', 'var(--j-color-primary, #2563eb)', 'Border color while focused.'),
+  cssVar('--j-input-focus-shadow-color', 'color-mix(in srgb, var(--j-color-primary) 22%, transparent)', 'Focus ring shadow color.'),
+  cssVar('--j-input-icon-color', 'var(--j-color-muted-foreground, #64748b)', 'Prefix and suffix icon color.'),
+  cssVar('--j-input-clear-color', 'var(--j-color-muted-foreground, #64748b)', 'Clear button icon color.'),
+  cssVar('--j-input-helper-color', 'var(--j-color-muted-foreground, #64748b)', 'Helper text color.'),
+  cssVar('--j-input-error-color', 'var(--j-color-danger, #dc2626)', 'Error text and invalid border color.'),
+  cssVar('--j-input-success-color', 'var(--j-color-success, #16a34a)', 'Success state color.'),
+  cssVar('--j-input-warning-color', 'var(--j-color-warning, #d97706)', 'Warning state color.'),
+] as const;
+
+const buttonCssVariables = [
+  cssVar('--j-button-primary-bg', 'var(--j-color-primary, #2563eb)', 'Primary button background.'),
+  cssVar('--j-button-primary-color', 'var(--j-color-primary-foreground, #ffffff)', 'Primary button text color.'),
+  cssVar('--j-button-border-radius', 'var(--j-radius-md, 0.5rem)', 'Button corner radius.'),
+  cssVar('--j-button-focus-ring', 'var(--j-focus-ring)', 'Keyboard focus ring.'),
+  cssVar('--j-ripple-color', 'currentColor', 'Ripple color inherited by button ripple.'),
+  cssVar('--j-ripple-opacity', '0.18', 'Ripple opacity.'),
+] as const;
+
+const surfaceCssVariables = [
+  cssVar('--j-color-card', '#ffffff', 'Component surface background.'),
+  cssVar('--j-color-card-foreground', '#111827', 'Component surface text color.'),
+  cssVar('--j-color-border', '#e2e8f0', 'Component border color.'),
+  cssVar('--j-radius-lg', '0.75rem', 'Surface corner radius.'),
+  cssVar('--j-shadow-sm', '0 1px 2px rgb(15 23 42 / 0.08)', 'Subtle elevation shadow.'),
+] as const;
+
 export const componentGroups: readonly ComponentGroup[] = [
   { name: 'Forms', icon: 'text-cursor-input', slugs: ['input', 'textarea', 'select', 'checkbox', 'radio', 'switch'] },
   { name: 'Buttons', icon: 'mouse-pointer-click', slugs: ['button', 'icon-button'] },
-  { name: 'Data Display', icon: 'table', slugs: ['card', 'badge', 'tag', 'table'] },
-  { name: 'Feedback', icon: 'message-square', slugs: ['toast', 'progress', 'skeleton'] },
+  { name: 'Data Display', icon: 'table', slugs: ['card', 'badge', 'tag', 'table', 'action-menu', 'column-filter', 'filter-bar'] },
+  { name: 'Business', icon: 'briefcase-business', slugs: ['metric-card', 'stat-card', 'status-chip', 'page-header', 'empty-state'] },
+  { name: 'Feedback', icon: 'message-square', slugs: ['toast', 'progress', 'skeleton', 'copy-button'] },
   { name: 'Navigation', icon: 'route', slugs: ['tabs', 'breadcrumb', 'menu', 'sidebar'] },
-  { name: 'Overlay', icon: 'panel-top', slugs: ['dialog', 'tooltip', 'popover'] },
+  { name: 'Overlay', icon: 'panel-top', slugs: ['dialog', 'confirm-dialog', 'drawer', 'tooltip', 'popover'] },
+  { name: 'Utilities', icon: 'wrench', slugs: ['ripple', 'timeline', 'file-upload', 'formatting', 'tour-guide'] },
 ];
 
 export const componentDocs: readonly ComponentDoc[] = [
@@ -78,6 +118,7 @@ email = new FormControl('');
       prop('readonly', 'boolean', 'false', 'Keeps the value visible but not editable.'),
     ],
     outputs: [event('valueChange', 'string', 'Emits whenever the typed value changes.'), event('clear', 'void', 'Emits when the clear button is used.')],
+    cssVariables: formCssVariables,
     accessibility: ['Always provide a label or an equivalent accessible label.', 'Use error text with invalid state so the problem is visible to screen reader and sighted users.'],
     bestPractices: ['Use the correct input type for email, search, telephone, and URL fields.', 'Keep placeholders short; do not use them as the only label.'],
     commonMistakes: ['Using Input for long notes instead of Textarea.', 'Showing an error color without an error message.'],
@@ -116,6 +157,7 @@ email = new FormControl('');
       prop('invalid', 'boolean', 'false', 'Applies error styling.'),
     ],
     outputs: [event('valueChange', 'string', 'Emits when the text changes.'), event('clear', 'void', 'Emits when cleared.')],
+    cssVariables: formCssVariables,
     accessibility: ['Use a visible label and link invalid state to a clear error message.'],
     bestPractices: ['Set a sensible row count so the field does not dominate the form.', 'Use maxLength only when there is a real storage or product limit.'],
   },
@@ -162,6 +204,7 @@ teams = [
       event('selectionChange', 'JSelectOption | null', 'Emits selected option metadata.'),
       event('opened / closed', 'void', 'Emits when the panel opens or closes.'),
     ],
+    cssVariables: formCssVariables,
     accessibility: ['The trigger uses combobox semantics and keyboard interaction.', 'Keep option labels short enough to scan.'],
     bestPractices: ['Avoid hundreds of options without search or virtualization.', 'Use native radio buttons when there are only two or three visible choices.'],
   },
@@ -275,7 +318,8 @@ teams = [
     sizes: ['sm, md, lg, xl'],
     states: ['default', 'disabled', 'loading', 'full width', 'icon only'],
     inputs: [prop('label', 'string', "''", 'Text label.'), prop('severity', 'primary | secondary | neutral | success | warning | danger | info', "'primary'", 'Action intent.'), prop('variant', 'filled | outline | ghost | soft | link', "'filled'", 'Visual treatment.'), prop('loading', 'boolean', 'false', 'Shows a spinner and blocks clicks.'), prop('iconOnly', 'boolean', 'false', 'Optimizes dimensions for icon-only buttons.')],
-    outputs: [event('clicked', 'MouseEvent', 'Emits when activated and not disabled or loading.')],
+    outputs: [event('onClick', 'MouseEvent', 'Emits when activated and not disabled or loading.')],
+    cssVariables: buttonCssVariables,
     accessibility: ['Icon-only buttons need ariaLabel. Loading buttons expose busy state.'],
     bestPractices: ['Use destructive severity only for actions with destructive outcomes.', 'Keep labels verb-first: Save, Create, Delete, Export.'],
   },
@@ -307,7 +351,8 @@ teams = [
     sizes: ['sm, md, lg, xl'],
     states: ['default', 'hover/focus', 'disabled', 'loading'],
     inputs: [prop('iconOnly', 'boolean', 'false', 'Applies icon-only sizing.'), prop('ariaLabel', 'string', "''", 'Required accessible label when no text label is visible.'), prop('variant', 'JButtonVariant', "'filled'", 'Visual treatment.')],
-    outputs: [event('clicked', 'MouseEvent', 'Emits when activated.')],
+    outputs: [event('onClick', 'MouseEvent', 'Emits when activated.')],
+    cssVariables: buttonCssVariables,
     accessibility: ['Always provide ariaLabel because there is no visible text.'],
     bestPractices: ['Use familiar Lucide icons and tooltips for commands that are not universally obvious.'],
   },
@@ -408,25 +453,289 @@ teams = [
     description: 'A data table for structured rows and columns with sorting, pagination, selection, and states.',
     whenToUse: 'Use Table for comparable data where users need to scan across columns.',
     code: {
-      importCode: `import { JTableComponent, JTableColumn } from 'jrng-ui/table';`,
+      importCode: `import { JTableComponent, JTableColumn, JTableConfig } from 'jrng-ui/table';`,
       basic: `<j-table [value]="orders" [columns]="columns"></j-table>`,
-      variants: `<j-table [value]="orders" [columns]="columns" striped paginator [rows]="10"></j-table>`,
+      variants: `<j-table [value]="orders" [columns]="columns" striped paginator [rows]="10"></j-table>
+<j-table [value]="orders" [columns]="columns" showGlobalFilter showColumnManager showExport></j-table>
+<j-table [value]="orders" [columns]="columns" sortMode="multiple" selectionMode="checkbox"></j-table>
+<j-table [value]="orders" [columns]="columns" [config]="tableConfig"></j-table>`,
       states: `<j-table [value]="[]" [columns]="columns" emptyMessage="No orders found"></j-table>
-<j-table [value]="orders" [columns]="columns" loading></j-table>`,
+<j-table [value]="orders" [columns]="columns" loading></j-table>
+<j-table [value]="orders" [columns]="columns" lockableRows maximizable></j-table>`,
       angular: `columns: JTableColumn[] = [
   { field: 'order', header: 'Order', sortable: true },
-  { field: 'status', header: 'Status' },
-  { field: 'total', header: 'Total', align: 'end' }
-];`,
+  { field: 'status', header: 'Status', filterable: true },
+  { field: 'total', header: 'Total', align: 'end' },
+  { field: 'actions', header: 'Actions', type: 'action', actions }
+];
+
+tableConfig: JTableConfig = {
+  pagination: true,
+  sortable: true,
+  multiSort: true,
+  filterRow: true,
+  columnFilter: true,
+  globalSearch: true,
+  reorderableRows: true,
+  lockableRows: true,
+  reorderableColumns: true,
+  resizableColumns: true,
+  frozenColumns: true,
+  maximizable: true,
+  exportable: true,
+  stateful: true,
+  columnManager: true,
+  size: 'medium',
+  export: { rows: 'selected', visibleColumnsOnly: true }
+};`,
     },
     usage: ['Use for orders, users, files, tasks, invoices, and audit logs.'],
-    variants: ['striped', 'hoverable', 'paginated', 'sortable', 'selectable', 'lazy-loaded'],
-    sizes: ['Rows are controlled through table density and surrounding layout.'],
-    states: ['default', 'loading', 'empty', 'filtered empty', 'selected rows'],
-    inputs: [prop('value', 'readonly JTableRow[]', '[]', 'Rows to render.'), prop('columns', 'readonly JTableColumn[]', '[]', 'Column definitions.'), prop('paginator', 'boolean', 'false', 'Shows pagination controls.'), prop('loading', 'boolean', 'false', 'Shows loading rows.'), prop('selectionMode', 'single | multiple | checkbox | none', "'none'", 'Selection behavior.')],
-    outputs: [event('sortChange', 'JTableSort', 'Emits when sorting changes.'), event('pageChange', 'JTablePageChange', 'Emits when page changes.'), event('rowClick', 'JTableRowClickEvent', 'Emits when a row is clicked.')],
+    variants: ['basic table', 'pagination', 'sorting', 'multi sorting', 'filter row', 'column filter', 'global search', 'row actions', 'row reorder', 'row lock/unlock', 'column show/hide', 'column reorder', 'column resize', 'maximize/minimize', 'stateful table', 'export event'],
+    sizes: ['small', 'medium', 'large'],
+    states: ['default', 'loading skeleton', 'empty table', 'filtered empty', 'selected rows', 'locked rows', 'maximized'],
+    inputs: [prop('value', 'readonly JTableRow[]', '[]', 'Rows to render.'), prop('columns', 'readonly JTableColumn[]', '[]', 'Column definitions and header metadata.'), prop('config', 'JTableConfig', 'null', 'Object API for enterprise table behavior.'), prop('paginator', 'boolean', 'false', 'Shows pagination controls.'), prop('loading', 'boolean', 'false', 'Shows loading rows.'), prop('selectionMode', 'single | multiple | checkbox | none', "'none'", 'Selection behavior.'), prop('filterRow', 'boolean', 'true', 'Shows column filter controls for filterable columns.'), prop('lockableRows', 'boolean', 'false', 'Shows row lock/unlock controls.'), prop('maximizable', 'boolean', 'false', 'Shows maximize/minimize control with Escape support.'), prop('showGlobalFilter / showColumnManager / showExport / showTableState', 'boolean', 'false', 'Toolbar controls.'), prop('exportConfig', 'JTableExportOptions', '{}', 'CSV export mode, filename, and visible-column behavior.'), prop('size', 'small | medium | large', "'medium'", 'Table density.')],
+    outputs: [event('sortChange / onSortChange', 'JTableSort', 'Emits when sorting changes.'), event('pageChange / onPageChange', 'JTablePageChange', 'Emits when page changes.'), event('filterChange / onFilterChange', 'JTableFilterChange', 'Emits when global or column filters change.'), event('export / onExport', 'JTableExportEvent', 'Emits before CSV download; call preventDefault for server export.'), event('rowClick / onRowClick', 'JTableRowClickEvent', 'Emits when a row is clicked.'), event('rowDoubleClick / onRowDoubleClick', 'JTableRowClickEvent', 'Emits when a row is double-clicked.'), event('selectionChange / onSelectionChange', 'JTableSelection', 'Emits selection model changes.'), event('rowReorder / onRowReorder', 'JTableReorderEvent', 'Emits after row drag reorder.'), event('rowLock / onRowLock', 'JTableRowLockEvent', 'Emits when a row is locked.'), event('rowUnlock / onRowUnlock', 'JTableRowLockEvent', 'Emits when a row is unlocked.'), event('columnReorder / onColumnReorder', 'JTableColumnReorderEvent', 'Emits after column drag reorder.'), event('columnResize / onColumnResize', 'JTableColumnResizeEvent', 'Emits after column resize.'), event('columnVisibilityChange / onColumnVisibilityChange', 'JTableColumnVisibilityChangeEvent', 'Emits when a column is shown or hidden.'), event('stateSave / onStateSave', 'JTableState', 'Emits after state is saved.'), event('stateRestore / onStateRestore', 'JTableState', 'Emits after state is restored.'), event('maximize / onMaximize', 'void', 'Emits when expanded table mode opens.'), event('minimize / onMinimize', 'void', 'Emits when expanded table mode closes.')],
+    cssVariables: [
+      cssVar('--j-table-bg', 'var(--j-color-card, #ffffff)', 'Table surface background.'),
+      cssVar('--j-table-header-bg', 'var(--j-color-muted, #f8fafc)', 'Header row background.'),
+      cssVar('--j-table-header-color', 'var(--j-color-muted-foreground, #64748b)', 'Header text color.'),
+      cssVar('--j-table-border-color', 'var(--j-color-border, #e2e8f0)', 'Row and column border color.'),
+      cssVar('--j-table-row-hover-bg', 'color-mix(in srgb, var(--j-color-primary) 6%, transparent)', 'Hover row background.'),
+      cssVar('--j-table-selected-bg', 'color-mix(in srgb, var(--j-color-primary) 12%, transparent)', 'Selected row background.'),
+      cssVar('--j-table-filter-bg', 'var(--j-color-card, #ffffff)', 'Toolbar and filter area background.'),
+      cssVar('--j-table-locked-bg', 'color-mix(in srgb, var(--j-color-warning) 10%, var(--j-table-bg))', 'Locked row background.'),
+      cssVar('--j-table-action-color', 'var(--j-color-foreground, #111827)', 'Action menu text color inside table cells.'),
+      cssVar('--j-table-resize-handle-color', 'var(--j-color-border, #e2e8f0)', 'Column resize handle color.'),
+    ],
     accessibility: ['Use clear column headers and do not hide critical actions behind hover-only UI.'],
     bestPractices: ['Use pagination or lazy loading for large datasets.', 'Keep column labels short and align numeric columns to the end.'],
+  },
+  {
+    slug: 'action-menu',
+    name: 'Action Menu',
+    category: 'Data Display',
+    icon: 'ellipsis',
+    selector: 'j-action-menu',
+    importPath: 'jrng-ui/table',
+    status: 'Stable',
+    description: 'A compact row action control used with tables and dense data lists.',
+    whenToUse: 'Use Action Menu when each table row exposes a small set of commands such as view, edit, duplicate, or delete.',
+    code: {
+      importCode: `import { JActionMenuComponent, JTableAction } from 'jrng-ui/table';`,
+      basic: `<j-action-menu popup [actions]="actions" [row]="row" (actionClick)="runAction($event)"></j-action-menu>`,
+      angular: `actions: JTableAction[] = [
+  { key: 'view', label: 'View', icon: 'View' },
+  { key: 'edit', label: 'Edit', icon: 'Edit' },
+  { key: 'download', label: 'Download', icon: 'Download' },
+  { key: 'duplicate', label: 'Duplicate', icon: 'Copy' },
+  { key: 'approve', label: 'Approve', severity: 'success' },
+  { key: 'reject', label: 'Reject', severity: 'warning' },
+  { key: 'archive', label: 'Archive', disabled: true },
+  { key: 'delete', label: 'Delete', severity: 'danger' }
+];`,
+    },
+    usage: ['Use inside table cells or compact list rows.', 'Keep commands short and disable actions that are unavailable.'],
+    variants: ['inline actions', 'popup menu', 'icons', 'disabled actions', 'danger actions'],
+    sizes: ['Uses compact action sizing for dense data surfaces.'],
+    states: ['default', 'hover', 'focused', 'disabled'],
+    inputs: [prop('actions', 'readonly JTableAction[]', '[]', 'Actions rendered for the row.'), prop('row', 'JTableRow', '{}', 'Current row data.'), prop('rowIndex', 'number', '0', 'Index of the row in the table.'), prop('popup', 'boolean', 'false', 'Renders an overflow trigger with popup menu.'), prop('ariaLabel', 'string', "'Row actions'", 'Accessible label.')],
+    outputs: [event('actionClick', 'JTableActionEvent', 'Emits when an action is activated.')],
+    cssVariables: surfaceCssVariables,
+    accessibility: ['The action group exposes a row actions label and uses native buttons.'],
+    bestPractices: ['Avoid hiding the only critical row action in a menu when users must act repeatedly.'],
+  },
+  {
+    slug: 'column-filter',
+    name: 'Column Filter',
+    category: 'Data Display',
+    icon: 'filter',
+    selector: 'j-column-filter',
+    importPath: 'jrng-ui/table',
+    status: 'Stable',
+    description: 'A small search control for filtering a single table column.',
+    whenToUse: 'Use Column Filter inside table headers when users need per-column filtering.',
+    code: {
+      importCode: `import { JColumnFilterComponent } from 'jrng-ui/table';`,
+      basic: `<j-column-filter field="status" label="Status" (filterChange)="filter($event)"></j-column-filter>`,
+    },
+    usage: ['Use for text-based column filtering in advanced data tables.'],
+    variants: ['field label', 'current value binding'],
+    sizes: ['Compact by default for table headers.'],
+    states: ['empty', 'typed value', 'focused'],
+    inputs: [prop('field', 'string', "''", 'Field being filtered.'), prop('label', 'string', "''", 'Accessible label suffix.'), prop('value', 'unknown', "''", 'Current filter value.')],
+    outputs: [event('filterChange', 'JColumnFilterChange', 'Emits field and text value.')],
+    cssVariables: formCssVariables,
+    accessibility: ['The visible label is screen-reader only so table headers stay compact.'],
+    bestPractices: ['Pair column filters with clear table empty states so users understand filtered results.'],
+  },
+  {
+    slug: 'filter-bar',
+    name: 'Filter Bar',
+    category: 'Data Display',
+    icon: 'list-filter',
+    selector: 'j-filter-bar',
+    importPath: 'jrng-ui/filter-bar',
+    status: 'New',
+    description: 'A responsive business filter surface with search, status, date range, reset, apply, export, and advanced filter slots.',
+    whenToUse: 'Use Filter Bar above tables, audit logs, reports, and list pages that need repeatable search and filtering controls.',
+    code: {
+      importCode: `import { JFilterBarComponent } from 'jrng-ui/filter-bar';`,
+      basic: `<j-filter-bar
+  [statuses]="statuses"
+  showDateRange
+  showExport
+  showAdvancedToggle
+  (filterChange)="filters = $event"
+  (apply)="load($event)"
+  (reset)="resetFilters()"
+  (export)="exportRows($event)">
+</j-filter-bar>`,
+      variants: `<j-filter-bar searchPlaceholder="Search orders" [statuses]="['Draft', 'Paid', 'Overdue']">
+  <j-select jFilterBarFilters label="Team" [options]="teams"></j-select>
+  <div jFilterBarAdvanced>Advanced controls go here.</div>
+</j-filter-bar>`,
+    },
+    usage: ['Use for list pages where users repeatedly search, apply filters, reset filters, and export data.'],
+    variants: ['search only', 'status filter', 'date range', 'advanced slot', 'export action'],
+    sizes: ['Responsive grid collapses to one column on narrow screens.'],
+    states: ['idle', 'edited filters', 'advanced expanded', 'reset'],
+    inputs: [prop('statuses', 'readonly string[]', '[]', 'Status select options.'), prop('showDateRange', 'boolean', 'false', 'Shows start and end date inputs.'), prop('showExport', 'boolean', 'false', 'Shows export button.'), prop('showAdvancedToggle', 'boolean', 'false', 'Shows advanced filter toggle.')],
+    outputs: [event('filterChange', 'JFilterBarValue', 'Emits on search, status, date, or advanced changes.'), event('apply', 'JFilterBarValue', 'Emits when Apply is pressed.'), event('reset', 'void', 'Emits when Reset is pressed.'), event('export', 'JFilterBarValue', 'Emits when Export is pressed.')],
+    cssVariables: [
+      cssVar('--j-filter-bar-bg', 'var(--j-color-card, #ffffff)', 'Filter bar background.'),
+      cssVar('--j-filter-bar-border-color', 'var(--j-color-border, #e2e8f0)', 'Filter bar border color.'),
+      cssVar('--j-filter-bar-primary-bg', 'var(--j-color-primary, #2563eb)', 'Apply button background.'),
+    ],
+    accessibility: ['Search, status, and date controls use labels and native inputs/selects.'],
+    bestPractices: ['Emit filters to application state and keep server-side export behavior in the app.'],
+  },
+  {
+    slug: 'metric-card',
+    name: 'Metric Card',
+    category: 'Business',
+    icon: 'chart-no-axes-column',
+    selector: 'j-metric-card',
+    importPath: 'jrng-ui/metric-card',
+    status: 'Stable',
+    description: 'A compact KPI card for dashboard metrics with optional trend, icon, footer, and loading state.',
+    whenToUse: 'Use Metric Card for business dashboards, operational counters, and executive summaries.',
+    code: {
+      importCode: `import { JMetricCardComponent } from 'jrng-ui/metric-card';`,
+      basic: `<j-metric-card title="Revenue" value="$42.8k" trend="up" trendLabel="+12%" footer="Month to date"></j-metric-card>`,
+      variants: `<j-metric-card title="Churn" value="1.8%" trend="down" trendLabel="-0.4%"></j-metric-card>
+<j-metric-card title="Loading" loading></j-metric-card>`,
+    },
+    usage: ['Use for revenue, counts, conversion, queue volume, SLA, and activity metrics.'],
+    variants: ['up, down, and neutral trend', 'icon slot through icon input', 'loading skeleton'],
+    sizes: ['Metric cards size from content and grid layout.'],
+    states: ['default', 'positive trend', 'negative trend', 'neutral trend', 'loading'],
+    inputs: [prop('title', 'string', "''", 'Metric label.'), prop('value', 'string | number', "''", 'Primary metric value.'), prop('trend', 'up | down | neutral', "'neutral'", 'Trend intent.'), prop('trendLabel', 'string', "''", 'Visible trend text.'), prop('footer', 'string', "''", 'Secondary context.'), prop('loading', 'boolean', 'false', 'Shows loading placeholder.')],
+    outputs: noOutputs,
+    accessibility: ['Do not rely on trend color alone; include trendLabel text.'],
+    bestPractices: ['Keep values short and put date ranges or caveats in footer text.'],
+  },
+  {
+    slug: 'stat-card',
+    name: 'Stat Card',
+    category: 'Business',
+    icon: 'activity',
+    selector: 'j-stat-card',
+    importPath: 'jrng-ui/stat-card',
+    status: 'Stable',
+    description: 'A general statistic card for counts, status summaries, and operational snapshots.',
+    whenToUse: 'Use Stat Card when a metric needs a quieter, more neutral surface than Metric Card.',
+    code: {
+      importCode: `import { JStatCardComponent } from 'jrng-ui/stat-card';`,
+      basic: `<j-stat-card title="Open orders" value="128" trend="up" trendLabel="+18 today"></j-stat-card>`,
+      states: `<j-stat-card title="Loading" loading></j-stat-card>`,
+    },
+    usage: ['Use for counters, queue sizes, open tasks, exceptions, and concise health summaries.'],
+    variants: ['icon', 'trend', 'footer', 'loading'],
+    sizes: ['Designed for responsive dashboard grids.'],
+    states: ['default', 'up/down/neutral trend', 'loading'],
+    inputs: [prop('title', 'string', "''", 'Stat label.'), prop('value', 'string | number', "''", 'Primary value.'), prop('trend', 'up | down | neutral', "'neutral'", 'Trend style.'), prop('trendLabel', 'string', "''", 'Trend text.'), prop('icon', 'string', "''", 'Optional visual marker.'), prop('loading', 'boolean', 'false', 'Shows loading placeholder.')],
+    outputs: noOutputs,
+    accessibility: ['Use explicit titles and trend text so the value has context.'],
+    bestPractices: ['Use the same number format across a group of related cards.'],
+  },
+  {
+    slug: 'status-chip',
+    name: 'Status Chip',
+    category: 'Business',
+    icon: 'badge-check',
+    selector: 'j-status-chip',
+    importPath: 'jrng-ui/status-chip',
+    status: 'Stable',
+    description: 'A compact business status label with a dot and severity color.',
+    whenToUse: 'Use Status Chip for workflow states such as Ready, Review, Blocked, Queued, or Archived.',
+    code: {
+      importCode: `import { JStatusChipComponent } from 'jrng-ui/status-chip';`,
+      basic: `<j-status-chip status="active"></j-status-chip>`,
+      variants: `<j-status-chip status="pending"></j-status-chip>
+<j-status-chip status="approved"></j-status-chip>
+<j-status-chip status="rejected"></j-status-chip>
+<j-status-chip status="overdue"></j-status-chip>
+<j-status-chip label="Custom" [colorMap]="colors" status="custom"></j-status-chip>`,
+    },
+    usage: ['Use in tables, detail headers, cards, timeline items, and workflow summaries.'],
+    variants: ['active', 'inactive', 'pending', 'approved', 'rejected', 'draft', 'paid', 'unpaid', 'overdue', 'completed', 'failed', 'custom color map'],
+    sizes: ['sm, md, lg'],
+    states: ['static status display'],
+    inputs: [prop('label', 'string', "''", 'Visible status text override.'), prop('status', 'JBusinessStatus | string', "''", 'Business status alias.'), prop('severity', 'JSeverity', "'neutral'", 'Fallback status intent.'), prop('colorMap', 'Record<string, JStatusChipColor>', '{}', 'Custom status colors.'), prop('size', 'sm | md | lg', "'md'", 'Chip density.')],
+    outputs: noOutputs,
+    accessibility: ['Use readable label text; color only supports the label.'],
+    bestPractices: ['Keep labels short and consistent with workflow terminology.'],
+  },
+  {
+    slug: 'page-header',
+    name: 'Page Header',
+    category: 'Business',
+    icon: 'panel-top',
+    selector: 'j-page-header',
+    importPath: 'jrng-ui/page-header',
+    status: 'Stable',
+    description: 'A page title block with breadcrumbs, description, actions, and optional tabs slot.',
+    whenToUse: 'Use Page Header at the top of admin pages, record details, and settings views.',
+    code: {
+      importCode: `import { JPageHeaderComponent } from 'jrng-ui/page-header';`,
+      basic: `<j-page-header title="Orders" subtitle="Review fulfillment and exceptions" showBack (back)="goBack()">
+  <j-button jPageSecondaryActions label="Export" variant="outline"></j-button>
+  <j-button jPagePrimaryAction label="Create order"></j-button>
+</j-page-header>`,
+    },
+    usage: ['Use to standardize title, context, and actions across business app pages.'],
+    variants: ['breadcrumbs', 'back button', 'primary action', 'secondary actions', 'right-side action slot', 'tabs slot'],
+    sizes: ['Responsive layout collapses actions below the title on narrow screens.'],
+    states: ['with breadcrumbs', 'with actions', 'with tabs'],
+    inputs: [prop('title', 'string', "''", 'Page title.'), prop('subtitle', 'string', "''", 'Supporting text.'), prop('description', 'string', "''", 'Legacy supporting text alias.'), prop('breadcrumbs', 'readonly JPageHeaderBreadcrumb[]', '[]', 'Breadcrumb path.'), prop('showBack', 'boolean', 'false', 'Shows a back button.'), prop('styleClass', 'string', "''", 'Custom class.')],
+    outputs: [event('back', 'void', 'Emits when the back button is activated.')],
+    accessibility: ['Breadcrumbs use nav semantics and current page marking.'],
+    bestPractices: ['Keep one primary action visible and group secondary actions separately.'],
+  },
+  {
+    slug: 'empty-state',
+    name: 'Empty State',
+    category: 'Business',
+    icon: 'inbox',
+    selector: 'j-empty-state',
+    importPath: 'jrng-ui/empty-state',
+    status: 'Stable',
+    description: 'A reusable empty result or empty page state with title, description, icon, and action slot.',
+    whenToUse: 'Use Empty State when a page, table, search, or filtered view has no content to show.',
+    code: {
+      importCode: `import { JEmptyStateComponent } from 'jrng-ui/empty-state';`,
+      basic: `<j-empty-state title="No orders found" description="Try changing filters or create a new order.">
+  <j-button jEmptyStateAction label="Create order"></j-button>
+</j-empty-state>`,
+    },
+    usage: ['Use for search misses, first-run states, empty tables, and missing records.'],
+    variants: ['default', 'compact', 'with action'],
+    sizes: ['Default and compact density.'],
+    states: ['empty result', 'first run', 'filtered empty'],
+    inputs: [prop('title', 'string', "''", 'Primary empty-state title.'), prop('description', 'string', "''", 'Supporting text.'), prop('icon', 'string', "''", 'Optional visual marker.'), prop('compact', 'boolean', 'false', 'Reduces spacing.')],
+    outputs: noOutputs,
+    accessibility: ['Use clear text explaining why the state is empty and what action is available.'],
+    bestPractices: ['For filtered empty states, suggest changing filters before suggesting creation.'],
   },
   {
     slug: 'toast',
@@ -502,19 +811,48 @@ toast.info('Export started');`,
       basic: `<j-skeleton width="12rem"></j-skeleton>`,
       variants: `<j-skeleton variant="text"></j-skeleton>
 <j-skeleton variant="avatar"></j-skeleton>
+<j-skeleton variant="button" width="8rem"></j-skeleton>
 <j-skeleton variant="card"></j-skeleton>
 <j-skeleton variant="table" [rows]="3"></j-skeleton>`,
       states: `<j-skeleton animation="pulse"></j-skeleton>
 <j-skeleton [animated]="false"></j-skeleton>`,
     },
     usage: ['Use for cards, tables, avatars, and text blocks while data is loading.'],
-    variants: ['rectangle', 'text', 'avatar', 'card', 'table'],
+    variants: ['rectangle', 'text', 'avatar', 'button', 'card', 'table'],
     sizes: ['Use width and height for custom dimensions.'],
     states: ['wave animation', 'pulse animation', 'static'],
     inputs: [prop('variant', 'rectangle | text | avatar | card | table', "'rectangle'", 'Skeleton layout preset.'), prop('width / height', 'string', "'100%' / '1rem'", 'Custom dimensions.'), prop('rows', 'number', '4', 'Rows for table skeleton.')],
     outputs: noOutputs,
     accessibility: ['Skeletons are aria-hidden. Pair the loading region with status text if loading is important.'],
     bestPractices: ['Match the approximate shape of the content to avoid layout shift.'],
+  },
+  {
+    slug: 'copy-button',
+    name: 'Copy Button',
+    category: 'Feedback',
+    icon: 'copy',
+    selector: 'j-copy-button',
+    importPath: 'jrng-ui/copy-button',
+    status: 'Stable',
+    description: 'A clipboard button with copied feedback for code, tokens, IDs, links, and generated values.',
+    whenToUse: 'Use Copy Button when users need to copy a known text value without selecting it manually.',
+    code: {
+      importCode: `import { JCopyButtonComponent } from 'jrng-ui/copy-button';`,
+      basic: `<j-copy-button text="npm install jrng-ui"></j-copy-button>`,
+      states: `<j-copy-button text="INV-2048" copiedLabel="Copied ID"></j-copy-button>
+<j-copy-button text="support@example.com" label="Copy email"></j-copy-button>
+<j-copy-button text="+1 555 0100" label="Copy phone"></j-copy-button>
+<j-copy-button text="Disabled" disabled></j-copy-button>`,
+    },
+    usage: ['Use near code snippets, IDs, share links, API keys, and generated references.'],
+    variants: ['default label', 'custom copied label', 'disabled'],
+    sizes: ['Uses compact button sizing.'],
+    states: ['default', 'copied', 'disabled'],
+    inputs: [prop('text', 'string', "''", 'Text written to the clipboard.'), prop('label', 'string', "'Copy'", 'Default button label.'), prop('copiedLabel', 'string', "'Copied'", 'Feedback label after copying.'), prop('failedLabel', 'string', "'Copy failed'", 'Feedback label after failure.'), prop('ariaLabel', 'string', "'Copy to clipboard'", 'Accessible label.')],
+    outputs: [event('copied', 'string', 'Emits copied text after activation.'), event('copyFailed', 'unknown', 'Emits clipboard failure details.')],
+    cssVariables: buttonCssVariables,
+    accessibility: ['Provide an ariaLabel that names the value when several copy buttons appear together.'],
+    bestPractices: ['Keep copied feedback short and avoid copying hidden sensitive data unexpectedly.'],
   },
   {
     slug: 'tabs',
@@ -656,6 +994,77 @@ items = [
     bestPractices: ['Use clear primary and secondary actions. Do not place long full-page workflows inside a small dialog.'],
   },
   {
+    slug: 'confirm-dialog',
+    name: 'Confirm Dialog',
+    category: 'Overlay',
+    icon: 'shield-alert',
+    selector: 'j-confirm-dialog',
+    importPath: 'jrng-ui/confirm-dialog',
+    status: 'Stable',
+    description: 'A service-backed confirmation dialog for blocking accept or reject decisions.',
+    whenToUse: 'Use Confirm Dialog before destructive or hard-to-undo actions.',
+    code: {
+      importCode: `import { JConfirmDialogComponent, JConfirmationService } from 'jrng-ui/confirm-dialog';`,
+      basic: `<j-confirm-dialog></j-confirm-dialog>
+<j-button label="Delete" severity="danger" (onClick)="confirmDelete()"></j-button>`,
+      angular: `constructor(private readonly confirmation: JConfirmationService) {}
+
+confirmDelete(): void {
+  this.confirmation.delete({
+    title: 'Delete record',
+    message: 'This action cannot be undone.',
+    confirmText: 'Delete',
+    cancelText: 'Cancel',
+    closeOnOverlayClick: false
+  });
+}`,
+    },
+    usage: ['Place one j-confirm-dialog near the app root.', 'Call JConfirmationService from the workflow that needs confirmation.'],
+    variants: ['delete', 'approve', 'reject', 'logout', 'unsaved changes', 'custom message', 'accept and reject callbacks'],
+    sizes: ['Fixed dialog width suitable for short confirmations.'],
+    states: ['closed', 'open', 'accepted', 'rejected'],
+    inputs: [prop('title / header', 'string', "''", 'Dialog title.'), prop('message', 'string', "''", 'Dialog message.'), prop('confirmText / acceptLabel', 'string', "'OK'", 'Confirm button label.'), prop('cancelText / rejectLabel', 'string', "'Cancel'", 'Cancel button label.'), prop('severity', 'info | warning | danger | success', "'info'", 'Confirmation intent.'), prop('closeOnOverlayClick', 'boolean', 'true', 'Allows backdrop click close.'), prop('closeOnEscape', 'boolean', 'true', 'Allows Escape close.')],
+    outputs: [],
+    cssVariables: [
+      cssVar('--j-overlay-backdrop-bg', 'rgb(15 23 42 / 56%)', 'Confirmation backdrop color.'),
+      ...surfaceCssVariables,
+    ],
+    accessibility: ['Uses alertdialog semantics. Keep the title and message explicit.'],
+    bestPractices: ['Use action-specific labels such as Delete instead of generic OK for destructive actions.'],
+  },
+  {
+    slug: 'drawer',
+    name: 'Drawer',
+    category: 'Overlay',
+    icon: 'panel-right-open',
+    selector: 'j-drawer',
+    importPath: 'jrng-ui/drawer',
+    status: 'Stable',
+    description: 'A responsive side or sheet overlay for secondary workflows, filters, and details.',
+    whenToUse: 'Use Drawer for contextual details or filters that should not replace the current page.',
+    code: {
+      importCode: `import { JDrawerComponent } from 'jrng-ui/drawer';`,
+      basic: `<j-drawer header="Filters" [(visible)]="drawerOpen">
+  Drawer content
+</j-drawer>`,
+      variants: `<j-drawer position="right" header="Details" [(visible)]="visible"></j-drawer>
+<j-drawer position="bottom" header="Filters" [(visible)]="visible"></j-drawer>`,
+    },
+    usage: ['Use for filters, contextual detail panels, and short secondary forms.'],
+    variants: ['left', 'right', 'top', 'bottom', 'mobile bottom sheet'],
+    sizes: ['Width and height can be controlled with inputs or layout constraints.'],
+    states: ['open', 'closed', 'modal backdrop', 'dismissed with escape or backdrop'],
+    inputs: [prop('visible', 'boolean', 'false', 'Controls visibility.'), prop('header', 'string', "''", 'Drawer title.'), prop('position', 'left | right | top | bottom', "'right'", 'Drawer edge.'), prop('modal', 'boolean', 'true', 'Shows a blocking backdrop.')],
+    outputs: [event('openChange', 'boolean', 'Emits visibility model changes.'), event('opened', 'void', 'Emits after opening.'), event('closed', 'JDrawerCloseReason', 'Emits close reason.')],
+    cssVariables: [
+      cssVar('--j-overlay-backdrop-bg', 'rgb(15 23 42 / 56%)', 'Modal backdrop color.'),
+      cssVar('--j-drawer-snap-height', '32rem', 'Mobile bottom-sheet snap height.'),
+      ...surfaceCssVariables,
+    ],
+    accessibility: ['Drawer content is exposed as a dialog and traps focus when visible.'],
+    bestPractices: ['Do not put full multi-page workflows in a drawer; link to a dedicated page instead.'],
+  },
+  {
     slug: 'tooltip',
     name: 'Tooltip',
     category: 'Overlay',
@@ -705,5 +1114,225 @@ items = [
     outputs: [event('opened', 'void', 'Emits when shown.'), event('closed', 'void', 'Emits when hidden.')],
     accessibility: ['Use for contextual content and keep keyboard dismissal available.'],
     bestPractices: ['Do not use Popover for destructive confirmations; use Dialog.'],
+  },
+  {
+    slug: 'ripple',
+    name: 'Ripple',
+    category: 'Utilities',
+    icon: 'waves',
+    selector: '[jRipple]',
+    importPath: 'jrng-ui',
+    status: 'Stable',
+    description: 'A lightweight interaction ripple directive for clickable controls.',
+    whenToUse: 'Use Ripple on custom interactive elements that need consistent pointer feedback.',
+    code: {
+      importCode: `import { JRippleDirective } from 'jrng-ui';`,
+      basic: `<button type="button" jRipple>Save</button>`,
+      states: `<button type="button" [jRipple]="false">No ripple</button>
+<button type="button" jRipple disabled>Disabled</button>`,
+    },
+    usage: ['Use on native buttons or custom clickable elements with keyboard and pointer support.'],
+    variants: ['enabled', 'disabled', 'theme-colored ripple'],
+    sizes: ['The ripple automatically sizes to the host element.'],
+    states: ['pointer down', 'disabled host', 'reduced motion'],
+    inputs: [prop('jRipple', 'boolean', 'true', 'Enables or disables the directive.'), prop('rippleDisabled', 'boolean', 'false', 'Additional disabled flag for host state.')],
+    outputs: [],
+    cssVariables: [
+      cssVar('--j-ripple-color', 'currentColor', 'Ripple color.'),
+      cssVar('--j-ripple-opacity', '0.18', 'Ripple opacity.'),
+      cssVar('--j-ripple-duration', '520ms', 'Ripple animation duration.'),
+    ],
+    accessibility: ['The directive does not add semantics; use it only on elements that are already accessible.'],
+    bestPractices: ['Respect disabled states and avoid using ripple as the only interaction feedback.'],
+  },
+  {
+    slug: 'tour-guide',
+    name: 'Tour Guide',
+    category: 'Utilities',
+    icon: 'route',
+    selector: 'JTourService, [jTourStep]',
+    importPath: 'jrng-ui/tour',
+    status: 'New',
+    description: 'Optional guided onboarding tours powered internally by Driver.js and exposed through JRNG UI service and directive APIs.',
+    whenToUse: 'Use Tour Guide for short product onboarding, feature introductions, and release walkthroughs where a few highlighted UI elements help users get started.',
+    code: {
+      importCode: `import { JTourService, JTourStepDirective, JTourConfig } from 'jrng-ui/tour';`,
+      basic: `npm install driver.js`,
+      variants: `<button
+  type="button"
+  jTourStep="create-button"
+  tourTitle="Create"
+  tourDescription="Click here to create a new record.">
+  Create
+</button>`,
+      states: `this.jTour.start({
+  id: 'dashboard-intro-v1',
+  steps: [
+    {
+      element: '#createBtn',
+      title: 'Create',
+      description: 'Click here to create a new record.',
+      side: 'bottom',
+      align: 'start'
+    }
+  ],
+  onComplete: (event) => this.saveCompletedTour(event.tourId),
+  onSkip: (event) => this.saveSkippedTour(event.tourId)
+});`,
+      angular: `import { Component, inject } from '@angular/core';
+import { JTourService, JTourStepDirective } from 'jrng-ui/tour';
+
+@Component({
+  standalone: true,
+  imports: [JTourStepDirective],
+  template: \`
+    <button
+      id="createBtn"
+      type="button"
+      jTourStep="create-button"
+      tourTitle="Create"
+      tourDescription="Click here to create a new record.">
+      Create
+    </button>
+  \`
+})
+export class DashboardComponent {
+  private readonly jTour = inject(JTourService);
+
+  startTour(): void {
+    this.jTour.start({
+      id: 'dashboard-intro-v1',
+      steps: ['create-button']
+    });
+  }
+}`,
+    },
+    usage: ['Install driver.js only in apps that use tours.', 'Use the service for tour control and callbacks.', 'Use jTourStep when template metadata is easier to maintain than CSS selectors.'],
+    variants: ['service-based tour', 'directive-based step metadata', 'selector-based step', 'per-step placement', 'completion callback', 'skip callback'],
+    sizes: ['not size-based'],
+    states: ['inactive', 'active', 'highlighted step', 'completed', 'skipped', 'destroyed'],
+    inputs: [
+      prop('JTourConfig.id', 'string', 'undefined', 'Application-defined tour identifier.'),
+      prop('JTourConfig.steps', 'readonly JTourStepInput[]', '[]', 'Tour steps as config objects or registered jTourStep IDs.'),
+      prop('JTourStep.element', 'string | Element', 'undefined', 'Element selector or element reference to highlight.'),
+      prop('JTourStep.title / description', 'string', 'undefined', 'Popover heading and body text.'),
+      prop('JTourStep.side / align', 'top | right | bottom | left | over / start | center | end', 'undefined', 'Preferred popover placement.'),
+      prop('jTourStep', 'string', "''", 'Registers an element as reusable tour step metadata.'),
+      prop('tourTitle / tourDescription', 'string', "''", 'Directive metadata used when the step ID is referenced by a tour.'),
+    ],
+    outputs: [
+      event('events$', 'JTourEvent', 'Observable stream for start, navigation, completion, skip, destroy, highlight, and deselect events.'),
+      event('onStart / onNext / onPrevious', 'JTourEvent', 'Per-tour callbacks for lifecycle and navigation.'),
+      event('onComplete / onSkip / onDestroy', 'JTourEvent', 'Per-tour callbacks for app-managed persistence or analytics.'),
+      event('onHighlightStarted / onDeselected', 'JTourEvent', 'Per-tour callbacks for highlighted and deselected steps.'),
+    ],
+    cssVariables: [
+      cssVar('--j-tour-overlay-color', 'rgb(15 23 42 / 58%)', 'Tour overlay color.'),
+      cssVar('--j-tour-popover-bg', 'var(--j-color-popover, #ffffff)', 'Tour popover background.'),
+      cssVar('--j-tour-popover-color', 'var(--j-color-popover-foreground, #111827)', 'Tour popover text color.'),
+      cssVar('--j-tour-popover-border', 'var(--j-color-border, #e2e8f0)', 'Tour popover border color.'),
+      cssVar('--j-tour-popover-radius', 'var(--j-radius-lg, 0.75rem)', 'Tour popover corner radius.'),
+      cssVar('--j-tour-button-bg', 'var(--j-color-muted, #f1f5f9)', 'Secondary tour button background.'),
+      cssVar('--j-tour-button-color', 'var(--j-color-foreground, #111827)', 'Secondary tour button text color.'),
+      cssVar('--j-tour-primary-button-bg', 'var(--j-color-primary, #2563eb)', 'Primary tour button background.'),
+      cssVar('--j-tour-primary-button-color', 'var(--j-color-primary-foreground, #ffffff)', 'Primary tour button text color.'),
+    ],
+    accessibility: ['Keep tours short and allow users to close or skip them.', 'Use clear titles and descriptions that make sense when read by assistive technology.', 'Do not depend on tours as the only way to discover critical controls.'],
+    bestPractices: ['Keep completed/skipped persistence in the application, not the component library.', 'Prefer stable element IDs or jTourStep IDs over brittle selectors.', 'JRNG UI uses Driver.js internally while keeping app code on JRNG APIs.'],
+    commonMistakes: ['Do not add driver.js unless the app uses tours.', 'Do not call start before the target elements are rendered.'],
+  },
+  {
+    slug: 'timeline',
+    name: 'Timeline',
+    category: 'Utilities',
+    icon: 'git-branch',
+    selector: 'j-timeline',
+    importPath: 'jrng-ui/timeline',
+    status: 'Stable',
+    description: 'A vertical or horizontal event timeline for activity, history, and workflow milestones.',
+    whenToUse: 'Use Timeline to show chronological activity or ordered workflow steps.',
+    code: {
+      importCode: `import { JTimelineComponent, JTimelineItem } from 'jrng-ui/timeline';`,
+      basic: `<j-timeline [value]="events"></j-timeline>`,
+      angular: `events: JTimelineItem[] = [
+  { title: 'Created', content: 'Order was created.', opposite: '09:00', severity: 'info' },
+  { title: 'Updated', content: 'Customer address changed.', opposite: '09:30', icon: 'U' },
+  { title: 'Approved', content: 'Manager approved it.', opposite: '10:15', severity: 'success' },
+  { title: 'File uploaded', content: 'statement.pdf was attached.', opposite: '10:40', color: '#7c3aed' }
+];`,
+    },
+    usage: ['Use for audit trails, fulfillment progress, approvals, and release history.'],
+    variants: ['created', 'updated', 'approved', 'rejected', 'status changed', 'comment added', 'file uploaded', 'custom icon', 'custom color', 'compact mode'],
+    sizes: ['Timeline size follows content and layout.'],
+    states: ['neutral event', 'success', 'warning', 'danger', 'info'],
+    inputs: [prop('value', 'readonly JTimelineItem[]', '[]', 'Timeline items.'), prop('layout', 'vertical | horizontal', "'vertical'", 'Timeline orientation.'), prop('compact', 'boolean', 'false', 'Reduces item spacing for activity logs.'), prop('styleClass', 'string', "''", 'Custom root class.')],
+    outputs: [],
+    cssVariables: surfaceCssVariables,
+    accessibility: ['Timeline renders as an ordered list so the event order is meaningful.'],
+    bestPractices: ['Keep each event title short and put details in content text.'],
+  },
+  {
+    slug: 'file-upload',
+    name: 'File Upload',
+    category: 'Utilities',
+    icon: 'upload',
+    selector: 'j-file-upload',
+    importPath: 'jrng-ui/file-upload',
+    status: 'Stable',
+    description: 'A file upload queue with drag-and-drop, validation, progress, and manual upload events.',
+    whenToUse: 'Use File Upload for attachments, imports, documents, and media queues.',
+    code: {
+      importCode: `import { JFileUploadComponent } from 'jrng-ui/file-upload';
+import { JFilePreviewComponent } from 'jrng-ui/file-preview';`,
+      basic: `<j-file-upload multiple accept=".csv,.xlsx" (upload)="uploadFiles($event)"></j-file-upload>`,
+      states: `<j-file-upload mode="basic" chooseLabel="Choose file"></j-file-upload>
+<j-file-upload [maxFileSize]="5000000"></j-file-upload>
+<j-file-preview fileName="statement.pdf" [fileSize]="245760" url="/files/statement.pdf"></j-file-preview>`,
+    },
+    usage: ['Use auto mode for immediate workflows and customUpload for application-managed uploads.'],
+    variants: ['basic', 'advanced', 'single file', 'multiple files', 'drag and drop', 'manual upload', 'auto upload', 'preview and download actions'],
+    sizes: ['The upload surface fills its container width.'],
+    states: ['empty queue', 'drag over', 'uploading', 'complete', 'error', 'cancelled'],
+    inputs: [prop('mode', 'basic | advanced', "'advanced'", 'Upload UI mode.'), prop('multiple', 'boolean', 'false', 'Allows more than one file.'), prop('accept', 'string', "''", 'Accepted file types.'), prop('maxFileSize', 'number', '0', 'Maximum file size in bytes.')],
+    outputs: [event('filesChange', 'readonly File[]', 'Emits current files.'), event('upload', 'JFileUploadEvent', 'Emits when upload starts.'), event('remove', 'File', 'Emits when a file is removed.'), event('previewFile / downloadFile', 'JFileUploadItem', 'Emits file preview and download actions.'), event('cancelUpload / retryUpload', 'JFileUploadItemEvent', 'Emits queue item actions.')],
+    cssVariables: surfaceCssVariables,
+    accessibility: ['Use clear title and description text so the upload constraints are visible.'],
+    bestPractices: ['Validate file type and size before sending data to your API.'],
+  },
+  {
+    slug: 'formatting',
+    name: 'Formatting Utilities',
+    category: 'Utilities',
+    icon: 'text',
+    selector: 'pipes',
+    importPath: 'jrng-ui/formatting',
+    status: 'New',
+    description: 'Standalone pipes for common business formatting: date, time, date-time, currency, number, percentage, file size, and text truncation.',
+    whenToUse: 'Use formatting pipes in reusable Angular screens when values need consistent display formatting.',
+    code: {
+      importCode: `import {
+  JCurrencyFormatPipe,
+  JDateTimeFormatPipe,
+  JFileSizeFormatPipe,
+  JPercentFormatPipe,
+  JTextTruncatePipe
+} from 'jrng-ui/formatting';`,
+      basic: `<span>{{ createdAt | jDateTimeFormat }}</span>
+<span>{{ total | jCurrencyFormat: 'USD' }}</span>
+<span>{{ conversionRate | jPercentFormat }}</span>
+<span>{{ fileSize | jFileSizeFormat }}</span>
+<span>{{ description | jTruncate: 80 }}</span>`,
+      variants: `<span>{{ dueDate | jDateFormat: 'en-GB' }}</span>
+<span>{{ startTime | jTimeFormat }}</span>
+<span>{{ amount | jNumberFormat: 'en-US': { maximumFractionDigits: 2 } }}</span>`,
+    },
+    usage: ['Use in tables, cards, details pages, and exports previews.'],
+    variants: ['date', 'time', 'date-time', 'currency', 'number', 'percent', 'file size', 'truncate'],
+    sizes: ['Pipes do not render layout.'],
+    states: ['empty values return an empty string', 'invalid dates return an empty string'],
+    inputs: [prop('value', 'Date | string | number', "''", 'Input value passed to the pipe.'), prop('locale', 'string', 'browser default', 'Optional Intl locale.'), prop('options', 'Intl options', '{}', 'Optional Intl formatting options.')],
+    outputs: noOutputs,
+    accessibility: ['Formatting should not remove meaning; use labels and table headers around formatted values.'],
+    bestPractices: ['Pass currency and locale explicitly when product requirements need a specific display format.'],
   },
 ];

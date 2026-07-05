@@ -85,6 +85,13 @@ interface ComponentDoc {
   readonly accessibility: readonly string[];
 }
 
+type CodeTokenKind = 'comment' | 'keyword' | 'string' | 'tag' | 'attr' | 'type' | 'plain';
+
+interface CodeToken {
+  readonly text: string;
+  readonly kind: CodeTokenKind;
+}
+
 function isSitePage(value: unknown): value is SitePage {
   return value === 'home' || value === 'docs' || value === 'components' || value === 'themes' || value === 'component-detail';
 }
@@ -100,7 +107,7 @@ function isSitePage(value: unknown): value is SitePage {
         }
         <button type="button" (click)="copy()">{{ copied() ? 'Copied' : 'Copy' }}</button>
       </div>
-      <pre><code>{{ code() }}</code></pre>
+      <pre><code>@for (token of highlightedCode(); track $index) {<span [class]="'j-token j-token--' + token.kind">{{ token.text }}</span>}</code></pre>
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -114,6 +121,7 @@ export class CodeBlockComponent {
   readonly code = input('');
   readonly label = input('');
   readonly copied = signal(false);
+  readonly highlightedCode = computed(() => tokenizeCode(this.code()));
 
   constructor() {
     this.destroyRef.onDestroy(() => {
@@ -541,7 +549,7 @@ import { JInputComponent } from 'jrng-ui/input';`;
 
   readonly docsSections: readonly TextSection[] = [
     {
-      title: 'Introduction',
+      title: 'Getting Started',
       body: [
         'JRNG UI is a generic Angular UI component library for building clean, fast, accessible web applications.',
         'It provides reusable j-* components so teams do not need to rebuild common controls such as buttons, inputs, cards, dialogs, toasts, and tables for every Angular project.',
@@ -561,7 +569,7 @@ import { JInputComponent } from 'jrng-ui/input';`;
       code: 'npm install jrng-ui',
     },
     {
-      title: 'Add Styles',
+      title: 'Theme Setup',
       body: [
         'JRNG UI styles are required for the visual design, spacing, colors, focus rings, and component states.',
         'Use one style setup method. If components appear unstyled, the global style import is usually missing or pointing to the wrong path.',
@@ -592,10 +600,12 @@ import { JButtonComponent } from 'jrng-ui/button';
   standalone: true,
   imports: [JButtonComponent],
   template: \`
-    <j-button label="Save"></j-button>
+    <j-button label="Save" (onClick)="save()"></j-button>
   \`
 })
-export class ExampleComponent {}`,
+export class ExampleComponent {
+  save(): void {}
+}`,
     },
     {
       title: 'Using Multiple Components',
@@ -607,7 +617,7 @@ import { JCardComponent } from 'jrng-ui/card';
 
 <j-card header="Create user">
   <j-input label="Name" placeholder="Enter name"></j-input>
-  <j-button label="Save"></j-button>
+  <j-button label="Save" (onClick)="save()"></j-button>
 </j-card>`,
     },
     {
@@ -650,8 +660,65 @@ import { JSelectComponent } from 'jrng-ui/select';`,
       body: ['Many JRNG UI components share common input and output names to make APIs predictable.'],
       list: [
         'Common inputs: label, placeholder, disabled, loading, size, severity, variant, styleClass.',
-        'Common outputs: clicked, valueChange, selectionChange, opened, closed, clear, remove, pageChange, sortChange.',
+        'Common outputs: onClick, valueChange, selectionChange, opened, closed, clear, remove, pageChange, sortChange.',
       ],
+    },
+    {
+      title: 'Business Utilities',
+      body: [
+        'Business utilities provide common admin-app building blocks such as Metric Card, Stat Card, Status Chip, Page Header, and Empty State.',
+        'Use them for dashboard summaries, workflow states, empty results, and repeatable page title/action patterns.',
+      ],
+      list: [
+        'Metric Card and Stat Card cover KPI and operational counters.',
+        'Status Chip keeps workflow states readable in tables and detail views.',
+        'Page Header standardizes breadcrumbs, titles, descriptions, and action slots.',
+        'Empty State gives filtered, first-run, and missing-record screens clear next steps.',
+      ],
+    },
+    {
+      title: 'Data Table',
+      body: [
+        'The table component supports common business data workflows including sorting, pagination, global filtering, column management, export, row selection, lazy loading, row expansion, and editing hooks.',
+        'Start with value and columns, then enable advanced features only when the screen needs them.',
+      ],
+      codeLabel: 'HTML',
+      code: `<j-table
+  [value]="orders"
+  [columns]="columns"
+  paginator
+  showGlobalFilter
+  showColumnManager
+  showExport>
+</j-table>`,
+    },
+    {
+      title: 'Tour Guide',
+      body: [
+        'JRNG UI includes an optional Tour Guide wrapper for short onboarding and feature walkthroughs.',
+        'Install Driver.js only in applications that use tours. App code should use JTourService and jTourStep rather than direct Driver.js APIs.',
+      ],
+      codeLabel: 'TypeScript',
+      code: `npm install driver.js
+
+this.jTour.start({
+  id: 'dashboard-intro-v1',
+  steps: [
+    {
+      element: '#createBtn',
+      title: 'Create',
+      description: 'Click here to create a new record.'
+    }
+  ]
+});`,
+    },
+    {
+      title: 'Changelog',
+      body: [
+        'Read the changelog before upgrading. Version 0.0.6 removes legacy button events and standardizes examples on onClick.',
+      ],
+      codeLabel: 'HTML',
+      code: `<j-button label="Save" (onClick)="save()"></j-button>`,
     },
     {
       title: 'Styling Components',
@@ -903,7 +970,7 @@ import { JSelectComponent } from 'jrng-ui/select';`,
         api('styleClass', 'string', "''", 'Adds a custom class to the root element.'),
         api('ariaLabel', 'string', "''", 'Accessible label for icon-only buttons.'),
       ],
-      outputs: [out('clicked', 'MouseEvent', 'Emits when the button is activated and not disabled or loading.')],
+      outputs: [out('onClick', 'MouseEvent', 'Emits when the button is activated and not disabled or loading.')],
       tokens: tokens('button', ['--j-button-primary-bg', '--j-button-primary-color', '--j-button-radius', '--j-button-height-md']),
       stylingHtml: `<j-button label="Save" styleClass="my-save-button"></j-button>`,
       stylingCss: `.my-save-button {
@@ -912,7 +979,7 @@ import { JSelectComponent } from 'jrng-ui/select';`,
       accessibility: [
         'Use visible text when possible.',
         'Use ariaLabel for icon-only buttons.',
-        'Disabled and loading buttons should not emit clicked.',
+        'Disabled and loading buttons should not emit onClick.',
         'Buttons should be reachable by Tab and activated with Enter or Space.',
       ],
     },
@@ -1249,4 +1316,53 @@ function out(name: string, payload: string, description: string): OutputRow {
 
 function tokens(component: string, names: readonly string[]): readonly TokenRow[] {
   return names.map((name) => ({ name, description: `Token used by ${component} styling.` }));
+}
+
+function tokenizeCode(code: string): readonly CodeToken[] {
+  const tokens: CodeToken[] = [];
+  const pattern =
+    /(<!--[\s\S]*?-->|\/\/[^\n]*|\/\*[\s\S]*?\*\/|`(?:\\.|[^`])*`|'(?:\\.|[^'])*'|"(?:\\.|[^"])*"|<\/?[A-Za-z][\w:-]*|[\[(][\w:-]+[\])]|@[A-Za-z]+|\b(?:import|from|export|const|let|readonly|class|interface|type|return|if|else|true|false|null|undefined|new|extends|implements|public|private|protected)\b|\b[A-Z][A-Za-z0-9_]*\b)/g;
+  let index = 0;
+
+  for (const match of code.matchAll(pattern)) {
+    const text = match[0];
+    const start = match.index ?? 0;
+
+    if (start > index) {
+      tokens.push({ text: code.slice(index, start), kind: 'plain' });
+    }
+
+    tokens.push({ text, kind: tokenKind(text) });
+    index = start + text.length;
+  }
+
+  if (index < code.length) {
+    tokens.push({ text: code.slice(index), kind: 'plain' });
+  }
+
+  return tokens;
+}
+
+function tokenKind(text: string): CodeTokenKind {
+  if (text.startsWith('//') || text.startsWith('/*') || text.startsWith('<!--')) {
+    return 'comment';
+  }
+
+  if (text.startsWith('"') || text.startsWith("'") || text.startsWith('`')) {
+    return 'string';
+  }
+
+  if (text.startsWith('<')) {
+    return 'tag';
+  }
+
+  if (text.startsWith('[') || text.startsWith('(') || text.startsWith('@')) {
+    return 'attr';
+  }
+
+  if (/^[A-Z]/.test(text)) {
+    return 'type';
+  }
+
+  return 'keyword';
 }

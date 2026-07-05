@@ -12,8 +12,8 @@
 
 .j-table__toolbar {
   align-items: center;
-  background: var(--j-color-card, #ffffff);
-  border-bottom: 1px solid var(--j-color-border, #dbe2ea);
+  background: var(--j-table-filter-bg, var(--j-color-card, #ffffff));
+  border-bottom: 1px solid var(--j-table-border-color, var(--j-color-border, #dbe2ea));
   display: flex;
   flex-wrap: wrap;
   gap: var(--j-spacing-sm, 0.5rem);
@@ -25,7 +25,7 @@
 .j-table__tool-button,
 .j-table__edit-input {
   background: var(--j-color-surface, #ffffff);
-  border: 1px solid var(--j-color-border, #dbe2ea);
+  border: 1px solid var(--j-table-border-color, var(--j-color-border, #dbe2ea));
   border-radius: var(--j-radius-sm, 0.375rem);
   color: var(--j-color-text, #111827);
   font: inherit;
@@ -51,7 +51,7 @@
 
 .j-table__columns-panel {
   background: var(--j-color-popover, #ffffff);
-  border: 1px solid var(--j-color-border, #dbe2ea);
+  border: 1px solid var(--j-table-border-color, var(--j-color-border, #dbe2ea));
   border-radius: var(--j-radius-md, 0.5rem);
   box-shadow: var(--j-shadow-lg);
   display: grid;
@@ -68,6 +68,17 @@
   align-items: center;
   display: flex;
   gap: var(--j-spacing-sm, 0.5rem);
+}
+
+.j-table__column-config {
+  display: grid;
+  gap: var(--j-spacing-xs, 0.25rem);
+}
+
+.j-table__column-config small {
+  color: var(--j-color-muted-foreground, #64748b);
+  font-size: var(--j-font-size-xs, 0.75rem);
+  padding-inline-start: 1.5rem;
 }
 
 .j-table__scroll {
@@ -93,7 +104,7 @@ caption {
 
 th,
 td {
-  border-bottom: 1px solid var(--j-color-border, #dbe2ea);
+  border-bottom: 1px solid var(--j-table-border-color, var(--j-color-border, #dbe2ea));
   font-size: var(--j-font-size-sm, 0.875rem);
   line-height: 1.4;
   padding: var(--j-spacing-md, 0.75rem) var(--j-spacing-lg, 1rem);
@@ -135,7 +146,30 @@ tbody tr:last-child td {
 }
 
 tbody tr.is-active td {
-  background: var(--j-color-secondary-soft, #dbeafe);
+  background: var(--j-table-selected-bg, var(--j-color-secondary-soft, #dbeafe));
+}
+
+tbody tr.is-locked td {
+  background: var(--j-table-locked-bg, color-mix(in srgb, var(--j-color-warning, #d97706) 10%, var(--j-table-bg, #ffffff)));
+}
+
+.j-table--small th,
+.j-table--small td {
+  padding: var(--j-spacing-sm, 0.5rem) var(--j-spacing-md, 0.75rem);
+}
+
+.j-table--large th,
+.j-table--large td {
+  padding: var(--j-spacing-lg, 1rem) var(--j-spacing-xl, 1.25rem);
+}
+
+.j-table.is-maximized {
+  border-radius: 0;
+  inset: var(--j-table-maximized-inset, 1rem);
+  max-height: calc(100dvh - 2rem);
+  overflow: auto;
+  position: fixed;
+  z-index: var(--j-z-index-modal, 1000);
 }
 
 .j-table__cell--start {
@@ -155,19 +189,29 @@ tbody tr.is-active td {
   width: 3rem;
 }
 
-.j-table__expand-cell {
+.j-table__expand-cell,
+.j-table__lock-cell {
   text-align: center;
   width: 3rem;
 }
 
-.j-table__expand-button {
+.j-table__expand-button,
+.j-table__lock-button {
   background: var(--j-color-surface, #ffffff);
-  border: 1px solid var(--j-color-border, #dbe2ea);
+  border: 1px solid var(--j-table-border-color, var(--j-color-border, #dbe2ea));
   border-radius: var(--j-radius-sm, 0.375rem);
   color: var(--j-color-text, #111827);
   cursor: pointer;
+}
+
+.j-table__expand-button {
   height: 1.75rem;
   width: 1.75rem;
+}
+
+.j-table__lock-button {
+  min-height: 1.75rem;
+  padding: 0 var(--j-spacing-sm, 0.5rem);
 }
 
 .j-table__select-cell input {
@@ -216,6 +260,15 @@ tbody tr.is-active td {
   width: 0.375rem;
 }
 
+.j-table__resize-handle::after {
+  background: var(--j-table-resize-handle-color, var(--j-color-border, #dbe2ea));
+  content: '';
+  inset-block: 25%;
+  position: absolute;
+  right: 0.125rem;
+  width: 1px;
+}
+
 .j-table__cell--frozen {
   left: 0;
   position: sticky;
@@ -256,6 +309,10 @@ tbody tr.is-active td {
   font-weight: var(--j-font-weight-semibold, 650);
   line-height: 1;
   padding: var(--j-spacing-xs, 0.25rem) var(--j-spacing-sm, 0.5rem);
+}
+
+.j-table j-action-menu {
+  --j-action-menu-item-color: var(--j-table-action-color, var(--j-color-foreground, #111827));
 }
 
 .j-table__tag {

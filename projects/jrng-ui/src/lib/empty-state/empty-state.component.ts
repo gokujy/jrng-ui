@@ -11,7 +11,9 @@ import { JPassThrough, jMergePartClasses } from '../core/pass-through';
       data-jc-section="root"
       data-jc-extend="icon action"
     >
-      @if (icon()) {
+      @if (imageUrl()) {
+        <img class="j-empty-state__image" data-jc-section="image" [src]="imageUrl()" [alt]="imageAlt()" />
+      } @else if (icon()) {
         <div class="j-empty-state__icon" data-jc-section="icon" aria-hidden="true">{{ icon() }}</div>
       }
       @if (title()) {
@@ -30,7 +32,7 @@ import { JPassThrough, jMergePartClasses } from '../core/pass-through';
     `
       .j-empty-state {
         align-items: center;
-        color: var(--j-color-text);
+        color: var(--j-empty-state-color, var(--j-color-foreground, #111827));
         display: flex;
         flex-direction: column;
         gap: var(--j-spacing-sm);
@@ -45,14 +47,20 @@ import { JPassThrough, jMergePartClasses } from '../core/pass-through';
 
       .j-empty-state__icon {
         align-items: center;
-        background: var(--j-color-muted);
+        background: var(--j-empty-state-icon-bg, var(--j-color-muted, #f1f5f9));
         border-radius: var(--j-radius-full);
-        color: var(--j-color-muted-foreground);
+        color: var(--j-empty-state-icon-color, var(--j-color-muted-foreground, #64748b));
         display: inline-flex;
         font-size: var(--j-font-size-2xl);
         height: 3rem;
         justify-content: center;
         width: 3rem;
+      }
+
+      .j-empty-state__image {
+        max-height: var(--j-empty-state-image-height, 8rem);
+        max-width: min(100%, var(--j-empty-state-image-width, 14rem));
+        object-fit: contain;
       }
 
       .j-empty-state--compact .j-empty-state__icon {
@@ -69,7 +77,7 @@ import { JPassThrough, jMergePartClasses } from '../core/pass-through';
       }
 
       .j-empty-state__description {
-        color: var(--j-color-text-muted);
+        color: var(--j-empty-state-description-color, var(--j-color-muted-foreground, #64748b));
         margin: 0;
         max-width: 32rem;
       }
@@ -89,6 +97,8 @@ export class JEmptyStateComponent {
   readonly title = input('');
   readonly description = input('');
   readonly icon = input('');
+  readonly imageUrl = input('');
+  readonly imageAlt = input('');
   readonly styleClass = input('');
   readonly pt = input<JPassThrough | null>(null);
   readonly compact = input(false, { transform: booleanAttribute });

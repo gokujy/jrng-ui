@@ -12,7 +12,7 @@ import { JButtonSeverity, JButtonSize, JrButtonComponent } from './button.compon
       [disabled]="disabled"
       [loading]="loading"
       icon="S"
-      (clicked)="presses = presses + 1"
+      (onClick)="presses = presses + 1"
     >
       Save
     </j-button>
@@ -58,7 +58,7 @@ describe('JrButtonComponent', () => {
     expect(button().classList).toContain('j-button--lg');
   });
 
-  it('emits clicked when enabled', () => {
+  it('emits onClick when enabled', () => {
     button().click();
 
     expect(host.presses).toBe(1);
@@ -86,5 +86,9 @@ describe('JrButtonComponent', () => {
 
   it('supports icon labels', () => {
     expect(button().textContent).toContain('S');
+  });
+
+  it('applies ripple utility to the native button', () => {
+    expect(button().classList).toContain('j-ripple');
   });
 });

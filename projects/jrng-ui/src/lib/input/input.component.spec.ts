@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { JrInputComponent } from './input.component';
+import { JInputType, JrInputComponent } from './input.component';
 
 @Component({
   imports: [JrInputComponent, ReactiveFormsModule],
@@ -13,6 +13,8 @@ import { JrInputComponent } from './input.component';
       [formControl]="control"
       [error]="error"
       [clearable]="clearable"
+      [readonly]="readonly"
+      [type]="type"
     />
   `,
 })
@@ -20,6 +22,8 @@ class InputHostComponent {
   control = new FormControl<string>('initial', { nonNullable: true });
   error = '';
   clearable = false;
+  readonly = false;
+  type: JInputType = 'text';
 }
 
 describe('JrInputComponent', () => {
@@ -105,5 +109,28 @@ describe('JrInputComponent', () => {
     fixture.detectChanges();
 
     expect(host.control.value).toBe('');
+  });
+
+  it('hides clear button when disabled or readonly', () => {
+    host.clearable = true;
+    host.control.disable();
+    detectHostChanges();
+
+    expect(fixture.debugElement.query(By.css('.j-input__clear'))).toBeNull();
+
+    host.control.enable();
+    host.readonly = true;
+    detectHostChanges();
+
+    expect(fixture.debugElement.query(By.css('.j-input__clear'))).toBeNull();
+  });
+
+  it('supports custom clear button for search inputs', () => {
+    host.clearable = true;
+    host.type = 'search';
+    detectHostChanges();
+
+    expect(field().type).toBe('search');
+    expect(fixture.debugElement.query(By.css('.j-input__clear'))).toBeTruthy();
   });
 });
