@@ -209,7 +209,7 @@ export class JConfirmDialogComponent {
   severityIcon(severity: string | undefined): string {
     switch (severity) {
       case 'success':
-        return '✓';
+        return 'OK';
       case 'warning':
         return '!';
       case 'danger':

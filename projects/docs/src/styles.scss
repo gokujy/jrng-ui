@@ -236,7 +236,20 @@ code {
 
 .j-code-block code,
 .j-doc-code code {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  color: var(--j-code-foreground, #e2e8f0);
+  padding: 0;
   white-space: pre;
+}
+
+.j-code-block .j-token,
+.j-doc-code .j-token {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
 }
 
 .j-token--comment {
@@ -904,7 +917,6 @@ code {
 }
 
 .j-doc-code code {
-  color: var(--j-code-foreground, #e2e8f0);
   line-height: 1.7;
 }
 

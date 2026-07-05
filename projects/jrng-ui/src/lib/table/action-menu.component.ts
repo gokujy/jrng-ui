@@ -1,4 +1,4 @@
-import { DOCUMENT } from '@angular/common';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -7,6 +7,7 @@ import {
   EventEmitter,
   Input,
   Output,
+  PLATFORM_ID,
   booleanAttribute,
   inject,
 } from '@angular/core';
@@ -141,6 +142,7 @@ export class JActionMenuComponent {
   private readonly documentRef = inject(DOCUMENT);
   private readonly destroyRef = inject(DestroyRef);
   private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   @Input() actions: readonly JTableAction[] = [];
   @Input({ required: true }) row: JTableRow = {};
@@ -154,6 +156,10 @@ export class JActionMenuComponent {
   open = false;
 
   constructor() {
+    if (!this.isBrowser) {
+      return;
+    }
+
     const listener = (event: MouseEvent) => {
       if (this.open && !this.elementRef.nativeElement.contains(event.target as Node | null)) {
         this.open = false;

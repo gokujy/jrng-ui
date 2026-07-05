@@ -5,6 +5,7 @@ import {
   Component,
   ContentChild,
   ContentChildren,
+  DestroyRef,
   EventEmitter,
   HostListener,
   Inject,
@@ -188,12 +189,16 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   private columnOrder: readonly string[] = [];
   private columnWidths: Record<string, string> = {};
   private internalLockedRowKeys = new Set<string>();
+  private stopColumnResize: (() => void) | null = null;
   maximized = false;
 
   constructor(
     @Inject(DOCUMENT) private readonly documentRef: Document,
     @Inject(PLATFORM_ID) private readonly platformId: object,
-  ) {}
+    private readonly destroyRef: DestroyRef,
+  ) {
+    this.destroyRef.onDestroy(() => this.cleanupColumnResize());
+  }
 
   @Input()
   set rows(value: number | readonly JTableRow[]) {
@@ -946,6 +951,7 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     }
     event.preventDefault();
     event.stopPropagation();
+    this.cleanupColumnResize();
     const header = (event.target as HTMLElement).closest('th');
     const startX = event.clientX;
     const startWidth = header?.getBoundingClientRect().width ?? 120;
@@ -954,8 +960,7 @@ export class JTableComponent implements AfterContentInit, OnChanges {
       this.columnWidths = { ...this.columnWidths, [column.field]: width };
     };
     const up = () => {
-      this.documentRef.removeEventListener('pointermove', move);
-      this.documentRef.removeEventListener('pointerup', up);
+      this.cleanupColumnResize();
       const width = this.columnWidths[column.field] ?? column.width ?? `${startWidth}px`;
       const resizeEvent: JTableColumnResizeEvent = { column, field: column.field, width };
       this.columnResize.emit(resizeEvent);
@@ -963,6 +968,15 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     };
     this.documentRef.addEventListener('pointermove', move);
     this.documentRef.addEventListener('pointerup', up);
+    this.stopColumnResize = () => {
+      this.documentRef.removeEventListener('pointermove', move);
+      this.documentRef.removeEventListener('pointerup', up);
+      this.stopColumnResize = null;
+    };
+  }
+
+  private cleanupColumnResize(): void {
+    this.stopColumnResize?.();
   }
 
   private applyConfig(): void {
