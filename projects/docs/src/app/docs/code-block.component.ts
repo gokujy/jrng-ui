@@ -15,9 +15,14 @@ interface CodeToken {
   template: `
     <div class="j-doc-code">
       <div class="j-doc-code__header">
-        @if (label()) {
-          <span>{{ label() }}</span>
-        }
+        <div class="j-doc-code__meta">
+          @if (fileName() || label()) {
+            <span>{{ fileName() || label() }}</span>
+          }
+          @if (languageLabel()) {
+            <small>{{ languageLabel() }}</small>
+          }
+        </div>
         <button type="button" (click)="copy()">
           <j-icon [name]="copied() ? 'check-check' : 'copy'" />
           {{ copied() ? 'Copied' : 'Copy' }}
@@ -36,8 +41,11 @@ export class CodeBlockComponent {
 
   readonly code = input('');
   readonly label = input('');
+  readonly language = input('');
+  readonly fileName = input('');
   readonly copied = signal(false);
   readonly highlightedCode = computed(() => tokenizeCode(this.code()));
+  readonly languageLabel = computed(() => formatLanguage(this.language() || inferLanguage(this.label())));
 
   constructor() {
     this.destroyRef.onDestroy(() => {
@@ -60,10 +68,45 @@ export class CodeBlockComponent {
   }
 }
 
+function inferLanguage(label: string): string {
+  const normalized = label.toLowerCase();
+  if (normalized.includes('import') || normalized.includes('angular') || normalized.includes('typescript')) {
+    return 'ts';
+  }
+  if (normalized.includes('scss') || normalized.includes('css')) {
+    return 'scss';
+  }
+  if (normalized.includes('terminal') || normalized.includes('bash')) {
+    return 'bash';
+  }
+  return 'html';
+}
+
+function formatLanguage(language: string): string {
+  const normalized = language.trim().toLowerCase();
+  switch (normalized) {
+    case 'html':
+      return 'HTML';
+    case 'ts':
+    case 'typescript':
+      return 'TS';
+    case 'scss':
+      return 'SCSS';
+    case 'css':
+      return 'CSS';
+    case 'bash':
+    case 'shell':
+    case 'terminal':
+      return 'Bash';
+    default:
+      return normalized.toUpperCase();
+  }
+}
+
 function tokenizeCode(code: string): readonly CodeToken[] {
   const tokens: CodeToken[] = [];
   const pattern =
-    /(<!--[\s\S]*?-->|\/\/[^\n]*|\/\*[\s\S]*?\*\/|`(?:\\.|[^`])*`|'(?:\\.|[^'])*'|"(?:\\.|[^"])*"|<\/?[A-Za-z][\w:-]*|[\[(][\w:-]+[\])]|@[A-Za-z]+|\b(?:import|from|export|const|let|readonly|class|interface|type|return|if|else|true|false|null|undefined|new|extends|implements|public|private|protected)\b|\b[A-Z][A-Za-z0-9_]*\b)/g;
+    /(<!--[\s\S]*?-->|\/\/[^\n]*|\/\*[\s\S]*?\*\/|#[^\n]*|`(?:\\.|[^`])*`|'(?:\\.|[^'])*'|"(?:\\.|[^"])*"|<\/?[A-Za-z][\w:-]*|[\[(][\w:-]+[\])]|@[A-Za-z]+|\b(?:npm|ng|import|from|export|const|let|readonly|class|interface|type|return|if|else|true|false|null|undefined|new|extends|implements|public|private|protected|display|color|background|border|padding|margin)\b|\b[A-Z][A-Za-z0-9_]*\b)/g;
   let index = 0;
 
   for (const match of code.matchAll(pattern)) {
@@ -86,7 +129,7 @@ function tokenizeCode(code: string): readonly CodeToken[] {
 }
 
 function tokenKind(text: string): CodeTokenKind {
-  if (text.startsWith('//') || text.startsWith('/*') || text.startsWith('<!--')) {
+  if (text.startsWith('//') || text.startsWith('/*') || text.startsWith('<!--') || text.startsWith('#')) {
     return 'comment';
   }
 

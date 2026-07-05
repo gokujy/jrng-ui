@@ -5,8 +5,12 @@ import { JBreadcrumbComponent, JBreadcrumbItem } from 'jrng-ui/breadcrumb';
 import { JButtonComponent } from 'jrng-ui/button';
 import { JCardComponent } from 'jrng-ui/card';
 import { JCheckboxComponent } from 'jrng-ui/checkbox';
+import { JConfirmationService } from 'jrng-ui/confirm-dialog';
+import { JCopyButtonComponent } from 'jrng-ui/copy-button';
 import { JDialogComponent } from 'jrng-ui/dialog';
+import { JDrawerComponent } from 'jrng-ui/drawer';
 import { JEmptyStateComponent } from 'jrng-ui/empty-state';
+import { JFileUploadComponent } from 'jrng-ui/file-upload';
 import { JIconComponent } from 'jrng-ui/icon';
 import { JInputComponent } from 'jrng-ui/input';
 import { JMenuComponent, JMenuItem } from 'jrng-ui/menu';
@@ -23,10 +27,12 @@ import { JStatusChipComponent } from 'jrng-ui/status-chip';
 import { JSwitchComponent } from 'jrng-ui/switch';
 import { JTabComponent, JTabsComponent } from 'jrng-ui/tabs';
 import { JTagComponent } from 'jrng-ui/tag';
-import { JTableColumn, JTableComponent } from 'jrng-ui/table';
+import { JActionMenuComponent, JColumnFilterComponent, JTableAction, JTableColumn, JTableComponent } from 'jrng-ui/table';
 import { JTextareaComponent } from 'jrng-ui/textarea';
+import { JTimelineComponent, JTimelineItem } from 'jrng-ui/timeline';
 import { JTooltipDirective } from 'jrng-ui/tooltip';
 import { JrToastContainerComponent, JrToastService } from 'jrng-ui/toast';
+import { JRippleDirective } from 'jrng-ui';
 import { ComponentDoc } from './docs-types';
 import { CodeBlockComponent } from './code-block.component';
 
@@ -42,8 +48,11 @@ type DetailTab = 'preview' | 'code';
     JButtonComponent,
     JCardComponent,
     JCheckboxComponent,
+    JCopyButtonComponent,
     JDialogComponent,
+    JDrawerComponent,
     JEmptyStateComponent,
+    JFileUploadComponent,
     JIconComponent,
     JInputComponent,
     JMenuComponent,
@@ -62,8 +71,12 @@ type DetailTab = 'preview' | 'code';
     JTabsComponent,
     JTagComponent,
     JTableComponent,
+    JActionMenuComponent,
+    JColumnFilterComponent,
     JTextareaComponent,
+    JTimelineComponent,
     JTooltipDirective,
+    JRippleDirective,
     JrToastContainerComponent,
   ],
   template: `
@@ -243,6 +256,15 @@ type DetailTab = 'preview' | 'code';
                     showExport
                   />
                 }
+                @case ('action-menu') {
+                  <j-action-menu [actions]="rowActions" [row]="orders[0]" />
+                }
+                @case ('column-filter') {
+                  <div class="j-preview-grid">
+                    <j-column-filter field="status" label="Status" />
+                    <j-column-filter field="customer" label="Customer" value="Acme" />
+                  </div>
+                }
                 @case ('metric-card') {
                   <div class="j-preview-grid j-preview-grid--cards">
                     <j-metric-card title="Revenue" value="$42.8k" trend="up" trendLabel="+12%" icon="$" footer="Month to date" />
@@ -306,6 +328,13 @@ type DetailTab = 'preview' | 'code';
                     <j-skeleton variant="table" [rows]="3" />
                   </div>
                 }
+                @case ('copy-button') {
+                  <div class="j-preview-row">
+                    <j-copy-button text="npm install jrng-ui" />
+                    <j-copy-button text="INV-2048" label="Copy ID" copiedLabel="Copied ID" />
+                    <j-copy-button text="Disabled" disabled />
+                  </div>
+                }
                 @case ('tabs') {
                   <j-tabs>
                     <j-tab header="Overview">
@@ -354,6 +383,23 @@ type DetailTab = 'preview' | 'code';
                     </j-dialog>
                   </div>
                 }
+                @case ('confirm-dialog') {
+                  <div class="j-preview-row">
+                    <j-button label="Confirm save" (onClick)="openConfirm()" />
+                    <j-button label="Delete record" severity="danger" (onClick)="openConfirm('danger')" />
+                  </div>
+                }
+                @case ('drawer') {
+                  <div class="j-preview-row">
+                    <j-button label="Open drawer" (onClick)="drawerOpen.set(true)" />
+                    <j-drawer header="Filters" [visible]="drawerOpen()" (openChange)="drawerOpen.set($event)">
+                      <div class="j-preview-stack">
+                        <j-input label="Search" type="search" clearable />
+                        <j-select label="Status" [options]="statuses" />
+                      </div>
+                    </j-drawer>
+                  </div>
+                }
                 @case ('tooltip') {
                   <div class="j-preview-row">
                     <button class="j-doc-preview-button" type="button" jTooltip="Refresh data" tooltipPosition="top">
@@ -375,24 +421,36 @@ type DetailTab = 'preview' | 'code';
                     </j-popover>
                   </div>
                 }
+                @case ('ripple') {
+                  <div class="j-preview-row">
+                    <button class="j-doc-preview-button" type="button" jRipple>Ripple button</button>
+                    <button class="j-doc-preview-button" type="button" [jRipple]="false">Disabled ripple</button>
+                  </div>
+                }
+                @case ('timeline') {
+                  <j-timeline [value]="timelineItems" />
+                }
+                @case ('file-upload') {
+                  <j-file-upload title="Upload documents" description="Drag files here or choose from your device." multiple />
+                }
               }
             </div>
           </div>
         } @else {
           <div class="j-code-grid">
-            <app-code-block label="Import" [code]="doc().code.importCode" />
-            <app-code-block label="Basic usage" [code]="doc().code.basic" />
+            <app-code-block label="Import" language="ts" [code]="doc().code.importCode" />
+            <app-code-block label="Basic usage" language="html" [code]="doc().code.basic" />
             @if (doc().code.variants) {
-              <app-code-block label="Variants" [code]="doc().code.variants ?? ''" />
+              <app-code-block label="Variants" language="html" [code]="doc().code.variants ?? ''" />
             }
             @if (doc().code.sizes) {
-              <app-code-block label="Sizes" [code]="doc().code.sizes ?? ''" />
+              <app-code-block label="Sizes" language="html" [code]="doc().code.sizes ?? ''" />
             }
             @if (doc().code.states) {
-              <app-code-block label="States" [code]="doc().code.states ?? ''" />
+              <app-code-block label="States" language="html" [code]="doc().code.states ?? ''" />
             }
             @if (doc().code.angular) {
-              <app-code-block label="Angular example" [code]="doc().code.angular ?? ''" />
+              <app-code-block label="Angular example" language="ts" [code]="doc().code.angular ?? ''" />
             }
           </div>
         }
@@ -488,6 +546,34 @@ type DetailTab = 'preview' | 'code';
         </div>
       </section>
 
+      <section class="j-doc-section-block">
+        <h3>CSS variables</h3>
+        <div class="j-table-wrap">
+          <table class="j-api-table">
+            <thead>
+              <tr>
+                <th>Variable</th>
+                <th>Default / fallback</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of doc().cssVariables ?? []; track row.variable) {
+                <tr>
+                  <td><code>{{ row.variable }}</code></td>
+                  <td><code>{{ row.fallback }}</code></td>
+                  <td>{{ row.description }}</td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="3">Uses the shared JRNG UI semantic theme variables.</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+
       <section class="j-doc-grid-sections">
         <div class="j-doc-section-block">
           <h3>Accessibility</h3>
@@ -523,10 +609,12 @@ type DetailTab = 'preview' | 'code';
 })
 export class ComponentDetailViewComponent {
   private readonly toast = inject(JrToastService);
+  private readonly confirmation = inject(JConfirmationService);
 
   readonly doc = input.required<ComponentDoc>();
   readonly activeTab = signal<DetailTab>('preview');
   readonly dialogOpen = signal(false);
+  readonly drawerOpen = signal(false);
   readonly popoverOpen = signal(false);
 
   checked = true;
@@ -562,6 +650,18 @@ export class ComponentDetailViewComponent {
     { label: 'Breadcrumb' },
   ];
 
+  readonly rowActions: readonly JTableAction[] = [
+    { key: 'view', label: 'View' },
+    { key: 'duplicate', label: 'Duplicate' },
+    { key: 'delete', label: 'Delete', severity: 'danger' },
+  ];
+
+  readonly timelineItems: readonly JTimelineItem[] = [
+    { title: 'Created', content: 'Order was created.', opposite: '09:00', severity: 'info' },
+    { title: 'Approved', content: 'Manager approved the request.', opposite: '10:15', severity: 'success' },
+    { title: 'Queued', content: 'Waiting for fulfillment.', opposite: '11:20', severity: 'warning' },
+  ];
+
   readonly pageHeaderBreadcrumbs = [
     { label: 'Home', url: '/' },
     { label: 'Operations', url: '/docs' },
@@ -591,5 +691,14 @@ export class ComponentDetailViewComponent {
       return;
     }
     this.toast.warning('Some changes still need review.', 'Review required', { position: 'bottom-right' });
+  }
+
+  openConfirm(severity: 'default' | 'danger' = 'default'): void {
+    this.confirmation.confirm({
+      header: severity === 'danger' ? 'Delete record' : 'Confirm action',
+      message: severity === 'danger' ? 'This action cannot be undone.' : 'Review the details before continuing.',
+      acceptLabel: severity === 'danger' ? 'Delete' : 'Continue',
+      rejectLabel: 'Cancel',
+    });
   }
 }

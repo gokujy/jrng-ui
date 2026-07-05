@@ -13,6 +13,12 @@ export interface DocsEventRow {
   readonly description: string;
 }
 
+export interface DocsCssVariableRow {
+  readonly variable: string;
+  readonly fallback: string;
+  readonly description: string;
+}
+
 export interface ComponentCodeExamples {
   readonly importCode: string;
   readonly basic: string;
@@ -39,6 +45,7 @@ export interface ComponentDoc {
   readonly states: readonly string[];
   readonly inputs: readonly DocsApiRow[];
   readonly outputs: readonly DocsEventRow[];
+  readonly cssVariables?: readonly DocsCssVariableRow[];
   readonly accessibility: readonly string[];
   readonly bestPractices: readonly string[];
   readonly commonMistakes?: readonly string[];

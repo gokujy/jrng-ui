@@ -549,7 +549,7 @@ import { JInputComponent } from 'jrng-ui/input';`;
 
   readonly docsSections: readonly TextSection[] = [
     {
-      title: 'Introduction',
+      title: 'Getting Started',
       body: [
         'JRNG UI is a generic Angular UI component library for building clean, fast, accessible web applications.',
         'It provides reusable j-* components so teams do not need to rebuild common controls such as buttons, inputs, cards, dialogs, toasts, and tables for every Angular project.',
@@ -569,7 +569,7 @@ import { JInputComponent } from 'jrng-ui/input';`;
       code: 'npm install jrng-ui',
     },
     {
-      title: 'Add Styles',
+      title: 'Theme Setup',
       body: [
         'JRNG UI styles are required for the visual design, spacing, colors, focus rings, and component states.',
         'Use one style setup method. If components appear unstyled, the global style import is usually missing or pointing to the wrong path.',
@@ -600,10 +600,12 @@ import { JButtonComponent } from 'jrng-ui/button';
   standalone: true,
   imports: [JButtonComponent],
   template: \`
-    <j-button label="Save"></j-button>
+    <j-button label="Save" (onClick)="save()"></j-button>
   \`
 })
-export class ExampleComponent {}`,
+export class ExampleComponent {
+  save(): void {}
+}`,
     },
     {
       title: 'Using Multiple Components',
@@ -615,7 +617,7 @@ import { JCardComponent } from 'jrng-ui/card';
 
 <j-card header="Create user">
   <j-input label="Name" placeholder="Enter name"></j-input>
-  <j-button label="Save"></j-button>
+  <j-button label="Save" (onClick)="save()"></j-button>
 </j-card>`,
     },
     {
@@ -660,6 +662,52 @@ import { JSelectComponent } from 'jrng-ui/select';`,
         'Common inputs: label, placeholder, disabled, loading, size, severity, variant, styleClass.',
         'Common outputs: onClick, valueChange, selectionChange, opened, closed, clear, remove, pageChange, sortChange.',
       ],
+    },
+    {
+      title: 'Business Utilities',
+      body: [
+        'Business utilities provide common admin-app building blocks such as Metric Card, Stat Card, Status Chip, Page Header, and Empty State.',
+        'Use them for dashboard summaries, workflow states, empty results, and repeatable page title/action patterns.',
+      ],
+      list: [
+        'Metric Card and Stat Card cover KPI and operational counters.',
+        'Status Chip keeps workflow states readable in tables and detail views.',
+        'Page Header standardizes breadcrumbs, titles, descriptions, and action slots.',
+        'Empty State gives filtered, first-run, and missing-record screens clear next steps.',
+      ],
+    },
+    {
+      title: 'Data Table',
+      body: [
+        'The table component supports common business data workflows including sorting, pagination, global filtering, column management, export, row selection, lazy loading, row expansion, and editing hooks.',
+        'Start with value and columns, then enable advanced features only when the screen needs them.',
+      ],
+      codeLabel: 'HTML',
+      code: `<j-table
+  [value]="orders"
+  [columns]="columns"
+  paginator
+  showGlobalFilter
+  showColumnManager
+  showExport>
+</j-table>`,
+    },
+    {
+      title: 'Tour Guide',
+      body: [
+        'Tour Guide support is reserved for the optional Driver.js wrapper in the v0.0.6 release line.',
+        'Do not install Driver.js unless your app uses tours. When implemented, Driver.js should remain an optional peer dependency.',
+      ],
+      codeLabel: 'Terminal',
+      code: 'npm install driver.js',
+    },
+    {
+      title: 'Changelog',
+      body: [
+        'Read the changelog before upgrading. Version 0.0.6 removes legacy button events and standardizes examples on onClick.',
+      ],
+      codeLabel: 'HTML',
+      code: `<j-button label="Save" (onClick)="save()"></j-button>`,
     },
     {
       title: 'Styling Components',
