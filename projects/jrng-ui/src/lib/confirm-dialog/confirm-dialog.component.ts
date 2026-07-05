@@ -90,7 +90,7 @@ import { JConfirmationService } from './confirmation.service';
       .j-confirm-dialog__button--accept {
         background: var(--j-color-primary);
         border-color: var(--j-color-primary);
-        color: var(--j-color-primary-contrast);
+        color: var(--j-color-primary-foreground, var(--j-color-white, #ffffff));
       }
       .j-confirm-dialog__button--reject {
         background: var(--j-color-surface);

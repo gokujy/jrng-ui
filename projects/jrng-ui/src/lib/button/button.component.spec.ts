@@ -87,4 +87,8 @@ describe('JrButtonComponent', () => {
   it('supports icon labels', () => {
     expect(button().textContent).toContain('S');
   });
+
+  it('applies ripple utility to the native button', () => {
+    expect(button().classList).toContain('j-ripple');
+  });
 });

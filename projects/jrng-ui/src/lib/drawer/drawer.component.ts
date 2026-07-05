@@ -99,7 +99,7 @@ export type JDrawerCloseReason = 'close-button' | 'backdrop' | 'escape' | 'gestu
       }
 
       .j-drawer__backdrop.is-modal {
-        background: rgb(15 23 42 / 56%);
+        background: var(--j-overlay-backdrop-bg, rgb(15 23 42 / 56%));
       }
 
       .j-drawer {

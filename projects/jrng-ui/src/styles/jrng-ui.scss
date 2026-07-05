@@ -123,7 +123,7 @@
   }
 
   .j-ripple::after {
-    background: currentColor;
+    background: var(--j-ripple-color, currentColor);
     border-radius: var(--j-radius-full);
     content: '';
     height: 0;
@@ -137,13 +137,19 @@
   }
 
   .j-ripple.is-rippling::after {
-    animation: j-ripple var(--j-duration-slow) var(--j-ease-standard);
+    animation: j-ripple var(--j-ripple-duration, var(--j-duration-slow)) var(--j-ease-standard);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .j-ripple.is-rippling::after {
+      animation: none;
+    }
   }
 
   @keyframes j-ripple {
     from {
       height: 0;
-      opacity: 0.18;
+      opacity: var(--j-ripple-opacity, 0.18);
       width: 0;
     }
 

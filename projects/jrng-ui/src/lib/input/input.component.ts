@@ -107,11 +107,16 @@ export class JrInputComponent implements ControlValueAccessor {
         `j-input--${this.variant}`,
         this.hasError ? 'is-invalid' : '',
         this.isDisabled ? 'is-disabled' : '',
+        this.readonly ? 'is-readonly' : '',
         this.fluid || this.fullWidth ? 'j-input--fluid' : '',
       ],
       this.styleClass,
       this.pt,
     );
+  }
+
+  get showClear(): boolean {
+    return this.clearable && !!this.internalValue && !this.isDisabled && !this.readonly;
   }
 
   writeValue(value: string | number | null | undefined): void {

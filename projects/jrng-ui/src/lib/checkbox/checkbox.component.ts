@@ -108,7 +108,7 @@ import { JSize } from '../core/types';
       .j-checkbox.is-indeterminate .j-checkbox__box {
         background: var(--j-color-primary);
         border-color: var(--j-color-primary);
-        color: var(--j-color-primary-contrast);
+        color: var(--j-color-primary-foreground, var(--j-color-white, #ffffff));
       }
 
       .j-checkbox__input:checked + .j-checkbox__box::after {

@@ -39,7 +39,7 @@ export type JSkeletonVariant = 'rectangle' | 'text' | 'avatar' | 'card' | 'table
   styles: [
     `
       .j-skeleton {
-        background: var(--j-color-surface-subtle);
+        background: var(--j-skeleton-bg, var(--j-color-surface-subtle));
         display: block;
         min-height: 1rem;
         overflow: hidden;
@@ -77,7 +77,7 @@ export type JSkeletonVariant = 'rectangle' | 'text' | 'avatar' | 'card' | 'table
 
       .j-skeleton__line,
       .j-skeleton__row {
-        background: var(--j-color-surface-subtle);
+        background: var(--j-skeleton-bg, var(--j-color-surface-subtle));
         border-radius: var(--j-radius-sm);
         display: block;
         height: 1rem;
@@ -108,7 +108,7 @@ export type JSkeletonVariant = 'rectangle' | 'text' | 'avatar' | 'card' | 'table
       .j-skeleton--wave .j-skeleton__line::after,
       .j-skeleton--wave .j-skeleton__row::after {
         animation: j-skeleton-wave 1.4s linear infinite;
-        background: linear-gradient(90deg, transparent, rgb(255 255 255 / 42%), transparent);
+        background: linear-gradient(90deg, transparent, var(--j-skeleton-shimmer-color, rgb(255 255 255 / 42%)), transparent);
         content: '';
         inset: 0;
         position: absolute;
