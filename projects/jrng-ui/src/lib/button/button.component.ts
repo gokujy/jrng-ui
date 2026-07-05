@@ -45,9 +45,7 @@ export class JrButtonComponent {
   readonly fullWidth = input(false, { transform: booleanAttribute });
   readonly iconOnly = input(false, { transform: booleanAttribute });
 
-  readonly clicked = output<MouseEvent>();
-  /** @deprecated Use clicked instead. */
-  readonly jrPress = output<MouseEvent>();
+  readonly onClick = output<MouseEvent>();
 
   readonly isBlocked = computed(() => this.disabled() || this.loading());
 
@@ -111,7 +109,6 @@ export class JrButtonComponent {
       return;
     }
 
-    this.clicked.emit(event);
-    this.jrPress.emit(event);
+    this.onClick.emit(event);
   }
 }

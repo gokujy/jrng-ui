@@ -24,7 +24,7 @@ Scope: current `jrng-ui` workspace state after the generic-library cleanup pass.
 - Components are standalone Angular components and use `ChangeDetectionStrategy.OnPush`.
 - Form controls that own values implement `ControlValueAccessor`.
 - Library templates use modern Angular control-flow syntax.
-- Shared docs and examples should stay generic and avoid app, company, client, or internal project names.
+- Shared docs and examples should stay generic and avoid private organization or project names.
 
 ## Theme
 

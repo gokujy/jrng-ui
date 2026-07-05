@@ -13,7 +13,7 @@ import { JButtonComponent } from 'jrng-ui/button';
 ```
 
 ```html
-<j-button label="Save" severity="primary" (clicked)="save()" />
+<j-button label="Save" severity="primary" (onClick)="save()" />
 <j-button label="Archive" severity="neutral" variant="soft" />
 <j-button label="Delete" severity="danger" variant="outline" />
 <j-button label="Open details" variant="link" />
@@ -22,7 +22,7 @@ import { JButtonComponent } from 'jrng-ui/button';
 <j-button label="Continue" size="xl" fullWidth />
 ```
 
-`j-button` renders a native `button` internally. It emits `clicked` only when it
+`j-button` renders a native `button` internally. It emits `onClick` only when it
 is not disabled or loading. Native Angular `(click)` bindings can still listen on
 the host for enabled clicks. Supported severities are `primary`, `secondary`,
 `neutral`, `success`, `warning`, `danger`, and `info`. Supported visual variants

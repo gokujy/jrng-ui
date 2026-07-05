@@ -85,6 +85,13 @@ interface ComponentDoc {
   readonly accessibility: readonly string[];
 }
 
+type CodeTokenKind = 'comment' | 'keyword' | 'string' | 'tag' | 'attr' | 'type' | 'plain';
+
+interface CodeToken {
+  readonly text: string;
+  readonly kind: CodeTokenKind;
+}
+
 function isSitePage(value: unknown): value is SitePage {
   return value === 'home' || value === 'docs' || value === 'components' || value === 'themes' || value === 'component-detail';
 }
@@ -100,7 +107,7 @@ function isSitePage(value: unknown): value is SitePage {
         }
         <button type="button" (click)="copy()">{{ copied() ? 'Copied' : 'Copy' }}</button>
       </div>
-      <pre><code>{{ code() }}</code></pre>
+      <pre><code>@for (token of highlightedCode(); track $index) {<span [class]="'j-token j-token--' + token.kind">{{ token.text }}</span>}</code></pre>
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -114,6 +121,7 @@ export class CodeBlockComponent {
   readonly code = input('');
   readonly label = input('');
   readonly copied = signal(false);
+  readonly highlightedCode = computed(() => tokenizeCode(this.code()));
 
   constructor() {
     this.destroyRef.onDestroy(() => {
@@ -650,7 +658,7 @@ import { JSelectComponent } from 'jrng-ui/select';`,
       body: ['Many JRNG UI components share common input and output names to make APIs predictable.'],
       list: [
         'Common inputs: label, placeholder, disabled, loading, size, severity, variant, styleClass.',
-        'Common outputs: clicked, valueChange, selectionChange, opened, closed, clear, remove, pageChange, sortChange.',
+        'Common outputs: onClick, valueChange, selectionChange, opened, closed, clear, remove, pageChange, sortChange.',
       ],
     },
     {
@@ -903,7 +911,7 @@ import { JSelectComponent } from 'jrng-ui/select';`,
         api('styleClass', 'string', "''", 'Adds a custom class to the root element.'),
         api('ariaLabel', 'string', "''", 'Accessible label for icon-only buttons.'),
       ],
-      outputs: [out('clicked', 'MouseEvent', 'Emits when the button is activated and not disabled or loading.')],
+      outputs: [out('onClick', 'MouseEvent', 'Emits when the button is activated and not disabled or loading.')],
       tokens: tokens('button', ['--j-button-primary-bg', '--j-button-primary-color', '--j-button-radius', '--j-button-height-md']),
       stylingHtml: `<j-button label="Save" styleClass="my-save-button"></j-button>`,
       stylingCss: `.my-save-button {
@@ -912,7 +920,7 @@ import { JSelectComponent } from 'jrng-ui/select';`,
       accessibility: [
         'Use visible text when possible.',
         'Use ariaLabel for icon-only buttons.',
-        'Disabled and loading buttons should not emit clicked.',
+        'Disabled and loading buttons should not emit onClick.',
         'Buttons should be reachable by Tab and activated with Enter or Space.',
       ],
     },
@@ -1249,4 +1257,53 @@ function out(name: string, payload: string, description: string): OutputRow {
 
 function tokens(component: string, names: readonly string[]): readonly TokenRow[] {
   return names.map((name) => ({ name, description: `Token used by ${component} styling.` }));
+}
+
+function tokenizeCode(code: string): readonly CodeToken[] {
+  const tokens: CodeToken[] = [];
+  const pattern =
+    /(<!--[\s\S]*?-->|\/\/[^\n]*|\/\*[\s\S]*?\*\/|`(?:\\.|[^`])*`|'(?:\\.|[^'])*'|"(?:\\.|[^"])*"|<\/?[A-Za-z][\w:-]*|[\[(][\w:-]+[\])]|@[A-Za-z]+|\b(?:import|from|export|const|let|readonly|class|interface|type|return|if|else|true|false|null|undefined|new|extends|implements|public|private|protected)\b|\b[A-Z][A-Za-z0-9_]*\b)/g;
+  let index = 0;
+
+  for (const match of code.matchAll(pattern)) {
+    const text = match[0];
+    const start = match.index ?? 0;
+
+    if (start > index) {
+      tokens.push({ text: code.slice(index, start), kind: 'plain' });
+    }
+
+    tokens.push({ text, kind: tokenKind(text) });
+    index = start + text.length;
+  }
+
+  if (index < code.length) {
+    tokens.push({ text: code.slice(index), kind: 'plain' });
+  }
+
+  return tokens;
+}
+
+function tokenKind(text: string): CodeTokenKind {
+  if (text.startsWith('//') || text.startsWith('/*') || text.startsWith('<!--')) {
+    return 'comment';
+  }
+
+  if (text.startsWith('"') || text.startsWith("'") || text.startsWith('`')) {
+    return 'string';
+  }
+
+  if (text.startsWith('<')) {
+    return 'tag';
+  }
+
+  if (text.startsWith('[') || text.startsWith('(') || text.startsWith('@')) {
+    return 'attr';
+  }
+
+  if (/^[A-Z]/.test(text)) {
+    return 'type';
+  }
+
+  return 'keyword';
 }

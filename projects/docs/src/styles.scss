@@ -234,6 +234,29 @@ code {
   padding: var(--j-spacing-4);
 }
 
+.j-code-block code,
+.j-doc-code code {
+  white-space: pre;
+}
+
+.j-token--comment {
+  color: var(--j-code-comment, #64748b);
+}
+
+.j-token--keyword,
+.j-token--attr {
+  color: var(--j-code-keyword, #7c3aed);
+}
+
+.j-token--string {
+  color: var(--j-code-string, #15803d);
+}
+
+.j-token--tag,
+.j-token--type {
+  color: var(--j-code-type, #0369a1);
+}
+
 .j-preview-form {
   display: grid;
   gap: var(--j-spacing-4);

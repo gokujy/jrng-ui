@@ -6,15 +6,20 @@ import { JButtonComponent } from 'jrng-ui/button';
 import { JCardComponent } from 'jrng-ui/card';
 import { JCheckboxComponent } from 'jrng-ui/checkbox';
 import { JDialogComponent } from 'jrng-ui/dialog';
+import { JEmptyStateComponent } from 'jrng-ui/empty-state';
 import { JIconComponent } from 'jrng-ui/icon';
 import { JInputComponent } from 'jrng-ui/input';
 import { JMenuComponent, JMenuItem } from 'jrng-ui/menu';
+import { JMetricCardComponent } from 'jrng-ui/metric-card';
+import { JPageHeaderComponent } from 'jrng-ui/page-header';
 import { JPopoverComponent } from 'jrng-ui/popover';
 import { JProgressBarComponent } from 'jrng-ui/progress-bar';
 import { JRadioComponent } from 'jrng-ui/radio';
 import { JSelectComponent } from 'jrng-ui/select';
 import { JSkeletonComponent } from 'jrng-ui/skeleton';
 import { JResponsiveSidebarComponent } from 'jrng-ui/responsive-sidebar';
+import { JStatCardComponent } from 'jrng-ui/stat-card';
+import { JStatusChipComponent } from 'jrng-ui/status-chip';
 import { JSwitchComponent } from 'jrng-ui/switch';
 import { JTabComponent, JTabsComponent } from 'jrng-ui/tabs';
 import { JTagComponent } from 'jrng-ui/tag';
@@ -38,15 +43,20 @@ type DetailTab = 'preview' | 'code';
     JCardComponent,
     JCheckboxComponent,
     JDialogComponent,
+    JEmptyStateComponent,
     JIconComponent,
     JInputComponent,
     JMenuComponent,
+    JMetricCardComponent,
+    JPageHeaderComponent,
     JPopoverComponent,
     JProgressBarComponent,
     JRadioComponent,
     JSelectComponent,
     JSkeletonComponent,
     JResponsiveSidebarComponent,
+    JStatCardComponent,
+    JStatusChipComponent,
     JSwitchComponent,
     JTabComponent,
     JTabsComponent,
@@ -221,14 +231,62 @@ type DetailTab = 'preview' | 'code';
                   </div>
                 }
                 @case ('table') {
-                  <j-table [value]="orders" [columns]="orderColumns" striped hover paginator [rows]="3" />
+                  <j-table
+                    [value]="orders"
+                    [columns]="orderColumns"
+                    striped
+                    hover
+                    paginator
+                    [rows]="3"
+                    showGlobalFilter
+                    showColumnManager
+                    showExport
+                  />
+                }
+                @case ('metric-card') {
+                  <div class="j-preview-grid j-preview-grid--cards">
+                    <j-metric-card title="Revenue" value="$42.8k" trend="up" trendLabel="+12%" icon="$" footer="Month to date" />
+                    <j-metric-card title="Churn" value="1.8%" trend="down" trendLabel="-0.4%" icon="%" footer="Rolling 30 days" />
+                    <j-metric-card title="Loading" loading />
+                  </div>
+                }
+                @case ('stat-card') {
+                  <div class="j-preview-grid j-preview-grid--cards">
+                    <j-stat-card title="Open orders" value="128" trend="up" trendLabel="+18 today" icon="#" footer="Updated 4 minutes ago" />
+                    <j-stat-card title="SLA risk" value="7" trend="neutral" trendLabel="Stable" icon="!" footer="Across active queues" />
+                    <j-stat-card title="Loading" loading />
+                  </div>
+                }
+                @case ('status-chip') {
+                  <div class="j-preview-row">
+                    <j-status-chip label="Ready" severity="success" />
+                    <j-status-chip label="Review" severity="warning" />
+                    <j-status-chip label="Blocked" severity="danger" />
+                    <j-status-chip label="Queued" severity="info" />
+                    <j-status-chip label="Neutral" severity="neutral" />
+                  </div>
+                }
+                @case ('page-header') {
+                  <j-page-header
+                    title="Orders"
+                    description="Review fulfillment, exceptions, and exportable operational data."
+                    [breadcrumbs]="pageHeaderBreadcrumbs"
+                  >
+                    <j-button jPageActions label="Export" variant="outline" />
+                    <j-button jPageActions label="Create order" />
+                  </j-page-header>
+                }
+                @case ('empty-state') {
+                  <j-empty-state title="No orders found" description="Try changing filters or create a new order." icon="0">
+                    <j-button jEmptyStateAction label="Create order" />
+                  </j-empty-state>
                 }
                 @case ('toast') {
                   <div class="j-preview-stack">
                     <div class="j-preview-row">
-                      <j-button label="Show success" (clicked)="showToast('success')" />
-                      <j-button label="Show error" severity="danger" (clicked)="showToast('error')" />
-                      <j-button label="Show warning" severity="warning" (clicked)="showToast('warning')" />
+                      <j-button label="Show success" (onClick)="showToast('success')" />
+                      <j-button label="Show error" severity="danger" (onClick)="showToast('error')" />
+                      <j-button label="Show warning" severity="warning" (onClick)="showToast('warning')" />
                     </div>
                     <j-toast position="bottom-right" />
                   </div>
@@ -280,7 +338,7 @@ type DetailTab = 'preview' | 'code';
                 }
                 @case ('dialog') {
                   <div class="j-preview-row">
-                    <j-button label="Open dialog" (clicked)="dialogOpen.set(true)" />
+                    <j-button label="Open dialog" (onClick)="dialogOpen.set(true)" />
                     <j-dialog
                       header="Edit project"
                       [visible]="dialogOpen()"
@@ -289,8 +347,8 @@ type DetailTab = 'preview' | 'code';
                       <div class="j-dialog-demo">
                         <j-input label="Project name" value="JRNG UI Docs" />
                         <div class="j-preview-row">
-                          <j-button label="Cancel" variant="ghost" (clicked)="dialogOpen.set(false)" />
-                          <j-button label="Save" (clicked)="dialogOpen.set(false)" />
+                          <j-button label="Cancel" variant="ghost" (onClick)="dialogOpen.set(false)" />
+                          <j-button label="Save" (onClick)="dialogOpen.set(false)" />
                         </div>
                       </div>
                     </j-dialog>
@@ -503,6 +561,12 @@ export class ComponentDetailViewComponent {
     { label: 'Components', routerLink: '/docs/components' },
     { label: 'Breadcrumb' },
   ];
+
+  readonly pageHeaderBreadcrumbs = [
+    { label: 'Home', url: '/' },
+    { label: 'Operations', url: '/docs' },
+    { label: 'Orders' },
+  ] as const;
 
   readonly menuItems: readonly JMenuItem[] = [
     { label: 'Open', icon: 'Open' },

@@ -36,7 +36,7 @@ Root imports are also supported from `jrng-ui`.
   resizable
 >
   <form>...</form>
-  <j-button jDialogFooter variant="ghost" (clicked)="dialogVisible = false">Cancel</j-button>
+  <j-button jDialogFooter variant="ghost" (onClick)="dialogVisible = false">Cancel</j-button>
   <j-button jDialogFooter>Save</j-button>
 </j-dialog>
 ```
@@ -67,7 +67,7 @@ dialog.open({
   [snapPoints]="['45%', '82%']"
 >
   ...
-  <j-button jDrawerFooter (clicked)="filtersOpen = false">Apply</j-button>
+  <j-button jDrawerFooter (onClick)="filtersOpen = false">Apply</j-button>
 </j-drawer>
 ```
 

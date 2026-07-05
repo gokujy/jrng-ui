@@ -115,4 +115,34 @@ describe('JTableComponent', () => {
     expect(host.page).toBe(2);
     expect(fixture.nativeElement.textContent).toContain('REC-2');
   });
+
+  it('filters rows with the global filter and emits filterChange', () => {
+    const table = fixture.debugElement.query(By.directive(JTableComponent)).componentInstance as JTableComponent;
+    const emitted: unknown[] = [];
+    table.filterChange.subscribe((event) => emitted.push(event));
+
+    table.handleGlobalFilter('alpha');
+    expect(table.visibleRows.length).toBe(1);
+    expect(table.visibleRows[0]?.['code']).toBe('REC-1');
+    expect(emitted.length).toBe(1);
+  });
+
+  it('tracks multiple sort metadata when sortMode is multiple', () => {
+    const table = fixture.debugElement.query(By.directive(JTableComponent)).componentInstance as JTableComponent;
+    table.sortMode = 'multiple';
+
+    table.toggleSort(host.columns[0] as JTableColumn);
+    table.toggleSort(host.columns[2] as JTableColumn);
+
+    expect(table.multiSortMeta.map((sort) => sort.field)).toEqual(['code', 'amount']);
+  });
+
+  it('exports visible table data as CSV', () => {
+    const table = fixture.debugElement.query(By.directive(JTableComponent)).componentInstance as JTableComponent;
+
+    const csv = table.exportCSV();
+
+    expect(csv).toContain('Code,Name,Amount');
+    expect(csv).toContain('REC-3,Record Gamma,300');
+  });
 });

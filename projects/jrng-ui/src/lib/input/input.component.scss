@@ -79,6 +79,11 @@
   color: var(--j-input-placeholder-color);
 }
 
+.j-input__field::-webkit-search-cancel-button,
+.j-input__field::-webkit-search-decoration {
+  appearance: none;
+}
+
 .j-input__icon {
   align-items: center;
   color: var(--j-color-text-muted);
