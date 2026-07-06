@@ -1,1 +1,1 @@
-export { JAppShellComponent } from 'jrng-ui';
+export * from './app-shell.component';

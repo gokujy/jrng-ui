@@ -1,1 +1,1 @@
-export { JContextMenuComponent } from 'jrng-ui';
+export * from './context-menu.component';

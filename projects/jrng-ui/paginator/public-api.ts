@@ -1,2 +1,1 @@
-export { JPaginatorComponent } from 'jrng-ui';
-export type { JPaginatorChange, JPaginatorPageChange } from 'jrng-ui';
+export * from './paginator.component';

@@ -1,1 +1,1 @@
-export { JComboboxComponent } from 'jrng-ui';
+export * from './combobox.component';

@@ -1,3 +1,1 @@
-export { JStepperComponent } from 'jrng-ui';
-export type { JStepItem } from 'jrng-ui';
-
+export * from './stepper.component';

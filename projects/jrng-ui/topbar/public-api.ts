@@ -1,1 +1,1 @@
-export { JTopbarComponent } from 'jrng-ui';
+export * from './topbar.component';

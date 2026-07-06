@@ -1,2 +1,1 @@
-export { JMenuComponent } from 'jrng-ui';
-export type { JMenuItem } from 'jrng-ui';
+export * from './menu.component';

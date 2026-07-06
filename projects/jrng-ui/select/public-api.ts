@@ -1,8 +1,2 @@
-export { JSelectComponent, SelectComponent } from 'jrng-ui';
-export type {
-  JSelectItemContext,
-  JSelectOption,
-  JSelectOptionRecord,
-  JSelectOptionSource,
-  JSelectPrimitive,
-} from 'jrng-ui';
+export * from './select.component';
+export { JSelectComponent as SelectComponent } from './select.component';

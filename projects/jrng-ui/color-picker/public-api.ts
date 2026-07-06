@@ -1,2 +1,1 @@
-export { JColorPickerComponent } from 'jrng-ui';
-
+export * from './color-picker.component';

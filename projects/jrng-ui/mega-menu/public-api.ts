@@ -1,2 +1,1 @@
-export { JMegaMenuComponent } from 'jrng-ui';
-export type { JMegaMenuGroup, JMegaMenuItem } from 'jrng-ui';
+export * from './mega-menu.component';

@@ -1,1 +1,1 @@
-export { JEmptyStateComponent } from 'jrng-ui';
+export * from './empty-state.component';

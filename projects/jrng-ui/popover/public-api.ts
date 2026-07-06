@@ -1,2 +1,1 @@
-export { JPopoverComponent } from 'jrng-ui';
-export type { JPopoverPosition } from 'jrng-ui';
+export * from './popover.component';

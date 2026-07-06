@@ -1,1 +1,1 @@
-export { JNotificationCenterComponent } from 'jrng-ui';
+export * from './notification-center.component';

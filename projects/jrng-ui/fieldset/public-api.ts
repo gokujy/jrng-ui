@@ -1,1 +1,1 @@
-export { JFieldsetComponent } from 'jrng-ui';
+export * from './fieldset.component';

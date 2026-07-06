@@ -1,1 +1,1 @@
-export { JTransferListComponent } from 'jrng-ui';
+export * from './transfer-list.component';

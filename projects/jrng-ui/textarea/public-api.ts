@@ -1,2 +1,1 @@
-export { JTextareaComponent } from 'jrng-ui';
-export type { JInputVariant } from 'jrng-ui';
+export * from './textarea.component';

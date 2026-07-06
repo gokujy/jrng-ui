@@ -1,42 +1,10 @@
-export {
-  JActionMenuComponent,
-  JColumnComponent,
-  JColumnFilterComponent,
-  JSortIconComponent,
-  JTableCellTemplateDirective,
-  JTableComponent,
-  JTableEmptyStateComponent,
-  JTableHeaderTemplateDirective,
-  JTableSkeletonComponent,
-  TableComponent,
-} from 'jrng-ui';
-export type {
-  JColumnCellContext,
-  JColumnFilterChange,
-  JTableAction,
-  JTableActionEvent,
-  JTableCellContext,
-  JTableColumn,
-  JTableColumnAlign,
-  JTableColumnResizeEvent,
-  JTableColumnType,
-  JTableColumnVisibilityChangeEvent,
-  JTableConfig,
-  JTableExportEvent,
-  JTableExportOptions,
-  JTableExportRows,
-  JTableFilterChange,
-  JTableHeaderContext,
-  JTableLazyLoadEvent,
-  JTablePageChange,
-  JTableRow,
-  JTableRowClickEvent,
-  JTableRowLockEvent,
-  JTableSelection,
-  JTableSelectionMode,
-  JTableSize,
-  JTableSort,
-  JTableSortDirection,
-  JTableSortOrder,
-  JTableState,
-} from 'jrng-ui';
+export * from './table.component';
+export * from './table.types';
+export * from './column.component';
+export * from './table-template.directive';
+export * from './sort-icon.component';
+export * from './column-filter.component';
+export * from './action-menu.component';
+export * from './table-skeleton.component';
+export * from './table-empty-state.component';
+export { JTableComponent as TableComponent } from './table.component';

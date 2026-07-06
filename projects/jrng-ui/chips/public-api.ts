@@ -1,1 +1,1 @@
-export { JChipsComponent } from 'jrng-ui';
+export * from './chips.component';

@@ -1,2 +1,1 @@
-export { JImagePreviewComponent } from 'jrng-ui';
-
+export * from './image-preview.component';

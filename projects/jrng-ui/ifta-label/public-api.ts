@@ -1,1 +1,1 @@
-export { JIftaLabelComponent } from 'jrng-ui';
+export * from './ifta-label.component';

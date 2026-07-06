@@ -1,2 +1,1 @@
-export { JStackComponent } from 'jrng-ui';
-export type { JStackAlign, JStackDirection, JStackJustify } from 'jrng-ui';
+export * from './stack.component';

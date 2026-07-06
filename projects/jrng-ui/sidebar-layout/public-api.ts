@@ -1,1 +1,1 @@
-export { JSidebarLayoutComponent } from 'jrng-ui';
+export * from './sidebar-layout.component';

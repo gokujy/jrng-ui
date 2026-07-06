@@ -35,4 +35,4 @@ After:
 ### Notes
 
 - Tour Guide requires optional peer dependency `driver.js` in applications that use tours. Install it with `npm install driver.js`.
-- No PrimeNG dependency is included.
+- No third-party UI-framework dependency is included.

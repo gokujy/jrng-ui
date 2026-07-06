@@ -1,2 +1,1 @@
-export { JToolbarComponent } from 'jrng-ui';
-
+export * from './toolbar.component';

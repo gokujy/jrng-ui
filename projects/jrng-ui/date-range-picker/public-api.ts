@@ -1,2 +1,1 @@
-export { JDateRangePickerComponent } from 'jrng-ui';
-export type { JDateRangeInputValue, JDateRangeValue } from 'jrng-ui';
+export * from './date-range-picker.component';

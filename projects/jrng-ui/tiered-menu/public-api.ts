@@ -1,1 +1,1 @@
-export { JTieredMenuComponent } from 'jrng-ui';
+export * from './tiered-menu.component';

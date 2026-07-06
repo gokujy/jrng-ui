@@ -1,1 +1,1 @@
-export { JMetricCardComponent } from 'jrng-ui';
+export * from './metric-card.component';

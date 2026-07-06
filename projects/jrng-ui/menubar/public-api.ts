@@ -1,1 +1,1 @@
-export { JMenubarComponent } from 'jrng-ui';
+export * from './menubar.component';

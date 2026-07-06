@@ -1,2 +1,1 @@
-export { JRatingComponent } from 'jrng-ui';
-export type { JSize } from 'jrng-ui';
+export * from './rating.component';

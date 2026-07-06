@@ -1,1 +1,1 @@
-export { JDynamicDialogComponent } from 'jrng-ui';
+export * from './dynamic-dialog.component';

@@ -1,2 +1,1 @@
-export { JChartComponent } from 'jrng-ui';
-export type { JChartInteractionEvent, JChartType } from 'jrng-ui';
+export * from './chart.component';

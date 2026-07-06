@@ -17,6 +17,7 @@ npm run build:docs
 - Prefer CSS variables for theme-related styling.
 - Keep public APIs stable unless a change is documented as breaking.
 - Add or update focused tests when behavior changes.
+- Do not add or wrap any third-party UI-component framework.
 - Do not commit generated `dist` output.
 
 ## Pull Requests

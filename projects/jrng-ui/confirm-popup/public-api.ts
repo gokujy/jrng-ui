@@ -1,1 +1,1 @@
-export { JConfirmPopupComponent } from 'jrng-ui';
+export * from './confirm-popup.component';

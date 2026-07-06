@@ -1,2 +1,3 @@
-export { CardComponent, JCardComponent, JrCardComponent } from 'jrng-ui';
-export type { JrCardVariant } from 'jrng-ui';
+export * from './card.component';
+export { JrCardComponent as JCardComponent } from './card.component';
+export { JrCardComponent as CardComponent } from './card.component';

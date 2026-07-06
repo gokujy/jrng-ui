@@ -1,2 +1,1 @@
-export { JInputIconComponent } from 'jrng-ui';
-export type { JInputIconPosition } from 'jrng-ui';
+export * from './input-icon.component';

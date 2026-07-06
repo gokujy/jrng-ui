@@ -1,1 +1,1 @@
-export { JOverlayPanelComponent } from 'jrng-ui';
+export * from './overlay-panel.component';

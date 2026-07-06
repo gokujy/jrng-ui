@@ -1,1 +1,1 @@
-export { JVideoPlayerComponent } from 'jrng-ui';
+export * from './video-player.component';

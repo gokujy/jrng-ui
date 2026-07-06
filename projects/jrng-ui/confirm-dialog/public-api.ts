@@ -1,3 +1,2 @@
-export { JConfirmDialogComponent } from 'jrng-ui';
-export { JConfirmationService } from 'jrng-ui';
-export type { JConfirmationOptions, JConfirmationRequest } from 'jrng-ui';
+export * from './confirm-dialog.component';
+export * from './confirmation.service';

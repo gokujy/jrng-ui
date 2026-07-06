@@ -1,1 +1,1 @@
-export { JDashboardLayoutComponent } from 'jrng-ui';
+export * from './dashboard-layout.component';

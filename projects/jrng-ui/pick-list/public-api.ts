@@ -1,1 +1,1 @@
-export { JPickListComponent } from 'jrng-ui';
+export * from './pick-list.component';
