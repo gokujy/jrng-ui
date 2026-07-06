@@ -1,1 +1,1 @@
-export { JErrorPageComponent } from 'jrng-ui';
+export * from './error-page.component';

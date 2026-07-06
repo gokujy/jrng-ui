@@ -1,2 +1,1 @@
-export { JSwitchComponent } from 'jrng-ui';
-export type { JSize } from 'jrng-ui';
+export * from './switch.component';

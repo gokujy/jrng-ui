@@ -1,1 +1,1 @@
-export { JTabComponent, JTabsComponent } from 'jrng-ui';
+export * from './tabs.component';

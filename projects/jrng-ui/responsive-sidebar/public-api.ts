@@ -1,1 +1,1 @@
-export { JResponsiveSidebarComponent } from 'jrng-ui';
+export * from './responsive-sidebar.component';

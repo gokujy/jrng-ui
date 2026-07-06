@@ -1,2 +1,1 @@
-export { JListboxComponent } from 'jrng-ui';
-export type { JListboxOption } from 'jrng-ui';
+export * from './listbox.component';

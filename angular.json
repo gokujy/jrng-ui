@@ -10,7 +10,7 @@
     "jrng-ui": {
       "projectType": "library",
       "root": "projects/jrng-ui",
-      "sourceRoot": "projects/jrng-ui/src",
+      "sourceRoot": "projects/jrng-ui",
       "prefix": "j",
       "architect": {
         "build": {
@@ -84,6 +84,9 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "port": 4300
+          },
           "configurations": {
             "production": {
               "buildTarget": "docs:build:production"

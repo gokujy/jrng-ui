@@ -1,1 +1,1 @@
-export { JGridLayoutComponent } from 'jrng-ui';
+export * from './grid-layout.component';

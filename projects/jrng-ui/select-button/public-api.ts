@@ -1,1 +1,1 @@
-export { JSelectButtonComponent } from 'jrng-ui';
+export * from './select-button.component';

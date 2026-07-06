@@ -1,2 +1,1 @@
-export { JAuthLayoutComponent } from 'jrng-ui';
-export type { JAuthLayoutVariant } from 'jrng-ui';
+export * from './auth-layout.component';

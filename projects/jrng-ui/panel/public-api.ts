@@ -1,2 +1,1 @@
-export { JPanelComponent } from 'jrng-ui';
-
+export * from './panel.component';

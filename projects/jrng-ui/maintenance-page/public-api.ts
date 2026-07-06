@@ -1,1 +1,1 @@
-export { JMaintenancePageComponent } from 'jrng-ui';
+export * from './maintenance-page.component';

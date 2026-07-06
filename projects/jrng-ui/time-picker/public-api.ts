@@ -1,2 +1,1 @@
-export { JTimePickerComponent } from 'jrng-ui';
-export type { JTimePickerHourFormat } from 'jrng-ui';
+export * from './time-picker.component';

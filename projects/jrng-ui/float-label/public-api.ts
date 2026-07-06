@@ -1,1 +1,1 @@
-export { JFloatLabelComponent } from 'jrng-ui';
+export * from './float-label.component';

@@ -1,1 +1,1 @@
-export { JIconFieldComponent } from 'jrng-ui';
+export * from './icon-field.component';

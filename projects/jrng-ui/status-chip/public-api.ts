@@ -1,2 +1,1 @@
-export { JStatusChipComponent } from 'jrng-ui';
-
+export * from './status-chip.component';

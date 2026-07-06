@@ -1,2 +1,1 @@
-export { JFilterBarComponent } from 'jrng-ui';
-export type { JFilterBarValue } from 'jrng-ui';
+export * from './filter-bar.component';

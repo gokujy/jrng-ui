@@ -1,1 +1,1 @@
-export { JInputGroupComponent } from 'jrng-ui';
+export * from './input-group.component';

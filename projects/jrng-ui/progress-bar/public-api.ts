@@ -1,1 +1,1 @@
-export { JProgressBarComponent } from 'jrng-ui';
+export * from './progress-bar.component';

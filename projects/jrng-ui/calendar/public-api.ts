@@ -1,1 +1,1 @@
-export { JCalendarComponent } from 'jrng-ui';
+export * from './calendar.component';

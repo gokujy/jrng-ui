@@ -1,1 +1,1 @@
-export { JDataGridComponent } from 'jrng-ui';
+export * from './data-grid.component';

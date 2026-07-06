@@ -1,2 +1,1 @@
-export { JEditorComponent } from 'jrng-ui';
-
+export * from './editor.component';

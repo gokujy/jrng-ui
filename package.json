@@ -30,10 +30,24 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng build jrng-ui && ng test --watch=false",
     "test:lib": "ng test jrng-ui --watch=false",
-    "test:docs": "ng build jrng-ui && ng test docs --watch=false"
+    "test:docs": "ng build jrng-ui && ng test docs --watch=false",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write \"**/*.{ts,html,scss,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,html,scss,json,md}\"",
+    "prepare": "husky"
   },
   "private": true,
   "packageManager": "npm@11.6.2",
+  "lint-staged": {
+    "*.{ts,html}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{scss,json,md}": [
+      "prettier --write"
+    ]
+  },
   "dependencies": {
     "@angular/common": "^21.2.0",
     "@angular/compiler": "^21.2.0",
@@ -48,11 +62,16 @@
     "@angular/build": "^21.2.17",
     "@angular/cli": "^21.2.17",
     "@angular/compiler-cli": "^21.2.0",
+    "angular-eslint": "^21.4.0",
     "chart.js": "^4.5.1",
+    "eslint": "^9.39.4",
+    "husky": "^9.1.7",
     "jsdom": "^28.0.0",
+    "lint-staged": "^17.0.8",
     "ng-packagr": "^21.2.0",
     "prettier": "^3.8.1",
     "typescript": "~5.9.2",
+    "typescript-eslint": "^8.62.1",
     "vitest": "^4.0.8"
   },
   "overrides": {

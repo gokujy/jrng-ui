@@ -1,1 +1,1 @@
-export { JTagComponent } from 'jrng-ui';
+export * from './tag.component';

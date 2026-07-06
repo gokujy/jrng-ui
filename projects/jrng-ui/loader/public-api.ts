@@ -1,1 +1,1 @@
-export { JLoaderComponent } from 'jrng-ui';
+export * from './loader.component';

@@ -1,1 +1,1 @@
-export { JBadgeComponent } from 'jrng-ui';
+export * from './badge.component';

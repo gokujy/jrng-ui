@@ -1,1 +1,1 @@
-export { JKnobComponent } from 'jrng-ui';
+export * from './knob.component';

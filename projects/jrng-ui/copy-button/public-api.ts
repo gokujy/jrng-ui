@@ -1,2 +1,1 @@
-export { JCopyButtonComponent } from 'jrng-ui';
-
+export * from './copy-button.component';

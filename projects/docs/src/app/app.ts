@@ -1,68 +1,73 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { ChangeDetectionStrategy, Component, PLATFORM_ID, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  PLATFORM_ID,
+  signal,
+} from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { JConfirmDialogComponent } from 'jrng-ui/confirm-dialog';
+import { JThemeService } from 'jrng-ui/theming';
 import { JrToastContainerComponent } from 'jrng-ui/toast';
 
-interface SiteNavItem {
+interface DocsNavItem {
   readonly label: string;
-  readonly path?: string;
-  readonly href?: string;
+  readonly path: string;
+  readonly exact?: boolean;
 }
 
 @Component({
   selector: 'app-root',
-  imports: [RouterLink, RouterLinkActive, RouterOutlet, JConfirmDialogComponent, JrToastContainerComponent],
+  imports: [
+    RouterLink,
+    RouterLinkActive,
+    RouterOutlet,
+    JConfirmDialogComponent,
+    JrToastContainerComponent,
+  ],
   templateUrl: './app.html',
   styleUrl: './app.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
-  readonly githubUrl = 'https://github.com/gokujy/jrng-ui';
-  readonly npmUrl = 'https://www.npmjs.com/package/jrng-ui';
-
+  private readonly theme = inject(JThemeService);
   private readonly documentRef = inject(DOCUMENT);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
-  readonly mobileMenuOpen = signal(false);
-  readonly darkMode = signal(false);
-  readonly density = signal<'comfortable' | 'compact'>('comfortable');
+  readonly githubUrl = 'https://github.com/gokujy/jrng-ui';
 
-  readonly navItems: readonly SiteNavItem[] = [
-    { label: 'Home', path: '/' },
-    { label: 'Docs', path: '/docs' },
+  readonly nav: readonly DocsNavItem[] = [
+    { label: 'Home', path: '/', exact: true },
+    { label: 'Getting Started', path: '/docs' },
     { label: 'Components', path: '/docs/components' },
     { label: 'Charts', path: '/docs/charts' },
-    { label: 'Themes', path: '/themes' },
-    { label: 'GitHub', href: this.githubUrl },
-    { label: 'npm', href: this.npmUrl },
+    { label: 'Theming', path: '/themes' },
   ];
 
-  toggleMobileMenu(): void {
-    this.mobileMenuOpen.update((value) => !value);
-  }
+  readonly mode = this.theme.mode;
+  readonly modeLabel = computed(() => {
+    const value = this.mode();
+    return value.charAt(0).toUpperCase() + value.slice(1);
+  });
 
-  closeMobileMenu(): void {
-    this.mobileMenuOpen.set(false);
-  }
+  readonly density = signal<'comfortable' | 'compact'>('comfortable');
 
-  toggleDarkMode(): void {
-    this.darkMode.update((value) => !value);
-    this.syncDocumentClasses();
+  /** Cycle light -> dark -> system. */
+  cycleMode(): void {
+    const order = ['light', 'dark', 'system'] as const;
+    const next = order[(order.indexOf(this.mode()) + 1) % order.length];
+    this.theme.setMode(next);
   }
 
   toggleDensity(): void {
     this.density.update((value) => (value === 'comfortable' ? 'compact' : 'comfortable'));
-    this.syncDocumentClasses();
-  }
-
-  private syncDocumentClasses(): void {
-    if (!this.isBrowser) {
-      return;
+    if (this.isBrowser) {
+      this.documentRef.documentElement.classList.toggle(
+        'j-density-compact',
+        this.density() === 'compact',
+      );
     }
-
-    const root = this.documentRef.documentElement;
-    root.classList.toggle('j-dark', this.darkMode());
-    root.classList.toggle('j-density-compact', this.density() === 'compact');
   }
 }

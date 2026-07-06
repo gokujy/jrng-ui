@@ -1,2 +1,3 @@
-export { InputComponent, JInputComponent, JrInputComponent } from 'jrng-ui';
-export type { JInputType, JInputVariant, JrInputType } from 'jrng-ui';
+export * from './input.component';
+export { JrInputComponent as JInputComponent } from './input.component';
+export { JrInputComponent as InputComponent } from './input.component';

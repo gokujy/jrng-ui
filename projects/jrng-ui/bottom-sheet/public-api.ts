@@ -1,1 +1,1 @@
-export { JBottomSheetComponent } from 'jrng-ui';
+export * from './bottom-sheet.component';

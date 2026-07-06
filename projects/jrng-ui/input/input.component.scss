@@ -1,0 +1,145 @@
+:host {
+  color: var(--j-input-text-color, var(--j-color-text, #111827));
+  display: block;
+  font: inherit;
+}
+
+.j-input__label {
+  align-items: center;
+  color: var(--j-input-label-color, var(--j-input-text-color, var(--j-color-text, #111827)));
+  display: inline-flex;
+  font-size: var(--j-font-size-sm);
+  font-weight: var(--j-font-weight-semibold);
+  gap: var(--j-spacing-xs);
+  margin-bottom: var(--j-spacing-sm);
+}
+
+.j-input__required,
+.j-input__message--error {
+  color: var(--j-input-error-color, var(--j-color-danger, #dc2626));
+}
+
+.j-input {
+  align-items: center;
+  background: var(--j-input-bg, var(--j-control-bg, var(--j-color-card, #ffffff)));
+  border: 1px solid
+    var(--j-input-border-color, var(--j-control-border-color, var(--j-color-input, #d8e0ea)));
+  border-radius: var(--j-input-radius, var(--j-control-radius, var(--j-radius-md, 0.5rem)));
+  display: flex;
+  gap: var(--j-spacing-sm);
+  padding-inline: var(--j-spacing-md);
+  transition: var(--j-transition-colors), var(--j-transition-shadow);
+}
+
+.j-input--filled {
+  background: var(--j-input-filled-bg, var(--j-color-surface-muted, var(--j-color-muted, #f1f5f9)));
+}
+
+.j-input--sm {
+  min-height: var(--j-input-height-sm);
+}
+
+.j-input--md {
+  min-height: var(--j-input-height-md);
+}
+
+.j-input--lg {
+  min-height: var(--j-input-height-lg);
+}
+
+.j-input--fluid {
+  width: 100%;
+}
+
+.j-input:focus-within {
+  border-color: var(--j-input-focus-border-color, var(--j-color-primary, #4f46e5));
+  box-shadow: 0 0 0 3px var(--j-input-focus-shadow-color, var(--j-color-ring, rgb(79 70 229 / 28%)));
+}
+
+.j-input:not(.is-disabled, .is-readonly):hover {
+  border-color: var(--j-input-hover-border-color, var(--j-color-border-strong, #cbd5e1));
+}
+
+.j-input.is-invalid {
+  border-color: var(--j-input-error-color, var(--j-color-danger, #dc2626));
+}
+
+.j-input.is-disabled {
+  background: var(--j-input-disabled-bg, var(--j-color-surface-subtle, #f1f5f9));
+  opacity: var(--j-disabled-opacity);
+}
+
+.j-input.is-readonly {
+  background: var(
+    --j-input-readonly-bg,
+    var(--j-input-bg, var(--j-control-bg, var(--j-color-card, #ffffff)))
+  );
+}
+
+.j-input__field {
+  background: transparent;
+  border: 0;
+  color: var(
+    --j-input-text-color,
+    var(--j-input-color, var(--j-control-color, var(--j-color-card-foreground, #111827)))
+  );
+  flex: 1;
+  font: inherit;
+  font-size: var(--j-font-size-sm);
+  min-width: 0;
+  outline: none;
+}
+
+.j-input__field::placeholder {
+  color: var(
+    --j-input-placeholder-color,
+    var(--j-control-placeholder-color, var(--j-color-muted-foreground, #64748b))
+  );
+}
+
+.j-input__field::-webkit-search-cancel-button,
+.j-input__field::-webkit-search-decoration {
+  appearance: none;
+}
+
+.j-input__icon {
+  align-items: center;
+  color: var(--j-input-icon-color, var(--j-color-text-muted, #64748b));
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+
+.j-input__icon:empty {
+  display: none;
+}
+
+.j-input__clear {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: var(--j-radius-sm, 0.375rem);
+  color: var(--j-input-clear-color, var(--j-input-icon-color, var(--j-color-text-muted, #64748b)));
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  height: 1.5rem;
+  justify-content: center;
+  padding: 0;
+  width: 1.5rem;
+}
+
+.j-input__clear:hover {
+  background: var(--j-input-clear-hover-bg, var(--j-color-muted, #f1f5f9));
+  color: var(--j-input-clear-hover-color, var(--j-input-text-color, var(--j-color-text, #111827)));
+}
+
+.j-input__clear:focus-visible {
+  box-shadow: 0 0 0 3px var(--j-input-focus-shadow-color, var(--j-color-ring, rgb(79 70 229 / 28%)));
+  outline: none;
+}
+
+.j-input__message {
+  color: var(--j-input-helper-color, var(--j-color-text-muted, #64748b));
+  font-size: var(--j-font-size-xs);
+  margin: var(--j-spacing-sm) 0 0;
+}

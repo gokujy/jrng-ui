@@ -1,1 +1,1 @@
-export { JFilePreviewComponent } from 'jrng-ui';
+export * from './file-preview.component';

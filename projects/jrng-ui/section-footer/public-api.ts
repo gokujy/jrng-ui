@@ -1,1 +1,1 @@
-export { JSectionFooterComponent } from 'jrng-ui';
+export * from './section-footer.component';

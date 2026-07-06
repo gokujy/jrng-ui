@@ -1,1 +1,1 @@
-export { JProgressSpinnerComponent } from 'jrng-ui';
+export * from './progress-spinner.component';

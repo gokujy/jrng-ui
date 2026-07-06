@@ -1,1 +1,1 @@
-export { JInputOtpComponent } from 'jrng-ui';
+export * from './input-otp.component';

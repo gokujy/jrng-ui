@@ -1,1 +1,1 @@
-export { JToggleButtonComponent } from 'jrng-ui';
+export * from './toggle-button.component';
