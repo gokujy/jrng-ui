@@ -106,7 +106,7 @@ function formatLanguage(language: string): string {
 function tokenizeCode(code: string): readonly CodeToken[] {
   const tokens: CodeToken[] = [];
   const pattern =
-    /(<!--[\s\S]*?-->|\/\/[^\n]*|\/\*[\s\S]*?\*\/|#[^\n]*|`(?:\\.|[^`])*`|'(?:\\.|[^'])*'|"(?:\\.|[^"])*"|<\/?[A-Za-z][\w:-]*|[\[(][\w:-]+[\])]|@[A-Za-z]+|\b(?:npm|ng|import|from|export|const|let|readonly|class|interface|type|return|if|else|true|false|null|undefined|new|extends|implements|public|private|protected|display|color|background|border|padding|margin)\b|\b[A-Z][A-Za-z0-9_]*\b)/g;
+    /(<!--[\s\S]*?-->|\/\/[^\n]*|\/\*[\s\S]*?\*\/|#[^\n]*|`(?:\\.|[^`])*`|'(?:\\.|[^'])*'|"(?:\\.|[^"])*"|<\/?[A-Za-z][\w:-]*|[[(][\w:-]+[\])]|@[A-Za-z]+|\b(?:npm|ng|import|from|export|const|let|readonly|class|interface|type|return|if|else|true|false|null|undefined|new|extends|implements|public|private|protected|display|color|background|border|padding|margin)\b|\b[A-Z][A-Za-z0-9_]*\b)/g;
   let index = 0;
 
   for (const match of code.matchAll(pattern)) {

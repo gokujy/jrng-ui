@@ -13,7 +13,7 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { JDialogCloseReason, JrDialogComponent } from 'jrng-ui/dialog';
+import { JrDialogComponent } from 'jrng-ui/dialog';
 
 export interface JCommandPaletteItem {
   readonly id?: string;
@@ -40,7 +40,7 @@ export interface JCommandPaletteItem {
       [closeOnEscape]="true"
       data-jc-name="command-palette"
       data-jc-section="dialog"
-      (closed)="handleClosed($event)"
+      (closed)="handleClosed()"
     >
       <section class="j-command-palette" data-jc-name="command-palette" data-jc-section="root">
         <input
@@ -238,7 +238,7 @@ export class JCommandPaletteComponent {
     this.visible.set(false);
   }
 
-  handleClosed(_reason: JDialogCloseReason): void {
+  handleClosed(): void {
     this.query.set('');
     this.activeItem.set(null);
   }

@@ -67,6 +67,7 @@ export interface JMenuItemTemplateContext {
         [class.j-menu__list--submenu]="level > 0"
         data-jc-section="list"
         role="menu"
+        tabindex="0"
         (keydown)="handleKeydown($event)"
       >
         @for (item of items; track item.label || item.icon || $index; let i = $index) {
@@ -97,7 +98,7 @@ export interface JMenuItemTemplateContext {
                 [attr.data-j-active]="path === activePath ? 'true' : null"
                 [attr.data-j-disabled]="item.disabled ? 'true' : null"
                 (click)="activate(item, $event, path)"
-                (focus)="setActive(path, item)"
+                (focus)="setActive(path)"
               >
                 @if (itemTemplate) {
                   <ng-container
@@ -111,7 +112,7 @@ export interface JMenuItemTemplateContext {
                     }}</span>
                   }
                   <span class="j-menu__label" data-jc-section="label">{{ item.label }}</span>
-                  @if (item.badge != null) {
+                  @if (item.badge !== null && item.badge !== undefined) {
                     <span class="j-menu__badge" data-jc-section="badge">{{ item.badge }}</span>
                   }
                   @if (item.items?.length) {
@@ -285,7 +286,7 @@ export class JMenuComponent {
     if (item.disabled) {
       return;
     }
-    this.setActive(path, item);
+    this.setActive(path);
     if (item.items?.length) {
       this.openPaths.add(path);
       this.changeDetectorRef.markForCheck();
@@ -351,7 +352,7 @@ export class JMenuComponent {
     return this.activePath === path;
   }
 
-  setActive(path: string, _item: JMenuItem): void {
+  setActive(path: string): void {
     this.activePath = path;
   }
 

@@ -87,6 +87,7 @@ export class JTabComponent {
         class="j-tabs__list"
         data-jc-section="list"
         role="tablist"
+        tabindex="0"
         [attr.aria-orientation]="orientation"
         (keydown)="handleKeydown($event)"
       >

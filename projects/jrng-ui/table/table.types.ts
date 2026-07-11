@@ -154,6 +154,7 @@ export interface JTableExportEvent {
 }
 
 export interface JTableState {
+  readonly version?: 1;
   readonly first: number;
   readonly rows: number;
   readonly sortField: string;
@@ -166,6 +167,12 @@ export interface JTableState {
   readonly columnWidths: Record<string, string>;
   readonly lockedRows: readonly string[];
   readonly size: JTableSize;
+}
+
+export interface JTableStateRestoreError {
+  readonly key: string;
+  readonly reason: 'storage-unavailable' | 'invalid-json' | 'invalid-shape' | 'unsupported-version';
+  readonly error?: unknown;
 }
 
 export interface JTableActionEvent {

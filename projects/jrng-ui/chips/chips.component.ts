@@ -24,7 +24,10 @@ import { jCreateId } from 'jrng-ui/core';
       data-jc-extend="chip input remove"
       [attr.data-j-disabled]="isDisabled ? 'true' : null"
       [attr.data-j-invalid]="hasError ? 'true' : null"
+      tabindex="0"
       (click)="input.focus()"
+      (keydown.enter)="input.focus()"
+      (keydown.space)="input.focus(); $event.preventDefault()"
     >
       @if (label) {
         <label class="j-chips__label" data-jc-section="label" [for]="id">

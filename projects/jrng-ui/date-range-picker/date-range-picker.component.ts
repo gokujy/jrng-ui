@@ -73,12 +73,12 @@ const MONTH_NAMES = [
       [attr.data-j-open]="isOpen ? 'true' : null"
     >
       @if (label) {
-        <label class="j-date-range-picker__label" [id]="labelId">
+        <span class="j-date-range-picker__label" [id]="labelId">
           <span>{{ label }}</span>
           @if (required) {
             <span class="j-date-range-picker__required" aria-hidden="true">*</span>
           }
-        </label>
+        </span>
       }
 
       <button

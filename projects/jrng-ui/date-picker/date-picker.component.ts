@@ -165,6 +165,7 @@ export interface JDatePickerDayContext {
               <div
                 class="j-date-picker__grid"
                 role="grid"
+                tabindex="0"
                 [attr.aria-label]="monthNames[viewDate.getMonth()] + ' ' + viewDate.getFullYear()"
                 (keydown)="handleGridKeydown($event)"
               >

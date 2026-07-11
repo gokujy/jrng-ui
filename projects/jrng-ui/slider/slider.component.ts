@@ -29,12 +29,12 @@ export type JSliderValue = number | readonly [number, number];
       [attr.data-j-invalid]="hasError ? 'true' : null"
     >
       @if (label) {
-        <label class="j-slider__label" data-jc-section="label" [id]="labelId">
+        <span class="j-slider__label" data-jc-section="label" [id]="labelId">
           <span>{{ label }}</span>
           @if (required) {
             <span class="j-slider__required" aria-hidden="true">*</span>
           }
-        </label>
+        </span>
       }
 
       <div class="j-slider__control" data-jc-section="control">

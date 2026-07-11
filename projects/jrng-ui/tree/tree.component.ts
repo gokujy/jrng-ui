@@ -58,6 +58,7 @@ interface JTreeFlatEntry {
       data-jc-name="tree"
       data-jc-section="root"
       role="tree"
+      tabindex="0"
       [attr.aria-label]="ariaLabel()"
       (keydown)="handleKeydown($event)"
     >

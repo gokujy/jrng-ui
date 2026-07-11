@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { JIconComponent } from 'jrng-ui/icon';
-import { componentDocs, componentGroups } from './component-docs.data';
+import { componentDocs } from './component-docs.data';
 import { ComponentDetailViewComponent } from './component-detail-view.component';
 
 @Component({
@@ -12,8 +12,8 @@ import { ComponentDetailViewComponent } from './component-detail-view.component'
       <span class="j-page-eyebrow">Components</span>
       <h1>Component Documentation</h1>
       <p>
-        Browse the reusable JRNG UI building blocks from one page. Select a component on the left to preview it,
-        copy code, and read beginner-friendly usage guidance without navigating away.
+        Browse the reusable JRNG UI building blocks from one page. Select a component on the left to
+        preview it, copy code, and read beginner-friendly usage guidance without navigating away.
       </p>
       <div class="j-doc-hero-links">
         <a routerLink="/docs/charts"><j-icon name="chart-no-axes-column" /> Charts</a>
@@ -31,6 +31,16 @@ import { ComponentDetailViewComponent } from './component-detail-view.component'
             [value]="query()"
             (input)="updateQuery($event)"
           />
+        </label>
+        <label class="j-doc-search">
+          <span class="j-hidden-accessible">Filter by stability</span>
+          <select [value]="status()" (change)="updateStatus($event)">
+            <option value="all">All statuses</option>
+            <option value="Stable">Stable</option>
+            <option value="Beta">Beta</option>
+            <option value="New">New</option>
+            <option value="Coming soon">Coming soon</option>
+          </select>
         </label>
 
         <nav class="j-components-nav">
@@ -69,24 +79,31 @@ import { ComponentDetailViewComponent } from './component-detail-view.component'
 })
 export class ComponentsDocsPageComponent {
   readonly query = signal('');
+  readonly status = signal('all');
   readonly selectedSlug = signal(componentDocs[0]?.slug ?? 'input');
 
-  readonly selectedDoc = computed(() => componentDocs.find((doc) => doc.slug === this.selectedSlug()) ?? componentDocs[0]);
+  readonly selectedDoc = computed(
+    () => componentDocs.find((doc) => doc.slug === this.selectedSlug()) ?? componentDocs[0],
+  );
 
   readonly filteredGroups = computed(() => {
     const search = this.query().trim().toLowerCase();
-    return componentGroups
-      .map((group) => ({
-        ...group,
-        docs: group.slugs
-          .map((slug) => componentDocs.find((doc) => doc.slug === slug))
-          .filter((doc) => doc != null)
-          .filter((doc) =>
-            !search ||
-            doc.name.toLowerCase().includes(search) ||
-            doc.category.toLowerCase().includes(search) ||
-            doc.selector.toLowerCase().includes(search) ||
-            doc.description.toLowerCase().includes(search),
+    const status = this.status();
+    const categories = [...new Set(componentDocs.map((doc) => doc.category))].sort();
+    return categories
+      .map((category) => ({
+        name: category,
+        icon: 'layout-grid',
+        docs: componentDocs
+          .filter((doc) => doc.category === category)
+          .filter((doc) => status === 'all' || doc.status === status)
+          .filter(
+            (doc) =>
+              !search ||
+              doc.name.toLowerCase().includes(search) ||
+              doc.category.toLowerCase().includes(search) ||
+              doc.selector.toLowerCase().includes(search) ||
+              doc.description.toLowerCase().includes(search),
           ),
       }))
       .filter((group) => group.docs.length > 0);
@@ -98,5 +115,9 @@ export class ComponentsDocsPageComponent {
 
   updateQuery(event: Event): void {
     this.query.set((event.target as HTMLInputElement).value);
+  }
+
+  updateStatus(event: Event): void {
+    this.status.set((event.target as HTMLSelectElement).value);
   }
 }

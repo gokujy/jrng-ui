@@ -550,7 +550,9 @@ export class JAutocompleteComponent implements ControlValueAccessor {
       return;
     }
     let next = this.activeIndex;
-    for (let attempt = 0; attempt < options.length; attempt += 1) {
+    let attempts = 0;
+    while (attempts < options.length) {
+      attempts += 1;
       next = (next + direction + options.length) % options.length;
       if (!options[next]?.disabled) {
         this.activeIndex = next;

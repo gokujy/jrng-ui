@@ -104,9 +104,14 @@ export interface JMultiselectItemContext {
           </span>
         }
         @if (canClear) {
-          <span class="j-multiselect__clear" data-jc-section="clear" (click)="clearAll($event)"
-            >x</span
+          <button
+            class="j-multiselect__clear"
+            data-jc-section="clear"
+            type="button"
+            (click)="clearAll($event)"
           >
+            x
+          </button>
         }
         <span
           class="j-multiselect__indicator"
@@ -708,7 +713,9 @@ export class JMultiselectComponent implements ControlValueAccessor {
       return;
     }
     let next = this.activeIndex;
-    for (let attempt = 0; attempt < options.length; attempt += 1) {
+    let attempts = 0;
+    while (attempts < options.length) {
+      attempts += 1;
       next = (next + direction + options.length) % options.length;
       if (!options[next]?.disabled) {
         this.activeIndex = next;

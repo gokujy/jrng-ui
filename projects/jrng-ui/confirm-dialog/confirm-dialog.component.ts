@@ -10,10 +10,17 @@ import {
   inject,
 } from '@angular/core';
 import { JConfirmationService } from './confirmation.service';
+import {
+  JBodyScrollLockService,
+  JFocusTrapDirective,
+  jCreateId,
+  jFocusInitial,
+  jRememberFocus,
+} from 'jrng-ui/core';
 
 @Component({
   selector: 'j-confirm-dialog',
-  imports: [],
+  imports: [JFocusTrapDirective],
   template: `
     @if (confirmationService.confirmation(); as confirmation) {
       <div
@@ -26,6 +33,7 @@ import { JConfirmationService } from './confirmation.service';
       >
         <section
           #dialogPanel
+          jFocusTrap
           class="j-confirm-dialog"
           [class]="'j-confirm-dialog j-confirm-dialog--' + (confirmation.severity || 'info')"
           role="alertdialog"
@@ -59,6 +67,7 @@ import { JConfirmationService } from './confirmation.service';
               class="j-confirm-dialog__button j-confirm-dialog__button--accept"
               type="button"
               #acceptButton
+              data-j-initial-focus
               (click)="accept()"
             >
               {{ confirmation.confirmText || confirmation.acceptLabel || 'OK' }}
@@ -181,13 +190,15 @@ export class JConfirmDialogComponent {
   private readonly documentRef = inject(DOCUMENT);
   private readonly destroyRef = inject(DestroyRef);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
-  private previousFocus: HTMLElement | null = null;
+  private readonly bodyScrollLock = inject(JBodyScrollLockService);
+  private restorePreviousFocus: (() => void) | null = null;
+  private scrollLocked = false;
 
   @ViewChild('dialogPanel') private dialogPanel?: ElementRef<HTMLElement>;
   @ViewChild('acceptButton') private acceptButton?: ElementRef<HTMLButtonElement>;
 
-  readonly titleId = `j-confirm-title-${Math.random().toString(36).slice(2)}`;
-  readonly messageId = `j-confirm-message-${Math.random().toString(36).slice(2)}`;
+  readonly titleId = jCreateId('j-confirm-title');
+  readonly messageId = jCreateId('j-confirm-message');
 
   constructor() {
     effect(() => {
@@ -205,9 +216,12 @@ export class JConfirmDialogComponent {
 
     const keydownListener = (event: KeyboardEvent) => this.handleDocumentKeydown(event);
     this.documentRef.addEventListener('keydown', keydownListener);
-    this.destroyRef.onDestroy(() =>
-      this.documentRef.removeEventListener('keydown', keydownListener),
-    );
+    this.destroyRef.onDestroy(() => {
+      this.documentRef.removeEventListener('keydown', keydownListener);
+      if (this.scrollLocked) {
+        this.bodyScrollLock.unlock();
+      }
+    });
   }
 
   accept(): void {
@@ -246,10 +260,16 @@ export class JConfirmDialogComponent {
     if (!this.isBrowser) {
       return;
     }
-    this.previousFocus =
-      this.documentRef.activeElement instanceof HTMLElement ? this.documentRef.activeElement : null;
+    this.restorePreviousFocus = jRememberFocus(this.documentRef);
+    if (!this.scrollLocked) {
+      this.bodyScrollLock.lock();
+      this.scrollLocked = true;
+    }
     queueMicrotask(() => {
-      (this.acceptButton?.nativeElement ?? this.dialogPanel?.nativeElement)?.focus();
+      const panel = this.dialogPanel?.nativeElement;
+      if (panel && !jFocusInitial(panel, '[data-j-initial-focus]')) {
+        (this.acceptButton?.nativeElement ?? panel).focus();
+      }
     });
   }
 
@@ -266,9 +286,12 @@ export class JConfirmDialogComponent {
     if (!this.isBrowser) {
       return;
     }
-    queueMicrotask(() => {
-      this.previousFocus?.focus();
-      this.previousFocus = null;
-    });
+    if (this.scrollLocked) {
+      this.bodyScrollLock.unlock();
+      this.scrollLocked = false;
+    }
+    const restore = this.restorePreviousFocus;
+    this.restorePreviousFocus = null;
+    queueMicrotask(() => restore?.());
   }
 }

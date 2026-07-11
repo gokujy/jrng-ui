@@ -6,6 +6,8 @@
 
 JRNG UI is a standalone Angular component library for business and admin applications.
 
+Version 0.0.8 supports Angular 21.2 and uses optional peers for charts and product tours.
+
 ## Install
 
 ```bash
@@ -48,16 +50,21 @@ Or include the compiled CSS in `angular.json`.
 - Standalone Angular components and directives
 - Secondary entrypoints for focused imports
 - Forms, buttons, overlays, feedback, navigation, business utilities, and data table components
+- Typed SSR-safe utilities for clipboard, storage, breakpoints, keyboard shortcuts, timing, disclosure, and pagination
 - Optional Tour Guide wrapper through `JTourService` and `jTourStep` for apps that install `driver.js`
 - Token-driven light and dark themes
 - CSS variables for customization
 - Accessibility-focused interaction states
+
+Browser APIs used by overlays, storage, charts, themes, and tours are guarded for server rendering. Optional features still require their documented browser runtime and peer dependency.
 
 ## Links
 
 - Docs: https://jrngui.dev/
 - GitHub: https://github.com/gokujy/jrng-ui
 - npm: https://www.npmjs.com/package/jrng-ui
+- Changelog: https://github.com/gokujy/jrng-ui/blob/main/CHANGELOG.md
+- v0.0.8 migration: https://jrngui.dev/docs/migration/0.0.8
 
 ## License
 

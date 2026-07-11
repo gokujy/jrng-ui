@@ -6,7 +6,13 @@ const angular = require('angular-eslint');
 module.exports = tseslint.config(
   {
     // Global ignores. Build output and generated public-api barrels are not linted.
-    ignores: ['dist/**', 'coverage/**', '.angular/**', 'node_modules/**'],
+    ignores: [
+      'dist/**',
+      'coverage/**',
+      '.angular/**',
+      'node_modules/**',
+      'projects/jrng-ui/src/lib/**',
+    ],
   },
   {
     files: ['**/*.ts'],

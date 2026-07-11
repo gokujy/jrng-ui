@@ -25,7 +25,7 @@ import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
       [attr.data-j-invalid]="invalid() ? 'true' : null"
     >
       <ng-content></ng-content>
-      <label class="j-float-label__label" data-jc-section="label">{{ label() }}</label>
+      <span class="j-float-label__label" data-jc-section="label">{{ label() }}</span>
     </span>
   `,
   styles: [
