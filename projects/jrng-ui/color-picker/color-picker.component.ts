@@ -35,7 +35,7 @@ import { JClickOutsideDirective } from 'jrng-ui/core';
       (jClickOutside)="close()"
     >
       @if (label) {
-        <label class="j-color-picker__label" data-jc-section="label">{{ label }}</label>
+        <span class="j-color-picker__label" data-jc-section="label">{{ label }}</span>
       }
       <button
         class="j-color-picker__trigger"

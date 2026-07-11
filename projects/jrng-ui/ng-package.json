@@ -9,6 +9,11 @@
       "input": "src/styles",
       "glob": "**/*",
       "output": "theme"
+    },
+    {
+      "input": "registry",
+      "glob": "*.json",
+      "output": "registry"
     }
   ]
 }

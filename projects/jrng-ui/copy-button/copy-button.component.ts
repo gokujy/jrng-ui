@@ -1,17 +1,15 @@
-import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import {
   booleanAttribute,
   ChangeDetectionStrategy,
   Component,
   computed,
   DestroyRef,
-  PLATFORM_ID,
   inject,
   input,
   output,
   signal,
 } from '@angular/core';
-import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
+import { JClipboardService, JPassThrough, jMergePartClasses } from 'jrng-ui/core';
 
 @Component({
   selector: 'j-copy-button',
@@ -79,9 +77,8 @@ import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JCopyButtonComponent {
-  private readonly documentRef = inject(DOCUMENT);
+  private readonly clipboard = inject(JClipboardService);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   private resetTimer: ReturnType<typeof setTimeout> | null = null;
 
   readonly text = input('');
@@ -121,34 +118,20 @@ export class JCopyButtonComponent {
     }
 
     const text = this.text();
-    try {
-      await this.writeClipboard(text);
+    const result = await this.clipboard.copyText(text);
+    if (result.status === 'success') {
       this.copyState.set('copied');
       this.copied.emit(text);
-    } catch (error) {
+    } else {
       this.copyState.set('failed');
-      this.copyFailed.emit(error);
+      this.copyFailed.emit(result.error ?? result.status);
     }
     this.clearResetTimer();
-
-    if (!this.isBrowser) {
-      return;
-    }
 
     this.resetTimer = setTimeout(() => {
       this.copyState.set('idle');
       this.resetTimer = null;
     }, 1600);
-  }
-
-  private async writeClipboard(text: string): Promise<void> {
-    const windowRef = this.isBrowser ? this.documentRef.defaultView : null;
-    const clipboard = windowRef?.navigator.clipboard;
-    if (clipboard) {
-      await clipboard.writeText(text);
-      return;
-    }
-    throw new Error('Clipboard API is not available.');
   }
 
   private clearResetTimer(): void {

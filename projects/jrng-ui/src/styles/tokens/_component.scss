@@ -69,6 +69,39 @@
     --j-table-header-color: var(--j-color-muted-foreground);
     --j-table-row-hover-bg: color-mix(in srgb, var(--j-color-primary) 5%, transparent);
 
+    --j-select-bg: var(--j-control-bg);
+    --j-select-color: var(--j-control-color);
+    --j-select-border-color: var(--j-control-border-color);
+    --j-select-option-hover-bg: var(--j-color-hover-background);
+    --j-select-option-selected-bg: var(--j-color-selected-background);
+
+    --j-tabs-border-color: var(--j-color-border);
+    --j-tabs-active-color: var(--j-color-primary);
+    --j-tabs-hover-bg: var(--j-color-hover-background);
+
+    --j-menu-bg: var(--j-color-surface-elevated);
+    --j-menu-color: var(--j-color-text);
+    --j-menu-item-hover-bg: var(--j-color-hover-background);
+    --j-menu-border-color: var(--j-color-border);
+
+    --j-toast-bg: var(--j-color-surface-elevated);
+    --j-toast-color: var(--j-color-text);
+    --j-toast-border-color: var(--j-color-border);
+    --j-toast-shadow: var(--j-shadow-md);
+
+    --j-tooltip-bg: var(--j-color-foreground);
+    --j-tooltip-color: var(--j-color-background);
+    --j-tooltip-radius: var(--j-radius-sm);
+
+    --j-drawer-bg: var(--j-color-surface-elevated);
+    --j-drawer-color: var(--j-color-text);
+    --j-drawer-border-color: var(--j-color-border);
+
+    --j-editor-bg: var(--j-control-bg);
+    --j-editor-color: var(--j-control-color);
+    --j-editor-border-color: var(--j-control-border-color);
+    --j-editor-toolbar-bg: var(--j-color-muted);
+
     --j-tour-overlay-color: rgb(15 23 42 / 58%);
     --j-tour-popover-bg: var(--j-color-popover);
     --j-tour-popover-color: var(--j-color-popover-foreground);

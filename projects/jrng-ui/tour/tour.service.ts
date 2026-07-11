@@ -1,6 +1,7 @@
-import { isPlatformBrowser } from '@angular/common';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { Injectable, PLATFORM_ID, inject, signal } from '@angular/core';
 import { Subject } from 'rxjs';
+import { jPrefersReducedMotion, jRememberFocus } from 'jrng-ui/core';
 
 import {
   JTourConfig,
@@ -70,6 +71,7 @@ type JTourDriverFactory = (options: JTourDriverOptions) => JTourDriver;
 @Injectable({ providedIn: 'root' })
 export class JTourService {
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  private readonly documentRef = inject(DOCUMENT);
   private readonly eventsSubject = new Subject<JTourEvent>();
   private readonly registeredSteps = new Map<string, JTourStep>();
   private readonly _isActive = signal(false);
@@ -92,6 +94,8 @@ export class JTourService {
   private activeConfig: JTourConfig | null = null;
   private resolvedSteps: readonly JTourStep[] = [];
   private pendingDestroyEvent = true;
+  private restoreFocus: (() => void) | null = null;
+  private startVersion = 0;
 
   readonly events$ = this.eventsSubject.asObservable();
   readonly isActive = this._isActive.asReadonly();
@@ -120,18 +124,36 @@ export class JTourService {
       return;
     }
 
-    const resolvedConfig = { ...this.defaults, ...config };
+    const version = ++this.startVersion;
+    const resolvedConfig = {
+      ...this.defaults,
+      ...config,
+      animate:
+        config.animate ?? (jPrefersReducedMotion(this.documentRef) ? false : this.defaults.animate),
+    };
+    this.activeConfig = resolvedConfig;
     const steps = config.steps
       .map((step) => this.resolveStep(step))
-      .filter((step): step is JTourStep => Boolean(step));
+      .filter((step): step is JTourStep => Boolean(step))
+      .filter((step) => this.hasTarget(step));
 
     if (!steps.length) {
+      this.activeConfig = null;
       return;
     }
 
     this.destroy(false);
 
-    const factory = await this.loadDriverFactory();
+    this.restoreFocus = jRememberFocus(this.documentRef);
+    let factory: JTourDriverFactory;
+    try {
+      factory = await this.loadDriverFactory();
+    } catch (error) {
+      this.emitError(error instanceof Error ? error.message : DRIVER_INSTALL_MESSAGE);
+      this.restoreAndClearFocus();
+      throw error;
+    }
+    if (version !== this.startVersion) return;
     this.activeConfig = resolvedConfig;
     this.resolvedSteps = steps;
     this._activeTourId.set(resolvedConfig.id ?? null);
@@ -226,6 +248,7 @@ export class JTourService {
   }
 
   destroy(emitEvent = true): void {
+    this.startVersion += 1;
     this.pendingDestroyEvent = emitEvent;
 
     if (this.driver) {
@@ -274,10 +297,8 @@ export class JTourService {
     }
 
     try {
-      const importer = new Function('specifier', 'return import(specifier)') as (
-        specifier: string,
-      ) => Promise<unknown>;
-      const module = await importer('driver.js');
+      const specifier = 'driver.js';
+      const module: unknown = await import(specifier);
       const candidate = this.extractDriverFactory(module);
 
       if (!candidate) {
@@ -340,6 +361,7 @@ export class JTourService {
     if (shouldEmit) {
       this.emit('destroy', index);
     }
+    this.restoreAndClearFocus();
   }
 
   private currentIndex(): number {
@@ -389,7 +411,39 @@ export class JTourService {
         return this.activeConfig?.onHighlightStarted;
       case 'deselected':
         return this.activeConfig?.onDeselected;
+      case 'error':
+        return this.activeConfig?.onError;
     }
+  }
+
+  private hasTarget(step: JTourStep): boolean {
+    if (!step.element || typeof step.element !== 'string') return true;
+    try {
+      if (this.documentRef.querySelector(step.element)) return true;
+    } catch {
+      this.emitError(`Invalid tour target selector: ${step.element}`);
+      return false;
+    }
+    this.emitError(`Tour target was not found: ${step.element}`);
+    return false;
+  }
+
+  private emitError(message: string): void {
+    this._lastError.set(message);
+    const event: JTourEvent = {
+      type: 'error',
+      tourId: this.activeConfig?.id,
+      index: -1,
+      error: message,
+    };
+    this.eventsSubject.next(event);
+    this.activeConfig?.onError?.(event);
+  }
+
+  private restoreAndClearFocus(): void {
+    const restore = this.restoreFocus;
+    this.restoreFocus = null;
+    queueMicrotask(() => restore?.());
   }
 }
 

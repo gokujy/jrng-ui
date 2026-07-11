@@ -36,6 +36,7 @@ import { JTableAction, JTableActionEvent, JTableRow } from './table.types';
         <div
           class="j-action-menu__items"
           [attr.role]="popup ? 'menu' : 'group'"
+          [attr.tabindex]="popup ? 0 : null"
           [attr.aria-label]="ariaLabel"
           (keydown)="handleMenuKeydown($event)"
         >

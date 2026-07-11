@@ -271,7 +271,9 @@ export class JRadioGroupComponent implements ControlValueAccessor {
   private findNextEnabled(startIndex: number, direction: 1 | -1): number {
     const options = this.normalizedOptions;
     let next = startIndex;
-    for (let attempt = 0; attempt < options.length; attempt += 1) {
+    let attempts = 0;
+    while (attempts < options.length) {
+      attempts += 1;
       next = (next + direction + options.length) % options.length;
       if (!options[next]?.disabled) {
         return next;

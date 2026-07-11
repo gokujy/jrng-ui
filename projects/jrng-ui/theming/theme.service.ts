@@ -1,7 +1,7 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { computed, effect, inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 import { JRNG_CONFIG, JThemeMode } from 'jrng-ui/core';
-import { JThemePreset, JThemeTokens } from './preset.types';
+import { JComponentThemeTokens, JThemePreset, JThemeTokens } from './preset.types';
 import { J_THEME_OPTIONS } from './theme-config.token';
 
 const PRESET_STYLE_ID = 'j-theme-preset';
@@ -40,6 +40,7 @@ export class JThemeService {
     if (this.options.preset) {
       this.setPreset(this.options.preset);
     }
+    this.applyTokens({ ...this.options.tokens, ...this.flattenComponents(this.options.components) });
 
     this.darkModeQuery()?.addEventListener('change', (event) =>
       this.systemPrefersDark.set(event.matches),
@@ -71,7 +72,9 @@ export class JThemeService {
     }
     const root = this.documentRef.documentElement;
     for (const [name, value] of Object.entries(tokens)) {
-      root.style.setProperty(name, value);
+      if (value !== undefined) {
+        root.style.setProperty(name, value);
+      }
     }
   }
 
@@ -80,8 +83,11 @@ export class JThemeService {
     if (!this.isBrowser) {
       return;
     }
+    const shared = this.flattenComponents(preset.components);
     const css =
-      (preset.light ? `:root{${this.toDeclarations(preset.light)}}` : '') +
+      (preset.light || preset.components
+        ? `:root{${this.toDeclarations({ ...preset.light, ...shared })}}`
+        : '') +
       (preset.dark ? `.${this.darkClass}{${this.toDeclarations(preset.dark)}}` : '');
 
     let style = this.documentRef.getElementById(PRESET_STYLE_ID) as HTMLStyleElement | null;
@@ -103,8 +109,16 @@ export class JThemeService {
 
   private toDeclarations(tokens: JThemeTokens): string {
     return Object.entries(tokens)
+      .filter((entry): entry is [string, string] => entry[1] !== undefined)
       .map(([name, value]) => `${name}:${value};`)
       .join('');
+  }
+
+  private flattenComponents(components?: JComponentThemeTokens): JThemeTokens {
+    return Object.values(components ?? {}).reduce<JThemeTokens>(
+      (tokens, componentTokens) => ({ ...tokens, ...componentTokens }),
+      {},
+    );
   }
 
   private prefersDark(): boolean {

@@ -8,7 +8,6 @@ import {
   DestroyRef,
   EventEmitter,
   HostListener,
-  Inject,
   Input,
   OnChanges,
   Output,
@@ -17,6 +16,7 @@ import {
   SimpleChanges,
   TemplateRef,
   booleanAttribute,
+  inject,
   numberAttribute,
 } from '@angular/core';
 import { JActionMenuComponent } from './action-menu.component';
@@ -52,6 +52,7 @@ import {
   JTableSize,
   JTableSort,
   JTableState,
+  JTableStateRestoreError,
 } from './table.types';
 import {
   JTableCellTemplateDirective,
@@ -169,6 +170,7 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   @Output() export = new EventEmitter<JTableExportEvent>();
   @Output() stateSave = new EventEmitter<JTableState>();
   @Output() stateRestore = new EventEmitter<JTableState>();
+  @Output() stateRestoreError = new EventEmitter<JTableStateRestoreError>();
   @Output() maximize = new EventEmitter<void>();
   @Output() minimize = new EventEmitter<void>();
   @Output() contextMenu = new EventEmitter<JTableRowClickEvent>();
@@ -204,11 +206,11 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   private stopColumnResize: (() => void) | null = null;
   maximized = false;
 
-  constructor(
-    @Inject(DOCUMENT) private readonly documentRef: Document,
-    @Inject(PLATFORM_ID) private readonly platformId: object,
-    private readonly destroyRef: DestroyRef,
-  ) {
+  private readonly documentRef = inject(DOCUMENT);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly destroyRef = inject(DestroyRef);
+
+  constructor() {
     this.destroyRef.onDestroy(() => this.cleanupColumnResize());
   }
 
@@ -874,7 +876,12 @@ export class JTableComponent implements AfterContentInit, OnChanges {
       return;
     }
     const state = this.currentState();
-    this.documentRef.defaultView?.localStorage?.setItem(this.stateKey, JSON.stringify(state));
+    try {
+      this.documentRef.defaultView?.localStorage?.setItem(this.stateKey, JSON.stringify(state));
+    } catch (error) {
+      this.stateRestoreError.emit({ key: this.stateKey, reason: 'storage-unavailable', error });
+      return;
+    }
     this.stateSave.emit(state);
     this.onStateSave.emit(state);
   }
@@ -883,23 +890,90 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     if (!this.stateKey || !isPlatformBrowser(this.platformId)) {
       return;
     }
-    const raw = this.documentRef.defaultView?.localStorage?.getItem(this.stateKey);
+    let raw: string | null = null;
+    try {
+      raw = this.documentRef.defaultView?.localStorage?.getItem(this.stateKey) ?? null;
+    } catch (error) {
+      this.stateRestoreError.emit({ key: this.stateKey, reason: 'storage-unavailable', error });
+      return;
+    }
     if (!raw) {
       return;
     }
-    const state = JSON.parse(raw) as Partial<JTableState>;
-    this.first = state.first ?? this.first;
-    this.pageRows = state.rows ?? this.pageRows;
-    this.sortField = state.sortField ?? this.sortField;
-    this.sortOrder = state.sortOrder ?? this.sortOrder;
-    this.multiSortMeta = state.multiSortMeta ?? this.multiSortMeta;
-    this.filters = state.filters ?? this.filters;
-    this.globalFilter = state.globalFilter ?? this.globalFilter;
-    this.hiddenColumnFields = new Set(state.hiddenColumns ?? []);
-    this.columnOrder = state.columnOrder ?? this.columnOrder;
-    this.columnWidths = state.columnWidths ?? this.columnWidths;
-    this.internalLockedRowKeys = new Set(state.lockedRows ?? []);
-    this.size = state.size ?? this.size;
+    let state: Partial<JTableState>;
+    try {
+      const parsed: unknown = JSON.parse(raw);
+      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+        this.stateRestoreError.emit({ key: this.stateKey, reason: 'invalid-shape' });
+        return;
+      }
+      state = parsed as Partial<JTableState>;
+    } catch (error) {
+      this.stateRestoreError.emit({ key: this.stateKey, reason: 'invalid-json', error });
+      return;
+    }
+    if (state.version !== undefined && state.version !== 1) {
+      this.stateRestoreError.emit({ key: this.stateKey, reason: 'unsupported-version' });
+      return;
+    }
+    const fields = new Set(this.columns.map((column) => column.field));
+    const rows =
+      typeof state.rows === 'number' && state.rows > 0 ? Math.trunc(state.rows) : this.pageRows;
+    const maxFirst = Math.max(
+      0,
+      Math.ceil(Math.max(this.totalRecords, this.value.length) / rows) * rows - rows,
+    );
+    this.first =
+      typeof state.first === 'number'
+        ? Math.min(Math.max(0, Math.trunc(state.first)), maxFirst)
+        : this.first;
+    this.pageRows = rows;
+    this.sortField =
+      typeof state.sortField === 'string' && fields.has(state.sortField)
+        ? state.sortField
+        : this.sortField;
+    this.sortOrder =
+      state.sortOrder === 1 || state.sortOrder === -1 || state.sortOrder === 0
+        ? state.sortOrder
+        : this.sortOrder;
+    this.multiSortMeta = Array.isArray(state.multiSortMeta)
+      ? state.multiSortMeta.filter(
+          (sort) => fields.has(sort.field) && (sort.order === 1 || sort.order === -1),
+        )
+      : this.multiSortMeta;
+    this.filters =
+      state.filters && typeof state.filters === 'object' && !Array.isArray(state.filters)
+        ? Object.fromEntries(Object.entries(state.filters).filter(([field]) => fields.has(field)))
+        : this.filters;
+    this.globalFilter =
+      typeof state.globalFilter === 'string' ? state.globalFilter : this.globalFilter;
+    this.hiddenColumnFields = new Set(
+      Array.isArray(state.hiddenColumns)
+        ? state.hiddenColumns.filter((field) => fields.has(field))
+        : [],
+    );
+    this.columnOrder = Array.isArray(state.columnOrder)
+      ? state.columnOrder.filter((field) => fields.has(field))
+      : this.columnOrder;
+    this.columnWidths =
+      state.columnWidths &&
+      typeof state.columnWidths === 'object' &&
+      !Array.isArray(state.columnWidths)
+        ? Object.fromEntries(
+            Object.entries(state.columnWidths).filter(
+              ([field, width]) => fields.has(field) && typeof width === 'string',
+            ),
+          )
+        : this.columnWidths;
+    this.internalLockedRowKeys = new Set(
+      Array.isArray(state.lockedRows)
+        ? state.lockedRows.filter((key) => typeof key === 'string')
+        : [],
+    );
+    this.size =
+      state.size === 'small' || state.size === 'medium' || state.size === 'large'
+        ? state.size
+        : this.size;
     const restored = this.currentState();
     this.stateRestore.emit(restored);
     this.onStateRestore.emit(restored);
@@ -1088,6 +1162,7 @@ export class JTableComponent implements AfterContentInit, OnChanges {
 
   private currentState(): JTableState {
     return {
+      version: 1,
       first: this.first,
       rows: this.rows,
       sortField: this.sortField,

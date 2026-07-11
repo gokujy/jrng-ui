@@ -28,7 +28,8 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "tsConfig": "projects/jrng-ui/tsconfig.spec.json"
+            "tsConfig": "projects/jrng-ui/tsconfig.spec.json",
+            "exclude": ["src/lib/**"]
           }
         }
       }

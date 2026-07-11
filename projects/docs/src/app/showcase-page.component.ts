@@ -1321,7 +1321,7 @@ function tokens(component: string, names: readonly string[]): readonly TokenRow[
 function tokenizeCode(code: string): readonly CodeToken[] {
   const tokens: CodeToken[] = [];
   const pattern =
-    /(<!--[\s\S]*?-->|\/\/[^\n]*|\/\*[\s\S]*?\*\/|`(?:\\.|[^`])*`|'(?:\\.|[^'])*'|"(?:\\.|[^"])*"|<\/?[A-Za-z][\w:-]*|[\[(][\w:-]+[\])]|@[A-Za-z]+|\b(?:import|from|export|const|let|readonly|class|interface|type|return|if|else|true|false|null|undefined|new|extends|implements|public|private|protected)\b|\b[A-Z][A-Za-z0-9_]*\b)/g;
+    /(<!--[\s\S]*?-->|\/\/[^\n]*|\/\*[\s\S]*?\*\/|`(?:\\.|[^`])*`|'(?:\\.|[^'])*'|"(?:\\.|[^"])*"|<\/?[A-Za-z][\w:-]*|[[(][\w:-]+[\])]|@[A-Za-z]+|\b(?:import|from|export|const|let|readonly|class|interface|type|return|if|else|true|false|null|undefined|new|extends|implements|public|private|protected)\b|\b[A-Z][A-Za-z0-9_]*\b)/g;
   let index = 0;
 
   for (const match of code.matchAll(pattern)) {

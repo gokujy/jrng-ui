@@ -45,7 +45,7 @@ import { JMenuItem } from 'jrng-ui/menu';
                 <span class="j-sidebar-nav__icon" aria-hidden="true">{{ item.icon }}</span>
               }
               <span class="j-sidebar-nav__label">{{ item.label }}</span>
-              @if (item.badge != null) {
+              @if (item.badge !== null && item.badge !== undefined) {
                 <span class="j-sidebar-nav__badge">{{ item.badge }}</span>
               }
             </a>

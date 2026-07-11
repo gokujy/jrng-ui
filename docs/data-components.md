@@ -6,7 +6,7 @@ JRNG UI data components provide generic, premium Angular data display patterns w
 
 ```ts
 import { JTableComponent, JTableColumn } from 'jrng-ui/table';
-import { JDataGridComponent } from 'jrng-ui/data-grid';
+import { JDataGridColumn, JDataGridComponent } from 'jrng-ui/data-grid';
 import { JPaginatorComponent } from 'jrng-ui/paginator';
 import { JColumnFilterComponent } from 'jrng-ui/column-filter';
 import { JDataViewComponent } from 'jrng-ui/data-view';
@@ -75,7 +75,7 @@ Custom templates:
 
 ## j-data-grid
 
-`j-data-grid` composes the table foundation into a more app-like management surface with a toolbar, search, column controls, CSV export, state controls, bulk-action projection, loading and empty states.
+`j-data-grid` composes the table foundation into a more app-like management surface with a toolbar, search, column controls, CSV export, state controls, bulk-action projection, loading and empty states. It keeps `j-table` as the rendering foundation and forwards table events for server-side data, selection, sorting, filtering, editing, expansion, column changes, export, state save/restore, and state restore errors.
 
 ```html
 <j-data-grid
@@ -83,12 +83,35 @@ Custom templates:
   description="Manage customer records"
   [value]="customers"
   [columns]="columns"
+  sortMode="multiple"
+  resizableColumns
+  reorderableColumns
+  stateKey="customers-grid"
   [(selection)]="selectedCustomers"
+  (lazyLoad)="loadCustomers($event)"
+  (stateRestoreError)="clearCorruptedGridState($event)"
 >
   <j-button jDataGridActions>Create</j-button>
   <j-button jDataGridBulkActions>Archive selected</j-button>
 </j-data-grid>
 ```
+
+```ts
+interface CustomerRow {
+  readonly id: number;
+  readonly name: string;
+  readonly status: string;
+  readonly totalOrders: number;
+}
+
+columns: readonly JDataGridColumn<CustomerRow>[] = [
+  { field: 'name', header: 'Customer', sortable: true, filterable: true },
+  { field: 'status', header: 'Status', type: 'tag', filterable: true },
+  { field: 'totalOrders', header: 'Orders', type: 'number', sortable: true, align: 'end' },
+];
+```
+
+State persistence is enabled only when a `stateKey` is provided. Restored state is validated before it is applied: invalid JSON, unsupported versions, removed columns, invalid sort directions, and invalid page values are ignored or reported through `stateRestoreError` instead of leaving the grid blank.
 
 ## j-paginator
 

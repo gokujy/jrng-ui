@@ -24,12 +24,12 @@ import { JInputVariant } from 'jrng-ui/input';
   imports: [],
   template: `
     @if (label()) {
-      <label class="j-input-otp__label" data-jc-section="label" [id]="labelId">
+      <span class="j-input-otp__label" data-jc-section="label" [id]="labelId">
         <span>{{ label() }}</span>
         @if (required()) {
           <span class="j-input-otp__required" aria-hidden="true">*</span>
         }
-      </label>
+      </span>
     }
     <div
       [class]="rootClasses()"

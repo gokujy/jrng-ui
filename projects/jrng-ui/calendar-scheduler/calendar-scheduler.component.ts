@@ -82,8 +82,12 @@ interface JCalendarDay {
               @for (event of day.events; track event.id) {
                 <span
                   class="j-calendar-scheduler__event"
+                  role="button"
+                  tabindex="0"
                   [style.--j-event-color]="event.color || null"
                   (click)="handleEventClick($event, event, day.date)"
+                  (keydown.enter)="handleEventClick($event, event, day.date)"
+                  (keydown.space)="handleEventClick($event, event, day.date)"
                 >
                   {{ event.title }}
                 </span>

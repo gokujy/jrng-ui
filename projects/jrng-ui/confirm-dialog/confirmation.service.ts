@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { JSeverity } from 'jrng-ui/core';
+import { JSeverity, jCreateId } from 'jrng-ui/core';
 
 export interface JConfirmationOptions {
   readonly title?: string;
@@ -32,7 +32,7 @@ export class JConfirmationService {
 
   confirm(options: JConfirmationOptions): JConfirmationRequest {
     const request: JConfirmationRequest = {
-      id: `j-confirm-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+      id: jCreateId('j-confirm'),
       ...options,
     };
     this.currentConfirmation.set(request);

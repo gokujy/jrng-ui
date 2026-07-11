@@ -7,6 +7,7 @@ import {
   Input,
   inject,
 } from '@angular/core';
+import { jPrefersReducedMotion } from './accessibility-preferences';
 
 @Directive({
   selector: '[jRipple]',
@@ -51,10 +52,6 @@ export class JRippleDirective {
   }
 
   private prefersReducedMotion(): boolean {
-    return (
-      this.elementRef.nativeElement.ownerDocument.defaultView?.matchMedia(
-        '(prefers-reduced-motion: reduce)',
-      ).matches ?? false
-    );
+    return jPrefersReducedMotion(this.elementRef.nativeElement.ownerDocument);
   }
 }

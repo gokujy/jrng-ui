@@ -1,0 +1,3269 @@
+{
+  "schemaVersion": 1,
+  "package": "jrng-ui",
+  "version": "0.0.8",
+  "components": [
+    {
+      "name": "Accordion",
+      "description": "Angular Accordion component for reusable application interfaces.",
+      "selector": "j-accordion",
+      "category": "Navigation & Menus",
+      "entryPoint": "jrng-ui/accordion",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JAccordionComponent } from 'jrng-ui/accordion';",
+      "usageExample": "<j-accordion></j-accordion>",
+      "documentationUrl": "https://jrngui.dev/docs/components#accordion",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Accordion Panel",
+      "description": "Angular Accordion Panel component for reusable application interfaces.",
+      "selector": "j-accordion-panel",
+      "category": "Navigation & Menus",
+      "entryPoint": "jrng-ui/accordion",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JAccordionPanelComponent } from 'jrng-ui/accordion';",
+      "usageExample": "<j-accordion-panel></j-accordion-panel>",
+      "documentationUrl": "https://jrngui.dev/docs/components#accordion-panel",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Action Menu",
+      "description": "Angular Action Menu component for reusable application interfaces.",
+      "selector": "j-action-menu",
+      "category": "Data & Tables",
+      "entryPoint": "jrng-ui/table",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JActionMenuComponent } from 'jrng-ui/table';",
+      "usageExample": "<j-action-menu></j-action-menu>",
+      "documentationUrl": "https://jrngui.dev/docs/components#action-menu",
+      "stability": "Stable",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "App Shell",
+      "description": "Angular App Shell component for reusable application interfaces.",
+      "selector": "j-app-shell",
+      "category": "Layout",
+      "entryPoint": "jrng-ui/app-shell",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JAppShellComponent } from 'jrng-ui/app-shell';",
+      "usageExample": "<j-app-shell></j-app-shell>",
+      "documentationUrl": "https://jrngui.dev/docs/components#app-shell",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Auth Layout",
+      "description": "Angular Auth Layout component for reusable application interfaces.",
+      "selector": "j-auth-layout",
+      "category": "Layout",
+      "entryPoint": "jrng-ui/auth-layout",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JAuthLayoutComponent } from 'jrng-ui/auth-layout';",
+      "usageExample": "<j-auth-layout></j-auth-layout>",
+      "documentationUrl": "https://jrngui.dev/docs/components#auth-layout",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Autocomplete",
+      "description": "Angular Autocomplete component for reusable application interfaces.",
+      "selector": "j-autocomplete",
+      "category": "Forms & Inputs",
+      "entryPoint": "jrng-ui/autocomplete",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JAutocompleteComponent } from 'jrng-ui/autocomplete';",
+      "usageExample": "<j-autocomplete></j-autocomplete>",
+      "documentationUrl": "https://jrngui.dev/docs/components#autocomplete",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Avatar",
+      "description": "Angular Avatar component for reusable application interfaces.",
+      "selector": "j-avatar",
+      "category": "Data Display",
+      "entryPoint": "jrng-ui/avatar",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JAvatarComponent } from 'jrng-ui/avatar';",
+      "usageExample": "<j-avatar></j-avatar>",
+      "documentationUrl": "https://jrngui.dev/docs/components#avatar",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Avatar Group",
+      "description": "Angular Avatar Group component for reusable application interfaces.",
+      "selector": "j-avatar-group",
+      "category": "Data Display",
+      "entryPoint": "jrng-ui/avatar-group",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JAvatarGroupComponent } from 'jrng-ui/avatar-group';",
+      "usageExample": "<j-avatar-group></j-avatar-group>",
+      "documentationUrl": "https://jrngui.dev/docs/components#avatar-group",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Badge",
+      "description": "Angular Badge component for reusable application interfaces.",
+      "selector": "j-badge",
+      "category": "Data Display",
+      "entryPoint": "jrng-ui/badge",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JBadgeComponent } from 'jrng-ui/badge';",
+      "usageExample": "<j-badge></j-badge>",
+      "documentationUrl": "https://jrngui.dev/docs/components#badge",
+      "stability": "Stable",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Bottom Sheet",
+      "description": "Angular Bottom Sheet component for reusable application interfaces.",
+      "selector": "j-bottom-sheet",
+      "category": "Overlays & Feedback",
+      "entryPoint": "jrng-ui/bottom-sheet",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [],
+      "importExample": "import { JBottomSheetComponent } from 'jrng-ui/bottom-sheet';",
+      "usageExample": "<j-bottom-sheet></j-bottom-sheet>",
+      "documentationUrl": "https://jrngui.dev/docs/components#bottom-sheet",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Breadcrumb",
+      "description": "Angular Breadcrumb component for reusable application interfaces.",
+      "selector": "j-breadcrumb",
+      "category": "Navigation & Menus",
+      "entryPoint": "jrng-ui/breadcrumb",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JBreadcrumbComponent } from 'jrng-ui/breadcrumb';",
+      "usageExample": "<j-breadcrumb></j-breadcrumb>",
+      "documentationUrl": "https://jrngui.dev/docs/components#breadcrumb",
+      "stability": "Stable",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Button",
+      "description": "Angular Button component for reusable application interfaces.",
+      "selector": "j-button",
+      "category": "Buttons & Actions",
+      "entryPoint": "jrng-ui/button",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JrButtonComponent } from 'jrng-ui/button';",
+      "usageExample": "<j-button></j-button>",
+      "documentationUrl": "https://jrngui.dev/docs/components#button",
+      "stability": "Stable",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Calendar",
+      "description": "Angular Calendar component for reusable application interfaces.",
+      "selector": "j-calendar",
+      "category": "Forms & Inputs",
+      "entryPoint": "jrng-ui/calendar",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JCalendarComponent } from 'jrng-ui/calendar';",
+      "usageExample": "<j-calendar></j-calendar>",
+      "documentationUrl": "https://jrngui.dev/docs/components#calendar",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Calendar Scheduler",
+      "description": "Angular Calendar Scheduler component for reusable application interfaces.",
+      "selector": "j-calendar-scheduler",
+      "category": "Scheduling & Productivity",
+      "entryPoint": "jrng-ui/calendar-scheduler",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JCalendarSchedulerComponent } from 'jrng-ui/calendar-scheduler';",
+      "usageExample": "<j-calendar-scheduler></j-calendar-scheduler>",
+      "documentationUrl": "https://jrngui.dev/docs/components#calendar-scheduler",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Card",
+      "description": "Angular Card component for reusable application interfaces.",
+      "selector": "j-card",
+      "category": "Data Display",
+      "entryPoint": "jrng-ui/card",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JrCardComponent } from 'jrng-ui/card';",
+      "usageExample": "<j-card></j-card>",
+      "documentationUrl": "https://jrngui.dev/docs/components#card",
+      "stability": "Stable",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Carousel",
+      "description": "Angular Carousel component for reusable application interfaces.",
+      "selector": "j-carousel",
+      "category": "Media & Visualization",
+      "entryPoint": "jrng-ui/carousel",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JCarouselComponent } from 'jrng-ui/carousel';",
+      "usageExample": "<j-carousel></j-carousel>",
+      "documentationUrl": "https://jrngui.dev/docs/components#carousel",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Chart",
+      "description": "Angular Chart component for reusable application interfaces.",
+      "selector": "j-chart",
+      "category": "Media & Visualization",
+      "entryPoint": "jrng-ui/chart",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [
+        "chart.js"
+      ],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JChartComponent } from 'jrng-ui/chart';",
+      "usageExample": "<j-chart></j-chart>",
+      "documentationUrl": "https://jrngui.dev/docs/components#chart",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Checkbox",
+      "description": "Angular Checkbox component for reusable application interfaces.",
+      "selector": "j-checkbox",
+      "category": "Forms & Inputs",
+      "entryPoint": "jrng-ui/checkbox",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JCheckboxComponent } from 'jrng-ui/checkbox';",
+      "usageExample": "<j-checkbox></j-checkbox>",
+      "documentationUrl": "https://jrngui.dev/docs/components#checkbox",
+      "stability": "Stable",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Chip",
+      "description": "Angular Chip component for reusable application interfaces.",
+      "selector": "j-chip",
+      "category": "Data Display",
+      "entryPoint": "jrng-ui/chip",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JChipComponent } from 'jrng-ui/chip';",
+      "usageExample": "<j-chip></j-chip>",
+      "documentationUrl": "https://jrngui.dev/docs/components#chip",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Chips",
+      "description": "Angular Chips component for reusable application interfaces.",
+      "selector": "j-chips",
+      "category": "Forms & Inputs",
+      "entryPoint": "jrng-ui/chips",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JChipsComponent } from 'jrng-ui/chips';",
+      "usageExample": "<j-chips></j-chips>",
+      "documentationUrl": "https://jrngui.dev/docs/components#chips",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Color Picker",
+      "description": "Angular Color Picker component for reusable application interfaces.",
+      "selector": "j-color-picker",
+      "category": "Forms & Inputs",
+      "entryPoint": "jrng-ui/color-picker",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JColorPickerComponent } from 'jrng-ui/color-picker';",
+      "usageExample": "<j-color-picker></j-color-picker>",
+      "documentationUrl": "https://jrngui.dev/docs/components#color-picker",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Column",
+      "description": "Angular Column component for reusable application interfaces.",
+      "selector": "j-column",
+      "category": "Data & Tables",
+      "entryPoint": "jrng-ui/table",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [],
+      "importExample": "import { JColumnComponent } from 'jrng-ui/table';",
+      "usageExample": "<j-column></j-column>",
+      "documentationUrl": "https://jrngui.dev/docs/components#column",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Column Filter",
+      "description": "Angular Column Filter component for reusable application interfaces.",
+      "selector": "j-column-filter",
+      "category": "Data & Tables",
+      "entryPoint": "jrng-ui/table",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JColumnFilterComponent } from 'jrng-ui/table';",
+      "usageExample": "<j-column-filter></j-column-filter>",
+      "documentationUrl": "https://jrngui.dev/docs/components#column-filter",
+      "stability": "Stable",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Combobox",
+      "description": "Angular Combobox component for reusable application interfaces.",
+      "selector": "j-combobox",
+      "category": "Forms & Inputs",
+      "entryPoint": "jrng-ui/combobox",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JComboboxComponent } from 'jrng-ui/combobox';",
+      "usageExample": "<j-combobox></j-combobox>",
+      "documentationUrl": "https://jrngui.dev/docs/components#combobox",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Command Palette",
+      "description": "Angular Command Palette component for reusable application interfaces.",
+      "selector": "j-command-palette",
+      "category": "Navigation & Menus",
+      "entryPoint": "jrng-ui/command-palette",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JCommandPaletteComponent } from 'jrng-ui/command-palette';",
+      "usageExample": "<j-command-palette></j-command-palette>",
+      "documentationUrl": "https://jrngui.dev/docs/components#command-palette",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Confirm Dialog",
+      "description": "Angular Confirm Dialog component for reusable application interfaces.",
+      "selector": "j-confirm-dialog",
+      "category": "Overlays & Feedback",
+      "entryPoint": "jrng-ui/confirm-dialog",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JConfirmDialogComponent } from 'jrng-ui/confirm-dialog';",
+      "usageExample": "<j-confirm-dialog></j-confirm-dialog>",
+      "documentationUrl": "https://jrngui.dev/docs/components#confirm-dialog",
+      "stability": "Stable",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Confirm Popup",
+      "description": "Angular Confirm Popup component for reusable application interfaces.",
+      "selector": "j-confirm-popup",
+      "category": "Overlays & Feedback",
+      "entryPoint": "jrng-ui/confirm-popup",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JConfirmPopupComponent } from 'jrng-ui/confirm-popup';",
+      "usageExample": "<j-confirm-popup></j-confirm-popup>",
+      "documentationUrl": "https://jrngui.dev/docs/components#confirm-popup",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Container",
+      "description": "Angular Container component for reusable application interfaces.",
+      "selector": "j-container",
+      "category": "Layout",
+      "entryPoint": "jrng-ui/container",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JContainerComponent } from 'jrng-ui/container';",
+      "usageExample": "<j-container></j-container>",
+      "documentationUrl": "https://jrngui.dev/docs/components#container",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Context Menu",
+      "description": "Angular Context Menu component for reusable application interfaces.",
+      "selector": "j-context-menu",
+      "category": "Navigation & Menus",
+      "entryPoint": "jrng-ui/context-menu",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [],
+      "importExample": "import { JContextMenuComponent } from 'jrng-ui/context-menu';",
+      "usageExample": "<j-context-menu></j-context-menu>",
+      "documentationUrl": "https://jrngui.dev/docs/components#context-menu",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Copy Button",
+      "description": "Angular Copy Button component for reusable application interfaces.",
+      "selector": "j-copy-button",
+      "category": "Buttons & Actions",
+      "entryPoint": "jrng-ui/copy-button",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JCopyButtonComponent } from 'jrng-ui/copy-button';",
+      "usageExample": "<j-copy-button></j-copy-button>",
+      "documentationUrl": "https://jrngui.dev/docs/components#copy-button",
+      "stability": "Stable",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Dashboard Layout",
+      "description": "Angular Dashboard Layout component for reusable application interfaces.",
+      "selector": "j-dashboard-layout",
+      "category": "Layout",
+      "entryPoint": "jrng-ui/dashboard-layout",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JDashboardLayoutComponent } from 'jrng-ui/dashboard-layout';",
+      "usageExample": "<j-dashboard-layout></j-dashboard-layout>",
+      "documentationUrl": "https://jrngui.dev/docs/components#dashboard-layout",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Data Grid",
+      "description": "Angular Data Grid component for reusable application interfaces.",
+      "selector": "j-data-grid",
+      "category": "Data & Tables",
+      "entryPoint": "jrng-ui/data-grid",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JDataGridComponent } from 'jrng-ui/data-grid';",
+      "usageExample": "<j-data-grid></j-data-grid>",
+      "documentationUrl": "https://jrngui.dev/docs/components#data-grid",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Data View",
+      "description": "Angular Data View component for reusable application interfaces.",
+      "selector": "j-data-view",
+      "category": "Data & Tables",
+      "entryPoint": "jrng-ui/data-view",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JDataViewComponent } from 'jrng-ui/data-view';",
+      "usageExample": "<j-data-view></j-data-view>",
+      "documentationUrl": "https://jrngui.dev/docs/components#data-view",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Date Picker",
+      "description": "Angular Date Picker component for reusable application interfaces.",
+      "selector": "j-date-picker",
+      "category": "Forms & Inputs",
+      "entryPoint": "jrng-ui/date-picker",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JDatePickerComponent } from 'jrng-ui/date-picker';",
+      "usageExample": "<j-date-picker></j-date-picker>",
+      "documentationUrl": "https://jrngui.dev/docs/components#date-picker",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Date Range Picker",
+      "description": "Angular Date Range Picker component for reusable application interfaces.",
+      "selector": "j-date-range-picker",
+      "category": "Forms & Inputs",
+      "entryPoint": "jrng-ui/date-range-picker",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JDateRangePickerComponent } from 'jrng-ui/date-range-picker';",
+      "usageExample": "<j-date-range-picker></j-date-range-picker>",
+      "documentationUrl": "https://jrngui.dev/docs/components#date-range-picker",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Dialog",
+      "description": "Angular Dialog component for reusable application interfaces.",
+      "selector": "j-dialog",
+      "category": "Overlays & Feedback",
+      "entryPoint": "jrng-ui/dialog",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JrDialogComponent } from 'jrng-ui/dialog';",
+      "usageExample": "<j-dialog></j-dialog>",
+      "documentationUrl": "https://jrngui.dev/docs/components#dialog",
+      "stability": "Stable",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Divider",
+      "description": "Angular Divider component for reusable application interfaces.",
+      "selector": "j-divider",
+      "category": "Data Display",
+      "entryPoint": "jrng-ui/divider",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JDividerComponent } from 'jrng-ui/divider';",
+      "usageExample": "<j-divider></j-divider>",
+      "documentationUrl": "https://jrngui.dev/docs/components#divider",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Drawer",
+      "description": "Angular Drawer component for reusable application interfaces.",
+      "selector": "j-drawer",
+      "category": "Overlays & Feedback",
+      "entryPoint": "jrng-ui/drawer",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JDrawerComponent } from 'jrng-ui/drawer';",
+      "usageExample": "<j-drawer></j-drawer>",
+      "documentationUrl": "https://jrngui.dev/docs/components#drawer",
+      "stability": "Stable",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Dropzone",
+      "description": "Angular Dropzone component for reusable application interfaces.",
+      "selector": "j-dropzone",
+      "category": "Media & Visualization",
+      "entryPoint": "jrng-ui/dropzone",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JDropzoneComponent } from 'jrng-ui/dropzone';",
+      "usageExample": "<j-dropzone></j-dropzone>",
+      "documentationUrl": "https://jrngui.dev/docs/components#dropzone",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Dynamic Dialog",
+      "description": "Angular Dynamic Dialog component for reusable application interfaces.",
+      "selector": "j-dynamic-dialog",
+      "category": "Overlays & Feedback",
+      "entryPoint": "jrng-ui/dynamic-dialog",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JDynamicDialogComponent } from 'jrng-ui/dynamic-dialog';",
+      "usageExample": "<j-dynamic-dialog></j-dynamic-dialog>",
+      "documentationUrl": "https://jrngui.dev/docs/components#dynamic-dialog",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Editor",
+      "description": "Angular Editor component for reusable application interfaces.",
+      "selector": "j-editor",
+      "category": "Forms & Inputs",
+      "entryPoint": "jrng-ui/editor",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JEditorComponent } from 'jrng-ui/editor';",
+      "usageExample": "<j-editor></j-editor>",
+      "documentationUrl": "https://jrngui.dev/docs/components#editor",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Empty Page",
+      "description": "Angular Empty Page component for reusable application interfaces.",
+      "selector": "j-empty-page",
+      "category": "Status Pages",
+      "entryPoint": "jrng-ui/empty-page",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JEmptyPageComponent } from 'jrng-ui/empty-page';",
+      "usageExample": "<j-empty-page></j-empty-page>",
+      "documentationUrl": "https://jrngui.dev/docs/components#empty-page",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Empty State",
+      "description": "Angular Empty State component for reusable application interfaces.",
+      "selector": "j-empty-state",
+      "category": "Data Display",
+      "entryPoint": "jrng-ui/empty-state",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JEmptyStateComponent } from 'jrng-ui/empty-state';",
+      "usageExample": "<j-empty-state></j-empty-state>",
+      "documentationUrl": "https://jrngui.dev/docs/components#empty-state",
+      "stability": "Stable",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Error Page",
+      "description": "Angular Error Page component for reusable application interfaces.",
+      "selector": "j-error-page",
+      "category": "Status Pages",
+      "entryPoint": "jrng-ui/error-page",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JErrorPageComponent } from 'jrng-ui/error-page';",
+      "usageExample": "<j-error-page></j-error-page>",
+      "documentationUrl": "https://jrngui.dev/docs/components#error-page",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Fieldset",
+      "description": "Angular Fieldset component for reusable application interfaces.",
+      "selector": "j-fieldset",
+      "category": "Layout",
+      "entryPoint": "jrng-ui/fieldset",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JFieldsetComponent } from 'jrng-ui/fieldset';",
+      "usageExample": "<j-fieldset></j-fieldset>",
+      "documentationUrl": "https://jrngui.dev/docs/components#fieldset",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "File Preview",
+      "description": "Angular File Preview component for reusable application interfaces.",
+      "selector": "j-file-preview",
+      "category": "Media & Visualization",
+      "entryPoint": "jrng-ui/file-preview",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JFilePreviewComponent } from 'jrng-ui/file-preview';",
+      "usageExample": "<j-file-preview></j-file-preview>",
+      "documentationUrl": "https://jrngui.dev/docs/components#file-preview",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "File Upload",
+      "description": "Angular File Upload component for reusable application interfaces.",
+      "selector": "j-file-upload",
+      "category": "Media & Visualization",
+      "entryPoint": "jrng-ui/file-upload",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JFileUploadComponent } from 'jrng-ui/file-upload';",
+      "usageExample": "<j-file-upload></j-file-upload>",
+      "documentationUrl": "https://jrngui.dev/docs/components#file-upload",
+      "stability": "Stable",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Filter Bar",
+      "description": "Angular Filter Bar component for reusable application interfaces.",
+      "selector": "j-filter-bar",
+      "category": "Data & Tables",
+      "entryPoint": "jrng-ui/filter-bar",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JFilterBarComponent } from 'jrng-ui/filter-bar';",
+      "usageExample": "<j-filter-bar></j-filter-bar>",
+      "documentationUrl": "https://jrngui.dev/docs/components#filter-bar",
+      "stability": "New",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Float Label",
+      "description": "Angular Float Label component for reusable application interfaces.",
+      "selector": "j-float-label",
+      "category": "Forms & Inputs",
+      "entryPoint": "jrng-ui/float-label",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JFloatLabelComponent } from 'jrng-ui/float-label';",
+      "usageExample": "<j-float-label></j-float-label>",
+      "documentationUrl": "https://jrngui.dev/docs/components#float-label",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Form Field",
+      "description": "Angular Form Field component for reusable application interfaces.",
+      "selector": "j-form-field",
+      "category": "Forms & Inputs",
+      "entryPoint": "jrng-ui/form-field",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JFormFieldComponent } from 'jrng-ui/form-field';",
+      "usageExample": "<j-form-field></j-form-field>",
+      "documentationUrl": "https://jrngui.dev/docs/components#form-field",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Gallery",
+      "description": "Angular Gallery component for reusable application interfaces.",
+      "selector": "j-gallery",
+      "category": "Media & Visualization",
+      "entryPoint": "jrng-ui/gallery",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JGalleryComponent } from 'jrng-ui/gallery';",
+      "usageExample": "<j-gallery></j-gallery>",
+      "documentationUrl": "https://jrngui.dev/docs/components#gallery",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Gantt",
+      "description": "Angular Gantt component for reusable application interfaces.",
+      "selector": "j-gantt",
+      "category": "Scheduling & Productivity",
+      "entryPoint": "jrng-ui/gantt",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JGanttComponent } from 'jrng-ui/gantt';",
+      "usageExample": "<j-gantt></j-gantt>",
+      "documentationUrl": "https://jrngui.dev/docs/components#gantt",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Grid Layout",
+      "description": "Angular Grid Layout component for reusable application interfaces.",
+      "selector": "j-grid-layout",
+      "category": "Layout",
+      "entryPoint": "jrng-ui/grid-layout",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JGridLayoutComponent } from 'jrng-ui/grid-layout';",
+      "usageExample": "<j-grid-layout></j-grid-layout>",
+      "documentationUrl": "https://jrngui.dev/docs/components#grid-layout",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Icon",
+      "description": "Angular Icon component for reusable application interfaces.",
+      "selector": "j-icon",
+      "category": "Data Display",
+      "entryPoint": "jrng-ui/icon",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [],
+      "importExample": "import { JIconComponent } from 'jrng-ui/icon';",
+      "usageExample": "<j-icon></j-icon>",
+      "documentationUrl": "https://jrngui.dev/docs/components#icon",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Icon Field",
+      "description": "Angular Icon Field component for reusable application interfaces.",
+      "selector": "j-icon-field",
+      "category": "Forms & Inputs",
+      "entryPoint": "jrng-ui/icon-field",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JIconFieldComponent } from 'jrng-ui/icon-field';",
+      "usageExample": "<j-icon-field></j-icon-field>",
+      "documentationUrl": "https://jrngui.dev/docs/components#icon-field",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Ifta Label",
+      "description": "Angular Ifta Label component for reusable application interfaces.",
+      "selector": "j-ifta-label",
+      "category": "Forms & Inputs",
+      "entryPoint": "jrng-ui/ifta-label",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JIftaLabelComponent } from 'jrng-ui/ifta-label';",
+      "usageExample": "<j-ifta-label></j-ifta-label>",
+      "documentationUrl": "https://jrngui.dev/docs/components#ifta-label",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Image",
+      "description": "Angular Image component for reusable application interfaces.",
+      "selector": "j-image",
+      "category": "Media & Visualization",
+      "entryPoint": "jrng-ui/image-preview",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JImageComponent } from 'jrng-ui/image-preview';",
+      "usageExample": "<j-image></j-image>",
+      "documentationUrl": "https://jrngui.dev/docs/components#image",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Image Preview",
+      "description": "Angular Image Preview component for reusable application interfaces.",
+      "selector": "j-image-preview",
+      "category": "Media & Visualization",
+      "entryPoint": "jrng-ui/image-preview",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JImagePreviewComponent } from 'jrng-ui/image-preview';",
+      "usageExample": "<j-image-preview></j-image-preview>",
+      "documentationUrl": "https://jrngui.dev/docs/components#image-preview",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Input",
+      "description": "Angular Input component for reusable application interfaces.",
+      "selector": "j-input",
+      "category": "Forms & Inputs",
+      "entryPoint": "jrng-ui/input",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JrInputComponent } from 'jrng-ui/input';",
+      "usageExample": "<j-input></j-input>",
+      "documentationUrl": "https://jrngui.dev/docs/components#input",
+      "stability": "Stable",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Input Group",
+      "description": "Angular Input Group component for reusable application interfaces.",
+      "selector": "j-input-group",
+      "category": "Forms & Inputs",
+      "entryPoint": "jrng-ui/input-group",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JInputGroupComponent } from 'jrng-ui/input-group';",
+      "usageExample": "<j-input-group></j-input-group>",
+      "documentationUrl": "https://jrngui.dev/docs/components#input-group",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Input Icon",
+      "description": "Angular Input Icon component for reusable application interfaces.",
+      "selector": "j-input-icon",
+      "category": "Forms & Inputs",
+      "entryPoint": "jrng-ui/input-icon",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JInputIconComponent } from 'jrng-ui/input-icon';",
+      "usageExample": "<j-input-icon></j-input-icon>",
+      "documentationUrl": "https://jrngui.dev/docs/components#input-icon",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Input Mask",
+      "description": "Angular Input Mask component for reusable application interfaces.",
+      "selector": "j-input-mask",
+      "category": "Forms & Inputs",
+      "entryPoint": "jrng-ui/input-mask",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JInputMaskComponent } from 'jrng-ui/input-mask';",
+      "usageExample": "<j-input-mask></j-input-mask>",
+      "documentationUrl": "https://jrngui.dev/docs/components#input-mask",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Input Number",
+      "description": "Angular Input Number component for reusable application interfaces.",
+      "selector": "j-input-number",
+      "category": "Forms & Inputs",
+      "entryPoint": "jrng-ui/input-number",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JInputNumberComponent } from 'jrng-ui/input-number';",
+      "usageExample": "<j-input-number></j-input-number>",
+      "documentationUrl": "https://jrngui.dev/docs/components#input-number",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Input OTP",
+      "description": "Angular Input OTP component for reusable application interfaces.",
+      "selector": "j-input-otp",
+      "category": "Forms & Inputs",
+      "entryPoint": "jrng-ui/input-otp",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JInputOtpComponent } from 'jrng-ui/input-otp';",
+      "usageExample": "<j-input-otp></j-input-otp>",
+      "documentationUrl": "https://jrngui.dev/docs/components#input-otp",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Kanban",
+      "description": "Angular Kanban component for reusable application interfaces.",
+      "selector": "j-kanban",
+      "category": "Scheduling & Productivity",
+      "entryPoint": "jrng-ui/kanban",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JKanbanComponent } from 'jrng-ui/kanban';",
+      "usageExample": "<j-kanban></j-kanban>",
+      "documentationUrl": "https://jrngui.dev/docs/components#kanban",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Knob",
+      "description": "Angular Knob component for reusable application interfaces.",
+      "selector": "j-knob",
+      "category": "Forms & Inputs",
+      "entryPoint": "jrng-ui/knob",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JKnobComponent } from 'jrng-ui/knob';",
+      "usageExample": "<j-knob></j-knob>",
+      "documentationUrl": "https://jrngui.dev/docs/components#knob",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Listbox",
+      "description": "Angular Listbox component for reusable application interfaces.",
+      "selector": "j-listbox",
+      "category": "Forms & Inputs",
+      "entryPoint": "jrng-ui/listbox",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JListboxComponent } from 'jrng-ui/listbox';",
+      "usageExample": "<j-listbox></j-listbox>",
+      "documentationUrl": "https://jrngui.dev/docs/components#listbox",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Loader",
+      "description": "Angular Loader component for reusable application interfaces.",
+      "selector": "j-loader",
+      "category": "Data Display",
+      "entryPoint": "jrng-ui/loader",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JLoaderComponent } from 'jrng-ui/loader';",
+      "usageExample": "<j-loader></j-loader>",
+      "documentationUrl": "https://jrngui.dev/docs/components#loader",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Maintenance Page",
+      "description": "Angular Maintenance Page component for reusable application interfaces.",
+      "selector": "j-maintenance-page",
+      "category": "Status Pages",
+      "entryPoint": "jrng-ui/maintenance-page",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JMaintenancePageComponent } from 'jrng-ui/maintenance-page';",
+      "usageExample": "<j-maintenance-page></j-maintenance-page>",
+      "documentationUrl": "https://jrngui.dev/docs/components#maintenance-page",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Mega Menu",
+      "description": "Angular Mega Menu component for reusable application interfaces.",
+      "selector": "j-mega-menu",
+      "category": "Navigation & Menus",
+      "entryPoint": "jrng-ui/mega-menu",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JMegaMenuComponent } from 'jrng-ui/mega-menu';",
+      "usageExample": "<j-mega-menu></j-mega-menu>",
+      "documentationUrl": "https://jrngui.dev/docs/components#mega-menu",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Menu",
+      "description": "Angular Menu component for reusable application interfaces.",
+      "selector": "j-menu",
+      "category": "Navigation & Menus",
+      "entryPoint": "jrng-ui/menu",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JMenuComponent } from 'jrng-ui/menu';",
+      "usageExample": "<j-menu></j-menu>",
+      "documentationUrl": "https://jrngui.dev/docs/components#menu",
+      "stability": "Stable",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Menubar",
+      "description": "Angular Menubar component for reusable application interfaces.",
+      "selector": "j-menubar",
+      "category": "Navigation & Menus",
+      "entryPoint": "jrng-ui/menubar",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JMenubarComponent } from 'jrng-ui/menubar';",
+      "usageExample": "<j-menubar></j-menubar>",
+      "documentationUrl": "https://jrngui.dev/docs/components#menubar",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Meter Group",
+      "description": "Angular Meter Group component for reusable application interfaces.",
+      "selector": "j-meter-group",
+      "category": "Data Display",
+      "entryPoint": "jrng-ui/meter-group",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JMeterGroupComponent } from 'jrng-ui/meter-group';",
+      "usageExample": "<j-meter-group></j-meter-group>",
+      "documentationUrl": "https://jrngui.dev/docs/components#meter-group",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Metric Card",
+      "description": "Angular Metric Card component for reusable application interfaces.",
+      "selector": "j-metric-card",
+      "category": "Data Display",
+      "entryPoint": "jrng-ui/metric-card",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JMetricCardComponent } from 'jrng-ui/metric-card';",
+      "usageExample": "<j-metric-card></j-metric-card>",
+      "documentationUrl": "https://jrngui.dev/docs/components#metric-card",
+      "stability": "Stable",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Multiselect",
+      "description": "Angular Multiselect component for reusable application interfaces.",
+      "selector": "j-multiselect",
+      "category": "Forms & Inputs",
+      "entryPoint": "jrng-ui/multiselect",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JMultiselectComponent } from 'jrng-ui/multiselect';",
+      "usageExample": "<j-multiselect></j-multiselect>",
+      "documentationUrl": "https://jrngui.dev/docs/components#multiselect",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Notification Center",
+      "description": "Angular Notification Center component for reusable application interfaces.",
+      "selector": "j-notification-center",
+      "category": "Overlays & Feedback",
+      "entryPoint": "jrng-ui/notification-center",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JNotificationCenterComponent } from 'jrng-ui/notification-center';",
+      "usageExample": "<j-notification-center></j-notification-center>",
+      "documentationUrl": "https://jrngui.dev/docs/components#notification-center",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Order List",
+      "description": "Angular Order List component for reusable application interfaces.",
+      "selector": "j-order-list",
+      "category": "Data & Tables",
+      "entryPoint": "jrng-ui/order-list",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JOrderListComponent } from 'jrng-ui/order-list';",
+      "usageExample": "<j-order-list></j-order-list>",
+      "documentationUrl": "https://jrngui.dev/docs/components#order-list",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Org Chart",
+      "description": "Angular Org Chart component for reusable application interfaces.",
+      "selector": "j-org-chart",
+      "category": "Scheduling & Productivity",
+      "entryPoint": "jrng-ui/org-chart",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JOrgChartComponent } from 'jrng-ui/org-chart';",
+      "usageExample": "<j-org-chart></j-org-chart>",
+      "documentationUrl": "https://jrngui.dev/docs/components#org-chart",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Overlay Panel",
+      "description": "Angular Overlay Panel component for reusable application interfaces.",
+      "selector": "j-overlay-panel",
+      "category": "Overlays & Feedback",
+      "entryPoint": "jrng-ui/overlay-panel",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [],
+      "importExample": "import { JOverlayPanelComponent } from 'jrng-ui/overlay-panel';",
+      "usageExample": "<j-overlay-panel></j-overlay-panel>",
+      "documentationUrl": "https://jrngui.dev/docs/components#overlay-panel",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Page Header",
+      "description": "Angular Page Header component for reusable application interfaces.",
+      "selector": "j-page-header",
+      "category": "Layout",
+      "entryPoint": "jrng-ui/page-header",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JPageHeaderComponent } from 'jrng-ui/page-header';",
+      "usageExample": "<j-page-header></j-page-header>",
+      "documentationUrl": "https://jrngui.dev/docs/components#page-header",
+      "stability": "Stable",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Paginator",
+      "description": "Angular Paginator component for reusable application interfaces.",
+      "selector": "j-paginator",
+      "category": "Data & Tables",
+      "entryPoint": "jrng-ui/paginator",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JPaginatorComponent } from 'jrng-ui/paginator';",
+      "usageExample": "<j-paginator></j-paginator>",
+      "documentationUrl": "https://jrngui.dev/docs/components#paginator",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Panel",
+      "description": "Angular Panel component for reusable application interfaces.",
+      "selector": "j-panel",
+      "category": "Layout",
+      "entryPoint": "jrng-ui/panel",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JPanelComponent } from 'jrng-ui/panel';",
+      "usageExample": "<j-panel></j-panel>",
+      "documentationUrl": "https://jrngui.dev/docs/components#panel",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Password",
+      "description": "Angular Password component for reusable application interfaces.",
+      "selector": "j-password",
+      "category": "Forms & Inputs",
+      "entryPoint": "jrng-ui/password",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JPasswordComponent } from 'jrng-ui/password';",
+      "usageExample": "<j-password></j-password>",
+      "documentationUrl": "https://jrngui.dev/docs/components#password",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Pick List",
+      "description": "Angular Pick List component for reusable application interfaces.",
+      "selector": "j-pick-list",
+      "category": "Data & Tables",
+      "entryPoint": "jrng-ui/pick-list",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [],
+      "importExample": "import { JPickListComponent } from 'jrng-ui/pick-list';",
+      "usageExample": "<j-pick-list></j-pick-list>",
+      "documentationUrl": "https://jrngui.dev/docs/components#pick-list",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Popover",
+      "description": "Angular Popover component for reusable application interfaces.",
+      "selector": "j-popover",
+      "category": "Overlays & Feedback",
+      "entryPoint": "jrng-ui/popover",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JPopoverComponent } from 'jrng-ui/popover';",
+      "usageExample": "<j-popover></j-popover>",
+      "documentationUrl": "https://jrngui.dev/docs/components#popover",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Progress Bar",
+      "description": "Angular Progress Bar component for reusable application interfaces.",
+      "selector": "j-progress-bar",
+      "category": "Data Display",
+      "entryPoint": "jrng-ui/progress-bar",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JProgressBarComponent } from 'jrng-ui/progress-bar';",
+      "usageExample": "<j-progress-bar></j-progress-bar>",
+      "documentationUrl": "https://jrngui.dev/docs/components#progress-bar",
+      "stability": "Stable",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Progress Spinner",
+      "description": "Angular Progress Spinner component for reusable application interfaces.",
+      "selector": "j-progress-spinner",
+      "category": "Data Display",
+      "entryPoint": "jrng-ui/progress-spinner",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JProgressSpinnerComponent } from 'jrng-ui/progress-spinner';",
+      "usageExample": "<j-progress-spinner></j-progress-spinner>",
+      "documentationUrl": "https://jrngui.dev/docs/components#progress-spinner",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Radio",
+      "description": "Angular Radio component for reusable application interfaces.",
+      "selector": "j-radio",
+      "category": "Forms & Inputs",
+      "entryPoint": "jrng-ui/radio",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JRadioComponent } from 'jrng-ui/radio';",
+      "usageExample": "<j-radio></j-radio>",
+      "documentationUrl": "https://jrngui.dev/docs/components#radio",
+      "stability": "Stable",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Radio Group",
+      "description": "Angular Radio Group component for reusable application interfaces.",
+      "selector": "j-radio-group",
+      "category": "Forms & Inputs",
+      "entryPoint": "jrng-ui/radio-group",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JRadioGroupComponent } from 'jrng-ui/radio-group';",
+      "usageExample": "<j-radio-group></j-radio-group>",
+      "documentationUrl": "https://jrngui.dev/docs/components#radio-group",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Rating",
+      "description": "Angular Rating component for reusable application interfaces.",
+      "selector": "j-rating",
+      "category": "Forms & Inputs",
+      "entryPoint": "jrng-ui/rating",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JRatingComponent } from 'jrng-ui/rating';",
+      "usageExample": "<j-rating></j-rating>",
+      "documentationUrl": "https://jrngui.dev/docs/components#rating",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Responsive Sidebar",
+      "description": "Angular Responsive Sidebar component for reusable application interfaces.",
+      "selector": "j-responsive-sidebar",
+      "category": "Layout",
+      "entryPoint": "jrng-ui/responsive-sidebar",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JResponsiveSidebarComponent } from 'jrng-ui/responsive-sidebar';",
+      "usageExample": "<j-responsive-sidebar></j-responsive-sidebar>",
+      "documentationUrl": "https://jrngui.dev/docs/components#responsive-sidebar",
+      "stability": "Stable",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Section Footer",
+      "description": "Angular Section Footer component for reusable application interfaces.",
+      "selector": "j-section-footer",
+      "category": "Layout",
+      "entryPoint": "jrng-ui/section-footer",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JSectionFooterComponent } from 'jrng-ui/section-footer';",
+      "usageExample": "<j-section-footer></j-section-footer>",
+      "documentationUrl": "https://jrngui.dev/docs/components#section-footer",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Section Header",
+      "description": "Angular Section Header component for reusable application interfaces.",
+      "selector": "j-section-header",
+      "category": "Layout",
+      "entryPoint": "jrng-ui/section-header",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JSectionHeaderComponent } from 'jrng-ui/section-header';",
+      "usageExample": "<j-section-header></j-section-header>",
+      "documentationUrl": "https://jrngui.dev/docs/components#section-header",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Select",
+      "description": "Angular Select component for reusable application interfaces.",
+      "selector": "j-select",
+      "category": "Forms & Inputs",
+      "entryPoint": "jrng-ui/select",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JSelectComponent } from 'jrng-ui/select';",
+      "usageExample": "<j-select></j-select>",
+      "documentationUrl": "https://jrngui.dev/docs/components#select",
+      "stability": "Stable",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Select Button",
+      "description": "Angular Select Button component for reusable application interfaces.",
+      "selector": "j-select-button",
+      "category": "Forms & Inputs",
+      "entryPoint": "jrng-ui/select-button",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JSelectButtonComponent } from 'jrng-ui/select-button';",
+      "usageExample": "<j-select-button></j-select-button>",
+      "documentationUrl": "https://jrngui.dev/docs/components#select-button",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Sidebar Layout",
+      "description": "Angular Sidebar Layout component for reusable application interfaces.",
+      "selector": "j-sidebar-layout",
+      "category": "Layout",
+      "entryPoint": "jrng-ui/sidebar-layout",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JSidebarLayoutComponent } from 'jrng-ui/sidebar-layout';",
+      "usageExample": "<j-sidebar-layout></j-sidebar-layout>",
+      "documentationUrl": "https://jrngui.dev/docs/components#sidebar-layout",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Sidebar Nav",
+      "description": "Angular Sidebar Nav component for reusable application interfaces.",
+      "selector": "j-sidebar-nav",
+      "category": "Navigation & Menus",
+      "entryPoint": "jrng-ui/sidebar-nav",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JSidebarNavComponent } from 'jrng-ui/sidebar-nav';",
+      "usageExample": "<j-sidebar-nav></j-sidebar-nav>",
+      "documentationUrl": "https://jrngui.dev/docs/components#sidebar-nav",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Skeleton",
+      "description": "Angular Skeleton component for reusable application interfaces.",
+      "selector": "j-skeleton",
+      "category": "Data Display",
+      "entryPoint": "jrng-ui/skeleton",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JSkeletonComponent } from 'jrng-ui/skeleton';",
+      "usageExample": "<j-skeleton></j-skeleton>",
+      "documentationUrl": "https://jrngui.dev/docs/components#skeleton",
+      "stability": "Stable",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Slider",
+      "description": "Angular Slider component for reusable application interfaces.",
+      "selector": "j-slider",
+      "category": "Forms & Inputs",
+      "entryPoint": "jrng-ui/slider",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JSliderComponent } from 'jrng-ui/slider';",
+      "usageExample": "<j-slider></j-slider>",
+      "documentationUrl": "https://jrngui.dev/docs/components#slider",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Sort Icon",
+      "description": "Angular Sort Icon component for reusable application interfaces.",
+      "selector": "j-sort-icon",
+      "category": "Data & Tables",
+      "entryPoint": "jrng-ui/table",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JSortIconComponent } from 'jrng-ui/table';",
+      "usageExample": "<j-sort-icon></j-sort-icon>",
+      "documentationUrl": "https://jrngui.dev/docs/components#sort-icon",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Sparkline",
+      "description": "Angular Sparkline component for reusable application interfaces.",
+      "selector": "j-sparkline",
+      "category": "Media & Visualization",
+      "entryPoint": "jrng-ui/sparkline",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JSparklineComponent } from 'jrng-ui/sparkline';",
+      "usageExample": "<j-sparkline></j-sparkline>",
+      "documentationUrl": "https://jrngui.dev/docs/components#sparkline",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Splitter",
+      "description": "Angular Splitter component for reusable application interfaces.",
+      "selector": "j-splitter",
+      "category": "Layout",
+      "entryPoint": "jrng-ui/splitter",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [],
+      "importExample": "import { JSplitterComponent } from 'jrng-ui/splitter';",
+      "usageExample": "<j-splitter></j-splitter>",
+      "documentationUrl": "https://jrngui.dev/docs/components#splitter",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Stack",
+      "description": "Angular Stack component for reusable application interfaces.",
+      "selector": "j-stack",
+      "category": "Layout",
+      "entryPoint": "jrng-ui/stack",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JStackComponent } from 'jrng-ui/stack';",
+      "usageExample": "<j-stack></j-stack>",
+      "documentationUrl": "https://jrngui.dev/docs/components#stack",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Stat Card",
+      "description": "Angular Stat Card component for reusable application interfaces.",
+      "selector": "j-stat-card",
+      "category": "Data Display",
+      "entryPoint": "jrng-ui/stat-card",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JStatCardComponent } from 'jrng-ui/stat-card';",
+      "usageExample": "<j-stat-card></j-stat-card>",
+      "documentationUrl": "https://jrngui.dev/docs/components#stat-card",
+      "stability": "Stable",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Status Chip",
+      "description": "Angular Status Chip component for reusable application interfaces.",
+      "selector": "j-status-chip",
+      "category": "Data Display",
+      "entryPoint": "jrng-ui/status-chip",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JStatusChipComponent } from 'jrng-ui/status-chip';",
+      "usageExample": "<j-status-chip></j-status-chip>",
+      "documentationUrl": "https://jrngui.dev/docs/components#status-chip",
+      "stability": "Stable",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Stepper",
+      "description": "Angular Stepper component for reusable application interfaces.",
+      "selector": "j-stepper",
+      "category": "Navigation & Menus",
+      "entryPoint": "jrng-ui/stepper",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JStepperComponent } from 'jrng-ui/stepper';",
+      "usageExample": "<j-stepper></j-stepper>",
+      "documentationUrl": "https://jrngui.dev/docs/components#stepper",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Switch",
+      "description": "Angular Switch component for reusable application interfaces.",
+      "selector": "j-switch",
+      "category": "Forms & Inputs",
+      "entryPoint": "jrng-ui/switch",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JSwitchComponent } from 'jrng-ui/switch';",
+      "usageExample": "<j-switch></j-switch>",
+      "documentationUrl": "https://jrngui.dev/docs/components#switch",
+      "stability": "Stable",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Tab",
+      "description": "Angular Tab component for reusable application interfaces.",
+      "selector": "j-tab",
+      "category": "Navigation & Menus",
+      "entryPoint": "jrng-ui/tabs",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JTabComponent } from 'jrng-ui/tabs';",
+      "usageExample": "<j-tab></j-tab>",
+      "documentationUrl": "https://jrngui.dev/docs/components#tab",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Table",
+      "description": "Angular Table component for reusable application interfaces.",
+      "selector": "j-table",
+      "category": "Data & Tables",
+      "entryPoint": "jrng-ui/table",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JTableComponent } from 'jrng-ui/table';",
+      "usageExample": "<j-table></j-table>",
+      "documentationUrl": "https://jrngui.dev/docs/components#table",
+      "stability": "Stable",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Table Empty State",
+      "description": "Angular Table Empty State component for reusable application interfaces.",
+      "selector": "j-table-empty-state",
+      "category": "Data & Tables",
+      "entryPoint": "jrng-ui/table",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JTableEmptyStateComponent } from 'jrng-ui/table';",
+      "usageExample": "<j-table-empty-state></j-table-empty-state>",
+      "documentationUrl": "https://jrngui.dev/docs/components#table-empty-state",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Table Skeleton",
+      "description": "Angular Table Skeleton component for reusable application interfaces.",
+      "selector": "j-table-skeleton",
+      "category": "Data & Tables",
+      "entryPoint": "jrng-ui/table",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JTableSkeletonComponent } from 'jrng-ui/table';",
+      "usageExample": "<j-table-skeleton></j-table-skeleton>",
+      "documentationUrl": "https://jrngui.dev/docs/components#table-skeleton",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Tabs",
+      "description": "Angular Tabs component for reusable application interfaces.",
+      "selector": "j-tabs",
+      "category": "Navigation & Menus",
+      "entryPoint": "jrng-ui/tabs",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JTabsComponent } from 'jrng-ui/tabs';",
+      "usageExample": "<j-tabs></j-tabs>",
+      "documentationUrl": "https://jrngui.dev/docs/components#tabs",
+      "stability": "Stable",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Tag",
+      "description": "Angular Tag component for reusable application interfaces.",
+      "selector": "j-tag",
+      "category": "Data Display",
+      "entryPoint": "jrng-ui/tag",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JTagComponent } from 'jrng-ui/tag';",
+      "usageExample": "<j-tag></j-tag>",
+      "documentationUrl": "https://jrngui.dev/docs/components#tag",
+      "stability": "Stable",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Textarea",
+      "description": "Angular Textarea component for reusable application interfaces.",
+      "selector": "j-textarea",
+      "category": "Forms & Inputs",
+      "entryPoint": "jrng-ui/textarea",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JTextareaComponent } from 'jrng-ui/textarea';",
+      "usageExample": "<j-textarea></j-textarea>",
+      "documentationUrl": "https://jrngui.dev/docs/components#textarea",
+      "stability": "Stable",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Tiered Menu",
+      "description": "Angular Tiered Menu component for reusable application interfaces.",
+      "selector": "j-tiered-menu",
+      "category": "Navigation & Menus",
+      "entryPoint": "jrng-ui/tiered-menu",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [],
+      "importExample": "import { JTieredMenuComponent } from 'jrng-ui/tiered-menu';",
+      "usageExample": "<j-tiered-menu></j-tiered-menu>",
+      "documentationUrl": "https://jrngui.dev/docs/components#tiered-menu",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Time Picker",
+      "description": "Angular Time Picker component for reusable application interfaces.",
+      "selector": "j-time-picker",
+      "category": "Forms & Inputs",
+      "entryPoint": "jrng-ui/time-picker",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JTimePickerComponent } from 'jrng-ui/time-picker';",
+      "usageExample": "<j-time-picker></j-time-picker>",
+      "documentationUrl": "https://jrngui.dev/docs/components#time-picker",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Timeline",
+      "description": "Angular Timeline component for reusable application interfaces.",
+      "selector": "j-timeline",
+      "category": "Scheduling & Productivity",
+      "entryPoint": "jrng-ui/timeline",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JTimelineComponent } from 'jrng-ui/timeline';",
+      "usageExample": "<j-timeline></j-timeline>",
+      "documentationUrl": "https://jrngui.dev/docs/components#timeline",
+      "stability": "Stable",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Toast",
+      "description": "Angular Toast component for reusable application interfaces.",
+      "selector": "j-toast",
+      "category": "Overlays & Feedback",
+      "entryPoint": "jrng-ui/toast",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JrToastContainerComponent } from 'jrng-ui/toast';",
+      "usageExample": "<j-toast></j-toast>",
+      "documentationUrl": "https://jrngui.dev/docs/components#toast",
+      "stability": "Stable",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Toggle Button",
+      "description": "Angular Toggle Button component for reusable application interfaces.",
+      "selector": "j-toggle-button",
+      "category": "Forms & Inputs",
+      "entryPoint": "jrng-ui/toggle-button",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JToggleButtonComponent } from 'jrng-ui/toggle-button';",
+      "usageExample": "<j-toggle-button></j-toggle-button>",
+      "documentationUrl": "https://jrngui.dev/docs/components#toggle-button",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Toolbar",
+      "description": "Angular Toolbar component for reusable application interfaces.",
+      "selector": "j-toolbar",
+      "category": "Layout",
+      "entryPoint": "jrng-ui/toolbar",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JToolbarComponent } from 'jrng-ui/toolbar';",
+      "usageExample": "<j-toolbar></j-toolbar>",
+      "documentationUrl": "https://jrngui.dev/docs/components#toolbar",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Topbar",
+      "description": "Angular Topbar component for reusable application interfaces.",
+      "selector": "j-topbar",
+      "category": "Layout",
+      "entryPoint": "jrng-ui/topbar",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JTopbarComponent } from 'jrng-ui/topbar';",
+      "usageExample": "<j-topbar></j-topbar>",
+      "documentationUrl": "https://jrngui.dev/docs/components#topbar",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Transfer List",
+      "description": "Angular Transfer List component for reusable application interfaces.",
+      "selector": "j-transfer-list",
+      "category": "Data & Tables",
+      "entryPoint": "jrng-ui/transfer-list",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JTransferListComponent } from 'jrng-ui/transfer-list';",
+      "usageExample": "<j-transfer-list></j-transfer-list>",
+      "documentationUrl": "https://jrngui.dev/docs/components#transfer-list",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Tree",
+      "description": "Angular Tree component for reusable application interfaces.",
+      "selector": "j-tree",
+      "category": "Data & Tables",
+      "entryPoint": "jrng-ui/tree",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JTreeComponent } from 'jrng-ui/tree';",
+      "usageExample": "<j-tree></j-tree>",
+      "documentationUrl": "https://jrngui.dev/docs/components#tree",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Tree Table",
+      "description": "Angular Tree Table component for reusable application interfaces.",
+      "selector": "j-tree-table",
+      "category": "Data & Tables",
+      "entryPoint": "jrng-ui/tree-table",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JTreeTableComponent } from 'jrng-ui/tree-table';",
+      "usageExample": "<j-tree-table></j-tree-table>",
+      "documentationUrl": "https://jrngui.dev/docs/components#tree-table",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Video Player",
+      "description": "Angular Video Player component for reusable application interfaces.",
+      "selector": "j-video-player",
+      "category": "Media & Visualization",
+      "entryPoint": "jrng-ui/video-player",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JVideoPlayerComponent } from 'jrng-ui/video-player';",
+      "usageExample": "<j-video-player></j-video-player>",
+      "documentationUrl": "https://jrngui.dev/docs/components#video-player",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    },
+    {
+      "name": "Virtual Scroller",
+      "description": "Angular Virtual Scroller component for reusable application interfaces.",
+      "selector": "j-virtual-scroller",
+      "category": "Data & Tables",
+      "entryPoint": "jrng-ui/virtual-scroller",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ],
+      "importExample": "import { JVirtualScrollerComponent } from 'jrng-ui/virtual-scroller';",
+      "usageExample": "<j-virtual-scroller></j-virtual-scroller>",
+      "documentationUrl": "https://jrngui.dev/docs/components#virtual-scroller",
+      "stability": "Beta",
+      "angularCompatibility": "^21.2.0"
+    }
+  ]
+}

@@ -56,6 +56,7 @@ export type JSelectListItem = JSelectGroupItem | JSelectOptionItem;
 export interface JSelectItemContext {
   readonly $implicit: JSelectOptionSource;
   readonly option: JSelectOptionSource;
+  readonly index: number;
   readonly label: string;
   readonly value: unknown;
   readonly selected: boolean;
@@ -416,6 +417,7 @@ export class JSelectComponent implements ControlValueAccessor {
     return {
       $implicit: option.source,
       option: option.source,
+      index,
       label: option.label,
       value: option.value,
       selected: this.sameValue(option.value, this.value),
@@ -445,7 +447,9 @@ export class JSelectComponent implements ControlValueAccessor {
 
     let nextIndex = this.activeIndex;
 
-    for (let attempt = 0; attempt < options.length; attempt += 1) {
+    let attempts = 0;
+    while (attempts < options.length) {
+      attempts += 1;
       nextIndex = (nextIndex + direction + options.length) % options.length;
       if (!options[nextIndex]?.disabled) {
         this.activeIndex = nextIndex;

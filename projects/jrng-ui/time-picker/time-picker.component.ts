@@ -34,12 +34,12 @@ export type JTimePickerHourFormat = 12 | 24;
       [attr.data-j-open]="isOpen ? 'true' : null"
     >
       @if (label) {
-        <label class="j-time-picker__label" [id]="labelId">
+        <span class="j-time-picker__label" [id]="labelId">
           <span>{{ label }}</span>
           @if (required) {
             <span class="j-time-picker__required" aria-hidden="true">*</span>
           }
-        </label>
+        </span>
       }
 
       <button

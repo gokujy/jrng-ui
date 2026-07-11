@@ -24,7 +24,7 @@ import {
           <input
             [placeholder]="filterPlaceholder"
             [value]="sourceFilter"
-            (input)="sourceFilter = $any($event.target).value"
+            (input)="updateSourceFilter($event)"
           />
         }
         <div role="listbox" aria-multiselectable="true" [attr.aria-label]="sourceAriaLabel">
@@ -32,7 +32,7 @@ import {
             <button
               type="button"
               role="option"
-              [class.is-selected]="isSourceSelected(item)"
+              [class.j-is-selected]="isSourceSelected(item)"
               [attr.aria-selected]="isSourceSelected(item)"
               (click)="toggleSource(item)"
             >
@@ -67,7 +67,7 @@ import {
           <input
             [placeholder]="filterPlaceholder"
             [value]="targetFilter"
-            (input)="targetFilter = $any($event.target).value"
+            (input)="updateTargetFilter($event)"
           />
         }
         <div role="listbox" aria-multiselectable="true" [attr.aria-label]="targetAriaLabel">
@@ -75,7 +75,7 @@ import {
             <button
               type="button"
               role="option"
-              [class.is-selected]="isTargetSelected(item)"
+              [class.j-is-selected]="isTargetSelected(item)"
               [attr.aria-selected]="isTargetSelected(item)"
               (click)="toggleTarget(item)"
             >
@@ -128,7 +128,7 @@ import {
         width: 100%;
       }
       .j-transfer-list__pane button:hover,
-      .j-transfer-list__pane button.is-selected {
+      .j-transfer-list__pane button.j-is-selected {
         background: var(--j-color-surface-muted);
         color: var(--j-color-primary);
       }
@@ -195,6 +195,14 @@ export class JTransferListComponent {
     return this.filterOptions(this.normalizedTarget, this.targetFilter);
   }
 
+  updateSourceFilter(event: Event): void {
+    this.sourceFilter = this.inputValue(event);
+  }
+
+  updateTargetFilter(event: Event): void {
+    this.targetFilter = this.inputValue(event);
+  }
+
   toggleSource(item: JNormalizedSelectionOption): void {
     this.sourceSelected = this.toggle(this.sourceSelected, item.value);
   }
@@ -206,6 +214,10 @@ export class JTransferListComponent {
   }
   isTargetSelected(item: JNormalizedSelectionOption): boolean {
     return this.targetSelected.some((value) => jSameSelectionValue(value, item.value));
+  }
+
+  private inputValue(event: Event): string {
+    return event.target instanceof HTMLInputElement ? event.target.value : '';
   }
 
   moveSelectedToTarget(): void {

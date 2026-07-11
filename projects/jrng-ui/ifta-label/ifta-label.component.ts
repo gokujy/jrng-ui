@@ -15,7 +15,7 @@ import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
   selector: 'j-ifta-label',
   imports: [],
   template: `
-    <label
+    <div
       [class]="labelClasses()"
       data-jc-name="ifta-label"
       data-jc-section="root"
@@ -26,7 +26,7 @@ import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
     >
       <span class="j-ifta-label__text" data-jc-section="label">{{ label() }}</span>
       <ng-content></ng-content>
-    </label>
+    </div>
   `,
   styles: [
     `

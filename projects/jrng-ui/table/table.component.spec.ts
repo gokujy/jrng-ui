@@ -225,4 +225,43 @@ describe('JTableComponent', () => {
     expect(exportEvents[0]?.defaultPrevented).toBe(true);
     expect(exportEvents[0]?.rows.length).toBe(3);
   });
+
+  it('recovers safely from corrupted persisted state', () => {
+    const table = fixture.debugElement.query(By.directive(JTableComponent))
+      .componentInstance as JTableComponent;
+    const errors: string[] = [];
+    table.stateKey = 'j-table-corrupt-test';
+    table.stateRestoreError.subscribe((event) => errors.push(event.reason));
+    localStorage.setItem(table.stateKey, '{not-json');
+
+    expect(() => table.restoreState()).not.toThrow();
+    expect(errors).toEqual(['invalid-json']);
+    expect(table.visibleRows.length).toBe(3);
+    localStorage.removeItem(table.stateKey);
+  });
+
+  it('ignores unknown columns and invalid values during state restoration', () => {
+    const table = fixture.debugElement.query(By.directive(JTableComponent))
+      .componentInstance as JTableComponent;
+    table.stateKey = 'j-table-validation-test';
+    localStorage.setItem(
+      table.stateKey,
+      JSON.stringify({
+        version: 1,
+        first: -20,
+        rows: 0,
+        sortField: 'removed-column',
+        sortOrder: 99,
+        hiddenColumns: ['removed-column', 'name'],
+        columnOrder: ['removed-column', 'amount'],
+        columnWidths: { 'removed-column': '10px', amount: '12rem' },
+      }),
+    );
+
+    table.restoreState();
+    expect(table.first).toBe(0);
+    expect(table.sortField).toBe('');
+    expect(table.resolvedColumns.map((column) => column.field)).toEqual(['amount', 'code']);
+    localStorage.removeItem(table.stateKey);
+  });
 });

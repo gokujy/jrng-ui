@@ -6,6 +6,8 @@
 
 JRNG UI is a standalone Angular component library for business and admin applications.
 
+Version 0.0.8 supports Angular 21.2 and uses optional peers for charts and product tours.
+
 ## Install
 
 ```bash
@@ -64,6 +66,7 @@ Dark mode is enabled by adding `j-dark` to a root element.
 - Angular standalone components and directives
 - Secondary entrypoints such as `jrng-ui/button` and `jrng-ui/input`
 - Forms, buttons, overlays, feedback, navigation, business utilities, and data table components
+- Typed SSR-safe utilities for clipboard, storage, breakpoints, keyboard shortcuts, timing, disclosure, and pagination
 - Optional Tour Guide wrapper through `JTourService` and `jTourStep` for apps that install `driver.js`
 - Token-driven light and dark themes
 - CSS variables for component customization
@@ -71,11 +74,15 @@ Dark mode is enabled by adding `j-dark` to a root element.
 - Reactive Forms support where form controls apply
 - Optional peer dependencies for optional features
 
+Browser APIs used by overlays, storage, charts, themes, and tours are guarded for server rendering. Optional features still require their documented browser runtime and peer dependency.
+
 ## Links
 
 - Docs: https://jrngui.dev/
 - GitHub: https://github.com/gokujy/jrng-ui
 - npm: https://www.npmjs.com/package/jrng-ui
+- Changelog: ./CHANGELOG.md
+- v0.0.8 migration: ./docs/migration-0.0.8.md
 
 ## License
 

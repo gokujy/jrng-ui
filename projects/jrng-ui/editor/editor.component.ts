@@ -16,6 +16,7 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { jCreateId } from 'jrng-ui/core';
+import { jIsSafeEditorUrl, jSanitizeEditorHtml } from './editor-sanitizer';
 
 export type JEditorFormat = 'html' | 'text';
 export type JEditorBlock = 'p' | 'h1' | 'h2' | 'h3' | 'blockquote' | 'pre';
@@ -282,7 +283,8 @@ export class JEditorComponent implements ControlValueAccessor {
   }
 
   writeValue(value: string | null): void {
-    this.value.set(value ?? '');
+    const next = value ?? '';
+    this.value.set(this.outputFormat() === 'html' ? this.sanitize(next) : next);
     this.syncView();
   }
 
@@ -307,8 +309,10 @@ export class JEditorComponent implements ControlValueAccessor {
       return;
     }
     const editable = this.editable()?.nativeElement;
-    const next =
+    const raw =
       this.outputFormat() === 'text' ? (editable?.innerText ?? '') : (editable?.innerHTML ?? '');
+    const next = this.outputFormat() === 'text' ? raw : this.sanitize(raw);
+    if (editable && next !== raw) editable.innerHTML = next;
     this.value.set(next);
     this.isEmpty.set(!editable?.textContent?.trim());
     this.onChange(next);
@@ -338,14 +342,14 @@ export class JEditorComponent implements ControlValueAccessor {
 
   createLink(): void {
     const url = this.prompt('Enter URL');
-    if (url) {
+    if (url && this.isSafeUrl(url)) {
       this.execute('createLink', url);
     }
   }
 
   insertImage(): void {
     const url = this.prompt('Enter image URL');
-    if (url) {
+    if (url && this.isSafeUrl(url)) {
       this.execute('insertImage', url);
     }
   }
@@ -357,7 +361,15 @@ export class JEditorComponent implements ControlValueAccessor {
   handlePaste(event: ClipboardEvent): void {
     if (this.readonly() || this.isDisabled()) {
       event.preventDefault();
+      return;
     }
+    const html = event.clipboardData?.getData('text/html');
+    const text = event.clipboardData?.getData('text/plain') ?? '';
+    if (!html && !text) return;
+    event.preventDefault();
+    const safe = html ? this.sanitize(html) : this.escapeText(text);
+    this.documentRef()?.execCommand('insertHTML', false, safe);
+    this.handleInput();
   }
 
   private canEdit(): boolean {
@@ -375,7 +387,10 @@ export class JEditorComponent implements ControlValueAccessor {
         return;
       }
       this.updatingView = true;
-      editable.innerHTML = this.value();
+      editable.innerHTML =
+        this.outputFormat() === 'html'
+          ? this.sanitize(this.value())
+          : this.escapeText(this.value());
       editable.setAttribute('contenteditable', String(!this.isDisabled() && !this.readonly()));
       this.isEmpty.set(!editable.textContent?.trim());
       this.updatingView = false;
@@ -388,5 +403,23 @@ export class JEditorComponent implements ControlValueAccessor {
 
   private prompt(message: string): string {
     return this.documentRef()?.defaultView?.prompt(message) ?? '';
+  }
+
+  private sanitize(value: string): string {
+    const documentRef = this.documentRef();
+    return documentRef ? jSanitizeEditorHtml(value, documentRef) : '';
+  }
+
+  private isSafeUrl(value: string): boolean {
+    const documentRef = this.documentRef();
+    return !!documentRef && jIsSafeEditorUrl(value, documentRef);
+  }
+
+  private escapeText(value: string): string {
+    const documentRef = this.documentRef();
+    if (!documentRef) return '';
+    const element = documentRef.createElement('div');
+    element.textContent = value;
+    return element.innerHTML.replaceAll('\n', '<br>');
   }
 }

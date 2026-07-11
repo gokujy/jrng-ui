@@ -9,7 +9,8 @@ export type JTourEventType =
   | 'skip'
   | 'destroy'
   | 'highlightStarted'
-  | 'deselected';
+  | 'deselected'
+  | 'error';
 
 export interface JTourStep {
   readonly id?: string;
@@ -33,6 +34,7 @@ export interface JTourEvent {
   readonly tourId?: string;
   readonly step?: JTourStep;
   readonly index: number;
+  readonly error?: string;
 }
 
 export interface JTourConfig {
@@ -58,6 +60,7 @@ export interface JTourConfig {
   readonly onDestroy?: (event: JTourEvent) => void;
   readonly onHighlightStarted?: (event: JTourEvent) => void;
   readonly onDeselected?: (event: JTourEvent) => void;
+  readonly onError?: (event: JTourEvent) => void;
 }
 
 export type JTourDefaults = Omit<Partial<JTourConfig>, 'id' | 'steps'>;
