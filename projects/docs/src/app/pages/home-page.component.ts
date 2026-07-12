@@ -53,14 +53,11 @@ interface CategoryPreview {
             </span>
 
             <h1>
-              A modern Angular component library for
-              <span class="docs-home-highlight"
-                >admin panels, dashboards and business applications</span
-              >
+              <span class="docs-home-highlight">Premium UI Suite for Angular</span>
             </h1>
 
             <p>
-              Build responsive Angular business applications with {{ totalComponents }}+ standalone
+              Build responsive admin panels and dashboards with {{ totalComponents }}+ standalone
               components, advanced data tools, accessible themes, SSR support, and modular imports.
             </p>
 
@@ -189,10 +186,9 @@ interface CategoryPreview {
             <span class="docs-eyebrow">Angular business application components</span>
             <h2>A focused Angular design system for operational interfaces.</h2>
             <p>
-              JRNG UI is designed for teams evaluating an Angular Material alternative or PrimeNG
-              alternative for admin panels and business applications. Compare APIs, accessibility,
-              component coverage, maintenance needs, and migration cost against your own
-              requirements.
+              JRNG UI is designed for teams building admin panels and business applications.
+              Evaluate its APIs, accessibility, component coverage, maintenance needs, and
+              migration cost against your own requirements.
             </p>
           </div>
         </section>
