@@ -6,6 +6,7 @@ import {
   ElementRef,
   PLATFORM_ID,
   ViewChild,
+  computed,
   effect,
   inject,
 } from '@angular/core';
@@ -22,7 +23,7 @@ import {
   selector: 'j-confirm-dialog',
   imports: [JFocusTrapDirective],
   template: `
-    @if (confirmationService.confirmation(); as confirmation) {
+    @if (dialogConfirmation(); as confirmation) {
       <div
         class="j-confirm-dialog__backdrop"
         [class]="
@@ -187,6 +188,10 @@ import {
 })
 export class JConfirmDialogComponent {
   readonly confirmationService = inject(JConfirmationService);
+  readonly dialogConfirmation = computed(() => {
+    const confirmation = this.confirmationService.confirmation();
+    return confirmation?.target ? null : confirmation;
+  });
   private readonly documentRef = inject(DOCUMENT);
   private readonly destroyRef = inject(DestroyRef);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
@@ -202,7 +207,7 @@ export class JConfirmDialogComponent {
 
   constructor() {
     effect(() => {
-      const confirmation = this.confirmationService.confirmation();
+      const confirmation = this.dialogConfirmation();
       if (confirmation) {
         this.handleOpened();
         return;
@@ -225,19 +230,19 @@ export class JConfirmDialogComponent {
   }
 
   accept(): void {
-    const confirmation = this.confirmationService.confirmation();
+    const confirmation = this.dialogConfirmation();
     confirmation?.accept?.();
     this.confirmationService.close();
   }
 
   reject(): void {
-    const confirmation = this.confirmationService.confirmation();
+    const confirmation = this.dialogConfirmation();
     confirmation?.reject?.();
     this.confirmationService.close();
   }
 
   handleOverlayMouseDown(event: MouseEvent): void {
-    const confirmation = this.confirmationService.confirmation();
+    const confirmation = this.dialogConfirmation();
     if (event.target === event.currentTarget && confirmation?.closeOnOverlayClick !== false) {
       this.reject();
     }
@@ -274,7 +279,7 @@ export class JConfirmDialogComponent {
   }
 
   private handleDocumentKeydown(event: KeyboardEvent): void {
-    const confirmation = this.confirmationService.confirmation();
+    const confirmation = this.dialogConfirmation();
     if (!confirmation || event.key !== 'Escape' || confirmation.closeOnEscape === false) {
       return;
     }

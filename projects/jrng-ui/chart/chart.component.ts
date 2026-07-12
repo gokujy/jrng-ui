@@ -210,8 +210,7 @@ export class JChartComponent {
     }
 
     try {
-      const specifier = 'chart.js/auto';
-      const module: unknown = await import(specifier);
+      const module: unknown = await import('chart.js/auto');
       const candidate = isRecord(module) ? (module['default'] ?? module['Chart']) : null;
       if (typeof candidate !== 'function') {
         this.loadError.set('Chart renderer is unavailable.');

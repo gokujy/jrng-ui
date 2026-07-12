@@ -59,7 +59,12 @@ export type JIconName =
   | 'code-xml'
   | 'accessibility'
   | 'lightbulb'
-  | 'triangle-alert';
+  | 'triangle-alert'
+  | 'file'
+  | 'file-text'
+  | 'image'
+  | 'video'
+  | 'archive';
 
 export type JIconMap = Readonly<Record<string, string>>;
 
@@ -131,6 +136,13 @@ export const JRNG_DEFAULT_ICONS: JIconMap = {
     'M9 18h6M10 22h4M15.09 14c.18-.98.74-1.86 1.48-2.57A6 6 0 1 0 7.43 11.43c.74.71 1.3 1.59 1.48 2.57h6.18Z',
   'triangle-alert':
     'M12 9v4M12 17h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z',
+  file: 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6ZM14 2v6h6',
+  'file-text':
+    'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6ZM14 2v6h6M8 13h8M8 17h8M8 9h2',
+  image:
+    'M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5ZM8.5 10a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM21 15l-5-5L5 21',
+  video: 'm16 13 5 3V8l-5 3v2ZM3 6h13v12H3V6Z',
+  archive: 'M3 5h18v4H3V5ZM5 9h14v12H5V9ZM10 13h4',
 };
 
 @Injectable({ providedIn: 'root' })

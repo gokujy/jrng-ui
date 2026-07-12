@@ -7,7 +7,7 @@ export const generatedComponentRegistry = [
     selector: 'j-accordion',
     category: 'Navigation & Menus',
     importPath: 'jrng-ui/accordion',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Accordion component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -29,7 +29,7 @@ export const generatedComponentRegistry = [
     selector: 'j-accordion-panel',
     category: 'Navigation & Menus',
     importPath: 'jrng-ui/accordion',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Accordion Panel component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -73,7 +73,7 @@ export const generatedComponentRegistry = [
     selector: 'j-app-shell',
     category: 'Layout',
     importPath: 'jrng-ui/app-shell',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular App Shell component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -90,7 +90,7 @@ export const generatedComponentRegistry = [
     selector: 'j-auth-layout',
     category: 'Layout',
     importPath: 'jrng-ui/auth-layout',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Auth Layout component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -107,7 +107,7 @@ export const generatedComponentRegistry = [
     selector: 'j-autocomplete',
     category: 'Forms & Inputs',
     importPath: 'jrng-ui/autocomplete',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Autocomplete component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -129,7 +129,7 @@ export const generatedComponentRegistry = [
     selector: 'j-avatar',
     category: 'Data Display',
     importPath: 'jrng-ui/avatar',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Avatar component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -146,7 +146,7 @@ export const generatedComponentRegistry = [
     selector: 'j-avatar-group',
     category: 'Data Display',
     importPath: 'jrng-ui/avatar-group',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Avatar Group component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -184,7 +184,7 @@ export const generatedComponentRegistry = [
     selector: 'j-bottom-sheet',
     category: 'Overlays & Feedback',
     importPath: 'jrng-ui/bottom-sheet',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Bottom Sheet component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -245,7 +245,7 @@ export const generatedComponentRegistry = [
     selector: 'j-calendar',
     category: 'Forms & Inputs',
     importPath: 'jrng-ui/calendar',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Calendar component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -262,7 +262,7 @@ export const generatedComponentRegistry = [
     selector: 'j-calendar-scheduler',
     category: 'Scheduling & Productivity',
     importPath: 'jrng-ui/calendar-scheduler',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Calendar Scheduler component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -300,7 +300,7 @@ export const generatedComponentRegistry = [
     selector: 'j-carousel',
     category: 'Media & Visualization',
     importPath: 'jrng-ui/carousel',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Carousel component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -322,7 +322,7 @@ export const generatedComponentRegistry = [
     selector: 'j-chart',
     category: 'Media & Visualization',
     importPath: 'jrng-ui/chart',
-    stability: 'Beta',
+    stability: 'Stable',
     description: 'Angular Chart component for reusable application interfaces.',
     documentationStatus: 'missing',
     testStatus: 'none',
@@ -355,7 +355,7 @@ export const generatedComponentRegistry = [
     selector: 'j-chip',
     category: 'Data Display',
     importPath: 'jrng-ui/chip',
-    stability: 'Beta',
+    stability: 'Stable',
     description: 'Angular Chip component for reusable application interfaces.',
     documentationStatus: 'missing',
     testStatus: 'direct',
@@ -371,7 +371,7 @@ export const generatedComponentRegistry = [
     selector: 'j-chips',
     category: 'Forms & Inputs',
     importPath: 'jrng-ui/chips',
-    stability: 'Beta',
+    stability: 'Stable',
     description: 'Angular Chips component for reusable application interfaces.',
     documentationStatus: 'missing',
     testStatus: 'none',
@@ -387,7 +387,7 @@ export const generatedComponentRegistry = [
     selector: 'j-color-picker',
     category: 'Forms & Inputs',
     importPath: 'jrng-ui/color-picker',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Color Picker component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -409,7 +409,7 @@ export const generatedComponentRegistry = [
     selector: 'j-column',
     category: 'Data & Tables',
     importPath: 'jrng-ui/table',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Column component for reusable application interfaces.',
     documentationStatus: 'entrypoint-covered',
@@ -448,7 +448,7 @@ export const generatedComponentRegistry = [
     selector: 'j-combobox',
     category: 'Forms & Inputs',
     importPath: 'jrng-ui/combobox',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Combobox component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -465,7 +465,7 @@ export const generatedComponentRegistry = [
     selector: 'j-command-palette',
     category: 'Navigation & Menus',
     importPath: 'jrng-ui/command-palette',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Command Palette component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -509,7 +509,7 @@ export const generatedComponentRegistry = [
     selector: 'j-confirm-popup',
     category: 'Overlays & Feedback',
     importPath: 'jrng-ui/confirm-popup',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Confirm Popup component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -531,7 +531,7 @@ export const generatedComponentRegistry = [
     selector: 'j-container',
     category: 'Layout',
     importPath: 'jrng-ui/container',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Container component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -548,7 +548,7 @@ export const generatedComponentRegistry = [
     selector: 'j-context-menu',
     category: 'Navigation & Menus',
     importPath: 'jrng-ui/context-menu',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Context Menu component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -592,7 +592,7 @@ export const generatedComponentRegistry = [
     selector: 'j-dashboard-layout',
     category: 'Layout',
     importPath: 'jrng-ui/dashboard-layout',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Dashboard Layout component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -614,7 +614,7 @@ export const generatedComponentRegistry = [
     selector: 'j-data-grid',
     category: 'Data & Tables',
     importPath: 'jrng-ui/data-grid',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Data Grid component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -636,7 +636,7 @@ export const generatedComponentRegistry = [
     selector: 'j-data-view',
     category: 'Data & Tables',
     importPath: 'jrng-ui/data-view',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Data View component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -658,7 +658,7 @@ export const generatedComponentRegistry = [
     selector: 'j-date-picker',
     category: 'Forms & Inputs',
     importPath: 'jrng-ui/date-picker',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Date Picker component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -680,7 +680,7 @@ export const generatedComponentRegistry = [
     selector: 'j-date-range-picker',
     category: 'Forms & Inputs',
     importPath: 'jrng-ui/date-range-picker',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Date Range Picker component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -719,7 +719,7 @@ export const generatedComponentRegistry = [
     selector: 'j-divider',
     category: 'Data Display',
     importPath: 'jrng-ui/divider',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Divider component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -753,7 +753,7 @@ export const generatedComponentRegistry = [
     selector: 'j-dropzone',
     category: 'Media & Visualization',
     importPath: 'jrng-ui/dropzone',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Dropzone component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -775,7 +775,7 @@ export const generatedComponentRegistry = [
     selector: 'j-dynamic-dialog',
     category: 'Overlays & Feedback',
     importPath: 'jrng-ui/dynamic-dialog',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Dynamic Dialog component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -797,7 +797,7 @@ export const generatedComponentRegistry = [
     selector: 'j-editor',
     category: 'Forms & Inputs',
     importPath: 'jrng-ui/editor',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Editor component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -814,7 +814,7 @@ export const generatedComponentRegistry = [
     selector: 'j-empty-page',
     category: 'Status Pages',
     importPath: 'jrng-ui/empty-page',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Empty Page component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -858,7 +858,7 @@ export const generatedComponentRegistry = [
     selector: 'j-error-page',
     category: 'Status Pages',
     importPath: 'jrng-ui/error-page',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Error Page component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -880,7 +880,7 @@ export const generatedComponentRegistry = [
     selector: 'j-fieldset',
     category: 'Layout',
     importPath: 'jrng-ui/fieldset',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Fieldset component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -897,7 +897,7 @@ export const generatedComponentRegistry = [
     selector: 'j-file-preview',
     category: 'Media & Visualization',
     importPath: 'jrng-ui/file-preview',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular File Preview component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -941,7 +941,7 @@ export const generatedComponentRegistry = [
     selector: 'j-filter-bar',
     category: 'Data & Tables',
     importPath: 'jrng-ui/filter-bar',
-    stability: 'New',
+    stability: 'Stable',
     description:
       'Angular Filter Bar component for reusable application interfaces.',
     documentationStatus: 'dedicated-record',
@@ -963,7 +963,7 @@ export const generatedComponentRegistry = [
     selector: 'j-float-label',
     category: 'Forms & Inputs',
     importPath: 'jrng-ui/float-label',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Float Label component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -985,7 +985,7 @@ export const generatedComponentRegistry = [
     selector: 'j-form-field',
     category: 'Forms & Inputs',
     importPath: 'jrng-ui/form-field',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Form Field component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -1007,7 +1007,7 @@ export const generatedComponentRegistry = [
     selector: 'j-gallery',
     category: 'Media & Visualization',
     importPath: 'jrng-ui/gallery',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Gallery component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -1029,7 +1029,7 @@ export const generatedComponentRegistry = [
     selector: 'j-gantt',
     category: 'Scheduling & Productivity',
     importPath: 'jrng-ui/gantt',
-    stability: 'Beta',
+    stability: 'Stable',
     description: 'Angular Gantt component for reusable application interfaces.',
     documentationStatus: 'missing',
     testStatus: 'none',
@@ -1050,7 +1050,7 @@ export const generatedComponentRegistry = [
     selector: 'j-grid-layout',
     category: 'Layout',
     importPath: 'jrng-ui/grid-layout',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Grid Layout component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -1067,7 +1067,7 @@ export const generatedComponentRegistry = [
     selector: 'j-icon',
     category: 'Data Display',
     importPath: 'jrng-ui/icon',
-    stability: 'Beta',
+    stability: 'Stable',
     description: 'Angular Icon component for reusable application interfaces.',
     documentationStatus: 'missing',
     testStatus: 'none',
@@ -1083,7 +1083,7 @@ export const generatedComponentRegistry = [
     selector: 'j-icon-field',
     category: 'Forms & Inputs',
     importPath: 'jrng-ui/icon-field',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Icon Field component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -1105,7 +1105,7 @@ export const generatedComponentRegistry = [
     selector: 'j-ifta-label',
     category: 'Forms & Inputs',
     importPath: 'jrng-ui/ifta-label',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Ifta Label component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -1127,7 +1127,7 @@ export const generatedComponentRegistry = [
     selector: 'j-image',
     category: 'Media & Visualization',
     importPath: 'jrng-ui/image-preview',
-    stability: 'Beta',
+    stability: 'Stable',
     description: 'Angular Image component for reusable application interfaces.',
     documentationStatus: 'missing',
     testStatus: 'none',
@@ -1148,7 +1148,7 @@ export const generatedComponentRegistry = [
     selector: 'j-image-preview',
     category: 'Media & Visualization',
     importPath: 'jrng-ui/image-preview',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Image Preview component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -1186,7 +1186,7 @@ export const generatedComponentRegistry = [
     selector: 'j-input-group',
     category: 'Forms & Inputs',
     importPath: 'jrng-ui/input-group',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Input Group component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -1208,7 +1208,7 @@ export const generatedComponentRegistry = [
     selector: 'j-input-icon',
     category: 'Forms & Inputs',
     importPath: 'jrng-ui/input-icon',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Input Icon component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -1230,7 +1230,7 @@ export const generatedComponentRegistry = [
     selector: 'j-input-mask',
     category: 'Forms & Inputs',
     importPath: 'jrng-ui/input-mask',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Input Mask component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -1252,7 +1252,7 @@ export const generatedComponentRegistry = [
     selector: 'j-input-number',
     category: 'Forms & Inputs',
     importPath: 'jrng-ui/input-number',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Input Number component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -1274,7 +1274,7 @@ export const generatedComponentRegistry = [
     selector: 'j-input-otp',
     category: 'Forms & Inputs',
     importPath: 'jrng-ui/input-otp',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Input OTP component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -1296,7 +1296,7 @@ export const generatedComponentRegistry = [
     selector: 'j-kanban',
     category: 'Scheduling & Productivity',
     importPath: 'jrng-ui/kanban',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Kanban component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -1318,7 +1318,7 @@ export const generatedComponentRegistry = [
     selector: 'j-knob',
     category: 'Forms & Inputs',
     importPath: 'jrng-ui/knob',
-    stability: 'Beta',
+    stability: 'Stable',
     description: 'Angular Knob component for reusable application interfaces.',
     documentationStatus: 'missing',
     testStatus: 'none',
@@ -1334,7 +1334,7 @@ export const generatedComponentRegistry = [
     selector: 'j-listbox',
     category: 'Forms & Inputs',
     importPath: 'jrng-ui/listbox',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Listbox component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -1351,7 +1351,7 @@ export const generatedComponentRegistry = [
     selector: 'j-loader',
     category: 'Data Display',
     importPath: 'jrng-ui/loader',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Loader component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -1368,7 +1368,7 @@ export const generatedComponentRegistry = [
     selector: 'j-maintenance-page',
     category: 'Status Pages',
     importPath: 'jrng-ui/maintenance-page',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Maintenance Page component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -1390,7 +1390,7 @@ export const generatedComponentRegistry = [
     selector: 'j-mega-menu',
     category: 'Navigation & Menus',
     importPath: 'jrng-ui/mega-menu',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Mega Menu component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -1428,7 +1428,7 @@ export const generatedComponentRegistry = [
     selector: 'j-menubar',
     category: 'Navigation & Menus',
     importPath: 'jrng-ui/menubar',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Menubar component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -1445,7 +1445,7 @@ export const generatedComponentRegistry = [
     selector: 'j-meter-group',
     category: 'Data Display',
     importPath: 'jrng-ui/meter-group',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Meter Group component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -1489,7 +1489,7 @@ export const generatedComponentRegistry = [
     selector: 'j-multiselect',
     category: 'Forms & Inputs',
     importPath: 'jrng-ui/multiselect',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Multiselect component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -1511,7 +1511,7 @@ export const generatedComponentRegistry = [
     selector: 'j-notification-center',
     category: 'Overlays & Feedback',
     importPath: 'jrng-ui/notification-center',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Notification Center component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -1533,7 +1533,7 @@ export const generatedComponentRegistry = [
     selector: 'j-order-list',
     category: 'Data & Tables',
     importPath: 'jrng-ui/order-list',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Order List component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -1555,7 +1555,7 @@ export const generatedComponentRegistry = [
     selector: 'j-org-chart',
     category: 'Scheduling & Productivity',
     importPath: 'jrng-ui/org-chart',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Org Chart component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -1577,7 +1577,7 @@ export const generatedComponentRegistry = [
     selector: 'j-overlay-panel',
     category: 'Overlays & Feedback',
     importPath: 'jrng-ui/overlay-panel',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Overlay Panel component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -1616,7 +1616,7 @@ export const generatedComponentRegistry = [
     selector: 'j-paginator',
     category: 'Data & Tables',
     importPath: 'jrng-ui/paginator',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Paginator component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -1638,7 +1638,7 @@ export const generatedComponentRegistry = [
     selector: 'j-panel',
     category: 'Layout',
     importPath: 'jrng-ui/panel',
-    stability: 'Beta',
+    stability: 'Stable',
     description: 'Angular Panel component for reusable application interfaces.',
     documentationStatus: 'missing',
     testStatus: 'none',
@@ -1654,7 +1654,7 @@ export const generatedComponentRegistry = [
     selector: 'j-password',
     category: 'Forms & Inputs',
     importPath: 'jrng-ui/password',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Password component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -1671,7 +1671,7 @@ export const generatedComponentRegistry = [
     selector: 'j-pick-list',
     category: 'Data & Tables',
     importPath: 'jrng-ui/pick-list',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Pick List component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -1693,7 +1693,7 @@ export const generatedComponentRegistry = [
     selector: 'j-popover',
     category: 'Overlays & Feedback',
     importPath: 'jrng-ui/popover',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Popover component for reusable application interfaces.',
     documentationStatus: 'dedicated-record',
@@ -1737,7 +1737,7 @@ export const generatedComponentRegistry = [
     selector: 'j-progress-spinner',
     category: 'Data Display',
     importPath: 'jrng-ui/progress-spinner',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Progress Spinner component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -1775,7 +1775,7 @@ export const generatedComponentRegistry = [
     selector: 'j-radio-group',
     category: 'Forms & Inputs',
     importPath: 'jrng-ui/radio-group',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Radio Group component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -1797,7 +1797,7 @@ export const generatedComponentRegistry = [
     selector: 'j-rating',
     category: 'Forms & Inputs',
     importPath: 'jrng-ui/rating',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Rating component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -1836,7 +1836,7 @@ export const generatedComponentRegistry = [
     selector: 'j-section-footer',
     category: 'Layout',
     importPath: 'jrng-ui/section-footer',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Section Footer component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -1858,7 +1858,7 @@ export const generatedComponentRegistry = [
     selector: 'j-section-header',
     category: 'Layout',
     importPath: 'jrng-ui/section-header',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Section Header component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -1897,7 +1897,7 @@ export const generatedComponentRegistry = [
     selector: 'j-select-button',
     category: 'Forms & Inputs',
     importPath: 'jrng-ui/select-button',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Select Button component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -1919,7 +1919,7 @@ export const generatedComponentRegistry = [
     selector: 'j-sidebar-layout',
     category: 'Layout',
     importPath: 'jrng-ui/sidebar-layout',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Sidebar Layout component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -1941,7 +1941,7 @@ export const generatedComponentRegistry = [
     selector: 'j-sidebar-nav',
     category: 'Navigation & Menus',
     importPath: 'jrng-ui/sidebar-nav',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Sidebar Nav component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -1980,7 +1980,7 @@ export const generatedComponentRegistry = [
     selector: 'j-slider',
     category: 'Forms & Inputs',
     importPath: 'jrng-ui/slider',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Slider component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -1997,7 +1997,7 @@ export const generatedComponentRegistry = [
     selector: 'j-sort-icon',
     category: 'Data & Tables',
     importPath: 'jrng-ui/table',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Sort Icon component for reusable application interfaces.',
     documentationStatus: 'entrypoint-covered',
@@ -2014,7 +2014,7 @@ export const generatedComponentRegistry = [
     selector: 'j-sparkline',
     category: 'Media & Visualization',
     importPath: 'jrng-ui/sparkline',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Sparkline component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -2036,7 +2036,7 @@ export const generatedComponentRegistry = [
     selector: 'j-splitter',
     category: 'Layout',
     importPath: 'jrng-ui/splitter',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Splitter component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -2053,7 +2053,7 @@ export const generatedComponentRegistry = [
     selector: 'j-stack',
     category: 'Layout',
     importPath: 'jrng-ui/stack',
-    stability: 'Beta',
+    stability: 'Stable',
     description: 'Angular Stack component for reusable application interfaces.',
     documentationStatus: 'missing',
     testStatus: 'none',
@@ -2108,7 +2108,7 @@ export const generatedComponentRegistry = [
     selector: 'j-stepper',
     category: 'Navigation & Menus',
     importPath: 'jrng-ui/stepper',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Stepper component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -2142,7 +2142,7 @@ export const generatedComponentRegistry = [
     selector: 'j-tab',
     category: 'Navigation & Menus',
     importPath: 'jrng-ui/tabs',
-    stability: 'Beta',
+    stability: 'Stable',
     description: 'Angular Tab component for reusable application interfaces.',
     documentationStatus: 'entrypoint-covered',
     testStatus: 'none',
@@ -2174,7 +2174,7 @@ export const generatedComponentRegistry = [
     selector: 'j-table-empty-state',
     category: 'Data & Tables',
     importPath: 'jrng-ui/table',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Table Empty State component for reusable application interfaces.',
     documentationStatus: 'entrypoint-covered',
@@ -2196,7 +2196,7 @@ export const generatedComponentRegistry = [
     selector: 'j-table-skeleton',
     category: 'Data & Tables',
     importPath: 'jrng-ui/table',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Table Skeleton component for reusable application interfaces.',
     documentationStatus: 'entrypoint-covered',
@@ -2267,7 +2267,7 @@ export const generatedComponentRegistry = [
     selector: 'j-tiered-menu',
     category: 'Navigation & Menus',
     importPath: 'jrng-ui/tiered-menu',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Tiered Menu component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -2289,7 +2289,7 @@ export const generatedComponentRegistry = [
     selector: 'j-time-picker',
     category: 'Forms & Inputs',
     importPath: 'jrng-ui/time-picker',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Time Picker component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -2349,7 +2349,7 @@ export const generatedComponentRegistry = [
     selector: 'j-toggle-button',
     category: 'Forms & Inputs',
     importPath: 'jrng-ui/toggle-button',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Toggle Button component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -2371,7 +2371,7 @@ export const generatedComponentRegistry = [
     selector: 'j-toolbar',
     category: 'Layout',
     importPath: 'jrng-ui/toolbar',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Toolbar component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -2388,7 +2388,7 @@ export const generatedComponentRegistry = [
     selector: 'j-topbar',
     category: 'Layout',
     importPath: 'jrng-ui/topbar',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Topbar component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -2405,7 +2405,7 @@ export const generatedComponentRegistry = [
     selector: 'j-transfer-list',
     category: 'Data & Tables',
     importPath: 'jrng-ui/transfer-list',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Transfer List component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -2427,7 +2427,7 @@ export const generatedComponentRegistry = [
     selector: 'j-tree',
     category: 'Data & Tables',
     importPath: 'jrng-ui/tree',
-    stability: 'Beta',
+    stability: 'Stable',
     description: 'Angular Tree component for reusable application interfaces.',
     documentationStatus: 'missing',
     testStatus: 'none',
@@ -2443,7 +2443,7 @@ export const generatedComponentRegistry = [
     selector: 'j-tree-table',
     category: 'Data & Tables',
     importPath: 'jrng-ui/tree-table',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Tree Table component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -2465,7 +2465,7 @@ export const generatedComponentRegistry = [
     selector: 'j-video-player',
     category: 'Media & Visualization',
     importPath: 'jrng-ui/video-player',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Video Player component for reusable application interfaces.',
     documentationStatus: 'missing',
@@ -2487,7 +2487,7 @@ export const generatedComponentRegistry = [
     selector: 'j-virtual-scroller',
     category: 'Data & Tables',
     importPath: 'jrng-ui/virtual-scroller',
-    stability: 'Beta',
+    stability: 'Stable',
     description:
       'Angular Virtual Scroller component for reusable application interfaces.',
     documentationStatus: 'missing',

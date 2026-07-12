@@ -5,7 +5,9 @@ import { JConfirmationService } from './confirmation.service';
 
 describe('JConfirmDialogComponent', () => {
   beforeEach(async () => {
-    await TestBed.configureTestingModule({ imports: [JConfirmDialogComponent] }).compileComponents();
+    await TestBed.configureTestingModule({
+      imports: [JConfirmDialogComponent],
+    }).compileComponents();
   });
 
   it('labels the alert dialog, focuses the accept action, traps focus, and restores focus', async () => {
@@ -18,12 +20,17 @@ describe('JConfirmDialogComponent', () => {
     fixture.detectChanges();
     await Promise.resolve();
 
-    const panel = fixture.debugElement.query(By.css('[role="alertdialog"]')).nativeElement as HTMLElement;
+    const panel = fixture.debugElement.query(By.css('[role="alertdialog"]'))
+      .nativeElement as HTMLElement;
     const buttons = fixture.debugElement.queryAll(By.css('.j-confirm-dialog__button'));
     const cancel = buttons[0].nativeElement as HTMLButtonElement;
     const accept = buttons[1].nativeElement as HTMLButtonElement;
-    expect(document.getElementById(panel.getAttribute('aria-labelledby') ?? '')?.textContent).toContain('Remove product?');
-    expect(document.getElementById(panel.getAttribute('aria-describedby') ?? '')?.textContent).toContain('cannot be undone');
+    expect(
+      document.getElementById(panel.getAttribute('aria-labelledby') ?? '')?.textContent,
+    ).toContain('Remove product?');
+    expect(
+      document.getElementById(panel.getAttribute('aria-describedby') ?? '')?.textContent,
+    ).toContain('cannot be undone');
     expect(document.activeElement).toBe(accept);
     accept.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true }));
     expect(document.activeElement).toBe(cancel);
@@ -42,11 +49,26 @@ describe('JConfirmDialogComponent', () => {
     service.confirm({ message: 'Continue?', closeOnEscape: false, closeOnOverlayClick: false });
     fixture.detectChanges();
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
-    const backdrop = fixture.debugElement.query(By.css('.j-confirm-dialog__backdrop')).nativeElement as HTMLElement;
+    const backdrop = fixture.debugElement.query(By.css('.j-confirm-dialog__backdrop'))
+      .nativeElement as HTMLElement;
     backdrop.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
     expect(service.confirmation()).not.toBeNull();
 
     service.close();
     fixture.detectChanges();
+  });
+
+  it('does not render targeted confirmations that belong to confirm popup', () => {
+    const fixture = TestBed.createComponent(JConfirmDialogComponent);
+    const service = TestBed.inject(JConfirmationService);
+    const target = document.createElement('button');
+    document.body.append(target);
+
+    service.confirm({ target, message: 'Archive this project?' });
+    fixture.detectChanges();
+
+    expect(fixture.debugElement.query(By.css('[role="alertdialog"]'))).toBeNull();
+    service.close();
+    target.remove();
   });
 });

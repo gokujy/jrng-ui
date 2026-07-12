@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, input, booleanAttribute } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+  booleanAttribute,
+} from '@angular/core';
 
 export type JStatTrend = 'up' | 'down' | 'neutral';
 
@@ -26,7 +32,10 @@ export type JStatTrend = 'up' | 'down' | 'neutral';
           }
         </div>
         @if (trend()) {
-          <span class="j-stat-card__trend" [class]="'j-stat-card__trend j-stat-card__trend--' + trend()">
+          <span
+            class="j-stat-card__trend"
+            [class]="'j-stat-card__trend j-stat-card__trend--' + trend()"
+          >
             {{ trendLabel() }}
           </span>
         }
@@ -40,7 +49,11 @@ export type JStatTrend = 'up' | 'down' | 'neutral';
   styles: [
     `
       .j-stat-card {
-        background: var(--j-color-card);
+        background: linear-gradient(
+          145deg,
+          var(--j-color-card) 0%,
+          color-mix(in srgb, var(--j-color-primary) 5%, var(--j-color-card)) 100%
+        );
         border: 1px solid var(--j-color-border);
         border-radius: var(--j-card-radius, var(--j-radius-lg));
         box-shadow: var(--j-shadow-sm);
@@ -48,6 +61,16 @@ export type JStatTrend = 'up' | 'down' | 'neutral';
         display: grid;
         gap: var(--j-spacing-3);
         padding: var(--j-spacing-4);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .j-stat-card::before {
+        background: var(--j-color-primary);
+        content: '';
+        height: 3px;
+        inset: 0 0 auto;
+        position: absolute;
       }
 
       .j-stat-card__header {
@@ -71,11 +94,12 @@ export type JStatTrend = 'up' | 'down' | 'neutral';
 
       .j-stat-card__icon {
         align-items: center;
-        background: var(--j-color-muted);
+        background: color-mix(in srgb, var(--j-color-primary) 12%, var(--j-color-card));
         border-radius: var(--j-radius-md);
         display: inline-flex;
         height: 2.5rem;
         justify-content: center;
+        color: var(--j-color-primary);
         width: 2.5rem;
       }
 
@@ -104,7 +128,12 @@ export type JStatTrend = 'up' | 'down' | 'neutral';
 
       .j-stat-card__skeleton {
         animation: j-stat-card-pulse 1.2s ease-in-out infinite;
-        background: linear-gradient(90deg, var(--j-color-muted), var(--j-color-surface-subtle), var(--j-color-muted));
+        background: linear-gradient(
+          90deg,
+          var(--j-color-muted),
+          var(--j-color-surface-subtle),
+          var(--j-color-muted)
+        );
         border-radius: var(--j-radius-md);
         min-height: 6rem;
       }
@@ -128,5 +157,7 @@ export class JStatCardComponent {
   readonly loading = input(false, { transform: booleanAttribute });
   readonly styleClass = input('');
 
-  readonly cardClasses = computed(() => ['j-stat-card', this.styleClass()].filter(Boolean).join(' '));
+  readonly cardClasses = computed(() =>
+    ['j-stat-card', this.styleClass()].filter(Boolean).join(' '),
+  );
 }

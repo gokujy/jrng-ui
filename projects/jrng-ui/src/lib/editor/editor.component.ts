@@ -15,7 +15,8 @@ import {
   viewChild,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { jCreateId } from '../core/id';
+import { jCreateId } from 'jrng-ui/core';
+import { jIsSafeEditorUrl, jSanitizeEditorHtml } from './editor-sanitizer';
 
 export type JEditorFormat = 'html' | 'text';
 export type JEditorBlock = 'p' | 'h1' | 'h2' | 'h3' | 'blockquote' | 'pre';
@@ -45,15 +46,58 @@ export type JEditorBlock = 'p' | 'h1' | 'h2' | 'h3' | 'blockquote' | 'pre';
       }
 
       <div class="j-editor__surface">
-        <div class="j-editor__toolbar" data-jc-section="toolbar" role="toolbar" [attr.aria-label]="toolbarLabel()">
+        <div
+          class="j-editor__toolbar"
+          data-jc-section="toolbar"
+          role="toolbar"
+          [attr.aria-label]="toolbarLabel()"
+          (mousedown)="handleToolbarMouseDown($event)"
+        >
           @if (toolbarTemplate(); as template) {
             <ng-container [ngTemplateOutlet]="template" />
           } @else {
-            <button type="button" class="j-editor__tool" [disabled]="isDisabled()" (click)="execute('bold')" aria-label="Bold">B</button>
-            <button type="button" class="j-editor__tool" [disabled]="isDisabled()" (click)="execute('italic')" aria-label="Italic">I</button>
-            <button type="button" class="j-editor__tool" [disabled]="isDisabled()" (click)="execute('underline')" aria-label="Underline">U</button>
-            <button type="button" class="j-editor__tool" [disabled]="isDisabled()" (click)="execute('strikeThrough')" aria-label="Strike">S</button>
-            <select class="j-editor__select" [disabled]="isDisabled()" (change)="setBlock($event)" aria-label="Block style">
+            <button
+              type="button"
+              class="j-editor__tool"
+              [disabled]="isDisabled()"
+              (click)="execute('bold')"
+              aria-label="Bold"
+            >
+              B
+            </button>
+            <button
+              type="button"
+              class="j-editor__tool"
+              [disabled]="isDisabled()"
+              (click)="execute('italic')"
+              aria-label="Italic"
+            >
+              I
+            </button>
+            <button
+              type="button"
+              class="j-editor__tool"
+              [disabled]="isDisabled()"
+              (click)="execute('underline')"
+              aria-label="Underline"
+            >
+              U
+            </button>
+            <button
+              type="button"
+              class="j-editor__tool"
+              [disabled]="isDisabled()"
+              (click)="execute('strikeThrough')"
+              aria-label="Strike"
+            >
+              S
+            </button>
+            <select
+              class="j-editor__select"
+              [disabled]="isDisabled()"
+              (change)="setBlock($event)"
+              aria-label="Block style"
+            >
               <option value="p">Paragraph</option>
               <option value="h1">Heading 1</option>
               <option value="h2">Heading 2</option>
@@ -61,11 +105,96 @@ export type JEditorBlock = 'p' | 'h1' | 'h2' | 'h3' | 'blockquote' | 'pre';
               <option value="blockquote">Quote</option>
               <option value="pre">Code block</option>
             </select>
-            <button type="button" class="j-editor__tool" [disabled]="isDisabled()" (click)="execute('insertOrderedList')" aria-label="Ordered list">1.</button>
-            <button type="button" class="j-editor__tool" [disabled]="isDisabled()" (click)="execute('insertUnorderedList')" aria-label="Unordered list">-</button>
-            <button type="button" class="j-editor__tool" [disabled]="isDisabled()" (click)="createLink()" aria-label="Link">Link</button>
-            <button type="button" class="j-editor__tool" [disabled]="isDisabled()" (click)="insertImage()" aria-label="Image">Image</button>
-            <button type="button" class="j-editor__tool" [disabled]="isDisabled()" (click)="clearFormatting()" aria-label="Clear formatting">Clear</button>
+            <button
+              type="button"
+              class="j-editor__tool"
+              [disabled]="isDisabled()"
+              (click)="execute('insertOrderedList')"
+              aria-label="Ordered list"
+            >
+              1.
+            </button>
+            <button
+              type="button"
+              class="j-editor__tool"
+              [disabled]="isDisabled()"
+              (click)="execute('insertUnorderedList')"
+              aria-label="Unordered list"
+            >
+              -
+            </button>
+            <button
+              type="button"
+              class="j-editor__tool"
+              [disabled]="isDisabled()"
+              (click)="createLink()"
+              aria-label="Link"
+            >
+              Link
+            </button>
+            <button
+              type="button"
+              class="j-editor__tool"
+              [disabled]="isDisabled()"
+              (click)="insertImage()"
+              aria-label="Image"
+            >
+              Image
+            </button>
+            <button
+              type="button"
+              class="j-editor__tool"
+              [disabled]="isDisabled()"
+              (click)="clearFormatting()"
+              aria-label="Clear formatting"
+            >
+              Clear
+            </button>
+            <button
+              type="button"
+              class="j-editor__tool"
+              [disabled]="isDisabled()"
+              (click)="execute('justifyLeft')"
+              aria-label="Align left"
+            >
+              Left
+            </button>
+            <button
+              type="button"
+              class="j-editor__tool"
+              [disabled]="isDisabled()"
+              (click)="execute('justifyCenter')"
+              aria-label="Align center"
+            >
+              Center
+            </button>
+            <button
+              type="button"
+              class="j-editor__tool"
+              [disabled]="isDisabled()"
+              (click)="execute('justifyRight')"
+              aria-label="Align right"
+            >
+              Right
+            </button>
+            <button
+              type="button"
+              class="j-editor__tool"
+              [disabled]="isDisabled()"
+              (click)="execute('undo')"
+              aria-label="Undo"
+            >
+              Undo
+            </button>
+            <button
+              type="button"
+              class="j-editor__tool"
+              [disabled]="isDisabled()"
+              (click)="execute('redo')"
+              aria-label="Redo"
+            >
+              Redo
+            </button>
           }
         </div>
 
@@ -83,6 +212,8 @@ export type JEditorBlock = 'p' | 'h1' | 'h2' | 'h3' | 'blockquote' | 'pre';
           [class.is-empty]="isEmpty()"
           (input)="handleInput()"
           (blur)="markTouched()"
+          (mouseup)="rememberSelection()"
+          (keyup)="rememberSelection()"
           (paste)="handlePaste($event)"
         ></div>
       </div>
@@ -170,6 +301,7 @@ export type JEditorBlock = 'p' | 'h1' | 'h2' | 'h3' | 'blockquote' | 'pre';
 export class JEditorComponent implements ControlValueAccessor {
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   private updatingView = false;
+  private savedRange: Range | null = null;
 
   readonly label = input('');
   readonly placeholder = input('');
@@ -184,7 +316,9 @@ export class JEditorComponent implements ControlValueAccessor {
   readonly valueChange = output<string>();
 
   readonly editable = viewChild<ElementRef<HTMLElement>>('editable');
-  readonly toolbarTemplate = contentChild<unknown, TemplateRef<unknown>>('jEditorToolbar', { read: TemplateRef });
+  readonly toolbarTemplate = contentChild<unknown, TemplateRef<unknown>>('jEditorToolbar', {
+    read: TemplateRef,
+  });
   readonly value = signal('');
   readonly formDisabled = signal(false);
   readonly isEmpty = signal(true);
@@ -198,7 +332,8 @@ export class JEditorComponent implements ControlValueAccessor {
   }
 
   writeValue(value: string | null): void {
-    this.value.set(value ?? '');
+    const next = value ?? '';
+    this.value.set(this.outputFormat() === 'html' ? this.sanitize(next) : next);
     this.syncView();
   }
 
@@ -223,7 +358,10 @@ export class JEditorComponent implements ControlValueAccessor {
       return;
     }
     const editable = this.editable()?.nativeElement;
-    const next = this.outputFormat() === 'text' ? editable?.innerText ?? '' : editable?.innerHTML ?? '';
+    const raw =
+      this.outputFormat() === 'text' ? (editable?.innerText ?? '') : (editable?.innerHTML ?? '');
+    const next = this.outputFormat() === 'text' ? raw : this.sanitize(raw);
+    if (editable && next !== raw) editable.innerHTML = next;
     this.value.set(next);
     this.isEmpty.set(!editable?.textContent?.trim());
     this.onChange(next);
@@ -238,9 +376,26 @@ export class JEditorComponent implements ControlValueAccessor {
     if (!this.canEdit()) {
       return;
     }
-    this.focusEditable();
+    this.restoreSelection();
     this.documentRef()?.execCommand(command, false, value);
     this.handleInput();
+    this.rememberSelection();
+  }
+
+  handleToolbarMouseDown(event: MouseEvent): void {
+    if ((event.target as HTMLElement | null)?.closest('button')) {
+      event.preventDefault();
+    }
+  }
+
+  rememberSelection(): void {
+    const editable = this.editable()?.nativeElement;
+    const selection = this.documentRef()?.getSelection();
+    if (!editable || !selection?.rangeCount) return;
+    const range = selection.getRangeAt(0);
+    if (editable.contains(range.commonAncestorContainer)) {
+      this.savedRange = range.cloneRange();
+    }
   }
 
   setBlock(event: Event): void {
@@ -253,14 +408,14 @@ export class JEditorComponent implements ControlValueAccessor {
 
   createLink(): void {
     const url = this.prompt('Enter URL');
-    if (url) {
+    if (url && this.isSafeUrl(url)) {
       this.execute('createLink', url);
     }
   }
 
   insertImage(): void {
     const url = this.prompt('Enter image URL');
-    if (url) {
+    if (url && this.isSafeUrl(url)) {
       this.execute('insertImage', url);
     }
   }
@@ -272,7 +427,15 @@ export class JEditorComponent implements ControlValueAccessor {
   handlePaste(event: ClipboardEvent): void {
     if (this.readonly() || this.isDisabled()) {
       event.preventDefault();
+      return;
     }
+    const html = event.clipboardData?.getData('text/html');
+    const text = event.clipboardData?.getData('text/plain') ?? '';
+    if (!html && !text) return;
+    event.preventDefault();
+    const safe = html ? this.sanitize(html) : this.escapeText(text);
+    this.documentRef()?.execCommand('insertHTML', false, safe);
+    this.handleInput();
   }
 
   private canEdit(): boolean {
@@ -283,6 +446,14 @@ export class JEditorComponent implements ControlValueAccessor {
     this.editable()?.nativeElement.focus();
   }
 
+  private restoreSelection(): void {
+    this.focusEditable();
+    if (!this.savedRange) return;
+    const selection = this.documentRef()?.getSelection();
+    selection?.removeAllRanges();
+    selection?.addRange(this.savedRange);
+  }
+
   private syncView(): void {
     queueMicrotask(() => {
       const editable = this.editable()?.nativeElement;
@@ -290,7 +461,10 @@ export class JEditorComponent implements ControlValueAccessor {
         return;
       }
       this.updatingView = true;
-      editable.innerHTML = this.value();
+      editable.innerHTML =
+        this.outputFormat() === 'html'
+          ? this.sanitize(this.value())
+          : this.escapeText(this.value());
       editable.setAttribute('contenteditable', String(!this.isDisabled() && !this.readonly()));
       this.isEmpty.set(!editable.textContent?.trim());
       this.updatingView = false;
@@ -303,5 +477,23 @@ export class JEditorComponent implements ControlValueAccessor {
 
   private prompt(message: string): string {
     return this.documentRef()?.defaultView?.prompt(message) ?? '';
+  }
+
+  private sanitize(value: string): string {
+    const documentRef = this.documentRef();
+    return documentRef ? jSanitizeEditorHtml(value, documentRef) : '';
+  }
+
+  private isSafeUrl(value: string): boolean {
+    const documentRef = this.documentRef();
+    return !!documentRef && jIsSafeEditorUrl(value, documentRef);
+  }
+
+  private escapeText(value: string): string {
+    const documentRef = this.documentRef();
+    if (!documentRef) return '';
+    const element = documentRef.createElement('div');
+    element.textContent = value;
+    return element.innerHTML.replaceAll('\n', '<br>');
   }
 }

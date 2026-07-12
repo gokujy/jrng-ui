@@ -62,17 +62,25 @@ try {
   );
 
   const tsc = join(workspace, 'node_modules', 'typescript', 'bin', 'tsc');
-  const result = spawnSync(process.execPath, [tsc, '--noEmit', '-p', join(temporaryDirectory, 'tsconfig.json')], {
-    cwd: workspace,
-    encoding: 'utf8',
-  });
+  const result = spawnSync(
+    process.execPath,
+    [tsc, '--noEmit', '-p', join(temporaryDirectory, 'tsconfig.json')],
+    {
+      cwd: workspace,
+      encoding: 'utf8',
+    },
+  );
   if (result.status !== 0) {
     process.stderr.write(result.stdout ?? '');
-    process.stderr.write(result.stderr ?? result.error?.message ?? 'Public API compilation failed.');
+    process.stderr.write(
+      result.stderr ?? result.error?.message ?? 'Public API compilation failed.',
+    );
     process.exit(result.status ?? 1);
   }
 
-  console.log(`Verified ${entryPoints.length} public entry points with a strict consumer compilation.`);
+  console.log(
+    `Verified ${entryPoints.length} public entry points with a strict consumer compilation.`,
+  );
 } finally {
   await rm(temporaryDirectory, { recursive: true, force: true });
 }

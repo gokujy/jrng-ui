@@ -61,6 +61,43 @@ export type JPopoverPosition = 'top' | 'right' | 'bottom' | 'left';
         box-shadow: var(--j-focus-ring);
         outline: none;
       }
+
+      .j-popover__arrow {
+        background: var(--j-color-popover);
+        border: 1px solid var(--j-color-border);
+        height: 0.75rem;
+        position: absolute;
+        transform: rotate(45deg);
+        width: 0.75rem;
+      }
+
+      .j-popover--bottom .j-popover__arrow {
+        border-bottom: 0;
+        border-right: 0;
+        left: 1.25rem;
+        top: -0.42rem;
+      }
+
+      .j-popover--top .j-popover__arrow {
+        border-left: 0;
+        border-top: 0;
+        bottom: -0.42rem;
+        left: 1.25rem;
+      }
+
+      .j-popover--right .j-popover__arrow {
+        border-right: 0;
+        border-top: 0;
+        left: -0.42rem;
+        top: 1.25rem;
+      }
+
+      .j-popover--left .j-popover__arrow {
+        border-bottom: 0;
+        border-left: 0;
+        right: -0.42rem;
+        top: 1.25rem;
+      }
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -12,11 +12,11 @@ import {
   ViewChild,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { jAriaDescribedBy } from '../core/aria';
-import { jCreateId } from '../core/id';
-import { JPassThrough, jMergePartClasses } from '../core/pass-through';
-import { JSize } from '../core/types';
-import { JInputVariant } from '../input/input.component';
+import { jAriaDescribedBy } from 'jrng-ui/core';
+import { jCreateId } from 'jrng-ui/core';
+import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
+import { JSize } from 'jrng-ui/core';
+import { JInputVariant } from 'jrng-ui/input';
 
 @Component({
   selector: 'j-textarea',
@@ -86,6 +86,7 @@ import { JInputVariant } from '../input/input.component';
     `
       :host {
         display: block;
+        width: 100%;
       }
 
       .j-textarea__label {
@@ -105,6 +106,7 @@ import { JInputVariant } from '../input/input.component';
         background: var(--j-color-surface);
         border: 1px solid var(--j-color-border);
         border-radius: var(--j-radius-md);
+        box-sizing: border-box;
         color: var(--j-color-text);
         display: block;
         font: inherit;
@@ -113,7 +115,7 @@ import { JInputVariant } from '../input/input.component';
         padding: var(--j-spacing-md);
         resize: vertical;
         transition: var(--j-transition-colors), var(--j-transition-shadow);
-        width: auto;
+        width: 100%;
       }
 
       .j-textarea__clear {

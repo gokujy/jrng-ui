@@ -110,8 +110,8 @@ export interface JFilterBarValue {
         color: var(--j-filter-bar-color, var(--j-color-card-foreground, #111827));
         display: grid;
         gap: var(--j-spacing-3, 0.75rem);
-        grid-template-columns: minmax(12rem, 1fr) repeat(3, minmax(8rem, auto)) auto;
-        padding: var(--j-spacing-3, 0.75rem);
+        grid-template-columns: minmax(14rem, 1.5fr) repeat(3, minmax(9rem, 1fr));
+        padding: var(--j-spacing-4, 1rem);
       }
 
       .j-filter-bar__search,
@@ -147,6 +147,7 @@ export interface JFilterBarValue {
         display: flex;
         flex-wrap: wrap;
         gap: var(--j-spacing-2, 0.5rem);
+        grid-column: 1 / -1;
         justify-content: flex-end;
       }
 

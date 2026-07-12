@@ -19,6 +19,8 @@ export interface JGalleryItem {
   readonly caption?: string;
 }
 
+export type JGalleryAnimation = 'fade' | 'zoom' | 'slide' | 'none';
+
 @Component({
   selector: 'j-gallery',
   imports: [JImagePreviewComponent],
@@ -26,7 +28,13 @@ export interface JGalleryItem {
     <section class="j-gallery" [class]="styleClass()" data-jc-name="gallery" data-jc-section="root">
       @if (activeItem(); as item) {
         <button class="j-gallery__stage" type="button" (click)="previewVisible.set(true)">
-          <img [src]="item.src" [alt]="item.alt || ''" />
+          @for (active of [item]; track active.src) {
+            <img
+              [class]="'j-gallery__image j-gallery__image--' + animation()"
+              [src]="active.src"
+              [alt]="active.alt || ''"
+            />
+          }
           @if (item.caption) {
             <span>{{ item.caption }}</span>
           }
@@ -80,6 +88,38 @@ export interface JGalleryItem {
         width: 100%;
       }
 
+      .j-gallery__image--fade {
+        animation: j-gallery-fade 320ms ease-out;
+      }
+
+      .j-gallery__image--zoom {
+        animation: j-gallery-zoom 360ms ease-out;
+      }
+
+      .j-gallery__image--slide {
+        animation: j-gallery-slide 360ms ease-out;
+      }
+
+      @keyframes j-gallery-fade {
+        from {
+          opacity: 0;
+        }
+      }
+
+      @keyframes j-gallery-zoom {
+        from {
+          opacity: 0;
+          transform: scale(1.04);
+        }
+      }
+
+      @keyframes j-gallery-slide {
+        from {
+          opacity: 0;
+          transform: translateX(1.5rem);
+        }
+      }
+
       .j-gallery__stage span {
         color: var(--j-color-muted-foreground);
         padding: var(--j-spacing-3);
@@ -123,6 +163,7 @@ export class JGalleryComponent {
   readonly value = input<readonly JGalleryItem[]>([]);
   readonly activeIndex = model(0);
   readonly styleClass = input('');
+  readonly animation = input<JGalleryAnimation>('fade');
   readonly previewVisible = model(false);
   readonly activeItem = computed(() => this.value()[this.activeIndex()] ?? null);
 

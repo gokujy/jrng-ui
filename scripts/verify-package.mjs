@@ -119,13 +119,28 @@ function verifyEntrypoints(packageJson) {
     .map((entry) => `./${entry.name}`)
     .sort();
 
-  for (const entrypoint of ['.', './styles', './theme', './registry', './registry/schema', './package.json', ...expectedEntrypoints]) {
+  for (const entrypoint of [
+    '.',
+    './styles',
+    './theme',
+    './registry',
+    './registry/schema',
+    './package.json',
+    ...expectedEntrypoints,
+  ]) {
     if (!packageJson.exports?.[entrypoint]) {
       fail(`Expected package export is missing: ${entrypoint}.`);
     }
   }
 
-  const allowedExports = new Set(['.', './styles', './registry', './registry/schema', './package.json', ...expectedEntrypoints]);
+  const allowedExports = new Set([
+    '.',
+    './styles',
+    './registry',
+    './registry/schema',
+    './package.json',
+    ...expectedEntrypoints,
+  ]);
   for (const entrypoint of Object.keys(packageJson.exports ?? {})) {
     if (!allowedExports.has(entrypoint)) {
       fail(`Unexpected package export: ${entrypoint}.`);
@@ -137,7 +152,7 @@ function verifyFileAllowlist(files) {
   const allowedPath =
     /^(?:README\.md|LICENSE|CHANGELOG\.md|package\.json|fesm2022\/[^/]+\.mjs|types\/[^/]+\.d\.ts|theme\/(?:.+\.(?:css|scss))|registry\/(?:registry|schema)\.json)$/;
   const privateFilePattern = new RegExp(
-    '(?:^|/)(?:\\.env(?:\\.|$)|coverage(?:/|$)|__tests__(?:/|$)|[^/]+\\.(?:spec|test)\\.|screenshots?(?:/|$)|prompts?(?:/|$)|instructions?(?:/|$))',
+    '(?:^|/)(?:\\.env(?:\\.|$)|coverage(?:/|$)|test-results?(?:/|$)|__tests__(?:/|$)|[^/]+\\.(?:spec|test)\\.|screenshots?(?:/|$)|prompts?(?:/|$)|instructions?(?:/|$)|AGENTS\\.md$|llms\\.txt$|AI_USAGE\\.md$|(?:dev|development)[-_ ]?notes?(?:\\.|/|$)|private(?:\\.|/|$)|temp(?:orary)?(?:\\.|/|$)|tmp(?:\\.|/|$))',
     'i',
   );
   const forbiddenNames = privateTerms();
@@ -205,9 +220,9 @@ function verifySizeBudgets(report) {
 function privateTerms() {
   const builtInTerms = [
     ['B', 'D', 'M', 'S'].join(''),
-    ['Cl', 'aude'].join(''),
-    ['Co', 'dex'].join(''),
-    ['Chat', 'GPT'].join(''),
+    'internal ai instruction',
+    'internal development prompt',
+    'private project document',
   ];
   const configuredTerms = (process.env.JRNG_ADDITIONAL_FORBIDDEN_TERMS ?? '')
     .split(',')

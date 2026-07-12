@@ -15,8 +15,8 @@ import {
   model,
   output,
 } from '@angular/core';
-import { JClickOutsideDirective } from '../core/click-outside.directive';
-import { JZIndexManagerService } from '../core/z-index-manager.service';
+import { JClickOutsideDirective } from 'jrng-ui/core';
+import { JZIndexManagerService } from 'jrng-ui/core';
 
 export type JPopoverPosition = 'top' | 'right' | 'bottom' | 'left';
 
@@ -60,6 +60,43 @@ export type JPopoverPosition = 'top' | 'right' | 'bottom' | 'left';
       .j-popover:focus-visible {
         box-shadow: var(--j-focus-ring);
         outline: none;
+      }
+
+      .j-popover__arrow {
+        background: var(--j-color-popover);
+        border: 1px solid var(--j-color-border);
+        height: 0.75rem;
+        position: absolute;
+        transform: rotate(45deg);
+        width: 0.75rem;
+      }
+
+      .j-popover--bottom .j-popover__arrow {
+        border-bottom: 0;
+        border-right: 0;
+        left: 1.25rem;
+        top: -0.42rem;
+      }
+
+      .j-popover--top .j-popover__arrow {
+        border-left: 0;
+        border-top: 0;
+        bottom: -0.42rem;
+        left: 1.25rem;
+      }
+
+      .j-popover--right .j-popover__arrow {
+        border-right: 0;
+        border-top: 0;
+        left: -0.42rem;
+        top: 1.25rem;
+      }
+
+      .j-popover--left .j-popover__arrow {
+        border-bottom: 0;
+        border-left: 0;
+        right: -0.42rem;
+        top: 1.25rem;
       }
     `,
   ],
@@ -105,12 +142,16 @@ export class JPopoverComponent {
     });
 
     if (this.isBrowser) {
-      const removeKeydown = this.renderer.listen(this.documentRef, 'keydown', (event: KeyboardEvent) => {
-        if (this.visible() && this.closeOnEscape && event.key === 'Escape') {
-          event.preventDefault();
-          this.hide();
-        }
-      });
+      const removeKeydown = this.renderer.listen(
+        this.documentRef,
+        'keydown',
+        (event: KeyboardEvent) => {
+          if (this.visible() && this.closeOnEscape && event.key === 'Escape') {
+            event.preventDefault();
+            this.hide();
+          }
+        },
+      );
       this.destroyRef.onDestroy(removeKeydown);
     }
   }

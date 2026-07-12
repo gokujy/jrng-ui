@@ -1,5 +1,16 @@
-import { booleanAttribute, ChangeDetectionStrategy, Component, ElementRef, HostListener, computed, inject, input, signal } from '@angular/core';
-import { JPassThrough, jMergePartClasses } from '../core/pass-through';
+import {
+  booleanAttribute,
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  HostListener,
+  computed,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
+import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
 
 @Component({
   selector: 'j-float-label',
@@ -15,7 +26,7 @@ import { JPassThrough, jMergePartClasses } from '../core/pass-through';
       [attr.data-j-invalid]="invalid() ? 'true' : null"
     >
       <ng-content></ng-content>
-      <label class="j-float-label__label" data-jc-section="label">{{ label() }}</label>
+      <span class="j-float-label__label" data-jc-section="label">{{ label() }}</span>
     </span>
   `,
   styles: [
@@ -37,7 +48,9 @@ import { JPassThrough, jMergePartClasses } from '../core/pass-through';
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
-        transition: var(--j-transition-colors), transform var(--j-duration-fast) var(--j-ease-standard);
+        transition:
+          var(--j-transition-colors),
+          transform var(--j-duration-fast) var(--j-ease-standard);
       }
 
       .j-float-label.is-filled .j-float-label__label,
@@ -59,7 +72,7 @@ import { JPassThrough, jMergePartClasses } from '../core/pass-through';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class JFloatLabelComponent {
+export class JFloatLabelComponent implements AfterViewInit {
   private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
 
   readonly label = input('');
@@ -104,10 +117,14 @@ export class JFloatLabelComponent {
     this.syncFilled();
   }
 
+  ngAfterViewInit(): void {
+    queueMicrotask(() => this.syncFilled());
+  }
+
   private syncFilled(): void {
-    const control = this.elementRef.nativeElement.querySelector<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>(
-      'input, textarea, select',
-    );
+    const control = this.elementRef.nativeElement.querySelector<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >('input, textarea, select');
     this.filled.set(!!control?.value);
   }
 }

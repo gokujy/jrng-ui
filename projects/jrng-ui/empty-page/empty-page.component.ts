@@ -24,11 +24,21 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   styles: [
     `
       .j-empty-page {
+        background:
+          radial-gradient(
+            circle at 50% 18%,
+            color-mix(in srgb, var(--j-color-primary) 14%, transparent),
+            transparent 32%
+          ),
+          var(--j-color-card);
+        border: 1px solid var(--j-color-border);
+        border-radius: var(--j-radius-xl);
         display: grid;
         gap: var(--j-spacing-3);
         margin: 0 auto;
         max-width: 38rem;
-        min-height: 50dvh;
+        min-height: 28rem;
+        padding: var(--j-spacing-8);
         place-content: center;
         text-align: center;
       }
@@ -38,10 +48,12 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
         background: var(--j-color-muted);
         border-radius: var(--j-radius-full);
         display: inline-flex;
-        height: 3rem;
+        color: var(--j-color-primary);
+        font-size: var(--j-font-size-lg);
+        height: 4rem;
         justify-content: center;
         justify-self: center;
-        width: 3rem;
+        width: 4rem;
       }
 
       .j-empty-page h1 {

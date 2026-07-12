@@ -6,7 +6,10 @@ import {
   output,
   viewChild,
   ElementRef,
+  computed,
+  inject,
 } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'j-video-player',
@@ -18,20 +21,30 @@ import {
       data-jc-name="video-player"
       data-jc-section="root"
     >
-      <video
-        #video
-        class="j-video-player__media"
-        [src]="src()"
-        [poster]="poster() || null"
-        [controls]="controls()"
-        [muted]="muted()"
-        [loop]="loop()"
-        [autoplay]="autoplay()"
-        [attr.aria-label]="ariaLabel()"
-        (play)="played.emit()"
-        (pause)="paused.emit()"
-        (ended)="ended.emit()"
-      ></video>
+      @if (embedUrl(); as url) {
+        <iframe
+          class="j-video-player__media j-video-player__embed"
+          [src]="url"
+          [title]="ariaLabel()"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+      } @else {
+        <video
+          #video
+          class="j-video-player__media"
+          [src]="src()"
+          [poster]="poster() || null"
+          [controls]="controls()"
+          [muted]="muted()"
+          [loop]="loop()"
+          [autoplay]="autoplay()"
+          [attr.aria-label]="ariaLabel()"
+          (play)="played.emit()"
+          (pause)="paused.emit()"
+          (ended)="ended.emit()"
+        ></video>
+      }
       @if (caption()) {
         <figcaption>{{ caption() }}</figcaption>
       }
@@ -50,9 +63,14 @@ import {
       }
 
       .j-video-player__media {
+        aspect-ratio: 16 / 9;
         background: black;
         display: block;
         width: 100%;
+      }
+
+      .j-video-player__embed {
+        border: 0;
       }
 
       .j-video-player figcaption {
@@ -64,6 +82,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JVideoPlayerComponent {
+  private readonly sanitizer = inject(DomSanitizer);
   readonly src = input('');
   readonly poster = input('');
   readonly caption = input('');
@@ -79,6 +98,14 @@ export class JVideoPlayerComponent {
   readonly ended = output<void>();
 
   readonly video = viewChild<ElementRef<HTMLVideoElement>>('video');
+  readonly embedUrl = computed(() => {
+    const id = this.youtubeId(this.src());
+    return id
+      ? this.sanitizer.bypassSecurityTrustResourceUrl(
+          `https://www.youtube-nocookie.com/embed/${id}?rel=0`,
+        )
+      : null;
+  });
 
   play(): void {
     void this.video()?.nativeElement.play();
@@ -86,5 +113,12 @@ export class JVideoPlayerComponent {
 
   pause(): void {
     this.video()?.nativeElement.pause();
+  }
+
+  private youtubeId(url: string): string {
+    const match = url.match(
+      /(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{6,})/,
+    );
+    return match?.[1] ?? '';
   }
 }

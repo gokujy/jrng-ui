@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, booleanAttribute, computed, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  booleanAttribute,
+  computed,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 
 export interface JFilterBarValue {
   readonly search: string;
@@ -12,7 +20,12 @@ export interface JFilterBarValue {
   selector: 'j-filter-bar',
   imports: [],
   template: `
-    <section class="j-filter-bar" [class.is-advanced]="advanced()" data-jc-name="filter-bar" data-jc-section="root">
+    <section
+      class="j-filter-bar"
+      [class.is-advanced]="advanced()"
+      data-jc-name="filter-bar"
+      data-jc-section="root"
+    >
       <label class="j-filter-bar__search">
         <span>{{ searchLabel() }}</span>
         <input
@@ -53,16 +66,29 @@ export interface JFilterBarValue {
 
       <div class="j-filter-bar__actions">
         @if (showAdvancedToggle()) {
-          <button type="button" class="j-filter-bar__button" [attr.aria-expanded]="advanced()" (click)="toggleAdvanced()">
+          <button
+            type="button"
+            class="j-filter-bar__button"
+            [attr.aria-expanded]="advanced()"
+            (click)="toggleAdvanced()"
+          >
             {{ advanced() ? hideAdvancedLabel() : showAdvancedLabel() }}
           </button>
         }
-        <button type="button" class="j-filter-bar__button" (click)="resetFilters()">{{ resetLabel() }}</button>
-        <button type="button" class="j-filter-bar__button j-filter-bar__button--primary" (click)="applyFilters()">
+        <button type="button" class="j-filter-bar__button" (click)="resetFilters()">
+          {{ resetLabel() }}
+        </button>
+        <button
+          type="button"
+          class="j-filter-bar__button j-filter-bar__button--primary"
+          (click)="applyFilters()"
+        >
           {{ applyLabel() }}
         </button>
         @if (showExport()) {
-          <button type="button" class="j-filter-bar__button" (click)="export.emit(value())">{{ exportLabel() }}</button>
+          <button type="button" class="j-filter-bar__button" (click)="export.emit(value())">
+            {{ exportLabel() }}
+          </button>
         }
         <ng-content select="[jFilterBarActions]"></ng-content>
       </div>
@@ -84,8 +110,8 @@ export interface JFilterBarValue {
         color: var(--j-filter-bar-color, var(--j-color-card-foreground, #111827));
         display: grid;
         gap: var(--j-spacing-3, 0.75rem);
-        grid-template-columns: minmax(12rem, 1fr) repeat(3, minmax(8rem, auto)) auto;
-        padding: var(--j-spacing-3, 0.75rem);
+        grid-template-columns: minmax(14rem, 1.5fr) repeat(3, minmax(9rem, 1fr));
+        padding: var(--j-spacing-4, 1rem);
       }
 
       .j-filter-bar__search,
@@ -121,6 +147,7 @@ export interface JFilterBarValue {
         display: flex;
         flex-wrap: wrap;
         gap: var(--j-spacing-2, 0.5rem);
+        grid-column: 1 / -1;
         justify-content: flex-end;
       }
 

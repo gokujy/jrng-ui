@@ -57,7 +57,7 @@
                 "input": "projects/docs/public"
               }
             ],
-            "styles": ["projects/docs/src/styles.scss"]
+            "styles": ["node_modules/driver.js/dist/driver.css", "projects/docs/src/styles.scss"]
           },
           "configurations": {
             "production": {
@@ -100,6 +100,46 @@
         },
         "test": {
           "builder": "@angular/build:unit-test"
+        }
+      }
+    },
+    "admin-starter": {
+      "projectType": "application",
+      "root": "projects/admin-starter",
+      "sourceRoot": "projects/admin-starter/src",
+      "prefix": "admin",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "browser": "projects/admin-starter/src/main.ts",
+            "tsConfig": "projects/admin-starter/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "styles": ["projects/admin-starter/src/styles.scss"]
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                { "type": "initial", "maximumWarning": "800kB", "maximumError": "1.5MB" },
+                { "type": "anyComponentStyle", "maximumWarning": "12kB", "maximumError": "18kB" }
+              ],
+              "outputHashing": "all"
+            },
+            "development": { "optimization": false, "extractLicenses": false, "sourceMap": true }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "configurations": {
+            "production": { "buildTarget": "admin-starter:build:production" },
+            "development": { "buildTarget": "admin-starter:build:development" }
+          },
+          "defaultConfiguration": "development"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": { "tsConfig": "projects/admin-starter/tsconfig.spec.json" }
         }
       }
     }

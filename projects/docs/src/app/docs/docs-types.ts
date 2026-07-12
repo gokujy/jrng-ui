@@ -1,4 +1,4 @@
-export type DocsStatus = 'Stable' | 'Beta' | 'New' | 'Coming soon';
+export type DocsStatus = 'Stable';
 
 export interface DocsApiRow {
   readonly name: string;

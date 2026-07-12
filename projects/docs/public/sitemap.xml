@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://jrngui.dev/</loc></url>
+  <url><loc>https://jrngui.dev/docs</loc></url>
+  <url><loc>https://jrngui.dev/docs/components</loc></url>
+  <url><loc>https://jrngui.dev/docs/index</loc></url>
+  <url><loc>https://jrngui.dev/docs/charts</loc></url>
+  <url><loc>https://jrngui.dev/themes</loc></url>
+  <url><loc>https://jrngui.dev/examples</loc></url>
+  <url><loc>https://jrngui.dev/admin-starter</loc></url>
+  <url><loc>https://jrngui.dev/guides</loc></url>
+  <url><loc>https://jrngui.dev/community</loc></url>
+  <url><loc>https://jrngui.dev/guides/admin-dashboard</loc></url>
+  <url><loc>https://jrngui.dev/guides/server-side-data-table</loc></url>
+  <url><loc>https://jrngui.dev/guides/reactive-forms</loc></url>
+  <url><loc>https://jrngui.dev/guides/dark-mode</loc></url>
+  <url><loc>https://jrngui.dev/guides/confirmation-workflows</loc></url>
+  <url><loc>https://jrngui.dev/guides/responsive-business-layouts</loc></url>
+  <url><loc>https://jrngui.dev/guides/ssr</loc></url>
+  <url><loc>https://jrngui.dev/guides/zoneless</loc></url>
+</urlset>

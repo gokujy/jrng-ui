@@ -51,6 +51,7 @@ export type JEditorBlock = 'p' | 'h1' | 'h2' | 'h3' | 'blockquote' | 'pre';
           data-jc-section="toolbar"
           role="toolbar"
           [attr.aria-label]="toolbarLabel()"
+          (mousedown)="handleToolbarMouseDown($event)"
         >
           @if (toolbarTemplate(); as template) {
             <ng-container [ngTemplateOutlet]="template" />
@@ -149,6 +150,51 @@ export type JEditorBlock = 'p' | 'h1' | 'h2' | 'h3' | 'blockquote' | 'pre';
             >
               Clear
             </button>
+            <button
+              type="button"
+              class="j-editor__tool"
+              [disabled]="isDisabled()"
+              (click)="execute('justifyLeft')"
+              aria-label="Align left"
+            >
+              Left
+            </button>
+            <button
+              type="button"
+              class="j-editor__tool"
+              [disabled]="isDisabled()"
+              (click)="execute('justifyCenter')"
+              aria-label="Align center"
+            >
+              Center
+            </button>
+            <button
+              type="button"
+              class="j-editor__tool"
+              [disabled]="isDisabled()"
+              (click)="execute('justifyRight')"
+              aria-label="Align right"
+            >
+              Right
+            </button>
+            <button
+              type="button"
+              class="j-editor__tool"
+              [disabled]="isDisabled()"
+              (click)="execute('undo')"
+              aria-label="Undo"
+            >
+              Undo
+            </button>
+            <button
+              type="button"
+              class="j-editor__tool"
+              [disabled]="isDisabled()"
+              (click)="execute('redo')"
+              aria-label="Redo"
+            >
+              Redo
+            </button>
           }
         </div>
 
@@ -166,6 +212,8 @@ export type JEditorBlock = 'p' | 'h1' | 'h2' | 'h3' | 'blockquote' | 'pre';
           [class.is-empty]="isEmpty()"
           (input)="handleInput()"
           (blur)="markTouched()"
+          (mouseup)="rememberSelection()"
+          (keyup)="rememberSelection()"
           (paste)="handlePaste($event)"
         ></div>
       </div>
@@ -253,6 +301,7 @@ export type JEditorBlock = 'p' | 'h1' | 'h2' | 'h3' | 'blockquote' | 'pre';
 export class JEditorComponent implements ControlValueAccessor {
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   private updatingView = false;
+  private savedRange: Range | null = null;
 
   readonly label = input('');
   readonly placeholder = input('');
@@ -327,9 +376,26 @@ export class JEditorComponent implements ControlValueAccessor {
     if (!this.canEdit()) {
       return;
     }
-    this.focusEditable();
+    this.restoreSelection();
     this.documentRef()?.execCommand(command, false, value);
     this.handleInput();
+    this.rememberSelection();
+  }
+
+  handleToolbarMouseDown(event: MouseEvent): void {
+    if ((event.target as HTMLElement | null)?.closest('button')) {
+      event.preventDefault();
+    }
+  }
+
+  rememberSelection(): void {
+    const editable = this.editable()?.nativeElement;
+    const selection = this.documentRef()?.getSelection();
+    if (!editable || !selection?.rangeCount) return;
+    const range = selection.getRangeAt(0);
+    if (editable.contains(range.commonAncestorContainer)) {
+      this.savedRange = range.cloneRange();
+    }
   }
 
   setBlock(event: Event): void {
@@ -378,6 +444,14 @@ export class JEditorComponent implements ControlValueAccessor {
 
   private focusEditable(): void {
     this.editable()?.nativeElement.focus();
+  }
+
+  private restoreSelection(): void {
+    this.focusEditable();
+    if (!this.savedRange) return;
+    const selection = this.documentRef()?.getSelection();
+    selection?.removeAllRanges();
+    selection?.addRange(this.savedRange);
   }
 
   private syncView(): void {

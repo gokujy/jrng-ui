@@ -19,11 +19,13 @@ if (failures.length) {
 }
 
 for (const args of [
+  ['run', 'typecheck'],
   ['run', 'lint'],
   ['run', 'test'],
   ['run', 'build:lib'],
   ['run', 'verify:api'],
   ['run', 'verify:registry'],
+  ['run', 'verify:docs-links'],
   ['run', 'build:docs:app'],
   ['run', 'verify:package', '--', '--skip-build'],
 ]) {
@@ -80,7 +82,7 @@ function verifyChangelog() {
 }
 
 function verifyPublicSourcePrivacy() {
-  const roots = ['projects/jrng-ui', 'projects/docs', 'docs'];
+  const roots = ['projects/jrng-ui', 'projects/docs', 'projects/admin-starter', 'docs'];
   const rootFiles = ['CHANGELOG.md', 'CONTRIBUTING.md', 'README.md', 'package.json'];
   const forbiddenTerms = privateTerms();
   const absolutePathPatterns = [
@@ -114,9 +116,9 @@ function verifyPublicSourcePrivacy() {
 function privateTerms() {
   const builtInTerms = [
     ['B', 'D', 'M', 'S'].join(''),
-    ['Cl', 'aude'].join(''),
-    ['Co', 'dex'].join(''),
-    ['Chat', 'GPT'].join(''),
+    'internal ai instruction',
+    'internal development prompt',
+    'private project document',
   ];
   const configuredTerms = (process.env.JRNG_ADDITIONAL_FORBIDDEN_TERMS ?? '')
     .split(',')

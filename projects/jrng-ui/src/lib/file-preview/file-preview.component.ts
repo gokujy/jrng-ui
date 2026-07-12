@@ -1,11 +1,30 @@
-import { ChangeDetectionStrategy, Component, booleanAttribute, computed, input, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  booleanAttribute,
+  computed,
+  input,
+  output,
+} from '@angular/core';
+import { JIconComponent } from 'jrng-ui/icon';
 
 @Component({
   selector: 'j-file-preview',
-  imports: [],
+  imports: [JIconComponent],
   template: `
-    <article class="j-file-preview" [class]="styleClass()" data-jc-name="file-preview" data-jc-section="root">
-      <div class="j-file-preview__icon" aria-hidden="true">{{ extension() }}</div>
+    <article
+      class="j-file-preview"
+      [class]="styleClass()"
+      data-jc-name="file-preview"
+      data-jc-section="root"
+    >
+      <div class="j-file-preview__icon" aria-hidden="true">
+        @if (showTypeLabel()) {
+          <span>{{ typeLabel() || extension() }}</span>
+        } @else {
+          <j-icon [name]="resolvedIcon()" size="1.35rem" />
+        }
+      </div>
       <div class="j-file-preview__body">
         <strong>{{ name() }}</strong>
         @if (sizeLabel()) {
@@ -17,7 +36,9 @@ import { ChangeDetectionStrategy, Component, booleanAttribute, computed, input, 
       </div>
       <div class="j-file-preview__actions">
         @if (url()) {
-          <a [href]="url()" target="_blank" rel="noreferrer" (click)="preview.emit()">{{ previewLabel() }}</a>
+          <a [href]="url()" target="_blank" rel="noreferrer" (click)="preview.emit()">{{
+            previewLabel()
+          }}</a>
         }
         <button type="button" (click)="download.emit()">{{ downloadLabel() }}</button>
         @if (removable()) {
@@ -105,6 +126,9 @@ export class JFilePreviewComponent {
   readonly previewLabel = input('Preview');
   readonly downloadLabel = input('Download');
   readonly removeLabel = input('Remove');
+  readonly icon = input('');
+  readonly typeLabel = input('');
+  readonly showTypeLabel = input(false, { transform: booleanAttribute });
   readonly removable = input(true, { transform: booleanAttribute });
   readonly styleClass = input('');
 
@@ -113,7 +137,18 @@ export class JFilePreviewComponent {
   readonly download = output<void>();
 
   readonly name = computed(() => this.file()?.name || this.fileName());
-  readonly extension = computed(() => this.name().split('.').pop()?.slice(0, 4).toUpperCase() || 'FILE');
+  readonly extension = computed(
+    () => this.name().split('.').pop()?.slice(0, 4).toUpperCase() || 'FILE',
+  );
+  readonly resolvedIcon = computed(() => {
+    if (this.icon()) return this.icon();
+    const extension = this.extension().toLocaleLowerCase();
+    if (['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'].includes(extension)) return 'image';
+    if (['mp4', 'webm', 'mov'].includes(extension)) return 'video';
+    if (['zip', 'rar', '7z'].includes(extension)) return 'archive';
+    if (['txt', 'md', 'doc', 'docx', 'pdf'].includes(extension)) return 'file-text';
+    return 'file';
+  });
   readonly sizeLabel = computed(() => {
     const size = this.file()?.size || this.fileSize();
     if (!size) {

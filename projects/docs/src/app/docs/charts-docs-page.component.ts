@@ -1,22 +1,28 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { JBadgeComponent } from 'jrng-ui/badge';
 import { JChartComponent } from 'jrng-ui/chart';
 import { JIconComponent } from 'jrng-ui/icon';
 import { JSkeletonComponent } from 'jrng-ui/skeleton';
 import { CodeBlockComponent } from './code-block.component';
-import { chartDataCode, chartEvents, chartInputs, chartInstallCode, chartOptionsCode, chartTypeDocs } from './chart-docs.data';
+import {
+  chartDataCode,
+  chartEvents,
+  chartInputs,
+  chartInstallCode,
+  chartOptionsCode,
+  chartTypeDocs,
+} from './chart-docs.data';
 
 @Component({
   selector: 'app-charts-docs-page',
-  imports: [RouterLink, CodeBlockComponent, JBadgeComponent, JChartComponent, JIconComponent, JSkeletonComponent],
+  imports: [RouterLink, CodeBlockComponent, JChartComponent, JIconComponent, JSkeletonComponent],
   template: `
     <section class="j-page-hero j-page-hero--docs">
       <span class="j-page-eyebrow">Charts</span>
       <h1>Charts Documentation</h1>
       <p>
-        JRNG charts wrap Chart.js in an Angular component with theme-aware colors, loading and empty states,
-        responsive behavior, and interaction events.
+        JRNG charts wrap Chart.js in an Angular component with theme-aware colors, loading and empty
+        states, responsive behavior, and interaction events.
       </p>
       <div class="j-doc-hero-links">
         <a routerLink="/docs/components"><j-icon name="boxes" /> Components</a>
@@ -41,16 +47,17 @@ import { chartDataCode, chartEvents, chartInputs, chartInstallCode, chartOptions
             <h2>Use charts for readable data stories</h2>
           </div>
           <p>
-            The chart component accepts Chart.js-compatible data and options. JRNG supplies theme-aware default
-            colors, responsive configuration, built-in loading and empty states, and click/hover outputs.
+            The chart component accepts Chart.js-compatible data and options. JRNG supplies
+            theme-aware default colors, responsive configuration, built-in loading and empty states,
+            and click/hover outputs.
           </p>
           <div class="j-callout">
             <j-icon name="triangle-alert" />
             <div>
               <strong>Renderer dependency</strong>
               <p>
-                The library keeps Chart.js as an optional peer dependency. Install it in the consuming app when
-                rendering live charts.
+                The library keeps Chart.js as an optional peer dependency. Install it in the
+                consuming app when rendering live charts.
               </p>
             </div>
           </div>
@@ -64,11 +71,19 @@ import { chartDataCode, chartEvents, chartInputs, chartInstallCode, chartOptions
           </div>
 
           <div class="j-doc-tabs" role="tablist" aria-label="Charts preview and code">
-            <button type="button" [class.is-active]="activeTab() === 'preview'" (click)="activeTab.set('preview')">
+            <button
+              type="button"
+              [class.is-active]="activeTab() === 'preview'"
+              (click)="activeTab.set('preview')"
+            >
               <j-icon name="component" />
               Preview
             </button>
-            <button type="button" [class.is-active]="activeTab() === 'code'" (click)="activeTab.set('code')">
+            <button
+              type="button"
+              [class.is-active]="activeTab() === 'code'"
+              (click)="activeTab.set('code')"
+            >
               <j-icon name="code-xml" />
               Code
             </button>
@@ -77,34 +92,64 @@ import { chartDataCode, chartEvents, chartInputs, chartInstallCode, chartOptions
           @if (activeTab() === 'preview') {
             <div class="j-chart-preview-grid">
               <article class="j-chart-example">
-                <header><h3>Bar chart</h3><j-badge value="Stable" severity="success" /></header>
+                <header><h3>Bar chart</h3></header>
                 <p>Best for comparing categories.</p>
-                <j-chart type="bar" [data]="barData" [options]="barOptions" ariaLabel="Revenue by quarter" />
+                <j-chart
+                  type="bar"
+                  [data]="barData"
+                  [options]="barOptions"
+                  ariaLabel="Revenue by quarter"
+                />
               </article>
               <article class="j-chart-example">
-                <header><h3>Line chart</h3><j-badge value="Stable" severity="success" /></header>
+                <header><h3>Line chart</h3></header>
                 <p>Best for trends over time.</p>
-                <j-chart type="line" [data]="lineData" [options]="lineOptions" ariaLabel="Weekly signups" />
+                <j-chart
+                  type="line"
+                  [data]="lineData"
+                  [options]="lineOptions"
+                  ariaLabel="Weekly signups"
+                />
               </article>
               <article class="j-chart-example">
-                <header><h3>Pie chart</h3><j-badge value="Stable" severity="success" /></header>
+                <header><h3>Pie chart</h3></header>
                 <p>Use sparingly for simple part-to-whole data.</p>
-                <j-chart type="pie" [data]="segmentData" [options]="segmentOptions" ariaLabel="Plan share" />
+                <j-chart
+                  type="pie"
+                  [data]="segmentData"
+                  [options]="segmentOptions"
+                  ariaLabel="Plan share"
+                />
               </article>
               <article class="j-chart-example">
-                <header><h3>Donut chart</h3><j-badge value="Stable" severity="success" /></header>
+                <header><h3>Donut chart</h3></header>
                 <p>Useful for compact summaries with a legend.</p>
-                <j-chart type="doughnut" [data]="segmentData" [options]="segmentOptions" ariaLabel="Plan share donut" />
+                <j-chart
+                  type="doughnut"
+                  [data]="segmentData"
+                  [options]="segmentOptions"
+                  ariaLabel="Plan share donut"
+                />
               </article>
               <article class="j-chart-example">
-                <header><h3>Area chart</h3><j-badge value="Stable" severity="success" /></header>
+                <header><h3>Area chart</h3></header>
                 <p>A line chart with filled volume.</p>
-                <j-chart type="line" [data]="areaData" [options]="areaOptions" ariaLabel="Usage volume" />
+                <j-chart
+                  type="line"
+                  [data]="areaData"
+                  [options]="areaOptions"
+                  ariaLabel="Usage volume"
+                />
               </article>
               <article class="j-chart-example">
-                <header><h3>Scatter chart</h3><j-badge value="Stable" severity="success" /></header>
+                <header><h3>Scatter chart</h3></header>
                 <p>Best for x/y relationships and outliers.</p>
-                <j-chart type="scatter" [data]="scatterData" [options]="scatterOptions" ariaLabel="Cost and conversion scatter" />
+                <j-chart
+                  type="scatter"
+                  [data]="scatterData"
+                  [options]="scatterOptions"
+                  ariaLabel="Cost and conversion scatter"
+                />
               </article>
             </div>
           } @else {
@@ -122,8 +167,9 @@ import { chartDataCode, chartEvents, chartInputs, chartInstallCode, chartOptions
             <h2>Data format and options</h2>
           </div>
           <p>
-            Pass the same shape that Chart.js expects: labels plus one or more datasets. Long labels should be
-            shortened, wrapped in your source data, or handled with tick auto-skip in options.
+            Pass the same shape that Chart.js expects: labels plus one or more datasets. Long labels
+            should be shortened, wrapped in your source data, or handled with tick auto-skip in
+            options.
           </p>
           <div class="j-two-column">
             <app-code-block label="Data examples" [code]="chartDataCode" />
@@ -141,7 +187,6 @@ import { chartDataCode, chartEvents, chartInputs, chartInstallCode, chartOptions
               <article>
                 <header>
                   <h3>{{ chart.title }}</h3>
-                  <j-badge [value]="chart.status" severity="success" />
                 </header>
                 <p>{{ chart.description }}</p>
                 <ul>
@@ -181,9 +226,13 @@ import { chartDataCode, chartEvents, chartInputs, chartInstallCode, chartOptions
               <tbody>
                 @for (row of chartInputs; track row.name) {
                   <tr>
-                    <td><code>{{ row.name }}</code></td>
+                    <td>
+                      <code>{{ row.name }}</code>
+                    </td>
                     <td>{{ row.type }}</td>
-                    <td><code>{{ row.defaultValue }}</code></td>
+                    <td>
+                      <code>{{ row.defaultValue }}</code>
+                    </td>
                     <td>{{ row.description }}</td>
                   </tr>
                 }
@@ -203,7 +252,9 @@ import { chartDataCode, chartEvents, chartInputs, chartInstallCode, chartOptions
               <tbody>
                 @for (row of chartEvents; track row.event) {
                   <tr>
-                    <td><code>{{ row.event }}</code></td>
+                    <td>
+                      <code>{{ row.event }}</code>
+                    </td>
                     <td>{{ row.payload }}</td>
                     <td>{{ row.description }}</td>
                   </tr>
@@ -225,7 +276,12 @@ import { chartDataCode, chartEvents, chartInputs, chartInstallCode, chartOptions
             </article>
             <article class="j-chart-example">
               <header><h3>Empty</h3></header>
-              <j-chart type="bar" [data]="emptyChartData" emptyMessage="No revenue data yet." ariaLabel="Empty chart" />
+              <j-chart
+                type="bar"
+                [data]="emptyChartData"
+                emptyMessage="No revenue data yet."
+                ariaLabel="Empty chart"
+              />
             </article>
             <article class="j-chart-example">
               <header><h3>Skeleton wrapper</h3></header>
@@ -237,7 +293,10 @@ import { chartDataCode, chartEvents, chartInputs, chartInstallCode, chartOptions
           <ul class="j-doc-list">
             <li>Use <code>loading</code> while fetching data.</li>
             <li>Pass an empty labels or datasets array to show the empty message.</li>
-            <li>If Chart.js is not installed, the component shows a renderer error state instead of crashing.</li>
+            <li>
+              If Chart.js is not installed, the component shows a renderer error state instead of
+              crashing.
+            </li>
           </ul>
         </section>
 
@@ -250,7 +309,9 @@ import { chartDataCode, chartEvents, chartInputs, chartInstallCode, chartOptions
             <div class="j-doc-section-block">
               <h3>Mobile</h3>
               <ul>
-                <li>Leave <code>responsive</code> enabled unless a fixed export size is required.</li>
+                <li>
+                  Leave <code>responsive</code> enabled unless a fixed export size is required.
+                </li>
                 <li>Keep x-axis labels short and use <code>autoSkip</code> for dense timelines.</li>
                 <li>Prefer horizontal bars or tables when category labels are long.</li>
               </ul>

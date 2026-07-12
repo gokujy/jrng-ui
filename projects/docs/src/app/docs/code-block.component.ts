@@ -1,6 +1,16 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, PLATFORM_ID, computed, inject, input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  PLATFORM_ID,
+  computed,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 import { JIconComponent } from 'jrng-ui/icon';
+import { DocsAnalyticsService } from '../core/analytics.service';
 
 type CodeTokenKind = 'comment' | 'keyword' | 'string' | 'tag' | 'attr' | 'type' | 'plain';
 
@@ -37,6 +47,7 @@ export class CodeBlockComponent {
   private readonly documentRef = inject(DOCUMENT);
   private readonly destroyRef = inject(DestroyRef);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  private readonly analytics = inject(DocsAnalyticsService);
   private copyTimer: number | undefined;
 
   readonly code = input('');
@@ -45,7 +56,9 @@ export class CodeBlockComponent {
   readonly fileName = input('');
   readonly copied = signal(false);
   readonly highlightedCode = computed(() => tokenizeCode(this.code()));
-  readonly languageLabel = computed(() => formatLanguage(this.language() || inferLanguage(this.label())));
+  readonly languageLabel = computed(() =>
+    formatLanguage(this.language() || inferLanguage(this.label())),
+  );
 
   constructor() {
     this.destroyRef.onDestroy(() => {
@@ -61,6 +74,7 @@ export class CodeBlockComponent {
     }
 
     const windowRef = this.documentRef.defaultView;
+    this.analytics.track('copy_code', { language: this.languageLabel() || 'unknown' });
     void windowRef?.navigator.clipboard?.writeText(this.code()).then(() => {
       this.copied.set(true);
       this.copyTimer = windowRef.setTimeout(() => this.copied.set(false), 1200);
@@ -70,7 +84,11 @@ export class CodeBlockComponent {
 
 function inferLanguage(label: string): string {
   const normalized = label.toLowerCase();
-  if (normalized.includes('import') || normalized.includes('angular') || normalized.includes('typescript')) {
+  if (
+    normalized.includes('import') ||
+    normalized.includes('angular') ||
+    normalized.includes('typescript')
+  ) {
     return 'ts';
   }
   if (normalized.includes('scss') || normalized.includes('css')) {
@@ -129,7 +147,12 @@ function tokenizeCode(code: string): readonly CodeToken[] {
 }
 
 function tokenKind(text: string): CodeTokenKind {
-  if (text.startsWith('//') || text.startsWith('/*') || text.startsWith('<!--') || text.startsWith('#')) {
+  if (
+    text.startsWith('//') ||
+    text.startsWith('/*') ||
+    text.startsWith('<!--') ||
+    text.startsWith('#')
+  ) {
     return 'comment';
   }
 

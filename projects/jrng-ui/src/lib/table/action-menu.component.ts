@@ -36,6 +36,7 @@ import { JTableAction, JTableActionEvent, JTableRow } from './table.types';
         <div
           class="j-action-menu__items"
           [attr.role]="popup ? 'menu' : 'group'"
+          [attr.tabindex]="popup ? 0 : null"
           [attr.aria-label]="ariaLabel"
           (keydown)="handleMenuKeydown($event)"
         >
@@ -105,8 +106,8 @@ import { JTableAction, JTableActionEvent, JTableRow } from './table.types';
 
       .j-action-menu__trigger {
         justify-content: center;
-        padding: 0;
-        width: 2rem;
+        min-width: 2rem;
+        padding: 0 var(--j-spacing-sm, 0.5rem);
       }
 
       .j-action-menu.is-popup .j-action-menu__item {
@@ -212,7 +213,9 @@ export class JActionMenuComponent {
     if (event.key === 'Escape') {
       event.preventDefault();
       this.open = false;
-      this.elementRef.nativeElement.querySelector<HTMLButtonElement>('.j-action-menu__trigger')?.focus();
+      this.elementRef.nativeElement
+        .querySelector<HTMLButtonElement>('.j-action-menu__trigger')
+        ?.focus();
       return;
     }
     if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
@@ -228,11 +231,16 @@ export class JActionMenuComponent {
   private moveFocus(direction: 1 | -1): void {
     const buttons = this.actionButtons();
     const currentIndex = buttons.findIndex((button) => button === this.documentRef.activeElement);
-    const nextIndex = currentIndex < 0 ? 0 : (currentIndex + direction + buttons.length) % buttons.length;
+    const nextIndex =
+      currentIndex < 0 ? 0 : (currentIndex + direction + buttons.length) % buttons.length;
     buttons[nextIndex]?.focus();
   }
 
   private actionButtons(): HTMLButtonElement[] {
-    return Array.from(this.elementRef.nativeElement.querySelectorAll<HTMLButtonElement>('.j-action-menu__item:not(:disabled)'));
+    return Array.from(
+      this.elementRef.nativeElement.querySelectorAll<HTMLButtonElement>(
+        '.j-action-menu__item:not(:disabled)',
+      ),
+    );
   }
 }

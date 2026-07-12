@@ -1,6 +1,16 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, PLATFORM_ID, Renderer2, computed, inject, input, model } from '@angular/core';
-import { JImagePreviewComponent } from '../image-preview/image-preview.component';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  PLATFORM_ID,
+  Renderer2,
+  computed,
+  inject,
+  input,
+  model,
+} from '@angular/core';
+import { JImagePreviewComponent } from 'jrng-ui/image-preview';
 
 export interface JGalleryItem {
   readonly src: string;
@@ -9,6 +19,8 @@ export interface JGalleryItem {
   readonly caption?: string;
 }
 
+export type JGalleryAnimation = 'fade' | 'zoom' | 'slide' | 'none';
+
 @Component({
   selector: 'j-gallery',
   imports: [JImagePreviewComponent],
@@ -16,7 +28,13 @@ export interface JGalleryItem {
     <section class="j-gallery" [class]="styleClass()" data-jc-name="gallery" data-jc-section="root">
       @if (activeItem(); as item) {
         <button class="j-gallery__stage" type="button" (click)="previewVisible.set(true)">
-          <img [src]="item.src" [alt]="item.alt || ''" />
+          @for (active of [item]; track active.src) {
+            <img
+              [class]="'j-gallery__image j-gallery__image--' + animation()"
+              [src]="active.src"
+              [alt]="active.alt || ''"
+            />
+          }
           @if (item.caption) {
             <span>{{ item.caption }}</span>
           }
@@ -25,7 +43,12 @@ export interface JGalleryItem {
 
       <div class="j-gallery__thumbs" data-jc-section="thumbnails">
         @for (item of value(); track item.src; let index = $index) {
-          <button type="button" [class.is-active]="index === activeIndex()" [attr.aria-current]="index === activeIndex() ? 'true' : null" (click)="activeIndex.set(index)">
+          <button
+            type="button"
+            [class.is-active]="index === activeIndex()"
+            [attr.aria-current]="index === activeIndex() ? 'true' : null"
+            (click)="activeIndex.set(index)"
+          >
             <img [src]="item.thumbnail || item.src" [alt]="item.alt || ''" />
           </button>
         }
@@ -33,7 +56,12 @@ export interface JGalleryItem {
     </section>
 
     @if (activeItem(); as item) {
-      <j-image-preview [src]="item.src" [alt]="item.alt || ''" [visible]="previewVisible()" (visibleChange)="previewVisible.set($event)" />
+      <j-image-preview
+        [src]="item.src"
+        [alt]="item.alt || ''"
+        [visible]="previewVisible()"
+        (visibleChange)="previewVisible.set($event)"
+      />
     }
   `,
   styles: [
@@ -58,6 +86,38 @@ export interface JGalleryItem {
         aspect-ratio: 16 / 9;
         object-fit: cover;
         width: 100%;
+      }
+
+      .j-gallery__image--fade {
+        animation: j-gallery-fade 320ms ease-out;
+      }
+
+      .j-gallery__image--zoom {
+        animation: j-gallery-zoom 360ms ease-out;
+      }
+
+      .j-gallery__image--slide {
+        animation: j-gallery-slide 360ms ease-out;
+      }
+
+      @keyframes j-gallery-fade {
+        from {
+          opacity: 0;
+        }
+      }
+
+      @keyframes j-gallery-zoom {
+        from {
+          opacity: 0;
+          transform: scale(1.04);
+        }
+      }
+
+      @keyframes j-gallery-slide {
+        from {
+          opacity: 0;
+          transform: translateX(1.5rem);
+        }
       }
 
       .j-gallery__stage span {
@@ -103,6 +163,7 @@ export class JGalleryComponent {
   readonly value = input<readonly JGalleryItem[]>([]);
   readonly activeIndex = model(0);
   readonly styleClass = input('');
+  readonly animation = input<JGalleryAnimation>('fade');
   readonly previewVisible = model(false);
   readonly activeItem = computed(() => this.value()[this.activeIndex()] ?? null);
 

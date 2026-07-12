@@ -1,5 +1,35 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Public project trust files, adoption documentation, compatibility guidance, and release checks.
+
+### Changed
+
+- Positioned JRNG UI for Angular admin panels, dashboards, and business applications.
+
+### Fixed
+
+- Documentation sections with unavailable details now show contextual guidance instead of empty tables.
+
+### Deprecated
+
+- No APIs are currently scheduled for deprecation.
+
+### Removed
+
+- No public APIs have been removed.
+
+### Security
+
+- Package validation rejects internal instruction, temporary, private, and test-output files.
+
+### Migration notes
+
+- No migration is required for the current documentation and developer-experience changes.
+
 ## 0.0.8
 
 ### Added
@@ -9,7 +39,7 @@
 - Added typed disclosure, pagination, versioned storage, clipboard, media-query, keyboard-shortcut, timing, observer, live-announcement, and reduced-motion utilities.
 - Added a versioned 126-component package registry and registry schema.
 
-### Improved
+### Changed
 
 - Added an explicit npm package file allowlist and public publish metadata.
 - Added RxJS to the published peer dependency contract.

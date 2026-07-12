@@ -17,15 +17,7 @@ import {
 import { isPlatformBrowser } from '@angular/common';
 
 export type JChartType =
-  | 'bar'
-  | 'line'
-  | 'pie'
-  | 'doughnut'
-  | 'radar'
-  | 'polarArea'
-  | 'scatter'
-  | 'bubble'
-  | 'mixed';
+  'bar' | 'line' | 'pie' | 'doughnut' | 'radar' | 'polarArea' | 'scatter' | 'bubble' | 'mixed';
 
 export interface JChartInteractionEvent {
   readonly nativeEvent: Event;
@@ -49,9 +41,10 @@ interface JChartInstance {
   toBase64Image?(type?: string, quality?: number): string;
 }
 
-interface JChartConstructor {
-  new (item: HTMLCanvasElement, config: JChartRuntimeConfig): JChartInstance;
-}
+type JChartConstructor = new (
+  item: HTMLCanvasElement,
+  config: JChartRuntimeConfig,
+) => JChartInstance;
 
 @Component({
   selector: 'j-chart',
@@ -217,9 +210,8 @@ export class JChartComponent {
     }
 
     try {
-      const specifier = 'chart.js/auto';
-      const module: unknown = await import(specifier);
-      const candidate = isRecord(module) ? module['default'] ?? module['Chart'] : null;
+      const module: unknown = await import('chart.js/auto');
+      const candidate = isRecord(module) ? (module['default'] ?? module['Chart']) : null;
       if (typeof candidate !== 'function') {
         this.loadError.set('Chart renderer is unavailable.');
         return null;
@@ -300,7 +292,8 @@ export class JChartComponent {
   private palette(canvas: HTMLCanvasElement): readonly string[] {
     const view = canvas.ownerDocument.defaultView;
     const styles = view?.getComputedStyle(canvas);
-    const token = (name: string, fallback: string) => styles?.getPropertyValue(name).trim() || fallback;
+    const token = (name: string, fallback: string) =>
+      styles?.getPropertyValue(name).trim() || fallback;
     return [
       token('--j-color-primary', '#2563eb'),
       token('--j-color-success', '#16a34a'),

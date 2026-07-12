@@ -61,6 +61,7 @@ import { JSize } from 'jrng-ui/core';
     `
       :host {
         display: inline-block;
+        vertical-align: middle;
       }
 
       .j-checkbox {
@@ -69,6 +70,7 @@ import { JSize } from 'jrng-ui/core';
         cursor: pointer;
         display: inline-flex;
         gap: var(--j-spacing-sm);
+        line-height: 1;
       }
 
       .j-checkbox.is-disabled {
@@ -87,10 +89,12 @@ import { JSize } from 'jrng-ui/core';
         align-items: center;
         border: 1px solid var(--j-color-border);
         border-radius: var(--j-radius-xs);
+        box-sizing: border-box;
         display: inline-flex;
         flex: 0 0 auto;
         height: 1rem;
         justify-content: center;
+        position: relative;
         transition:
           background-color 0.15s ease,
           border-color 0.15s ease;
@@ -120,9 +124,10 @@ import { JSize } from 'jrng-ui/core';
         box-sizing: border-box;
         content: '';
         height: 0.5rem;
-        /* Optical centering: lift the mark slightly so the rotated tick reads centered. */
-        margin-top: -0.0625rem;
-        transform: rotate(45deg);
+        left: 50%;
+        position: absolute;
+        top: 47%;
+        transform: translate(-50%, -50%) rotate(45deg);
         width: 0.3rem;
       }
 
@@ -146,6 +151,7 @@ import { JSize } from 'jrng-ui/core';
         display: inline-flex;
         gap: var(--j-spacing-xs);
         font-size: var(--j-font-size-sm);
+        line-height: 1.25rem;
       }
 
       .j-checkbox__required,

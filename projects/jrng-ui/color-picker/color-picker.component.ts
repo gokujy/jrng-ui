@@ -156,15 +156,29 @@ import { JClickOutsideDirective } from 'jrng-ui/core';
         display: grid;
         gap: var(--j-spacing-sm);
         margin-top: var(--j-spacing-xs);
-        min-width: 13rem;
+        left: 0;
+        min-width: 15rem;
         padding: var(--j-spacing-md);
         position: absolute;
         top: 100%;
         z-index: var(--j-z-index-dropdown);
       }
       .j-color-picker__native {
-        height: 2.25rem;
+        appearance: none;
+        background: transparent;
+        border: 0;
+        cursor: pointer;
+        height: 6rem;
+        padding: 0;
         width: 100%;
+      }
+      .j-color-picker__native::-webkit-color-swatch-wrapper {
+        padding: 0;
+      }
+      .j-color-picker__native::-webkit-color-swatch,
+      .j-color-picker__native::-moz-color-swatch {
+        border: 1px solid var(--j-color-border);
+        border-radius: var(--j-radius-md);
       }
       .j-color-picker__hex {
         background: var(--j-color-surface);
@@ -177,15 +191,15 @@ import { JClickOutsideDirective } from 'jrng-ui/core';
       }
       .j-color-picker__presets {
         display: grid;
-        gap: var(--j-spacing-xs);
-        grid-template-columns: repeat(6, 1.5rem);
+        gap: var(--j-spacing-2, 0.5rem);
+        grid-template-columns: repeat(6, minmax(0, 1fr));
       }
       .j-color-picker__preset {
         border: 1px solid var(--j-color-border);
         border-radius: var(--j-radius-sm);
         cursor: pointer;
-        height: 1.5rem;
-        width: 1.5rem;
+        height: 1.75rem;
+        width: 100%;
       }
       .j-color-picker__preset[data-j-selected='true'] {
         box-shadow: var(--j-focus-ring);

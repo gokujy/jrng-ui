@@ -70,8 +70,11 @@ function verifyComponents() {
     requireString(component, 'selector', label);
     requireString(component, 'category', label);
     requireString(component, 'entryPoint', label);
+    requireString(component, 'importPath', label);
     requireString(component, 'documentationUrl', label);
     requireString(component, 'stability', label);
+    requireString(component, 'formCompatibility', label);
+    requireString(component, 'status', label);
     requireString(component, 'angularCompatibility', label);
     requireArray(component, 'files', label);
     requireArray(component, 'dependencies', label);
@@ -80,11 +83,31 @@ function verifyComponents() {
     requireArray(component, 'styles', label);
     requireArray(component, 'assets', label);
     requireArray(component, 'themeRequirements', label);
+    requireArray(component, 'inputs', label);
+    requireArray(component, 'outputs', label);
+
+    if (
+      !['Complete', 'Basic', 'Planned', 'Experimental', 'Deprecated'].includes(component.status)
+    ) {
+      failures.push(`${label}.status is not a supported documentation status.`);
+    }
+    if (!['ControlValueAccessor', 'Not a form control'].includes(component.formCompatibility)) {
+      failures.push(`${label}.formCompatibility is invalid.`);
+    }
+    if (component.sinceVersion !== null && typeof component.sinceVersion !== 'string') {
+      failures.push(`${label}.sinceVersion must be a string or null.`);
+    }
+    if (component.deprecation !== null && !isObject(component.deprecation)) {
+      failures.push(`${label}.deprecation must be an object or null.`);
+    }
 
     if (typeof component.selector === 'string' && !component.selector.startsWith('j-')) {
       failures.push(`${label} selector must use the j- prefix.`);
     }
-    if (typeof component.entryPoint === 'string' && !/^jrng-ui(?:\/|$)/.test(component.entryPoint)) {
+    if (
+      typeof component.entryPoint === 'string' &&
+      !/^jrng-ui(?:\/|$)/.test(component.entryPoint)
+    ) {
       failures.push(`${label} entryPoint must start with jrng-ui.`);
     }
     if (

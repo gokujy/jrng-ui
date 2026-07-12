@@ -9,10 +9,11 @@ import {
   output,
 } from '@angular/core';
 import { JMenuItem, JMenuItemTemplateContext } from 'jrng-ui/menu';
+import { JIconComponent } from 'jrng-ui/icon';
 
 @Component({
   selector: 'j-menubar',
-  imports: [NgTemplateOutlet],
+  imports: [NgTemplateOutlet, JIconComponent],
   template: `
     <nav
       class="j-menubar"
@@ -55,9 +56,12 @@ import { JMenuItem, JMenuItemTemplateContext } from 'jrng-ui/menu';
                 />
               } @else {
                 @if (item.icon) {
-                  <span aria-hidden="true">{{ item.icon }}</span>
+                  <j-icon [name]="item.icon" />
                 }
                 <span>{{ item.label }}</span>
+                @if (item.items?.length) {
+                  <j-icon name="chevron-down" styleClass="j-menubar__chevron" />
+                }
               }
             </button>
             @if (item.items?.length && openItem === item) {
@@ -72,7 +76,7 @@ import { JMenuItem, JMenuItemTemplateContext } from 'jrng-ui/menu';
                       (click)="activate(child, $event)"
                     >
                       @if (child.icon) {
-                        <span aria-hidden="true">{{ child.icon }}</span>
+                        <j-icon [name]="child.icon" />
                       }
                       <span>{{ child.label }}</span>
                     </button>
@@ -113,6 +117,9 @@ import { JMenuItem, JMenuItemTemplateContext } from 'jrng-ui/menu';
         border-radius: var(--j-radius-md);
         color: var(--j-color-foreground);
         cursor: pointer;
+        align-items: center;
+        display: inline-flex;
+        gap: var(--j-spacing-2);
         font: inherit;
         min-height: 2.5rem;
         padding: 0 var(--j-spacing-3);
