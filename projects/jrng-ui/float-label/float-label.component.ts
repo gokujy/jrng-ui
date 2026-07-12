@@ -1,5 +1,6 @@
 import {
   booleanAttribute,
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   ElementRef,
@@ -71,7 +72,7 @@ import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class JFloatLabelComponent {
+export class JFloatLabelComponent implements AfterViewInit {
   private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
 
   readonly label = input('');
@@ -114,6 +115,10 @@ export class JFloatLabelComponent {
   @HostListener('input')
   handleInput(): void {
     this.syncFilled();
+  }
+
+  ngAfterViewInit(): void {
+    queueMicrotask(() => this.syncFilled());
   }
 
   private syncFilled(): void {

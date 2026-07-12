@@ -914,7 +914,7 @@ tableConfig: JTableConfig = {
     icon: 'list-filter',
     selector: 'j-filter-bar',
     importPath: 'jrng-ui/filter-bar',
-    status: 'New',
+    status: 'Stable',
     description:
       'A responsive business filter surface with search, status, date range, reset, apply, export, and advanced filter slots.',
     whenToUse:
@@ -1207,8 +1207,8 @@ toast.info('Export started');`,
     ],
   },
   {
-    slug: 'progress',
-    name: 'Progress',
+    slug: 'progress-bar',
+    name: 'Progress Bar',
     category: 'Feedback',
     icon: 'loader-circle',
     selector: 'j-progress-bar',
@@ -1438,8 +1438,8 @@ items = [
     bestPractices: ['Use concise item labels and separators for distinct command groups.'],
   },
   {
-    slug: 'sidebar',
-    name: 'Sidebar',
+    slug: 'responsive-sidebar',
+    name: 'Responsive Sidebar',
     category: 'Navigation',
     icon: 'panel-left-open',
     selector: 'j-responsive-sidebar',
@@ -1599,6 +1599,12 @@ confirmDelete(): void {
       prop('header', 'string', "''", 'Drawer title.'),
       prop('position', 'left | right | top | bottom', "'right'", 'Drawer edge.'),
       prop('modal', 'boolean', 'true', 'Shows a blocking backdrop.'),
+      prop(
+        'contained',
+        'boolean',
+        'false',
+        'Contains the drawer inside its positioned parent for embedded workspaces and previews.',
+      ),
     ],
     outputs: [
       event('openChange', 'boolean', 'Emits visibility model changes.'),
@@ -1652,7 +1658,7 @@ confirmDelete(): void {
     icon: 'message-square-more',
     selector: 'j-popover',
     importPath: 'jrng-ui/popover',
-    status: 'Beta',
+    status: 'Stable',
     description: 'A lightweight floating panel anchored to a target.',
     whenToUse: 'Use Popover for short contextual content, small forms, or additional details.',
     code: {
@@ -1725,7 +1731,7 @@ confirmDelete(): void {
     icon: 'route',
     selector: 'JTourService, [jTourStep]',
     importPath: 'jrng-ui/tour',
-    status: 'New',
+    status: 'Stable',
     description:
       'Optional guided onboarding tours powered internally by Driver.js and exposed through JRNG UI service and directive APIs.',
     whenToUse:
@@ -2016,7 +2022,7 @@ import { JFilePreviewComponent } from 'jrng-ui/file-preview';`,
     icon: 'text',
     selector: 'pipes',
     importPath: 'jrng-ui/formatting',
-    status: 'New',
+    status: 'Stable',
     description:
       'Standalone pipes for common business formatting: date, time, date-time, currency, number, percentage, file size, and text truncation.',
     whenToUse:
@@ -2068,33 +2074,276 @@ import { JFilePreviewComponent } from 'jrng-ui/file-preview';`,
 
 const detailedSlugs = new Set(detailedComponentDocs.map((doc) => doc.slug));
 
-export const componentDocs: readonly ComponentDoc[] = [
+const generatedBasicExamples: Readonly<Record<string, string>> = {
+  accordion: `<j-accordion [multiple]="true" [activeIndex]="[0]">
+  <j-accordion-panel header="Account details">Update profile and contact information.</j-accordion-panel>
+  <j-accordion-panel header="Notifications">Choose which updates you receive.</j-accordion-panel>
+</j-accordion>`,
+  'accordion-panel': `<j-accordion [activeIndex]="0">
+  <j-accordion-panel header="Project summary">This panel is expanded by default.</j-accordion-panel>
+</j-accordion>`,
+  autocomplete: `<j-autocomplete label="Customer" [suggestions]="customers" placeholder="Search customers"></j-autocomplete>`,
+  avatar: `<j-avatar initials="AR" ariaLabel="Avery Reed" status="online"></j-avatar>`,
+  chip: `<j-chip label="Approved" severity="success" removable></j-chip>`,
+  'color-picker': `<j-color-picker label="Brand colour" [(ngModel)]="brandColor" clearable></j-color-picker>`,
+  'date-picker': `<j-date-picker label="Due date" placeholder="Choose a date" [(ngModel)]="dueDate"></j-date-picker>`,
+  divider: `<j-divider></j-divider>`,
+  icon: `<j-icon name="search" ariaLabel="Search" size="24"></j-icon>`,
+  'input-mask': `<j-input-mask label="Phone" mask="(999) 999-9999" placeholder="(555) 123-4567"></j-input-mask>`,
+  'input-number': `<j-input-number label="Quantity" [min]="1" [max]="100" [(ngModel)]="quantity"></j-input-number>`,
+  'input-otp': `<j-input-otp label="Verification code" [length]="6" numericOnly [(ngModel)]="code"></j-input-otp>`,
+  listbox: `<j-listbox label="Team" [options]="teams" [(ngModel)]="selectedTeam"></j-listbox>`,
+  multiselect: `<j-multiselect label="Skills" [options]="skills" [(ngModel)]="selectedSkills"></j-multiselect>`,
+  paginator: `<j-paginator [first]="20" [rows]="10" [totalRecords]="96" [rowsPerPageOptions]="[10, 20, 50]" showCurrentPageReport></j-paginator>`,
+  password: `<j-password label="Password" placeholder="Enter a secure password" feedback toggleMask></j-password>`,
+  'progress-spinner': `<j-progress-spinner label="Loading orders" [size]="48"></j-progress-spinner>`,
+  rating: `<j-rating label="Product rating" [(ngModel)]="rating"></j-rating>`,
+  slider: `<j-slider label="Completion" [min]="0" [max]="100" [step]="5" tooltip [(ngModel)]="completion"></j-slider>`,
+  'avatar-group': `<j-avatar-group [items]="teamMembers" [max]="3" ariaLabel="Project team"></j-avatar-group>`,
+  calendar: `<j-calendar [value]="selectedDate"></j-calendar>`,
+  carousel: `<j-carousel [value]="featuredItems" [visibleItems]="2"></j-carousel>`,
+  chart: `<j-chart type="bar" [data]="ordersChartData" ariaLabel="Monthly orders"></j-chart>`,
+  chips: `<j-chips label="Tags" placeholder="Type a tag and press Enter" [(ngModel)]="tags"></j-chips>`,
+  combobox: `<j-combobox label="Customer" [options]="customers" placeholder="Choose or type a customer"></j-combobox>`,
+  'data-grid': `<j-data-grid
+  title="Orders"
+  description="Sortable, filterable operational data with pagination."
+  [value]="orders"
+  [columns]="orderColumns"
+  [totalRecords]="orders.length"
+  striped
+  hover>
+</j-data-grid>`,
+  'data-view': `<j-data-view [value]="products" layout="grid" [rows]="6"></j-data-view>`,
+  'date-range-picker': `<j-date-range-picker label="Campaign window" [(ngModel)]="dateRange"></j-date-range-picker>`,
+  editor: `<j-editor label="Description" placeholder="Write a short product summary" [(ngModel)]="description"></j-editor>`,
+  'file-preview': `<j-file-preview fileName="statement.pdf" [fileSize]="245760"></j-file-preview>`,
+  fieldset: `<j-fieldset legend="Billing address" toggleable>
+  <j-input label="Street"></j-input>
+  <j-input label="City"></j-input>
+</j-fieldset>`,
+  gallery: `<j-gallery [value]="galleryItems" animation="fade"></j-gallery>`,
+  image: `<j-image src="/assets/product-preview.png" alt="Product preview" preview></j-image>`,
+  'image-preview': `<j-image-preview [src]="previewSrc" alt="Product preview" [visible]="previewOpen"></j-image-preview>`,
+  knob: `<j-knob label="Completion" [(ngModel)]="completion"></j-knob>`,
+  loader: `<j-loader label="Loading report" [size]="32"></j-loader>`,
+  'meter-group': `<j-meter-group [value]="segments"></j-meter-group>`,
+  'order-list': `<j-order-list header="Priorities" [value]="tasks" filter></j-order-list>`,
+  'org-chart': `<j-org-chart [value]="organization"></j-org-chart>`,
+  panel: `<j-panel header="Project health" toggleable>
+  The latest build passed and documentation coverage is improving.
+</j-panel>`,
+  'select-button': `<j-select-button label="View mode" [options]="viewModes" [(ngModel)]="viewMode"></j-select-button>`,
+  stack: `<j-stack direction="horizontal" align="center" gap="var(--j-spacing-3)">
+  <j-badge value="New"></j-badge>
+  <span>Reusable spacing layout</span>
+</j-stack>`,
+  'time-picker': `<j-time-picker label="Meeting time" [(ngModel)]="meetingTime"></j-time-picker>`,
+  'toggle-button': `<j-toggle-button onLabel="Published" offLabel="Draft" [(ngModel)]="published"></j-toggle-button>`,
+  toolbar: `<j-toolbar>
+  <j-button label="New"></j-button>
+  <j-button label="Export" variant="outline"></j-button>
+</j-toolbar>`,
+  topbar: `<j-topbar [model]="navigationItems" activeKey="Projects"></j-topbar>`,
+  'transfer-list': `<j-transfer-list
+  [source]="availableTasks"
+  [target]="assignedTasks"
+  sourceHeader="Available tasks"
+  targetHeader="Assigned tasks"
+  filter>
+</j-transfer-list>`,
+  'video-player': `<j-video-player src="https://www.youtube.com/watch?v=M7lc1UVf-VE" caption="YouTube embed example"></j-video-player>`,
+  tree: `<j-tree [value]="nodes" filter ariaLabel="Workspace folders"></j-tree>`,
+  'virtual-scroller': `<j-virtual-scroller [items]="records" [itemSize]="40" height="14rem"></j-virtual-scroller>`,
+};
+
+const generatedFallbackExamples: Readonly<Record<string, string>> = {
+  'app-shell': `<j-app-shell>
+  <main>Application content</main>
+</j-app-shell>`,
+  'auth-layout': `<j-auth-layout title="Sign in" subtitle="Access your workspace">
+  <j-input label="Email" type="email"></j-input>
+  <j-password label="Password"></j-password>
+</j-auth-layout>`,
+  'bottom-sheet': `<j-bottom-sheet header="Actions" [visible]="true">
+  <j-button label="Archive"></j-button>
+</j-bottom-sheet>`,
+  'calendar-scheduler': `<j-calendar-scheduler [events]="events"></j-calendar-scheduler>`,
+  column: `<j-table [value]="orders">
+  <j-column field="order" header="Order"></j-column>
+  <j-column field="status" header="Status"></j-column>
+</j-table>`,
+  'command-palette': `<j-command-palette [items]="commands" placeholder="Search commands"></j-command-palette>`,
+  'confirm-popup': `<j-confirm-popup></j-confirm-popup>`,
+  container: `<j-container>
+  <h2>Content area</h2>
+  <p>Use Container to constrain page content.</p>
+</j-container>`,
+  'context-menu': `<j-context-menu [model]="menuItems"></j-context-menu>`,
+  'dashboard-layout': `<j-dashboard-layout>
+  <j-card title="Revenue">Dashboard content</j-card>
+</j-dashboard-layout>`,
+  dropzone: `<j-dropzone accept=".csv,.xlsx" multiple></j-dropzone>`,
+  'dynamic-dialog': `<j-dynamic-dialog></j-dynamic-dialog>`,
+  'empty-page': `<j-empty-page title="No results" description="Try changing the filters."></j-empty-page>`,
+  'error-page': `<j-error-page title="Something went wrong" statusCode="500"></j-error-page>`,
+  'file-preview': `<j-file-preview fileName="report.pdf" [fileSize]="245760" description="Uploaded recently"></j-file-preview>`,
+  'float-label': `<j-float-label label="Email">
+  <j-input type="email"></j-input>
+</j-float-label>`,
+  'form-field': `<j-form-field label="Email" hint="Use a work email address.">
+  <j-input type="email"></j-input>
+</j-form-field>`,
+  gantt: `<j-gantt [tasks]="tasks"></j-gantt>`,
+  'grid-layout': `<j-grid-layout>
+  <j-card title="Open tasks">12</j-card>
+  <j-card title="Completed">48</j-card>
+</j-grid-layout>`,
+  'icon-field': `<j-icon-field icon="search">
+  <j-input placeholder="Search"></j-input>
+</j-icon-field>`,
+  'ifta-label': `<j-ifta-label label="Email">
+  <j-input type="email"></j-input>
+</j-ifta-label>`,
+  'input-group': `<j-input-group>
+  <j-input placeholder="Search orders"></j-input>
+  <j-button label="Search"></j-button>
+</j-input-group>`,
+  'input-icon': `<j-input-icon name="search"></j-input-icon>`,
+  kanban: `<j-kanban [columns]="columns"></j-kanban>`,
+  'maintenance-page': `<j-maintenance-page title="Maintenance" description="The application will be back soon."></j-maintenance-page>`,
+  'mega-menu': `<j-mega-menu [model]="menuItems"></j-mega-menu>`,
+  menubar: `<j-menubar [model]="menuItems"></j-menubar>`,
+  'notification-center': `<j-notification-center [items]="notifications"></j-notification-center>`,
+  'overlay-panel': `<j-overlay-panel [visible]="true">
+  <p>Overlay content</p>
+</j-overlay-panel>`,
+  'pick-list': `<j-pick-list [source]="availableItems" [target]="selectedItems"></j-pick-list>`,
+  'radio-group': `<j-radio-group label="Plan" [options]="plans" [(ngModel)]="plan"></j-radio-group>`,
+  'section-footer': `<j-section-footer>
+  <j-button label="Cancel" variant="ghost"></j-button>
+  <j-button label="Save"></j-button>
+</j-section-footer>`,
+  'section-header': `<j-section-header title="Projects" subtitle="Track active work."></j-section-header>`,
+  'sidebar-layout': `<j-sidebar-layout>
+  <nav jSidebar>Navigation</nav>
+  <main>Main content</main>
+</j-sidebar-layout>`,
+  'sidebar-nav': `<j-sidebar-nav [items]="navigationItems"></j-sidebar-nav>`,
+  'sort-icon': `<j-sort-icon field="name" [sortField]="sortField" [sortOrder]="sortOrder"></j-sort-icon>`,
+  sparkline: `<j-sparkline [value]="[12, 18, 16, 24, 30]"></j-sparkline>`,
+  splitter: `<j-splitter>
+  <section>Left panel</section>
+  <section>Right panel</section>
+</j-splitter>`,
+  stepper: `<j-stepper [steps]="steps" [activeIndex]="1"></j-stepper>`,
+  tab: `<j-tabs>
+  <j-tab header="Overview">Overview content</j-tab>
+</j-tabs>`,
+  'table-empty-state': `<j-table-empty-state message="No orders found"></j-table-empty-state>`,
+  'table-skeleton': `<j-table-skeleton [rows]="4"></j-table-skeleton>`,
+  'tiered-menu': `<j-tiered-menu [model]="menuItems"></j-tiered-menu>`,
+  'tree-table': `<j-tree-table [value]="nodes" [columns]="columns"></j-tree-table>`,
+  'video-player': `<j-video-player src="/assets/demo-video.mp4" title="Product walkthrough"></j-video-player>`,
+};
+
+const createGeneratedBasicExample = (
+  record: (typeof generatedComponentRegistry)[number],
+): string => {
+  const mapped = generatedBasicExamples[record.slug] ?? generatedFallbackExamples[record.slug];
+  if (mapped) {
+    return mapped;
+  }
+
+  if (record.category === 'Forms & Inputs') {
+    return `<${record.selector} label="${record.name}" placeholder="Enter ${record.name.toLowerCase()}"></${record.selector}>`;
+  }
+  if (record.category === 'Layout') {
+    return `<${record.selector}>
+  <section>Content</section>
+</${record.selector}>`;
+  }
+  if (record.category === 'Data & Tables') {
+    return `<${record.selector} [value]="items"></${record.selector}>`;
+  }
+  if (record.category === 'Navigation & Menus') {
+    return `<${record.selector} [model]="items"></${record.selector}>`;
+  }
+  if (record.category === 'Overlays & Feedback') {
+    return `<${record.selector} [visible]="visible">
+  <p>${record.name} content</p>
+</${record.selector}>`;
+  }
+  return `<${record.selector}>
+  ${record.name} content
+</${record.selector}>`;
+};
+
+const generatedDisplayNames: Readonly<Record<string, string>> = {
+  combobox: 'Searchable Select',
+};
+
+const generatedInputDocs: Readonly<Record<string, readonly DocsApiRow[]>> = {
+  'file-preview': [
+    prop('icon', 'JIconName | string', "''", 'Overrides the inferred file-type icon.'),
+    prop('showTypeLabel', 'boolean', 'false', 'Shows an optional type label beside the icon.'),
+    prop('typeLabel', 'string', "''", 'Custom label used when showTypeLabel is enabled.'),
+  ],
+  gallery: [
+    prop(
+      'animation',
+      'fade | zoom | slide | none',
+      "'fade'",
+      'Transition used when the active image changes.',
+    ),
+  ],
+  'input-mask': [
+    prop('mask', 'string', "''", 'Pattern using 9 for digits, a for letters, and * for either.'),
+    prop('unmask', 'boolean', 'false', 'Emits only entered characters instead of literals.'),
+  ],
+  'video-player': [
+    prop('src', 'string', "''", 'Native video URL or a YouTube watch, short, or embed URL.'),
+    prop('caption', 'string', "''", 'Accessible caption shown below the player.'),
+  ],
+};
+
+const mergedComponentDocs: readonly ComponentDoc[] = [
   ...detailedComponentDocs,
   ...generatedComponentRegistry
     .filter((record) => !detailedSlugs.has(record.slug))
     .map<ComponentDoc>((record) => ({
       slug: record.slug,
-      name: record.name,
+      name: generatedDisplayNames[record.slug] ?? record.name,
       category: record.category,
       icon: 'box',
       selector: record.selector,
       importPath: record.importPath,
-      status: record.stability,
+      status: 'Stable',
       description: record.description,
       whenToUse: `Use ${record.name} when its ${record.category.toLowerCase()} behavior matches the application workflow.`,
       code: {
         importCode: `import { ${record.className} } from '${record.importPath}';`,
-        basic: `<${record.selector}></${record.selector}>`,
+        basic: createGeneratedBasicExample(record),
       },
       usage: [`Import ${record.className} from the public ${record.importPath} entry point.`],
       variants: [],
       sizes: [],
       states: [],
-      inputs: [],
+      inputs: generatedInputDocs[record.slug] ?? [],
       outputs: [],
       accessibility: [
         'Provide an accessible name and verify keyboard behavior for the configured content.',
       ],
       bestPractices: ['Use only the documented public entry point and selector.'],
     })),
-].sort((left, right) => left.name.localeCompare(right.name));
+];
+
+export const componentDocs: readonly ComponentDoc[] = mergedComponentDocs
+  .filter(
+    (doc, index, docs) =>
+      docs.findIndex(
+        (candidate) =>
+          candidate.selector === doc.selector && candidate.importPath === doc.importPath,
+      ) === index,
+  )
+  .sort((left, right) => left.name.localeCompare(right.name));

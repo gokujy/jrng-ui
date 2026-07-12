@@ -25,11 +25,21 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   styles: [
     `
       .j-maintenance-page {
+        background:
+          radial-gradient(
+            circle at 50% 15%,
+            color-mix(in srgb, var(--j-color-warning) 16%, transparent),
+            transparent 32%
+          ),
+          var(--j-color-card);
+        border: 1px solid var(--j-color-border);
+        border-radius: var(--j-radius-xl);
         display: grid;
         gap: var(--j-spacing-3);
         margin: 0 auto;
         max-width: 42rem;
-        min-height: 60dvh;
+        min-height: 28rem;
+        padding: var(--j-spacing-8);
         place-content: center;
         text-align: center;
       }
@@ -40,6 +50,10 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
         color: var(--j-color-warning);
         justify-self: center;
         padding: var(--j-spacing-1) var(--j-spacing-3);
+        text-transform: uppercase;
+        font-size: var(--j-font-size-xs);
+        font-weight: var(--j-font-weight-semibold);
+        letter-spacing: 0.08em;
       }
 
       .j-maintenance-page h1 {

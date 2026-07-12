@@ -1,20 +1,45 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, ContentChild, Input, TemplateRef, booleanAttribute, output } from '@angular/core';
-import { JMenuItem, JMenuItemTemplateContext } from '../menu/menu.component';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ContentChild,
+  Input,
+  TemplateRef,
+  booleanAttribute,
+  output,
+} from '@angular/core';
+import { JMenuItem, JMenuItemTemplateContext } from 'jrng-ui/menu';
+import { JIconComponent } from 'jrng-ui/icon';
 
 @Component({
   selector: 'j-menubar',
-  imports: [NgTemplateOutlet],
+  imports: [NgTemplateOutlet, JIconComponent],
   template: `
-    <nav class="j-menubar" [class.is-collapsed]="collapsed" data-jc-name="menubar" data-jc-section="root" [attr.aria-label]="ariaLabel">
+    <nav
+      class="j-menubar"
+      [class.is-collapsed]="collapsed"
+      data-jc-name="menubar"
+      data-jc-section="root"
+      [attr.aria-label]="ariaLabel"
+    >
       @if (mobileCollapse) {
-        <button class="j-menubar__toggle" type="button" [attr.aria-expanded]="!collapsed" (click)="collapsed = !collapsed">
+        <button
+          class="j-menubar__toggle"
+          type="button"
+          [attr.aria-expanded]="!collapsed"
+          (click)="collapsed = !collapsed"
+        >
           {{ menuLabel }}
         </button>
       }
       <ul class="j-menubar__list" role="menubar">
         @for (item of model; track item.label || item.icon || $index) {
-          <li class="j-menubar__item" role="none" (mouseenter)="openItem = item" (mouseleave)="openItem = null">
+          <li
+            class="j-menubar__item"
+            role="none"
+            (mouseenter)="openItem = item"
+            (mouseleave)="openItem = null"
+          >
             <button
               class="j-menubar__button"
               type="button"
@@ -25,21 +50,33 @@ import { JMenuItem, JMenuItemTemplateContext } from '../menu/menu.component';
               (click)="activate(item, $event)"
             >
               @if (itemTemplate) {
-                <ng-container [ngTemplateOutlet]="itemTemplate" [ngTemplateOutletContext]="templateContext(item)" />
+                <ng-container
+                  [ngTemplateOutlet]="itemTemplate"
+                  [ngTemplateOutletContext]="templateContext(item)"
+                />
               } @else {
                 @if (item.icon) {
-                  <span aria-hidden="true">{{ item.icon }}</span>
+                  <j-icon [name]="item.icon" />
                 }
                 <span>{{ item.label }}</span>
+                @if (item.items?.length) {
+                  <j-icon name="chevron-down" styleClass="j-menubar__chevron" />
+                }
               }
             </button>
             @if (item.items?.length && openItem === item) {
               <ul class="j-menubar__submenu" role="menu">
                 @for (child of item.items; track child.label || child.icon || $index) {
                   <li role="none">
-                    <button class="j-menubar__button" type="button" role="menuitem" [disabled]="child.disabled" (click)="activate(child, $event)">
+                    <button
+                      class="j-menubar__button"
+                      type="button"
+                      role="menuitem"
+                      [disabled]="child.disabled"
+                      (click)="activate(child, $event)"
+                    >
                       @if (child.icon) {
-                        <span aria-hidden="true">{{ child.icon }}</span>
+                        <j-icon [name]="child.icon" />
                       }
                       <span>{{ child.label }}</span>
                     </button>
@@ -80,6 +117,9 @@ import { JMenuItem, JMenuItemTemplateContext } from '../menu/menu.component';
         border-radius: var(--j-radius-md);
         color: var(--j-color-foreground);
         cursor: pointer;
+        align-items: center;
+        display: inline-flex;
+        gap: var(--j-spacing-2);
         font: inherit;
         min-height: 2.5rem;
         padding: 0 var(--j-spacing-3);
@@ -134,7 +174,8 @@ export class JMenubarComponent {
   @Input() menuLabel = 'Menu';
   @Input({ transform: booleanAttribute }) mobileCollapse = true;
   readonly itemClick = output<{ item: JMenuItem; originalEvent: Event }>();
-  @ContentChild('jMenubarItem', { read: TemplateRef }) itemTemplate?: TemplateRef<JMenuItemTemplateContext>;
+  @ContentChild('jMenubarItem', { read: TemplateRef })
+  itemTemplate?: TemplateRef<JMenuItemTemplateContext>;
 
   collapsed = true;
   openItem: JMenuItem | null = null;
@@ -150,6 +191,12 @@ export class JMenubarComponent {
   }
 
   templateContext(item: JMenuItem): JMenuItemTemplateContext {
-    return { $implicit: item, item, active: this.openItem === item, disabled: item.disabled === true, level: 0 };
+    return {
+      $implicit: item,
+      item,
+      active: this.openItem === item,
+      disabled: item.disabled === true,
+      level: 0,
+    };
   }
 }

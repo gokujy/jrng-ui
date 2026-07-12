@@ -1,8 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Meta, Title } from '@angular/platform-browser';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { JIconComponent } from 'jrng-ui/icon';
 import { componentDocs } from './component-docs.data';
 import { ComponentDetailViewComponent } from './component-detail-view.component';
+import { DocsAnalyticsService } from '../core/analytics.service';
 
 @Component({
   selector: 'app-components-docs-page',
@@ -23,25 +26,17 @@ import { ComponentDetailViewComponent } from './component-detail-view.component'
 
     <section class="j-components-layout">
       <aside class="j-components-sidebar" aria-label="Component groups">
-        <label class="j-doc-search">
-          <j-icon name="search" />
-          <input
-            type="search"
-            placeholder="Search components"
-            [value]="query()"
-            (input)="updateQuery($event)"
-          />
-        </label>
-        <label class="j-doc-search">
-          <span class="j-hidden-accessible">Filter by stability</span>
-          <select [value]="status()" (change)="updateStatus($event)">
-            <option value="all">All statuses</option>
-            <option value="Stable">Stable</option>
-            <option value="Beta">Beta</option>
-            <option value="New">New</option>
-            <option value="Coming soon">Coming soon</option>
-          </select>
-        </label>
+        <div class="j-components-sidebar__filters">
+          <label class="j-doc-search">
+            <j-icon name="search" />
+            <input
+              type="search"
+              placeholder="Search components"
+              [value]="query()"
+              (input)="updateQuery($event)"
+            />
+          </label>
+        </div>
 
         <nav class="j-components-nav">
           @for (group of filteredGroups(); track group.name) {
@@ -58,7 +53,6 @@ import { ComponentDetailViewComponent } from './component-detail-view.component'
                 >
                   <j-icon [name]="doc.icon" />
                   <span>{{ doc.name }}</span>
-                  <small>{{ doc.status }}</small>
                 </button>
               }
             </section>
@@ -78,17 +72,30 @@ import { ComponentDetailViewComponent } from './component-detail-view.component'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ComponentsDocsPageComponent {
+  private readonly title = inject(Title);
+  private readonly meta = inject(Meta);
+  private readonly analytics = inject(DocsAnalyticsService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
   readonly query = signal('');
-  readonly status = signal('all');
   readonly selectedSlug = signal(componentDocs[0]?.slug ?? 'input');
 
   readonly selectedDoc = computed(
     () => componentDocs.find((doc) => doc.slug === this.selectedSlug()) ?? componentDocs[0],
   );
 
+  constructor() {
+    this.route.fragment.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((fragment) => {
+      if (fragment && componentDocs.some((doc) => doc.slug === fragment)) {
+        this.selectedSlug.set(fragment);
+        this.updateMetadata(fragment);
+      }
+    });
+  }
+
   readonly filteredGroups = computed(() => {
     const search = this.query().trim().toLowerCase();
-    const status = this.status();
     const categories = [...new Set(componentDocs.map((doc) => doc.category))].sort();
     return categories
       .map((category) => ({
@@ -96,7 +103,6 @@ export class ComponentsDocsPageComponent {
         icon: 'layout-grid',
         docs: componentDocs
           .filter((doc) => doc.category === category)
-          .filter((doc) => status === 'all' || doc.status === status)
           .filter(
             (doc) =>
               !search ||
@@ -111,13 +117,23 @@ export class ComponentsDocsPageComponent {
 
   select(slug: string): void {
     this.selectedSlug.set(slug);
+    void this.router.navigate([], { fragment: slug, replaceUrl: true });
+    this.updateMetadata(slug);
+  }
+
+  private updateMetadata(slug: string): void {
+    const doc = componentDocs.find((item) => item.slug === slug);
+    if (doc) {
+      this.analytics.track('component_page_view', { component: doc.slug });
+      this.title.setTitle(`${doc.name} Angular Component - JRNG UI`);
+      this.meta.updateTag({
+        name: 'description',
+        content: `${doc.description} Review the live preview, code, API, accessibility, responsive behavior and troubleshooting guidance.`,
+      });
+    }
   }
 
   updateQuery(event: Event): void {
     this.query.set((event.target as HTMLInputElement).value);
-  }
-
-  updateStatus(event: Event): void {
-    this.status.set((event.target as HTMLSelectElement).value);
   }
 }

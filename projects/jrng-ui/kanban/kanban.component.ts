@@ -88,7 +88,12 @@ interface JKanbanDragState {
             }
           </header>
 
-          <div class="j-kanban__cards" data-jc-section="cards">
+          <div
+            class="j-kanban__cards"
+            data-jc-section="cards"
+            (dragover)="handleDragOver($event, column.id)"
+            (drop)="handleDrop($event, column, column.cards.length)"
+          >
             @for (card of column.cards; track card.id; let cardIndex = $index) {
               <article
                 class="j-kanban__card"
@@ -268,6 +273,7 @@ export class JKanbanComponent {
 
   handleDrop(event: DragEvent, toColumn: JKanbanColumn, toIndex: number): void {
     event.preventDefault();
+    event.stopPropagation();
     const state = this.dragState();
     if (!state) {
       return;

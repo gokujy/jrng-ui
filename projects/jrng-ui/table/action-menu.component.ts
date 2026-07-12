@@ -106,8 +106,8 @@ import { JTableAction, JTableActionEvent, JTableRow } from './table.types';
 
       .j-action-menu__trigger {
         justify-content: center;
-        padding: 0;
-        width: 2rem;
+        min-width: 2rem;
+        padding: 0 var(--j-spacing-sm, 0.5rem);
       }
 
       .j-action-menu.is-popup .j-action-menu__item {

@@ -1,5 +1,13 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, TemplateRef, contentChild, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  TemplateRef,
+  contentChild,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 
 export interface JKanbanCard {
   readonly id: string;
@@ -70,14 +78,22 @@ interface JKanbanDragState {
         >
           <header class="j-kanban__column-header">
             @if (columnTemplate(); as template) {
-              <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="columnContext(column, columnIndex)" />
+              <ng-container
+                [ngTemplateOutlet]="template"
+                [ngTemplateOutletContext]="columnContext(column, columnIndex)"
+              />
             } @else {
               <strong>{{ column.title }}</strong>
               <span>{{ column.cards.length }}</span>
             }
           </header>
 
-          <div class="j-kanban__cards" data-jc-section="cards">
+          <div
+            class="j-kanban__cards"
+            data-jc-section="cards"
+            (dragover)="handleDragOver($event, column.id)"
+            (drop)="handleDrop($event, column, column.cards.length)"
+          >
             @for (card of column.cards; track card.id; let cardIndex = $index) {
               <article
                 class="j-kanban__card"
@@ -89,7 +105,10 @@ interface JKanbanDragState {
                 (drop)="handleDrop($event, column, cardIndex)"
               >
                 @if (cardTemplate(); as template) {
-                  <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="cardContext(card, column, columnIndex, cardIndex)" />
+                  <ng-container
+                    [ngTemplateOutlet]="template"
+                    [ngTemplateOutletContext]="cardContext(card, column, columnIndex, cardIndex)"
+                  />
                 } @else {
                   <strong>{{ card.title }}</strong>
                   @if (card.description) {
@@ -99,14 +118,23 @@ interface JKanbanDragState {
                     <small>{{ card.metadata }}</small>
                   }
                 }
-                <button type="button" class="j-kanban__remove" aria-label="Remove card" (click)="removeCard.emit({ card, column })">Remove</button>
+                <button
+                  type="button"
+                  class="j-kanban__remove"
+                  aria-label="Remove card"
+                  (click)="removeCard.emit({ card, column })"
+                >
+                  Remove
+                </button>
               </article>
             } @empty {
               <div class="j-kanban__empty" data-jc-section="empty">{{ emptyMessage() }}</div>
             }
           </div>
 
-          <button type="button" class="j-kanban__add" (click)="addCard.emit({ column })">{{ addCardLabel() }}</button>
+          <button type="button" class="j-kanban__add" (click)="addCard.emit({ column })">
+            {{ addCardLabel() }}
+          </button>
         </section>
       }
     </section>
@@ -214,8 +242,13 @@ export class JKanbanComponent {
   readonly removeCard = output<JKanbanCardEvent>();
   readonly reorder = output<JKanbanMoveEvent>();
 
-  readonly cardTemplate = contentChild<unknown, TemplateRef<JKanbanCardContext>>('jKanbanCard', { read: TemplateRef });
-  readonly columnTemplate = contentChild<unknown, TemplateRef<JKanbanColumnContext>>('jKanbanColumn', { read: TemplateRef });
+  readonly cardTemplate = contentChild<unknown, TemplateRef<JKanbanCardContext>>('jKanbanCard', {
+    read: TemplateRef,
+  });
+  readonly columnTemplate = contentChild<unknown, TemplateRef<JKanbanColumnContext>>(
+    'jKanbanColumn',
+    { read: TemplateRef },
+  );
 
   readonly dropColumnId = signal('');
   private readonly dragState = signal<JKanbanDragState | null>(null);
@@ -240,6 +273,7 @@ export class JKanbanComponent {
 
   handleDrop(event: DragEvent, toColumn: JKanbanColumn, toIndex: number): void {
     event.preventDefault();
+    event.stopPropagation();
     const state = this.dragState();
     if (!state) {
       return;
@@ -261,7 +295,12 @@ export class JKanbanComponent {
     this.dropColumnId.set('');
   }
 
-  cardContext(card: JKanbanCard, column: JKanbanColumn, columnIndex: number, cardIndex: number): JKanbanCardContext {
+  cardContext(
+    card: JKanbanCard,
+    column: JKanbanColumn,
+    columnIndex: number,
+    cardIndex: number,
+  ): JKanbanCardContext {
     return { $implicit: card, card, column, columnIndex, cardIndex };
   }
 

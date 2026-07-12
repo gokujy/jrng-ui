@@ -152,9 +152,14 @@ const MONTH_NAMES = [
         color: var(--j-color-primary-foreground);
       }
 
-      .j-calendar__cell:hover:not(:disabled),
+      .j-calendar__cell:hover:not(:disabled):not(.is-selected),
       .j-calendar__nav:hover {
         background: var(--j-color-muted);
+      }
+
+      .j-calendar__cell.is-selected:hover:not(:disabled) {
+        background: var(--j-color-primary);
+        color: var(--j-color-primary-foreground);
       }
 
       .j-calendar__cell:focus-visible,

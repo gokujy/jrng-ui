@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, inject, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  inject,
+  output,
+} from '@angular/core';
 
 interface JCalendarCell {
   readonly date: Date;
@@ -30,16 +37,27 @@ const MONTH_NAMES = [
   template: `
     <section class="j-calendar" data-jc-name="calendar" data-jc-section="root">
       <header class="j-calendar__header" data-jc-section="header">
-        <button type="button" class="j-calendar__nav" aria-label="Previous month" (click)="previousMonth()">
+        <button
+          type="button"
+          class="j-calendar__nav"
+          aria-label="Previous month"
+          (click)="previousMonth()"
+        >
           &lt;
         </button>
-        <span class="j-calendar__heading">{{ monthNames[viewDate.getMonth()] }} {{ viewDate.getFullYear() }}</span>
+        <span class="j-calendar__heading"
+          >{{ monthNames[viewDate.getMonth()] }} {{ viewDate.getFullYear() }}</span
+        >
         <button type="button" class="j-calendar__nav" aria-label="Next month" (click)="nextMonth()">
           &gt;
         </button>
       </header>
 
-      <div class="j-calendar__grid" role="grid" [attr.aria-label]="monthNames[viewDate.getMonth()] + ' ' + viewDate.getFullYear()">
+      <div
+        class="j-calendar__grid"
+        role="grid"
+        [attr.aria-label]="monthNames[viewDate.getMonth()] + ' ' + viewDate.getFullYear()"
+      >
         @for (dayName of dayNames; track dayName) {
           <span class="j-calendar__weekday" role="columnheader">{{ dayName }}</span>
         }
@@ -134,9 +152,14 @@ const MONTH_NAMES = [
         color: var(--j-color-primary-foreground);
       }
 
-      .j-calendar__cell:hover:not(:disabled),
+      .j-calendar__cell:hover:not(:disabled):not(.is-selected),
       .j-calendar__nav:hover {
         background: var(--j-color-muted);
+      }
+
+      .j-calendar__cell.is-selected:hover:not(:disabled) {
+        background: var(--j-color-primary);
+        color: var(--j-color-primary-foreground);
       }
 
       .j-calendar__cell:focus-visible,
@@ -279,5 +302,9 @@ function addMonths(date: Date, amount: number): Date {
 }
 
 function sameDate(left: Date, right: Date): boolean {
-  return left.getFullYear() === right.getFullYear() && left.getMonth() === right.getMonth() && left.getDate() === right.getDate();
+  return (
+    left.getFullYear() === right.getFullYear() &&
+    left.getMonth() === right.getMonth() &&
+    left.getDate() === right.getDate()
+  );
 }

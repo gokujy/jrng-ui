@@ -4,7 +4,13 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   selector: 'j-error-page',
   imports: [],
   template: `
-    <section class="j-error-page" [class]="styleClass()" data-jc-name="error-page" data-jc-section="root" role="status">
+    <section
+      class="j-error-page"
+      [class]="styleClass()"
+      data-jc-name="error-page"
+      data-jc-section="root"
+      role="status"
+    >
       <span class="j-error-page__code">{{ code() }}</span>
       <h1>{{ title() }}</h1>
       <p>{{ description() }}</p>
@@ -16,18 +22,31 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   styles: [
     `
       .j-error-page {
+        background:
+          radial-gradient(
+            circle at 50% 15%,
+            color-mix(in srgb, var(--j-color-danger) 13%, transparent),
+            transparent 30%
+          ),
+          var(--j-color-card);
+        border: 1px solid var(--j-color-border);
+        border-radius: var(--j-radius-xl);
         display: grid;
         gap: var(--j-spacing-3);
         margin: 0 auto;
         max-width: 40rem;
-        min-height: 60dvh;
+        min-height: 28rem;
+        padding: var(--j-spacing-8);
         place-content: center;
         text-align: center;
       }
 
       .j-error-page__code {
         color: var(--j-color-danger);
+        font-size: clamp(3.5rem, 11vw, 7rem);
+        line-height: 0.9;
         font-weight: var(--j-font-weight-semibold);
+        letter-spacing: -0.06em;
       }
 
       .j-error-page h1 {

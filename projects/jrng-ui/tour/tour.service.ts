@@ -297,8 +297,7 @@ export class JTourService {
     }
 
     try {
-      const specifier = 'driver.js';
-      const module: unknown = await import(specifier);
+      const module: unknown = await import('driver.js');
       const candidate = this.extractDriverFactory(module);
 
       if (!candidate) {

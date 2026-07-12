@@ -1,7 +1,7 @@
 {
   "name": "jrng-ui",
   "version": "0.0.8",
-  "description": "A modern, premium Angular UI component library for building clean, fast, and accessible web applications.",
+  "description": "A modern Angular component library for admin panels, dashboards and business applications.",
   "homepage": "https://jrngui.dev/",
   "keywords": [
     "angular",
@@ -14,7 +14,9 @@
     "reactive-forms",
     "ssr",
     "zoneless",
-    "dashboard"
+    "dashboard",
+    "admin-dashboard",
+    "business-ui"
   ],
   "repository": {
     "type": "git",
@@ -31,11 +33,11 @@
     "CHANGELOG.md"
   ],
   "peerDependencies": {
-    "@angular/common": "^21.2.0",
-    "@angular/core": "^21.2.0",
-    "@angular/forms": "^21.2.0",
-    "@angular/platform-browser": "^21.2.0",
-    "@angular/router": "^21.2.0",
+    "@angular/common": ">=21.2.0 <22.0.0",
+    "@angular/core": ">=21.2.0 <22.0.0",
+    "@angular/forms": ">=21.2.0 <22.0.0",
+    "@angular/platform-browser": ">=21.2.0 <22.0.0",
+    "@angular/router": ">=21.2.0 <22.0.0",
     "chart.js": "^4.0.0",
     "driver.js": "^1.6.0",
     "rxjs": "^7.8.0"

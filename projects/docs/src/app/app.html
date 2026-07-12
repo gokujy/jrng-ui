@@ -1,17 +1,36 @@
 <div class="docs-shell">
   <header class="docs-header">
     <div class="docs-container docs-header__inner">
+      @if (!isHomeRoute()) {
+        <button
+          class="docs-menu-button"
+          type="button"
+          (click)="toggleNavigation()"
+          [attr.aria-expanded]="navOpen()"
+          aria-controls="docs-sidebar"
+          aria-label="Toggle documentation navigation"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      }
+
       <a class="docs-brand" routerLink="/">
-        <span class="docs-brand__mark">J</span>
-        JRNG UI
+        <span class="docs-brand__mark">JR</span>
+        <span class="docs-brand__text">
+          <strong>JRNG UI</strong>
+          <small>Angular Components</small>
+        </span>
       </a>
 
-      <nav class="docs-nav" aria-label="Primary">
+      <nav class="docs-nav docs-nav--desktop" aria-label="Primary">
         @for (item of nav; track item.path) {
           <a
             [routerLink]="item.path"
             routerLinkActive="is-active"
             [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
+            (click)="closeNavigation()"
           >
             {{ item.label }}
           </a>
@@ -35,9 +54,61 @@
     </div>
   </header>
 
-  <main class="docs-main">
-    <router-outlet />
-  </main>
+  <div
+    class="docs-layout"
+    [class.docs-layout--full]="isHomeRoute()"
+    [class.is-nav-open]="navOpen()"
+  >
+    @if (!isHomeRoute()) {
+      <button
+        class="docs-sidebar-backdrop"
+        type="button"
+        aria-label="Close documentation navigation"
+        (click)="closeNavigation()"
+      ></button>
+
+      <aside id="docs-sidebar" class="docs-sidebar" aria-label="Documentation navigation">
+        <div class="docs-sidebar__header">
+          <span class="docs-sidebar__eyebrow">Documentation</span>
+          <strong>JRNG UI v0.0.8</strong>
+        </div>
+
+        <nav class="docs-sidebar__nav">
+          @for (group of docsNavGroups; track group.label) {
+            <section class="docs-sidebar__group">
+              <h2>{{ group.label }}</h2>
+              @for (item of group.items; track item.path) {
+                @if (item.path.startsWith('http')) {
+                  <a
+                    [href]="item.path"
+                    target="_blank"
+                    rel="noreferrer"
+                    (click)="closeNavigation()"
+                  >
+                    <span>{{ item.label }}</span>
+                    <small>External</small>
+                  </a>
+                } @else {
+                  <a
+                    [routerLink]="item.path"
+                    routerLinkActive="is-active"
+                    [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
+                    (click)="closeNavigation()"
+                  >
+                    <span>{{ item.label }}</span>
+                  </a>
+                }
+              }
+            </section>
+          }
+        </nav>
+      </aside>
+    }
+
+    <main class="docs-main" tabindex="-1">
+      <router-outlet />
+    </main>
+  </div>
 
   <footer class="docs-footer">
     <div class="docs-container docs-footer__inner">

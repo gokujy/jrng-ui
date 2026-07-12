@@ -9,18 +9,23 @@ import {
   output,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { jAriaDescribedBy } from '../core/aria';
-import { jCreateId } from '../core/id';
-import { JPassThrough, jMergePartClasses } from '../core/pass-through';
-import { JSize } from '../core/types';
-import { JInputVariant } from '../input/input.component';
+import { jAriaDescribedBy } from 'jrng-ui/core';
+import { jCreateId } from 'jrng-ui/core';
+import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
+import { JSize } from 'jrng-ui/core';
+import { JInputVariant } from 'jrng-ui/input';
 
 @Component({
   selector: 'j-input-mask',
   imports: [],
   template: `
     @if (label) {
-      <label class="j-input-mask__label" data-jc-name="input-mask" data-jc-section="label" [for]="id">
+      <label
+        class="j-input-mask__label"
+        data-jc-name="input-mask"
+        data-jc-section="label"
+        [for]="id"
+      >
         <span>{{ label }}</span>
         @if (required) {
           <span class="j-input-mask__required" aria-hidden="true">*</span>
@@ -164,6 +169,7 @@ export class JInputMaskComponent implements ControlValueAccessor {
   @Input({ transform: booleanAttribute }) clearable = false;
   @Input({ transform: booleanAttribute }) fluid = false;
   @Input({ transform: booleanAttribute }) fullWidth = false;
+  @Input({ transform: booleanAttribute }) unmask = false;
 
   readonly valueChange = output<string>();
   readonly clear = output<void>();
@@ -214,7 +220,7 @@ export class JInputMaskComponent implements ControlValueAccessor {
   }
 
   writeValue(value: string | number | null | undefined): void {
-    this.value = value == null ? '' : String(value);
+    this.value = this.applyMask(value == null ? '' : String(value));
     this.changeDetectorRef.markForCheck();
   }
 
@@ -233,9 +239,11 @@ export class JInputMaskComponent implements ControlValueAccessor {
 
   handleInput(event: Event): void {
     const target = event.target as HTMLInputElement;
-    this.value = target.value;
-    this.onChange(this.value);
-    this.valueChange.emit(this.value);
+    this.value = this.applyMask(target.value);
+    target.value = this.value;
+    const emittedValue = this.unmask ? this.rawValue(this.value) : this.value;
+    this.onChange(emittedValue);
+    this.valueChange.emit(emittedValue);
   }
 
   handleBlur(): void {
@@ -252,5 +260,38 @@ export class JInputMaskComponent implements ControlValueAccessor {
     this.valueChange.emit(this.value);
     this.clear.emit();
     this.changeDetectorRef.markForCheck();
+  }
+
+  private applyMask(value: string): string {
+    if (!this.mask) return value;
+    const source = [...value];
+    let sourceIndex = 0;
+    let result = '';
+    const accepts: Readonly<Record<string, (character: string) => boolean>> = {
+      '9': (character) => /\d/.test(character),
+      a: (character) => /[a-z]/i.test(character),
+      '*': (character) => /[a-z0-9]/i.test(character),
+    };
+
+    for (const maskCharacter of this.mask) {
+      const acceptsCharacter = accepts[maskCharacter];
+      if (!acceptsCharacter) {
+        if (sourceIndex < source.length || result) result += maskCharacter;
+        continue;
+      }
+
+      let accepted = '';
+      while (sourceIndex < source.length && !accepted) {
+        const candidate = source[sourceIndex++] ?? '';
+        if (acceptsCharacter(candidate)) accepted = candidate;
+      }
+      if (!accepted) break;
+      result += accepted;
+    }
+    return result;
+  }
+
+  private rawValue(value: string): string {
+    return [...value].filter((character) => /[a-z0-9]/i.test(character)).join('');
   }
 }

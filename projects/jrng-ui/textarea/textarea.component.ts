@@ -86,6 +86,7 @@ import { JInputVariant } from 'jrng-ui/input';
     `
       :host {
         display: block;
+        width: 100%;
       }
 
       .j-textarea__label {
@@ -105,6 +106,7 @@ import { JInputVariant } from 'jrng-ui/input';
         background: var(--j-color-surface);
         border: 1px solid var(--j-color-border);
         border-radius: var(--j-radius-md);
+        box-sizing: border-box;
         color: var(--j-color-text);
         display: block;
         font: inherit;
@@ -113,7 +115,7 @@ import { JInputVariant } from 'jrng-ui/input';
         padding: var(--j-spacing-md);
         resize: vertical;
         transition: var(--j-transition-colors), var(--j-transition-shadow);
-        width: auto;
+        width: 100%;
       }
 
       .j-textarea__clear {

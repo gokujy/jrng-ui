@@ -15,11 +15,11 @@ import {
   model,
   output,
 } from '@angular/core';
-import { JBodyScrollLockService } from '../core/body-scroll-lock.service';
-import { jFocusInitial } from '../core/focus';
-import { JFocusTrapDirective } from '../core/focus-trap.directive';
-import { jCreateId } from '../core/id';
-import { JZIndexManagerService } from '../core/z-index-manager.service';
+import { JBodyScrollLockService } from 'jrng-ui/core';
+import { jFocusInitial } from 'jrng-ui/core';
+import { JFocusTrapDirective } from 'jrng-ui/core';
+import { jCreateId } from 'jrng-ui/core';
+import { JZIndexManagerService } from 'jrng-ui/core';
 
 export type JDrawerPosition = 'left' | 'right' | 'top' | 'bottom';
 export type JDrawerCloseReason = 'close-button' | 'backdrop' | 'escape' | 'gesture' | 'api';
@@ -32,6 +32,7 @@ export type JDrawerCloseReason = 'close-button' | 'backdrop' | 'escape' | 'gestu
       <div
         class="j-drawer__backdrop"
         [class.is-modal]="modal"
+        [class.is-contained]="contained"
         [style.z-index]="zIndex || null"
         data-jc-name="drawer"
         data-jc-section="backdrop"
@@ -75,7 +76,12 @@ export type JDrawerCloseReason = 'close-button' | 'backdrop' | 'escape' | 'gestu
               }
               <ng-content select="[jDrawerHeader]"></ng-content>
               @if (closable) {
-                <button class="j-drawer__close" type="button" aria-label="Close drawer" (click)="close('close-button')">
+                <button
+                  class="j-drawer__close"
+                  type="button"
+                  aria-label="Close drawer"
+                  (click)="close('close-button')"
+                >
                   x
                 </button>
               }
@@ -100,6 +106,10 @@ export type JDrawerCloseReason = 'close-button' | 'backdrop' | 'escape' | 'gestu
 
       .j-drawer__backdrop.is-modal {
         background: var(--j-overlay-backdrop-bg, rgb(15 23 42 / 56%));
+      }
+
+      .j-drawer__backdrop.is-contained {
+        position: absolute;
       }
 
       .j-drawer {
@@ -240,6 +250,7 @@ export class JDrawerComponent {
   @Input() appendTo: 'self' | 'body' | string = 'self';
   @Input() snapPoints: readonly string[] = ['50%', '80%'];
   @Input({ transform: booleanAttribute }) modal = true;
+  @Input({ transform: booleanAttribute }) contained = false;
   @Input({ transform: booleanAttribute }) closable = true;
   @Input({ transform: booleanAttribute }) dismissableMask = true;
   @Input({ transform: booleanAttribute }) closeOnEscape = true;
@@ -271,7 +282,9 @@ export class JDrawerComponent {
   }
 
   get computedHeight(): string | null {
-    return this.height || (this.position === 'bottom' && this.snapPoints[1] ? this.snapPoints[1] : null);
+    return (
+      this.height || (this.position === 'bottom' && this.snapPoints[1] ? this.snapPoints[1] : null)
+    );
   }
 
   get gestureTransform(): string | null {
@@ -302,11 +315,15 @@ export class JDrawerComponent {
       return;
     }
 
-    const removeKeydownListener = this.renderer.listen(this.documentRef, 'keydown', (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        this.handleEscape(event);
-      }
-    });
+    const removeKeydownListener = this.renderer.listen(
+      this.documentRef,
+      'keydown',
+      (event: KeyboardEvent) => {
+        if (event.key === 'Escape') {
+          this.handleEscape(event);
+        }
+      },
+    );
 
     this.destroyRef.onDestroy(removeKeydownListener);
   }
@@ -383,7 +400,9 @@ export class JDrawerComponent {
     this.zIndex = this.zIndexManager.next(1100);
     const HTMLElementCtor = this.documentRef.defaultView?.HTMLElement;
     this.previousFocus =
-      HTMLElementCtor && this.documentRef.activeElement instanceof HTMLElementCtor ? this.documentRef.activeElement : null;
+      HTMLElementCtor && this.documentRef.activeElement instanceof HTMLElementCtor
+        ? this.documentRef.activeElement
+        : null;
     if (this.modal && !this.scrollLocked) {
       this.bodyScrollLock.lock();
       this.scrollLocked = true;

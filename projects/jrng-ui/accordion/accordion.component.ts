@@ -70,10 +70,16 @@ export type JAccordionActiveIndex = number | readonly number[] | null;
         font: inherit;
         font-weight: var(--j-font-weight-semibold, 650);
         justify-content: space-between;
-        min-height: 3rem;
-        padding: 0 var(--j-spacing-lg, 1rem);
+        min-height: 3.5rem;
+        padding: 0 var(--j-spacing-4, 1rem);
         text-align: left;
         width: 100%;
+      }
+
+      .j-accordion-panel__button:hover:not(:disabled),
+      .j-accordion-panel.is-active .j-accordion-panel__button {
+        background: var(--j-color-muted, #f8fafc);
+        color: var(--j-color-primary, #4f46e5);
       }
 
       .j-accordion-panel__button:focus-visible {
@@ -87,8 +93,11 @@ export type JAccordionActiveIndex = number | readonly number[] | null;
       }
 
       .j-accordion-panel__content {
-        color: var(--j-color-text, #111827);
-        padding: 0 var(--j-spacing-lg, 1rem) var(--j-spacing-lg, 1rem);
+        background: var(--j-color-card, #ffffff);
+        border-top: 1px solid var(--j-color-border, #dbe2ea);
+        color: var(--j-color-muted-foreground, #64748b);
+        line-height: 1.6;
+        padding: var(--j-spacing-4, 1rem);
       }
     `,
   ],
@@ -120,7 +129,8 @@ export class JAccordionPanelComponent {
       .j-accordion {
         background: var(--j-color-surface, #ffffff);
         border: 1px solid var(--j-color-border, #dbe2ea);
-        border-radius: var(--j-radius-md, 0.5rem);
+        border-radius: var(--j-radius-lg, 0.75rem);
+        box-shadow: var(--j-shadow-sm);
         color: var(--j-color-text, #111827);
         overflow: hidden;
       }

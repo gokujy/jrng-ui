@@ -1,14 +1,21 @@
-import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, inject } from '@angular/core';
-import { JFocusTrapDirective } from '../core/focus-trap.directive';
-import { JRNG_LOCALE } from '../core/locale';
-import { JPopoverComponent } from '../popover/popover.component';
-import { JConfirmationService } from '../confirm-dialog/confirmation.service';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  ViewChild,
+  computed,
+  inject,
+} from '@angular/core';
+import { JFocusTrapDirective } from 'jrng-ui/core';
+import { JRNG_LOCALE } from 'jrng-ui/core';
+import { JPopoverComponent } from 'jrng-ui/popover';
+import { JConfirmationService } from 'jrng-ui/confirm-dialog';
 
 @Component({
   selector: 'j-confirm-popup',
   imports: [JPopoverComponent, JFocusTrapDirective],
   template: `
-    @if (confirmationService.confirmation(); as confirmation) {
+    @if (popupConfirmation(); as confirmation) {
       <j-popover
         [visible]="true"
         [target]="confirmation.target ?? null"
@@ -35,13 +42,19 @@ import { JConfirmationService } from '../confirm-dialog/confirmation.service';
             <strong>{{ confirmation.header || 'Confirm' }}</strong>
           </header>
           @if (confirmation.message) {
-            <p class="j-confirm-popup__message" data-jc-section="message">{{ confirmation.message }}</p>
+            <p class="j-confirm-popup__message" data-jc-section="message">
+              {{ confirmation.message }}
+            </p>
           }
           <footer class="j-confirm-popup__footer" data-jc-section="footer">
             <button class="j-confirm-popup__button" type="button" (click)="reject()">
               {{ confirmation.rejectLabel || locale.cancel }}
             </button>
-            <button class="j-confirm-popup__button j-confirm-popup__button--accept" type="button" (click)="accept()">
+            <button
+              class="j-confirm-popup__button j-confirm-popup__button--accept"
+              type="button"
+              (click)="accept()"
+            >
               {{ confirmation.acceptLabel || locale.accept }}
             </button>
           </footer>
@@ -103,6 +116,10 @@ import { JConfirmationService } from '../confirm-dialog/confirmation.service';
 })
 export class JConfirmPopupComponent {
   readonly confirmationService = inject(JConfirmationService);
+  readonly popupConfirmation = computed(() => {
+    const confirmation = this.confirmationService.confirmation();
+    return confirmation?.target ? confirmation : null;
+  });
   readonly locale = inject(JRNG_LOCALE);
 
   @ViewChild('panel') private panel?: ElementRef<HTMLElement>;

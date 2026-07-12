@@ -93,7 +93,13 @@ interface CodeToken {
 }
 
 function isSitePage(value: unknown): value is SitePage {
-  return value === 'home' || value === 'docs' || value === 'components' || value === 'themes' || value === 'component-detail';
+  return (
+    value === 'home' ||
+    value === 'docs' ||
+    value === 'components' ||
+    value === 'themes' ||
+    value === 'component-detail'
+  );
 }
 
 @Component({
@@ -147,7 +153,15 @@ export class CodeBlockComponent {
 
 @Component({
   selector: 'app-showcase-page',
-  imports: [RouterLink, NgTemplateOutlet, CodeBlockComponent, JButtonComponent, JInputComponent, JCardComponent, JBadgeComponent],
+  imports: [
+    RouterLink,
+    NgTemplateOutlet,
+    CodeBlockComponent,
+    JButtonComponent,
+    JInputComponent,
+    JCardComponent,
+    JBadgeComponent,
+  ],
   template: `
     @switch (currentPage()) {
       @case ('home') {
@@ -155,15 +169,26 @@ export class CodeBlockComponent {
           <div class="j-home-hero__content">
             <span class="j-page-eyebrow">Angular UI Library</span>
             <h1>JRNG UI</h1>
-            <p>A modern Angular UI component library for building clean, fast, and accessible web applications.</p>
+            <p>
+              A modern Angular UI component library for building clean, fast, and accessible web
+              applications.
+            </p>
             <div class="j-hero-actions">
               <a class="j-button-link j-button-link--primary" routerLink="/docs">Get Started</a>
               <a class="j-button-link" routerLink="/docs/components">Components</a>
-              <a class="j-button-link" [href]="npmLink" target="_blank" rel="noopener noreferrer">npm</a>
-              <a class="j-button-link" [href]="githubLink" target="_blank" rel="noopener noreferrer">GitHub</a>
+              <a class="j-button-link" [href]="npmLink" target="_blank" rel="noopener noreferrer"
+                >npm</a
+              >
+              <a class="j-button-link" [href]="githubLink" target="_blank" rel="noopener noreferrer"
+                >GitHub</a
+              >
             </div>
           </div>
-          <j-card title="Reusable primitives" subtitle="Generic controls for application screens" elevated>
+          <j-card
+            title="Reusable primitives"
+            subtitle="Generic controls for application screens"
+            elevated
+          >
             <div class="j-preview-form">
               <j-badge value="Active" severity="success" />
               <j-input label="Email" placeholder="Enter email" />
@@ -352,7 +377,9 @@ export class CodeBlockComponent {
               @if (doc.forms) {
                 <section class="j-doc-section" id="reactive-forms">
                   <h2>Reactive Forms</h2>
-                  <p>Import ReactiveFormsModule and bind the JRNG form component to a FormControl.</p>
+                  <p>
+                    Import ReactiveFormsModule and bind the JRNG form component to a FormControl.
+                  </p>
                   <app-code-block label="TypeScript" [code]="doc.forms" />
                 </section>
               }
@@ -372,9 +399,13 @@ export class CodeBlockComponent {
                     <tbody>
                       @for (row of doc.inputs; track row.name) {
                         <tr>
-                          <td><code>{{ row.name }}</code></td>
+                          <td>
+                            <code>{{ row.name }}</code>
+                          </td>
                           <td>{{ row.type }}</td>
-                          <td><code>{{ row.defaultValue }}</code></td>
+                          <td>
+                            <code>{{ row.defaultValue }}</code>
+                          </td>
                           <td>{{ row.description }}</td>
                         </tr>
                       }
@@ -394,7 +425,9 @@ export class CodeBlockComponent {
                     <tbody>
                       @for (row of doc.outputs; track row.name) {
                         <tr>
-                          <td><code>{{ row.name }}</code></td>
+                          <td>
+                            <code>{{ row.name }}</code>
+                          </td>
                           <td>{{ row.payload }}</td>
                           <td>{{ row.description }}</td>
                         </tr>
@@ -418,7 +451,9 @@ export class CodeBlockComponent {
                     <tbody>
                       @for (row of doc.tokens; track row.name) {
                         <tr>
-                          <td><code>{{ row.name }}</code></td>
+                          <td>
+                            <code>{{ row.name }}</code>
+                          </td>
                           <td>{{ row.description }}</td>
                         </tr>
                       }
@@ -497,9 +532,24 @@ export class ShowcasePageComponent {
   readonly githubLink = 'https://github.com/gokujy/jrng-ui';
   readonly npmLink = 'https://www.npmjs.com/package/jrng-ui';
 
-  readonly activeComponent = computed(() => this.componentDocs.find((doc) => doc.slug === this.currentComponent()) ?? this.componentDocs[0]);
+  readonly activeComponent = computed(
+    () =>
+      this.componentDocs.find((doc) => doc.slug === this.currentComponent()) ??
+      this.componentDocs[0],
+  );
 
-  readonly componentNav = ['Overview', 'Import', 'Basic Usage', 'Variants', 'Sizes', 'States', 'Reactive Forms', 'API', 'Styling', 'Accessibility'] as const;
+  readonly componentNav = [
+    'Overview',
+    'Import',
+    'Basic Usage',
+    'Variants',
+    'Sizes',
+    'States',
+    'Reactive Forms',
+    'API',
+    'Styling',
+    'Accessibility',
+  ] as const;
 
   readonly installCode = 'npm install jrng-ui';
   readonly typescriptUsageCode = `import { JButtonComponent } from 'jrng-ui/button';
@@ -511,40 +561,72 @@ import { JInputComponent } from 'jrng-ui/input';`;
     home: {
       eyebrow: 'Home',
       title: 'JRNG UI',
-      intro: 'A modern Angular UI component library for building clean, fast, and accessible web applications.',
+      intro:
+        'A modern Angular UI component library for building clean, fast, and accessible web applications.',
     },
     docs: {
       eyebrow: 'Documentation',
       title: 'Documentation',
-      intro: 'Beginner-friendly setup, usage patterns, imports, styling, accessibility, and troubleshooting for JRNG UI.',
+      intro:
+        'Beginner-friendly setup, usage patterns, imports, styling, accessibility, and troubleshooting for JRNG UI.',
     },
     components: {
       eyebrow: 'Components',
       title: 'Component Catalog',
-      intro: 'Browse generic component categories, selectors, import paths, descriptions, and implementation status.',
+      intro:
+        'Browse generic component categories, selectors, import paths, descriptions, and implementation status.',
     },
     themes: {
       eyebrow: 'Themes',
       title: 'Theme System',
-      intro: 'Learn how JRNG UI styles, light and dark themes, CSS variables, and component tokens work together.',
+      intro:
+        'Learn how JRNG UI styles, light and dark themes, CSS variables, and component tokens work together.',
     },
     'component-detail': {
       eyebrow: 'Component',
       title: 'Component Documentation',
-      intro: 'Usage examples, API tables, styling notes, and accessibility guidance for JRNG UI components.',
+      intro:
+        'Usage examples, API tables, styling notes, and accessibility guidance for JRNG UI components.',
     },
   };
 
   readonly features = [
-    { title: 'Modern Angular standalone components', description: 'Import only the components needed by each screen.' },
-    { title: 'Clean j-* selectors', description: 'Selectors are short, predictable, and easy to scan in templates.' },
-    { title: 'Premium dashboard-friendly design', description: 'Calm spacing, subtle borders, rounded cards, and clear hierarchy.' },
-    { title: 'Light and dark theme support', description: 'Themes are token-driven and ready for application-level toggles.' },
-    { title: 'Design tokens', description: 'Primitive, semantic, and component tokens keep customization maintainable.' },
-    { title: 'Accessible components', description: 'Semantic structure, focus states, ARIA, and keyboard patterns are built in.' },
-    { title: 'Reactive Forms support', description: 'Form controls are designed to work with Angular Reactive Forms.' },
-    { title: 'SSR-safe and zoneless-friendly', description: 'Browser APIs are guarded and interactions avoid unnecessary assumptions.' },
-    { title: 'Secondary entrypoints', description: 'Use focused imports such as jrng-ui/button and jrng-ui/input.' },
+    {
+      title: 'Modern Angular standalone components',
+      description: 'Import only the components needed by each screen.',
+    },
+    {
+      title: 'Clean j-* selectors',
+      description: 'Selectors are short, predictable, and easy to scan in templates.',
+    },
+    {
+      title: 'Premium dashboard-friendly design',
+      description: 'Calm spacing, subtle borders, rounded cards, and clear hierarchy.',
+    },
+    {
+      title: 'Light and dark theme support',
+      description: 'Themes are token-driven and ready for application-level toggles.',
+    },
+    {
+      title: 'Design tokens',
+      description: 'Primitive, semantic, and component tokens keep customization maintainable.',
+    },
+    {
+      title: 'Accessible components',
+      description: 'Semantic structure, focus states, ARIA, and keyboard patterns are built in.',
+    },
+    {
+      title: 'Reactive Forms support',
+      description: 'Form controls are designed to work with Angular Reactive Forms.',
+    },
+    {
+      title: 'SSR-safe and zoneless-friendly',
+      description: 'Browser APIs are guarded and interactions avoid unnecessary assumptions.',
+    },
+    {
+      title: 'Secondary entrypoints',
+      description: 'Use focused imports such as jrng-ui/button and jrng-ui/input.',
+    },
   ] as const;
 
   readonly docsSections: readonly TextSection[] = [
@@ -582,7 +664,9 @@ import { JInputComponent } from 'jrng-ui/input';`;
     },
     {
       title: 'SCSS Style Import',
-      body: ['If your workspace uses SCSS, import the style entry once from your global stylesheet.'],
+      body: [
+        'If your workspace uses SCSS, import the style entry once from your global stylesheet.',
+      ],
       codeLabel: 'SCSS',
       code: `@use 'jrng-ui/styles';`,
     },
@@ -609,7 +693,9 @@ export class ExampleComponent {
     },
     {
       title: 'Using Multiple Components',
-      body: ['Components are standalone, so add each imported component to the imports array of the component that uses them.'],
+      body: [
+        'Components are standalone, so add each imported component to the imports array of the component that uses them.',
+      ],
       codeLabel: 'TypeScript and HTML',
       code: `import { JButtonComponent } from 'jrng-ui/button';
 import { JInputComponent } from 'jrng-ui/input';
@@ -622,7 +708,9 @@ import { JCardComponent } from 'jrng-ui/card';
     },
     {
       title: 'Reactive Forms',
-      body: ['Form components support Angular Reactive Forms. Import ReactiveFormsModule and bind a FormControl.'],
+      body: [
+        'Form components support Angular Reactive Forms. Import ReactiveFormsModule and bind a FormControl.',
+      ],
       codeLabel: 'TypeScript',
       code: `import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -657,7 +745,9 @@ import { JSelectComponent } from 'jrng-ui/select';`,
     },
     {
       title: 'Common API Pattern',
-      body: ['Many JRNG UI components share common input and output names to make APIs predictable.'],
+      body: [
+        'Many JRNG UI components share common input and output names to make APIs predictable.',
+      ],
       list: [
         'Common inputs: label, placeholder, disabled, loading, size, severity, variant, styleClass.',
         'Common outputs: onClick, valueChange, selectionChange, opened, closed, clear, remove, pageChange, sortChange.',
@@ -742,7 +832,9 @@ this.jTour.start({
     },
     {
       title: 'Troubleshooting',
-      body: ['Most setup issues are caused by missing imports, missing styles, or wrong entrypoint paths.'],
+      body: [
+        'Most setup issues are caused by missing imports, missing styles, or wrong entrypoint paths.',
+      ],
       list: [
         'Component is unknown: import the standalone component and add it to the imports array.',
         'Styles are not applied: add the JRNG UI global styles once.',
@@ -765,17 +857,23 @@ this.jTour.start({
     },
     {
       title: 'Importing styles',
-      body: ['Import JRNG UI styles once. Do not duplicate both setup methods in the same application unless you have a specific build reason.'],
+      body: [
+        'Import JRNG UI styles once. Do not duplicate both setup methods in the same application unless you have a specific build reason.',
+      ],
       codeLabel: 'SCSS',
       code: `@use 'jrng-ui/styles';`,
     },
     {
       title: 'Light theme',
-      body: ['The light theme is the default and provides clean surfaces, readable text, soft borders, and calm focus states.'],
+      body: [
+        'The light theme is the default and provides clean surfaces, readable text, soft borders, and calm focus states.',
+      ],
     },
     {
       title: 'Dark theme',
-      body: ['Add j-dark to a root element to enable dark semantic tokens for components inside that scope.'],
+      body: [
+        'Add j-dark to a root element to enable dark semantic tokens for components inside that scope.',
+      ],
       codeLabel: 'HTML',
       code: `<main class="j-dark">
   <j-button label="Save"></j-button>
@@ -783,7 +881,9 @@ this.jTour.start({
     },
     {
       title: 'CSS variables',
-      body: ['Theme values are exposed as --j-* CSS variables. Override them globally or in a scoped container.'],
+      body: [
+        'Theme values are exposed as --j-* CSS variables. Override them globally or in a scoped container.',
+      ],
       codeLabel: 'CSS',
       code: `:root {
   --j-color-primary: #2563eb;
@@ -792,22 +892,45 @@ this.jTour.start({
     },
     {
       title: 'Primitive tokens',
-      body: ['Primitive tokens are raw foundation values such as color palettes, spacing, radius, shadows, and typography steps.'],
-      list: ['--j-color-slate-50', '--j-color-blue-500', '--j-radius-md', '--j-spacing-4', '--j-shadow-sm'],
+      body: [
+        'Primitive tokens are raw foundation values such as color palettes, spacing, radius, shadows, and typography steps.',
+      ],
+      list: [
+        '--j-color-slate-50',
+        '--j-color-blue-500',
+        '--j-radius-md',
+        '--j-spacing-4',
+        '--j-shadow-sm',
+      ],
     },
     {
       title: 'Semantic tokens',
-      body: ['Semantic tokens map primitive values to interface intent, such as background, foreground, border, primary, success, warning, and danger.'],
-      list: ['--j-color-background', '--j-color-foreground', '--j-color-border', '--j-color-primary', '--j-color-danger'],
+      body: [
+        'Semantic tokens map primitive values to interface intent, such as background, foreground, border, primary, success, warning, and danger.',
+      ],
+      list: [
+        '--j-color-background',
+        '--j-color-foreground',
+        '--j-color-border',
+        '--j-color-primary',
+        '--j-color-danger',
+      ],
     },
     {
       title: 'Component tokens',
       body: ['Component tokens tune a specific component while preserving the global theme model.'],
-      list: ['--j-button-primary-bg', '--j-button-primary-color', '--j-input-border-color', '--j-card-radius'],
+      list: [
+        '--j-button-primary-bg',
+        '--j-button-primary-color',
+        '--j-input-border-color',
+        '--j-card-radius',
+      ],
     },
     {
       title: 'Customizing primary color',
-      body: ['Override primary semantic tokens to align the component system with your application palette.'],
+      body: [
+        'Override primary semantic tokens to align the component system with your application palette.',
+      ],
       codeLabel: 'CSS',
       code: `:root {
   --j-color-primary: #2563eb;
@@ -816,7 +939,9 @@ this.jTour.start({
     },
     {
       title: 'Customizing radius',
-      body: ['Radius tokens control the rounded corner system. Small changes can make the whole UI feel sharper or softer.'],
+      body: [
+        'Radius tokens control the rounded corner system. Small changes can make the whole UI feel sharper or softer.',
+      ],
       codeLabel: 'CSS',
       code: `:root {
   --j-radius-md: 0.75rem;
@@ -824,7 +949,9 @@ this.jTour.start({
     },
     {
       title: 'Customizing button token',
-      body: ['Use component tokens when only one component family needs a different visual treatment.'],
+      body: [
+        'Use component tokens when only one component family needs a different visual treatment.',
+      ],
       codeLabel: 'CSS',
       code: `:root {
   --j-button-primary-bg: #111827;
@@ -833,7 +960,9 @@ this.jTour.start({
     },
     {
       title: 'Best practices',
-      body: ['Keep token overrides small and intentional. Prefer semantic tokens before component tokens, and avoid styling internal component elements unless needed.'],
+      body: [
+        'Keep token overrides small and intentional. Prefer semantic tokens before component tokens, and avoid styling internal component elements unless needed.',
+      ],
       list: [
         'Set brand colors through semantic tokens.',
         'Use component tokens for targeted changes.',
@@ -848,21 +977,67 @@ this.jTour.start({
       title: 'Basic',
       description: 'Foundational display and feedback components.',
       items: [
-        summary('Button', 'j-button', 'jrng-ui/button', 'Actions, submits, toolbar controls, and icon buttons.', 'ready', '/components/button'),
-        summary('Card', 'j-card', 'jrng-ui/card', 'Grouped content, panels, metric blocks, and section containers.', 'ready', '/components/card'),
+        summary(
+          'Button',
+          'j-button',
+          'jrng-ui/button',
+          'Actions, submits, toolbar controls, and icon buttons.',
+          'ready',
+          '/components/button',
+        ),
+        summary(
+          'Card',
+          'j-card',
+          'jrng-ui/card',
+          'Grouped content, panels, metric blocks, and section containers.',
+          'ready',
+          '/components/card',
+        ),
         summary('Badge', 'j-badge', 'jrng-ui/badge', 'Small status and count labels.', 'ready'),
-        summary('Tag', 'j-tag', 'jrng-ui/tag', 'Compact labels with optional remove actions.', 'ready'),
-        summary('Avatar', 'j-avatar', 'jrng-ui/avatar', 'Images, initials, and presence indicators.', 'ready'),
+        summary(
+          'Tag',
+          'j-tag',
+          'jrng-ui/tag',
+          'Compact labels with optional remove actions.',
+          'ready',
+        ),
+        summary(
+          'Avatar',
+          'j-avatar',
+          'jrng-ui/avatar',
+          'Images, initials, and presence indicators.',
+          'ready',
+        ),
       ],
     },
     {
       title: 'Forms',
       description: 'Inputs and form controls for Angular Reactive Forms.',
       items: [
-        summary('Input', 'j-input', 'jrng-ui/input', 'Text input with labels, hints, errors, and form binding.', 'ready', '/components/input'),
-        summary('Select', 'j-select', 'jrng-ui/select', 'Single selection with primitive or object options.', 'ready', '/components/select'),
+        summary(
+          'Input',
+          'j-input',
+          'jrng-ui/input',
+          'Text input with labels, hints, errors, and form binding.',
+          'ready',
+          '/components/input',
+        ),
+        summary(
+          'Select',
+          'j-select',
+          'jrng-ui/select',
+          'Single selection with primitive or object options.',
+          'ready',
+          '/components/select',
+        ),
         summary('Textarea', 'j-textarea', 'jrng-ui/textarea', 'Multi-line text input.', 'ready'),
-        summary('Checkbox', 'j-checkbox', 'jrng-ui/checkbox', 'Boolean and selection input.', 'ready'),
+        summary(
+          'Checkbox',
+          'j-checkbox',
+          'jrng-ui/checkbox',
+          'Boolean and selection input.',
+          'ready',
+        ),
         summary('Switch', 'j-switch', 'jrng-ui/switch', 'Accessible on/off control.', 'ready'),
       ],
     },
@@ -870,9 +1045,28 @@ this.jTour.start({
       title: 'Data',
       description: 'Components for displaying, filtering, and navigating data.',
       items: [
-        summary('Table', 'j-table', 'jrng-ui/table', 'Structured rows, columns, pagination, sorting, and empty states.', 'ready', '/components/table'),
-        summary('Data Grid', 'j-data-grid', 'jrng-ui/data-grid', 'App-like data management layout.', 'basic'),
-        summary('Paginator', 'j-paginator', 'jrng-ui/paginator', 'Page navigation for lists and tables.', 'ready'),
+        summary(
+          'Table',
+          'j-table',
+          'jrng-ui/table',
+          'Structured rows, columns, pagination, sorting, and empty states.',
+          'ready',
+          '/components/table',
+        ),
+        summary(
+          'Data Grid',
+          'j-data-grid',
+          'jrng-ui/data-grid',
+          'App-like data management layout.',
+          'basic',
+        ),
+        summary(
+          'Paginator',
+          'j-paginator',
+          'jrng-ui/paginator',
+          'Page navigation for lists and tables.',
+          'ready',
+        ),
         summary('Tree', 'j-tree', 'jrng-ui/tree', 'Hierarchical data display.', 'basic'),
         summary('Chart', 'j-chart', 'jrng-ui/chart', 'Optional chart rendering.', 'basic'),
       ],
@@ -881,9 +1075,29 @@ this.jTour.start({
       title: 'Overlay',
       description: 'Layered interaction and feedback components.',
       items: [
-        summary('Dialog', 'j-dialog', 'jrng-ui/dialog', 'Modal content with focus handling.', 'ready', '/components/dialog'),
-        summary('Toast', 'j-toast', 'jrng-ui/toast', 'Stacked feedback messages.', 'ready', '/components/toast'),
-        summary('Drawer', 'j-drawer', 'jrng-ui/drawer', 'Side panel for forms and filters.', 'ready'),
+        summary(
+          'Dialog',
+          'j-dialog',
+          'jrng-ui/dialog',
+          'Modal content with focus handling.',
+          'ready',
+          '/components/dialog',
+        ),
+        summary(
+          'Toast',
+          'j-toast',
+          'jrng-ui/toast',
+          'Stacked feedback messages.',
+          'ready',
+          '/components/toast',
+        ),
+        summary(
+          'Drawer',
+          'j-drawer',
+          'jrng-ui/drawer',
+          'Side panel for forms and filters.',
+          'ready',
+        ),
         summary('Popover', 'j-popover', 'jrng-ui/popover', 'Anchored floating content.', 'basic'),
         summary('Tooltip', 'j-tooltip', 'jrng-ui/tooltip', 'Short contextual help.', 'ready'),
       ],
@@ -894,18 +1108,54 @@ this.jTour.start({
       items: [
         summary('Menu', 'j-menu', 'jrng-ui/menu', 'Nested action lists.', 'ready'),
         summary('Tabs', 'j-tabs', 'jrng-ui/tabs', 'Tabbed content regions.', 'ready'),
-        summary('Breadcrumb', 'j-breadcrumb', 'jrng-ui/breadcrumb', 'Current page hierarchy.', 'ready'),
-        summary('Accordion', 'j-accordion', 'jrng-ui/accordion', 'Expandable content sections.', 'ready'),
+        summary(
+          'Breadcrumb',
+          'j-breadcrumb',
+          'jrng-ui/breadcrumb',
+          'Current page hierarchy.',
+          'ready',
+        ),
+        summary(
+          'Accordion',
+          'j-accordion',
+          'jrng-ui/accordion',
+          'Expandable content sections.',
+          'ready',
+        ),
       ],
     },
     {
       title: 'Layout',
       description: 'Reusable page and application layout blocks.',
       items: [
-        summary('App Shell', 'j-app-shell', 'jrng-ui/app-shell', 'Header, sidebar, content, and footer layout.', 'ready'),
-        summary('Page Header', 'j-page-header', 'jrng-ui/page-header', 'Title, description, breadcrumbs, and actions.', 'ready'),
-        summary('Container', 'j-container', 'jrng-ui/container', 'Width-constrained content wrapper.', 'ready'),
-        summary('Stack', 'j-stack', 'jrng-ui/stack', 'Simple vertical or horizontal spacing layout.', 'ready'),
+        summary(
+          'App Shell',
+          'j-app-shell',
+          'jrng-ui/app-shell',
+          'Header, sidebar, content, and footer layout.',
+          'ready',
+        ),
+        summary(
+          'Page Header',
+          'j-page-header',
+          'jrng-ui/page-header',
+          'Title, description, breadcrumbs, and actions.',
+          'ready',
+        ),
+        summary(
+          'Container',
+          'j-container',
+          'jrng-ui/container',
+          'Width-constrained content wrapper.',
+          'ready',
+        ),
+        summary(
+          'Stack',
+          'j-stack',
+          'jrng-ui/stack',
+          'Simple vertical or horizontal spacing layout.',
+          'ready',
+        ),
       ],
     },
     {
@@ -915,7 +1165,13 @@ this.jTour.start({
         summary('Image', 'j-image', 'jrng-ui/image', 'Responsive image display.', 'basic'),
         summary('Gallery', 'j-gallery', 'jrng-ui/gallery', 'Image gallery with preview.', 'basic'),
         summary('Carousel', 'j-carousel', 'jrng-ui/carousel', 'Rotating content groups.', 'basic'),
-        summary('File Preview', 'j-file-preview', 'jrng-ui/file-preview', 'Generic file preview display.', 'basic'),
+        summary(
+          'File Preview',
+          'j-file-preview',
+          'jrng-ui/file-preview',
+          'Generic file preview display.',
+          'basic',
+        ),
       ],
     },
     {
@@ -923,10 +1179,28 @@ this.jTour.start({
       description: 'Productivity components for complex application screens.',
       items: [
         summary('Editor', 'j-editor', 'jrng-ui/editor', 'Rich text editing foundation.', 'basic'),
-        summary('File Upload', 'j-file-upload', 'jrng-ui/file-upload', 'Upload queue and progress UI.', 'ready'),
-        summary('Kanban', 'j-kanban', 'jrng-ui/kanban', 'Columns and cards for task workflows.', 'basic'),
+        summary(
+          'File Upload',
+          'j-file-upload',
+          'jrng-ui/file-upload',
+          'Upload queue and progress UI.',
+          'ready',
+        ),
+        summary(
+          'Kanban',
+          'j-kanban',
+          'jrng-ui/kanban',
+          'Columns and cards for task workflows.',
+          'basic',
+        ),
         summary('Gantt', 'j-gantt', 'jrng-ui/gantt', 'Timeline task planning.', 'basic'),
-        summary('Calendar Scheduler', 'j-calendar-scheduler', 'jrng-ui/calendar-scheduler', 'Calendar event scheduling.', 'basic'),
+        summary(
+          'Calendar Scheduler',
+          'j-calendar-scheduler',
+          'jrng-ui/calendar-scheduler',
+          'Calendar event scheduling.',
+          'basic',
+        ),
       ],
     },
   ];
@@ -958,8 +1232,18 @@ this.jTour.start({
 <j-button label="Full width" fullWidth></j-button>`,
       inputs: [
         api('label', 'string', "''", 'Text displayed inside the button.'),
-        api('severity', 'primary | secondary | neutral | success | warning | danger | info', "'primary'", 'Visual intent of the action.'),
-        api('variant', 'filled | outline | ghost | soft | link', "'filled'", 'Button visual treatment.'),
+        api(
+          'severity',
+          'primary | secondary | neutral | success | warning | danger | info',
+          "'primary'",
+          'Visual intent of the action.',
+        ),
+        api(
+          'variant',
+          'filled | outline | ghost | soft | link',
+          "'filled'",
+          'Button visual treatment.',
+        ),
         api('size', 'sm | md | lg | xl', "'md'", 'Button height and spacing.'),
         api('disabled', 'boolean', 'false', 'Disables interaction.'),
         api('loading', 'boolean', 'false', 'Shows loading state and prevents clicks.'),
@@ -970,8 +1254,19 @@ this.jTour.start({
         api('styleClass', 'string', "''", 'Adds a custom class to the root element.'),
         api('ariaLabel', 'string', "''", 'Accessible label for icon-only buttons.'),
       ],
-      outputs: [out('onClick', 'MouseEvent', 'Emits when the button is activated and not disabled or loading.')],
-      tokens: tokens('button', ['--j-button-primary-bg', '--j-button-primary-color', '--j-button-radius', '--j-button-height-md']),
+      outputs: [
+        out(
+          'onClick',
+          'MouseEvent',
+          'Emits when the button is activated and not disabled or loading.',
+        ),
+      ],
+      tokens: tokens('button', [
+        '--j-button-primary-bg',
+        '--j-button-primary-color',
+        '--j-button-radius',
+        '--j-button-height-md',
+      ]),
       stylingHtml: `<j-button label="Save" styleClass="my-save-button"></j-button>`,
       stylingCss: `.my-save-button {
   min-width: 120px;
@@ -1089,7 +1384,11 @@ readonly products = [
         out('valueChange', 'unknown', 'Emits the selected value.'),
         out('selectionChange', 'unknown', 'Emits selection details when selection changes.'),
       ],
-      tokens: tokens('select', ['--j-input-height-md', '--j-input-border-color', '--j-color-popover']),
+      tokens: tokens('select', [
+        '--j-input-height-md',
+        '--j-input-border-color',
+        '--j-color-popover',
+      ]),
       stylingHtml: `<j-select label="Product" styleClass="my-product-select" [options]="products"></j-select>`,
       stylingCss: `.my-product-select {
   width: 100%;
@@ -1129,7 +1428,12 @@ readonly products = [
         api('styleClass', 'string', "''", 'Adds a custom class.'),
       ],
       outputs: [],
-      tokens: tokens('card', ['--j-card-radius', '--j-card-shadow', '--j-color-card', '--j-color-card-foreground']),
+      tokens: tokens('card', [
+        '--j-card-radius',
+        '--j-card-shadow',
+        '--j-color-card',
+        '--j-color-card-foreground',
+      ]),
       stylingHtml: `<j-card header="Analytics" styleClass="my-analytics-card"></j-card>`,
       stylingCss: `.my-analytics-card {
   --j-card-radius: 1rem;
@@ -1204,12 +1508,22 @@ toast.warning('Review required');`,
 
 toast.clear();`,
       inputs: [
-        api('position', 'top-right | top-left | bottom-right | bottom-left', "'top-right'", 'Toast stack position.'),
+        api(
+          'position',
+          'top-right | top-left | bottom-right | bottom-left',
+          "'top-right'",
+          'Toast stack position.',
+        ),
         api('duration', 'number', '3000', 'Default message duration.'),
         api('styleClass', 'string', "''", 'Adds a custom class to the container.'),
       ],
       outputs: [],
-      tokens: tokens('toast', ['--j-color-success', '--j-color-danger', '--j-color-info', '--j-color-warning']),
+      tokens: tokens('toast', [
+        '--j-color-success',
+        '--j-color-danger',
+        '--j-color-info',
+        '--j-color-warning',
+      ]),
       stylingHtml: `<j-toast styleClass="my-toast-stack"></j-toast>`,
       stylingCss: `.my-toast-stack {
   --j-toast-radius: var(--j-radius-lg);
@@ -1250,7 +1564,12 @@ toast.clear();`,
         api('rows', 'number', '10', 'Rows per page.'),
         api('totalRecords', 'number', '0', 'Total row count for paginated or lazy data.'),
         api('sort', 'JTableSort', 'null', 'Current sort state.'),
-        api('emptyMessage', 'string', "'No records found'", 'Message shown when there are no rows.'),
+        api(
+          'emptyMessage',
+          'string',
+          "'No records found'",
+          'Message shown when there are no rows.',
+        ),
       ],
       outputs: [
         out('pageChange', 'JTablePageChange', 'Emits when the page changes.'),

@@ -1,0 +1,20 @@
+# JRNG UI
+
+> JRNG UI is a modern Angular component library for admin panels, dashboards and business applications.
+
+Package: jrng-ui
+Documentation: https://jrngui.dev/
+Getting started: https://jrngui.dev/docs
+Public API index: https://jrngui.dev/docs/index
+Components: https://jrngui.dev/docs/components
+Guides: https://jrngui.dev/guides
+Examples: https://jrngui.dev/examples
+Registry: https://jrngui.dev/registry/registry.json
+Registry schema: https://jrngui.dev/registry/schema.json
+Source: https://github.com/gokujy/jrng-ui
+
+Compatibility: JRNG UI 0.0.8 is verified with Angular 21.2.x.
+Imports: use modular public entrypoints such as jrng-ui/button.
+Styles: load jrng-ui/styles once.
+Button activation: use (onClick).
+Architecture: standalone components, SSR-safe behavior, zoneless-friendly state, semantic theme tokens, and accessible keyboard/focus behavior.

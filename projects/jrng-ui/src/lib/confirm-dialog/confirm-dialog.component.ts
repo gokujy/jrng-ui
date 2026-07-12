@@ -6,23 +6,35 @@ import {
   ElementRef,
   PLATFORM_ID,
   ViewChild,
+  computed,
   effect,
   inject,
 } from '@angular/core';
 import { JConfirmationService } from './confirmation.service';
+import {
+  JBodyScrollLockService,
+  JFocusTrapDirective,
+  jCreateId,
+  jFocusInitial,
+  jRememberFocus,
+} from 'jrng-ui/core';
 
 @Component({
   selector: 'j-confirm-dialog',
-  imports: [],
+  imports: [JFocusTrapDirective],
   template: `
-    @if (confirmationService.confirmation(); as confirmation) {
+    @if (dialogConfirmation(); as confirmation) {
       <div
         class="j-confirm-dialog__backdrop"
-        [class]="'j-confirm-dialog__backdrop j-confirm-dialog__backdrop--' + (confirmation.severity || 'info')"
+        [class]="
+          'j-confirm-dialog__backdrop j-confirm-dialog__backdrop--' +
+          (confirmation.severity || 'info')
+        "
         (mousedown)="handleOverlayMouseDown($event)"
       >
         <section
           #dialogPanel
+          jFocusTrap
           class="j-confirm-dialog"
           [class]="'j-confirm-dialog j-confirm-dialog--' + (confirmation.severity || 'info')"
           role="alertdialog"
@@ -36,7 +48,9 @@ import { JConfirmationService } from './confirmation.service';
             @if (confirmation.icon) {
               <span class="j-confirm-dialog__icon">{{ confirmation.icon }}</span>
             } @else {
-              <span class="j-confirm-dialog__icon" aria-hidden="true">{{ severityIcon(confirmation.severity) }}</span>
+              <span class="j-confirm-dialog__icon" aria-hidden="true">{{
+                severityIcon(confirmation.severity)
+              }}</span>
             }
             <h2 [id]="titleId">{{ confirmation.title || confirmation.header || 'Confirm' }}</h2>
           </header>
@@ -54,6 +68,7 @@ import { JConfirmationService } from './confirmation.service';
               class="j-confirm-dialog__button j-confirm-dialog__button--accept"
               type="button"
               #acceptButton
+              data-j-initial-focus
               (click)="accept()"
             >
               {{ confirmation.confirmText || confirmation.acceptLabel || 'OK' }}
@@ -67,7 +82,10 @@ import { JConfirmationService } from './confirmation.service';
     `
       .j-confirm-dialog__backdrop {
         align-items: center;
-        background: var(--j-confirm-dialog-backdrop-bg, var(--j-overlay-backdrop-bg, rgb(15 23 42 / 56%)));
+        background: var(
+          --j-confirm-dialog-backdrop-bg,
+          var(--j-overlay-backdrop-bg, rgb(15 23 42 / 56%))
+        );
         display: flex;
         inset: 0;
         justify-content: center;
@@ -93,7 +111,14 @@ import { JConfirmationService } from './confirmation.service';
       }
       .j-confirm-dialog__icon {
         align-items: center;
-        background: var(--j-confirm-dialog-icon-bg, color-mix(in srgb, var(--j-confirm-dialog-accent, var(--j-color-info, #0284c7)) 12%, transparent));
+        background: var(
+          --j-confirm-dialog-icon-bg,
+          color-mix(
+            in srgb,
+            var(--j-confirm-dialog-accent, var(--j-color-info, #0284c7)) 12%,
+            transparent
+          )
+        );
         border-radius: var(--j-radius-full, 999px);
         color: var(--j-confirm-dialog-accent, var(--j-color-info, #0284c7));
         display: inline-flex;
@@ -127,8 +152,14 @@ import { JConfirmationService } from './confirmation.service';
         padding: 0 var(--j-spacing-md, 0.75rem);
       }
       .j-confirm-dialog__button--accept {
-        background: var(--j-confirm-dialog-accept-bg, var(--j-confirm-dialog-accent, var(--j-color-primary, #2563eb)));
-        border-color: var(--j-confirm-dialog-accept-bg, var(--j-confirm-dialog-accent, var(--j-color-primary, #2563eb)));
+        background: var(
+          --j-confirm-dialog-accept-bg,
+          var(--j-confirm-dialog-accent, var(--j-color-primary, #2563eb))
+        );
+        border-color: var(
+          --j-confirm-dialog-accept-bg,
+          var(--j-confirm-dialog-accent, var(--j-color-primary, #2563eb))
+        );
         color: var(--j-confirm-dialog-accept-color, var(--j-color-primary-foreground, #ffffff));
       }
       .j-confirm-dialog__button--reject {
@@ -157,20 +188,26 @@ import { JConfirmationService } from './confirmation.service';
 })
 export class JConfirmDialogComponent {
   readonly confirmationService = inject(JConfirmationService);
+  readonly dialogConfirmation = computed(() => {
+    const confirmation = this.confirmationService.confirmation();
+    return confirmation?.target ? null : confirmation;
+  });
   private readonly documentRef = inject(DOCUMENT);
   private readonly destroyRef = inject(DestroyRef);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
-  private previousFocus: HTMLElement | null = null;
+  private readonly bodyScrollLock = inject(JBodyScrollLockService);
+  private restorePreviousFocus: (() => void) | null = null;
+  private scrollLocked = false;
 
   @ViewChild('dialogPanel') private dialogPanel?: ElementRef<HTMLElement>;
   @ViewChild('acceptButton') private acceptButton?: ElementRef<HTMLButtonElement>;
 
-  readonly titleId = `j-confirm-title-${Math.random().toString(36).slice(2)}`;
-  readonly messageId = `j-confirm-message-${Math.random().toString(36).slice(2)}`;
+  readonly titleId = jCreateId('j-confirm-title');
+  readonly messageId = jCreateId('j-confirm-message');
 
   constructor() {
     effect(() => {
-      const confirmation = this.confirmationService.confirmation();
+      const confirmation = this.dialogConfirmation();
       if (confirmation) {
         this.handleOpened();
         return;
@@ -184,23 +221,28 @@ export class JConfirmDialogComponent {
 
     const keydownListener = (event: KeyboardEvent) => this.handleDocumentKeydown(event);
     this.documentRef.addEventListener('keydown', keydownListener);
-    this.destroyRef.onDestroy(() => this.documentRef.removeEventListener('keydown', keydownListener));
+    this.destroyRef.onDestroy(() => {
+      this.documentRef.removeEventListener('keydown', keydownListener);
+      if (this.scrollLocked) {
+        this.bodyScrollLock.unlock();
+      }
+    });
   }
 
   accept(): void {
-    const confirmation = this.confirmationService.confirmation();
+    const confirmation = this.dialogConfirmation();
     confirmation?.accept?.();
     this.confirmationService.close();
   }
 
   reject(): void {
-    const confirmation = this.confirmationService.confirmation();
+    const confirmation = this.dialogConfirmation();
     confirmation?.reject?.();
     this.confirmationService.close();
   }
 
   handleOverlayMouseDown(event: MouseEvent): void {
-    const confirmation = this.confirmationService.confirmation();
+    const confirmation = this.dialogConfirmation();
     if (event.target === event.currentTarget && confirmation?.closeOnOverlayClick !== false) {
       this.reject();
     }
@@ -223,14 +265,21 @@ export class JConfirmDialogComponent {
     if (!this.isBrowser) {
       return;
     }
-    this.previousFocus = this.documentRef.activeElement instanceof HTMLElement ? this.documentRef.activeElement : null;
+    this.restorePreviousFocus = jRememberFocus(this.documentRef);
+    if (!this.scrollLocked) {
+      this.bodyScrollLock.lock();
+      this.scrollLocked = true;
+    }
     queueMicrotask(() => {
-      (this.acceptButton?.nativeElement ?? this.dialogPanel?.nativeElement)?.focus();
+      const panel = this.dialogPanel?.nativeElement;
+      if (panel && !jFocusInitial(panel, '[data-j-initial-focus]')) {
+        (this.acceptButton?.nativeElement ?? panel).focus();
+      }
     });
   }
 
   private handleDocumentKeydown(event: KeyboardEvent): void {
-    const confirmation = this.confirmationService.confirmation();
+    const confirmation = this.dialogConfirmation();
     if (!confirmation || event.key !== 'Escape' || confirmation.closeOnEscape === false) {
       return;
     }
@@ -242,9 +291,12 @@ export class JConfirmDialogComponent {
     if (!this.isBrowser) {
       return;
     }
-    queueMicrotask(() => {
-      this.previousFocus?.focus();
-      this.previousFocus = null;
-    });
+    if (this.scrollLocked) {
+      this.bodyScrollLock.unlock();
+      this.scrollLocked = false;
+    }
+    const restore = this.restorePreviousFocus;
+    this.restorePreviousFocus = null;
+    queueMicrotask(() => restore?.());
   }
 }

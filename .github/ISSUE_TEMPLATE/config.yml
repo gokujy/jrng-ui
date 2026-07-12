@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Support and usage questions
+    url: https://github.com/gokujy/jrng-ui/discussions
+    about: Ask implementation questions and discuss patterns with the community.
+  - name: Security vulnerability
+    url: https://github.com/gokujy/jrng-ui/security/advisories/new
+    about: Privately report security vulnerabilities instead of opening a public issue.

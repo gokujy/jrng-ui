@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  ViewChild,
+  computed,
+  inject,
+} from '@angular/core';
 import { JFocusTrapDirective } from 'jrng-ui/core';
 import { JRNG_LOCALE } from 'jrng-ui/core';
 import { JPopoverComponent } from 'jrng-ui/popover';
@@ -8,7 +15,7 @@ import { JConfirmationService } from 'jrng-ui/confirm-dialog';
   selector: 'j-confirm-popup',
   imports: [JPopoverComponent, JFocusTrapDirective],
   template: `
-    @if (confirmationService.confirmation(); as confirmation) {
+    @if (popupConfirmation(); as confirmation) {
       <j-popover
         [visible]="true"
         [target]="confirmation.target ?? null"
@@ -109,6 +116,10 @@ import { JConfirmationService } from 'jrng-ui/confirm-dialog';
 })
 export class JConfirmPopupComponent {
   readonly confirmationService = inject(JConfirmationService);
+  readonly popupConfirmation = computed(() => {
+    const confirmation = this.confirmationService.confirmation();
+    return confirmation?.target ? confirmation : null;
+  });
   readonly locale = inject(JRNG_LOCALE);
 
   @ViewChild('panel') private panel?: ElementRef<HTMLElement>;

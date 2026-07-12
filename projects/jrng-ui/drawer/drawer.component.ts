@@ -32,6 +32,7 @@ export type JDrawerCloseReason = 'close-button' | 'backdrop' | 'escape' | 'gestu
       <div
         class="j-drawer__backdrop"
         [class.is-modal]="modal"
+        [class.is-contained]="contained"
         [style.z-index]="zIndex || null"
         data-jc-name="drawer"
         data-jc-section="backdrop"
@@ -105,6 +106,10 @@ export type JDrawerCloseReason = 'close-button' | 'backdrop' | 'escape' | 'gestu
 
       .j-drawer__backdrop.is-modal {
         background: var(--j-overlay-backdrop-bg, rgb(15 23 42 / 56%));
+      }
+
+      .j-drawer__backdrop.is-contained {
+        position: absolute;
       }
 
       .j-drawer {
@@ -245,6 +250,7 @@ export class JDrawerComponent {
   @Input() appendTo: 'self' | 'body' | string = 'self';
   @Input() snapPoints: readonly string[] = ['50%', '80%'];
   @Input({ transform: booleanAttribute }) modal = true;
+  @Input({ transform: booleanAttribute }) contained = false;
   @Input({ transform: booleanAttribute }) closable = true;
   @Input({ transform: booleanAttribute }) dismissableMask = true;
   @Input({ transform: booleanAttribute }) closeOnEscape = true;

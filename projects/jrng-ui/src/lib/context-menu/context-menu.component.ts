@@ -10,7 +10,7 @@ import {
   ViewChild,
   inject,
 } from '@angular/core';
-import { JMenuComponent, JMenuItem } from '../menu/menu.component';
+import { JMenuComponent, JMenuItem } from 'jrng-ui/menu';
 
 @Component({
   selector: 'j-context-menu',
@@ -51,10 +51,14 @@ export class JContextMenuComponent {
     }
 
     const element = value instanceof ElementRef ? value.nativeElement : value;
-    this.removeTargetListener = this.renderer.listen(element, 'contextmenu', (event: MouseEvent) => {
-      event.preventDefault();
-      this.show(event);
-    });
+    this.removeTargetListener = this.renderer.listen(
+      element,
+      'contextmenu',
+      (event: MouseEvent) => {
+        event.preventDefault();
+        this.show(event);
+      },
+    );
   }
 
   constructor() {
@@ -64,20 +68,27 @@ export class JContextMenuComponent {
       return;
     }
 
-    const removeKeydown = this.renderer.listen(this.documentRef, 'keydown', (event: KeyboardEvent) => {
-      if (event.key === 'ContextMenu' || (event.shiftKey && event.key === 'F10')) {
-        const target = this.documentRef.activeElement;
-        if (target instanceof HTMLElement) {
-          event.preventDefault();
-          this.show(target);
+    const removeKeydown = this.renderer.listen(
+      this.documentRef,
+      'keydown',
+      (event: KeyboardEvent) => {
+        if (event.key === 'ContextMenu' || (event.shiftKey && event.key === 'F10')) {
+          const target = this.documentRef.activeElement;
+          if (target instanceof HTMLElement) {
+            event.preventDefault();
+            this.show(target);
+          }
         }
-      }
-    });
+      },
+    );
 
     this.destroyRef.onDestroy(removeKeydown);
   }
 
   show(eventOrTarget: MouseEvent | HTMLElement): void {
+    if (eventOrTarget instanceof MouseEvent) {
+      eventOrTarget.preventDefault();
+    }
     this.visible = true;
     this.menu?.show(eventOrTarget);
   }

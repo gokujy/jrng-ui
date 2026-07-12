@@ -6,10 +6,11 @@ import {
   input,
 } from '@angular/core';
 import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
+import { JIconComponent } from 'jrng-ui/icon';
 
 @Component({
   selector: 'j-icon-field',
-  imports: [],
+  imports: [JIconComponent],
   template: `
     <div
       [class]="fieldClasses()"
@@ -18,9 +19,9 @@ import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
       data-jc-extend="prefix suffix"
     >
       @if (prefixIcon()) {
-        <span class="j-icon-field__icon" data-jc-section="prefix" aria-hidden="true">{{
-          prefixIcon()
-        }}</span>
+        <span class="j-icon-field__icon" data-jc-section="prefix" aria-hidden="true">
+          <j-icon [name]="prefixIcon()" />
+        </span>
       }
       <span class="j-icon-field__icon" data-jc-section="prefix" aria-hidden="true"
         ><ng-content select="[jIconFieldPrefix]"></ng-content
@@ -30,9 +31,9 @@ import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
         ><ng-content select="[jIconFieldSuffix]"></ng-content
       ></span>
       @if (suffixIcon()) {
-        <span class="j-icon-field__icon" data-jc-section="suffix" aria-hidden="true">{{
-          suffixIcon()
-        }}</span>
+        <span class="j-icon-field__icon" data-jc-section="suffix" aria-hidden="true">
+          <j-icon [name]="suffixIcon()" />
+        </span>
       }
     </div>
   `,
@@ -40,8 +41,12 @@ import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
     `
       .j-icon-field {
         align-items: center;
+        background: var(--j-color-surface);
+        border: 1px solid var(--j-color-border);
+        border-radius: var(--j-radius-md);
         display: flex;
-        gap: var(--j-spacing-sm);
+        gap: var(--j-spacing-2, 0.5rem);
+        padding-inline: var(--j-spacing-3, 0.75rem);
       }
 
       .j-icon-field--fluid {
@@ -54,8 +59,19 @@ import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
       }
 
       .j-icon-field__icon {
-        color: var(--j-color-text-muted);
+        color: var(--j-color-muted-foreground, var(--j-color-text-muted));
         display: inline-flex;
+        flex: 0 0 auto;
+      }
+
+      .j-icon-field:focus-within {
+        border-color: var(--j-color-primary);
+        box-shadow: var(--j-focus-ring);
+      }
+
+      :host ::ng-deep .j-icon-field .j-input {
+        border: 0;
+        box-shadow: none;
       }
 
       .j-icon-field__icon:empty {

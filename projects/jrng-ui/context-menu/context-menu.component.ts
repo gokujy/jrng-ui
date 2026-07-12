@@ -86,6 +86,9 @@ export class JContextMenuComponent {
   }
 
   show(eventOrTarget: MouseEvent | HTMLElement): void {
+    if (eventOrTarget instanceof MouseEvent) {
+      eventOrTarget.preventDefault();
+    }
     this.visible = true;
     this.menu?.show(eventOrTarget);
   }
