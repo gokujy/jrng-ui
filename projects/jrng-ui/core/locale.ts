@@ -10,6 +10,13 @@ export interface JrngLocale {
   readonly choose: string;
   readonly upload: string;
   readonly remove: string;
+  readonly retry: string;
+  readonly preview: string;
+  readonly download: string;
+  readonly chooseFile: string;
+  readonly uploadFiles: string;
+  readonly addFiles: string;
+  readonly dropFilesHere: string;
   readonly emptyMessage: string;
   readonly noResultsFound: string;
   readonly selectAll: string;
@@ -21,6 +28,11 @@ export interface JrngLocale {
   readonly lastPage: string;
   readonly search: string;
   readonly loading: string;
+  readonly now: string;
+  readonly hour: string;
+  readonly minute: string;
+  readonly second: string;
+  readonly period: string;
   readonly showPassword: string;
   readonly hidePassword: string;
   readonly passwordWeak: string;
@@ -54,6 +66,13 @@ export const JRNG_DEFAULT_LOCALE: JrngLocale = {
   choose: 'Choose',
   upload: 'Upload',
   remove: 'Remove',
+  retry: 'Retry',
+  preview: 'Preview',
+  download: 'Download',
+  chooseFile: 'Choose file',
+  uploadFiles: 'Upload files',
+  addFiles: 'Add files to the upload queue.',
+  dropFilesHere: 'Drop files here or choose from your device.',
   emptyMessage: 'No records found.',
   noResultsFound: 'No results found.',
   selectAll: 'Select all',
@@ -65,6 +84,11 @@ export const JRNG_DEFAULT_LOCALE: JrngLocale = {
   lastPage: 'Last page',
   search: 'Search',
   loading: 'Loading',
+  now: 'Now',
+  hour: 'Hour',
+  minute: 'Minute',
+  second: 'Second',
+  period: 'Period',
   showPassword: 'Show password',
   hidePassword: 'Hide password',
   passwordWeak: 'Weak',
@@ -87,7 +111,20 @@ export const JRNG_DEFAULT_LOCALE: JrngLocale = {
     'November',
     'December',
   ],
-  monthNamesShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+  monthNamesShort: [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ],
   firstDayOfWeek: 0,
   am: 'AM',
   pm: 'PM',

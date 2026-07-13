@@ -10,21 +10,16 @@ import { JTabsComponent, JTabComponent } from 'jrng-ui/tabs';
 
 ```html
 <j-tabs [(selectedIndex)]="activeTab" lazy>
-  <j-tab header="Details">
-    Details content
-  </j-tab>
+  <j-tab header="Details"> Details content </j-tab>
 
-  <j-tab header="Approvals" [disabled]="locked">
-    Approval content
-  </j-tab>
+  <j-tab header="Approvals" [disabled]="locked"> Approval content </j-tab>
 
-  <j-tab header="Audit" closable>
-    Audit trail content
-  </j-tab>
+  <j-tab header="Audit" closable> Audit trail content </j-tab>
 </j-tabs>
 ```
 
 Features:
+
 - `selectedIndex`
 - `selectedIndexChange`
 - `lazy`
@@ -40,9 +35,7 @@ import { JAccordionComponent, JAccordionPanelComponent } from 'jrng-ui/accordion
 
 ```html
 <j-accordion [multiple]="true" [(activeIndex)]="openPanels">
-  <j-accordion-panel header="Profile">
-    Profile fields
-  </j-accordion-panel>
+  <j-accordion-panel header="Profile"> Profile fields </j-accordion-panel>
 
   <j-accordion-panel header="Settings" [disabled]="settingsLocked">
     Settings fields
@@ -112,11 +105,7 @@ steps: readonly JStepItem[] = [
 ```
 
 ```html
-<j-stepper
-  [items]="steps"
-  [(activeIndex)]="activeStep"
-  [linear]="true"
-/>
+<j-stepper [items]="steps" [(activeIndex)]="activeStep" [linear]="true" />
 ```
 
 ## Breadcrumb
@@ -132,11 +121,7 @@ items: readonly JBreadcrumbItem[] = [
 ```
 
 ```html
-<j-breadcrumb
-  [home]="home"
-  [model]="items"
-  (itemClick)="handleBreadcrumb($event)"
-/>
+<j-breadcrumb [home]="home" [model]="items" (itemClick)="handleBreadcrumb($event)" />
 ```
 
 ## Splitter

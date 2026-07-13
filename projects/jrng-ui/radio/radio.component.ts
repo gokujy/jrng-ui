@@ -3,11 +3,12 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  EventEmitter,
+  effect,
   forwardRef,
   inject,
-  Input,
-  Output,
+  input,
+  output,
+  signal,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { jCreateId } from 'jrng-ui/core';
@@ -21,23 +22,23 @@ import { JSize } from 'jrng-ui/core';
       <input
         class="j-radio__input"
         type="radio"
-        [id]="id"
-        [name]="name"
+        [id]="id()"
+        [name]="name()"
         [checked]="selected"
-        [disabled]="isDisabled"
-        [required]="required"
-        [readOnly]="readonly"
-        [attr.aria-invalid]="invalid ? 'true' : null"
+        [disabled]="isDisabled()"
+        [required]="required()"
+        [readOnly]="readonly()"
+        [attr.aria-invalid]="invalid() ? 'true' : null"
         (change)="handleChange()"
         (blur)="handleBlur()"
       />
       <span class="j-radio__mark" aria-hidden="true"></span>
       <span class="j-radio__label">
         <ng-content></ng-content>
-        @if (label) {
-          <span>{{ label }}</span>
+        @if (label()) {
+          <span>{{ label() }}</span>
         }
-        @if (required) {
+        @if (required()) {
           <span class="j-radio__required" aria-hidden="true">*</span>
         }
       </span>
@@ -124,42 +125,41 @@ import { JSize } from 'jrng-ui/core';
 export class JRadioComponent implements ControlValueAccessor {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
-  @Input() id = jCreateId('j-radio');
-  @Input() name = '';
-  @Input() label = '';
-  @Input() value: unknown = '';
-  @Input() styleClass = '';
-  @Input() size: JSize = 'md';
-  @Input({ transform: booleanAttribute }) required = false;
-  @Input({ transform: booleanAttribute }) invalid = false;
-  @Input({ transform: booleanAttribute }) readonly = false;
+  readonly id = input(jCreateId('j-radio'));
+  readonly name = input('');
+  readonly label = input('');
+  readonly value = input<unknown>('');
+  readonly styleClass = input('');
+  readonly size = input<JSize>('md');
+  readonly required = input(false, { transform: booleanAttribute });
+  readonly invalid = input(false, { transform: booleanAttribute });
+  readonly readonly = input(false, { transform: booleanAttribute });
+  readonly disabled = input(false, { transform: booleanAttribute });
 
-  @Output() valueChange = new EventEmitter<unknown>();
+  readonly valueChange = output<unknown>();
 
   selectedValue: unknown = null;
-  isDisabled = false;
+  readonly isDisabled = signal(false);
 
   private onChange: (value: unknown) => void = () => undefined;
   private onTouched: () => void = () => undefined;
 
-  @Input({ transform: booleanAttribute })
-  set disabled(value: boolean) {
-    this.isDisabled = value;
-    this.changeDetectorRef.markForCheck();
+  constructor() {
+    effect(() => this.isDisabled.set(this.disabled()));
   }
 
   get selected(): boolean {
-    return Object.is(this.selectedValue, this.value);
+    return Object.is(this.selectedValue, this.value());
   }
 
   get rootClasses(): string {
     return [
       'j-radio',
-      `j-radio--${this.size}`,
+      `j-radio--${this.size()}`,
       this.selected ? 'is-selected' : '',
-      this.isDisabled ? 'is-disabled' : '',
-      this.invalid ? 'is-invalid' : '',
-      this.styleClass,
+      this.isDisabled() ? 'is-disabled' : '',
+      this.invalid() ? 'is-invalid' : '',
+      this.styleClass(),
     ]
       .filter(Boolean)
       .join(' ');
@@ -179,17 +179,17 @@ export class JRadioComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled = isDisabled;
+    this.isDisabled.set(isDisabled);
     this.changeDetectorRef.markForCheck();
   }
 
   handleChange(): void {
-    if (this.readonly) {
+    if (this.readonly()) {
       return;
     }
-    this.selectedValue = this.value;
-    this.onChange(this.value);
-    this.valueChange.emit(this.value);
+    this.selectedValue = this.value();
+    this.onChange(this.value());
+    this.valueChange.emit(this.value());
   }
 
   handleBlur(): void {

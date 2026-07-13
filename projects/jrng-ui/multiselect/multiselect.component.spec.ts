@@ -1,19 +1,20 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { JMultiselectComponent } from './multiselect.component';
 
 describe('JMultiselectComponent', () => {
   let component: JMultiselectComponent;
+  let fixture: ComponentFixture<JMultiselectComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    const fixture = TestBed.createComponent(JMultiselectComponent);
+    fixture = TestBed.createComponent(JMultiselectComponent);
     component = fixture.componentInstance;
-    component.options = [
+    fixture.componentRef.setInput('options', [
       { label: 'Alpha', value: 'a' },
       { label: 'Beta', value: 'b' },
       { label: 'Gamma', value: 'c' },
-    ];
+    ]);
     fixture.detectChanges();
   });
 
@@ -43,9 +44,9 @@ describe('JMultiselectComponent', () => {
 
   it('enables virtual scrolling only when virtualScroll is set and not loading', () => {
     expect(component.useVirtual).toBe(false);
-    component.virtualScroll = true;
+    fixture.componentRef.setInput('virtualScroll', true);
     expect(component.useVirtual).toBe(true);
-    component.loading = true;
+    fixture.componentRef.setInput('loading', true);
     expect(component.useVirtual).toBe(false);
   });
 });

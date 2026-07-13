@@ -11,14 +11,14 @@ describe('JInputMaskComponent', () => {
   it('formats typed and programmatic values with digit and letter tokens', () => {
     const fixture = TestBed.createComponent(JInputMaskComponent);
     const component = fixture.componentInstance;
-    component.mask = '(999) 999-9999';
+    fixture.componentRef.setInput('mask', '(999) 999-9999');
     component.writeValue('5551234567');
     fixture.detectChanges();
 
     const input = fixture.debugElement.query(By.css('input')).nativeElement as HTMLInputElement;
     expect(input.value).toBe('(555) 123-4567');
 
-    component.mask = 'aa-9999';
+    fixture.componentRef.setInput('mask', 'aa-9999');
     input.value = 'jr2048';
     input.dispatchEvent(new Event('input', { bubbles: true }));
     fixture.detectChanges();
@@ -29,8 +29,8 @@ describe('JInputMaskComponent', () => {
     const fixture = TestBed.createComponent(JInputMaskComponent);
     const component = fixture.componentInstance;
     const onChange = vi.fn();
-    component.mask = '(999) 999-9999';
-    component.unmask = true;
+    fixture.componentRef.setInput('mask', '(999) 999-9999');
+    fixture.componentRef.setInput('unmask', true);
     component.registerOnChange(onChange);
     fixture.detectChanges();
 

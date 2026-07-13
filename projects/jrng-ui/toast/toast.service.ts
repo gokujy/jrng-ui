@@ -1,4 +1,5 @@
-import { DestroyRef, Injectable, inject, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { DestroyRef, Injectable, PLATFORM_ID, inject, signal } from '@angular/core';
 
 export type JToastSeverity = 'success' | 'error' | 'warning' | 'info' | 'neutral';
 export type JToastPosition =
@@ -52,6 +53,7 @@ export type JrToastOptions = JToastOptions;
 @Injectable({ providedIn: 'root' })
 export class JrToastService {
   private readonly destroyRef = inject(DestroyRef);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   private readonly toastList = signal<readonly JToast[]>([]);
   private readonly timers = new Map<string, ReturnType<typeof setTimeout>>();
   private readonly timerEndsAt = new Map<string, number>();
@@ -214,6 +216,11 @@ export class JrToastService {
   }
 
   private startTimer(id: string, duration: number): void {
+    // Don't schedule auto-dismiss timers during SSR — they would run server-side
+    // and are pointless for a one-shot server render.
+    if (!this.isBrowser) {
+      return;
+    }
     const timer = setTimeout(() => this.remove(id), duration);
     this.timers.set(id, timer);
     this.timerEndsAt.set(id, Date.now() + duration);

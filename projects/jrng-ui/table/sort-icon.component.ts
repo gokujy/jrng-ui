@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { JTableSortOrder } from 'jrng-ui/core';
 
 @Component({
   selector: 'j-sort-icon',
   template: `
-    <span class="j-sort-icon" [class.is-active]="order !== 0" aria-hidden="true">
-      {{ order === -1 ? '↓' : order === 1 ? '↑' : '↕' }}
+    <span class="j-sort-icon" [class.is-active]="order() !== 0" aria-hidden="true">
+      {{ order() === -1 ? '↓' : order() === 1 ? '↑' : '↕' }}
     </span>
   `,
   styles: [
@@ -25,5 +25,5 @@ import { JTableSortOrder } from 'jrng-ui/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JSortIconComponent {
-  @Input() order: JTableSortOrder = 0;
+  readonly order = input<JTableSortOrder>(0);
 }

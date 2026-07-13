@@ -4,14 +4,14 @@ import {
   ChangeDetectorRef,
   Component,
   ContentChildren,
-  EventEmitter,
-  Input,
   OnChanges,
-  Output,
   QueryList,
   SimpleChanges,
   booleanAttribute,
   inject,
+  input,
+  model,
+  output,
 } from '@angular/core';
 
 export type JAccordionActiveIndex = number | readonly number[] | null;
@@ -23,21 +23,21 @@ export type JAccordionActiveIndex = number | readonly number[] | null;
     <section
       class="j-accordion-panel"
       [class.is-active]="active"
-      [class.is-disabled]="disabled"
+      [class.is-disabled]="disabled()"
       data-jc-name="accordion"
       data-jc-section="panel"
       [attr.data-j-active]="active ? 'true' : null"
-      [attr.data-j-disabled]="disabled ? 'true' : null"
+      [attr.data-j-disabled]="disabled() ? 'true' : null"
     >
       <h3 class="j-accordion-panel__header">
         <button
           type="button"
           class="j-accordion-panel__button"
-          [disabled]="disabled"
+          [disabled]="disabled()"
           [attr.aria-expanded]="active"
           (click)="requestToggle()"
         >
-          <span>{{ header }}</span>
+          <span>{{ header() }}</span>
           <span aria-hidden="true">{{ active ? '−' : '+' }}</span>
         </button>
       </h3>
@@ -104,15 +104,15 @@ export type JAccordionActiveIndex = number | readonly number[] | null;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JAccordionPanelComponent {
-  @Input() header = '';
-  @Input({ transform: booleanAttribute }) disabled = false;
-  @Output() toggleRequest = new EventEmitter<JAccordionPanelComponent>();
+  readonly header = input('');
+  readonly disabled = input(false, { transform: booleanAttribute });
+  readonly toggleRequest = output<JAccordionPanelComponent>();
 
   index = -1;
   active = false;
 
   requestToggle(): void {
-    if (!this.disabled) {
+    if (!this.disabled()) {
       this.toggleRequest.emit(this);
     }
   }
@@ -142,9 +142,8 @@ export class JAccordionComponent implements AfterContentInit, OnChanges {
   private readonly changeDetector = inject(ChangeDetectorRef);
 
   @ContentChildren(JAccordionPanelComponent) panels?: QueryList<JAccordionPanelComponent>;
-  @Input({ transform: booleanAttribute }) multiple = false;
-  @Input() activeIndex: JAccordionActiveIndex = null;
-  @Output() activeIndexChange = new EventEmitter<JAccordionActiveIndex>();
+  readonly multiple = input(false, { transform: booleanAttribute });
+  readonly activeIndex = model<JAccordionActiveIndex>(null);
 
   ngAfterContentInit(): void {
     this.syncPanels();
@@ -163,21 +162,24 @@ export class JAccordionComponent implements AfterContentInit, OnChanges {
   }
 
   togglePanel(panel: JAccordionPanelComponent): void {
-    if (panel.disabled) {
+    if (panel.disabled()) {
       return;
     }
 
-    if (this.multiple) {
-      const current = Array.isArray(this.activeIndex) ? [...this.activeIndex] : [];
-      this.activeIndex = current.includes(panel.index)
-        ? current.filter((index) => index !== panel.index)
-        : [...current, panel.index];
+    const current = this.activeIndex();
+
+    if (this.multiple()) {
+      const active = Array.isArray(current) ? [...current] : [];
+      this.activeIndex.set(
+        active.includes(panel.index)
+          ? active.filter((index) => index !== panel.index)
+          : [...active, panel.index],
+      );
     } else {
-      this.activeIndex = this.activeIndex === panel.index ? null : panel.index;
+      this.activeIndex.set(current === panel.index ? null : panel.index);
     }
 
     this.syncPanels();
-    this.activeIndexChange.emit(this.activeIndex);
   }
 
   private syncPanels(): void {
@@ -195,10 +197,12 @@ export class JAccordionComponent implements AfterContentInit, OnChanges {
   }
 
   private activeIndexes(): readonly number[] {
-    if (Array.isArray(this.activeIndex)) {
-      return this.activeIndex;
+    const current = this.activeIndex();
+
+    if (Array.isArray(current)) {
+      return current;
     }
 
-    return typeof this.activeIndex === 'number' ? [this.activeIndex] : [];
+    return typeof current === 'number' ? [current] : [];
   }
 }

@@ -3,7 +3,7 @@
   data-jc-name="table"
   data-jc-section="root"
   data-jc-extend="header body row cell paginator"
-  [attr.data-j-loading]="loading ? 'true' : null"
+  [attr.data-j-loading]="loading() ? 'true' : null"
 >
   @if (
     toolbarTemplate ||
@@ -27,7 +27,7 @@
             type="search"
             [value]="globalFilter"
             placeholder="Search"
-            (input)="handleGlobalFilter($any($event.target).value)"
+            (input)="handleGlobalFilter($event)"
           />
         </label>
         <button class="j-table__tool-button" type="button" (click)="applyFilters()">
@@ -82,10 +82,10 @@
 
   <div class="j-table__scroll" data-jc-section="scroll" [ngStyle]="scrollStyles">
     <table data-jc-section="table" role="table">
-      @if (caption) {
+      @if (caption()) {
         <caption data-jc-section="caption">
           {{
-            caption
+            caption()
           }}
         </caption>
       }
@@ -104,7 +104,7 @@
             </th>
           }
 
-          @if (expandableRows) {
+          @if (expandableRows()) {
             <th scope="col" class="j-table__expand-cell" data-jc-section="expansion-header"></th>
           }
           @if (lockableRows) {
@@ -166,19 +166,19 @@
       </thead>
 
       <tbody data-jc-section="body">
-        @if (loading) {
+        @if (loading()) {
           <tr data-jc-section="state-row" data-j-loading="true">
             <td class="j-table__state" data-jc-section="loading" [attr.colspan]="colspan">
               <j-table-skeleton [rows]="3" [columns]="resolvedColumns.length || 1" />
-              <span class="j-table__state-label">{{ loadingMessage }}</span>
+              <span class="j-table__state-label">{{ loadingMessage() }}</span>
             </td>
           </tr>
         }
 
-        @if (!loading && !hasRows) {
+        @if (!loading() && !hasRows) {
           <tr data-jc-section="state-row">
             <td class="j-table__state" data-jc-section="empty" [attr.colspan]="colspan">
-              <j-table-empty-state [message]="emptyMessage" />
+              <j-table-empty-state [message]="emptyMessage()" />
             </td>
           </tr>
         }
@@ -188,8 +188,11 @@
             data-jc-section="row"
             [class.is-active]="isSelected(row)"
             [class.is-locked]="isRowLocked(row, rowIndex)"
+            [class.is-frozen]="isFrozenRow(row, rowIndex)"
+            [style.--j-frozen-index]="isFrozenRow(row, rowIndex) ? rowIndex : null"
             [attr.data-j-selected]="isSelected(row) ? 'true' : null"
             [attr.data-j-locked]="isRowLocked(row, rowIndex) ? 'true' : null"
+            [attr.data-j-frozen]="isFrozenRow(row, rowIndex) ? 'true' : null"
             [attr.data-j-active]="isSelected(row) ? 'true' : null"
             [attr.tabindex]="selectable ? 0 : null"
             [attr.aria-selected]="selectable ? isSelected(row) : null"
@@ -214,7 +217,7 @@
                 />
               </td>
             }
-            @if (expandableRows) {
+            @if (expandableRows()) {
               <td class="j-table__expand-cell" data-jc-section="expansion-cell">
                 <button
                   type="button"
@@ -296,7 +299,7 @@
               </td>
             }
           </tr>
-          @if (expandableRows && isExpanded(row, rowIndex)) {
+          @if (expandableRows() && isExpanded(row, rowIndex)) {
             <tr class="j-table__expanded-row" data-jc-section="expanded-row">
               <td [attr.colspan]="colspan">
                 @if (expandedRowTemplate) {

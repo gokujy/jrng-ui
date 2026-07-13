@@ -18,6 +18,8 @@ import {
       [value]="rows"
       [selectable]="selectable"
       [paginator]="paginator"
+      [frozenRows]="frozenRows"
+      [lockedRowKeys]="lockedRowKeys"
       [rows]="2"
       (rowSelect)="selected = $event"
       (sortChange)="sortField = $event.field"
@@ -28,6 +30,8 @@ import {
 class TableHostComponent {
   selectable = true;
   paginator = false;
+  frozenRows = false;
+  lockedRowKeys: readonly string[] = [];
   selected: JTableRow | null = null;
   sortField = '';
   page = 1;
@@ -122,13 +126,35 @@ describe('JTableComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('REC-2');
   });
 
+  it('keeps keyed frozen rows visible outside pagination while preserving selection and sorting', () => {
+    host.paginator = true;
+    host.frozenRows = true;
+    host.lockedRowKeys = ['3'];
+    detectHostChanges();
+
+    expect(bodyRows()).toHaveLength(3);
+    const frozen = bodyRows().find((row) => row.dataset['jFrozen'] === 'true');
+    expect(frozen?.textContent).toContain('REC-2');
+    frozen?.click();
+    fixture.detectChanges();
+    expect(host.selected?.['code']).toBe('REC-2');
+
+    const amountSort = fixture.debugElement.queryAll(By.css('.j-table__sort'))[2]
+      ?.nativeElement as HTMLButtonElement;
+    amountSort.click();
+    detectHostChanges();
+    expect(bodyRows().find((row) => row.dataset['jFrozen'] === 'true')?.textContent).toContain(
+      'REC-2',
+    );
+  });
+
   it('filters rows with the global filter and emits filterChange', () => {
     const table = fixture.debugElement.query(By.directive(JTableComponent))
       .componentInstance as JTableComponent;
     const emitted: unknown[] = [];
     table.filterChange.subscribe((event) => emitted.push(event));
 
-    table.handleGlobalFilter('alpha');
+    table.handleGlobalFilter({ target: { value: 'alpha' } } as unknown as Event);
     expect(table.visibleRows.length).toBe(1);
     expect(table.visibleRows[0]?.['code']).toBe('REC-1');
     expect(emitted.length).toBe(1);

@@ -1,35 +1,37 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
-  Input,
-  Output,
   booleanAttribute,
+  input,
+  linkedSignal,
+  output,
 } from '@angular/core';
 
 @Component({
   selector: 'j-fieldset',
   imports: [],
   template: `
-    <fieldset class="j-fieldset" [class.is-collapsed]="collapsed">
-      @if (legend) {
+    <fieldset class="j-fieldset" [class.is-collapsed]="collapsedState()">
+      @if (legend()) {
         <legend class="j-fieldset__legend">
-          @if (toggleable) {
+          @if (toggleable()) {
             <button
               type="button"
               class="j-fieldset__toggle"
-              [attr.aria-expanded]="!collapsed"
+              [attr.aria-expanded]="!collapsedState()"
               (click)="toggle()"
             >
-              <span class="j-fieldset__icon" aria-hidden="true">{{ collapsed ? '+' : '−' }}</span>
-              <span>{{ legend }}</span>
+              <span class="j-fieldset__icon" aria-hidden="true">{{
+                collapsedState() ? '+' : '−'
+              }}</span>
+              <span>{{ legend() }}</span>
             </button>
           } @else {
-            {{ legend }}
+            {{ legend() }}
           }
         </legend>
       }
-      <div class="j-fieldset__content" [hidden]="collapsed">
+      <div class="j-fieldset__content" [hidden]="collapsedState()">
         <ng-content></ng-content>
       </div>
     </fieldset>
@@ -70,17 +72,19 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JFieldsetComponent {
-  @Input() legend = '';
-  @Input({ transform: booleanAttribute }) toggleable = false;
-  @Input({ transform: booleanAttribute }) collapsed = false;
-  @Output() collapsedChange = new EventEmitter<boolean>();
+  readonly legend = input('');
+  readonly toggleable = input(false, { transform: booleanAttribute });
+  readonly collapsed = input(false, { transform: booleanAttribute });
+  readonly collapsedChange = output<boolean>();
+
+  protected readonly collapsedState = linkedSignal(() => this.collapsed());
 
   toggle(): void {
-    if (!this.toggleable) {
+    if (!this.toggleable()) {
       return;
     }
 
-    this.collapsed = !this.collapsed;
-    this.collapsedChange.emit(this.collapsed);
+    this.collapsedState.set(!this.collapsedState());
+    this.collapsedChange.emit(this.collapsedState());
   }
 }

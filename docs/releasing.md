@@ -72,7 +72,7 @@ The command packs `dist/jrng-ui`, not the private workspace package. Confirm the
 From a clean Angular application, install the generated tarball using its relative path:
 
 ```bash
-npm install ../jrng-ui/jrng-ui-0.0.8.tgz
+npm install ../jrng-ui/jrng-ui-0.0.9.tgz
 ng build --configuration production
 ```
 
@@ -84,7 +84,7 @@ After the clean release check and consumer test pass:
 
 ```bash
 npm whoami
-npm publish ./jrng-ui-0.0.8.tgz --access public
+npm publish ./jrng-ui-0.0.9.tgz --access public
 ```
 
 Publishing is intentionally manual. Recheck the tarball name, version, npm account, tag, and changelog immediately before running the publish command.

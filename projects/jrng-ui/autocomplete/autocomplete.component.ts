@@ -5,20 +5,21 @@ import {
   ChangeDetectorRef,
   Component,
   DestroyRef,
+  effect,
   ElementRef,
-  EventEmitter,
   forwardRef,
   inject,
-  Input,
-  Output,
+  input,
+  output,
   PLATFORM_ID,
+  signal,
   ViewChild,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { jAriaDescribedBy } from 'jrng-ui/core';
 import { JClickOutsideDirective } from 'jrng-ui/core';
 import { jCreateId } from 'jrng-ui/core';
-import { JOverlayHandle, JOverlayService } from 'jrng-ui/core';
+import { JAppendTo, JOverlayHandle, JOverlayService } from 'jrng-ui/core';
 import {
   JNormalizedSelectionOption,
   JSelectionOptionRecord,
@@ -41,15 +42,15 @@ export type JAutocompleteSuggestion = JSelectionOptionSource;
       data-jc-section="root"
       data-jc-extend="panel option dropdown"
       [attr.data-j-open]="isOpen ? 'true' : null"
-      [attr.data-j-disabled]="isDisabled ? 'true' : null"
+      [attr.data-j-disabled]="isDisabled() ? 'true' : null"
       [attr.data-j-invalid]="hasError ? 'true' : null"
       jClickOutside
       (jClickOutside)="close()"
     >
-      @if (label) {
-        <label class="j-autocomplete__label" data-jc-section="label" [for]="id">
-          <span>{{ label }}</span>
-          @if (required) {
+      @if (label()) {
+        <label class="j-autocomplete__label" data-jc-section="label" [for]="id()">
+          <span>{{ label() }}</span>
+          @if (required()) {
             <span class="j-autocomplete__required" aria-hidden="true">*</span>
           }
         </label>
@@ -59,29 +60,30 @@ export type JAutocompleteSuggestion = JSelectionOptionSource;
         <input
           class="j-autocomplete__field"
           data-jc-section="input"
-          [id]="id"
+          [id]="id()"
           type="text"
-          [placeholder]="placeholder"
-          [disabled]="isDisabled"
-          [readOnly]="readonly"
-          [required]="required"
+          [placeholder]="placeholder()"
+          [disabled]="isDisabled()"
+          [readOnly]="readonly()"
+          [required]="required()"
           [value]="query"
           [attr.aria-expanded]="isOpen"
           [attr.aria-controls]="listboxId"
           [attr.aria-invalid]="hasError ? 'true' : null"
           [attr.aria-describedby]="describedBy"
+          [attr.aria-activedescendant]="activeDescendant"
           role="combobox"
           (input)="handleInput($event)"
           (focus)="open()"
           (blur)="handleBlur()"
           (keydown)="handleKeydown($event)"
         />
-        @if (dropdown) {
+        @if (dropdown()) {
           <button
             class="j-autocomplete__dropdown"
             data-jc-section="dropdown"
             type="button"
-            [disabled]="isDisabled"
+            [disabled]="isDisabled()"
             (click)="toggle()"
           >
             <span aria-hidden="true"></span>
@@ -99,7 +101,7 @@ export type JAutocompleteSuggestion = JSelectionOptionSource;
           role="listbox"
         >
           @if (!normalizedSuggestions.length) {
-            <div class="j-autocomplete__empty" data-jc-section="empty">{{ emptyMessage }}</div>
+            <div class="j-autocomplete__empty" data-jc-section="empty">{{ emptyMessage() }}</div>
           }
           @for (
             item of suggestionItems;
@@ -116,6 +118,7 @@ export type JAutocompleteSuggestion = JSelectionOptionSource;
                 data-jc-section="option"
                 type="button"
                 role="option"
+                [id]="optionId(item.index)"
                 [disabled]="item.suggestion.disabled"
                 [class.is-active]="item.index === activeIndex"
                 [attr.data-j-active]="item.index === activeIndex ? 'true' : null"
@@ -132,13 +135,13 @@ export type JAutocompleteSuggestion = JSelectionOptionSource;
         </div>
       }
 
-      @if (hasError && error) {
+      @if (hasError && error()) {
         <p class="j-autocomplete__message j-autocomplete__message--error" [id]="errorId">
-          {{ error }}
+          {{ error() }}
         </p>
       }
-      @if (hint && !hasError) {
-        <p class="j-autocomplete__message" [id]="hintId">{{ hint }}</p>
+      @if (hint() && !hasError) {
+        <p class="j-autocomplete__message" [id]="hintId">{{ hint() }}</p>
       }
     </div>
   `,
@@ -300,61 +303,58 @@ export class JAutocompleteComponent implements ControlValueAccessor {
   @ViewChild('panel') private panelRef?: ElementRef<HTMLElement>;
   private completeTimer: ReturnType<typeof setTimeout> | null = null;
 
-  @Input() id = jCreateId('j-autocomplete');
-  @Input() label = '';
-  @Input() suggestions: readonly JAutocompleteSuggestion[] = [];
-  @Input() optionLabel = 'label';
-  @Input() optionValue = 'value';
-  @Input() optionDisabled = 'disabled';
-  @Input() groupLabel = 'label';
-  @Input() groupOptions = 'items';
-  @Input() placeholder = '';
-  @Input() error = '';
-  @Input() hint = '';
-  @Input() emptyMessage = 'No suggestions found';
-  @Input() styleClass = '';
-  @Input() size: JSize = 'md';
-  @Input() variant: JInputVariant = 'outlined';
-  @Input() delay = 250;
-  @Input() minLength = 1;
-  @Input({ transform: booleanAttribute }) readonly = false;
-  @Input({ transform: booleanAttribute }) invalid = false;
-  @Input({ transform: booleanAttribute }) required = false;
-  @Input() appendTo: 'self' | 'body' | string = 'self';
-  @Input({ transform: booleanAttribute }) dropdown = false;
-  @Input({ transform: booleanAttribute }) forceSelection = false;
+  readonly id = input(jCreateId('j-autocomplete'));
+  readonly label = input('');
+  readonly suggestions = input<readonly JAutocompleteSuggestion[]>([]);
+  readonly optionLabel = input('label');
+  readonly optionValue = input('value');
+  readonly optionDisabled = input('disabled');
+  readonly groupLabel = input('label');
+  readonly groupOptions = input('items');
+  readonly placeholder = input('');
+  readonly error = input('');
+  readonly hint = input('');
+  readonly emptyMessage = input('No suggestions found');
+  readonly styleClass = input('');
+  readonly size = input<JSize>('md');
+  readonly variant = input<JInputVariant>('outlined');
+  readonly delay = input(250);
+  readonly minLength = input(1);
+  readonly readonly = input(false, { transform: booleanAttribute });
+  readonly invalid = input(false, { transform: booleanAttribute });
+  readonly required = input(false, { transform: booleanAttribute });
+  readonly appendTo = input<JAppendTo | undefined>(undefined);
+  readonly dropdown = input(false, { transform: booleanAttribute });
+  readonly forceSelection = input(false, { transform: booleanAttribute });
 
-  @Output() valueChange = new EventEmitter<unknown>();
-  @Output() selectionChange = new EventEmitter<JNormalizedSelectionOption | null>();
-  @Output() searchChange = new EventEmitter<string>();
-  @Output() completeMethod = new EventEmitter<string>();
-  @Output() opened = new EventEmitter<void>();
-  @Output() closed = new EventEmitter<void>();
+  readonly valueChange = output<unknown>();
+  readonly selectionChange = output<JNormalizedSelectionOption | null>();
+  readonly searchChange = output<string>();
+  readonly completeMethod = output<string>();
+  readonly opened = output<void>();
+  readonly closed = output<void>();
 
   readonly hintId = jCreateId('j-autocomplete-hint');
   readonly errorId = jCreateId('j-autocomplete-error');
   readonly listboxId = jCreateId('j-autocomplete-listbox');
   value: unknown = null;
   query = '';
-  isDisabled = false;
+  readonly isDisabled = signal(false);
   isOpen = false;
   activeIndex = -1;
 
   private onChange: (value: unknown) => void = () => undefined;
   private onTouched: () => void = () => undefined;
 
+  readonly disabled = input(false, { transform: booleanAttribute });
+
   constructor() {
     this.destroyRef.onDestroy(() => this.clearCompleteTimer());
-  }
-
-  @Input({ transform: booleanAttribute })
-  set disabled(value: boolean) {
-    this.isDisabled = value;
-    this.changeDetectorRef.markForCheck();
+    effect(() => this.isDisabled.set(this.disabled()));
   }
 
   get normalizedSuggestions(): readonly JNormalizedSelectionOption[] {
-    return this.suggestions.flatMap((suggestion) => this.normalizeSuggestion(suggestion));
+    return this.suggestions().flatMap((suggestion) => this.normalizeSuggestion(suggestion));
   }
 
   get suggestionItems(): readonly (
@@ -386,21 +386,31 @@ export class JAutocompleteComponent implements ControlValueAccessor {
   }
 
   get hasError(): boolean {
-    return this.invalid || this.error.trim().length > 0;
+    return this.invalid() || this.error().trim().length > 0;
   }
 
   get describedBy(): string | null {
-    return jAriaDescribedBy(this.hasError ? this.errorId : null, this.hint ? this.hintId : null);
+    return jAriaDescribedBy(this.hasError ? this.errorId : null, this.hint() ? this.hintId : null);
+  }
+
+  /** Stable per-index id so the active option can be referenced via aria-activedescendant. */
+  optionId(index: number): string {
+    return `${this.listboxId}-option-${index}`;
+  }
+
+  /** Id of the active option, exposed on the combobox input for assistive tech. */
+  get activeDescendant(): string | null {
+    return this.isOpen && this.activeIndex >= 0 ? this.optionId(this.activeIndex) : null;
   }
 
   get rootClasses(): string {
     return [
       'j-autocomplete-field',
-      `j-autocomplete-field--${this.size}`,
-      `j-autocomplete-field--${this.variant}`,
+      `j-autocomplete-field--${this.size()}`,
+      `j-autocomplete-field--${this.variant()}`,
       this.hasError ? 'is-invalid' : '',
-      this.isDisabled ? 'is-disabled' : '',
-      this.styleClass,
+      this.isDisabled() ? 'is-disabled' : '',
+      this.styleClass(),
     ]
       .filter(Boolean)
       .join(' ');
@@ -424,7 +434,7 @@ export class JAutocompleteComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled = isDisabled;
+    this.isDisabled.set(isDisabled);
     if (isDisabled) {
       this.close();
     }
@@ -459,7 +469,7 @@ export class JAutocompleteComponent implements ControlValueAccessor {
   }
 
   open(): void {
-    if (this.isDisabled || this.readonly || this.isOpen) {
+    if (this.isDisabled() || this.readonly() || this.isOpen) {
       return;
     }
     this.isOpen = true;
@@ -482,7 +492,7 @@ export class JAutocompleteComponent implements ControlValueAccessor {
   }
 
   get appendToBody(): boolean {
-    return this.appendTo === 'body';
+    return this.overlay.resolveTarget(this.appendTo()) !== null;
   }
 
   private attachOverlay(): void {
@@ -493,7 +503,7 @@ export class JAutocompleteComponent implements ControlValueAccessor {
       this.hostRef.nativeElement,
       this.panelRef.nativeElement,
       {
-        appendTo: 'body',
+        appendTo: this.appendTo(),
         matchWidth: true,
       },
     );
@@ -502,7 +512,7 @@ export class JAutocompleteComponent implements ControlValueAccessor {
 
   handleBlur(): void {
     this.onTouched();
-    if (this.forceSelection) {
+    if (this.forceSelection()) {
       const selected = this.normalizedSuggestions.find(
         (suggestion) => suggestion.label === this.query,
       );
@@ -565,7 +575,7 @@ export class JAutocompleteComponent implements ControlValueAccessor {
   private scheduleComplete(query: string): void {
     this.clearCompleteTimer();
 
-    if (query.length < this.minLength) {
+    if (query.length < this.minLength()) {
       return;
     }
 
@@ -574,7 +584,7 @@ export class JAutocompleteComponent implements ControlValueAccessor {
         this.completeMethod.emit(query);
         this.completeTimer = null;
       },
-      Math.max(0, this.delay),
+      Math.max(0, this.delay()),
     );
   }
 
@@ -592,20 +602,21 @@ export class JAutocompleteComponent implements ControlValueAccessor {
     if (!this.isRecord(suggestion)) {
       return jNormalizeSelectionOptions(
         [suggestion],
-        this.optionLabel,
-        this.optionValue,
-        this.optionDisabled,
+        this.optionLabel(),
+        this.optionValue(),
+        this.optionDisabled(),
       );
     }
 
-    const children = suggestion[this.groupOptions] ?? suggestion['items'] ?? suggestion['options'];
+    const children =
+      suggestion[this.groupOptions()] ?? suggestion['items'] ?? suggestion['options'];
     if (Array.isArray(children)) {
-      const group = String(suggestion[this.groupLabel] ?? suggestion['label'] ?? '');
+      const group = String(suggestion[this.groupLabel()] ?? suggestion['label'] ?? '');
       return jNormalizeSelectionOptions(
         children as readonly JSelectionOptionSource[],
-        this.optionLabel,
-        this.optionValue,
-        this.optionDisabled,
+        this.optionLabel(),
+        this.optionValue(),
+        this.optionDisabled(),
       ).map((option) => ({
         ...option,
         source: { ...(option.source as object), __group: group } as JSelectionOptionRecord,
@@ -614,9 +625,9 @@ export class JAutocompleteComponent implements ControlValueAccessor {
 
     return jNormalizeSelectionOptions(
       [suggestion],
-      this.optionLabel,
-      this.optionValue,
-      this.optionDisabled,
+      this.optionLabel(),
+      this.optionValue(),
+      this.optionDisabled(),
     );
   }
 

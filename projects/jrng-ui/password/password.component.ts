@@ -3,10 +3,12 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  effect,
   forwardRef,
   inject,
-  Input,
+  input,
   output,
+  signal,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { jAriaDescribedBy } from 'jrng-ui/core';
@@ -20,10 +22,10 @@ import { JInputVariant } from 'jrng-ui/input';
   selector: 'j-password',
   imports: [],
   template: `
-    @if (label) {
-      <label class="j-password__label" data-jc-name="password" data-jc-section="label" [for]="id">
-        <span>{{ label }}</span>
-        @if (required) {
+    @if (label()) {
+      <label class="j-password__label" data-jc-name="password" data-jc-section="label" [for]="id()">
+        <span>{{ label() }}</span>
+        @if (required()) {
           <span class="j-password__required" aria-hidden="true">*</span>
         }
       </label>
@@ -33,62 +35,62 @@ import { JInputVariant } from 'jrng-ui/input';
       data-jc-name="password"
       data-jc-section="root"
       data-jc-extend="toggle clear meter"
-      [attr.data-j-disabled]="isDisabled ? 'true' : null"
+      [attr.data-j-disabled]="isDisabled() ? 'true' : null"
       [attr.data-j-invalid]="hasError ? 'true' : null"
       [attr.data-j-active]="value ? 'true' : null"
     >
       <input
         class="j-password__field"
         data-jc-section="input"
-        [id]="id"
-        [name]="name || null"
+        [id]="id()"
+        [name]="name() || null"
         [type]="visible ? 'text' : 'password'"
-        [placeholder]="placeholder"
-        [disabled]="isDisabled"
-        [readOnly]="readonly"
-        [required]="required"
+        [placeholder]="placeholder()"
+        [disabled]="isDisabled()"
+        [readOnly]="readonly()"
+        [required]="required()"
         [value]="value"
         [attr.aria-invalid]="hasError ? 'true' : null"
         [attr.aria-describedby]="describedBy"
         (input)="handleInput($event)"
         (blur)="handleBlur()"
       />
-      @if (clearable && value) {
+      @if (clearable() && value) {
         <button
           class="j-password__clear"
           data-jc-section="clear"
           type="button"
           [attr.aria-label]="locale.clear"
-          [disabled]="isDisabled || readonly"
+          [disabled]="isDisabled() || readonly()"
           (click)="clearValue()"
         >
           x
         </button>
       }
-      @if (toggleMask) {
+      @if (toggleMask()) {
         <button
           class="j-password__toggle"
           data-jc-section="toggle"
           type="button"
           [attr.aria-label]="visible ? locale.hidePassword : locale.showPassword"
-          [disabled]="isDisabled"
+          [disabled]="isDisabled()"
           (click)="visible = !visible"
         >
           {{ visible ? locale.hidePassword : locale.showPassword }}
         </button>
       }
     </div>
-    @if (feedback && value) {
+    @if (feedback() && value) {
       <div class="j-password__meter" data-jc-section="meter" aria-hidden="true">
         <span [style.width.%]="strength"></span>
       </div>
       <p class="j-password__message" data-jc-section="feedback">{{ strengthLabel }}</p>
     }
-    @if (hasError && error) {
-      <p class="j-password__message j-password__message--error" [id]="errorId">{{ error }}</p>
+    @if (hasError && error()) {
+      <p class="j-password__message j-password__message--error" [id]="errorId">{{ error() }}</p>
     }
-    @if (hint && !hasError) {
-      <p class="j-password__message" [id]="hintId">{{ hint }}</p>
+    @if (hint() && !hasError) {
+      <p class="j-password__message" [id]="hintId">{{ hint() }}</p>
     }
   `,
   styles: [
@@ -197,25 +199,26 @@ export class JPasswordComponent implements ControlValueAccessor {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
   readonly locale = inject(JRNG_LOCALE);
 
-  @Input() id = jCreateId('j-password');
-  @Input() name = '';
-  @Input() label = '';
-  @Input() placeholder = '';
-  @Input() hint = '';
-  @Input() error = '';
-  @Input() styleClass = '';
-  @Input() pt: JPassThrough | null = null;
-  @Input({ alias: 'aria-describedby' }) ariaDescribedby = '';
-  @Input() size: JSize = 'md';
-  @Input() variant: JInputVariant = 'outlined';
-  @Input({ transform: booleanAttribute }) readonly = false;
-  @Input({ transform: booleanAttribute }) invalid = false;
-  @Input({ transform: booleanAttribute }) required = false;
-  @Input({ transform: booleanAttribute }) clearable = false;
-  @Input({ transform: booleanAttribute }) toggleMask = true;
-  @Input({ transform: booleanAttribute }) feedback = false;
-  @Input({ transform: booleanAttribute }) fluid = false;
-  @Input({ transform: booleanAttribute }) fullWidth = false;
+  readonly id = input(jCreateId('j-password'));
+  readonly name = input('');
+  readonly label = input('');
+  readonly placeholder = input('');
+  readonly hint = input('');
+  readonly error = input('');
+  readonly styleClass = input('');
+  readonly pt = input<JPassThrough | null>(null);
+  readonly ariaDescribedby = input('', { alias: 'aria-describedby' });
+  readonly size = input<JSize>('md');
+  readonly variant = input<JInputVariant>('outlined');
+  readonly readonly = input(false, { transform: booleanAttribute });
+  readonly invalid = input(false, { transform: booleanAttribute });
+  readonly required = input(false, { transform: booleanAttribute });
+  readonly clearable = input(false, { transform: booleanAttribute });
+  readonly toggleMask = input(true, { transform: booleanAttribute });
+  readonly feedback = input(false, { transform: booleanAttribute });
+  readonly fluid = input(false, { transform: booleanAttribute });
+  readonly fullWidth = input(false, { transform: booleanAttribute });
+  readonly disabled = input(false, { transform: booleanAttribute });
 
   readonly valueChange = output<string>();
   readonly clear = output<void>();
@@ -224,30 +227,24 @@ export class JPasswordComponent implements ControlValueAccessor {
   readonly errorId = jCreateId('j-password-error');
   value = '';
   visible = false;
-  isDisabled = false;
+  readonly isDisabled = signal(false);
 
   private onChange: (value: string) => void = () => undefined;
   private onTouched: () => void = () => undefined;
 
-  @Input({ transform: booleanAttribute })
-  set disabled(value: boolean) {
-    this.isDisabled = value;
-    this.changeDetectorRef.markForCheck();
-  }
-
-  get disabled(): boolean {
-    return this.isDisabled;
+  constructor() {
+    effect(() => this.isDisabled.set(this.disabled()));
   }
 
   get hasError(): boolean {
-    return this.invalid || this.error.trim().length > 0;
+    return this.invalid() || this.error().trim().length > 0;
   }
 
   get describedBy(): string | null {
     return jAriaDescribedBy(
-      this.ariaDescribedby,
+      this.ariaDescribedby(),
       this.hasError ? this.errorId : null,
-      this.hint ? this.hintId : null,
+      this.hint() ? this.hintId : null,
     );
   }
 
@@ -255,14 +252,14 @@ export class JPasswordComponent implements ControlValueAccessor {
     return jMergePartClasses(
       [
         'j-password',
-        `j-password--${this.size}`,
-        `j-password--${this.variant}`,
+        `j-password--${this.size()}`,
+        `j-password--${this.variant()}`,
         this.hasError ? 'is-invalid' : '',
-        this.isDisabled ? 'is-disabled' : '',
-        this.fluid || this.fullWidth ? 'j-password--fluid' : '',
+        this.isDisabled() ? 'is-disabled' : '',
+        this.fluid() || this.fullWidth() ? 'j-password--fluid' : '',
       ],
-      this.styleClass,
-      this.pt,
+      this.styleClass(),
+      this.pt(),
     );
   }
 
@@ -300,7 +297,7 @@ export class JPasswordComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled = isDisabled;
+    this.isDisabled.set(isDisabled);
     this.changeDetectorRef.markForCheck();
   }
 
@@ -316,7 +313,7 @@ export class JPasswordComponent implements ControlValueAccessor {
   }
 
   clearValue(): void {
-    if (this.isDisabled || this.readonly || !this.value) {
+    if (this.isDisabled() || this.readonly() || !this.value) {
       return;
     }
 

@@ -8,18 +8,21 @@ import {
   ElementRef,
   effect,
   inject,
-  Input,
+  input,
   OnDestroy,
   model,
   output,
   PLATFORM_ID,
   Renderer2,
+  signal,
   ViewChild,
 } from '@angular/core';
 import { JBodyScrollLockService } from 'jrng-ui/core';
 import { JFocusTrapDirective } from 'jrng-ui/core';
 import { jFocusInitial } from 'jrng-ui/core';
 import { jCreateId } from 'jrng-ui/core';
+import { JOverlayStackService } from 'jrng-ui/core';
+import { JAppendTo, JOverlayHandle, JOverlayService } from 'jrng-ui/core';
 import { JZIndexManagerService } from 'jrng-ui/core';
 
 export type JDialogCloseReason = 'close-button' | 'backdrop' | 'escape' | 'api';
@@ -50,6 +53,8 @@ export class JrDialogComponent implements OnDestroy {
   private readonly renderer = inject(Renderer2);
   private readonly destroyRef = inject(DestroyRef);
   private readonly zIndexManager = inject(JZIndexManagerService);
+  private readonly overlayStack = inject(JOverlayStackService);
+  private readonly overlay = inject(JOverlayService);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   private previouslyFocused: HTMLElement | null = null;
   private scrollLocked = false;
@@ -69,22 +74,33 @@ export class JrDialogComponent implements OnDestroy {
   } | null = null;
 
   @ViewChild('dialogPanel') private panel?: ElementRef<HTMLElement>;
+  @ViewChild('overlayRoot') private overlayRoot?: ElementRef<HTMLElement>;
+  private overlayHandle?: JOverlayHandle;
 
   readonly visible = model(false);
-  @Input() header = '';
-  @Input({ transform: booleanAttribute }) modal = true;
-  @Input({ transform: booleanAttribute }) closable = true;
-  @Input({ transform: booleanAttribute }) dismissableMask = true;
-  @Input({ transform: booleanAttribute }) closeOnEscape = true;
-  @Input({ transform: booleanAttribute }) draggable = false;
-  @Input({ transform: booleanAttribute }) resizable = false;
-  @Input({ transform: booleanAttribute }) headless = false;
-  @Input() width = '';
-  @Input() height = '';
-  @Input() size: JDialogSize = 'md';
-  @Input() position: JDialogPosition = 'center';
-  @Input() styleClass = '';
-  @Input() appendTo: 'self' | 'body' | string = 'self';
+  // `header`, `closable`, and `dismissableMask` are read as internal state and
+  // also written by alias inputs (`title`, `showCloseButton`, `closeOnBackdrop`),
+  // so they are writable signals seeded from their own inputs via effects below.
+  readonly header = signal('');
+  readonly closable = signal(true);
+  readonly dismissableMask = signal(true);
+  readonly headerInput = input('', { alias: 'header' });
+  readonly closableInput = input(true, { alias: 'closable', transform: booleanAttribute });
+  readonly dismissableMaskInput = input(true, {
+    alias: 'dismissableMask',
+    transform: booleanAttribute,
+  });
+  readonly modal = input(true, { transform: booleanAttribute });
+  readonly closeOnEscape = input(true, { transform: booleanAttribute });
+  readonly draggable = input(false, { transform: booleanAttribute });
+  readonly resizable = input(false, { transform: booleanAttribute });
+  readonly headless = input(false, { transform: booleanAttribute });
+  readonly width = input('');
+  readonly height = input('');
+  readonly size = input<JDialogSize>('md');
+  readonly position = input<JDialogPosition>('center');
+  readonly styleClass = input('');
+  readonly appendTo = input<JAppendTo | undefined>(undefined);
   readonly titleId = jCreateId('j-dialog-title');
   zIndex = 0;
   dragX = 0;
@@ -99,39 +115,29 @@ export class JrDialogComponent implements OnDestroy {
   readonly openChange = output<boolean>();
   readonly jrClose = output<JDialogCloseReason>();
 
-  @Input({ transform: booleanAttribute })
-  set open(value: boolean) {
-    this.visible.set(value);
-  }
-
-  get open(): boolean {
-    return this.visible();
-  }
-
-  @Input()
-  set title(value: string) {
-    this.header = value;
-  }
-
-  @Input({ transform: booleanAttribute })
-  set showCloseButton(value: boolean) {
-    this.closable = value;
-  }
-
-  @Input({ transform: booleanAttribute })
-  set closeOnBackdrop(value: boolean) {
-    this.dismissableMask = value;
-  }
+  // Write-only alias inputs that feed other state. Each is optional so it only
+  // writes its target when actually bound, preserving the `[(visible)]`
+  // two-way binding and the `header`/`closable`/`dismissableMask` defaults.
+  readonly open = input<boolean | undefined, unknown>(undefined, {
+    transform: booleanAttribute,
+  });
+  readonly title = input<string | undefined>(undefined);
+  readonly showCloseButton = input<boolean | undefined, unknown>(undefined, {
+    transform: booleanAttribute,
+  });
+  readonly closeOnBackdrop = input<boolean | undefined, unknown>(undefined, {
+    transform: booleanAttribute,
+  });
 
   get dialogClasses(): string {
     return [
       'j-dialog',
-      `j-dialog--${this.size}`,
-      `j-dialog--${this.position}`,
-      this.resizable ? 'is-resizable' : '',
-      this.draggable ? 'is-draggable' : '',
-      this.headless ? 'is-headless' : '',
-      this.styleClass,
+      `j-dialog--${this.size()}`,
+      `j-dialog--${this.position()}`,
+      this.resizable() ? 'is-resizable' : '',
+      this.draggable() ? 'is-draggable' : '',
+      this.headless() ? 'is-headless' : '',
+      this.styleClass(),
     ]
       .filter(Boolean)
       .join(' ');
@@ -140,12 +146,43 @@ export class JrDialogComponent implements OnDestroy {
   get backdropClasses(): string {
     return [
       'j-dialog__backdrop',
-      `j-dialog__backdrop--${this.position}`,
-      this.modal ? 'is-modal' : '',
+      `j-dialog__backdrop--${this.position()}`,
+      this.modal() ? 'is-modal' : '',
     ].join(' ');
   }
 
   constructor() {
+    // Seed writable state from its own alias input.
+    effect(() => this.header.set(this.headerInput()));
+    effect(() => this.closable.set(this.closableInput()));
+    effect(() => this.dismissableMask.set(this.dismissableMaskInput()));
+
+    // Alias inputs override the shared state only when explicitly bound.
+    effect(() => {
+      const value = this.title();
+      if (value !== undefined) {
+        this.header.set(value);
+      }
+    });
+    effect(() => {
+      const value = this.showCloseButton();
+      if (value !== undefined) {
+        this.closable.set(value);
+      }
+    });
+    effect(() => {
+      const value = this.closeOnBackdrop();
+      if (value !== undefined) {
+        this.dismissableMask.set(value);
+      }
+    });
+    effect(() => {
+      const value = this.open();
+      if (value !== undefined) {
+        this.visible.set(value);
+      }
+    });
+
     effect(() => {
       const nextVisible = this.visible();
 
@@ -155,7 +192,7 @@ export class JrDialogComponent implements OnDestroy {
 
       if (!nextVisible && this.wasVisible) {
         const reason = this.pendingCloseReason ?? 'api';
-        this.handleClosed(reason, this.pendingCloseReason !== null);
+        this.handleClosed(reason);
         this.pendingCloseReason = null;
       }
 
@@ -180,13 +217,16 @@ export class JrDialogComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.overlayHandle?.detach();
+    this.overlayStack.remove(this);
     if (this.scrollLocked) {
       this.bodyScrollLock.unlock();
     }
   }
 
   handleEscape(event: Event): void {
-    if (!this.visible() || !this.closeOnEscape) {
+    // Only the front-most overlay should respond to Escape.
+    if (!this.visible() || !this.closeOnEscape() || !this.overlayStack.isTopmost(this)) {
       return;
     }
     event.preventDefault();
@@ -213,14 +253,14 @@ export class JrDialogComponent implements OnDestroy {
   }
 
   handleBackdropClick(event: MouseEvent): void {
-    if (!this.dismissableMask || event.target !== event.currentTarget) {
+    if (!this.dismissableMask() || event.target !== event.currentTarget) {
       return;
     }
     this.close('backdrop');
   }
 
   startDrag(event: PointerEvent): void {
-    if (!this.draggable || !this.panel?.nativeElement) {
+    if (!this.draggable() || !this.panel?.nativeElement) {
       return;
     }
     const rect = this.panel.nativeElement.getBoundingClientRect();
@@ -242,7 +282,7 @@ export class JrDialogComponent implements OnDestroy {
   }
 
   startResize(event: PointerEvent): void {
-    if (!this.resizable || !this.panel?.nativeElement) {
+    if (!this.resizable() || !this.panel?.nativeElement) {
       return;
     }
     const rect = this.panel.nativeElement.getBoundingClientRect();
@@ -269,20 +309,23 @@ export class JrDialogComponent implements OnDestroy {
 
   private handleOpened(): void {
     this.zIndex = this.zIndexManager.next(1100);
-    this.panelWidth = this.width;
-    this.panelHeight = this.height;
+    this.overlayStack.push(this);
+    this.panelWidth = this.width();
+    this.panelHeight = this.height();
     const HTMLElementCtor = this.documentRef.defaultView?.HTMLElement;
     this.previouslyFocused =
       HTMLElementCtor && this.documentRef.activeElement instanceof HTMLElementCtor
         ? this.documentRef.activeElement
         : null;
-    if (this.modal && !this.scrollLocked) {
+    if (this.modal() && !this.scrollLocked) {
       this.bodyScrollLock.lock();
       this.scrollLocked = true;
     }
     this.opened.emit();
     this.show.emit();
     queueMicrotask(() => {
+      const root = this.overlayRoot?.nativeElement;
+      if (root) this.overlayHandle = this.overlay.portal(root, this.appendTo());
       const panel = this.panel?.nativeElement;
       if (panel && !jFocusInitial(panel)) {
         panel.focus();
@@ -290,16 +333,19 @@ export class JrDialogComponent implements OnDestroy {
     });
   }
 
-  private handleClosed(reason: JDialogCloseReason, emitEvents: boolean): void {
+  private handleClosed(reason: JDialogCloseReason): void {
+    this.overlayHandle?.detach();
+    this.overlayHandle = undefined;
+    this.overlayStack.remove(this);
     if (this.scrollLocked) {
       this.bodyScrollLock.unlock();
       this.scrollLocked = false;
     }
-    if (emitEvents) {
-      this.closed.emit(reason);
-      this.hide.emit(reason);
-      this.jrClose.emit(reason);
-    }
+    // Emit close outputs for every close path — including closing via the
+    // `[(visible)]`/`open` model — so `(closed)`/`(hide)` fire consistently.
+    this.closed.emit(reason);
+    this.hide.emit(reason);
+    this.jrClose.emit(reason);
     queueMicrotask(() => this.previouslyFocused?.focus());
   }
 }

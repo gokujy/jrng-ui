@@ -3,12 +3,14 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  computed,
+  effect,
   ElementRef,
-  EventEmitter,
   forwardRef,
   inject,
-  Input,
-  Output,
+  input,
+  output,
+  signal,
   ViewChild,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -25,36 +27,36 @@ import { JSize } from 'jrng-ui/core';
         #input
         class="j-checkbox__input"
         type="checkbox"
-        [id]="id"
-        [name]="name || null"
+        [id]="id()"
+        [name]="name() || null"
         [checked]="checked"
-        [disabled]="isDisabled"
-        [readOnly]="readonly"
-        [required]="required"
-        [attr.aria-checked]="indeterminate ? 'mixed' : checked"
-        [attr.aria-invalid]="hasError ? 'true' : null"
-        [attr.aria-describedby]="describedBy"
+        [disabled]="isDisabled()"
+        [readOnly]="readonly()"
+        [required]="required()"
+        [attr.aria-checked]="isIndeterminate() ? 'mixed' : checked"
+        [attr.aria-invalid]="hasError() ? 'true' : null"
+        [attr.aria-describedby]="describedBy()"
         (change)="handleChange($event)"
         (blur)="handleBlur()"
       />
       <span class="j-checkbox__box" aria-hidden="true"></span>
-      @if (label || hasProjectedLabel) {
+      @if (label() || hasProjectedLabel()) {
         <span class="j-checkbox__label">
           <ng-content></ng-content>
-          @if (label) {
-            <span>{{ label }}</span>
+          @if (label()) {
+            <span>{{ label() }}</span>
           }
-          @if (required) {
+          @if (required()) {
             <span class="j-checkbox__required" aria-hidden="true">*</span>
           }
         </span>
       }
     </label>
-    @if (hasError && error) {
-      <p class="j-checkbox__message j-checkbox__message--error" [id]="errorId">{{ error }}</p>
+    @if (hasError() && error()) {
+      <p class="j-checkbox__message j-checkbox__message--error" [id]="errorId">{{ error() }}</p>
     }
-    @if (hint && !hasError) {
-      <p class="j-checkbox__message" [id]="hintId">{{ hint }}</p>
+    @if (hint() && !hasError()) {
+      <p class="j-checkbox__message" [id]="hintId">{{ hint() }}</p>
     }
   `,
   styles: [
@@ -180,24 +182,26 @@ export class JCheckboxComponent implements ControlValueAccessor {
 
   @ViewChild('input') private inputRef?: ElementRef<HTMLInputElement>;
 
-  @Input() id = jCreateId('j-checkbox');
-  @Input() name = '';
-  @Input() label = '';
-  @Input() value: unknown = true;
-  @Input() hint = '';
-  @Input() error = '';
-  @Input() styleClass = '';
-  @Input() size: JSize = 'md';
-  @Input({ transform: booleanAttribute }) required = false;
-  @Input({ transform: booleanAttribute }) invalid = false;
-  @Input({ transform: booleanAttribute }) readonly = false;
-  @Input({ transform: booleanAttribute }) indeterminate = false;
-  @Input({ transform: booleanAttribute }) hasProjectedLabel = true;
+  readonly id = input(jCreateId('j-checkbox'));
+  readonly name = input('');
+  readonly label = input('');
+  readonly value = input<unknown>(true);
+  readonly hint = input('');
+  readonly error = input('');
+  readonly styleClass = input('');
+  readonly size = input<JSize>('md');
+  readonly required = input(false, { transform: booleanAttribute });
+  readonly invalid = input(false, { transform: booleanAttribute });
+  readonly readonly = input(false, { transform: booleanAttribute });
+  readonly indeterminate = input(false, { transform: booleanAttribute });
+  readonly hasProjectedLabel = input(true, { transform: booleanAttribute });
+  readonly disabled = input(false, { transform: booleanAttribute });
 
-  @Output() valueChange = new EventEmitter<boolean | readonly unknown[]>();
+  readonly valueChange = output<boolean | readonly unknown[]>();
 
   checked = false;
-  isDisabled = false;
+  readonly isDisabled = signal(false);
+  readonly isIndeterminate = signal(false);
   private arrayValue: readonly unknown[] | null = null;
 
   readonly hintId = jCreateId('j-checkbox-hint');
@@ -206,29 +210,26 @@ export class JCheckboxComponent implements ControlValueAccessor {
   private onChange: (value: boolean | readonly unknown[]) => void = () => undefined;
   private onTouched: () => void = () => undefined;
 
-  @Input({ transform: booleanAttribute })
-  set disabled(value: boolean) {
-    this.isDisabled = value;
-    this.changeDetectorRef.markForCheck();
-  }
+  readonly hasError = computed(() => this.invalid() || this.error().trim().length > 0);
 
-  get hasError(): boolean {
-    return this.invalid || this.error.trim().length > 0;
-  }
+  readonly describedBy = computed(() =>
+    jAriaDescribedBy(this.hasError() ? this.errorId : null, this.hint() ? this.hintId : null),
+  );
 
-  get describedBy(): string | null {
-    return jAriaDescribedBy(this.hasError ? this.errorId : null, this.hint ? this.hintId : null);
+  constructor() {
+    effect(() => this.isDisabled.set(this.disabled()));
+    effect(() => this.isIndeterminate.set(this.indeterminate()));
   }
 
   get rootClasses(): string {
     return [
       'j-checkbox',
-      `j-checkbox--${this.size}`,
+      `j-checkbox--${this.size()}`,
       this.checked ? 'is-checked' : '',
-      this.indeterminate ? 'is-indeterminate' : '',
-      this.isDisabled ? 'is-disabled' : '',
-      this.hasError ? 'is-invalid' : '',
-      this.styleClass,
+      this.isIndeterminate() ? 'is-indeterminate' : '',
+      this.isDisabled() ? 'is-disabled' : '',
+      this.hasError() ? 'is-invalid' : '',
+      this.styleClass(),
     ]
       .filter(Boolean)
       .join(' ');
@@ -237,7 +238,7 @@ export class JCheckboxComponent implements ControlValueAccessor {
   writeValue(value: boolean | readonly unknown[] | null | undefined): void {
     if (Array.isArray(value)) {
       this.arrayValue = value;
-      this.checked = value.some((item) => Object.is(item, this.value));
+      this.checked = value.some((item) => Object.is(item, this.value()));
     } else {
       this.arrayValue = null;
       this.checked = value === true;
@@ -255,25 +256,28 @@ export class JCheckboxComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled = isDisabled;
+    this.isDisabled.set(isDisabled);
     this.changeDetectorRef.markForCheck();
   }
 
   handleChange(event: Event): void {
-    if (this.readonly) {
+    if (this.readonly()) {
       (event.target as HTMLInputElement).checked = this.checked;
       return;
     }
     const target = event.target as HTMLInputElement;
     this.checked = target.checked;
-    this.indeterminate = false;
+    this.isIndeterminate.set(false);
+    // Clearing the flag alone doesn't reset the native `.indeterminate` DOM property,
+    // so push the change onto the input element as writeValue does.
+    this.syncIndeterminate();
 
     const nextValue =
       this.arrayValue == null
         ? this.checked
         : this.checked
-          ? [...this.arrayValue, this.value]
-          : this.arrayValue.filter((item) => !Object.is(item, this.value));
+          ? [...this.arrayValue, this.value()]
+          : this.arrayValue.filter((item) => !Object.is(item, this.value()));
 
     if (Array.isArray(nextValue)) {
       this.arrayValue = nextValue;
@@ -290,7 +294,7 @@ export class JCheckboxComponent implements ControlValueAccessor {
   private syncIndeterminate(): void {
     queueMicrotask(() => {
       if (this.inputRef?.nativeElement) {
-        this.inputRef.nativeElement.indeterminate = this.indeterminate;
+        this.inputRef.nativeElement.indeterminate = this.isIndeterminate();
       }
     });
   }

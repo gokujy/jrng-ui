@@ -1,5 +1,13 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { computed, effect, inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
+import {
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  Injectable,
+  PLATFORM_ID,
+  signal,
+} from '@angular/core';
 import { JRNG_CONFIG, JThemeMode } from 'jrng-ui/core';
 import { JComponentThemeTokens, JThemePreset, JThemeTokens } from './preset.types';
 import { J_THEME_OPTIONS } from './theme-config.token';
@@ -21,6 +29,7 @@ export class JThemeService {
   private readonly documentRef = inject(DOCUMENT);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   private readonly config = inject(JRNG_CONFIG);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly options = inject(J_THEME_OPTIONS, { optional: true }) ?? {};
 
   /** Class toggled on the document root for dark styling. */
@@ -40,11 +49,18 @@ export class JThemeService {
     if (this.options.preset) {
       this.setPreset(this.options.preset);
     }
-    this.applyTokens({ ...this.options.tokens, ...this.flattenComponents(this.options.components) });
+    this.applyTokens({
+      ...this.options.tokens,
+      ...this.flattenComponents(this.options.components),
+    });
 
-    this.darkModeQuery()?.addEventListener('change', (event) =>
-      this.systemPrefersDark.set(event.matches),
-    );
+    const darkModeQuery = this.darkModeQuery();
+    if (darkModeQuery) {
+      const onChange = (event: MediaQueryListEvent): void =>
+        this.systemPrefersDark.set(event.matches);
+      darkModeQuery.addEventListener('change', onChange);
+      this.destroyRef.onDestroy(() => darkModeQuery.removeEventListener('change', onChange));
+    }
 
     // Keep the root element's dark class in sync with the resolved mode.
     effect(() => {
@@ -87,8 +103,7 @@ export class JThemeService {
     const css =
       (preset.light || preset.components
         ? `:root{${this.toDeclarations({ ...preset.light, ...shared })}}`
-        : '') +
-      (preset.dark ? `.${this.darkClass}{${this.toDeclarations(preset.dark)}}` : '');
+        : '') + (preset.dark ? `.${this.darkClass}{${this.toDeclarations(preset.dark)}}` : '');
 
     let style = this.documentRef.getElementById(PRESET_STYLE_ID) as HTMLStyleElement | null;
     if (!style) {
@@ -104,7 +119,12 @@ export class JThemeService {
     if (!this.isBrowser) {
       return '';
     }
-    return getComputedStyle(this.documentRef.documentElement).getPropertyValue(name).trim();
+    return (
+      this.documentRef.defaultView
+        ?.getComputedStyle(this.documentRef.documentElement)
+        .getPropertyValue(name)
+        .trim() ?? ''
+    );
   }
 
   private toDeclarations(tokens: JThemeTokens): string {

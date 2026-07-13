@@ -6,24 +6,25 @@ import {
   Component,
   ContentChild,
   DestroyRef,
+  effect,
   ElementRef,
-  EventEmitter,
   forwardRef,
   inject,
-  Input,
+  input,
   numberAttribute,
-  Output,
+  output,
   PLATFORM_ID,
+  signal,
   TemplateRef,
   ViewChild,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { jAriaDescribedBy } from 'jrng-ui/core';
+import { JRNG_CONFIG, jAriaDescribedBy } from 'jrng-ui/core';
 import { JClickOutsideDirective } from 'jrng-ui/core';
 import { jCreateTypeahead } from 'jrng-ui/core';
 import { jCreateId } from 'jrng-ui/core';
 import { JFilterMatchMode, jMatchesFilter } from 'jrng-ui/core';
-import { JOverlayHandle, JOverlayService } from 'jrng-ui/core';
+import { JAppendTo, JOverlayHandle, JOverlayService } from 'jrng-ui/core';
 import { JSize } from 'jrng-ui/core';
 import { JInputVariant } from 'jrng-ui/input';
 import { JVirtualScrollerComponent } from 'jrng-ui/virtual-scroller';
@@ -79,6 +80,7 @@ export interface JSelectItemContext {
 })
 export class JSelectComponent implements ControlValueAccessor {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
+  private readonly config = inject(JRNG_CONFIG);
   private readonly hostRef = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   private readonly overlay = inject(JOverlayService);
@@ -94,41 +96,42 @@ export class JSelectComponent implements ControlValueAccessor {
   @ContentChild('jSelectSelectedItem', { read: TemplateRef })
   selectedItemTemplate?: TemplateRef<JSelectItemContext>;
 
-  @Input() id = jCreateId('j-select');
-  @Input() label = '';
-  @Input() options: readonly JSelectOptionSource[] = [];
-  @Input() optionLabel = 'label';
-  @Input() optionValue = 'value';
-  @Input() optionDisabled = 'disabled';
-  @Input() groupLabel = 'label';
-  @Input() groupOptions = 'items';
-  @Input() placeholder = '';
-  @Input() error = '';
-  @Input() hint = '';
-  @Input() filterPlaceholder = 'Search';
-  @Input() emptyMessage = 'No options found';
-  @Input() appendTo: 'self' | 'body' | string = 'self';
-  @Input() styleClass = '';
-  @Input() size: JSize = 'md';
-  @Input() variant: JInputVariant = 'outlined';
-  @Input({ transform: booleanAttribute }) readonly = false;
-  @Input({ transform: booleanAttribute }) invalid = false;
-  @Input({ transform: booleanAttribute }) required = false;
-  @Input({ transform: booleanAttribute }) searchable = false;
-  @Input({ transform: booleanAttribute }) clearable = false;
-  @Input({ transform: booleanAttribute }) loading = false;
-  @Input({ transform: booleanAttribute }) filter = false;
-  @Input() filterMatchMode: JFilterMatchMode = 'contains';
-  @Input({ transform: booleanAttribute }) virtualScroll = false;
-  @Input({ transform: numberAttribute }) virtualScrollItemSize = 40;
-  @Input() scrollHeight = '15rem';
+  readonly id = input(jCreateId('j-select'));
+  readonly label = input('');
+  readonly options = input<readonly JSelectOptionSource[]>([]);
+  readonly optionLabel = input('label');
+  readonly optionValue = input('value');
+  readonly optionDisabled = input('disabled');
+  readonly groupLabel = input('label');
+  readonly groupOptions = input('items');
+  readonly placeholder = input('');
+  readonly error = input('');
+  readonly hint = input('');
+  readonly filterPlaceholder = input('Search');
+  readonly emptyMessage = input('No options found');
+  readonly appendTo = input<JAppendTo | undefined>(undefined);
+  readonly styleClass = input('');
+  readonly size = input<JSize>('md');
+  readonly variant = input<JInputVariant | undefined>(undefined);
+  readonly readonly = input(false, { transform: booleanAttribute });
+  readonly invalid = input(false, { transform: booleanAttribute });
+  readonly required = input(false, { transform: booleanAttribute });
+  readonly searchable = input(false, { transform: booleanAttribute });
+  readonly clearable = input(false, { transform: booleanAttribute });
+  readonly loading = input(false, { transform: booleanAttribute });
+  readonly filter = input(false, { transform: booleanAttribute });
+  readonly filterMatchMode = input<JFilterMatchMode>('contains');
+  readonly virtualScroll = input(false, { transform: booleanAttribute });
+  readonly virtualScrollItemSize = input(40, { transform: numberAttribute });
+  readonly scrollHeight = input('15rem');
+  readonly disabled = input(false, { transform: booleanAttribute });
 
-  @Output() valueChange = new EventEmitter<unknown>();
-  @Output() selectionChange = new EventEmitter<JSelectOption | null>();
-  @Output() filterChange = new EventEmitter<string>();
-  @Output() clear = new EventEmitter<void>();
-  @Output() opened = new EventEmitter<void>();
-  @Output() closed = new EventEmitter<void>();
+  readonly valueChange = output<unknown>();
+  readonly selectionChange = output<JSelectOption | null>();
+  readonly filterChange = output<string>();
+  readonly clear = output<void>();
+  readonly opened = output<void>();
+  readonly closed = output<void>();
 
   readonly hintId = jCreateId('j-select-hint');
   readonly errorId = jCreateId('j-select-error');
@@ -136,7 +139,7 @@ export class JSelectComponent implements ControlValueAccessor {
   readonly filterId = jCreateId('j-select-filter');
 
   value: unknown = null;
-  isDisabled = false;
+  readonly isDisabled = signal(false);
   isOpen = false;
 
   filterText = '';
@@ -146,26 +149,20 @@ export class JSelectComponent implements ControlValueAccessor {
   private onChange: (value: unknown) => void = () => undefined;
   private onTouched: () => void = () => undefined;
 
-  @Input({ transform: booleanAttribute })
-  set disabled(value: boolean) {
-    this.isDisabled = value;
-    this.changeDetectorRef.markForCheck();
-  }
-
-  get disabled(): boolean {
-    return this.isDisabled;
+  constructor() {
+    effect(() => this.isDisabled.set(this.disabled()));
   }
 
   get hasError(): boolean {
-    return this.invalid || this.error.trim().length > 0;
+    return this.invalid() || this.error().trim().length > 0;
   }
 
   get describedBy(): string | null {
-    return jAriaDescribedBy(this.hasError ? this.errorId : null, this.hint ? this.hintId : null);
+    return jAriaDescribedBy(this.hasError ? this.errorId : null, this.hint() ? this.hintId : null);
   }
 
   get normalizedOptions(): readonly JSelectOption[] {
-    return this.options.flatMap((option) => this.normalizeOptionSource(option));
+    return this.options().flatMap((option) => this.normalizeOptionSource(option));
   }
 
   get visibleOptions(): readonly JSelectOption[] {
@@ -176,7 +173,7 @@ export class JSelectComponent implements ControlValueAccessor {
     }
 
     return this.normalizedOptions.filter((option) =>
-      jMatchesFilter(option.label, query, this.filterMatchMode),
+      jMatchesFilter(option.label, query, this.filterMatchMode()),
     );
   }
 
@@ -202,7 +199,7 @@ export class JSelectComponent implements ControlValueAccessor {
 
   /** Virtual scrolling applies only to flat (ungrouped) lists. */
   get useVirtual(): boolean {
-    return this.virtualScroll && !this.isGrouped && !this.loading;
+    return this.virtualScroll() && !this.isGrouped && !this.loading();
   }
 
   private scrollActiveIntoView(): void {
@@ -223,11 +220,11 @@ export class JSelectComponent implements ControlValueAccessor {
 
   get canClear(): boolean {
     return (
-      this.clearable &&
+      this.clearable() &&
       this.value != null &&
       this.value !== '' &&
-      !this.isDisabled &&
-      !this.readonly
+      !this.isDisabled() &&
+      !this.readonly()
     );
   }
 
@@ -236,22 +233,22 @@ export class JSelectComponent implements ControlValueAccessor {
   }
 
   get activeDescendant(): string | null {
-    return this.isOpen && this.activeIndex >= 0 ? `${this.id}-option-${this.activeIndex}` : null;
+    return this.isOpen && this.activeIndex >= 0 ? `${this.id()}-option-${this.activeIndex}` : null;
   }
 
   get appendToBody(): boolean {
-    return this.appendTo === 'body';
+    return this.overlay.resolveTarget(this.appendTo()) !== null;
   }
 
   get rootClasses(): string {
     return [
       'j-select-field',
-      `j-select-field--${this.size}`,
-      `j-select-field--${this.variant}`,
+      `j-select-field--${this.size()}`,
+      `j-select-field--${this.variant() ?? this.config.inputStyle}`,
       this.hasError ? 'is-invalid' : '',
-      this.isDisabled ? 'is-disabled' : '',
+      this.isDisabled() ? 'is-disabled' : '',
       this.isOpen ? 'is-open' : '',
-      this.styleClass,
+      this.styleClass(),
     ]
       .filter(Boolean)
       .join(' ');
@@ -271,7 +268,7 @@ export class JSelectComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled = isDisabled;
+    this.isDisabled.set(isDisabled);
     if (isDisabled) {
       this.close();
     }
@@ -279,7 +276,7 @@ export class JSelectComponent implements ControlValueAccessor {
   }
 
   toggle(): void {
-    if (this.isDisabled || this.readonly) {
+    if (this.isDisabled() || this.readonly()) {
       return;
     }
 
@@ -287,7 +284,7 @@ export class JSelectComponent implements ControlValueAccessor {
   }
 
   open(): void {
-    if (this.isDisabled || this.readonly || this.isOpen) {
+    if (this.isDisabled() || this.readonly() || this.isOpen) {
       return;
     }
 
@@ -303,7 +300,7 @@ export class JSelectComponent implements ControlValueAccessor {
       this.attachOverlay();
       this.scrollActiveIntoView();
 
-      if (this.searchable || this.filter) {
+      if (this.searchable() || this.filter()) {
         this.filterInput?.nativeElement.focus();
       }
     });
@@ -410,7 +407,7 @@ export class JSelectComponent implements ControlValueAccessor {
   }
 
   optionId(index: number): string {
-    return `${this.id}-option-${index}`;
+    return `${this.id()}-option-${index}`;
   }
 
   itemContext(option: JSelectOption, index: number): JSelectItemContext {
@@ -471,9 +468,9 @@ export class JSelectComponent implements ControlValueAccessor {
   private resolveLabel(option: JSelectOptionSource): string {
     if (this.isRecord(option)) {
       return String(
-        option[this.optionLabel] ??
+        option[this.optionLabel()] ??
           option['label'] ??
-          option[this.optionValue] ??
+          option[this.optionValue()] ??
           option['value'] ??
           '',
       );
@@ -485,9 +482,9 @@ export class JSelectComponent implements ControlValueAccessor {
   private resolveValue(option: JSelectOptionSource): unknown {
     if (this.isRecord(option)) {
       return (
-        option[this.optionValue] ??
+        option[this.optionValue()] ??
         option['value'] ??
-        option[this.optionLabel] ??
+        option[this.optionLabel()] ??
         option['label'] ??
         option
       );
@@ -498,7 +495,8 @@ export class JSelectComponent implements ControlValueAccessor {
 
   private resolveDisabled(option: JSelectOptionSource): boolean {
     return (
-      this.isRecord(option) && (option[this.optionDisabled] === true || option['disabled'] === true)
+      this.isRecord(option) &&
+      (option[this.optionDisabled()] === true || option['disabled'] === true)
     );
   }
 
@@ -514,10 +512,10 @@ export class JSelectComponent implements ControlValueAccessor {
       ];
     }
 
-    const groupOptions = option[this.groupOptions] ?? option['options'] ?? option['items'];
+    const groupOptions = option[this.groupOptions()] ?? option['options'] ?? option['items'];
 
     if (Array.isArray(groupOptions)) {
-      const group = String(option[this.groupLabel] ?? option['label'] ?? '');
+      const group = String(option[this.groupLabel()] ?? option['label'] ?? '');
       return groupOptions.map((child) => ({
         label: this.resolveLabel(child as JSelectOptionSource),
         value: this.resolveValue(child as JSelectOptionSource),
@@ -576,7 +574,7 @@ export class JSelectComponent implements ControlValueAccessor {
       this.hostRef.nativeElement,
       this.panelRef.nativeElement,
       {
-        appendTo: 'body',
+        appendTo: this.appendTo(),
         matchWidth: true,
       },
     );

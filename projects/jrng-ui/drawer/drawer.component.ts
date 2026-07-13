@@ -6,12 +6,12 @@ import {
   Component,
   DestroyRef,
   ElementRef,
-  Input,
   PLATFORM_ID,
   Renderer2,
   ViewChild,
   effect,
   inject,
+  input,
   model,
   output,
 } from '@angular/core';
@@ -19,6 +19,7 @@ import { JBodyScrollLockService } from 'jrng-ui/core';
 import { jFocusInitial } from 'jrng-ui/core';
 import { JFocusTrapDirective } from 'jrng-ui/core';
 import { jCreateId } from 'jrng-ui/core';
+import { JAppendTo, JOverlayHandle, JOverlayService, JOverlayStackService } from 'jrng-ui/core';
 import { JZIndexManagerService } from 'jrng-ui/core';
 
 export type JDrawerPosition = 'left' | 'right' | 'top' | 'bottom';
@@ -30,9 +31,10 @@ export type JDrawerCloseReason = 'close-button' | 'backdrop' | 'escape' | 'gestu
   template: `
     @if (visible()) {
       <div
+        #overlayRoot
         class="j-drawer__backdrop"
-        [class.is-modal]="modal"
-        [class.is-contained]="contained"
+        [class.is-modal]="modal()"
+        [class.is-contained]="contained()"
         [style.z-index]="zIndex || null"
         data-jc-name="drawer"
         data-jc-section="backdrop"
@@ -43,13 +45,13 @@ export type JDrawerCloseReason = 'close-button' | 'backdrop' | 'escape' | 'gestu
           #drawerPanel
           jFocusTrap
           [class]="drawerClasses"
-          [style.width]="width || null"
+          [style.width]="width() || null"
           [style.height]="computedHeight"
           [style.transform]="gestureTransform"
           role="dialog"
-          [attr.aria-modal]="modal ? 'true' : 'false'"
-          [attr.aria-labelledby]="header ? titleId : null"
-          [attr.aria-label]="header ? null : 'Drawer'"
+          [attr.aria-modal]="modal() ? 'true' : 'false'"
+          [attr.aria-labelledby]="header() ? titleId : null"
+          [attr.aria-label]="header() ? null : 'Drawer'"
           tabindex="-1"
           data-jc-name="drawer"
           data-jc-section="root"
@@ -60,7 +62,7 @@ export type JDrawerCloseReason = 'close-button' | 'backdrop' | 'escape' | 'gestu
           (pointerup)="endGesture()"
           (pointercancel)="cancelGesture()"
         >
-          @if (showHandle) {
+          @if (showHandle()) {
             <button
               class="j-drawer__handle"
               type="button"
@@ -69,13 +71,13 @@ export type JDrawerCloseReason = 'close-button' | 'backdrop' | 'escape' | 'gestu
               (click)="close('gesture')"
             ></button>
           }
-          @if (header || closable) {
+          @if (header() || closable()) {
             <header class="j-drawer__header" data-jc-section="header">
-              @if (header) {
-                <h2 class="j-drawer__title" [id]="titleId">{{ header }}</h2>
+              @if (header()) {
+                <h2 class="j-drawer__title" [id]="titleId">{{ header() }}</h2>
               }
               <ng-content select="[jDrawerHeader]"></ng-content>
-              @if (closable) {
+              @if (closable()) {
                 <button
                   class="j-drawer__close"
                   type="button"
@@ -231,6 +233,8 @@ export class JDrawerComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly bodyScrollLock = inject(JBodyScrollLockService);
   private readonly zIndexManager = inject(JZIndexManagerService);
+  private readonly overlayStack = inject(JOverlayStackService);
+  private readonly overlay = inject(JOverlayService);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   private wasVisible = false;
@@ -240,22 +244,24 @@ export class JDrawerComponent {
   private gestureStart: { readonly x: number; readonly y: number } | null = null;
 
   @ViewChild('drawerPanel') private panel?: ElementRef<HTMLElement>;
+  @ViewChild('overlayRoot') private overlayRoot?: ElementRef<HTMLElement>;
+  private overlayHandle?: JOverlayHandle;
 
   readonly visible = model(false);
-  @Input() header = '';
-  @Input() position: JDrawerPosition = 'right';
-  @Input() width = '';
-  @Input() height = '';
-  @Input() styleClass = '';
-  @Input() appendTo: 'self' | 'body' | string = 'self';
-  @Input() snapPoints: readonly string[] = ['50%', '80%'];
-  @Input({ transform: booleanAttribute }) modal = true;
-  @Input({ transform: booleanAttribute }) contained = false;
-  @Input({ transform: booleanAttribute }) closable = true;
-  @Input({ transform: booleanAttribute }) dismissableMask = true;
-  @Input({ transform: booleanAttribute }) closeOnEscape = true;
-  @Input({ transform: booleanAttribute }) showHandle = true;
-  @Input({ transform: booleanAttribute }) mobileBottomSheet = true;
+  readonly header = input('');
+  readonly position = input<JDrawerPosition>('right');
+  readonly width = input('');
+  readonly height = input('');
+  readonly styleClass = input('');
+  readonly appendTo = input<JAppendTo | undefined>(undefined);
+  readonly snapPoints = input<readonly string[]>(['50%', '80%']);
+  readonly modal = input(true, { transform: booleanAttribute });
+  readonly contained = input(false, { transform: booleanAttribute });
+  readonly closable = input(true, { transform: booleanAttribute });
+  readonly dismissableMask = input(true, { transform: booleanAttribute });
+  readonly closeOnEscape = input(true, { transform: booleanAttribute });
+  readonly showHandle = input(true, { transform: booleanAttribute });
+  readonly mobileBottomSheet = input(true, { transform: booleanAttribute });
 
   readonly opened = output<void>();
   readonly closed = output<JDrawerCloseReason>();
@@ -265,17 +271,19 @@ export class JDrawerComponent {
   zIndex = 0;
   gestureOffset = 0;
 
-  @Input({ transform: booleanAttribute })
-  set open(value: boolean) {
-    this.visible.set(value);
-  }
+  // `open` is a write-only alias that feeds the `visible` model. Kept as an
+  // optional input so it only writes `visible` when actually bound, preserving
+  // the `[(visible)]` two-way binding when `open` is unused.
+  readonly open = input<boolean | undefined, unknown>(undefined, {
+    transform: booleanAttribute,
+  });
 
   get drawerClasses(): string {
     return [
       'j-drawer',
-      `j-drawer--${this.position}`,
-      this.mobileBottomSheet ? 'is-mobile-sheet' : '',
-      this.styleClass,
+      `j-drawer--${this.position()}`,
+      this.mobileBottomSheet() ? 'is-mobile-sheet' : '',
+      this.styleClass(),
     ]
       .filter(Boolean)
       .join(' ');
@@ -283,7 +291,8 @@ export class JDrawerComponent {
 
   get computedHeight(): string | null {
     return (
-      this.height || (this.position === 'bottom' && this.snapPoints[1] ? this.snapPoints[1] : null)
+      this.height() ||
+      (this.position() === 'bottom' && this.snapPoints()[1] ? this.snapPoints()[1] : null)
     );
   }
 
@@ -291,7 +300,7 @@ export class JDrawerComponent {
     if (!this.gestureOffset) {
       return null;
     }
-    if (this.position === 'left' || this.position === 'right') {
+    if (this.position() === 'left' || this.position() === 'right') {
       return `translateX(${this.gestureOffset}px)`;
     }
     return `translateY(${this.gestureOffset}px)`;
@@ -299,16 +308,28 @@ export class JDrawerComponent {
 
   constructor() {
     effect(() => {
+      const openValue = this.open();
+      if (openValue !== undefined) {
+        this.visible.set(openValue);
+      }
+    });
+
+    effect(() => {
       const nextVisible = this.visible();
       if (nextVisible && !this.wasVisible) {
         this.handleOpened();
       }
       if (!nextVisible && this.wasVisible) {
         const reason = this.pendingCloseReason ?? 'api';
-        this.handleClosed(reason, this.pendingCloseReason !== null);
+        this.handleClosed(reason);
         this.pendingCloseReason = null;
       }
       this.wasVisible = nextVisible;
+    });
+
+    this.destroyRef.onDestroy(() => {
+      this.overlayStack.remove(this);
+      this.overlayHandle?.detach();
     });
 
     if (!this.isBrowser) {
@@ -346,7 +367,8 @@ export class JDrawerComponent {
   }
 
   handleEscape(event: Event): void {
-    if (!this.visible() || !this.closeOnEscape) {
+    // Only the front-most overlay should respond to Escape.
+    if (!this.visible() || !this.closeOnEscape() || !this.overlayStack.isTopmost(this)) {
       return;
     }
     event.preventDefault();
@@ -354,13 +376,13 @@ export class JDrawerComponent {
   }
 
   handleMask(event: MouseEvent): void {
-    if (this.dismissableMask && event.target === event.currentTarget) {
+    if (this.dismissableMask() && event.target === event.currentTarget) {
       this.close('backdrop');
     }
   }
 
   startGesture(event: PointerEvent): void {
-    if (!this.showHandle) {
+    if (!this.showHandle()) {
       return;
     }
     this.gestureStart = { x: event.clientX, y: event.clientY };
@@ -378,7 +400,7 @@ export class JDrawerComponent {
       top: Math.min(0, dy),
       bottom: Math.max(0, dy),
     };
-    this.gestureOffset = offsetMap[this.position];
+    this.gestureOffset = offsetMap[this.position()];
   }
 
   endGesture(): void {
@@ -398,17 +420,20 @@ export class JDrawerComponent {
 
   private handleOpened(): void {
     this.zIndex = this.zIndexManager.next(1100);
+    this.overlayStack.push(this);
     const HTMLElementCtor = this.documentRef.defaultView?.HTMLElement;
     this.previousFocus =
       HTMLElementCtor && this.documentRef.activeElement instanceof HTMLElementCtor
         ? this.documentRef.activeElement
         : null;
-    if (this.modal && !this.scrollLocked) {
+    if (this.modal() && !this.scrollLocked) {
       this.bodyScrollLock.lock();
       this.scrollLocked = true;
     }
     this.opened.emit();
     queueMicrotask(() => {
+      const root = this.overlayRoot?.nativeElement;
+      if (root) this.overlayHandle = this.overlay.portal(root, this.appendTo());
       const panel = this.panel?.nativeElement;
       if (panel && !jFocusInitial(panel)) {
         panel.focus();
@@ -416,14 +441,17 @@ export class JDrawerComponent {
     });
   }
 
-  private handleClosed(reason: JDrawerCloseReason, emitEvent: boolean): void {
+  private handleClosed(reason: JDrawerCloseReason): void {
+    this.overlayHandle?.detach();
+    this.overlayHandle = undefined;
+    this.overlayStack.remove(this);
     if (this.scrollLocked) {
       this.bodyScrollLock.unlock();
       this.scrollLocked = false;
     }
-    if (emitEvent) {
-      this.closed.emit(reason);
-    }
+    // Emit `closed` for every close path — including closing via the model —
+    // so `(closed)` fires consistently.
+    this.closed.emit(reason);
     queueMicrotask(() => this.previousFocus?.focus());
     this.changeDetectorRef.markForCheck();
   }

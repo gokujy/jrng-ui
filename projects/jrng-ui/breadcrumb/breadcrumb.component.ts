@@ -3,8 +3,8 @@ import {
   ChangeDetectionStrategy,
   Component,
   ContentChild,
-  Input,
   TemplateRef,
+  input,
   output,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
@@ -34,7 +34,7 @@ export interface JBreadcrumbClickEvent {
       aria-label="Breadcrumb"
     >
       <ol class="j-breadcrumb__list" data-jc-section="list">
-        @if (home) {
+        @if (home(); as home) {
           <li class="j-breadcrumb__item" data-jc-section="item">
             <a
               class="j-breadcrumb__link"
@@ -52,7 +52,7 @@ export interface JBreadcrumbClickEvent {
           </li>
         }
         @for (
-          item of model;
+          item of model();
           track item.url || item.routerLink || item.label || $index;
           let last = $last
         ) {
@@ -142,8 +142,8 @@ export interface JBreadcrumbClickEvent {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JBreadcrumbComponent {
-  @Input() model: readonly JBreadcrumbItem[] = [];
-  @Input() home?: JBreadcrumbItem;
+  readonly model = input<readonly JBreadcrumbItem[]>([]);
+  readonly home = input<JBreadcrumbItem>();
   @ContentChild('jBreadcrumbSeparator', { read: TemplateRef })
   separatorTemplate?: TemplateRef<unknown>;
   readonly itemClick = output<JBreadcrumbClickEvent>();

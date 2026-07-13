@@ -69,31 +69,32 @@ interface JCalendarDay {
         [class.j-calendar-scheduler__grid--week]="view() === 'week'"
       >
         @for (day of visibleDays(); track day.date.toISOString()) {
-          <button
-            type="button"
+          <div
             class="j-calendar-scheduler__day"
             [class.is-muted]="day.muted"
             [class.is-today]="day.today"
-            [attr.aria-label]="day.label"
-            (click)="dateClick.emit({ date: day.date, view: view() })"
           >
-            <span class="j-calendar-scheduler__date">{{ day.date.getDate() }}</span>
+            <button
+              type="button"
+              class="j-calendar-scheduler__date"
+              [attr.aria-label]="day.label"
+              (click)="dateClick.emit({ date: day.date, view: view() })"
+            >
+              {{ day.date.getDate() }}
+            </button>
             <span class="j-calendar-scheduler__events">
               @for (event of day.events; track event.id) {
-                <span
+                <button
+                  type="button"
                   class="j-calendar-scheduler__event"
-                  role="button"
-                  tabindex="0"
                   [style.--j-event-color]="event.color || null"
                   (click)="handleEventClick($event, event, day.date)"
-                  (keydown.enter)="handleEventClick($event, event, day.date)"
-                  (keydown.space)="handleEventClick($event, event, day.date)"
                 >
                   {{ event.title }}
-                </span>
+                </button>
               }
             </span>
-          </button>
+          </div>
         }
       </div>
     </section>
@@ -172,11 +173,9 @@ interface JCalendarDay {
 
       .j-calendar-scheduler__day {
         background: var(--j-color-card);
-        border: 0;
         border-right: 1px solid var(--j-color-border);
         border-bottom: 1px solid var(--j-color-border);
         color: inherit;
-        cursor: pointer;
         display: grid;
         gap: var(--j-spacing-2);
         min-height: 7rem;
@@ -194,7 +193,15 @@ interface JCalendarDay {
       }
 
       .j-calendar-scheduler__date {
+        background: transparent;
+        border: 0;
+        color: inherit;
+        cursor: pointer;
+        font: inherit;
         font-weight: var(--j-font-weight-semibold);
+        justify-self: start;
+        padding: 0;
+        text-align: start;
       }
 
       .j-calendar-scheduler__events {
@@ -205,17 +212,23 @@ interface JCalendarDay {
 
       .j-calendar-scheduler__event {
         background: var(--j-event-color, var(--j-color-primary));
+        border: 0;
         border-radius: var(--j-radius-sm);
         color: var(--j-color-primary-foreground);
+        cursor: pointer;
+        font: inherit;
         overflow: hidden;
         padding: var(--j-spacing-1) var(--j-spacing-2);
+        text-align: start;
         text-overflow: ellipsis;
         white-space: nowrap;
+        width: 100%;
       }
 
       .j-calendar-scheduler__actions button:focus-visible,
       .j-calendar-scheduler__actions select:focus-visible,
-      .j-calendar-scheduler__day:focus-visible {
+      .j-calendar-scheduler__date:focus-visible,
+      .j-calendar-scheduler__event:focus-visible {
         box-shadow: var(--j-focus-ring);
         outline: none;
       }
@@ -323,6 +336,9 @@ function addByView(date: Date, view: JCalendarSchedulerView, direction: number):
   } else if (view === 'week') {
     next.setDate(next.getDate() + direction * 7);
   } else {
+    // Pin to the 1st before shifting the month so end-of-month anchor dates
+    // (e.g. Jan 31) don't overflow and skip a month (Jan 31 + 1 → Mar 3).
+    next.setDate(1);
     next.setMonth(next.getMonth() + direction);
   }
   return next;

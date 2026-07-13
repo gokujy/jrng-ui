@@ -39,7 +39,7 @@ import { CodeBlockComponent } from '../docs/code-block.component';
             </thead>
             <tbody>
               <tr>
-                <td>0.0.8 (current)</td>
+                <td>0.0.9 (current)</td>
                 <td>Angular 21.2.x</td>
               </tr>
             </tbody>

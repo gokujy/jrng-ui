@@ -3,12 +3,12 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  EventEmitter,
+  effect,
   forwardRef,
   inject,
-  Input,
+  input,
   numberAttribute,
-  Output,
+  output,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { jCreateId } from 'jrng-ui/core';
@@ -29,10 +29,10 @@ import { jCreateId } from 'jrng-ui/core';
       (keydown.enter)="input.focus()"
       (keydown.space)="input.focus(); $event.preventDefault()"
     >
-      @if (label) {
-        <label class="j-chips__label" data-jc-section="label" [for]="id">
-          <span>{{ label }}</span>
-          @if (required) {
+      @if (label()) {
+        <label class="j-chips__label" data-jc-section="label" [for]="id()">
+          <span>{{ label() }}</span>
+          @if (required()) {
             <span class="j-chips__required" aria-hidden="true">*</span>
           }
         </label>
@@ -44,7 +44,7 @@ import { jCreateId } from 'jrng-ui/core';
             <button
               data-jc-section="remove"
               type="button"
-              [disabled]="isDisabled || readonly"
+              [disabled]="isDisabled || readonly()"
               (click)="removeAt(i); $event.stopPropagation()"
             >
               x
@@ -55,22 +55,22 @@ import { jCreateId } from 'jrng-ui/core';
           #input
           class="j-chips__input"
           data-jc-section="input"
-          [id]="id"
+          [id]="id()"
           type="text"
-          [placeholder]="value.length ? '' : placeholder"
+          [placeholder]="value.length ? '' : placeholder()"
           [disabled]="isDisabled"
-          [readOnly]="readonly"
+          [readOnly]="readonly()"
           [value]="draft"
           (input)="handleInput($event)"
           (keydown)="handleKeydown($event)"
           (blur)="handleBlur()"
         />
       </div>
-      @if (hasError && error) {
-        <p class="j-chips__message j-chips__message--error">{{ error }}</p>
+      @if (hasError && error()) {
+        <p class="j-chips__message j-chips__message--error">{{ error() }}</p>
       }
-      @if (hint && !hasError) {
-        <p class="j-chips__message">{{ hint }}</p>
+      @if (hint() && !hasError) {
+        <p class="j-chips__message">{{ hint() }}</p>
       }
     </div>
   `,
@@ -167,23 +167,24 @@ import { jCreateId } from 'jrng-ui/core';
 export class JChipsComponent implements ControlValueAccessor {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
-  @Input() id = jCreateId('j-chips');
-  @Input() label = '';
-  @Input() placeholder = '';
-  @Input() hint = '';
-  @Input() error = '';
-  @Input() styleClass = '';
-  @Input() separator = ',';
-  @Input() separators: readonly string[] = [];
-  @Input({ transform: numberAttribute }) max = 0;
-  @Input({ transform: booleanAttribute }) invalid = false;
-  @Input({ transform: booleanAttribute }) required = false;
-  @Input({ transform: booleanAttribute }) readonly = false;
-  @Input({ transform: booleanAttribute }) allowDuplicate = false;
+  readonly id = input(jCreateId('j-chips'));
+  readonly label = input('');
+  readonly placeholder = input('');
+  readonly hint = input('');
+  readonly error = input('');
+  readonly styleClass = input('');
+  readonly separator = input(',');
+  readonly separators = input<readonly string[]>([]);
+  readonly max = input(0, { transform: numberAttribute });
+  readonly invalid = input(false, { transform: booleanAttribute });
+  readonly required = input(false, { transform: booleanAttribute });
+  readonly readonly = input(false, { transform: booleanAttribute });
+  readonly allowDuplicate = input(false, { transform: booleanAttribute });
+  readonly disabled = input(false, { transform: booleanAttribute });
 
-  @Output() valueChange = new EventEmitter<readonly string[]>();
-  @Output() add = new EventEmitter<string>();
-  @Output() remove = new EventEmitter<string>();
+  readonly valueChange = output<readonly string[]>();
+  readonly add = output<string>();
+  readonly remove = output<string>();
 
   value: readonly string[] = [];
   draft = '';
@@ -192,14 +193,15 @@ export class JChipsComponent implements ControlValueAccessor {
   private onChange: (value: readonly string[]) => void = () => undefined;
   private onTouched: () => void = () => undefined;
 
-  @Input({ transform: booleanAttribute })
-  set disabled(value: boolean) {
-    this.isDisabled = value;
-    this.changeDetectorRef.markForCheck();
+  constructor() {
+    effect(() => {
+      this.isDisabled = this.disabled();
+      this.changeDetectorRef.markForCheck();
+    });
   }
 
   get hasError(): boolean {
-    return this.invalid || this.error.trim().length > 0;
+    return this.invalid() || this.error().trim().length > 0;
   }
 
   get rootClasses(): string {
@@ -207,7 +209,7 @@ export class JChipsComponent implements ControlValueAccessor {
       'j-chips-field',
       this.hasError ? 'is-invalid' : '',
       this.isDisabled ? 'is-disabled' : '',
-      this.styleClass,
+      this.styleClass(),
     ]
       .filter(Boolean)
       .join(' ');
@@ -277,8 +279,8 @@ export class JChipsComponent implements ControlValueAccessor {
     const next = rawValue.trim();
     if (
       !next ||
-      (this.max > 0 && this.value.length >= this.max) ||
-      (!this.allowDuplicate && this.value.includes(next))
+      (this.max() > 0 && this.value.length >= this.max()) ||
+      (!this.allowDuplicate() && this.value.includes(next))
     ) {
       return;
     }
@@ -294,6 +296,6 @@ export class JChipsComponent implements ControlValueAccessor {
   }
 
   private get separatorList(): readonly string[] {
-    return this.separators.length ? this.separators : [this.separator].filter(Boolean);
+    return this.separators().length ? this.separators() : [this.separator()].filter(Boolean);
   }
 }

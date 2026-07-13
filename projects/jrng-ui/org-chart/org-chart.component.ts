@@ -38,19 +38,19 @@ export interface JOrgChartNodeContext {
       @if (value(); as root) {
         <ng-container
           [ngTemplateOutlet]="nodeTemplateRef"
-          [ngTemplateOutletContext]="{ node: root }"
+          [ngTemplateOutletContext]="{ node: root, nodeKey: nodeKeyFor(root, 'root', 0) }"
         />
       }
     </section>
 
-    <ng-template #nodeTemplateRef let-node="node">
-      @let expanded = isExpanded(node);
+    <ng-template #nodeTemplateRef let-node="node" let-nodeKey="nodeKey">
+      @let expanded = isExpanded(node, nodeKey);
       <div class="j-org-chart__branch" [attr.data-j-open]="expanded ? 'true' : null">
         <article class="j-org-chart__node" data-jc-section="node">
           @if (nodeTemplate(); as template) {
             <ng-container
               [ngTemplateOutlet]="template"
-              [ngTemplateOutletContext]="nodeContext(node)"
+              [ngTemplateOutletContext]="nodeContext(node, nodeKey)"
             />
           } @else {
             <strong>{{ node.label }}</strong>
@@ -63,7 +63,7 @@ export interface JOrgChartNodeContext {
               class="j-org-chart__toggle"
               type="button"
               [attr.aria-expanded]="expanded"
-              (click)="toggle(node)"
+              (click)="toggle(node, nodeKey)"
             >
               {{ expanded ? '-' : '+' }}
             </button>
@@ -71,10 +71,13 @@ export interface JOrgChartNodeContext {
         </article>
         @if (node.children?.length && expanded) {
           <div class="j-org-chart__children" data-jc-section="children">
-            @for (child of node.children; track child.key || child.label || $index) {
+            @for (child of node.children; track child) {
               <ng-container
                 [ngTemplateOutlet]="nodeTemplateRef"
-                [ngTemplateOutletContext]="{ node: child }"
+                [ngTemplateOutletContext]="{
+                  node: child,
+                  nodeKey: nodeKeyFor(child, nodeKey, $index),
+                }"
               />
             }
           </div>
@@ -163,8 +166,7 @@ export class JOrgChartComponent {
   private readonly collapsedKeys = signal<ReadonlySet<string>>(new Set());
   private readonly expandedKeys = signal<ReadonlySet<string>>(new Set());
 
-  isExpanded(node: JOrgChartNode): boolean {
-    const key = this.nodeKey(node);
+  isExpanded(node: JOrgChartNode, key: string): boolean {
     if (this.expandedKeys().has(key)) {
       return true;
     }
@@ -174,11 +176,10 @@ export class JOrgChartComponent {
     return node.expanded !== false;
   }
 
-  toggle(node: JOrgChartNode): void {
-    const key = this.nodeKey(node);
+  toggle(node: JOrgChartNode, key: string): void {
     const expanded = new Set(this.expandedKeys());
     const collapsed = new Set(this.collapsedKeys());
-    if (this.isExpanded(node)) {
+    if (this.isExpanded(node, key)) {
       expanded.delete(key);
       collapsed.add(key);
     } else {
@@ -189,11 +190,13 @@ export class JOrgChartComponent {
     this.collapsedKeys.set(collapsed);
   }
 
-  nodeContext(node: JOrgChartNode): JOrgChartNodeContext {
-    return { $implicit: node, node, expanded: this.isExpanded(node) };
+  nodeContext(node: JOrgChartNode, key: string): JOrgChartNodeContext {
+    return { $implicit: node, node, expanded: this.isExpanded(node, key) };
   }
 
-  private nodeKey(node: JOrgChartNode): string {
-    return node.key ?? node.label;
+  // Stable unique key derived from the node's explicit key or its path/position
+  // in the tree, so keyless nodes that share a label stay independent.
+  nodeKeyFor(node: JOrgChartNode, parentKey: string, index: number): string {
+    return node.key ?? `${parentKey}/${index}`;
   }
 }

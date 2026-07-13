@@ -4,12 +4,14 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  computed,
   ContentChild,
-  EventEmitter,
+  effect,
   forwardRef,
   inject,
-  Input,
-  Output,
+  input,
+  output,
+  signal,
   TemplateRef,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -26,23 +28,23 @@ import { JSize } from 'jrng-ui/core';
   imports: [NgTemplateOutlet],
   template: `
     <div
-      [class]="rootClasses"
+      [class]="rootClasses()"
       data-jc-name="select-button"
       data-jc-section="root"
       role="group"
-      [attr.aria-label]="ariaLabel || label || 'Select option'"
-      [attr.data-j-disabled]="isDisabled ? 'true' : null"
-      [attr.data-j-invalid]="invalid ? 'true' : null"
+      [attr.aria-label]="ariaLabel() || label() || 'Select option'"
+      [attr.data-j-disabled]="isDisabled() ? 'true' : null"
+      [attr.data-j-invalid]="invalid() ? 'true' : null"
     >
-      @if (label) {
-        <span class="j-select-button__label" data-jc-section="label">{{ label }}</span>
+      @if (label()) {
+        <span class="j-select-button__label" data-jc-section="label">{{ label() }}</span>
       }
-      @for (option of normalizedOptions; track option.value) {
+      @for (option of normalizedOptions(); track option.value) {
         <button
           class="j-select-button__option"
           data-jc-section="option"
           type="button"
-          [disabled]="isDisabled || option.disabled"
+          [disabled]="isDisabled() || option.disabled"
           [class.is-selected]="isSelected(option)"
           [attr.aria-pressed]="isSelected(option)"
           [attr.data-j-selected]="isSelected(option) ? 'true' : null"
@@ -136,52 +138,51 @@ export class JSelectButtonComponent implements ControlValueAccessor {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
   @ContentChild('jSelectButtonOption', { read: TemplateRef }) optionTemplate?: TemplateRef<unknown>;
 
-  @Input() label = '';
-  @Input() ariaLabel = '';
-  @Input() options: readonly JSelectionOptionSource[] = [];
-  @Input() optionLabel = 'label';
-  @Input() optionValue = 'value';
-  @Input() optionDisabled = 'disabled';
-  @Input() styleClass = '';
-  @Input() size: JSize = 'md';
-  @Input({ transform: booleanAttribute }) multiple = false;
-  @Input({ transform: booleanAttribute }) readonly = false;
-  @Input({ transform: booleanAttribute }) invalid = false;
+  readonly label = input('');
+  readonly ariaLabel = input('');
+  readonly options = input<readonly JSelectionOptionSource[]>([]);
+  readonly optionLabel = input('label');
+  readonly optionValue = input('value');
+  readonly optionDisabled = input('disabled');
+  readonly styleClass = input('');
+  readonly size = input<JSize>('md');
+  readonly multiple = input(false, { transform: booleanAttribute });
+  readonly readonly = input(false, { transform: booleanAttribute });
+  readonly invalid = input(false, { transform: booleanAttribute });
+  readonly disabled = input(false, { transform: booleanAttribute });
 
-  @Output() valueChange = new EventEmitter<unknown>();
+  readonly valueChange = output<unknown>();
 
   value: unknown = null;
-  isDisabled = false;
+  readonly isDisabled = signal(false);
   private onChange: (value: unknown) => void = () => undefined;
   onTouched: () => void = () => undefined;
 
-  @Input({ transform: booleanAttribute })
-  set disabled(value: boolean) {
-    this.isDisabled = value;
-    this.changeDetectorRef.markForCheck();
+  constructor() {
+    effect(() => this.isDisabled.set(this.disabled()));
   }
 
-  get normalizedOptions(): readonly JNormalizedSelectionOption[] {
-    return jNormalizeSelectionOptions(
-      this.options,
-      this.optionLabel,
-      this.optionValue,
-      this.optionDisabled,
-    );
-  }
-  get rootClasses(): string {
-    return [
+  readonly normalizedOptions = computed<readonly JNormalizedSelectionOption[]>(() =>
+    jNormalizeSelectionOptions(
+      this.options(),
+      this.optionLabel(),
+      this.optionValue(),
+      this.optionDisabled(),
+    ),
+  );
+  readonly rootClasses = computed(() =>
+    [
       'j-select-button',
-      `j-select-button--${this.size}`,
-      this.isDisabled ? 'is-disabled' : '',
-      this.invalid ? 'is-invalid' : '',
-      this.styleClass,
+      `j-select-button--${this.size()}`,
+      this.isDisabled() ? 'is-disabled' : '',
+      this.invalid() ? 'is-invalid' : '',
+      this.styleClass(),
     ]
       .filter(Boolean)
-      .join(' ');
-  }
+      .join(' '),
+  );
   writeValue(value: unknown): void {
-    this.value = value ?? (this.multiple ? [] : null);
+    this.value = value ?? (this.multiple() ? [] : null);
     this.changeDetectorRef.markForCheck();
   }
   registerOnChange(fn: (value: unknown) => void): void {
@@ -191,12 +192,12 @@ export class JSelectButtonComponent implements ControlValueAccessor {
     this.onTouched = fn;
   }
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled = isDisabled;
+    this.isDisabled.set(isDisabled);
     this.changeDetectorRef.markForCheck();
   }
   toggleOption(option: JNormalizedSelectionOption): void {
-    if (this.isDisabled || this.readonly || option.disabled) return;
-    if (this.multiple) {
+    if (this.isDisabled() || this.readonly() || option.disabled) return;
+    if (this.multiple()) {
       const current = Array.isArray(this.value) ? this.value : [];
       this.value = current.some((item) => jSameSelectionValue(item, option.value))
         ? current.filter((item) => !jSameSelectionValue(item, option.value))
@@ -208,7 +209,7 @@ export class JSelectButtonComponent implements ControlValueAccessor {
     this.valueChange.emit(this.value);
   }
   isSelected(option: JNormalizedSelectionOption): boolean {
-    return this.multiple && Array.isArray(this.value)
+    return this.multiple() && Array.isArray(this.value)
       ? this.value.some((item) => jSameSelectionValue(item, option.value))
       : jSameSelectionValue(this.value, option.value);
   }

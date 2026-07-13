@@ -2,8 +2,8 @@ import {
   ChangeDetectionStrategy,
   Component,
   ContentChild,
-  Input,
   TemplateRef,
+  input,
 } from '@angular/core';
 import { JTableAction, JTableColumnAlign, JTableColumnType, JTableRow } from './table.types';
 
@@ -20,18 +20,18 @@ export interface JColumnCellContext {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JColumnComponent {
-  @Input({ required: true }) field = '';
-  @Input() header = '';
-  @Input() sortable = false;
-  @Input() filterable = false;
-  @Input() width = '';
-  @Input() minWidth = '';
-  @Input() align: JTableColumnAlign = 'start';
-  @Input() type: JTableColumnType = 'text';
-  @Input() visible = true;
-  @Input() frozen = false;
-  @Input() templateKey = '';
-  @Input() actions: readonly JTableAction[] = [];
+  readonly field = input.required<string>();
+  readonly header = input('');
+  readonly sortable = input(false);
+  readonly filterable = input(false);
+  readonly width = input('');
+  readonly minWidth = input('');
+  readonly align = input<JTableColumnAlign>('start');
+  readonly type = input<JTableColumnType>('text');
+  readonly visible = input(true);
+  readonly frozen = input(false);
+  readonly templateKey = input('');
+  readonly actions = input<readonly JTableAction[]>([]);
 
   @ContentChild(TemplateRef) template?: TemplateRef<JColumnCellContext>;
 }

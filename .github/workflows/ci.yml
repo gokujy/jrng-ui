@@ -4,25 +4,84 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
 
+env:
+  NODE_VERSION: 22.12.0
+
 jobs:
-  angular-21:
-    name: Angular 21.2 compatibility
+  quality:
+    name: Quality and registries
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22.12.0
+          node-version: ${{ env.NODE_VERSION }}
           cache: npm
       - run: npm ci
-      - run: npm run typecheck
       - run: npm run lint
-      - run: npm run test
-      - run: npm run build
-      - run: npm run generate:sitemap
+      - run: npm run verify:api
+      - run: npm run verify:registry
+      - run: npm run verify:docs-registry
       - run: npm run verify:docs-links
-      - run: npm run verify:package -- --skip-build
+
+  tests:
+    name: Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npm run test:lib
+      - run: npm run test:docs
+      - run: npm run test:starter
+
+  builds:
+    name: Production builds
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npm run build:lib
+      - run: npm run build:docs:app
+      - run: npm run build:starter
+
+  package:
+    name: Package and clean consumer
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npm run verify:package
+      - run: npm run verify:consumer
+
+  ssr:
+    name: SSR and hydration build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npm run verify:ssr

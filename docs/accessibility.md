@@ -56,7 +56,7 @@ Form components that own values implement ControlValueAccessor and support React
 - `j-time-picker`
 - `j-date-range-picker`
 - `j-color-picker`
-- `j-editor` placeholder textarea API
+- `j-editor` labelled multiline rich-text textbox and keyboard-focusable toolbar
 
 Use labels, hints, and errors whenever possible:
 
@@ -96,9 +96,7 @@ Current responsive coverage:
 Use full-screen dialog mode for complex mobile workflows:
 
 ```html
-<j-dialog size="full" [(visible)]="open" header="Edit record">
-  ...
-</j-dialog>
+<j-dialog size="full" [(visible)]="open" header="Edit record"> ... </j-dialog>
 ```
 
 ## RTL Support

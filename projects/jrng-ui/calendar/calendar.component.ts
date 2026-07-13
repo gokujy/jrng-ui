@@ -1,11 +1,17 @@
+import { isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  Input,
+  ElementRef,
+  PLATFORM_ID,
+  ViewChild,
+  effect,
   inject,
+  input,
   output,
 } from '@angular/core';
+import { JRNG_LOCALE } from 'jrng-ui/core';
 
 interface JCalendarCell {
   readonly date: Date;
@@ -13,24 +19,9 @@ interface JCalendarCell {
   readonly inMonth: boolean;
   readonly today: boolean;
   readonly selected: boolean;
+  readonly focused: boolean;
   readonly disabled: boolean;
 }
-
-const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as const;
-const MONTH_NAMES = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-] as const;
 
 @Component({
   selector: 'j-calendar',
@@ -54,28 +45,39 @@ const MONTH_NAMES = [
       </header>
 
       <div
+        #grid
         class="j-calendar__grid"
         role="grid"
+        tabindex="-1"
         [attr.aria-label]="monthNames[viewDate.getMonth()] + ' ' + viewDate.getFullYear()"
+        (keydown)="handleGridKeydown($event)"
       >
-        @for (dayName of dayNames; track dayName) {
-          <span class="j-calendar__weekday" role="columnheader">{{ dayName }}</span>
-        }
-        @for (cell of cells; track cell.date.getTime()) {
-          <button
-            type="button"
-            role="gridcell"
-            [class]="cellClasses(cell)"
-            [disabled]="cell.disabled"
-            [attr.aria-selected]="cell.selected"
-            [attr.aria-current]="cell.today ? 'date' : null"
-            [attr.data-j-selected]="cell.selected ? 'true' : null"
-            [attr.data-j-disabled]="cell.disabled ? 'true' : null"
-            (click)="selectDate(cell.date)"
-            (keydown)="handleKeydown($event, cell.date)"
-          >
-            {{ cell.label }}
-          </button>
+        <div class="j-calendar__row" role="row">
+          @for (dayName of dayNames; track dayName) {
+            <span class="j-calendar__weekday" role="columnheader">{{ dayName }}</span>
+          }
+        </div>
+        @for (week of weeks; track $index) {
+          <div class="j-calendar__row" role="row">
+            @for (cell of week; track cell.date.getTime()) {
+              <button
+                type="button"
+                role="gridcell"
+                [class]="cellClasses(cell)"
+                [disabled]="cell.disabled"
+                [attr.tabindex]="cell.focused ? '0' : '-1'"
+                [attr.aria-selected]="cell.selected"
+                [attr.aria-current]="cell.today ? 'date' : null"
+                [attr.data-j-selected]="cell.selected ? 'true' : null"
+                [attr.data-j-focused]="cell.focused ? 'true' : null"
+                [attr.data-j-disabled]="cell.disabled ? 'true' : null"
+                (focus)="focusedDate = cloneDate(cell.date)"
+                (click)="selectDate(cell.date)"
+              >
+                {{ cell.label }}
+              </button>
+            }
+          </div>
         }
       </div>
     </section>
@@ -126,6 +128,11 @@ const MONTH_NAMES = [
         grid-template-columns: repeat(7, minmax(0, 1fr));
       }
 
+      /* Rows exist for ARIA grid semantics only; keep cells in the CSS grid. */
+      .j-calendar__row {
+        display: contents;
+      }
+
       .j-calendar__weekday {
         color: var(--j-color-muted-foreground);
         font-size: var(--j-font-size-xs);
@@ -173,61 +180,102 @@ const MONTH_NAMES = [
 })
 export class JCalendarComponent {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
+  private readonly locale = inject(JRNG_LOCALE);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
-  @Input() minDate: Date | string | null = null;
-  @Input() maxDate: Date | string | null = null;
-  @Input() disabledDates: readonly (Date | string)[] = [];
+  @ViewChild('grid') private gridRef?: ElementRef<HTMLElement>;
+
+  readonly minDate = input<Date | string | null>(null);
+  readonly maxDate = input<Date | string | null>(null);
+  readonly disabledDates = input<readonly (Date | string)[]>([]);
 
   readonly dateSelect = output<Date>();
   readonly monthChange = output<Date>();
 
-  readonly dayNames = DAY_NAMES;
-  readonly monthNames = MONTH_NAMES;
-  readonly today = startOfDay(new Date());
-
   viewDate = startOfMonth(new Date());
   selectedDate: Date | null = null;
+  /** Day that owns the roving tabindex / keyboard focus within the grid. */
+  focusedDate = startOfDay(new Date());
 
-  @Input()
-  set value(value: Date | string | null | undefined) {
-    this.selectedDate = normalizeDate(value);
-    this.viewDate = startOfMonth(this.selectedDate ?? this.today);
-    this.changeDetectorRef.markForCheck();
-  }
-
-  @Input()
-  set activeDate(value: Date | string | null | undefined) {
-    const active = normalizeDate(value);
-    if (active) {
-      this.viewDate = startOfMonth(active);
+  constructor() {
+    effect(() => {
+      this.selectedDate = normalizeDate(this.value());
+      const anchor = this.selectedDate ?? this.today;
+      this.viewDate = startOfMonth(anchor);
+      this.focusedDate = cloneDate(anchor);
       this.changeDetectorRef.markForCheck();
-    }
+    });
+    effect(() => {
+      const active = normalizeDate(this.activeDate());
+      if (active) {
+        this.viewDate = startOfMonth(active);
+        this.focusedDate = cloneDate(active);
+        this.changeDetectorRef.markForCheck();
+      }
+    });
   }
+
+  /** Today, recomputed on read so it never goes stale after midnight. */
+  get today(): Date {
+    return startOfDay(new Date());
+  }
+
+  /** First day of week from the active locale (0 = Sunday, 1 = Monday). */
+  get firstDayOfWeek(): number {
+    return this.locale.firstDayOfWeek;
+  }
+
+  /** Localized full month names. */
+  get monthNames(): readonly string[] {
+    return this.locale.monthNames;
+  }
+
+  /** Localized weekday headers, ordered by the locale's first day of week. */
+  get dayNames(): readonly string[] {
+    const short = this.locale.dayNamesShort;
+    return Array.from({ length: 7 }, (_, index) => short[(this.firstDayOfWeek + index) % 7]);
+  }
+
+  readonly value = input<Date | string | null | undefined>(undefined);
+  readonly activeDate = input<Date | string | null | undefined>(undefined);
 
   get cells(): readonly JCalendarCell[] {
     const first = startOfMonth(this.viewDate);
-    const gridStart = addDays(first, -first.getDay());
+    const offset = (first.getDay() - this.firstDayOfWeek + 7) % 7;
+    const gridStart = addDays(first, -offset);
+    const today = this.today;
     return Array.from({ length: 42 }, (_, index) => {
       const date = addDays(gridStart, index);
       return {
         date,
         label: date.getDate(),
         inMonth: date.getMonth() === this.viewDate.getMonth(),
-        today: sameDate(date, this.today),
+        today: sameDate(date, today),
         selected: !!this.selectedDate && sameDate(date, this.selectedDate),
+        focused: sameDate(date, this.focusedDate),
         disabled: this.isDisabled(date),
       };
     });
   }
 
+  /** The 42 cells grouped into six ARIA rows of seven days. */
+  get weeks(): readonly (readonly JCalendarCell[])[] {
+    const cells = this.cells;
+    return Array.from({ length: 6 }, (_, index) => cells.slice(index * 7, index * 7 + 7));
+  }
+
   previousMonth(): void {
     this.viewDate = addMonths(this.viewDate, -1);
+    this.focusedDate = clampToMonth(this.focusedDate, this.viewDate);
     this.monthChange.emit(this.viewDate);
+    this.changeDetectorRef.markForCheck();
   }
 
   nextMonth(): void {
     this.viewDate = addMonths(this.viewDate, 1);
+    this.focusedDate = clampToMonth(this.focusedDate, this.viewDate);
     this.monthChange.emit(this.viewDate);
+    this.changeDetectorRef.markForCheck();
   }
 
   selectDate(date: Date): void {
@@ -239,10 +287,37 @@ export class JCalendarComponent {
     this.changeDetectorRef.markForCheck();
   }
 
-  handleKeydown(event: KeyboardEvent, date: Date): void {
+  handleGridKeydown(event: KeyboardEvent): void {
+    const keyMap: Record<string, number> = {
+      ArrowLeft: -1,
+      ArrowRight: 1,
+      ArrowUp: -7,
+      ArrowDown: 7,
+    };
+
+    if (event.key in keyMap) {
+      event.preventDefault();
+      this.focusDate(addDays(this.focusedDate, keyMap[event.key]));
+      return;
+    }
+
+    if (event.key === 'Home') {
+      event.preventDefault();
+      const toWeekStart = (this.focusedDate.getDay() - this.firstDayOfWeek + 7) % 7;
+      this.focusDate(addDays(this.focusedDate, -toWeekStart));
+      return;
+    }
+
+    if (event.key === 'End') {
+      event.preventDefault();
+      const toWeekEnd = 6 - ((this.focusedDate.getDay() - this.firstDayOfWeek + 7) % 7);
+      this.focusDate(addDays(this.focusedDate, toWeekEnd));
+      return;
+    }
+
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
-      this.selectDate(date);
+      this.selectDate(this.focusedDate);
     }
   }
 
@@ -252,19 +327,43 @@ export class JCalendarComponent {
       cell.inMonth ? '' : 'is-outside',
       cell.today ? 'is-today' : '',
       cell.selected ? 'is-selected' : '',
+      cell.focused ? 'is-focused' : '',
     ]
       .filter(Boolean)
       .join(' ');
   }
 
+  cloneDate(date: Date): Date {
+    return cloneDate(date);
+  }
+
+  /** Move the roving focus, shift the visible month, and follow with DOM focus. */
+  private focusDate(date: Date): void {
+    this.focusedDate = startOfDay(date);
+    this.viewDate = startOfMonth(this.focusedDate);
+    this.changeDetectorRef.markForCheck();
+    this.focusActiveCell();
+  }
+
+  private focusActiveCell(): void {
+    if (!this.isBrowser) {
+      return;
+    }
+    queueMicrotask(() => {
+      const cell =
+        this.gridRef?.nativeElement.querySelector<HTMLButtonElement>('[data-j-focused="true"]');
+      cell?.focus();
+    });
+  }
+
   private isDisabled(date: Date): boolean {
     const normalized = startOfDay(date);
-    const min = normalizeDate(this.minDate);
-    const max = normalizeDate(this.maxDate);
+    const min = normalizeDate(this.minDate());
+    const max = normalizeDate(this.maxDate());
     return (
       (min ? normalized < min : false) ||
       (max ? normalized > max : false) ||
-      this.disabledDates.some((disabledDate) => {
+      this.disabledDates().some((disabledDate) => {
         const candidate = normalizeDate(disabledDate);
         return !!candidate && sameDate(candidate, normalized);
       })
@@ -307,4 +406,14 @@ function sameDate(left: Date, right: Date): boolean {
     left.getMonth() === right.getMonth() &&
     left.getDate() === right.getDate()
   );
+}
+
+function cloneDate(date: Date): Date {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+/** Keep the focused day-of-month within `monthDate`, clamped to its last valid day. */
+function clampToMonth(date: Date, monthDate: Date): Date {
+  const lastDay = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0).getDate();
+  return new Date(monthDate.getFullYear(), monthDate.getMonth(), Math.min(date.getDate(), lastDay));
 }

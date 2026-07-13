@@ -44,9 +44,7 @@ describe('keyboard shortcuts', () => {
     document.body.appendChild(input);
     const cleanup = service.register('ctrl+k', handler);
 
-    input.dispatchEvent(
-      new KeyboardEvent('keydown', { key: 'k', ctrlKey: true, bubbles: true }),
-    );
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true, bubbles: true }));
 
     cleanup();
     input.remove();

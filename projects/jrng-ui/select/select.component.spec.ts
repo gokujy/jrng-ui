@@ -14,6 +14,7 @@ import { JSelectComponent, JSelectOptionSource } from './select.component';
       [options]="options"
       [error]="error"
       [searchable]="searchable"
+      [virtualScroll]="virtualScroll"
       (valueChange)="lastValue = $event"
       (filterChange)="lastFilter = $event"
     />
@@ -23,6 +24,7 @@ class SelectHostComponent {
   control = new FormControl<string>('', { nonNullable: true });
   error = '';
   searchable = false;
+  virtualScroll = false;
   lastValue: unknown = '';
   lastFilter = '';
   options: readonly JSelectOptionSource[] = [
@@ -141,7 +143,7 @@ describe('JSelectComponent', () => {
   it('enables virtual scrolling only for flat (ungrouped) option lists', () => {
     const select = fixture.debugElement.query(By.directive(JSelectComponent))
       .componentInstance as JSelectComponent;
-    select.virtualScroll = true;
+    host.virtualScroll = true;
     detectHostChanges();
     expect(select.isGrouped).toBe(false);
     expect(select.useVirtual).toBe(true);

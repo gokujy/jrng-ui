@@ -1,11 +1,4 @@
-import {
-  booleanAttribute,
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-} from '@angular/core';
+import { booleanAttribute, ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { JSeverity, JSize } from 'jrng-ui/core';
 
 @Component({
@@ -14,15 +7,15 @@ import { JSeverity, JSize } from 'jrng-ui/core';
   template: `
     <span [class]="chipClasses" data-jc-name="chip" data-jc-section="root" data-jc-extend="remove">
       <ng-content></ng-content>
-      @if (label) {
-        <span data-jc-section="label">{{ label }}</span>
+      @if (label()) {
+        <span data-jc-section="label">{{ label() }}</span>
       }
-      @if (removable) {
+      @if (removable()) {
         <button
           class="j-chip__remove"
           data-jc-section="remove"
           type="button"
-          [attr.aria-label]="removeAriaLabel"
+          [attr.aria-label]="removeAriaLabel()"
           (click)="remove.emit()"
         >
           x
@@ -79,17 +72,17 @@ import { JSeverity, JSize } from 'jrng-ui/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JChipComponent {
-  @Input() label = '';
-  @Input() severity: JSeverity = 'neutral';
-  @Input() size: JSize = 'md';
-  @Input() styleClass = '';
-  @Input() removeAriaLabel = 'Remove';
-  @Input({ transform: booleanAttribute }) removable = false;
+  readonly label = input('');
+  readonly severity = input<JSeverity>('neutral');
+  readonly size = input<JSize>('md');
+  readonly styleClass = input('');
+  readonly removeAriaLabel = input('Remove');
+  readonly removable = input(false, { transform: booleanAttribute });
 
-  @Output() remove = new EventEmitter<void>();
+  readonly remove = output<void>();
 
   get chipClasses(): string {
-    return ['j-chip', `j-chip--${this.size}`, `j-chip--${this.severity}`, this.styleClass]
+    return ['j-chip', `j-chip--${this.size()}`, `j-chip--${this.severity()}`, this.styleClass()]
       .filter(Boolean)
       .join(' ');
   }

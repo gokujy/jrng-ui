@@ -4,7 +4,7 @@ import {
   Directive,
   ElementRef,
   HostListener,
-  Input,
+  input,
   PLATFORM_ID,
   inject,
   numberAttribute,
@@ -26,11 +26,11 @@ export class JTooltipDirective {
   private showTimer: ReturnType<typeof setTimeout> | null = null;
   private hideTimer: ReturnType<typeof setTimeout> | null = null;
 
-  @Input('jTooltip') tooltip = '';
-  @Input() tooltipPosition: JTooltipPosition = 'top';
-  @Input({ transform: numberAttribute }) showDelay = 0;
-  @Input({ transform: numberAttribute }) hideDelay = 0;
-  @Input() tooltipDisabled = false;
+  readonly tooltip = input('', { alias: 'jTooltip' });
+  readonly tooltipPosition = input<JTooltipPosition>('top');
+  readonly showDelay = input(0, { transform: numberAttribute });
+  readonly hideDelay = input(0, { transform: numberAttribute });
+  readonly tooltipDisabled = input(false);
 
   constructor() {
     this.destroyRef.onDestroy(() => {
@@ -42,11 +42,11 @@ export class JTooltipDirective {
   @HostListener('mouseenter')
   @HostListener('focusin')
   show(): void {
-    if (!this.isBrowser || this.tooltipDisabled || !this.tooltip) {
+    if (!this.isBrowser || this.tooltipDisabled() || !this.tooltip()) {
       return;
     }
     this.clearTimers();
-    this.showTimer = setTimeout(() => this.createTooltip(), this.showDelay);
+    this.showTimer = setTimeout(() => this.createTooltip(), this.showDelay());
   }
 
   @HostListener('mouseleave')
@@ -57,7 +57,7 @@ export class JTooltipDirective {
     }
 
     this.clearTimers();
-    this.hideTimer = setTimeout(() => this.removeTooltip(), this.hideDelay);
+    this.hideTimer = setTimeout(() => this.removeTooltip(), this.hideDelay());
   }
 
   private createTooltip(): void {
@@ -67,8 +67,8 @@ export class JTooltipDirective {
 
     this.removeTooltip();
     const element = this.documentRef.createElement('div');
-    element.className = `j-tooltip j-tooltip--${this.tooltipPosition}`;
-    element.textContent = this.tooltip;
+    element.className = `j-tooltip j-tooltip--${this.tooltipPosition()}`;
+    element.textContent = this.tooltip();
     element.setAttribute('role', 'tooltip');
     element.setAttribute('data-jc-name', 'tooltip');
     element.setAttribute('data-jc-section', 'root');
@@ -110,14 +110,14 @@ export class JTooltipDirective {
     let top = host.top - tip.height - gap;
     let left = host.left + (host.width - tip.width) / 2;
 
-    if (this.tooltipPosition === 'bottom') {
+    if (this.tooltipPosition() === 'bottom') {
       top = host.bottom + gap;
     }
-    if (this.tooltipPosition === 'left') {
+    if (this.tooltipPosition() === 'left') {
       top = host.top + (host.height - tip.height) / 2;
       left = host.left - tip.width - gap;
     }
-    if (this.tooltipPosition === 'right') {
+    if (this.tooltipPosition() === 'right') {
       top = host.top + (host.height - tip.height) / 2;
       left = host.right + gap;
     }

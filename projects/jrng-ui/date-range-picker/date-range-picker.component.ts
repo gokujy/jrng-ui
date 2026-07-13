@@ -1,16 +1,25 @@
+import { isPlatformBrowser } from '@angular/common';
 import {
   booleanAttribute,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  computed,
+  DestroyRef,
+  effect,
+  ElementRef,
   forwardRef,
   inject,
-  Input,
+  input,
+  PLATFORM_ID,
+  ViewChild,
   output,
+  signal,
+  untracked,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { jAriaDescribedBy } from 'jrng-ui/core';
-import { JClickOutsideDirective } from 'jrng-ui/core';
+import { JAppendTo, JClickOutsideDirective, JOverlayHandle, JOverlayService } from 'jrng-ui/core';
 import { JRNG_LOCALE } from 'jrng-ui/core';
 import { JPassThrough } from 'jrng-ui/core';
 import { JSize } from 'jrng-ui/core';
@@ -33,6 +42,7 @@ interface JRangeDay {
   readonly end: boolean;
   readonly inRange: boolean;
   readonly preview: boolean;
+  readonly focused: boolean;
   readonly disabled: boolean;
 }
 
@@ -41,22 +51,6 @@ interface JRangePreset {
   readonly start: Date;
   readonly end: Date;
 }
-
-const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as const;
-const MONTH_NAMES = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-] as const;
 
 @Component({
   selector: 'j-date-range-picker',
@@ -68,50 +62,52 @@ const MONTH_NAMES = [
       (jClickOutside)="close()"
       data-jc-name="date-range-picker"
       data-jc-section="root"
-      [attr.data-j-disabled]="isDisabled ? 'true' : null"
+      [attr.data-j-disabled]="isDisabled() ? 'true' : null"
       [attr.data-j-invalid]="hasError ? 'true' : null"
       [attr.data-j-open]="isOpen ? 'true' : null"
     >
-      @if (label) {
+      @if (label()) {
         <span class="j-date-range-picker__label" [id]="labelId">
-          <span>{{ label }}</span>
-          @if (required) {
+          <span>{{ label() }}</span>
+          @if (required()) {
             <span class="j-date-range-picker__required" aria-hidden="true">*</span>
           }
         </span>
       }
 
-      <button
-        class="j-date-range-picker__control"
-        type="button"
-        [disabled]="isDisabled || readonly"
-        [attr.aria-labelledby]="label ? labelId : null"
+      <div class="j-date-range-picker__control-wrapper">
+        <button
+          class="j-date-range-picker__control"
+          type="button"
+          [disabled]="isDisabled() || readonly()"
+        [attr.aria-labelledby]="label() ? labelId : null"
         [attr.aria-describedby]="describedBy"
         [attr.aria-invalid]="hasError ? 'true' : null"
         [attr.aria-expanded]="isOpen"
         [attr.aria-controls]="isOpen ? panelId : null"
         (click)="toggle()"
         (keydown)="handleTriggerKeydown($event)"
-      >
-        <span class="j-date-range-picker__value" [class.is-placeholder]="!startDate && !endDate">
-          {{ displayValue || placeholder }}
-        </span>
+        >
+          <span class="j-date-range-picker__value" [class.is-placeholder]="!startDate && !endDate">
+            {{ displayValue || placeholder() }}
+          </span>
+          <span class="j-date-range-picker__icon" aria-hidden="true">cal</span>
+        </button>
         @if (canClear) {
-          <span
+          <button
+            type="button"
             class="j-date-range-picker__clear"
-            role="button"
-            tabindex="-1"
             (click)="clearValue($event)"
-            aria-hidden="true"
+            [attr.aria-label]="locale.clear"
           >
             x
-          </span>
+          </button>
         }
-        <span class="j-date-range-picker__icon" aria-hidden="true">cal</span>
-      </button>
+      </div>
 
       @if (isOpen) {
         <div
+          #panel
           class="j-date-range-picker__panel"
           [id]="panelId"
           role="dialog"
@@ -153,36 +149,48 @@ const MONTH_NAMES = [
             </div>
 
             <div
+              #grid
               class="j-date-range-picker__grid"
               role="grid"
+              tabindex="0"
               [attr.aria-label]="monthNames[viewDate.getMonth()] + ' ' + viewDate.getFullYear()"
+              (keydown)="handleGridKeydown($event)"
             >
-              @for (dayName of dayNames; track dayName) {
-                <span class="j-date-range-picker__weekday" role="columnheader">{{ dayName }}</span>
-              }
-              @for (day of calendarDays; track day.date.getTime()) {
-                <button
-                  type="button"
-                  role="gridcell"
-                  [class]="dayClasses(day)"
-                  [disabled]="day.disabled"
-                  [attr.aria-selected]="day.start || day.end || day.inRange"
-                  [attr.aria-current]="day.today ? 'date' : null"
-                  [attr.data-j-selected]="day.start || day.end || day.inRange ? 'true' : null"
-                  [attr.data-j-disabled]="day.disabled ? 'true' : null"
-                  (mouseenter)="hoverDate = clone(day.date)"
-                  (focus)="hoverDate = clone(day.date)"
-                  (click)="selectDate(day.date)"
-                  (keydown)="handleDayKeydown($event, day.date)"
-                >
-                  {{ day.label }}
-                </button>
+              <div class="j-date-range-picker__row" role="row">
+                @for (dayName of dayNames; track dayName) {
+                  <span class="j-date-range-picker__weekday" role="columnheader">{{
+                    dayName
+                  }}</span>
+                }
+              </div>
+              @for (week of calendarWeeks; track $index) {
+                <div class="j-date-range-picker__row" role="row">
+                  @for (day of week; track day.date.getTime()) {
+                    <button
+                      type="button"
+                      role="gridcell"
+                      [class]="dayClasses(day)"
+                      [disabled]="day.disabled"
+                      [attr.tabindex]="day.focused ? '0' : '-1'"
+                      [attr.aria-selected]="day.start || day.end || day.inRange"
+                      [attr.aria-current]="day.today ? 'date' : null"
+                      [attr.data-j-selected]="day.start || day.end || day.inRange ? 'true' : null"
+                      [attr.data-j-focused]="day.focused ? 'true' : null"
+                      [attr.data-j-disabled]="day.disabled ? 'true' : null"
+                      (mouseenter)="hoverDate = clone(day.date)"
+                      (focus)="onDayFocus(day.date)"
+                      (click)="selectDate(day.date)"
+                    >
+                      {{ day.label }}
+                    </button>
+                  }
+                </div>
               }
             </div>
           </div>
 
           <div class="j-date-range-picker__bar">
-            <span class="j-date-range-picker__selection">{{ displayValue || placeholder }}</span>
+            <span class="j-date-range-picker__selection">{{ displayValue || placeholder() }}</span>
             <button
               type="button"
               class="j-date-range-picker__bar-button"
@@ -195,13 +203,13 @@ const MONTH_NAMES = [
         </div>
       }
 
-      @if (hasError && error) {
+      @if (hasError && error()) {
         <p class="j-date-range-picker__message j-date-range-picker__message--error" [id]="errorId">
-          {{ error }}
+          {{ error() }}
         </p>
       }
-      @if (hint && !hasError) {
-        <p class="j-date-range-picker__message" [id]="hintId">{{ hint }}</p>
+      @if (hint() && !hasError) {
+        <p class="j-date-range-picker__message" [id]="hintId">{{ hint() }}</p>
       }
     </div>
   `,
@@ -239,6 +247,24 @@ const MONTH_NAMES = [
         padding: 0 var(--j-spacing-3);
         text-align: left;
         width: 100%;
+      }
+
+      .j-date-range-picker__control-wrapper {
+        align-items: center;
+        display: flex;
+        position: relative;
+      }
+
+      .j-date-range-picker__control-wrapper .j-date-range-picker__control {
+        padding-inline-end: 4rem;
+      }
+
+      .j-date-range-picker__clear {
+        background: transparent;
+        border: 0;
+        cursor: pointer;
+        inset-inline-end: 2.5rem;
+        position: absolute;
       }
 
       .j-date-range-picker__control:focus-visible {
@@ -349,6 +375,11 @@ const MONTH_NAMES = [
         grid-template-columns: repeat(7, minmax(0, 1fr));
       }
 
+      /* Rows exist for ARIA grid semantics only; keep cells in the CSS grid. */
+      .j-date-range-picker__row {
+        display: contents;
+      }
+
       .j-date-range-picker__weekday {
         color: var(--j-color-muted-foreground);
         font-size: var(--j-font-size-xs);
@@ -440,30 +471,56 @@ const MONTH_NAMES = [
 })
 export class JDateRangePickerComponent implements ControlValueAccessor {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  private readonly hostRef = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly overlay = inject(JOverlayService);
+  private readonly destroyRef = inject(DestroyRef);
+
+  @ViewChild('grid') private gridRef?: ElementRef<HTMLElement>;
+  @ViewChild('panel') private panelRef?: ElementRef<HTMLElement>;
+  private overlayHandle?: JOverlayHandle;
 
   readonly locale = inject(JRNG_LOCALE);
   readonly labelId = jCreateId('j-date-range-picker-label');
   readonly hintId = jCreateId('j-date-range-picker-hint');
   readonly errorId = jCreateId('j-date-range-picker-error');
   readonly panelId = jCreateId('j-date-range-picker-panel');
-  readonly dayNames = DAY_NAMES;
-  readonly monthNames = MONTH_NAMES;
-  readonly today = startOfDay(new Date());
 
-  @Input() label = '';
-  @Input() placeholder = 'Select date range';
-  @Input() hint = '';
-  @Input() error = '';
-  @Input() styleClass = '';
-  @Input() variant: 'outlined' | 'filled' = 'outlined';
-  @Input() size: JSize = 'md';
-  @Input() dataType: 'date' | 'string' = 'string';
-  @Input() appendTo: 'self' | 'body' | string = 'self';
-  @Input() pt: JPassThrough | null = null;
-  @Input({ transform: booleanAttribute }) readonly = false;
-  @Input({ transform: booleanAttribute }) invalid = false;
-  @Input({ transform: booleanAttribute }) required = false;
-  @Input({ transform: booleanAttribute }) showClear = true;
+  /** First day of week from the active locale (0 = Sunday, 1 = Monday). */
+  get firstDayOfWeek(): number {
+    return this.locale.firstDayOfWeek;
+  }
+
+  /** Localized full month names. */
+  get monthNames(): readonly string[] {
+    return this.locale.monthNames;
+  }
+
+  /** Localized weekday headers, ordered by the locale's first day of week. */
+  get dayNames(): readonly string[] {
+    const short = this.locale.dayNamesShort;
+    return Array.from({ length: 7 }, (_, index) => short[(this.firstDayOfWeek + index) % 7]);
+  }
+
+  /** Today, recomputed on read so it never goes stale after midnight. */
+  get today(): Date {
+    return startOfDay(new Date());
+  }
+
+  readonly label = input('');
+  readonly placeholder = input('Select date range');
+  readonly hint = input('');
+  readonly error = input('');
+  readonly styleClass = input('');
+  readonly variant = input<'outlined' | 'filled'>('outlined');
+  readonly size = input<JSize>('md');
+  readonly dataType = input<'date' | 'string'>('string');
+  readonly appendTo = input<JAppendTo | undefined>(undefined);
+  readonly pt = input<JPassThrough | null>(null);
+  readonly readonly = input(false, { transform: booleanAttribute });
+  readonly invalid = input(false, { transform: booleanAttribute });
+  readonly required = input(false, { transform: booleanAttribute });
+  readonly showClear = input(true, { transform: booleanAttribute });
 
   readonly valueChange = output<JDateRangeValue>();
   readonly select = output<JDateRangeValue>();
@@ -474,63 +531,58 @@ export class JDateRangePickerComponent implements ControlValueAccessor {
   startDate: Date | null = null;
   endDate: Date | null = null;
   hoverDate: Date | null = null;
+  /** Day that owns the roving tabindex / keyboard focus within the grid. */
+  focusedDate = startOfDay(new Date());
   viewDate = startOfMonth(new Date());
-  isDisabled = false;
+  readonly formDisabled = signal(false);
+  readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
   isOpen = false;
 
-  private minDateInternal: Date | string | null = null;
-  private maxDateInternal: Date | string | null = null;
   private onChange: (value: JDateRangeValue) => void = () => undefined;
   private onTouched: () => void = () => undefined;
 
-  @Input()
-  set value(value: JDateRangeInputValue | null | undefined) {
-    this.writeValue(value);
-  }
+  readonly value = input<JDateRangeInputValue | null>();
+  readonly minDate = input<Date | string | null>();
+  readonly maxDate = input<Date | string | null>();
+  readonly disabled = input(false, { transform: booleanAttribute });
 
-  @Input()
-  set minDate(value: Date | string | null | undefined) {
-    this.minDateInternal = value ?? null;
-  }
-
-  @Input()
-  set maxDate(value: Date | string | null | undefined) {
-    this.maxDateInternal = value ?? null;
-  }
-
-  @Input({ transform: booleanAttribute })
-  set disabled(value: boolean) {
-    this.isDisabled = value;
-    this.changeDetectorRef.markForCheck();
+  constructor() {
+    this.destroyRef.onDestroy(() => this.overlayHandle?.detach());
+    effect(() => {
+      const value = this.value();
+      if (value !== undefined) {
+        untracked(() => this.writeValue(value));
+      }
+    });
   }
 
   get hasError(): boolean {
-    return this.invalid || this.error.trim().length > 0;
+    return this.invalid() || this.error().trim().length > 0;
   }
 
   get describedBy(): string | null {
-    return jAriaDescribedBy(this.hasError ? this.errorId : null, this.hint ? this.hintId : null);
+    return jAriaDescribedBy(this.hasError ? this.errorId : null, this.hint() ? this.hintId : null);
   }
 
   get canClear(): boolean {
     return (
-      this.showClear &&
+      this.showClear() &&
       (this.startDate != null || this.endDate != null) &&
-      !this.isDisabled &&
-      !this.readonly
+      !this.isDisabled() &&
+      !this.readonly()
     );
   }
 
   get rootClasses(): string {
     return [
       'j-date-range-picker',
-      `j-date-range-picker--${this.size}`,
-      `j-date-range-picker--${this.variant}`,
+      `j-date-range-picker--${this.size()}`,
+      `j-date-range-picker--${this.variant()}`,
       this.hasError ? 'is-invalid' : '',
-      this.isDisabled ? 'is-disabled' : '',
+      this.isDisabled() ? 'is-disabled' : '',
       this.isOpen ? 'is-open' : '',
-      this.styleClass,
-      this.pt?.['root']?.['class'] ?? '',
+      this.styleClass(),
+      this.pt()?.['root']?.['class'] ?? '',
     ]
       .filter(Boolean)
       .join(' ');
@@ -561,21 +613,30 @@ export class JDateRangePickerComponent implements ControlValueAccessor {
 
   get calendarDays(): readonly JRangeDay[] {
     const first = startOfMonth(this.viewDate);
-    const gridStart = addDays(first, -first.getDay());
+    const offset = (first.getDay() - this.firstDayOfWeek + 7) % 7;
+    const gridStart = addDays(first, -offset);
+    const today = this.today;
     return Array.from({ length: 42 }, (_, index) => {
       const date = addDays(gridStart, index);
       return {
         date,
         label: date.getDate(),
         inMonth: date.getMonth() === this.viewDate.getMonth(),
-        today: sameDate(date, this.today),
+        today: sameDate(date, today),
         start: !!this.startDate && sameDate(date, this.startDate),
         end: !!this.endDate && sameDate(date, this.endDate),
         inRange: this.isBetween(date, this.startDate, this.endDate),
         preview: this.isPreview(date),
+        focused: sameDate(date, this.focusedDate),
         disabled: this.isDateDisabled(date),
       };
     });
+  }
+
+  /** The 42 day cells grouped into six ARIA rows of seven days. */
+  get calendarWeeks(): readonly (readonly JRangeDay[])[] {
+    const days = this.calendarDays;
+    return Array.from({ length: 6 }, (_, index) => days.slice(index * 7, index * 7 + 7));
   }
 
   writeValue(value: JDateRangeInputValue | null | undefined): void {
@@ -591,7 +652,9 @@ export class JDateRangePickerComponent implements ControlValueAccessor {
       this.endDate = null;
     }
 
-    this.viewDate = startOfMonth(this.startDate ?? this.today);
+    const anchor = this.startDate ?? this.today;
+    this.viewDate = startOfMonth(anchor);
+    this.focusedDate = cloneDate(anchor);
     this.changeDetectorRef.markForCheck();
   }
 
@@ -604,7 +667,7 @@ export class JDateRangePickerComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled = isDisabled;
+    this.formDisabled.set(isDisabled);
     if (isDisabled) {
       this.close();
     }
@@ -616,19 +679,32 @@ export class JDateRangePickerComponent implements ControlValueAccessor {
   }
 
   open(): void {
-    if (this.isDisabled || this.readonly || this.isOpen) {
+    if (this.isDisabled() || this.readonly() || this.isOpen) {
       return;
     }
     this.isOpen = true;
-    this.viewDate = startOfMonth(this.startDate ?? this.today);
+    const anchor = this.startDate ?? this.today;
+    this.viewDate = startOfMonth(anchor);
+    this.focusedDate = cloneDate(anchor);
     this.opened.emit();
     this.changeDetectorRef.markForCheck();
+    queueMicrotask(() => {
+      const panel = this.panelRef?.nativeElement;
+      if (panel) {
+        this.overlayHandle = this.overlay.attach(this.hostRef.nativeElement, panel, {
+          appendTo: this.appendTo(),
+          matchWidth: false,
+        });
+      }
+    });
   }
 
   close(): void {
     if (!this.isOpen) {
       return;
     }
+    this.overlayHandle?.detach();
+    this.overlayHandle = undefined;
     this.isOpen = false;
     this.hoverDate = null;
     this.onTouched();
@@ -643,10 +719,57 @@ export class JDateRangePickerComponent implements ControlValueAccessor {
     }
   }
 
-  handleDayKeydown(event: KeyboardEvent, date: Date): void {
+  /** Keep hover-preview and roving focus in sync when a cell is focused. */
+  onDayFocus(date: Date): void {
+    this.hoverDate = cloneDate(date);
+    this.focusedDate = cloneDate(date);
+  }
+
+  handleGridKeydown(event: KeyboardEvent): void {
+    const keyMap: Record<string, number> = {
+      ArrowLeft: -1,
+      ArrowRight: 1,
+      ArrowUp: -7,
+      ArrowDown: 7,
+    };
+
+    if (event.key in keyMap) {
+      event.preventDefault();
+      this.focusDate(addDays(this.focusedDate, keyMap[event.key]));
+      return;
+    }
+
+    if (event.key === 'Home') {
+      event.preventDefault();
+      const toWeekStart = (this.focusedDate.getDay() - this.firstDayOfWeek + 7) % 7;
+      this.focusDate(addDays(this.focusedDate, -toWeekStart));
+      return;
+    }
+
+    if (event.key === 'End') {
+      event.preventDefault();
+      const toWeekEnd = 6 - ((this.focusedDate.getDay() - this.firstDayOfWeek + 7) % 7);
+      this.focusDate(addDays(this.focusedDate, toWeekEnd));
+      return;
+    }
+
+    if (event.key === 'PageUp') {
+      event.preventDefault();
+      // addMonths pins to the 1st, so re-apply the focused day within that month.
+      this.focusDate(clampToMonth(this.focusedDate, addMonths(this.focusedDate, -1)));
+      return;
+    }
+
+    if (event.key === 'PageDown') {
+      event.preventDefault();
+      this.focusDate(clampToMonth(this.focusedDate, addMonths(this.focusedDate, 1)));
+      return;
+    }
+
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
-      this.selectDate(date);
+      this.selectDate(this.focusedDate);
+      return;
     }
 
     if (event.key === 'Escape') {
@@ -655,12 +778,35 @@ export class JDateRangePickerComponent implements ControlValueAccessor {
     }
   }
 
+  /** Move the roving focus, shift the visible month, and follow with DOM focus. */
+  private focusDate(date: Date): void {
+    this.focusedDate = startOfDay(date);
+    this.viewDate = startOfMonth(this.focusedDate);
+    this.changeDetectorRef.markForCheck();
+    this.focusActiveCell();
+  }
+
+  private focusActiveCell(): void {
+    if (!this.isBrowser) {
+      return;
+    }
+    queueMicrotask(() => {
+      const cell =
+        this.gridRef?.nativeElement.querySelector<HTMLButtonElement>('[data-j-focused="true"]');
+      cell?.focus();
+    });
+  }
+
   previousMonth(): void {
     this.viewDate = addMonths(this.viewDate, -1);
+    this.focusedDate = clampToMonth(this.focusedDate, this.viewDate);
+    this.changeDetectorRef.markForCheck();
   }
 
   nextMonth(): void {
     this.viewDate = addMonths(this.viewDate, 1);
+    this.focusedDate = clampToMonth(this.focusedDate, this.viewDate);
+    this.changeDetectorRef.markForCheck();
   }
 
   selectDate(date: Date): void {
@@ -698,7 +844,7 @@ export class JDateRangePickerComponent implements ControlValueAccessor {
 
   clearValue(event?: Event): void {
     event?.stopPropagation();
-    if (this.isDisabled || this.readonly) {
+    if (this.isDisabled() || this.readonly()) {
       return;
     }
     this.startDate = null;
@@ -717,6 +863,7 @@ export class JDateRangePickerComponent implements ControlValueAccessor {
       day.end ? 'is-end' : '',
       day.inRange ? 'is-in-range' : '',
       day.preview ? 'is-preview' : '',
+      day.focused ? 'is-focused' : '',
     ]
       .filter(Boolean)
       .join(' ');
@@ -724,8 +871,8 @@ export class JDateRangePickerComponent implements ControlValueAccessor {
 
   isDateDisabled(date: Date): boolean {
     const normalized = startOfDay(date);
-    const min = normalizeDate(this.minDateInternal);
-    const max = normalizeDate(this.maxDateInternal);
+    const min = normalizeDate(this.minDate());
+    const max = normalizeDate(this.maxDate());
     return (min ? normalized < min : false) || (max ? normalized > max : false);
   }
 
@@ -746,8 +893,10 @@ export class JDateRangePickerComponent implements ControlValueAccessor {
   private currentValue(): JDateRangeValue {
     return {
       start:
-        this.dataType === 'string' && this.startDate ? formatDate(this.startDate) : this.startDate,
-      end: this.dataType === 'string' && this.endDate ? formatDate(this.endDate) : this.endDate,
+        this.dataType() === 'string' && this.startDate
+          ? formatDate(this.startDate)
+          : this.startDate,
+      end: this.dataType() === 'string' && this.endDate ? formatDate(this.endDate) : this.endDate,
     };
   }
 
@@ -822,4 +971,10 @@ function sameDate(left: Date, right: Date): boolean {
 
 function cloneDate(date: Date): Date {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+/** Keep the focused day-of-month within `monthDate`, clamped to its last valid day. */
+function clampToMonth(date: Date, monthDate: Date): Date {
+  const lastDay = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0).getDate();
+  return new Date(monthDate.getFullYear(), monthDate.getMonth(), Math.min(date.getDate(), lastDay));
 }

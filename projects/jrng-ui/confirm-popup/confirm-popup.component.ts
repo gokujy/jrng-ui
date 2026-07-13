@@ -22,6 +22,7 @@ import { JConfirmationService } from 'jrng-ui/confirm-dialog';
         position="bottom"
         data-jc-name="confirm-popup"
         data-jc-section="popover"
+        (opened)="focusPanel()"
         (closed)="reject()"
       >
         <section
@@ -128,12 +129,25 @@ export class JConfirmPopupComponent {
     const confirmation = this.confirmationService.confirmation();
     confirmation?.accept?.();
     this.confirmationService.close();
+    this.restoreFocus(confirmation?.target);
   }
 
   reject(): void {
     const confirmation = this.confirmationService.confirmation();
     confirmation?.reject?.();
     this.confirmationService.close();
+    this.restoreFocus(confirmation?.target);
+  }
+
+  /** Focus the alertdialog panel on open so the focus trap and Enter/Escape work. */
+  focusPanel(): void {
+    queueMicrotask(() => this.panel?.nativeElement.focus());
+  }
+
+  private restoreFocus(target: HTMLElement | null | undefined): void {
+    if (target) {
+      queueMicrotask(() => target.focus());
+    }
   }
 
   handleKeydown(event: KeyboardEvent): void {

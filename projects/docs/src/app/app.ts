@@ -10,7 +10,7 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { JConfirmDialogComponent } from 'jrng-ui/confirm-dialog';
-import { JThemeService } from 'jrng-ui/theming';
+import { JThemePresetName, JThemeService, jThemePresets } from 'jrng-ui/theming';
 import { JrToastContainerComponent } from 'jrng-ui/toast';
 import { filter, map } from 'rxjs';
 import { DocsSeoService } from './core/seo.service';
@@ -90,11 +90,12 @@ export class App {
     },
   ];
 
-  readonly mode = this.theme.mode;
-  readonly modeLabel = computed(() => {
-    const value = this.mode();
-    return value.charAt(0).toUpperCase() + value.slice(1);
-  });
+  readonly isDark = this.theme.isDark;
+
+  /** PrimeNG-style theme configurator (top-bar popover). */
+  readonly presetNames = Object.keys(jThemePresets) as JThemePresetName[];
+  readonly activePreset = signal<JThemePresetName>('indigo');
+  readonly configOpen = signal(false);
 
   readonly density = signal<'comfortable' | 'compact'>('comfortable');
   readonly navOpen = signal(false);
@@ -125,11 +126,32 @@ export class App {
       });
   }
 
-  /** Cycle light -> dark -> system. */
-  cycleMode(): void {
-    const order = ['light', 'dark', 'system'] as const;
-    const next = order[(order.indexOf(this.mode()) + 1) % order.length];
-    this.theme.setMode(next);
+  /** Light <-> dark, mirroring PrimeNG's top-bar toggle. */
+  toggleDark(): void {
+    this.theme.setMode(this.isDark() ? 'light' : 'dark');
+  }
+
+  setColorScheme(dark: boolean): void {
+    this.theme.setMode(dark ? 'dark' : 'light');
+  }
+
+  toggleConfig(): void {
+    this.configOpen.update((open) => !open);
+  }
+
+  closeConfig(): void {
+    this.configOpen.set(false);
+  }
+
+  /** Apply a color preset (the configurator's "Primary" palette). */
+  selectPreset(name: JThemePresetName): void {
+    this.activePreset.set(name);
+    this.theme.setPreset(jThemePresets[name]);
+  }
+
+  /** Swatch color for a preset chip. */
+  presetSwatch(name: JThemePresetName): string {
+    return jThemePresets[name].light?.['--j-color-primary'] ?? 'transparent';
   }
 
   toggleDensity(): void {

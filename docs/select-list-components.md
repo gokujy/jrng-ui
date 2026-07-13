@@ -134,12 +134,7 @@ Custom templates:
   (targetChange)="selectedProducts = $event"
 />
 
-<j-pick-list
-  [source]="availableUsers"
-  [target]="teamUsers"
-  optionLabel="name"
-  optionValue="id"
-/>
+<j-pick-list [source]="availableUsers" [target]="teamUsers" optionLabel="name" optionValue="id" />
 ```
 
 ## Chips
@@ -147,13 +142,7 @@ Custom templates:
 ```html
 <j-chip label="Active" removable (remove)="removeStatus()" />
 
-<j-chips
-  formControlName="tags"
-  label="Tags"
-  separator=","
-  [separators]="[',', ';']"
-  [max]="5"
-/>
+<j-chips formControlName="tags" label="Tags" separator="," [separators]="[',', ';']" [max]="5" />
 ```
 
 `j-chips` supports add/remove, separator parsing, optional duplicate prevention, max items, disabled state from Angular forms, and CVA.

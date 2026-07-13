@@ -5,7 +5,7 @@ import {
   ContentChild,
   TemplateRef,
   inject,
-  Input,
+  input,
 } from '@angular/core';
 import { JToast, JrToastPosition, JrToastService } from './toast.service';
 
@@ -23,14 +23,14 @@ export interface JToastTemplateContext {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JrToastContainerComponent {
-  @Input() position: JrToastPosition = 'top-right';
+  readonly position = input<JrToastPosition>('top-right');
   @ContentChild('jToast', { read: TemplateRef }) toastTemplate?: TemplateRef<JToastTemplateContext>;
 
   readonly toastService = inject(JrToastService);
   private swipeStart = new Map<string, number>();
 
   visibleToasts(): readonly JToast[] {
-    return this.toastService.toasts().filter((toast) => toast.position === this.position);
+    return this.toastService.toasts().filter((toast) => toast.position === this.position());
   }
 
   templateContext(toast: JToast): JToastTemplateContext {

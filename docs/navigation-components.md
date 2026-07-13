@@ -37,8 +37,7 @@ items: readonly JMenuItem[] = [
 ```
 
 ```html
-<j-menu [model]="items" />
-<j-menu #popup [model]="items" popup />
+<j-menu [model]="items" /> <j-menu #popup [model]="items" popup />
 ```
 
 `j-menu` supports nested items, icons, separators, disabled items, roving tabindex, arrow-key navigation, typeahead, submenu open/close delay, popup mode, and a custom `#jMenuItem` template.
@@ -122,12 +121,7 @@ Tabs support keyboard navigation, lazy panels, closable tabs, disabled tabs, and
 ## Stepper
 
 ```html
-<j-stepper
-  [items]="steps"
-  [(activeIndex)]="activeStep"
-  linear
-  orientation="horizontal"
-/>
+<j-stepper [items]="steps" [(activeIndex)]="activeStep" linear orientation="horizontal" />
 ```
 
 Steps support linear mode, completed state, error state, disabled state, and horizontal or vertical layout.

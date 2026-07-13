@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, model } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, model } from '@angular/core';
 import { JPopoverComponent } from 'jrng-ui/popover';
 import { JrToastService } from 'jrng-ui/toast';
 import { inject } from '@angular/core';
@@ -10,7 +10,7 @@ import { inject } from '@angular/core';
     <j-popover
       [visible]="visible()"
       (visibleChange)="visible.set($event)"
-      [target]="target"
+      [target]="target()"
       position="bottom"
       styleClass="j-notification-center"
     >
@@ -20,9 +20,9 @@ import { inject } from '@angular/core';
         data-jc-section="root"
       >
         <header class="j-notification-center__header">
-          <strong>{{ heading }}</strong>
+          <strong>{{ heading() }}</strong>
           <button type="button" class="j-notification-center__clear" (click)="toastService.clear()">
-            {{ clearLabel }}
+            {{ clearLabel() }}
           </button>
         </header>
         <div class="j-notification-center__list">
@@ -34,7 +34,7 @@ import { inject } from '@angular/core';
               }
             </article>
           } @empty {
-            <p class="j-notification-center__empty">{{ emptyMessage }}</p>
+            <p class="j-notification-center__empty">{{ emptyMessage() }}</p>
           }
         </div>
       </section>
@@ -86,8 +86,8 @@ import { inject } from '@angular/core';
 export class JNotificationCenterComponent {
   readonly toastService = inject(JrToastService);
   readonly visible = model(false);
-  @Input() target: HTMLElement | null = null;
-  @Input() heading = 'Notifications';
-  @Input() clearLabel = 'Clear';
-  @Input() emptyMessage = 'No notifications.';
+  readonly target = input<HTMLElement | null>(null);
+  readonly heading = input('Notifications');
+  readonly clearLabel = input('Clear');
+  readonly emptyMessage = input('No notifications.');
 }

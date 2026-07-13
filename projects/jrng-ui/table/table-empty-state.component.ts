@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 @Component({
   selector: 'j-table-empty-state',
   template: `
     <div class="j-table-empty-state" role="status">
-      <strong>{{ title }}</strong>
-      <p>{{ message }}</p>
+      <strong>{{ title() }}</strong>
+      <p>{{ message() }}</p>
     </div>
   `,
   styles: [
@@ -32,6 +32,6 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JTableEmptyStateComponent {
-  @Input() title = 'No records';
-  @Input() message = 'There is no data to display.';
+  readonly title = input('No records');
+  readonly message = input('There is no data to display.');
 }

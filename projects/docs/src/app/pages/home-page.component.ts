@@ -49,18 +49,15 @@ interface CategoryPreview {
           <div class="docs-home-hero__copy">
             <span class="docs-home-pill">
               <span aria-hidden="true"></span>
-              jrng-ui@0.0.8
+              jrng-ui@0.0.9
             </span>
 
             <h1>
-              A modern Angular component library for
-              <span class="docs-home-highlight"
-                >admin panels, dashboards and business applications</span
-              >
+              <span class="docs-home-highlight">Premium UI Suite for Angular</span>
             </h1>
 
             <p>
-              Build responsive Angular business applications with {{ totalComponents }}+ standalone
+              Build responsive admin panels and dashboards with {{ totalComponents }}+ standalone
               components, advanced data tools, accessible themes, SSR support, and modular imports.
             </p>
 
@@ -189,10 +186,9 @@ interface CategoryPreview {
             <span class="docs-eyebrow">Angular business application components</span>
             <h2>A focused Angular design system for operational interfaces.</h2>
             <p>
-              JRNG UI is designed for teams evaluating an Angular Material alternative or PrimeNG
-              alternative for admin panels and business applications. Compare APIs, accessibility,
-              component coverage, maintenance needs, and migration cost against your own
-              requirements.
+              JRNG UI is designed for teams building admin panels and business applications.
+              Evaluate its APIs, accessibility, component coverage, maintenance needs, and migration
+              cost against your own requirements.
             </p>
           </div>
         </section>
@@ -308,7 +304,7 @@ export class HomePageComponent {
     { label: 'Components', value: `${this.totalComponents}+`, delta: '+registry', tone: 'up' },
     { label: 'Entrypoints', value: '1:1', delta: 'tree-shakeable', tone: 'neutral' },
     { label: 'Theme modes', value: '3', delta: 'light/dark/system', tone: 'up' },
-    { label: 'Status', value: '0.0.8', delta: 'current', tone: 'down' },
+    { label: 'Status', value: '0.0.9', delta: 'current', tone: 'down' },
   ];
 
   readonly features: readonly Feature[] = [

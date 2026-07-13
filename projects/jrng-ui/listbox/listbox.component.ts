@@ -5,11 +5,12 @@ import {
   ChangeDetectorRef,
   Component,
   ContentChild,
-  EventEmitter,
+  effect,
   forwardRef,
   inject,
-  Input,
-  Output,
+  input,
+  output,
+  signal,
   TemplateRef,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -34,23 +35,23 @@ export type JListboxOption = JSelectionOptionSource;
       data-jc-name="listbox"
       data-jc-section="root"
       data-jc-extend="option filter"
-      [attr.data-j-disabled]="isDisabled ? 'true' : null"
+      [attr.data-j-disabled]="isDisabled() ? 'true' : null"
       [attr.data-j-invalid]="hasError ? 'true' : null"
     >
-      @if (label) {
-        <label class="j-listbox__label" data-jc-section="label" [for]="id">
-          <span>{{ label }}</span>
-          @if (required) {
+      @if (label()) {
+        <label class="j-listbox__label" data-jc-section="label" [for]="id()">
+          <span>{{ label() }}</span>
+          @if (required()) {
             <span class="j-listbox__required" aria-hidden="true">*</span>
           }
         </label>
       }
-      @if (filter) {
+      @if (filter()) {
         <input
           class="j-listbox__filter"
           data-jc-section="filter"
           type="text"
-          [placeholder]="filterPlaceholder"
+          [placeholder]="filterPlaceholder()"
           [value]="filterText"
           (input)="handleFilterInput($event)"
         />
@@ -59,10 +60,11 @@ export type JListboxOption = JSelectionOptionSource;
         class="j-listbox"
         data-jc-section="list"
         role="listbox"
-        [id]="id"
-        [attr.aria-multiselectable]="multiple ? 'true' : null"
+        [id]="id()"
+        [attr.aria-multiselectable]="multiple() ? 'true' : null"
         [attr.aria-invalid]="hasError ? 'true' : null"
         [attr.aria-describedby]="describedBy"
+        [attr.aria-activedescendant]="activeDescendant"
         tabindex="0"
         (keydown)="handleKeydown($event)"
         (blur)="onTouched()"
@@ -73,7 +75,9 @@ export type JListboxOption = JSelectionOptionSource;
             data-jc-section="option"
             type="button"
             role="option"
-            [disabled]="isDisabled || option.disabled"
+            [id]="optionId(i)"
+            [attr.tabindex]="-1"
+            [disabled]="isDisabled() || option.disabled"
             [class.is-active]="i === activeIndex"
             [class.is-selected]="isSelected(option)"
             [attr.data-j-selected]="isSelected(option) ? 'true' : null"
@@ -83,7 +87,7 @@ export type JListboxOption = JSelectionOptionSource;
             [attr.aria-disabled]="option.disabled ? 'true' : null"
             (click)="selectOption(option)"
           >
-            @if (multiple) {
+            @if (multiple()) {
               <span
                 class="j-listbox__box"
                 [class.is-selected]="isSelected(option)"
@@ -101,14 +105,14 @@ export type JListboxOption = JSelectionOptionSource;
           </button>
         }
         @if (!visibleOptions.length) {
-          <div class="j-listbox__empty">{{ emptyMessage }}</div>
+          <div class="j-listbox__empty">{{ emptyMessage() }}</div>
         }
       </div>
-      @if (hasError && error) {
-        <p class="j-listbox__message j-listbox__message--error" [id]="errorId">{{ error }}</p>
+      @if (hasError && error()) {
+        <p class="j-listbox__message j-listbox__message--error" [id]="errorId">{{ error() }}</p>
       }
-      @if (hint && !hasError) {
-        <p class="j-listbox__message" [id]="hintId">{{ hint }}</p>
+      @if (hint() && !hasError) {
+        <p class="j-listbox__message" [id]="hintId">{{ hint() }}</p>
       }
     </div>
   `,
@@ -246,51 +250,50 @@ export class JListboxComponent implements ControlValueAccessor {
     readonly disabled: boolean;
   }>;
 
-  @Input() id = jCreateId('j-listbox');
-  @Input() label = '';
-  @Input() options: readonly JListboxOption[] = [];
-  @Input() optionLabel = 'label';
-  @Input() optionValue = 'value';
-  @Input() optionDisabled = 'disabled';
-  @Input() error = '';
-  @Input() hint = '';
-  @Input() filterPlaceholder = 'Search';
-  @Input() emptyMessage = 'No options found';
-  @Input() styleClass = '';
-  @Input() size: JSize = 'md';
-  @Input({ transform: booleanAttribute }) invalid = false;
-  @Input({ transform: booleanAttribute }) required = false;
-  @Input({ transform: booleanAttribute }) multiple = false;
-  @Input({ transform: booleanAttribute }) filter = false;
+  readonly id = input(jCreateId('j-listbox'));
+  readonly label = input('');
+  readonly options = input<readonly JListboxOption[]>([]);
+  readonly optionLabel = input('label');
+  readonly optionValue = input('value');
+  readonly optionDisabled = input('disabled');
+  readonly error = input('');
+  readonly hint = input('');
+  readonly filterPlaceholder = input('Search');
+  readonly emptyMessage = input('No options found');
+  readonly styleClass = input('');
+  readonly size = input<JSize>('md');
+  readonly invalid = input(false, { transform: booleanAttribute });
+  readonly required = input(false, { transform: booleanAttribute });
+  readonly multiple = input(false, { transform: booleanAttribute });
+  readonly filter = input(false, { transform: booleanAttribute });
+  readonly disabled = input(false, { transform: booleanAttribute });
 
-  @Output() valueChange = new EventEmitter<unknown>();
-  @Output() selectionChange = new EventEmitter<
+  readonly valueChange = output<unknown>();
+  readonly selectionChange = output<
     JNormalizedSelectionOption | readonly JNormalizedSelectionOption[] | null
   >();
-  @Output() filterChange = new EventEmitter<string>();
+  readonly filterChange = output<string>();
 
   readonly hintId = jCreateId('j-listbox-hint');
   readonly errorId = jCreateId('j-listbox-error');
   value: unknown = null;
-  isDisabled = false;
+  readonly isDisabled = signal(false);
   filterText = '';
   activeIndex = 0;
 
   onTouched: () => void = () => undefined;
   private onChange: (value: unknown) => void = () => undefined;
 
-  @Input({ transform: booleanAttribute })
-  set disabled(value: boolean) {
-    this.isDisabled = value;
-    this.changeDetectorRef.markForCheck();
+  constructor() {
+    effect(() => this.isDisabled.set(this.disabled()));
   }
 
   get normalizedOptions(): readonly JNormalizedSelectionOption[] {
     return jNormalizeSelectionOptions(
-      this.options,
-      this.optionLabel,
-      this.optionValue,
-      this.optionDisabled,
+      this.options(),
+      this.optionLabel(),
+      this.optionValue(),
+      this.optionDisabled(),
     );
   }
 
@@ -306,27 +309,39 @@ export class JListboxComponent implements ControlValueAccessor {
   }
 
   get hasError(): boolean {
-    return this.invalid || this.error.trim().length > 0;
+    return this.invalid() || this.error().trim().length > 0;
   }
 
   get describedBy(): string | null {
-    return jAriaDescribedBy(this.hasError ? this.errorId : null, this.hint ? this.hintId : null);
+    return jAriaDescribedBy(this.hasError ? this.errorId : null, this.hint() ? this.hintId : null);
+  }
+
+  /** Stable per-index id so the active option can be referenced via aria-activedescendant. */
+  optionId(index: number): string {
+    return `${this.id()}-option-${index}`;
+  }
+
+  /** Id of the active option, exposed on the listbox container for assistive tech. */
+  get activeDescendant(): string | null {
+    return this.activeIndex >= 0 && this.visibleOptions.length
+      ? this.optionId(this.activeIndex)
+      : null;
   }
 
   get rootClasses(): string {
     return [
       'j-listbox-field',
-      `j-listbox-field--${this.size}`,
+      `j-listbox-field--${this.size()}`,
       this.hasError ? 'is-invalid' : '',
-      this.isDisabled ? 'is-disabled' : '',
-      this.styleClass,
+      this.isDisabled() ? 'is-disabled' : '',
+      this.styleClass(),
     ]
       .filter(Boolean)
       .join(' ');
   }
 
   writeValue(value: unknown): void {
-    this.value = value ?? (this.multiple ? [] : null);
+    this.value = value ?? (this.multiple() ? [] : null);
     this.changeDetectorRef.markForCheck();
   }
 
@@ -339,7 +354,7 @@ export class JListboxComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled = isDisabled;
+    this.isDisabled.set(isDisabled);
     this.changeDetectorRef.markForCheck();
   }
 
@@ -350,11 +365,11 @@ export class JListboxComponent implements ControlValueAccessor {
   }
 
   selectOption(option: JNormalizedSelectionOption): void {
-    if (this.isDisabled || option.disabled) {
+    if (this.isDisabled() || option.disabled) {
       return;
     }
 
-    if (this.multiple) {
+    if (this.multiple()) {
       const next = this.isSelected(option)
         ? this.selectedValues.filter((value) => !jSameSelectionValue(value, option.value))
         : [...this.selectedValues, option.value];
@@ -387,7 +402,9 @@ export class JListboxComponent implements ControlValueAccessor {
       this.changeDetectorRef.markForCheck();
     }
 
-    if (event.key === 'Enter') {
+    // Both Enter and Space select the active option (the container is the tab stop,
+    // so option buttons never receive the key events themselves).
+    if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       const option = this.visibleOptions[this.activeIndex];
       if (option) {
@@ -415,7 +432,7 @@ export class JListboxComponent implements ControlValueAccessor {
   }
 
   isSelected(option: JNormalizedSelectionOption): boolean {
-    return this.multiple
+    return this.multiple()
       ? this.selectedValues.some((value) => jSameSelectionValue(value, option.value))
       : jSameSelectionValue(this.value, option.value);
   }

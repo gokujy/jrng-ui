@@ -1,35 +1,35 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
-  Input,
-  Output,
   booleanAttribute,
+  input,
+  linkedSignal,
+  output,
 } from '@angular/core';
 
 @Component({
   selector: 'j-panel',
   imports: [],
   template: `
-    <section class="j-panel" [class.is-collapsed]="collapsed">
-      @if (header || toggleable) {
+    <section class="j-panel" [class.is-collapsed]="collapsedState()">
+      @if (header() || toggleable()) {
         <header class="j-panel__header">
-          @if (header) {
-            <h3>{{ header }}</h3>
+          @if (header()) {
+            <h3>{{ header() }}</h3>
           }
-          @if (toggleable) {
+          @if (toggleable()) {
             <button
               type="button"
               class="j-panel__toggle"
-              [attr.aria-expanded]="!collapsed"
+              [attr.aria-expanded]="!collapsedState()"
               (click)="toggle()"
             >
-              {{ collapsed ? 'Expand' : 'Collapse' }}
+              {{ collapsedState() ? 'Expand' : 'Collapse' }}
             </button>
           }
         </header>
       }
-      <div class="j-panel__body" [hidden]="collapsed">
+      <div class="j-panel__body" [hidden]="collapsedState()">
         <ng-content></ng-content>
       </div>
     </section>
@@ -81,13 +81,15 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JPanelComponent {
-  @Input() header = '';
-  @Input({ transform: booleanAttribute }) toggleable = false;
-  @Input({ transform: booleanAttribute }) collapsed = false;
-  @Output() collapsedChange = new EventEmitter<boolean>();
+  readonly header = input('');
+  readonly toggleable = input(false, { transform: booleanAttribute });
+  readonly collapsed = input(false, { transform: booleanAttribute });
+  readonly collapsedChange = output<boolean>();
+
+  protected readonly collapsedState = linkedSignal(() => this.collapsed());
 
   toggle(): void {
-    this.collapsed = !this.collapsed;
-    this.collapsedChange.emit(this.collapsed);
+    this.collapsedState.set(!this.collapsedState());
+    this.collapsedChange.emit(this.collapsedState());
   }
 }

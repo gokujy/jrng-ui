@@ -2,12 +2,13 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  EventEmitter,
-  Input,
-  Output,
   booleanAttribute,
+  effect,
   forwardRef,
   inject,
+  input,
+  output,
+  signal,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { JClickOutsideDirective } from 'jrng-ui/core';
@@ -29,19 +30,19 @@ import { JClickOutsideDirective } from 'jrng-ui/core';
       data-jc-section="root"
       data-jc-extend="panel preset clear"
       [attr.data-j-open]="open ? 'true' : null"
-      [attr.data-j-disabled]="disabled ? 'true' : null"
-      [attr.data-j-invalid]="invalid ? 'true' : null"
+      [attr.data-j-disabled]="disabledState() ? 'true' : null"
+      [attr.data-j-invalid]="invalid() ? 'true' : null"
       jClickOutside
       (jClickOutside)="close()"
     >
-      @if (label) {
-        <span class="j-color-picker__label" data-jc-section="label">{{ label }}</span>
+      @if (label()) {
+        <span class="j-color-picker__label" data-jc-section="label">{{ label() }}</span>
       }
       <button
         class="j-color-picker__trigger"
         data-jc-section="trigger"
         type="button"
-        [disabled]="disabled"
+        [disabled]="disabledState()"
         [attr.aria-expanded]="open"
         (click)="toggle()"
         (blur)="onTouched()"
@@ -51,7 +52,7 @@ import { JClickOutsideDirective } from 'jrng-ui/core';
           data-jc-section="swatch"
           [style.background]="value || fallbackColor"
         ></span>
-        <span>{{ value || placeholder }}</span>
+        <span>{{ value || placeholder() }}</span>
       </button>
       @if (open) {
         <div class="j-color-picker__panel" data-jc-section="panel">
@@ -60,25 +61,25 @@ import { JClickOutsideDirective } from 'jrng-ui/core';
             data-jc-section="native"
             type="color"
             [value]="value || fallbackColor"
-            [disabled]="disabled || readonly"
+            [disabled]="disabledState() || readonly()"
             (input)="handleInput($event)"
           />
-          @if (showInput) {
+          @if (showInput()) {
             <input
               class="j-color-picker__hex"
               data-jc-section="hex"
               type="text"
               [value]="value"
-              [placeholder]="placeholder"
-              [disabled]="disabled"
-              [readOnly]="readonly"
+              [placeholder]="placeholder()"
+              [disabled]="disabledState()"
+              [readOnly]="readonly()"
               (input)="handleTextInput($event)"
               (blur)="onTouched()"
             />
           }
-          @if (presetColors.length) {
+          @if (presetColors().length) {
             <div class="j-color-picker__presets" data-jc-section="presets">
-              @for (color of presetColors; track color) {
+              @for (color of presetColors(); track color) {
                 <button
                   class="j-color-picker__preset"
                   data-jc-section="preset"
@@ -86,18 +87,18 @@ import { JClickOutsideDirective } from 'jrng-ui/core';
                   [style.background]="color"
                   [attr.aria-label]="'Select ' + color"
                   [attr.data-j-selected]="value === color ? 'true' : null"
-                  [disabled]="disabled || readonly"
+                  [disabled]="disabledState() || readonly()"
                   (click)="setValue(color)"
                 ></button>
               }
             </div>
           }
-          @if (clearable) {
+          @if (clearable()) {
             <button
               class="j-color-picker__clear"
               data-jc-section="clear"
               type="button"
-              [disabled]="disabled || readonly"
+              [disabled]="disabledState() || readonly()"
               (click)="clearValue()"
             >
               Clear
@@ -105,11 +106,11 @@ import { JClickOutsideDirective } from 'jrng-ui/core';
           }
         </div>
       }
-      @if (invalid && error) {
-        <p class="j-color-picker__message j-color-picker__message--error">{{ error }}</p>
+      @if (invalid() && error()) {
+        <p class="j-color-picker__message j-color-picker__message--error">{{ error() }}</p>
       }
-      @if (hint && !(invalid && error)) {
-        <p class="j-color-picker__message">{{ hint }}</p>
+      @if (hint() && !(invalid() && error())) {
+        <p class="j-color-picker__message">{{ hint() }}</p>
       }
     </div>
   `,
@@ -234,39 +235,46 @@ import { JClickOutsideDirective } from 'jrng-ui/core';
 export class JColorPickerComponent implements ControlValueAccessor {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
-  @Input() label = '';
-  @Input() hint = '';
-  @Input() error = '';
-  @Input() placeholder = '#000000';
-  @Input() styleClass = '';
-  @Input() presetColors: readonly string[] = [
+  readonly label = input('');
+  readonly hint = input('');
+  readonly error = input('');
+  readonly placeholder = input('#000000');
+  readonly styleClass = input('');
+  readonly presetColors = input<readonly string[]>([
     '#111827',
     '#4f46e5',
     '#2563eb',
     '#16a34a',
     '#d97706',
     '#dc2626',
-  ];
-  @Input({ transform: booleanAttribute }) showInput = true;
-  @Input({ transform: booleanAttribute }) disabled = false;
-  @Input({ transform: booleanAttribute }) readonly = false;
-  @Input({ transform: booleanAttribute }) invalid = false;
-  @Input({ transform: booleanAttribute }) clearable = false;
-  @Output() valueChange = new EventEmitter<string | null>();
+  ]);
+  readonly showInput = input(true, { transform: booleanAttribute });
+  readonly disabled = input(false, { transform: booleanAttribute });
+  readonly readonly = input(false, { transform: booleanAttribute });
+  readonly invalid = input(false, { transform: booleanAttribute });
+  readonly clearable = input(false, { transform: booleanAttribute });
+  readonly valueChange = output<string | null>();
 
   value: string | null = '#4f46e5';
   open = false;
   readonly fallbackColor = '#4f46e5';
 
+  /** Writable disabled state so `setDisabledState()` (forms) works; seeded from the input. */
+  protected readonly disabledState = signal(false);
+
   private onChange: (value: string | null) => void = () => undefined;
   onTouched: () => void = () => undefined;
+
+  constructor() {
+    effect(() => this.disabledState.set(this.disabled()));
+  }
 
   get rootClasses(): string {
     return [
       'j-color-picker',
-      this.disabled ? 'is-disabled' : '',
-      this.invalid ? 'is-invalid' : '',
-      this.styleClass,
+      this.disabledState() ? 'is-disabled' : '',
+      this.invalid() ? 'is-invalid' : '',
+      this.styleClass(),
     ]
       .filter(Boolean)
       .join(' ');
@@ -286,12 +294,12 @@ export class JColorPickerComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.disabled = isDisabled;
+    this.disabledState.set(isDisabled);
     this.changeDetectorRef.markForCheck();
   }
 
   toggle(): void {
-    if (this.disabled || this.readonly) {
+    if (this.disabledState() || this.readonly()) {
       return;
     }
     this.open = !this.open;
@@ -313,7 +321,7 @@ export class JColorPickerComponent implements ControlValueAccessor {
   }
 
   setValue(value: string): void {
-    if (this.disabled || this.readonly) {
+    if (this.disabledState() || this.readonly()) {
       return;
     }
     this.value = value;
@@ -323,7 +331,7 @@ export class JColorPickerComponent implements ControlValueAccessor {
   }
 
   clearValue(): void {
-    if (this.disabled || this.readonly) {
+    if (this.disabledState() || this.readonly()) {
       return;
     }
     this.value = null;

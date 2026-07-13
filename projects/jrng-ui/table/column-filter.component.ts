@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 
 export interface JColumnFilterChange {
   readonly field: string;
@@ -10,12 +10,12 @@ export interface JColumnFilterChange {
   imports: [],
   template: `
     <label class="j-column-filter">
-      <span class="j-column-filter__label">Filter {{ label || field }}</span>
+      <span class="j-column-filter__label">Filter {{ label() || field() }}</span>
       <input
         class="j-column-filter__control"
         type="search"
-        [attr.aria-label]="'Filter ' + (label || field)"
-        [value]="stringValue"
+        [attr.aria-label]="'Filter ' + (label() || field())"
+        [value]="stringValue()"
         (input)="handleInput($event)"
       />
     </label>
@@ -57,17 +57,18 @@ export interface JColumnFilterChange {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JColumnFilterComponent {
-  @Input({ required: true }) field = '';
-  @Input() label = '';
-  @Input() value: unknown = '';
-  @Output() filterChange = new EventEmitter<JColumnFilterChange>();
+  readonly field = input.required<string>();
+  readonly label = input('');
+  readonly value = input<unknown>('');
+  readonly filterChange = output<JColumnFilterChange>();
 
-  get stringValue(): string {
-    return this.value == null ? '' : String(this.value);
-  }
+  readonly stringValue = computed<string>(() => {
+    const value = this.value();
+    return value == null ? '' : String(value);
+  });
 
   handleInput(event: Event): void {
     const input = event.target as HTMLInputElement | null;
-    this.filterChange.emit({ field: this.field, value: input?.value ?? '' });
+    this.filterChange.emit({ field: this.field(), value: input?.value ?? '' });
   }
 }

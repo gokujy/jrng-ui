@@ -4,70 +4,72 @@
   data-jc-section="root"
   data-jc-extend="panel option filter clear"
   [attr.data-j-open]="isOpen ? 'true' : null"
-  [attr.data-j-disabled]="isDisabled ? 'true' : null"
+  [attr.data-j-disabled]="isDisabled() ? 'true' : null"
   [attr.data-j-invalid]="hasError ? 'true' : null"
-  [attr.data-j-loading]="loading ? 'true' : null"
+  [attr.data-j-loading]="loading() ? 'true' : null"
   jClickOutside
   (jClickOutside)="handleOutsideClick()"
 >
-  @if (label) {
-    <label class="j-select-field__label" data-jc-section="label" [for]="id">
-      <span>{{ label }}</span>
-      @if (required) {
+  @if (label()) {
+    <label class="j-select-field__label" data-jc-section="label" [for]="id()">
+      <span>{{ label() }}</span>
+      @if (required()) {
         <span class="j-select-field__required" aria-hidden="true">*</span>
       }
     </label>
   }
 
-  <button
-    #triggerButton
-    class="j-select"
-    data-jc-section="trigger"
-    type="button"
-    role="combobox"
-    [id]="id"
-    [disabled]="isDisabled"
-    [attr.data-j-open]="isOpen ? 'true' : null"
-    [attr.data-j-disabled]="isDisabled ? 'true' : null"
-    [attr.data-j-invalid]="hasError ? 'true' : null"
-    [attr.data-j-loading]="loading ? 'true' : null"
-    [attr.aria-expanded]="isOpen"
-    [attr.aria-controls]="panelId"
-    [attr.aria-activedescendant]="activeDescendant"
-    [attr.aria-invalid]="hasError ? 'true' : null"
-    [attr.aria-describedby]="describedBy"
-    [attr.aria-required]="required ? 'true' : null"
-    (click)="toggle()"
-    (keydown)="handleKeydown($event)"
-    (blur)="handleButtonBlur()"
-  >
-    <span class="j-select__value" data-jc-section="value" [class.is-placeholder]="!displayLabel">
+  <div class="j-select__control-wrapper">
+    <button
+      #triggerButton
+      class="j-select"
+      data-jc-section="trigger"
+      type="button"
+      role="combobox"
+      [id]="id()"
+      [disabled]="isDisabled()"
+      [attr.data-j-open]="isOpen ? 'true' : null"
+      [attr.data-j-disabled]="isDisabled() ? 'true' : null"
+      [attr.data-j-invalid]="hasError ? 'true' : null"
+      [attr.data-j-loading]="loading() ? 'true' : null"
+      [attr.aria-expanded]="isOpen"
+      [attr.aria-controls]="panelId"
+      [attr.aria-activedescendant]="activeDescendant"
+      [attr.aria-invalid]="hasError ? 'true' : null"
+      [attr.aria-describedby]="describedBy"
+      [attr.aria-required]="required() ? 'true' : null"
+      (click)="toggle()"
+      (keydown)="handleKeydown($event)"
+      (blur)="handleButtonBlur()"
+    >
+      <span class="j-select__value" data-jc-section="value" [class.is-placeholder]="!displayLabel">
       @if (selectedItemTemplate && selectedOption) {
         <ng-container
           [ngTemplateOutlet]="selectedItemTemplate"
           [ngTemplateOutletContext]="itemContext(selectedOption, activeIndex)"
         ></ng-container>
       } @else {
-        {{ displayLabel || placeholder || 'Select' }}
+        {{ displayLabel || placeholder() || 'Select' }}
       }
-    </span>
-    @if (loading) {
-      <span class="j-select__loader" data-jc-section="loader" aria-hidden="true"></span>
-    }
+      </span>
+      @if (loading()) {
+        <span class="j-select__loader" data-jc-section="loader" aria-hidden="true"></span>
+      }
+      <span class="j-select__indicator" data-jc-section="indicator" aria-hidden="true"></span>
+    </button>
     @if (canClear) {
-      <span
+      <button
+        type="button"
         class="j-select__clear"
         data-jc-section="clear"
         aria-label="Clear"
-        role="button"
-        tabindex="-1"
+        [disabled]="isDisabled() || readonly()"
         (click)="clearValue($event)"
       >
         x
-      </span>
+      </button>
     }
-    <span class="j-select__indicator" data-jc-section="indicator" aria-hidden="true"></span>
-  </button>
+  </div>
 
   @if (isOpen) {
     <div
@@ -81,24 +83,24 @@
       (mousedown)="$event.stopPropagation()"
       (touchstart)="$event.stopPropagation()"
     >
-      @if (searchable || filter) {
+      @if (searchable() || filter()) {
         <input
           #filterInput
           class="j-select__filter"
           data-jc-section="filter"
           type="text"
           [id]="filterId"
-          [attr.aria-label]="filterPlaceholder || 'Filter options'"
-          [placeholder]="filterPlaceholder"
+          [attr.aria-label]="filterPlaceholder() || 'Filter options'"
+          [placeholder]="filterPlaceholder()"
           [value]="filterText"
           (input)="handleFilterInput($event)"
           (keydown)="handleKeydown($event)"
         />
       }
-      @if (!loading && visibleOptions.length === 0) {
-        <div class="j-select__empty" data-jc-section="empty">{{ emptyMessage }}</div>
+      @if (!loading() && visibleOptions.length === 0) {
+        <div class="j-select__empty" data-jc-section="empty">{{ emptyMessage() }}</div>
       }
-      @if (loading) {
+      @if (loading()) {
         <div class="j-select__empty" data-jc-section="loading" data-j-loading="true">
           Loading...
         </div>
@@ -133,8 +135,8 @@
       @if (useVirtual) {
         <j-virtual-scroller
           [items]="visibleOptions"
-          [itemSize]="virtualScrollItemSize"
-          [height]="scrollHeight"
+          [itemSize]="virtualScrollItemSize()"
+          [height]="scrollHeight()"
         >
           <ng-template #jVirtualScrollerItem let-option let-index="index">
             <ng-container
@@ -160,16 +162,16 @@
     </div>
   }
 
-  @if (hasError && error) {
+  @if (hasError && error()) {
     <p
       class="j-select-field__message j-select-field__message--error"
       data-jc-section="message"
       [id]="errorId"
     >
-      {{ error }}
+      {{ error() }}
     </p>
   }
-  @if (hint && !hasError) {
-    <p class="j-select-field__message" data-jc-section="message" [id]="hintId">{{ hint }}</p>
+  @if (hint() && !hasError) {
+    <p class="j-select-field__message" data-jc-section="message" [id]="hintId">{{ hint() }}</p>
   }
 </div>

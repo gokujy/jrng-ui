@@ -1,11 +1,12 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
-  Input,
-  Output,
   booleanAttribute,
+  effect,
+  input,
   numberAttribute,
+  output,
+  signal,
 } from '@angular/core';
 
 export interface JStepItem {
@@ -22,22 +23,22 @@ export interface JStepItem {
   template: `
     <nav
       class="j-stepper"
-      [class.j-stepper--vertical]="orientation === 'vertical'"
-      [class.j-stepper--horizontal]="orientation === 'horizontal'"
+      [class.j-stepper--vertical]="orientation() === 'vertical'"
+      [class.j-stepper--horizontal]="orientation() === 'horizontal'"
       data-jc-name="stepper"
       data-jc-section="root"
       aria-label="Progress"
     >
-      @for (item of items; track item.label || $index; let index = $index) {
+      @for (item of items(); track item.label || $index; let index = $index) {
         <button
           type="button"
           class="j-stepper__step"
-          [class.is-active]="index === activeIndex"
+          [class.is-active]="index === activeIndexState()"
           [class.is-completed]="isCompleted(item, index)"
           [class.is-error]="item.error"
           [disabled]="isDisabled(item, index)"
-          [attr.aria-current]="index === activeIndex ? 'step' : null"
-          [attr.data-j-active]="index === activeIndex ? 'true' : null"
+          [attr.aria-current]="index === activeIndexState() ? 'step' : null"
+          [attr.data-j-active]="index === activeIndexState() ? 'true' : null"
           [attr.data-j-disabled]="isDisabled(item, index) ? 'true' : null"
           [attr.data-j-invalid]="item.error ? 'true' : null"
           (click)="activate(index)"
@@ -136,28 +137,35 @@ export interface JStepItem {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JStepperComponent {
-  @Input() items: readonly JStepItem[] = [];
-  @Input({ transform: numberAttribute }) activeIndex = 0;
-  @Input({ transform: booleanAttribute }) linear = false;
-  @Input() orientation: 'horizontal' | 'vertical' = 'horizontal';
-  @Output() activeIndexChange = new EventEmitter<number>();
+  readonly items = input<readonly JStepItem[]>([]);
+  readonly activeIndex = input(0, { transform: numberAttribute });
+  readonly linear = input(false, { transform: booleanAttribute });
+  readonly orientation = input<'horizontal' | 'vertical'>('horizontal');
+  readonly activeIndexChange = output<number>();
+
+  /** Internal, mutable mirror of the `activeIndex` input (no two-way binding exists). */
+  protected readonly activeIndexState = signal(0);
+
+  constructor() {
+    effect(() => this.activeIndexState.set(this.activeIndex()));
+  }
 
   activate(index: number): void {
-    const item = this.items[index];
+    const item = this.items()[index];
 
-    if (!item || this.isDisabled(item, index) || index === this.activeIndex) {
+    if (!item || this.isDisabled(item, index) || index === this.activeIndexState()) {
       return;
     }
 
-    this.activeIndex = index;
+    this.activeIndexState.set(index);
     this.activeIndexChange.emit(index);
   }
 
   isCompleted(item: JStepItem, index: number): boolean {
-    return item.completed === true || index < this.activeIndex;
+    return item.completed === true || index < this.activeIndexState();
   }
 
   isDisabled(item: JStepItem, index: number): boolean {
-    return item.disabled === true || (this.linear && index > this.activeIndex + 1);
+    return item.disabled === true || (this.linear() && index > this.activeIndexState() + 1);
   }
 }

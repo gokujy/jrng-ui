@@ -1,11 +1,13 @@
-import { NgTemplateOutlet, isPlatformBrowser } from '@angular/common';
+import { DOCUMENT, NgTemplateOutlet, isPlatformBrowser } from '@angular/common';
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   ElementRef,
   PLATFORM_ID,
   TemplateRef,
   booleanAttribute,
+  computed,
   contentChild,
   forwardRef,
   inject,
@@ -17,6 +19,7 @@ import {
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { jCreateId } from 'jrng-ui/core';
 import { jIsSafeEditorUrl, jSanitizeEditorHtml } from './editor-sanitizer';
+import { JEditorCommandService } from './editor-command.service';
 
 export type JEditorFormat = 'html' | 'text';
 export type JEditorBlock = 'p' | 'h1' | 'h2' | 'h3' | 'blockquote' | 'pre';
@@ -208,6 +211,8 @@ export type JEditorBlock = 'p' | 'h1' | 'h2' | 'h3' | 'blockquote' | 'pre';
           [id]="editorId"
           [attr.aria-label]="ariaLabel() || label() || 'Editor'"
           [attr.aria-readonly]="readonly() || null"
+          [attr.aria-disabled]="isDisabled() || null"
+          [attr.contenteditable]="canInteract() ? 'true' : 'false'"
           [attr.data-placeholder]="placeholder()"
           [class.is-empty]="isEmpty()"
           (input)="handleInput()"
@@ -298,8 +303,10 @@ export type JEditorBlock = 'p' | 'h1' | 'h2' | 'h3' | 'blockquote' | 'pre';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class JEditorComponent implements ControlValueAccessor {
+export class JEditorComponent implements ControlValueAccessor, AfterViewInit {
+  private readonly documentRef = inject(DOCUMENT);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  private readonly commands = inject(JEditorCommandService);
   private updatingView = false;
   private savedRange: Range | null = null;
 
@@ -321,17 +328,22 @@ export class JEditorComponent implements ControlValueAccessor {
   });
   readonly value = signal('');
   readonly formDisabled = signal(false);
+  readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
   readonly isEmpty = signal(true);
   readonly editorId = jCreateId('j-editor');
 
   private onChange: (value: string) => void = () => undefined;
   private onTouched: () => void = () => undefined;
 
-  isDisabled(): boolean {
-    return this.disabled() || this.formDisabled();
+  ngAfterViewInit(): void {
+    this.syncView();
   }
 
-  writeValue(value: string | null): void {
+  canInteract(): boolean {
+    return this.isBrowser && !this.readonly() && !this.isDisabled();
+  }
+
+  writeValue(value: string | null | undefined): void {
     const next = value ?? '';
     this.value.set(this.outputFormat() === 'html' ? this.sanitize(next) : next);
     this.syncView();
@@ -347,10 +359,7 @@ export class JEditorComponent implements ControlValueAccessor {
 
   setDisabledState(isDisabled: boolean): void {
     this.formDisabled.set(isDisabled);
-    const editable = this.editable()?.nativeElement;
-    if (editable) {
-      editable.setAttribute('contenteditable', String(!isDisabled && !this.readonly()));
-    }
+    this.syncView();
   }
 
   handleInput(): void {
@@ -377,7 +386,7 @@ export class JEditorComponent implements ControlValueAccessor {
       return;
     }
     this.restoreSelection();
-    this.documentRef()?.execCommand(command, false, value);
+    this.commands.execute(command, value);
     this.handleInput();
     this.rememberSelection();
   }
@@ -390,7 +399,7 @@ export class JEditorComponent implements ControlValueAccessor {
 
   rememberSelection(): void {
     const editable = this.editable()?.nativeElement;
-    const selection = this.documentRef()?.getSelection();
+    const selection = this.documentRef.getSelection?.();
     if (!editable || !selection?.rangeCount) return;
     const range = selection.getRangeAt(0);
     if (editable.contains(range.commonAncestorContainer)) {
@@ -434,12 +443,12 @@ export class JEditorComponent implements ControlValueAccessor {
     if (!html && !text) return;
     event.preventDefault();
     const safe = html ? this.sanitize(html) : this.escapeText(text);
-    this.documentRef()?.execCommand('insertHTML', false, safe);
+    this.commands.execute('insertHTML', safe);
     this.handleInput();
   }
 
   private canEdit(): boolean {
-    return this.isBrowser && !this.readonly() && !this.isDisabled();
+    return this.canInteract();
   }
 
   private focusEditable(): void {
@@ -449,50 +458,35 @@ export class JEditorComponent implements ControlValueAccessor {
   private restoreSelection(): void {
     this.focusEditable();
     if (!this.savedRange) return;
-    const selection = this.documentRef()?.getSelection();
+    const selection = this.documentRef.getSelection?.();
     selection?.removeAllRanges();
     selection?.addRange(this.savedRange);
   }
 
   private syncView(): void {
-    queueMicrotask(() => {
-      const editable = this.editable()?.nativeElement;
-      if (!editable) {
-        return;
-      }
-      this.updatingView = true;
-      editable.innerHTML =
-        this.outputFormat() === 'html'
-          ? this.sanitize(this.value())
-          : this.escapeText(this.value());
-      editable.setAttribute('contenteditable', String(!this.isDisabled() && !this.readonly()));
-      this.isEmpty.set(!editable.textContent?.trim());
-      this.updatingView = false;
-    });
-  }
-
-  private documentRef(): Document | null {
-    return this.editable()?.nativeElement.ownerDocument ?? null;
+    const editable = this.editable()?.nativeElement;
+    if (!editable) return;
+    this.updatingView = true;
+    editable.innerHTML =
+      this.outputFormat() === 'html' ? this.sanitize(this.value()) : this.escapeText(this.value());
+    this.isEmpty.set(!editable.textContent?.trim());
+    this.updatingView = false;
   }
 
   private prompt(message: string): string {
-    return this.documentRef()?.defaultView?.prompt(message) ?? '';
+    return this.isBrowser ? (this.documentRef.defaultView?.prompt(message) ?? '') : '';
   }
 
   private sanitize(value: string): string {
-    const documentRef = this.documentRef();
-    return documentRef ? jSanitizeEditorHtml(value, documentRef) : '';
+    return jSanitizeEditorHtml(value, this.documentRef);
   }
 
   private isSafeUrl(value: string): boolean {
-    const documentRef = this.documentRef();
-    return !!documentRef && jIsSafeEditorUrl(value, documentRef);
+    return jIsSafeEditorUrl(value, this.documentRef);
   }
 
   private escapeText(value: string): string {
-    const documentRef = this.documentRef();
-    if (!documentRef) return '';
-    const element = documentRef.createElement('div');
+    const element = this.documentRef.createElement('div');
     element.textContent = value;
     return element.innerHTML.replaceAll('\n', '<br>');
   }

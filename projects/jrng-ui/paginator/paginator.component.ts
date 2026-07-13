@@ -1,11 +1,13 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
-  Input,
-  Output,
   booleanAttribute,
+  effect,
+  input,
   numberAttribute,
+  output,
+  signal,
+  untracked,
 } from '@angular/core';
 
 export interface JPaginatorPageChange {
@@ -25,7 +27,7 @@ export interface JPaginatorChange {
   imports: [],
   template: `
     <nav class="j-paginator" aria-label="Pagination">
-      @if (showCurrentPageReport) {
+      @if (showCurrentPageReport()) {
         <span class="j-paginator__report">{{ currentReport }}</span>
       }
 
@@ -81,11 +83,11 @@ export interface JPaginatorChange {
         </button>
       </div>
 
-      @if (rowsPerPageOptions.length) {
+      @if (rowsPerPageOptions().length) {
         <label class="j-paginator__rows">
           <span>Rows</span>
-          <select [value]="rows" (change)="setRows($event)">
-            @for (option of rowsPerPageOptions; track option) {
+          <select [value]="rows()" (change)="setRows($event)">
+            @for (option of rowsPerPageOptions(); track option) {
               <option [value]="option">{{ option }}</option>
             }
           </select>
@@ -161,36 +163,53 @@ export interface JPaginatorChange {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JPaginatorComponent {
-  @Input({ transform: numberAttribute }) first = 0;
-  @Input({ transform: numberAttribute }) rows = 10;
-  @Input({ transform: numberAttribute }) totalRecords = 0;
-  @Input() rowsPerPageOptions: readonly number[] = [];
-  @Input({ transform: numberAttribute }) pageLinkSize = 5;
-  @Input({ transform: booleanAttribute }) showCurrentPageReport = false;
-  @Input() currentPageReportTemplate = 'Showing {first} to {last} of {totalRecords}';
+  /** `first`/`rows` are inputs seeded once, then owned as internal mutable state. */
+  // Public (not private/protected): these are bound as `first`/`rows` from
+  // external templates, so Angular requires them to be publicly accessible.
+  readonly firstInput = input(0, { alias: 'first', transform: numberAttribute });
+  readonly rowsInput = input(10, { alias: 'rows', transform: numberAttribute });
+  readonly totalRecords = input(0, { transform: numberAttribute });
+  readonly rowsPerPageOptions = input<readonly number[]>([]);
+  readonly pageLinkSize = input(5, { transform: numberAttribute });
+  readonly showCurrentPageReport = input(false, { transform: booleanAttribute });
+  readonly currentPageReportTemplate = input('Showing {first} to {last} of {totalRecords}');
 
-  @Output() pageChange = new EventEmitter<JPaginatorPageChange>();
+  /** `page`/`pageSize` are convenience inputs that map onto `first`/`rows`. */
+  readonly pageInput = input<number | undefined>(undefined, { alias: 'page' });
+  readonly pageSizeInput = input<number | undefined>(undefined, { alias: 'pageSize' });
 
-  @Input()
-  set page(value: number) {
-    this.first = Math.max(0, ((Number(value) || 1) - 1) * this.rows);
+  readonly pageChange = output<JPaginatorPageChange>();
+
+  protected readonly first = signal(0);
+  protected readonly rows = signal(10);
+
+  constructor() {
+    effect(() => this.first.set(this.firstInput()));
+    effect(() => this.rows.set(this.rowsInput()));
+    effect(() => {
+      const value = this.pageInput();
+      if (value !== undefined) {
+        this.first.set(untracked(() => Math.max(0, ((Number(value) || 1) - 1) * this.rows())));
+      }
+    });
+    effect(() => {
+      const value = this.pageSizeInput();
+      if (value !== undefined) {
+        this.rows.set(Math.max(1, Number(value) || 10));
+      }
+    });
   }
 
   get page(): number {
     return this.currentPage;
   }
 
-  @Input()
-  set pageSize(value: number) {
-    this.rows = Math.max(1, Number(value) || 10);
-  }
-
   get pageSize(): number {
-    return this.rows;
+    return this.rows();
   }
 
   get pageCount(): number {
-    return Math.max(1, Math.ceil(this.totalRecords / this.normalizedRows));
+    return Math.max(1, Math.ceil(this.totalRecords() / this.normalizedRows));
   }
 
   get currentPage(): number {
@@ -198,7 +217,7 @@ export class JPaginatorComponent {
   }
 
   get pageLinks(): readonly number[] {
-    const size = Math.max(1, this.pageLinkSize);
+    const size = Math.max(1, this.pageLinkSize());
     const half = Math.floor(size / 2);
     const start = Math.max(1, Math.min(this.currentPage - half, this.pageCount - size + 1));
     const end = Math.min(this.pageCount, start + size - 1);
@@ -206,23 +225,23 @@ export class JPaginatorComponent {
   }
 
   get currentReport(): string {
-    const first = this.totalRecords === 0 ? 0 : this.normalizedFirst + 1;
-    const last = Math.min(this.normalizedFirst + this.normalizedRows, this.totalRecords);
-    return this.currentPageReportTemplate
+    const first = this.totalRecords() === 0 ? 0 : this.normalizedFirst + 1;
+    const last = Math.min(this.normalizedFirst + this.normalizedRows, this.totalRecords());
+    return this.currentPageReportTemplate()
       .replace('{first}', String(first))
       .replace('{last}', String(last))
       .replace('{rows}', String(this.normalizedRows))
-      .replace('{totalRecords}', String(this.totalRecords))
+      .replace('{totalRecords}', String(this.totalRecords()))
       .replace('{currentPage}', String(this.currentPage))
       .replace('{totalPages}', String(this.pageCount));
   }
 
   private get normalizedRows(): number {
-    return Math.max(1, this.rows);
+    return Math.max(1, this.rows());
   }
 
   private get normalizedFirst(): number {
-    return Math.max(0, Math.min(this.first, Math.max(0, this.totalRecords - 1)));
+    return Math.max(0, Math.min(this.first(), Math.max(0, this.totalRecords() - 1)));
   }
 
   setPage(page: number): void {
@@ -237,13 +256,13 @@ export class JPaginatorComponent {
   }
 
   private emitChange(first: number, rows: number): void {
-    this.first = first;
-    this.rows = rows;
+    this.first.set(first);
+    this.rows.set(rows);
     this.pageChange.emit({
       first,
       rows,
       page: Math.floor(first / rows) + 1,
-      pageCount: Math.max(1, Math.ceil(this.totalRecords / rows)),
+      pageCount: Math.max(1, Math.ceil(this.totalRecords() / rows)),
     });
   }
 }

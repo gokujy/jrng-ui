@@ -200,8 +200,12 @@ function verifyForbiddenContent(files) {
 }
 
 function verifySizeBudgets(report) {
-  const maximumPackedBytes = 450_000;
-  const maximumUnpackedBytes = 2_250_000;
+  // v0.0.9 ships 126 independently tree-shakable entrypoints. The declaration
+  // and FESM pairs are legitimate runtime package content; these limits retain
+  // roughly an 8% regression margin over the measured release candidate.
+  const maximumPackedBytes = 400_000;
+  const maximumUnpackedBytes = 2_650_000;
+  const maximumFileCount = 300;
   const maximumFileBytes = 256_000;
 
   if (report.size > maximumPackedBytes) {
@@ -209,6 +213,9 @@ function verifySizeBudgets(report) {
   }
   if (report.unpackedSize > maximumUnpackedBytes) {
     fail(`Unpacked size ${report.unpackedSize} exceeds ${maximumUnpackedBytes} bytes.`);
+  }
+  if (report.entryCount > maximumFileCount) {
+    fail(`File count ${report.entryCount} exceeds ${maximumFileCount}.`);
   }
   for (const file of report.files) {
     if (file.size > maximumFileBytes) {
@@ -285,6 +292,12 @@ function finish(report) {
     console.log(
       `Package verified: ${report.entryCount} files, ${report.size} bytes packed, ${report.unpackedSize} bytes unpacked.`,
     );
+    if (process.argv.includes('--report')) {
+      console.log('Largest package files:');
+      for (const file of [...report.files].sort((a, b) => b.size - a.size).slice(0, 10)) {
+        console.log(`- ${file.path}: ${file.size} bytes`);
+      }
+    }
   }
 }
 

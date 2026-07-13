@@ -40,10 +40,7 @@ import { MockAdminApiService } from '../services/mock-admin-api.service';
         <j-table [value]="api.users()" [columns]="columns" />
       </article>
     } @else {
-      <j-empty-state
-        title="No users"
-        description="Create the first user to begin managing access."
-      >
+      <j-empty-state title="No users" description="Create the first user to begin managing access.">
         <a jEmptyStateAction routerLink="/users/new"><j-button label="Create user" /></a>
       </j-empty-state>
     }

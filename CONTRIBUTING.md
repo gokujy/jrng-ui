@@ -6,7 +6,7 @@ Thanks for helping improve JRNG UI. Contributions should solve reusable Angular 
 
 Requirements:
 
-- Node.js 22.12 or another version allowed by `engines`;
+- Node.js 22.12 (the `.nvmrc` default), or Node 20.19+/24+ as allowed by `engines`;
 - npm 11;
 - Angular 21.2.x for the verified compatibility workflow.
 
@@ -29,6 +29,9 @@ npm run build:docs:app
 | `npm run test`                           | Run library and documentation tests                            |
 | `npm run verify:registry`                | Verify every public item is registered                         |
 | `npm run verify:package`                 | Inspect package metadata, contents, privacy, exports, and size |
+| `npm run verify:consumer`                | Install the tarball in a clean Angular SSR consumer            |
+| `npm run verify:ssr`                     | Prerender representative controls and optional entrypoints     |
+| `npm run report:package-size`            | Report package budgets and largest contributors                |
 | `npm run pack:dry-run`                   | Produce npm's package-content report without publishing        |
 | `npm run release:check -- --allow-dirty` | Run full local release validation without publishing           |
 
@@ -53,3 +56,5 @@ Add focused tests for behavior changes. Public API changes require documentation
 Keep pull requests focused. Complete the pull request template, include commands run, and call out public API, accessibility, SSR, zoneless, responsive, and migration impact.
 
 Do not commit `dist`, coverage, test output, temporary files, private documents, internal prompts, or development instruction files into package assets.
+
+GitHub Actions runs the same required quality, test, build, package-consumer, and SSR gates on pull requests, pushes to `main`, and manual dispatches. Publishing is deliberately excluded from CI.

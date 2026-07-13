@@ -3,11 +3,16 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  EventEmitter,
+  computed,
+  effect,
+  ElementRef,
   forwardRef,
   inject,
-  Input,
-  Output,
+  input,
+  output,
+  QueryList,
+  signal,
+  ViewChildren,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { jAriaDescribedBy } from 'jrng-ui/core';
@@ -30,12 +35,12 @@ export type JRadioGroupOption = JSelectionOptionSource;
     <fieldset
       [class]="rootClasses"
       [attr.aria-describedby]="describedBy"
-      [attr.aria-invalid]="hasError ? 'true' : null"
+      [attr.aria-invalid]="hasError() ? 'true' : null"
     >
-      @if (label) {
+      @if (label()) {
         <legend class="j-radio-group__legend">
-          <span>{{ label }}</span>
-          @if (required) {
+          <span>{{ label() }}</span>
+          @if (required()) {
             <span class="j-radio-group__required" aria-hidden="true">*</span>
           }
         </legend>
@@ -43,16 +48,17 @@ export type JRadioGroupOption = JSelectionOptionSource;
       <div
         class="j-radio-group__options"
         role="radiogroup"
-        [attr.aria-required]="required ? 'true' : null"
+        [attr.aria-required]="required() ? 'true' : null"
       >
-        @for (option of normalizedOptions; track option.value; let i = $index) {
+        @for (option of normalizedOptions(); track option.value; let i = $index) {
           <label class="j-radio-group__option">
             <input
+              #radio
               class="j-radio-group__input"
               type="radio"
-              [name]="name"
+              [name]="name()"
               [checked]="isSelected(option)"
-              [disabled]="isDisabled || option.disabled"
+              [disabled]="isDisabled() || option.disabled"
               [attr.tabindex]="i === activeIndex ? 0 : -1"
               (change)="selectOption(option, i)"
               (keydown)="handleKeydown($event, i)"
@@ -63,13 +69,13 @@ export type JRadioGroupOption = JSelectionOptionSource;
           </label>
         }
       </div>
-      @if (hasError && error) {
+      @if (hasError() && error()) {
         <p class="j-radio-group__message j-radio-group__message--error" [id]="errorId">
-          {{ error }}
+          {{ error() }}
         </p>
       }
-      @if (hint && !hasError) {
-        <p class="j-radio-group__message" [id]="hintId">{{ hint }}</p>
+      @if (hint() && !hasError()) {
+        <p class="j-radio-group__message" [id]="hintId">{{ hint() }}</p>
       }
     </fieldset>
   `,
@@ -163,58 +169,61 @@ export type JRadioGroupOption = JSelectionOptionSource;
 export class JRadioGroupComponent implements ControlValueAccessor {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
-  @Input() name = jCreateId('j-radio-group');
-  @Input() label = '';
-  @Input() options: readonly JRadioGroupOption[] = [];
-  @Input() optionLabel = 'label';
-  @Input() optionValue = 'value';
-  @Input() hint = '';
-  @Input() error = '';
-  @Input() styleClass = '';
-  @Input() size: JSize = 'md';
-  @Input() direction: JRadioGroupDirection = 'vertical';
-  @Input({ transform: booleanAttribute }) required = false;
-  @Input({ transform: booleanAttribute }) invalid = false;
-  @Input({ transform: booleanAttribute }) readonly = false;
+  @ViewChildren('radio') private radios?: QueryList<ElementRef<HTMLInputElement>>;
 
-  @Output() valueChange = new EventEmitter<unknown>();
-  @Output() selectionChange = new EventEmitter<JNormalizedSelectionOption | null>();
+  readonly name = input(jCreateId('j-radio-group'));
+  readonly label = input('');
+  readonly options = input<readonly JRadioGroupOption[]>([]);
+  readonly optionLabel = input('label');
+  readonly optionValue = input('value');
+  readonly hint = input('');
+  readonly error = input('');
+  readonly styleClass = input('');
+  readonly size = input<JSize>('md');
+  readonly direction = input<JRadioGroupDirection>('vertical');
+  readonly required = input(false, { transform: booleanAttribute });
+  readonly invalid = input(false, { transform: booleanAttribute });
+  readonly readonly = input(false, { transform: booleanAttribute });
+  readonly disabled = input(false, { transform: booleanAttribute });
+
+  readonly valueChange = output<unknown>();
+  readonly selectionChange = output<JNormalizedSelectionOption | null>();
 
   readonly hintId = jCreateId('j-radio-group-hint');
   readonly errorId = jCreateId('j-radio-group-error');
   value: unknown = null;
-  isDisabled = false;
+  // Writable so `setDisabledState` (CVA) can update it; seeded from the input.
+  readonly isDisabled = signal(false);
   activeIndex = 0;
 
   onTouched: () => void = () => undefined;
   private onChange: (value: unknown) => void = () => undefined;
 
-  @Input({ transform: booleanAttribute })
-  set disabled(value: boolean) {
-    this.isDisabled = value;
-    this.changeDetectorRef.markForCheck();
+  constructor() {
+    effect(() => this.isDisabled.set(this.disabled()));
   }
 
-  get normalizedOptions(): readonly JNormalizedSelectionOption[] {
-    return jNormalizeSelectionOptions(this.options, this.optionLabel, this.optionValue);
-  }
+  readonly normalizedOptions = computed<readonly JNormalizedSelectionOption[]>(() =>
+    jNormalizeSelectionOptions(this.options(), this.optionLabel(), this.optionValue()),
+  );
 
-  get hasError(): boolean {
-    return this.invalid || this.error.trim().length > 0;
-  }
+  readonly hasError = computed(() => this.invalid() || this.error().trim().length > 0);
 
   get describedBy(): string | null {
-    return jAriaDescribedBy(this.hasError ? this.errorId : null, this.hint ? this.hintId : null);
+    return jAriaDescribedBy(
+      this.hasError() ? this.errorId : null,
+      this.hint() ? this.hintId : null,
+    );
   }
 
   get rootClasses(): string {
     return [
       'j-radio-group',
-      `j-radio-group--${this.size}`,
-      `j-radio-group--${this.direction}`,
-      this.hasError ? 'is-invalid' : '',
-      this.isDisabled ? 'is-disabled' : '',
-      this.styleClass,
+      `j-radio-group--${this.size()}`,
+      `j-radio-group--${this.direction()}`,
+      this.hasError() ? 'is-invalid' : '',
+      this.isDisabled() ? 'is-disabled' : '',
+      this.styleClass(),
     ]
       .filter(Boolean)
       .join(' ');
@@ -222,7 +231,7 @@ export class JRadioGroupComponent implements ControlValueAccessor {
 
   writeValue(value: unknown): void {
     this.value = value ?? null;
-    const selectedIndex = this.normalizedOptions.findIndex((option) => this.isSelected(option));
+    const selectedIndex = this.normalizedOptions().findIndex((option) => this.isSelected(option));
     this.activeIndex = selectedIndex >= 0 ? selectedIndex : 0;
     this.changeDetectorRef.markForCheck();
   }
@@ -236,12 +245,11 @@ export class JRadioGroupComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled = isDisabled;
-    this.changeDetectorRef.markForCheck();
+    this.isDisabled.set(isDisabled);
   }
 
   selectOption(option: JNormalizedSelectionOption, index: number): void {
-    if (this.isDisabled || this.readonly || option.disabled) {
+    if (this.isDisabled() || this.readonly() || option.disabled) {
       return;
     }
     this.value = option.value;
@@ -258,9 +266,12 @@ export class JRadioGroupComponent implements ControlValueAccessor {
     event.preventDefault();
     const direction = event.key === 'ArrowDown' || event.key === 'ArrowRight' ? 1 : -1;
     const next = this.findNextEnabled(index, direction);
-    const option = this.normalizedOptions[next];
+    const option = this.normalizedOptions()[next];
     if (option) {
       this.selectOption(option, next);
+      // Move DOM focus to the newly active radio so the roving tabindex and the
+      // focused element stay in sync and further arrow presses advance.
+      this.radios?.get(next)?.nativeElement.focus();
     }
   }
 
@@ -269,7 +280,7 @@ export class JRadioGroupComponent implements ControlValueAccessor {
   }
 
   private findNextEnabled(startIndex: number, direction: 1 | -1): number {
-    const options = this.normalizedOptions;
+    const options = this.normalizedOptions();
     let next = startIndex;
     let attempts = 0;
     while (attempts < options.length) {

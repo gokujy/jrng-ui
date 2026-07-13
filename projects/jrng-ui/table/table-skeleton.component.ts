@@ -1,11 +1,17 @@
-import { ChangeDetectionStrategy, Component, Input, numberAttribute } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+  numberAttribute,
+} from '@angular/core';
 
 @Component({
   selector: 'j-table-skeleton',
   imports: [],
   template: `
     <div class="j-table-skeleton" aria-hidden="true">
-      @for (item of placeholders; track item) {
+      @for (item of placeholders(); track item) {
         <span class="j-table-skeleton__cell" [style.width.%]="item"></span>
       }
     </div>
@@ -45,13 +51,12 @@ import { ChangeDetectionStrategy, Component, Input, numberAttribute } from '@ang
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JTableSkeletonComponent {
-  @Input({ transform: numberAttribute }) rows = 5;
-  @Input({ transform: numberAttribute }) columns = 4;
+  readonly rows = input(5, { transform: numberAttribute });
+  readonly columns = input(4, { transform: numberAttribute });
 
-  get placeholders(): readonly number[] {
-    const count = Math.max(1, this.rows * this.columns);
-    return Array.from({ length: count }, (_, index) =>
-      index % this.columns === this.columns - 1 ? 55 : 80,
-    );
-  }
+  readonly placeholders = computed<readonly number[]>(() => {
+    const columns = this.columns();
+    const count = Math.max(1, this.rows() * columns);
+    return Array.from({ length: count }, (_, index) => (index % columns === columns - 1 ? 55 : 80));
+  });
 }

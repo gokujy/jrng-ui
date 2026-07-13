@@ -231,22 +231,31 @@ export class JChartComponent {
 
   private mergedOptions(): JChartRecord {
     const userOptions = this.options() ?? {};
+    const userPlugins = isRecord(userOptions['plugins']) ? userOptions['plugins'] : {};
+    const userLegend = isRecord(userPlugins['legend']) ? userPlugins['legend'] : {};
+    const userTooltip = isRecord(userPlugins['tooltip']) ? userPlugins['tooltip'] : {};
+    // Spread user options FIRST, then apply the built-in plugin defaults and
+    // event handlers so they win. The plugins block is deep-merged (per-plugin)
+    // so user plugin options extend the legend/tooltip defaults instead of
+    // wiping them out, and onClick/onHover are never clobbered.
     return {
       responsive: this.responsive(),
       maintainAspectRatio: this.height() === 0,
+      ...userOptions,
       plugins: {
+        ...userPlugins,
         legend: {
           display: true,
           labels: {
             color: 'var(--j-color-muted-foreground)',
           },
+          ...userLegend,
         },
         tooltip: {
           enabled: true,
+          ...userTooltip,
         },
-        ...(isRecord(userOptions['plugins']) ? userOptions['plugins'] : {}),
       },
-      ...userOptions,
       onClick: (event: Event, elements: readonly unknown[], chart: unknown) => {
         this.chartClick.emit({ nativeEvent: event, elements, chart });
       },

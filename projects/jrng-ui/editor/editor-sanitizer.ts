@@ -47,21 +47,20 @@ export function jIsSafeEditorUrl(value: string, documentRef: Document): boolean 
 }
 
 function sanitizeChildren(parent: ParentNode, documentRef: Document): void {
-  const ElementCtor = documentRef.defaultView?.Element;
-  if (!ElementCtor) return;
   for (const child of [...parent.childNodes]) {
-    if (!(child instanceof ElementCtor)) continue;
-    if (DROP_CONTENT.has(child.tagName)) {
+    if (child.nodeType !== 1) continue;
+    const element = child as Element;
+    if (DROP_CONTENT.has(element.tagName)) {
       child.remove();
       continue;
     }
-    if (!ALLOWED_ELEMENTS.has(child.tagName)) {
-      sanitizeChildren(child, documentRef);
-      child.replaceWith(...child.childNodes);
+    if (!ALLOWED_ELEMENTS.has(element.tagName)) {
+      sanitizeChildren(element, documentRef);
+      element.replaceWith(...element.childNodes);
       continue;
     }
-    sanitizeAttributes(child, documentRef);
-    sanitizeChildren(child, documentRef);
+    sanitizeAttributes(element, documentRef);
+    sanitizeChildren(element, documentRef);
   }
 }
 

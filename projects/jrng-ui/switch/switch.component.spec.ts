@@ -1,9 +1,10 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { JSwitchComponent } from './switch.component';
 
 describe('JSwitchComponent', () => {
   let component: JSwitchComponent;
+  let fixture: ComponentFixture<JSwitchComponent>;
 
   function toggle(checked: boolean): void {
     const target = { checked } as HTMLInputElement;
@@ -12,7 +13,8 @@ describe('JSwitchComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({ imports: [JSwitchComponent] });
-    component = TestBed.createComponent(JSwitchComponent).componentInstance;
+    fixture = TestBed.createComponent(JSwitchComponent);
+    component = fixture.componentInstance;
   });
 
   it('reflects the on state when writeValue matches trueValue', () => {
@@ -30,15 +32,15 @@ describe('JSwitchComponent', () => {
   });
 
   it('honors custom trueValue/falseValue in writeValue', () => {
-    component.trueValue = 'yes';
-    component.falseValue = 'no';
+    fixture.componentRef.setInput('trueValue', 'yes');
+    fixture.componentRef.setInput('falseValue', 'no');
     component.writeValue('yes');
     expect(component.checked).toBe(true);
   });
 
   it('emits valueChange with trueValue/falseValue when toggled', () => {
-    component.trueValue = 'on';
-    component.falseValue = 'off';
+    fixture.componentRef.setInput('trueValue', 'on');
+    fixture.componentRef.setInput('falseValue', 'off');
     const emitted: unknown[] = [];
     component.valueChange.subscribe((value) => emitted.push(value));
 
@@ -54,7 +56,7 @@ describe('JSwitchComponent', () => {
   });
 
   it('ignores changes while readonly', () => {
-    component.readonly = true;
+    fixture.componentRef.setInput('readonly', true);
     const emitted: unknown[] = [];
     component.valueChange.subscribe((value) => emitted.push(value));
 

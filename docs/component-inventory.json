@@ -1,6 +1,6 @@
 {
   "inventoryVersion": 1,
-  "targetRelease": "0.0.8",
+  "targetRelease": "0.0.9",
   "generatedOn": "2026-07-10",
   "authority": {
     "componentSurface": "Public declarations produced by the library build",

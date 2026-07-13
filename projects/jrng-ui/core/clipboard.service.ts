@@ -63,7 +63,8 @@ export class JClipboardService {
       copied = this.documentRef.execCommand('copy');
     } finally {
       body.removeChild(textarea);
-      if (activeElement instanceof HTMLElement) {
+      const HTMLElementCtor = this.documentRef.defaultView?.HTMLElement;
+      if (HTMLElementCtor && activeElement instanceof HTMLElementCtor) {
         activeElement.focus({ preventScroll: true });
       }
     }

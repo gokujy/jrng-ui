@@ -6,9 +6,12 @@ import { spawnSync } from 'node:child_process';
 const workspaceRoot = process.cwd();
 const allowDirty = process.argv.includes('--allow-dirty');
 const failures = [];
+const hasGitMetadata = verifyGitRepository();
 
-verifyWorkingTree();
-verifyBranch();
+if (hasGitMetadata) {
+  verifyWorkingTree();
+  verifyBranch();
+}
 verifyVersions();
 verifyChangelog();
 verifyPublicSourcePrivacy();
@@ -21,18 +24,34 @@ if (failures.length) {
 for (const args of [
   ['run', 'typecheck'],
   ['run', 'lint'],
-  ['run', 'test'],
+  ['run', 'test:lib'],
+  ['run', 'test:docs'],
+  ['run', 'test:starter'],
   ['run', 'build:lib'],
   ['run', 'verify:api'],
   ['run', 'verify:registry'],
+  ['run', 'verify:docs-registry'],
   ['run', 'verify:docs-links'],
   ['run', 'build:docs:app'],
   ['run', 'verify:package', '--', '--skip-build'],
+  ['run', 'verify:ssr'],
+  ['run', 'verify:consumer'],
 ]) {
   runNpm(args);
 }
 
 console.log('Release verification passed. No package was published.');
+
+function verifyGitRepository() {
+  const result = run('git', ['rev-parse', '--is-inside-work-tree'], true, true);
+  if (result.status !== 0 || result.stdout.trim() !== 'true') {
+    failures.push(
+      'Git metadata is unavailable. Run release verification from a real Git clone with its .git directory.',
+    );
+    return false;
+  }
+  return true;
+}
 
 function verifyWorkingTree() {
   const status = run('git', ['status', '--porcelain', '--untracked-files=all'], true).stdout.trim();
@@ -158,7 +177,7 @@ function runNpm(args) {
   }
 }
 
-function run(command, args, capture = false) {
+function run(command, args, capture = false, allowFailure = false) {
   const executable = process.platform === 'win32' && command === 'git' ? 'git.exe' : command;
   const result = spawnSync(executable, args, {
     cwd: workspaceRoot,
@@ -166,7 +185,7 @@ function run(command, args, capture = false) {
     env: process.env,
     stdio: capture ? 'pipe' : 'inherit',
   });
-  if (result.status !== 0) {
+  if (result.status !== 0 && !allowFailure) {
     throw new Error(`${command} ${args.join(' ')} failed with exit code ${result.status}.`);
   }
   return result;

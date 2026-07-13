@@ -3,15 +3,22 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  computed,
+  DestroyRef,
+  ElementRef,
+  effect,
   forwardRef,
   inject,
-  Input,
+  input,
   numberAttribute,
   output,
+  signal,
+  untracked,
+  ViewChild,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { jAriaDescribedBy } from 'jrng-ui/core';
-import { JClickOutsideDirective } from 'jrng-ui/core';
+import { JAppendTo, JClickOutsideDirective, JOverlayHandle, JOverlayService } from 'jrng-ui/core';
 import { JRNG_LOCALE } from 'jrng-ui/core';
 import { JPassThrough } from 'jrng-ui/core';
 import { JSize } from 'jrng-ui/core';
@@ -29,53 +36,54 @@ export type JTimePickerHourFormat = 12 | 24;
       (jClickOutside)="close()"
       data-jc-name="time-picker"
       data-jc-section="root"
-      [attr.data-j-disabled]="isDisabled ? 'true' : null"
+      [attr.data-j-disabled]="isDisabled() ? 'true' : null"
       [attr.data-j-invalid]="hasError ? 'true' : null"
       [attr.data-j-open]="isOpen ? 'true' : null"
     >
-      @if (label) {
+      @if (label()) {
         <span class="j-time-picker__label" [id]="labelId">
-          <span>{{ label }}</span>
-          @if (required) {
+          <span>{{ label() }}</span>
+          @if (required()) {
             <span class="j-time-picker__required" aria-hidden="true">*</span>
           }
         </span>
       }
 
-      <button
-        class="j-time-picker__control"
-        type="button"
-        [disabled]="isDisabled || readonly"
-        [attr.aria-labelledby]="label ? labelId : null"
+      <div class="j-time-picker__control-wrapper">
+        <button
+          class="j-time-picker__control"
+          type="button"
+          [disabled]="isDisabled() || readonly()"
+        [attr.aria-labelledby]="label() ? labelId : null"
         [attr.aria-describedby]="describedBy"
         [attr.aria-invalid]="hasError ? 'true' : null"
         [attr.aria-expanded]="isOpen"
         [attr.aria-controls]="isOpen ? panelId : null"
         (click)="toggle()"
         (keydown)="handleTriggerKeydown($event)"
-      >
-        <span class="j-time-picker__value" [class.is-placeholder]="!value">
-          {{ displayValue || placeholder }}
-        </span>
+        >
+          <span class="j-time-picker__value" [class.is-placeholder]="!value">
+            {{ displayValue || placeholder() }}
+          </span>
+          <span class="j-time-picker__icon" aria-hidden="true">time</span>
+        </button>
         @if (canClear) {
-          <span
+          <button
+            type="button"
             class="j-time-picker__clear"
-            role="button"
-            tabindex="-1"
-            aria-hidden="true"
+            [attr.aria-label]="locale.clear"
             (click)="clearValue($event)"
           >
             x
-          </span>
+          </button>
         }
-        <span class="j-time-picker__icon" aria-hidden="true">time</span>
-      </button>
+      </div>
 
       @if (isOpen) {
-        <div class="j-time-picker__panel" [id]="panelId" role="dialog" data-jc-section="panel">
+        <div #panel class="j-time-picker__panel" [id]="panelId" role="dialog" data-jc-section="panel">
           <div class="j-time-picker__columns">
             <label class="j-time-picker__column">
-              <span class="j-time-picker__column-label">Hour</span>
+              <span class="j-time-picker__column-label">{{ locale.hour }}</span>
               <select
                 class="j-time-picker__select"
                 [value]="displayHour"
@@ -88,7 +96,7 @@ export type JTimePickerHourFormat = 12 | 24;
             </label>
 
             <label class="j-time-picker__column">
-              <span class="j-time-picker__column-label">Minute</span>
+              <span class="j-time-picker__column-label">{{ locale.minute }}</span>
               <select
                 class="j-time-picker__select"
                 [value]="minute"
@@ -100,9 +108,9 @@ export type JTimePickerHourFormat = 12 | 24;
               </select>
             </label>
 
-            @if (showSeconds) {
+            @if (showSeconds()) {
               <label class="j-time-picker__column">
-                <span class="j-time-picker__column-label">Second</span>
+                <span class="j-time-picker__column-label">{{ locale.second }}</span>
                 <select
                   class="j-time-picker__select"
                   [value]="second"
@@ -115,9 +123,9 @@ export type JTimePickerHourFormat = 12 | 24;
               </label>
             }
 
-            @if (hourFormat === 12) {
+            @if (hourFormat() === 12) {
               <label class="j-time-picker__column j-time-picker__column--period">
-                <span class="j-time-picker__column-label">Period</span>
+                <span class="j-time-picker__column-label">{{ locale.period }}</span>
                 <select
                   class="j-time-picker__select"
                   [value]="period"
@@ -132,7 +140,7 @@ export type JTimePickerHourFormat = 12 | 24;
 
           <div class="j-time-picker__bar">
             <button type="button" class="j-time-picker__bar-button" (click)="selectNow()">
-              Now
+              {{ locale.now }}
             </button>
             <button
               type="button"
@@ -149,13 +157,13 @@ export type JTimePickerHourFormat = 12 | 24;
         </div>
       }
 
-      @if (hasError && error) {
+      @if (hasError && error()) {
         <p class="j-time-picker__message j-time-picker__message--error" [id]="errorId">
-          {{ error }}
+          {{ error() }}
         </p>
       }
-      @if (hint && !hasError) {
-        <p class="j-time-picker__message" [id]="hintId">{{ hint }}</p>
+      @if (hint() && !hasError) {
+        <p class="j-time-picker__message" [id]="hintId">{{ hint() }}</p>
       }
     </div>
   `,
@@ -193,6 +201,24 @@ export type JTimePickerHourFormat = 12 | 24;
         padding: 0 var(--j-spacing-3);
         text-align: left;
         width: 100%;
+      }
+
+      .j-time-picker__control-wrapper {
+        align-items: center;
+        display: flex;
+        position: relative;
+      }
+
+      .j-time-picker__control-wrapper .j-time-picker__control {
+        padding-inline-end: 4rem;
+      }
+
+      .j-time-picker__clear {
+        background: transparent;
+        border: 0;
+        cursor: pointer;
+        inset-inline-end: 2.5rem;
+        position: absolute;
       }
 
       .j-time-picker__control:focus-visible {
@@ -355,6 +381,11 @@ export type JTimePickerHourFormat = 12 | 24;
 })
 export class JTimePickerComponent implements ControlValueAccessor {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
+  private readonly hostRef = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly overlay = inject(JOverlayService);
+  private readonly destroyRef = inject(DestroyRef);
+  @ViewChild('panel') private panelRef?: ElementRef<HTMLElement>;
+  private overlayHandle?: JOverlayHandle;
 
   readonly locale = inject(JRNG_LOCALE);
   readonly labelId = jCreateId('j-time-picker-label');
@@ -362,22 +393,28 @@ export class JTimePickerComponent implements ControlValueAccessor {
   readonly errorId = jCreateId('j-time-picker-error');
   readonly panelId = jCreateId('j-time-picker-panel');
 
-  @Input() label = '';
-  @Input() placeholder = 'Select time';
-  @Input() hint = '';
-  @Input() error = '';
-  @Input() styleClass = '';
-  @Input() variant: 'outlined' | 'filled' = 'outlined';
-  @Input() size: JSize = 'md';
-  @Input() hourFormat: JTimePickerHourFormat = 24;
-  @Input() appendTo: 'self' | 'body' | string = 'self';
-  @Input() pt: JPassThrough | null = null;
-  @Input({ transform: booleanAttribute }) readonly = false;
-  @Input({ transform: booleanAttribute }) invalid = false;
-  @Input({ transform: booleanAttribute }) required = false;
-  @Input({ transform: booleanAttribute }) showSeconds = false;
-  @Input({ transform: booleanAttribute }) showClear = true;
-  @Input({ transform: booleanAttribute }) timeOnly = true;
+  readonly label = input('');
+  readonly placeholder = input('Select time');
+  readonly hint = input('');
+  readonly error = input('');
+  readonly styleClass = input('');
+  readonly variant = input<'outlined' | 'filled'>('outlined');
+  readonly size = input<JSize>('md');
+  readonly hourFormat = input<JTimePickerHourFormat>(24);
+  readonly appendTo = input<JAppendTo | undefined>(undefined);
+  readonly pt = input<JPassThrough | null>(null);
+  readonly readonly = input(false, { transform: booleanAttribute });
+  readonly invalid = input(false, { transform: booleanAttribute });
+  readonly required = input(false, { transform: booleanAttribute });
+  readonly showSeconds = input(false, { transform: booleanAttribute });
+  readonly showClear = input(true, { transform: booleanAttribute });
+  /** @deprecated JTimePicker is inherently time-only; this compatibility input is ignored. */
+  readonly timeOnly = input(true, { transform: booleanAttribute });
+
+  readonly valueInput = input<string | null | undefined>(undefined);
+  readonly minuteStep = input<number | string | undefined>(undefined);
+  readonly stepMinute = input<number | string | undefined>(undefined);
+  readonly disabled = input(false, { transform: booleanAttribute });
 
   readonly valueChange = output<string | null>();
   readonly select = output<string | null>();
@@ -390,69 +427,73 @@ export class JTimePickerComponent implements ControlValueAccessor {
   minute = 0;
   second = 0;
   period: 'AM' | 'PM' = 'AM';
-  isDisabled = false;
+  readonly formDisabled = signal(false);
+  readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
   isOpen = false;
 
-  private minuteStepInternal = 1;
+  private readonly minuteStepInternal = signal(1);
   private onChange: (value: string | null) => void = () => undefined;
   private onTouched: () => void = () => undefined;
 
-  @Input()
-  set valueInput(value: string | null | undefined) {
-    this.writeValue(value);
+  constructor() {
+    this.destroyRef.onDestroy(() => this.overlayHandle?.detach());
+    effect(() => {
+      const value = this.valueInput();
+      untracked(() => this.writeValue(value));
+    });
+    effect(() => {
+      const value = this.minuteStep();
+      if (value !== undefined) {
+        this.setMinuteStep(value);
+      }
+    });
+    effect(() => {
+      const value = this.stepMinute();
+      if (value !== undefined) {
+        this.setMinuteStep(value);
+      }
+    });
   }
 
-  @Input()
-  set minuteStep(value: number | string) {
-    this.minuteStepInternal = Math.max(1, Math.min(60, numberAttribute(value, 1)));
-  }
-
-  @Input()
-  set stepMinute(value: number | string) {
-    this.minuteStep = value;
-  }
-
-  @Input({ transform: booleanAttribute })
-  set disabled(value: boolean) {
-    this.isDisabled = value;
-    this.changeDetectorRef.markForCheck();
+  private setMinuteStep(value: number | string): void {
+    this.minuteStepInternal.set(Math.max(1, Math.min(60, numberAttribute(value, 1))));
   }
 
   get hasError(): boolean {
-    return this.invalid || this.error.trim().length > 0;
+    return this.invalid() || this.error().trim().length > 0;
   }
 
   get describedBy(): string | null {
-    return jAriaDescribedBy(this.hasError ? this.errorId : null, this.hint ? this.hintId : null);
+    return jAriaDescribedBy(this.hasError ? this.errorId : null, this.hint() ? this.hintId : null);
   }
 
   get canClear(): boolean {
-    return this.showClear && !!this.value && !this.isDisabled && !this.readonly;
+    return this.showClear() && !!this.value && !this.isDisabled() && !this.readonly();
   }
 
   get rootClasses(): string {
     return [
       'j-time-picker',
-      `j-time-picker--${this.size}`,
-      `j-time-picker--${this.variant}`,
+      `j-time-picker--${this.size()}`,
+      `j-time-picker--${this.variant()}`,
       this.hasError ? 'is-invalid' : '',
-      this.isDisabled ? 'is-disabled' : '',
+      this.isDisabled() ? 'is-disabled' : '',
       this.isOpen ? 'is-open' : '',
-      this.styleClass,
-      this.pt?.['root']?.['class'] ?? '',
+      this.styleClass(),
+      this.pt()?.['root']?.['class'] ?? '',
     ]
       .filter(Boolean)
       .join(' ');
   }
 
   get hourOptions(): readonly number[] {
-    return this.hourFormat === 12
+    return this.hourFormat() === 12
       ? Array.from({ length: 12 }, (_, index) => index + 1)
       : Array.from({ length: 24 }, (_, index) => index);
   }
 
   get minuteOptions(): readonly number[] {
-    return steppedOptions(this.minuteStepInternal);
+    return steppedOptions(this.minuteStepInternal());
   }
 
   get secondOptions(): readonly number[] {
@@ -460,7 +501,7 @@ export class JTimePickerComponent implements ControlValueAccessor {
   }
 
   get displayHour(): number {
-    if (this.hourFormat === 24) {
+    if (this.hourFormat() === 24) {
       return this.hour;
     }
     const hour = this.hour % 12;
@@ -472,15 +513,15 @@ export class JTimePickerComponent implements ControlValueAccessor {
       return '';
     }
 
-    if (this.hourFormat === 24) {
+    if (this.hourFormat() === 24) {
       return this.value;
     }
 
-    return `${this.pad(this.displayHour)}:${this.pad(this.minute)}${this.showSeconds ? `:${this.pad(this.second)}` : ''} ${this.period}`;
+    return `${this.pad(this.displayHour)}:${this.pad(this.minute)}${this.showSeconds() ? `:${this.pad(this.second)}` : ''} ${this.period}`;
   }
 
   writeValue(value: string | null | undefined): void {
-    this.value = normalizeTime(value, this.showSeconds);
+    this.value = normalizeTime(value, this.showSeconds());
     this.applyValueParts();
     this.changeDetectorRef.markForCheck();
   }
@@ -494,7 +535,7 @@ export class JTimePickerComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled = isDisabled;
+    this.formDisabled.set(isDisabled);
     if (isDisabled) {
       this.close();
     }
@@ -506,7 +547,7 @@ export class JTimePickerComponent implements ControlValueAccessor {
   }
 
   open(): void {
-    if (this.isDisabled || this.readonly || this.isOpen) {
+    if (this.isDisabled() || this.readonly() || this.isOpen) {
       return;
     }
     if (!this.value) {
@@ -515,12 +556,23 @@ export class JTimePickerComponent implements ControlValueAccessor {
     this.isOpen = true;
     this.opened.emit();
     this.changeDetectorRef.markForCheck();
+    queueMicrotask(() => {
+      const panel = this.panelRef?.nativeElement;
+      if (panel) {
+        this.overlayHandle = this.overlay.attach(this.hostRef.nativeElement, panel, {
+          appendTo: this.appendTo(),
+          matchWidth: false,
+        });
+      }
+    });
   }
 
   close(): void {
     if (!this.isOpen) {
       return;
     }
+    this.overlayHandle?.detach();
+    this.overlayHandle = undefined;
     this.isOpen = false;
     this.onTouched();
     this.closed.emit();
@@ -540,7 +592,7 @@ export class JTimePickerComponent implements ControlValueAccessor {
 
   handleHourChange(event: Event): void {
     const nextHour = Number((event.target as HTMLSelectElement).value);
-    if (this.hourFormat === 12) {
+    if (this.hourFormat() === 12) {
       this.hour = this.toTwentyFourHour(nextHour, this.period);
     } else {
       this.hour = nextHour;
@@ -571,7 +623,7 @@ export class JTimePickerComponent implements ControlValueAccessor {
 
   clearValue(event?: Event): void {
     event?.stopPropagation();
-    if (this.isDisabled || this.readonly) {
+    if (this.isDisabled() || this.readonly()) {
       return;
     }
     this.value = '';
@@ -586,7 +638,7 @@ export class JTimePickerComponent implements ControlValueAccessor {
   }
 
   private commit(): void {
-    this.value = `${this.pad(this.hour)}:${this.pad(this.minute)}${this.showSeconds ? `:${this.pad(this.second)}` : ''}`;
+    this.value = `${this.pad(this.hour)}:${this.pad(this.minute)}${this.showSeconds() ? `:${this.pad(this.second)}` : ''}`;
     this.onChange(this.value || null);
     this.valueChange.emit(this.value || null);
     this.select.emit(this.value || null);
@@ -612,9 +664,9 @@ export class JTimePickerComponent implements ControlValueAccessor {
   private setPartsFromDate(date: Date): void {
     this.hour = date.getHours();
     const roundedMinute =
-      Math.floor(date.getMinutes() / this.minuteStepInternal) * this.minuteStepInternal;
+      Math.floor(date.getMinutes() / this.minuteStepInternal()) * this.minuteStepInternal();
     this.minute = clamp(roundedMinute, 0, 59);
-    this.second = this.showSeconds ? date.getSeconds() : 0;
+    this.second = this.showSeconds() ? date.getSeconds() : 0;
     this.period = this.hour >= 12 ? 'PM' : 'AM';
   }
 

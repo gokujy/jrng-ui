@@ -76,14 +76,7 @@ Use `j-form-field` as a lightweight wrapper when a native or custom projected co
 `j-textarea` supports `rows`, `autoResize`, `maxLength`, and `showCount`.
 
 ```html
-<j-textarea
-  label="Notes"
-  [rows]="4"
-  [maxLength]="240"
-  showCount
-  autoResize
-  [formControl]="notes"
-/>
+<j-textarea label="Notes" [rows]="4" [maxLength]="240" showCount autoResize [formControl]="notes" />
 ```
 
 ## j-password
@@ -113,6 +106,13 @@ Use `j-form-field` as a lightweight wrapper when a native or custom projected co
   [step]="100"
   [formControl]="recordValue"
 />
+```
+
+The visible value is produced by `Intl.NumberFormat`; the form value remains an unrounded number. Locale-aware input accepts grouping, decimal, minus, and localized digits for the selected locale. Formatting is applied outside active editing to avoid cursor jumps. `min`/`max` clamp on blur and arrow-key stepping; invalid or partial input never emits `NaN`. If `minFractionDigits` exceeds `maxFractionDigits`, the maximum is raised to the minimum. Invalid locales fall back to the configured global locale, then `en-US`; an invalid currency falls back to decimal formatting.
+
+```html
+<j-input-number locale="en-IN" [minFractionDigits]="2" [maxFractionDigits]="2" />
+<j-input-number locale="de-DE" mode="currency" currency="EUR" />
 ```
 
 ## j-input-mask

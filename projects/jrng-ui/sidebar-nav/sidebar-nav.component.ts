@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, Input, booleanAttribute, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  booleanAttribute,
+  input,
+  linkedSignal,
+  output,
+} from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { JMenuItem } from 'jrng-ui/menu';
 
@@ -8,26 +15,26 @@ import { JMenuItem } from 'jrng-ui/menu';
   template: `
     <aside
       class="j-sidebar-nav"
-      [class.is-collapsed]="collapsed"
+      [class.is-collapsed]="collapsedState()"
       data-jc-name="sidebar-nav"
       data-jc-section="root"
-      [attr.aria-label]="ariaLabel"
+      [attr.aria-label]="ariaLabel()"
     >
       <header class="j-sidebar-nav__header" data-jc-section="header">
         <ng-content select="[jSidebarBrand]"></ng-content>
-        @if (collapsible) {
+        @if (collapsible()) {
           <button
             class="j-sidebar-nav__toggle"
             type="button"
-            [attr.aria-expanded]="!collapsed"
+            [attr.aria-expanded]="!collapsedState()"
             (click)="toggle()"
           >
-            {{ collapsed ? expandLabel : collapseLabel }}
+            {{ collapsedState() ? expandLabel() : collapseLabel() }}
           </button>
         }
       </header>
       <nav class="j-sidebar-nav__body" data-jc-section="body">
-        @for (item of model; track item.label || item.url || item.routerLink || $index) {
+        @for (item of model(); track item.label || item.url || item.routerLink || $index) {
           @if (item.separator) {
             <span class="j-sidebar-nav__separator" role="separator"></span>
           } @else {
@@ -149,28 +156,30 @@ import { JMenuItem } from 'jrng-ui/menu';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JSidebarNavComponent {
-  @Input() model: readonly JMenuItem[] = [];
-  @Input() ariaLabel = 'Sidebar navigation';
-  @Input() activeKey = '';
-  @Input() collapseLabel = 'Collapse';
-  @Input() expandLabel = 'Expand';
-  @Input({ transform: booleanAttribute }) collapsible = true;
-  @Input({ transform: booleanAttribute }) collapsed = false;
+  readonly model = input<readonly JMenuItem[]>([]);
+  readonly ariaLabel = input('Sidebar navigation');
+  readonly activeKey = input('');
+  readonly collapseLabel = input('Collapse');
+  readonly expandLabel = input('Expand');
+  readonly collapsible = input(true, { transform: booleanAttribute });
+  readonly collapsed = input(false, { transform: booleanAttribute });
 
   readonly collapsedChange = output<boolean>();
   readonly itemClick = output<{ item: JMenuItem; originalEvent: MouseEvent }>();
 
+  protected readonly collapsedState = linkedSignal(() => this.collapsed());
+
   toggle(): void {
-    this.collapsed = !this.collapsed;
-    this.collapsedChange.emit(this.collapsed);
+    this.collapsedState.set(!this.collapsedState());
+    this.collapsedChange.emit(this.collapsedState());
   }
 
   isActive(item: JMenuItem): boolean {
     return (
-      !!this.activeKey &&
-      (item.label === this.activeKey ||
-        item.url === this.activeKey ||
-        item.routerLink === this.activeKey)
+      !!this.activeKey() &&
+      (item.label === this.activeKey() ||
+        item.url === this.activeKey() ||
+        item.routerLink === this.activeKey())
     );
   }
 

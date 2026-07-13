@@ -59,8 +59,7 @@ import { JBadgeComponent } from 'jrng-ui/badge';
 ```
 
 ```html
-<j-badge value="12" severity="danger" />
-<j-badge severity="success">Paid</j-badge>
+<j-badge value="12" severity="danger" /> <j-badge severity="success">Paid</j-badge>
 ```
 
 ## Tag
@@ -92,11 +91,7 @@ import { JAvatarGroupComponent } from 'jrng-ui/avatar-group';
 ```
 
 ```html
-<j-avatar-group
-  [items]="teamMembers"
-  [max]="4"
-  ariaLabel="Team members"
-/>
+<j-avatar-group [items]="teamMembers" [max]="4" ariaLabel="Team members" />
 ```
 
 ## Divider
@@ -106,8 +101,7 @@ import { JDividerComponent } from 'jrng-ui/divider';
 ```
 
 ```html
-<j-divider />
-<j-divider layout="vertical" />
+<j-divider /> <j-divider layout="vertical" />
 ```
 
 ## Loader

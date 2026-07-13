@@ -18,6 +18,12 @@ Production build:
 npx ng build admin-starter --configuration production
 ```
 
+Unit tests (Vitest, jsdom):
+
+```bash
+npx ng test admin-starter --watch=false
+```
+
 ## Structure
 
 - `layouts/` contains the reusable responsive application shell.
@@ -25,6 +31,7 @@ npx ng build admin-starter --configuration production
 - `services/` contains replaceable mock authentication and API services.
 - `guards/` protects application routes.
 - `models/` contains typed user, metric, and activity records.
+- `*.spec.ts` files sit beside each unit and cover routing, the auth guard, mock services, the shell, and every page.
 
 ## Themes
 

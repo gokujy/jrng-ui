@@ -325,7 +325,116 @@ pre {
   outline: none;
 }
 
-/* PrimeNG-inspired docs shell --------------------------------------------- */
+.docs-icon-button--square {
+  padding: 0;
+  width: 2.25rem;
+}
+
+.docs-icon-button--square svg {
+  display: block;
+}
+
+.docs-icon-button.is-active {
+  border-color: var(--j-color-primary);
+  color: var(--j-color-primary);
+}
+
+/* Theme configurator (PrimeNG-style top-bar popover) ---------------------- */
+
+.docs-config-backdrop {
+  background: transparent;
+  border: 0;
+  cursor: default;
+  inset: 0;
+  position: fixed;
+  z-index: 130;
+}
+
+.docs-config {
+  background: var(--j-color-card);
+  border: 1px solid var(--j-color-border);
+  border-radius: var(--j-radius-lg);
+  box-shadow: var(--j-shadow-lg, 0 24px 60px -20px rgb(0 0 0 / 35%));
+  display: grid;
+  gap: var(--j-spacing-4);
+  inset-block-start: 3.65rem;
+  inset-inline-end: var(--j-spacing-5);
+  padding: var(--j-spacing-4);
+  position: absolute;
+  width: min(20rem, calc(100vw - 2rem));
+  z-index: 140;
+}
+
+.docs-config__section {
+  display: grid;
+  gap: var(--j-spacing-2);
+}
+
+.docs-config__section h3 {
+  color: var(--j-color-muted-foreground);
+  font-size: var(--j-font-size-xs);
+  font-weight: var(--j-font-weight-bold);
+  letter-spacing: 0.08em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.docs-config__swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--j-spacing-2);
+}
+
+.docs-config__swatch {
+  border: 2px solid transparent;
+  border-radius: var(--j-radius-full, 999px);
+  box-shadow: 0 0 0 1px var(--j-color-border);
+  cursor: pointer;
+  height: 1.6rem;
+  padding: 0;
+  width: 1.6rem;
+}
+
+.docs-config__swatch.is-active {
+  border-color: var(--j-color-background);
+  box-shadow: 0 0 0 2px var(--j-color-foreground);
+}
+
+.docs-config__swatch:focus-visible {
+  outline: none;
+  box-shadow: var(--j-focus-ring);
+}
+
+.docs-config__toggle {
+  background: var(--j-color-muted);
+  border: 1px solid var(--j-color-border);
+  border-radius: var(--j-radius-md);
+  display: grid;
+  gap: var(--j-spacing-1);
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  padding: var(--j-spacing-1);
+}
+
+.docs-config__toggle button {
+  background: transparent;
+  border: 0;
+  border-radius: var(--j-radius-sm);
+  color: var(--j-color-muted-foreground);
+  cursor: pointer;
+  font: inherit;
+  font-size: var(--j-font-size-sm);
+  font-weight: var(--j-font-weight-semibold);
+  padding: var(--j-spacing-2);
+}
+
+.docs-config__toggle button.is-active {
+  background: var(--j-color-card);
+  box-shadow: var(--j-shadow-sm);
+  color: var(--j-color-foreground);
+}
+
+/* Documentation shell ----------------------------------------------------- */
 
 .docs-layout {
   display: grid;
@@ -1226,8 +1335,7 @@ pre {
     display: none;
   }
 
-  .docs-brand__text small,
-  .docs-header__actions .docs-icon-button:first-child {
+  .docs-brand__text small {
     display: none;
   }
 

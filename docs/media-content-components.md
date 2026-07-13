@@ -21,6 +21,8 @@ import { JEditorComponent } from 'jrng-ui/editor';
 
 Toolbar actions include bold, italic, underline, strike, headings, ordered list, unordered list, link, image URL insertion, code block, blockquote, and clear formatting. Use `#jEditorToolbar` to provide a custom toolbar template when needed.
 
+Initial `ngModel` and Reactive Forms values are sanitized before rendering, including values written before view initialization. `writeValue` never emits `valueChange`; user input emits once and blur marks the control touched. Scripts, event handlers, styles, executable embeds, unsupported elements, and unsafe URL protocols are removed. The editor is safe to render on the server; browser editing commands run only after a capability check.
+
 ## Dropzone
 
 `j-dropzone` is a focused drag and drop primitive for custom upload flows.
@@ -70,7 +72,14 @@ import { JImageComponent, JImagePreviewComponent } from 'jrng-ui/image';
 ```
 
 ```html
-<j-image src="/assets/product.png" alt="Product image" width="320px" height="200px" preview fallback="/assets/fallback.png" />
+<j-image
+  src="/assets/product.png"
+  alt="Product image"
+  width="320px"
+  height="200px"
+  preview
+  fallback="/assets/fallback.png"
+/>
 ```
 
 `j-image` supports preview, fallback source, lazy or eager loading, and object-fit styling. `j-image-preview` can also be used directly with two-way `visible` binding.
@@ -116,7 +125,11 @@ import { JVideoPlayerComponent } from 'jrng-ui/video-player';
 ```
 
 ```html
-<j-video-player src="/assets/project-demo.mp4" poster="/assets/project-poster.jpg" caption="Project demo" />
+<j-video-player
+  src="/assets/project-demo.mp4"
+  poster="/assets/project-poster.jpg"
+  caption="Project demo"
+/>
 ```
 
 `j-video-player` wraps native video with token styling and exposes play, pause, and ended outputs.
@@ -128,7 +141,12 @@ import { JFilePreviewComponent } from 'jrng-ui/file-preview';
 ```
 
 ```html
-<j-file-preview fileName="invoice.pdf" [fileSize]="245000" description="Invoice attachment" url="/files/invoice.pdf" />
+<j-file-preview
+  fileName="invoice.pdf"
+  [fileSize]="245000"
+  description="Invoice attachment"
+  url="/files/invoice.pdf"
+/>
 ```
 
 `j-file-preview` displays file name, extension, size, description, open link, and remove action.

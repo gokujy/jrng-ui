@@ -3,11 +3,11 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
-  Input,
   PLATFORM_ID,
   Renderer2,
   computed,
   inject,
+  input,
   model,
   output,
   signal,
@@ -35,7 +35,7 @@ export interface JCommandPaletteItem {
       (visibleChange)="visible.set($event)"
       size="lg"
       position="top"
-      [header]="heading"
+      [header]="heading()"
       [dismissableMask]="true"
       [closeOnEscape]="true"
       data-jc-name="command-palette"
@@ -46,7 +46,7 @@ export interface JCommandPaletteItem {
         <input
           class="j-command-palette__search"
           type="search"
-          [placeholder]="placeholder"
+          [placeholder]="placeholder()"
           [ngModel]="query()"
           (ngModelChange)="query.set($event)"
           (keydown)="handleSearchKeydown($event)"
@@ -79,7 +79,7 @@ export interface JCommandPaletteItem {
               }
             </section>
           } @empty {
-            <p class="j-command-palette__empty">{{ emptyMessage }}</p>
+            <p class="j-command-palette__empty">{{ emptyMessage() }}</p>
           }
         </div>
       </section>
@@ -166,18 +166,18 @@ export class JCommandPaletteComponent {
   readonly activeItem = signal<JCommandPaletteItem | null>(null);
   readonly command = output<JCommandPaletteItem>();
 
-  @Input() commands: readonly JCommandPaletteItem[] = [];
-  @Input() heading = 'Command palette';
-  @Input() placeholder = 'Search commands';
-  @Input() emptyMessage = 'No commands found.';
-  @Input() shortcut = 'k';
+  readonly commands = input<readonly JCommandPaletteItem[]>([]);
+  readonly heading = input('Command palette');
+  readonly placeholder = input('Search commands');
+  readonly emptyMessage = input('No commands found.');
+  readonly shortcut = input('k');
 
   readonly results = computed(() => {
     const query = this.query().trim().toLowerCase();
     if (!query) {
-      return this.commands;
+      return this.commands();
     }
-    return this.commands.filter((item) =>
+    return this.commands().filter((item) =>
       [item.label, item.description, item.group, ...(item.keywords ?? [])]
         .filter(Boolean)
         .join(' ')
@@ -202,7 +202,7 @@ export class JCommandPaletteComponent {
     const remove = this.renderer.listen(this.documentRef, 'keydown', (event: KeyboardEvent) => {
       if (
         (event.ctrlKey || event.metaKey) &&
-        event.key.toLowerCase() === this.shortcut.toLowerCase()
+        event.key.toLowerCase() === this.shortcut().toLowerCase()
       ) {
         event.preventDefault();
         this.visible.set(!this.visible());

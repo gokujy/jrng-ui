@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { JRadioComponent } from './radio.component';
 
@@ -9,15 +9,16 @@ describe('JRadioComponent', () => {
     }).compileComponents();
   });
 
-  function create(): JRadioComponent {
+  function create(): ComponentFixture<JRadioComponent> {
     const fixture = TestBed.createComponent(JRadioComponent);
     fixture.detectChanges();
-    return fixture.componentInstance;
+    return fixture;
   }
 
   it('marks the radio selected when writeValue matches its value', () => {
-    const radio = create();
-    radio.value = 'apple';
+    const fixture = create();
+    const radio = fixture.componentInstance;
+    fixture.componentRef.setInput('value', 'apple');
 
     radio.writeValue('apple');
 
@@ -25,8 +26,9 @@ describe('JRadioComponent', () => {
   });
 
   it('is not selected when the written value differs from its value', () => {
-    const radio = create();
-    radio.value = 'apple';
+    const fixture = create();
+    const radio = fixture.componentInstance;
+    fixture.componentRef.setInput('value', 'apple');
 
     radio.writeValue('banana');
 
@@ -34,8 +36,9 @@ describe('JRadioComponent', () => {
   });
 
   it('selects its own value and emits valueChange on change', () => {
-    const radio = create();
-    radio.value = 'cherry';
+    const fixture = create();
+    const radio = fixture.componentInstance;
+    fixture.componentRef.setInput('value', 'cherry');
 
     let onChangeValue: unknown;
     let emitted: unknown;
@@ -50,9 +53,10 @@ describe('JRadioComponent', () => {
   });
 
   it('ignores change events while readonly', () => {
-    const radio = create();
-    radio.value = 'cherry';
-    radio.readonly = true;
+    const fixture = create();
+    const radio = fixture.componentInstance;
+    fixture.componentRef.setInput('value', 'cherry');
+    fixture.componentRef.setInput('readonly', true);
 
     let emitted = false;
     radio.valueChange.subscribe(() => (emitted = true));
@@ -64,10 +68,11 @@ describe('JRadioComponent', () => {
   });
 
   it('reflects the disabled state through setDisabledState', () => {
-    const radio = create();
+    const fixture = create();
+    const radio = fixture.componentInstance;
 
     radio.setDisabledState(true);
 
-    expect(radio.isDisabled).toBe(true);
+    expect(radio.isDisabled()).toBe(true);
   });
 });

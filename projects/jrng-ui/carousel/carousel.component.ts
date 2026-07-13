@@ -1,12 +1,10 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
   TemplateRef,
   booleanAttribute,
   contentChild,
   effect,
-  inject,
   input,
   model,
   numberAttribute,
@@ -36,6 +34,8 @@ export interface JCarouselItemContext {
       [class]="styleClass()"
       data-jc-name="carousel"
       data-jc-section="root"
+      role="group"
+      aria-roledescription="carousel"
     >
       <div class="j-carousel__viewport" [style.--j-carousel-items]="visibleItems()">
         @for (item of value(); track item.image || item.title || $index; let index = $index) {
@@ -90,6 +90,7 @@ export interface JCarouselItemContext {
               type="button"
               [class.is-active]="index === activeIndex()"
               [attr.aria-label]="'Go to item ' + (index + 1)"
+              [attr.aria-current]="index === activeIndex() ? 'true' : null"
               (click)="activeIndex.set(index)"
             ></button>
           }
@@ -183,8 +184,6 @@ export interface JCarouselItemContext {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JCarouselComponent {
-  private readonly destroyRef = injectDestroyRef();
-
   readonly value = input<readonly JCarouselItem[]>([]);
   readonly activeIndex = model(0);
   readonly autoplay = input(false, { transform: booleanAttribute });
@@ -199,6 +198,16 @@ export class JCarouselComponent {
   );
 
   constructor() {
+    // Keep activeIndex within bounds when the data array shrinks so it never
+    // points past the last slide.
+    effect(() => {
+      const length = this.value().length;
+      const maxIndex = length > 0 ? length - 1 : 0;
+      if (this.activeIndex() > maxIndex) {
+        this.activeIndex.set(maxIndex);
+      }
+    });
+
     effect((onCleanup) => {
       if (!this.autoplay() || this.value().length < 2) {
         return;
@@ -229,8 +238,4 @@ export class JCarouselComponent {
   itemContext(item: JCarouselItem, index: number): JCarouselItemContext {
     return { $implicit: item, item, index };
   }
-}
-
-function injectDestroyRef(): DestroyRef {
-  return inject(DestroyRef);
 }

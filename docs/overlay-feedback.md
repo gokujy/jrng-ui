@@ -21,6 +21,19 @@ import { JCommandPaletteComponent, JCommandPaletteItem } from 'jrng-ui/command-p
 
 Root imports are also supported from `jrng-ui`.
 
+## Shared append target
+
+Connected overlays use one `JAppendTo` contract: `'self'`, `'body'`, an `HTMLElement`, or a selector string. A component input overrides `provideJrngUI({ appendTo })`; global configuration overrides the compatible `'self'` default. Selectors resolve through Angular's injected `DOCUMENT`. Missing or invalid selectors safely fall back to local rendering. Portalled panels are repositioned on nested scroll and resize, receive a managed z-index, and are restored to their Angular-owned location when closed so no orphan node or listener remains. Server rendering never resolves or appends a target.
+
+```ts
+provideJrngUI({ appendTo: 'body', zIndex: { modal: 2000, popover: 2100 } });
+```
+
+```html
+<j-select appendTo="#workspace-overlays" />
+<j-popover [appendTo]="overlayElement" />
+```
+
 ## j-dialog
 
 ```html
@@ -60,12 +73,7 @@ dialog.open({
 ## j-drawer
 
 ```html
-<j-drawer
-  header="Filters"
-  position="right"
-  [(visible)]="filtersOpen"
-  [snapPoints]="['45%', '82%']"
->
+<j-drawer header="Filters" position="right" [(visible)]="filtersOpen" [snapPoints]="['45%', '82%']">
   ...
   <j-button jDrawerFooter (onClick)="filtersOpen = false">Apply</j-button>
 </j-drawer>
@@ -87,8 +95,7 @@ Supported positions are `left`, `right`, `top`, and `bottom`. The drawer include
 Place one or more toast containers in the app shell:
 
 ```html
-<j-toast position="top-right" />
-<j-toast position="bottom-center" />
+<j-toast position="top-right" /> <j-toast position="bottom-center" />
 ```
 
 Use the service:
@@ -123,8 +130,7 @@ Toasts support stacked positions, rich severities, actions, cancel action, stick
 Place one dialog and one popup host:
 
 ```html
-<j-confirm-dialog />
-<j-confirm-popup />
+<j-confirm-dialog /> <j-confirm-popup />
 ```
 
 Dialog request:

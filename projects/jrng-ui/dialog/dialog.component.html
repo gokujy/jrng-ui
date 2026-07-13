@@ -1,5 +1,6 @@
 @if (visible()) {
   <div
+    #overlayRoot
     class="j-dialog__portal"
     data-jc-name="dialog"
     data-jc-section="portal"
@@ -22,31 +23,33 @@
         data-jc-extend="header body footer close"
         data-j-open="true"
         role="dialog"
-        [attr.aria-modal]="modal ? 'true' : 'false'"
-        [attr.aria-labelledby]="header ? titleId : null"
-        [attr.aria-label]="header ? null : 'Dialog'"
+        [attr.aria-modal]="modal() ? 'true' : 'false'"
+        [attr.aria-labelledby]="header() ? titleId : null"
+        [attr.aria-label]="header() ? null : 'Dialog'"
         [style.width]="panelWidth || null"
         [style.height]="panelHeight || null"
-        [style.transform]="draggable ? 'translate(' + dragX + 'px, ' + dragY + 'px)' : null"
+        [style.transform]="draggable() ? 'translate(' + dragX + 'px, ' + dragY + 'px)' : null"
         tabindex="-1"
         (pointermove)="moveDrag($event); moveResize($event)"
         (pointerup)="endDrag(); endResize()"
         (pointercancel)="endDrag(); endResize()"
       >
-        @if (!headless && (header || closable)) {
+        @if (!headless() && (header() || closable())) {
           <header
             class="j-dialog__header"
             data-jc-section="header"
-            [class.is-draggable]="draggable"
+            [class.is-draggable]="draggable()"
             (pointerdown)="startDrag($event)"
           >
             <div class="j-dialog__heading" data-jc-section="heading">
-              @if (header) {
-                <h2 class="j-dialog__title" data-jc-section="title" [id]="titleId">{{ header }}</h2>
+              @if (header()) {
+                <h2 class="j-dialog__title" data-jc-section="title" [id]="titleId">
+                  {{ header() }}
+                </h2>
               }
               <ng-content select="[jDialogHeader], [jrDialogHeader]"></ng-content>
             </div>
-            @if (closable) {
+            @if (closable()) {
               <button
                 class="j-dialog__close"
                 data-jc-section="close"
@@ -59,16 +62,16 @@
             }
           </header>
         }
-        <div class="j-dialog__body" data-jc-section="body" [class.is-headless]="headless">
+        <div class="j-dialog__body" data-jc-section="body" [class.is-headless]="headless()">
           <ng-content></ng-content>
           <ng-content select="[jDialogBody], [jrDialogBody]"></ng-content>
         </div>
-        @if (!headless) {
+        @if (!headless()) {
           <footer class="j-dialog__footer" data-jc-section="footer">
             <ng-content select="[jDialogFooter], [jrDialogFooter]"></ng-content>
           </footer>
         }
-        @if (resizable) {
+        @if (resizable()) {
           <span
             class="j-dialog__resize"
             data-jc-section="resize"

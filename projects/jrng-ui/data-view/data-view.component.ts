@@ -3,11 +3,11 @@ import {
   ChangeDetectionStrategy,
   Component,
   ContentChild,
-  EventEmitter,
   Input,
-  Output,
   TemplateRef,
   booleanAttribute,
+  input,
+  output,
 } from '@angular/core';
 import { JPaginatorComponent, JPaginatorPageChange } from 'jrng-ui/paginator';
 
@@ -28,11 +28,11 @@ export interface JDataViewItemContext<T> {
       <header class="j-data-view__toolbar">
         <select [value]="sortField" (change)="changeSort($event)">
           <option value="">Sort</option>
-          @for (option of sortOptions; track option.field) {
+          @for (option of sortOptions(); track option.field) {
             <option [value]="option.field">{{ option.label }}</option>
           }
         </select>
-        @if (layoutToggle) {
+        @if (layoutToggle()) {
           <div class="j-data-view__toggle" role="group" aria-label="Layout">
             <button type="button" [class.is-active]="layout === 'list'" (click)="setLayout('list')">
               List
@@ -55,16 +55,16 @@ export interface JDataViewItemContext<T> {
             <article class="j-data-view__item">{{ item }}</article>
           }
         } @empty {
-          <p class="j-data-view__empty">{{ emptyMessage }}</p>
+          <p class="j-data-view__empty">{{ emptyMessage() }}</p>
         }
       </div>
 
-      @if (paginator) {
+      @if (paginator()) {
         <j-paginator
           [first]="first"
           [rows]="rows"
           [totalRecords]="sortedItems.length"
-          [rowsPerPageOptions]="rowsPerPageOptions"
+          [rowsPerPageOptions]="rowsPerPageOptions()"
           (pageChange)="handlePageChange($event)"
         />
       }
@@ -121,29 +121,29 @@ export interface JDataViewItemContext<T> {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JDataViewComponent<T = unknown> {
-  @Input() value: readonly T[] = [];
+  readonly value = input<readonly T[]>([]);
   @Input() layout: JDataViewLayout = 'list';
   @Input() sortField = '';
-  @Input() sortOptions: readonly { field: string; label: string }[] = [];
+  readonly sortOptions = input<readonly { field: string; label: string }[]>([]);
   @Input() rows = 12;
   @Input() first = 0;
-  @Input() rowsPerPageOptions: readonly number[] = [12, 24, 48];
-  @Input() emptyMessage = 'No items found.';
-  @Input({ transform: booleanAttribute }) paginator = true;
-  @Input({ transform: booleanAttribute }) layoutToggle = true;
+  readonly rowsPerPageOptions = input<readonly number[]>([12, 24, 48]);
+  readonly emptyMessage = input('No items found.');
+  readonly paginator = input(true, { transform: booleanAttribute });
+  readonly layoutToggle = input(true, { transform: booleanAttribute });
   @ContentChild('jDataViewItem', { read: TemplateRef }) itemTemplate?: TemplateRef<
     JDataViewItemContext<T>
   >;
 
-  @Output() layoutChange = new EventEmitter<JDataViewLayout>();
-  @Output() sortChange = new EventEmitter<string>();
-  @Output() pageChange = new EventEmitter<JPaginatorPageChange>();
+  readonly layoutChange = output<JDataViewLayout>();
+  readonly sortChange = output<string>();
+  readonly pageChange = output<JPaginatorPageChange>();
 
   get sortedItems(): readonly T[] {
     if (!this.sortField) {
-      return this.value;
+      return this.value();
     }
-    return [...this.value].sort((a, b) =>
+    return [...this.value()].sort((a, b) =>
       String(this.readField(a, this.sortField)).localeCompare(
         String(this.readField(b, this.sortField)),
       ),
@@ -151,7 +151,7 @@ export class JDataViewComponent<T = unknown> {
   }
 
   get pageItems(): readonly T[] {
-    return this.paginator
+    return this.paginator()
       ? this.sortedItems.slice(this.first, this.first + this.rows)
       : this.sortedItems;
   }
@@ -163,6 +163,9 @@ export class JDataViewComponent<T = unknown> {
 
   changeSort(event: Event): void {
     this.sortField = (event.target as HTMLSelectElement | null)?.value ?? '';
+    // Reset to the first page so re-sorting doesn't leave the user on a page
+    // index that may now be out of range.
+    this.first = 0;
     this.sortChange.emit(this.sortField);
   }
 

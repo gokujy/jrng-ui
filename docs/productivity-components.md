@@ -83,9 +83,7 @@ readonly tasks: JGanttTask[] = [
 Use `#jGanttTask` for custom bar content.
 
 ```html
-<ng-template #jGanttTask let-task>
-  {{ task.label }} - {{ task.progress }}%
-</ng-template>
+<ng-template #jGanttTask let-task> {{ task.label }} - {{ task.progress }}% </ng-template>
 ```
 
 Features include task labels, start and end dates, progress bars, optional dependency display, day/week/month scale, horizontal scrolling, and task templates.

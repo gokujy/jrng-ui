@@ -59,7 +59,8 @@ describe('JDataGridComponent', () => {
   });
 
   function table(): JTableComponent {
-    return fixture.debugElement.query(By.directive(JTableComponent)).componentInstance as JTableComponent;
+    return fixture.debugElement.query(By.directive(JTableComponent))
+      .componentInstance as JTableComponent;
   }
 
   it('renders typed rows through the table wrapper', () => {

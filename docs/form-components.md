@@ -80,13 +80,7 @@ Form controls support common inputs where applicable:
 `j-password` supports show/hide, clearable mode, and an optional strength meter. Feedback text uses jrng-ui locale labels.
 
 ```html
-<j-password
-  label="Password"
-  placeholder="Enter password"
-  feedback
-  clearable
-  fullWidth
-/>
+<j-password label="Password" placeholder="Enter password" feedback clearable fullWidth />
 ```
 
 ## Number Input
@@ -122,13 +116,7 @@ Form controls support common inputs where applicable:
 ## OTP
 
 ```html
-<j-input-otp
-  formControlName="code"
-  label="One-time code"
-  [length]="6"
-  numericOnly
-  mask
-/>
+<j-input-otp formControlName="code" label="One-time code" [length]="6" numericOnly mask />
 ```
 
 OTP supports auto focus next, paste distribution, backspace previous, CVA integration, and per-cell accessibility labels.

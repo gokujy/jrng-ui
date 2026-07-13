@@ -100,23 +100,13 @@ Date object mode:
 `j-time-picker` emits stable string values in `HH:mm` or `HH:mm:ss` format. It supports 12-hour or 24-hour display, minute steps, optional seconds, clearing, and CVA integration.
 
 ```html
-<j-time-picker
-  label="Start time"
-  [minuteStep]="15"
-  [hourFormat]="24"
-  [formControl]="startTime"
-/>
+<j-time-picker label="Start time" [minuteStep]="15" [hourFormat]="24" [formControl]="startTime" />
 ```
 
 12-hour display with seconds:
 
 ```html
-<j-time-picker
-  label="Task reminder"
-  [hourFormat]="12"
-  showSeconds
-  [formControl]="reminderTime"
-/>
+<j-time-picker label="Task reminder" [hourFormat]="12" showSeconds [formControl]="reminderTime" />
 ```
 
 The legacy `stepMinute` input is still accepted as an alias for `minuteStep`.

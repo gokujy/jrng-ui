@@ -5,12 +5,14 @@ import {
   ChangeDetectorRef,
   Component,
   ContentChild,
+  DestroyRef,
   ElementRef,
-  Input,
   QueryList,
   TemplateRef,
   ViewChildren,
   inject,
+  input,
+  linkedSignal,
   numberAttribute,
   output,
 } from '@angular/core';
@@ -46,17 +48,17 @@ export interface JMenuItemTemplateContext {
       data-jc-name="menu"
       data-jc-section="root"
       data-jc-extend="item separator submenu"
-      [attr.data-j-open]="popup && visible ? 'true' : null"
-      [attr.aria-label]="ariaLabel"
+      [attr.data-j-open]="popup() && visibleState() ? 'true' : null"
+      [attr.aria-label]="ariaLabel()"
       [style.left.px]="left"
       [style.top.px]="top"
       jClickOutside
       (jClickOutside)="hide()"
     >
-      @if (!popup || visible) {
+      @if (!popup() || visibleState()) {
         <ng-container
           [ngTemplateOutlet]="menuList"
-          [ngTemplateOutletContext]="{ items: model, level: 0, parentPath: 'root' }"
+          [ngTemplateOutletContext]="{ items: model(), level: 0, parentPath: 'root' }"
         />
       }
     </nav>
@@ -233,22 +235,40 @@ export class JMenuComponent {
   private readonly typeahead = jCreateTypeahead<JMenuItem>();
   private readonly openTimers = new Map<string, ReturnType<typeof setTimeout>>();
   private readonly closeTimers = new Map<string, ReturnType<typeof setTimeout>>();
+  private readonly destroyRef = inject(DestroyRef);
+
+  constructor() {
+    // Clear any pending submenu hover timers so their callbacks don't run
+    // against a destroyed view (leaked timer + work on a dead component).
+    this.destroyRef.onDestroy(() => {
+      for (const timer of this.openTimers.values()) {
+        clearTimeout(timer);
+      }
+      for (const timer of this.closeTimers.values()) {
+        clearTimeout(timer);
+      }
+      this.openTimers.clear();
+      this.closeTimers.clear();
+    });
+  }
 
   @ViewChildren('menuButton') private buttons?: QueryList<ElementRef<HTMLButtonElement>>;
   @ContentChild('jMenuItem', { read: TemplateRef })
   itemTemplate?: TemplateRef<JMenuItemTemplateContext>;
 
-  @Input() model: readonly JMenuItem[] = [];
-  @Input() ariaLabel = 'Menu';
-  @Input() styleClass = '';
-  @Input() target: HTMLElement | null = null;
-  @Input({ transform: booleanAttribute }) popup = false;
-  @Input({ transform: booleanAttribute }) visible = false;
-  @Input({ transform: numberAttribute }) submenuOpenDelay = 120;
-  @Input({ transform: numberAttribute }) submenuCloseDelay = 180;
+  readonly model = input<readonly JMenuItem[]>([]);
+  readonly ariaLabel = input('Menu');
+  readonly styleClass = input('');
+  readonly target = input<HTMLElement | null>(null);
+  readonly popup = input(false, { transform: booleanAttribute });
+  readonly visible = input(false, { transform: booleanAttribute });
+  readonly submenuOpenDelay = input(120, { transform: numberAttribute });
+  readonly submenuCloseDelay = input(180, { transform: numberAttribute });
 
   readonly visibleChange = output<boolean>();
   readonly itemClick = output<{ item: JMenuItem; originalEvent: Event }>();
+
+  protected readonly visibleState = linkedSignal(() => this.visible());
 
   activePath = 'root-0';
   openPaths = new Set<string>();
@@ -256,30 +276,32 @@ export class JMenuComponent {
   top = 0;
 
   get menuClasses(): string {
-    return ['j-menu', this.popup ? 'j-menu--popup' : '', this.styleClass].filter(Boolean).join(' ');
+    return ['j-menu', this.popup() ? 'j-menu--popup' : '', this.styleClass()]
+      .filter(Boolean)
+      .join(' ');
   }
 
   show(eventOrTarget?: MouseEvent | HTMLElement): void {
     this.positionFrom(eventOrTarget);
-    this.visible = true;
+    this.visibleState.set(true);
     this.visibleChange.emit(true);
-    this.activePath = this.firstEnabledPath(this.model) ?? 'root-0';
+    this.activePath = this.firstEnabledPath(this.model()) ?? 'root-0';
     this.changeDetectorRef.markForCheck();
     queueMicrotask(() => this.focusActive());
   }
 
   hide(): void {
-    if (!this.popup || !this.visible) {
+    if (!this.popup() || !this.visibleState()) {
       return;
     }
-    this.visible = false;
+    this.visibleState.set(false);
     this.openPaths.clear();
     this.visibleChange.emit(false);
     this.changeDetectorRef.markForCheck();
   }
 
   toggle(eventOrTarget?: MouseEvent | HTMLElement): void {
-    this.visible ? this.hide() : this.show(eventOrTarget);
+    this.visibleState() ? this.hide() : this.show(eventOrTarget);
   }
 
   activate(item: JMenuItem, event: Event, path: string): void {
@@ -295,7 +317,7 @@ export class JMenuComponent {
     const payload = { item, originalEvent: event };
     item.command?.(payload);
     this.itemClick.emit(payload);
-    if (this.popup) {
+    if (this.popup()) {
       this.hide();
     }
   }
@@ -368,7 +390,7 @@ export class JMenuComponent {
         this.openPaths.add(path);
         this.activePath = path;
         this.changeDetectorRef.markForCheck();
-      }, this.submenuOpenDelay),
+      }, this.submenuOpenDelay()),
     );
   }
 
@@ -380,7 +402,7 @@ export class JMenuComponent {
       setTimeout(() => {
         this.openPaths.delete(path);
         this.changeDetectorRef.markForCheck();
-      }, this.submenuCloseDelay),
+      }, this.submenuCloseDelay()),
     );
   }
 
@@ -476,7 +498,7 @@ export class JMenuComponent {
   }
 
   private flatEnabledItems(
-    items = this.model,
+    items = this.model(),
     parentPath = 'root',
   ): { readonly item: JMenuItem; readonly path: string }[] {
     return items.flatMap((item, index) => {
@@ -498,15 +520,15 @@ export class JMenuComponent {
   }
 
   private positionFrom(eventOrTarget?: MouseEvent | HTMLElement): void {
-    if (!this.popup) {
+    if (!this.popup()) {
       return;
     }
-    if (eventOrTarget instanceof MouseEvent) {
+    if (eventOrTarget && 'clientX' in eventOrTarget && 'clientY' in eventOrTarget) {
       this.left = eventOrTarget.clientX;
       this.top = eventOrTarget.clientY;
       return;
     }
-    const target = eventOrTarget ?? this.target;
+    const target = eventOrTarget ?? this.target();
     if (target) {
       const rect = target.getBoundingClientRect();
       this.left = rect.left;

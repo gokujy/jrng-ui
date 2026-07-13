@@ -4,16 +4,17 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  computed,
   ContentChild,
-  EventEmitter,
   forwardRef,
   inject,
-  Input,
-  Output,
+  input,
+  output,
+  signal,
   TemplateRef,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { JClickOutsideDirective } from 'jrng-ui/core';
+import { JRNG_CONFIG, JClickOutsideDirective } from 'jrng-ui/core';
 import { jCreateId } from 'jrng-ui/core';
 import {
   JNormalizedSelectionOption,
@@ -28,28 +29,29 @@ import { JInputVariant } from 'jrng-ui/input';
   imports: [JClickOutsideDirective, NgTemplateOutlet],
   template: `
     <div
-      class="j-combobox-field"
+      [class]="'j-combobox-field j-combobox-field--' + resolvedVariant"
       [class.is-open]="open"
       data-jc-name="combobox"
       data-jc-section="root"
       jClickOutside
       (jClickOutside)="close()"
     >
-      @if (label) {
-        <label class="j-combobox__label" data-jc-section="label" [for]="id">{{ label }}</label>
+      @if (label()) {
+        <label class="j-combobox__label" data-jc-section="label" [for]="id()">{{ label() }}</label>
       }
       <div class="j-combobox" data-jc-section="control">
         <input
           class="j-combobox__input"
           data-jc-section="input"
           role="combobox"
-          [id]="id"
+          [id]="id()"
           [value]="query"
-          [placeholder]="placeholder"
-          [disabled]="disabledState"
-          [readOnly]="readonly"
+          [placeholder]="placeholder()"
+          [disabled]="disabledState()"
+          [readOnly]="readonly()"
           [attr.aria-expanded]="open"
           [attr.aria-controls]="listboxId"
+          [attr.aria-activedescendant]="activeDescendant"
           (input)="handleInput($event)"
           (keydown)="handleKeydown($event)"
           (focus)="show()"
@@ -59,7 +61,7 @@ import { JInputVariant } from 'jrng-ui/input';
           class="j-combobox__button"
           data-jc-section="dropdown"
           type="button"
-          [disabled]="disabledState"
+          [disabled]="disabledState()"
           (click)="toggle()"
         >
           ⌄
@@ -68,7 +70,7 @@ import { JInputVariant } from 'jrng-ui/input';
       @if (open) {
         <div class="j-combobox__panel" data-jc-section="panel" [id]="listboxId" role="listbox">
           @if (!filteredOptions.length) {
-            <div class="j-combobox__empty" data-jc-section="empty">{{ emptyMessage }}</div>
+            <div class="j-combobox__empty" data-jc-section="empty">{{ emptyMessage() }}</div>
           }
           @for (option of filteredOptions; track option.value; let i = $index) {
             <button
@@ -76,6 +78,7 @@ import { JInputVariant } from 'jrng-ui/input';
               data-jc-section="option"
               role="option"
               type="button"
+              [id]="optionId(i)"
               [disabled]="option.disabled"
               [class.is-active]="i === activeIndex"
               [attr.aria-selected]="isSelected(option)"
@@ -122,6 +125,13 @@ import { JInputVariant } from 'jrng-ui/input';
         border-radius: var(--j-radius-md);
         display: flex;
         min-height: 2.5rem;
+      }
+      .j-combobox-field--filled .j-combobox {
+        background: var(--j-color-surface-muted);
+        border-color: transparent;
+      }
+      .j-combobox-field--outlined .j-combobox {
+        background: var(--j-color-surface);
       }
       .j-combobox-field.is-open .j-combobox,
       .j-combobox:focus-within {
@@ -191,39 +201,46 @@ import { JInputVariant } from 'jrng-ui/input';
 })
 export class JComboboxComponent implements ControlValueAccessor {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
+  private readonly config = inject(JRNG_CONFIG);
   @ContentChild('jComboboxItem', { read: TemplateRef }) itemTemplate?: TemplateRef<unknown>;
 
-  @Input() id = jCreateId('j-combobox');
-  @Input() label = '';
-  @Input() placeholder = '';
-  @Input() options: readonly JSelectionOptionSource[] = [];
-  @Input() optionLabel = 'label';
-  @Input() optionValue = 'value';
-  @Input() optionDisabled = 'disabled';
-  @Input() emptyMessage = 'No options found';
-  @Input() variant: JInputVariant = 'outlined';
-  @Input({ transform: booleanAttribute }) readonly = false;
-  @Input({ transform: booleanAttribute }) forceSelection = false;
+  readonly id = input(jCreateId('j-combobox'));
+  readonly label = input('');
+  readonly placeholder = input('');
+  readonly options = input<readonly JSelectionOptionSource[]>([]);
+  readonly optionLabel = input('label');
+  readonly optionValue = input('value');
+  readonly optionDisabled = input('disabled');
+  readonly emptyMessage = input('No options found');
+  readonly variant = input<JInputVariant | undefined>(undefined);
+  readonly readonly = input(false, { transform: booleanAttribute });
+  readonly disabled = input(false, { transform: booleanAttribute });
+  readonly forceSelection = input(false, { transform: booleanAttribute });
 
-  @Output() valueChange = new EventEmitter<unknown>();
-  @Output() searchChange = new EventEmitter<string>();
-  @Output() selectionChange = new EventEmitter<JNormalizedSelectionOption | null>();
+  readonly valueChange = output<unknown>();
+  readonly searchChange = output<string>();
+  readonly selectionChange = output<JNormalizedSelectionOption | null>();
 
   readonly listboxId = jCreateId('j-combobox-listbox');
   value: unknown = null;
   query = '';
   open = false;
-  disabledState = false;
+  readonly formDisabled = signal(false);
+  readonly disabledState = computed(() => this.disabled() || this.formDisabled());
   activeIndex = 0;
   onTouched: () => void = () => undefined;
   private onChange: (value: unknown) => void = () => undefined;
 
+  get resolvedVariant(): JInputVariant {
+    return this.variant() ?? this.config.inputStyle;
+  }
+
   get normalizedOptions(): readonly JNormalizedSelectionOption[] {
     return jNormalizeSelectionOptions(
-      this.options,
-      this.optionLabel,
-      this.optionValue,
-      this.optionDisabled,
+      this.options(),
+      this.optionLabel(),
+      this.optionValue(),
+      this.optionDisabled(),
     );
   }
 
@@ -232,6 +249,18 @@ export class JComboboxComponent implements ControlValueAccessor {
     return query
       ? this.normalizedOptions.filter((option) => option.label.toLowerCase().includes(query))
       : this.normalizedOptions;
+  }
+
+  /** Stable per-index id so the active option can be referenced via aria-activedescendant. */
+  optionId(index: number): string {
+    return `${this.listboxId}-option-${index}`;
+  }
+
+  /** Id of the active option, exposed on the combobox input for assistive tech. */
+  get activeDescendant(): string | null {
+    return this.open && this.activeIndex >= 0 && this.filteredOptions.length
+      ? this.optionId(this.activeIndex)
+      : null;
   }
 
   writeValue(value: unknown): void {
@@ -248,7 +277,7 @@ export class JComboboxComponent implements ControlValueAccessor {
     this.onTouched = fn;
   }
   setDisabledState(isDisabled: boolean): void {
-    this.disabledState = isDisabled;
+    this.formDisabled.set(isDisabled);
     this.changeDetectorRef.markForCheck();
   }
 
@@ -293,19 +322,20 @@ export class JComboboxComponent implements ControlValueAccessor {
     this.open ? this.close() : this.show();
   }
   show(): void {
-    if (!this.disabledState && !this.readonly) {
+    if (!this.disabledState() && !this.readonly()) {
       this.open = true;
       this.changeDetectorRef.markForCheck();
     }
   }
   close(): void {
     if (
-      this.forceSelection &&
+      this.forceSelection() &&
       !this.normalizedOptions.some((option) => option.label === this.query)
     ) {
       this.value = null;
       this.query = '';
       this.onChange(null);
+      this.valueChange.emit(null);
       this.selectionChange.emit(null);
     }
     this.open = false;

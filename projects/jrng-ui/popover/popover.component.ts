@@ -6,16 +6,22 @@ import {
   Component,
   DestroyRef,
   ElementRef,
-  Input,
   PLATFORM_ID,
   Renderer2,
   ViewChild,
   effect,
   inject,
+  input,
   model,
   output,
 } from '@angular/core';
 import { JClickOutsideDirective } from 'jrng-ui/core';
+import {
+  JAppendTo,
+  JOverlayHandle,
+  JOverlayService,
+  JOverlayStackService,
+} from 'jrng-ui/core';
 import { JZIndexManagerService } from 'jrng-ui/core';
 
 export type JPopoverPosition = 'top' | 'right' | 'bottom' | 'left';
@@ -31,6 +37,7 @@ export type JPopoverPosition = 'top' | 'right' | 'bottom' | 'left';
         jClickOutside
         (jClickOutside)="handleOutside()"
         role="dialog"
+        [attr.aria-label]="ariaLabel() || null"
         data-jc-name="popover"
         data-jc-section="root"
         data-j-open="true"
@@ -108,18 +115,23 @@ export class JPopoverComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly hostRef = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly zIndexManager = inject(JZIndexManagerService);
+  private readonly overlayStack = inject(JOverlayStackService);
+  private readonly overlay = inject(JOverlayService);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   @ViewChild('panel') private panel?: ElementRef<HTMLElement>;
 
   readonly visible = model(false);
-  @Input() position: JPopoverPosition = 'bottom';
-  @Input() styleClass = '';
-  @Input() appendTo: 'self' | 'body' | string = 'self';
-  @Input() target: HTMLElement | null = null;
-  @Input({ transform: booleanAttribute }) dismissable = true;
-  @Input({ transform: booleanAttribute }) closeOnEscape = true;
+  readonly position = input<JPopoverPosition>('bottom');
+  readonly styleClass = input('');
+  readonly appendTo = input<JAppendTo | undefined>(undefined);
+  // `target` is also set imperatively via show(), so it is a model (writable).
+  readonly target = model<HTMLElement | null>(null);
+  readonly dismissable = input(true, { transform: booleanAttribute });
+  readonly closeOnEscape = input(true, { transform: booleanAttribute });
+  /** Accessible label for the popover dialog (screen readers). */
+  readonly ariaLabel = input('');
 
   readonly opened = output<void>();
   readonly closed = output<void>();
@@ -127,17 +139,33 @@ export class JPopoverComponent {
   left = 0;
   top = 0;
   zIndex = 0;
+  private removeReposition?: () => void;
+  private overlayHandle?: JOverlayHandle;
 
   get popoverClasses(): string {
-    return ['j-popover', `j-popover--${this.position}`, this.styleClass].filter(Boolean).join(' ');
+    return ['j-popover', `j-popover--${this.position()}`, this.styleClass()]
+      .filter(Boolean)
+      .join(' ');
   }
 
   constructor() {
     effect(() => {
       if (this.visible()) {
         this.zIndex = this.zIndexManager.next(1200);
+        this.overlayStack.push(this);
         this.positionPanel();
+        this.attachRepositionListeners();
+        queueMicrotask(() => {
+          const panel = this.panel?.nativeElement;
+          if (panel) this.overlayHandle = this.overlay.portal(panel, this.appendTo());
+          this.positionPanel();
+        });
         this.opened.emit();
+      } else {
+        this.overlayStack.remove(this);
+        this.detachRepositionListeners();
+        this.overlayHandle?.detach();
+        this.overlayHandle = undefined;
       }
     });
 
@@ -146,7 +174,13 @@ export class JPopoverComponent {
         this.documentRef,
         'keydown',
         (event: KeyboardEvent) => {
-          if (this.visible() && this.closeOnEscape && event.key === 'Escape') {
+          // Only the front-most overlay should respond to Escape.
+          if (
+            this.visible() &&
+            this.closeOnEscape() &&
+            event.key === 'Escape' &&
+            this.overlayStack.isTopmost(this)
+          ) {
             event.preventDefault();
             this.hide();
           }
@@ -154,10 +188,16 @@ export class JPopoverComponent {
       );
       this.destroyRef.onDestroy(removeKeydown);
     }
+
+    this.destroyRef.onDestroy(() => {
+      this.overlayStack.remove(this);
+      this.detachRepositionListeners();
+      this.overlayHandle?.detach();
+    });
   }
 
   show(target?: HTMLElement): void {
-    this.target = target ?? this.target;
+    this.target.set(target ?? this.target());
     this.visible.set(true);
     queueMicrotask(() => this.positionPanel());
   }
@@ -175,7 +215,7 @@ export class JPopoverComponent {
   }
 
   handleOutside(): void {
-    if (this.dismissable) {
+    if (this.dismissable()) {
       this.hide();
     }
   }
@@ -184,7 +224,7 @@ export class JPopoverComponent {
     if (!this.isBrowser) {
       return;
     }
-    const anchor = this.target ?? this.hostRef.nativeElement;
+    const anchor = this.target() ?? this.hostRef.nativeElement;
     const rect = anchor.getBoundingClientRect();
     const panelRect = this.panel?.nativeElement.getBoundingClientRect();
     const width = panelRect?.width ?? 240;
@@ -196,8 +236,28 @@ export class JPopoverComponent {
       right: { left: rect.right + gap, top: rect.top },
       left: { left: rect.left - width - gap, top: rect.top },
     };
-    this.left = Math.max(8, positions[this.position].left);
-    this.top = Math.max(8, positions[this.position].top);
+    this.left = Math.max(8, positions[this.position()].left);
+    this.top = Math.max(8, positions[this.position()].top);
     this.changeDetectorRef.markForCheck();
+  }
+
+  private attachRepositionListeners(): void {
+    const view = this.documentRef.defaultView;
+    if (!this.isBrowser || !view || this.removeReposition) {
+      return;
+    }
+    // Keep the panel anchored while the page scrolls/resizes (it is position:fixed).
+    const reposition = (): void => this.positionPanel();
+    view.addEventListener('scroll', reposition, true);
+    view.addEventListener('resize', reposition);
+    this.removeReposition = () => {
+      view.removeEventListener('scroll', reposition, true);
+      view.removeEventListener('resize', reposition);
+    };
+  }
+
+  private detachRepositionListeners(): void {
+    this.removeReposition?.();
+    this.removeReposition = undefined;
   }
 }

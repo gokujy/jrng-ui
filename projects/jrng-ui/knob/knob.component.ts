@@ -3,12 +3,13 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  EventEmitter,
+  effect,
   forwardRef,
   inject,
-  Input,
+  input,
   numberAttribute,
-  Output,
+  output,
+  signal,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
@@ -22,12 +23,12 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
       data-jc-section="root"
       role="slider"
       tabindex="0"
-      [attr.aria-label]="ariaLabel || label || 'Value'"
-      [attr.aria-valuemin]="min"
-      [attr.aria-valuemax]="max"
+      [attr.aria-label]="ariaLabel() || label() || 'Value'"
+      [attr.aria-valuemin]="min()"
+      [attr.aria-valuemax]="max()"
       [attr.aria-valuenow]="value"
-      [attr.data-j-disabled]="isDisabled ? 'true' : null"
-      [attr.data-j-invalid]="invalid ? 'true' : null"
+      [attr.data-j-disabled]="isDisabled() ? 'true' : null"
+      [attr.data-j-invalid]="invalid() ? 'true' : null"
       (keydown)="handleKeydown($event)"
       (blur)="onTouched()"
     >
@@ -42,7 +43,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
           [attr.stroke-dashoffset]="dashOffset"
         ></circle>
       </svg>
-      <span class="j-knob__label" data-jc-section="label">{{ label || value }}</span>
+      <span class="j-knob__label" data-jc-section="label">{{ label() || value }}</span>
     </div>
   `,
   styles: [
@@ -97,32 +98,33 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 })
 export class JKnobComponent implements ControlValueAccessor {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
-  @Input() label = '';
-  @Input() ariaLabel = '';
-  @Input() styleClass = '';
-  @Input({ transform: numberAttribute }) min = 0;
-  @Input({ transform: numberAttribute }) max = 100;
-  @Input({ transform: numberAttribute }) step = 1;
-  @Input({ transform: booleanAttribute }) readonly = false;
-  @Input({ transform: booleanAttribute }) invalid = false;
-  @Output() valueChange = new EventEmitter<number>();
+  readonly label = input('');
+  readonly ariaLabel = input('');
+  readonly styleClass = input('');
+  readonly min = input(0, { transform: numberAttribute });
+  readonly max = input(100, { transform: numberAttribute });
+  readonly step = input(1, { transform: numberAttribute });
+  readonly readonly = input(false, { transform: booleanAttribute });
+  readonly invalid = input(false, { transform: booleanAttribute });
+  readonly disabled = input(false, { transform: booleanAttribute });
+  readonly valueChange = output<number>();
 
   value = 0;
-  isDisabled = false;
+  /** Writable disabled state so `setDisabledState()` (forms) works; seeded from the input. */
+  readonly isDisabled = signal(false);
   onTouched: () => void = () => undefined;
   private onChange: (value: number) => void = () => undefined;
 
-  @Input({ transform: booleanAttribute })
-  set disabled(value: boolean) {
-    this.isDisabled = value;
-    this.changeDetectorRef.markForCheck();
+  constructor() {
+    effect(() => this.isDisabled.set(this.disabled()));
   }
+
   get knobClasses(): string {
     return [
       'j-knob',
-      this.isDisabled ? 'is-disabled' : '',
-      this.invalid ? 'is-invalid' : '',
-      this.styleClass,
+      this.isDisabled() ? 'is-disabled' : '',
+      this.invalid() ? 'is-invalid' : '',
+      this.styleClass(),
     ]
       .filter(Boolean)
       .join(' ');
@@ -131,7 +133,7 @@ export class JKnobComponent implements ControlValueAccessor {
     return 2 * Math.PI * 42;
   }
   get percent(): number {
-    return (this.value - this.min) / Math.max(1, this.max - this.min);
+    return (this.value - this.min()) / Math.max(1, this.max() - this.min());
   }
   get dashArray(): string {
     return `${this.circumference} ${this.circumference}`;
@@ -140,7 +142,7 @@ export class JKnobComponent implements ControlValueAccessor {
     return this.circumference * (1 - Math.min(1, Math.max(0, this.percent)));
   }
   writeValue(value: number | null | undefined): void {
-    this.value = this.clamp(Number(value ?? this.min));
+    this.value = this.clamp(Number(value ?? this.min()));
     this.changeDetectorRef.markForCheck();
   }
   registerOnChange(fn: (value: number) => void): void {
@@ -150,11 +152,11 @@ export class JKnobComponent implements ControlValueAccessor {
     this.onTouched = fn;
   }
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled = isDisabled;
+    this.isDisabled.set(isDisabled);
     this.changeDetectorRef.markForCheck();
   }
   handleKeydown(event: KeyboardEvent): void {
-    if (this.isDisabled || this.readonly) return;
+    if (this.isDisabled() || this.readonly()) return;
     const direction =
       event.key === 'ArrowUp' || event.key === 'ArrowRight'
         ? 1
@@ -163,7 +165,7 @@ export class JKnobComponent implements ControlValueAccessor {
           : 0;
     if (!direction) return;
     event.preventDefault();
-    this.setValue(this.value + direction * this.step);
+    this.setValue(this.value + direction * this.step());
   }
   private setValue(value: number): void {
     this.value = this.clamp(value);
@@ -172,6 +174,6 @@ export class JKnobComponent implements ControlValueAccessor {
     this.changeDetectorRef.markForCheck();
   }
   private clamp(value: number): number {
-    return Math.min(this.max, Math.max(this.min, Number.isNaN(value) ? this.min : value));
+    return Math.min(this.max(), Math.max(this.min(), Number.isNaN(value) ? this.min() : value));
   }
 }

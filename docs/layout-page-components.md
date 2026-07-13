@@ -96,9 +96,7 @@ Use `j-container`, `j-stack`, and `j-grid-layout` to compose pages without gener
   <section>Results</section>
 </j-sidebar-layout>
 
-<j-responsive-sidebar [(open)]="filtersOpen" title="Filters">
-  Filter content
-</j-responsive-sidebar>
+<j-responsive-sidebar [(open)]="filtersOpen" title="Filters"> Filter content </j-responsive-sidebar>
 ```
 
 ## Splitter

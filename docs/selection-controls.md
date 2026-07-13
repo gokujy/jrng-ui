@@ -87,7 +87,15 @@ Array mode:
 
 ```html
 <j-slider label="Discount" [min]="0" [max]="100" [step]="5" [formControl]="discount" />
-<j-slider label="Price range" [min]="0" [max]="100000" [step]="1000" range tooltip [formControl]="priceRange" />
+<j-slider
+  label="Price range"
+  [min]="0"
+  [max]="100000"
+  [step]="1000"
+  range
+  tooltip
+  [formControl]="priceRange"
+/>
 <j-slider label="Level" vertical [formControl]="level" />
 ```
 

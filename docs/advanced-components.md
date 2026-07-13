@@ -25,6 +25,7 @@ import { JFileUploadComponent } from 'jrng-ui/file-upload';
 ```
 
 Supported:
+
 - basic and advanced modes
 - `multiple`
 - `accept`
@@ -60,11 +61,7 @@ import { JImagePreviewComponent } from 'jrng-ui/image-preview';
 ```
 
 ```html
-<j-image-preview
-  src="/assets/document.png"
-  alt="Document preview"
-  [(visible)]="previewOpen"
-/>
+<j-image-preview src="/assets/document.png" alt="Document preview" [(visible)]="previewOpen" />
 ```
 
 ## Avatar Group
@@ -90,11 +87,7 @@ import { JCopyButtonComponent } from 'jrng-ui/copy-button';
 ```
 
 ```html
-<j-copy-button
-  text="REC-2026-001"
-  ariaLabel="Copy record number"
-  (copied)="showCopied($event)"
-/>
+<j-copy-button text="REC-2026-001" ariaLabel="Copy record number" (copied)="showCopied($event)" />
 ```
 
 ## Status Chip
@@ -116,11 +109,7 @@ import { JColorPickerComponent } from 'jrng-ui/color-picker';
 ```
 
 ```html
-<j-color-picker
-  label="Brand color"
-  [formControl]="brandColor"
-  (valueChange)="color = $event"
-/>
+<j-color-picker label="Brand color" [formControl]="brandColor" (valueChange)="color = $event" />
 ```
 
 The color picker is a lightweight native color input with optional text input and ControlValueAccessor support.
@@ -132,14 +121,10 @@ import { JEditorComponent } from 'jrng-ui/editor';
 ```
 
 ```html
-<j-editor
-  label="Notes"
-  placeholder="Enter private notes"
-  [formControl]="notes"
-/>
+<j-editor label="Notes" placeholder="Enter private notes" [formControl]="notes" />
 ```
 
-`j-editor` is intentionally a placeholder wrapper API for now. It uses a textarea with ControlValueAccessor support and documents the future rich text surface without introducing a heavy editor dependency.
+`j-editor` is a dependency-free contenteditable rich-text control. HTML mode sanitizes initial values, programmatic updates, user edits, and paste through the same allowlist; text mode preserves literal text. It supports Reactive Forms and `ngModel`, independent readonly and disabled states, touched tracking, and a guarded command adapter for bold, italic, underline, lists, links, undo, and redo. The adapter isolates the legacy browser editing-command API so a future Selection/Range implementation will not change the public component API.
 
 ## Pending Items
 

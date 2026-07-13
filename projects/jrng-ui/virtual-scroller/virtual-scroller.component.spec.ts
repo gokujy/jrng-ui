@@ -1,16 +1,23 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { JVirtualScrollerComponent } from './virtual-scroller.component';
 
 describe('JVirtualScrollerComponent', () => {
+  let fixture: ComponentFixture<JVirtualScrollerComponent<number>>;
   let component: JVirtualScrollerComponent<number>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({ imports: [JVirtualScrollerComponent] });
-    component = TestBed.createComponent(JVirtualScrollerComponent<number>).componentInstance;
-    component.items = Array.from({ length: 100 }, (_, i) => i);
-    component.itemSize = 40;
-    component.viewportItems = 10;
+    fixture = TestBed.createComponent(JVirtualScrollerComponent<number>);
+    component = fixture.componentInstance;
+    fixture.componentRef.setInput(
+      'items',
+      Array.from({ length: 100 }, (_, i) => i),
+    );
+    fixture.componentRef.setInput('itemSize', 40);
+    fixture.componentRef.setInput('viewportItems', 10);
+    // Intentionally NOT calling detectChanges(): these tests exercise the
+    // no-rendered-viewport fallback path (signal inputs are set synchronously).
   });
 
   it('computes total height from item count and size', () => {

@@ -4,12 +4,14 @@ import {
   ElementRef,
   booleanAttribute,
   computed,
+  inject,
   input,
   numberAttribute,
   output,
   signal,
   viewChild,
 } from '@angular/core';
+import { JRNG_LOCALE } from 'jrng-ui/core';
 
 export type JFileUploadMode = 'basic' | 'advanced';
 export type JFileUploadStatus = 'pending' | 'uploading' | 'complete' | 'error' | 'cancelled';
@@ -63,10 +65,8 @@ export interface JFileUploadItemEvent {
 
       <div class="j-file-upload__header" data-jc-section="header">
         <div>
-          <strong>{{ title() }}</strong>
-          @if (description()) {
-            <p>{{ description() }}</p>
-          }
+          <strong>{{ title() || locale.uploadFiles }}</strong>
+          <p>{{ description() || locale.addFiles }}</p>
         </div>
         <div class="j-file-upload__actions">
           <button
@@ -75,7 +75,7 @@ export interface JFileUploadItemEvent {
             [disabled]="disabled()"
             (click)="openFilePicker()"
           >
-            {{ chooseLabel() }}
+            {{ chooseLabel() || locale.chooseFile }}
           </button>
           @if (!auto()) {
             <button
@@ -84,7 +84,7 @@ export interface JFileUploadItemEvent {
               [disabled]="!queue().length || disabled()"
               (click)="emitUpload()"
             >
-              {{ uploadLabel() }}
+              {{ uploadLabel() || locale.upload }}
             </button>
           }
           @if (queue().length) {
@@ -94,7 +94,7 @@ export interface JFileUploadItemEvent {
               [disabled]="disabled()"
               (click)="clear()"
             >
-              {{ cancelLabel() }}
+              {{ cancelLabel() || locale.clear }}
             </button>
           }
         </div>
@@ -102,8 +102,8 @@ export interface JFileUploadItemEvent {
 
       @if (mode() !== 'basic') {
         <div class="j-file-upload__drop" data-jc-section="dropzone">
-          <span aria-hidden="true">Upload</span>
-          <p>Drop files here or choose from your device.</p>
+          <span aria-hidden="true">{{ locale.upload }}</span>
+          <p>{{ locale.dropFilesHere }}</p>
         </div>
       }
 
@@ -126,14 +126,14 @@ export interface JFileUploadItemEvent {
               </div>
               <div class="j-file-upload__row-actions">
                 @if (item.status === 'error' || item.status === 'cancelled') {
-                  <button type="button" (click)="retry(item)">Retry</button>
+                  <button type="button" [disabled]="disabled()" (click)="retry(item)">{{ locale.retry }}</button>
                 }
                 @if (item.status === 'uploading') {
-                  <button type="button" (click)="cancel(item)">Cancel</button>
+                  <button type="button" [disabled]="disabled()" (click)="cancel(item)">{{ locale.cancel }}</button>
                 }
-                <button type="button" (click)="previewFile.emit(item)">Preview</button>
-                <button type="button" (click)="downloadFile.emit(item)">Download</button>
-                <button type="button" (click)="removeItem(item)">Remove</button>
+                <button type="button" [disabled]="disabled()" (click)="previewFile.emit(item)">{{ locale.preview }}</button>
+                <button type="button" [disabled]="disabled()" (click)="downloadFile.emit(item)">{{ locale.download }}</button>
+                <button type="button" [disabled]="disabled()" (click)="removeItem(item)">{{ locale.remove }}</button>
               </div>
             </li>
           }
@@ -141,7 +141,7 @@ export interface JFileUploadItemEvent {
       }
 
       @if (errors().length) {
-        <ul class="j-file-upload__errors" aria-live="polite">
+        <ul class="j-file-upload__errors" role="alert" aria-live="polite">
           @for (error of errors(); track error.file.name + ':' + error.message) {
             <li>{{ error.file.name }}: {{ error.message }}</li>
           }
@@ -299,17 +299,20 @@ export interface JFileUploadItemEvent {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JFileUploadComponent {
+  readonly locale = inject(JRNG_LOCALE);
   readonly fileInput = viewChild<ElementRef<HTMLInputElement>>('fileInput');
 
   readonly mode = input<JFileUploadMode>('advanced');
   readonly multiple = input(false, { transform: booleanAttribute });
   readonly accept = input('');
   readonly maxFileSize = input(0, { transform: numberAttribute });
-  readonly chooseLabel = input('Choose');
-  readonly uploadLabel = input('Upload');
-  readonly cancelLabel = input('Clear');
-  readonly title = input('Upload files');
-  readonly description = input('Add files to the upload queue.');
+  readonly maxFileCount = input(0, { transform: numberAttribute });
+  readonly maxTotalSize = input(0, { transform: numberAttribute });
+  readonly chooseLabel = input('');
+  readonly uploadLabel = input('');
+  readonly cancelLabel = input('');
+  readonly title = input('');
+  readonly description = input('');
   readonly auto = input(false, { transform: booleanAttribute });
   readonly customUpload = input(true, { transform: booleanAttribute });
   readonly disabled = input(false, { transform: booleanAttribute });
@@ -362,16 +365,19 @@ export class JFileUploadComponent {
   }
 
   openFilePicker(): void {
+    if (this.disabled()) return;
     this.fileInput()?.nativeElement.click();
   }
 
   removeItem(item: JFileUploadItem): void {
+    if (this.disabled()) return;
     this.queue.set(this.queue().filter((entry) => entry.id !== item.id));
     this.remove.emit(item.file);
     this.emitFilesChange();
   }
 
   clear(): void {
+    if (this.disabled()) return;
     this.queue.set([]);
     this.errors.set([]);
     this.emitFilesChange();
@@ -382,17 +388,23 @@ export class JFileUploadComponent {
   }
 
   emitUpload(): void {
-    const items = this.queue().map((item) => ({ ...item, status: 'uploading' as const }));
+    if (this.disabled() || !this.queue().length) return;
+    const items = this.queue().map((item) => ({
+      ...item,
+      status: this.customUpload() ? item.status : ('uploading' as const),
+    }));
     this.queue.set(items);
     this.upload.emit({ files: items.map((item) => item.file), items });
   }
 
   cancel(item: JFileUploadItem): void {
+    if (this.disabled()) return;
     this.updateItem(item.id, { status: 'cancelled', progress: item.progress });
     this.cancelUpload.emit({ item });
   }
 
   retry(item: JFileUploadItem): void {
+    if (this.disabled()) return;
     this.updateItem(item.id, { status: 'pending', progress: 0, error: undefined });
     this.retryUpload.emit({ item });
   }
@@ -406,6 +418,10 @@ export class JFileUploadComponent {
 
   setError(itemId: string, error: string): void {
     this.updateItem(itemId, { status: 'error', error });
+  }
+
+  setComplete(itemId: string): void {
+    this.updateItem(itemId, { status: 'complete', progress: 100, error: undefined });
   }
 
   formatSize(size: number): string {
@@ -427,12 +443,30 @@ export class JFileUploadComponent {
   private addFiles(files: readonly File[]): void {
     const accepted: JFileUploadItem[] = [];
     const errors: JFileUploadError[] = [];
+    const existingKeys = new Set(this.queue().map((item) => fileKey(item.file)));
+    let totalSize = this.queue().reduce((total, item) => total + item.file.size, 0);
     for (const file of files) {
-      const error = this.validateFile(file);
+      const duplicate = existingKeys.has(fileKey(file));
+      const countExceeded =
+        this.maxFileCount() > 0 && this.queue().length + accepted.length >= this.maxFileCount();
+      const totalExceeded =
+        this.maxTotalSize() > 0 && totalSize + file.size > this.maxTotalSize();
+      const fileError = this.validateFile(file);
+      const error = duplicate
+        ? 'File is already selected'
+        : fileError
+          ? fileError
+          : countExceeded
+          ? `Maximum file count is ${this.maxFileCount()}`
+          : totalExceeded
+            ? `Total size exceeds ${this.formatSize(this.maxTotalSize())}`
+            : '';
       if (error) {
         errors.push({ file, message: error });
       } else {
         accepted.push({ id: createFileId(file), file, progress: 0, status: 'pending' });
+        existingKeys.add(fileKey(file));
+        totalSize += file.size;
       }
     }
 
@@ -464,8 +498,15 @@ export class JFileUploadComponent {
   }
 }
 
+let nextFileId = 0;
+
 function createFileId(file: File): string {
-  return `${file.name}-${file.size}-${file.lastModified}-${Math.random().toString(36).slice(2)}`;
+  nextFileId += 1;
+  return `${file.name}-${file.size}-${file.lastModified}-${nextFileId}`;
+}
+
+function fileKey(file: File): string {
+  return `${file.name}\u0000${file.size}\u0000${file.lastModified}\u0000${file.type}`;
 }
 
 function matchesAccept(file: File, accept: string): boolean {

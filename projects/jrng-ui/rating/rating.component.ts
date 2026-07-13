@@ -3,12 +3,17 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  EventEmitter,
+  computed,
+  effect,
+  ElementRef,
   forwardRef,
   inject,
-  Input,
+  input,
   numberAttribute,
-  Output,
+  output,
+  QueryList,
+  signal,
+  ViewChildren,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { JSize } from 'jrng-ui/core';
@@ -18,41 +23,43 @@ import { JSize } from 'jrng-ui/core';
   imports: [],
   template: `
     <div
-      [class]="rootClasses"
+      [class]="rootClasses()"
       data-jc-name="rating"
       data-jc-section="root"
       role="radiogroup"
-      [attr.aria-label]="ariaLabel || label || 'Rating'"
-      [attr.data-j-disabled]="isDisabled ? 'true' : null"
-      [attr.data-j-invalid]="invalid ? 'true' : null"
+      [attr.aria-label]="ariaLabel() || label() || 'Rating'"
+      [attr.data-j-disabled]="isDisabled() ? 'true' : null"
+      [attr.data-j-invalid]="invalid() ? 'true' : null"
     >
-      @if (label) {
-        <span class="j-rating__label" data-jc-section="label">{{ label }}</span>
+      @if (label()) {
+        <span class="j-rating__label" data-jc-section="label">{{ label() }}</span>
       }
-      @if (cancel && !readonly) {
+      @if (cancel() && !readonly()) {
         <button
           class="j-rating__clear"
           data-jc-section="clear"
           type="button"
-          [disabled]="isDisabled"
+          [disabled]="isDisabled()"
           (click)="setValue(0)"
         >
           Clear
         </button>
       }
-      @for (star of stars; track star) {
+      @for (star of stars(); track star) {
         <button
+          #starButton
           class="j-rating__star"
           data-jc-section="item"
           type="button"
           role="radio"
-          [disabled]="isDisabled || readonly"
+          [disabled]="isDisabled() || readonly()"
+          [attr.tabindex]="rovingTabindex(star)"
           [class.is-active]="star <= value"
           [attr.data-j-active]="star <= value ? 'true' : null"
           [attr.aria-checked]="star === value"
-          [attr.aria-label]="star + ' of ' + stars.length"
+          [attr.aria-label]="star + ' of ' + stars().length"
           (click)="setValue(star)"
-          (keydown)="handleKeydown($event, star)"
+          (keydown)="handleKeydown($event)"
           (blur)="onTouched()"
         >
           ★
@@ -126,45 +133,46 @@ import { JSize } from 'jrng-ui/core';
 export class JRatingComponent implements ControlValueAccessor {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
-  @Input() label = '';
-  @Input() ariaLabel = '';
-  @Input() styleClass = '';
-  @Input() size: JSize = 'md';
-  @Input({ transform: numberAttribute }) max = 5;
-  @Input({ transform: booleanAttribute }) readonly = false;
-  @Input({ transform: booleanAttribute }) cancel = false;
-  @Input({ transform: booleanAttribute }) invalid = false;
+  @ViewChildren('starButton') private starButtons?: QueryList<ElementRef<HTMLButtonElement>>;
 
-  @Output() valueChange = new EventEmitter<number>();
+  readonly label = input('');
+  readonly ariaLabel = input('');
+  readonly styleClass = input('');
+  readonly size = input<JSize>('md');
+  readonly max = input(5, { transform: numberAttribute });
+  readonly readonly = input(false, { transform: booleanAttribute });
+  readonly cancel = input(false, { transform: booleanAttribute });
+  readonly invalid = input(false, { transform: booleanAttribute });
+  readonly disabled = input(false, { transform: booleanAttribute });
+
+  readonly valueChange = output<number>();
 
   value = 0;
-  isDisabled = false;
+  readonly isDisabled = signal(false);
 
   onTouched: () => void = () => undefined;
   private onChange: (value: number) => void = () => undefined;
 
-  @Input({ transform: booleanAttribute })
-  set disabled(value: boolean) {
-    this.isDisabled = value;
-    this.changeDetectorRef.markForCheck();
+  constructor() {
+    effect(() => this.isDisabled.set(this.disabled()));
   }
 
-  get stars(): readonly number[] {
-    return Array.from({ length: Math.max(0, this.max) }, (_, index) => index + 1);
-  }
+  readonly stars = computed<readonly number[]>(() =>
+    Array.from({ length: Math.max(0, this.max()) }, (_, index) => index + 1),
+  );
 
-  get rootClasses(): string {
-    return [
+  readonly rootClasses = computed(() =>
+    [
       'j-rating',
-      `j-rating--${this.size}`,
-      this.isDisabled ? 'is-disabled' : '',
-      this.readonly ? 'is-readonly' : '',
-      this.invalid ? 'is-invalid' : '',
-      this.styleClass,
+      `j-rating--${this.size()}`,
+      this.isDisabled() ? 'is-disabled' : '',
+      this.readonly() ? 'is-readonly' : '',
+      this.invalid() ? 'is-invalid' : '',
+      this.styleClass(),
     ]
       .filter(Boolean)
-      .join(' ');
-  }
+      .join(' '),
+  );
 
   writeValue(value: number | null | undefined): void {
     this.value = Number(value ?? 0);
@@ -180,12 +188,12 @@ export class JRatingComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled = isDisabled;
+    this.isDisabled.set(isDisabled);
     this.changeDetectorRef.markForCheck();
   }
 
   setValue(value: number): void {
-    if (this.isDisabled || this.readonly) {
+    if (this.isDisabled() || this.readonly()) {
       return;
     }
     this.value = value;
@@ -194,14 +202,30 @@ export class JRatingComponent implements ControlValueAccessor {
     this.changeDetectorRef.markForCheck();
   }
 
-  handleKeydown(event: KeyboardEvent, star: number): void {
+  /**
+   * Roving tabindex: only one star is in the tab order — the selected one, or the
+   * first star when nothing is selected. All others are removed from the tab sequence.
+   */
+  rovingTabindex(star: number): number {
+    const focusable = this.value >= 1 ? this.value : 1;
+    return star === focusable ? 0 : -1;
+  }
+
+  handleKeydown(event: KeyboardEvent): void {
+    // Compute the next value from the current selection (not the pressed star) so
+    // arrow keys advance the rating, and move focus to the newly-selected star.
     if (event.key === 'ArrowRight' || event.key === 'ArrowUp') {
       event.preventDefault();
-      this.setValue(Math.min(this.max, star + 1));
+      this.moveTo(Math.min(this.max(), this.value + 1));
     }
     if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') {
       event.preventDefault();
-      this.setValue(Math.max(0, star - 1));
+      this.moveTo(Math.max(1, this.value - 1));
     }
+  }
+
+  private moveTo(next: number): void {
+    this.setValue(next);
+    this.starButtons?.get(next - 1)?.nativeElement.focus();
   }
 }

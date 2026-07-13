@@ -25,6 +25,7 @@ export * from './media-query.service';
 export * from './overlay-keyboard';
 export * from './overlay-listeners';
 export * from './overlay-position';
+export * from './overlay-stack.service';
 export * from './overlay.service';
 export * from './observer-directives';
 export * from './pass-through';

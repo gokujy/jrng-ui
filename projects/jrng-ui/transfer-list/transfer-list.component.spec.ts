@@ -15,7 +15,9 @@ describe('JTransferListComponent', () => {
   let fixture: ComponentFixture<TransferListHostComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({ imports: [TransferListHostComponent] }).compileComponents();
+    await TestBed.configureTestingModule({
+      imports: [TransferListHostComponent],
+    }).compileComponents();
     fixture = TestBed.createComponent(TransferListHostComponent);
     fixture.detectChanges();
   });
@@ -32,7 +34,7 @@ describe('JTransferListComponent', () => {
 
     const component = fixture.debugElement.query(By.directive(JTransferListComponent))
       .componentInstance as JTransferListComponent;
-    expect(component.sourceFilter).toBe('user');
-    expect(component.targetFilter).toBe('order');
+    expect(component.sourceFilter()).toBe('user');
+    expect(component.targetFilter()).toBe('order');
   });
 });

@@ -1,10 +1,17 @@
-import { InjectionToken, makeEnvironmentProviders } from '@angular/core';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import {
+  InjectionToken,
+  PLATFORM_ID,
+  inject,
+  makeEnvironmentProviders,
+  provideEnvironmentInitializer,
+} from '@angular/core';
 
 export type JThemeMode = 'light' | 'dark' | 'system';
 export type JInputStyle = 'outlined' | 'filled';
 export type JAnimationMode = 'enabled' | 'disabled';
 export type JDensity = 'comfortable' | 'compact' | 'spacious';
-export type JAppendTo = 'self' | 'body' | string;
+export type JAppendTo = 'self' | 'body' | HTMLElement | string;
 
 export interface JrngZIndexConfig {
   readonly base: number;
@@ -24,6 +31,7 @@ export interface JrngConfig {
   readonly locale: string;
   readonly zIndex: JrngZIndexConfig;
   readonly appendTo: JAppendTo;
+  /** @deprecated Retained as a root styling hook; accessibility-critical styles remain. */
   readonly unstyled: boolean;
   readonly animation: JAnimationMode;
   readonly density: JDensity;
@@ -71,10 +79,21 @@ export function jMergeConfig(config: JrngConfigInput = {}): JrngConfig {
 }
 
 export function provideJrngUI(config: JrngConfigInput = {}) {
+  const merged = jMergeConfig(config);
   return makeEnvironmentProviders([
     {
       provide: JRNG_CONFIG,
-      useValue: jMergeConfig(config),
+      useValue: merged,
     },
+    provideEnvironmentInitializer(() => {
+      if (!isPlatformBrowser(inject(PLATFORM_ID))) return;
+      const root = inject(DOCUMENT).documentElement;
+      root.dataset['jDensity'] = merged.density;
+      root.dataset['jInputStyle'] = merged.inputStyle;
+      root.dataset['jLocale'] = merged.locale;
+      root.classList.toggle('j-unstyled', merged.unstyled);
+      root.classList.toggle('j-animations-disabled', merged.animation === 'disabled');
+      root.classList.toggle('j-dark', merged.themeMode === 'dark');
+    }),
   ]);
 }

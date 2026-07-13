@@ -3,11 +3,12 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  EventEmitter,
+  effect,
   forwardRef,
   inject,
-  Input,
-  Output,
+  input,
+  output,
+  signal,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { JSize } from 'jrng-ui/core';
@@ -21,21 +22,21 @@ import { JSize } from 'jrng-ui/core';
       data-jc-name="toggle-button"
       data-jc-section="root"
       type="button"
-      [disabled]="isDisabled"
+      [disabled]="isDisabled()"
       [attr.aria-pressed]="pressed"
       [attr.data-j-active]="pressed ? 'true' : null"
-      [attr.data-j-disabled]="isDisabled ? 'true' : null"
-      [attr.data-j-invalid]="invalid ? 'true' : null"
+      [attr.data-j-disabled]="isDisabled() ? 'true' : null"
+      [attr.data-j-invalid]="invalid() ? 'true' : null"
       (click)="toggle()"
       (blur)="onTouched()"
     >
-      @if (pressed && onIcon) {
-        <span data-jc-section="icon" aria-hidden="true">{{ onIcon }}</span>
+      @if (pressed && onIcon()) {
+        <span data-jc-section="icon" aria-hidden="true">{{ onIcon() }}</span>
       }
-      @if (!pressed && offIcon) {
-        <span data-jc-section="icon" aria-hidden="true">{{ offIcon }}</span>
+      @if (!pressed && offIcon()) {
+        <span data-jc-section="icon" aria-hidden="true">{{ offIcon() }}</span>
       }
-      <span data-jc-section="label">{{ pressed ? onLabel : offLabel }}</span>
+      <span data-jc-section="label">{{ pressed ? onLabel() : offLabel() }}</span>
     </button>
   `,
   styles: [
@@ -90,48 +91,47 @@ import { JSize } from 'jrng-ui/core';
 export class JToggleButtonComponent implements ControlValueAccessor {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
-  @Input() onLabel = 'On';
-  @Input() offLabel = 'Off';
-  @Input() onIcon = '';
-  @Input() offIcon = '';
-  @Input() trueValue: unknown = true;
-  @Input() falseValue: unknown = false;
-  @Input() styleClass = '';
-  @Input() size: JSize = 'md';
-  @Input({ transform: booleanAttribute }) readonly = false;
-  @Input({ transform: booleanAttribute }) invalid = false;
+  readonly onLabel = input('On');
+  readonly offLabel = input('Off');
+  readonly onIcon = input('');
+  readonly offIcon = input('');
+  readonly trueValue = input<unknown>(true);
+  readonly falseValue = input<unknown>(false);
+  readonly styleClass = input('');
+  readonly size = input<JSize>('md');
+  readonly readonly = input(false, { transform: booleanAttribute });
+  readonly invalid = input(false, { transform: booleanAttribute });
+  readonly disabled = input(false, { transform: booleanAttribute });
 
-  @Output() valueChange = new EventEmitter<unknown>();
+  readonly valueChange = output<unknown>();
 
   value: unknown = false;
-  isDisabled = false;
+  readonly isDisabled = signal(false);
   onTouched: () => void = () => undefined;
   private onChange: (value: unknown) => void = () => undefined;
 
-  @Input({ transform: booleanAttribute })
-  set disabled(value: boolean) {
-    this.isDisabled = value;
-    this.changeDetectorRef.markForCheck();
+  constructor() {
+    effect(() => this.isDisabled.set(this.disabled()));
   }
 
   get pressed(): boolean {
-    return Object.is(this.value, this.trueValue);
+    return Object.is(this.value, this.trueValue());
   }
 
   get buttonClasses(): string {
     return [
       'j-toggle-button',
-      `j-toggle-button--${this.size}`,
+      `j-toggle-button--${this.size()}`,
       this.pressed ? 'is-active' : '',
-      this.invalid ? 'is-invalid' : '',
-      this.styleClass,
+      this.invalid() ? 'is-invalid' : '',
+      this.styleClass(),
     ]
       .filter(Boolean)
       .join(' ');
   }
 
   writeValue(value: unknown): void {
-    this.value = value ?? this.falseValue;
+    this.value = value ?? this.falseValue();
     this.changeDetectorRef.markForCheck();
   }
   registerOnChange(fn: (value: unknown) => void): void {
@@ -141,12 +141,12 @@ export class JToggleButtonComponent implements ControlValueAccessor {
     this.onTouched = fn;
   }
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled = isDisabled;
+    this.isDisabled.set(isDisabled);
     this.changeDetectorRef.markForCheck();
   }
   toggle(): void {
-    if (this.isDisabled || this.readonly) return;
-    this.value = this.pressed ? this.falseValue : this.trueValue;
+    if (this.isDisabled() || this.readonly()) return;
+    this.value = this.pressed ? this.falseValue() : this.trueValue();
     this.onChange(this.value);
     this.valueChange.emit(this.value);
     this.changeDetectorRef.markForCheck();

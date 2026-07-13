@@ -36,14 +36,7 @@ rows = [
 ```
 
 ```html
-<j-table
-  [value]="rows"
-  [columns]="columns"
-  dataKey="id"
-  striped
-  hover
-  responsive
-/>
+<j-table [value]="rows" [columns]="columns" dataKey="id" striped hover responsive />
 ```
 
 ## Pagination
@@ -194,11 +187,7 @@ columns = [
 ```
 
 ```html
-<j-table
-  [value]="rows"
-  [columns]="columns"
-  (actionClick)="handleAction($event)"
-/>
+<j-table [value]="rows" [columns]="columns" (actionClick)="handleAction($event)" />
 ```
 
 ## Custom Templates
@@ -224,9 +213,7 @@ Or by using keyed templates with an input column model:
     <span class="j-table-status">{{ value }}</span>
   </ng-template>
 
-  <ng-template jTableHeader="amount" let-column>
-    {{ column.header }} total
-  </ng-template>
+  <ng-template jTableHeader="amount" let-column> {{ column.header }} total </ng-template>
 </j-table>
 ```
 

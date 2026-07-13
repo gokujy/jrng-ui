@@ -1,10 +1,11 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
-  Input,
-  Output,
   booleanAttribute,
+  computed,
+  input,
+  model,
+  signal,
 } from '@angular/core';
 import {
   JNormalizedSelectionOption,
@@ -20,28 +21,30 @@ import {
     <section class="j-pick-list" data-jc-name="pick-list" data-jc-section="root">
       <header class="j-pick-list__summary" data-jc-section="header">
         <div>
-          <strong>{{ sourceHeader }}</strong>
-          <span>{{ visibleSource.length }} available</span>
+          <strong>{{ sourceHeader() }}</strong>
+          <span>{{ visibleSource().length }} available</span>
         </div>
-        <button type="button" (click)="addAll()" [disabled]="!movableSource.length">Add all</button>
+        <button type="button" (click)="addAll()" [disabled]="!movableSource().length">
+          Add all
+        </button>
       </header>
 
       <div class="j-pick-list__layout">
         <section class="j-pick-list__available" data-jc-section="source">
-          @if (filter) {
+          @if (filter()) {
             <label class="j-pick-list__filter">
-              <span class="j-visually-hidden">{{ filterPlaceholder }}</span>
+              <span class="j-visually-hidden">{{ filterPlaceholder() }}</span>
               <input
                 type="search"
-                [placeholder]="filterPlaceholder"
-                [value]="sourceFilter"
+                [placeholder]="filterPlaceholder()"
+                [value]="sourceFilter()"
                 (input)="updateSourceFilter($event)"
               />
             </label>
           }
 
-          <div class="j-pick-list__options" role="list" [attr.aria-label]="sourceAriaLabel">
-            @for (item of visibleSource; track item.value) {
+          <div class="j-pick-list__options" role="list" [attr.aria-label]="sourceAriaLabel()">
+            @for (item of visibleSource(); track item.value) {
               <article class="j-pick-list__option" [class.j-is-disabled]="item.disabled">
                 <span>{{ item.label }}</span>
                 <button
@@ -62,16 +65,16 @@ import {
         <section class="j-pick-list__selected" data-jc-section="target">
           <header>
             <div>
-              <strong>{{ targetHeader }}</strong>
-              <span>{{ normalizedTarget.length }} selected</span>
+              <strong>{{ targetHeader() }}</strong>
+              <span>{{ normalizedTarget().length }} selected</span>
             </div>
-            <button type="button" (click)="removeAll()" [disabled]="!movableTarget.length">
+            <button type="button" (click)="removeAll()" [disabled]="!movableTarget().length">
               Clear
             </button>
           </header>
 
-          <div class="j-pick-list__picks" role="list" [attr.aria-label]="targetAriaLabel">
-            @for (item of normalizedTarget; track item.value; let index = $index) {
+          <div class="j-pick-list__picks" role="list" [attr.aria-label]="targetAriaLabel()">
+            @for (item of normalizedTarget(); track item.value; let index = $index) {
               <article class="j-pick-list__pick" [class.j-is-disabled]="item.disabled">
                 <span class="j-pick-list__index">{{ index + 1 }}</span>
                 <span class="j-pick-list__label">{{ item.label }}</span>
@@ -86,7 +89,7 @@ import {
                   </button>
                   <button
                     type="button"
-                    [disabled]="item.disabled || index === normalizedTarget.length - 1"
+                    [disabled]="item.disabled || index === normalizedTarget().length - 1"
                     [attr.aria-label]="'Move ' + item.label + ' down'"
                     (click)="move(item, 1)"
                   >
@@ -276,58 +279,56 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JPickListComponent {
-  @Input() source: readonly JSelectionOptionSource[] = [];
-  @Input() target: readonly JSelectionOptionSource[] = [];
-  @Input() optionLabel = 'label';
-  @Input() optionValue = 'value';
-  @Input() optionDisabled = 'disabled';
-  @Input() sourceHeader = 'Available options';
-  @Input() targetHeader = 'Selected options';
-  @Input() sourceAriaLabel = 'Available options';
-  @Input() targetAriaLabel = 'Selected options';
-  @Input() filterPlaceholder = 'Search available options';
-  @Input({ transform: booleanAttribute }) filter = false;
+  readonly source = model<readonly JSelectionOptionSource[]>([]);
+  readonly target = model<readonly JSelectionOptionSource[]>([]);
+  readonly optionLabel = input('label');
+  readonly optionValue = input('value');
+  readonly optionDisabled = input('disabled');
+  readonly sourceHeader = input('Available options');
+  readonly targetHeader = input('Selected options');
+  readonly sourceAriaLabel = input('Available options');
+  readonly targetAriaLabel = input('Selected options');
+  readonly filterPlaceholder = input('Search available options');
+  readonly filter = input(false, { transform: booleanAttribute });
 
-  @Output() sourceChange = new EventEmitter<readonly JSelectionOptionSource[]>();
-  @Output() targetChange = new EventEmitter<readonly JSelectionOptionSource[]>();
+  readonly sourceFilter = signal('');
 
-  sourceFilter = '';
+  readonly normalizedSource = computed<readonly JNormalizedSelectionOption[]>(() =>
+    jNormalizeSelectionOptions(
+      this.source(),
+      this.optionLabel(),
+      this.optionValue(),
+      this.optionDisabled(),
+    ),
+  );
 
-  get normalizedSource(): readonly JNormalizedSelectionOption[] {
-    return jNormalizeSelectionOptions(
-      this.source,
-      this.optionLabel,
-      this.optionValue,
-      this.optionDisabled,
-    );
-  }
+  readonly normalizedTarget = computed<readonly JNormalizedSelectionOption[]>(() =>
+    jNormalizeSelectionOptions(
+      this.target(),
+      this.optionLabel(),
+      this.optionValue(),
+      this.optionDisabled(),
+    ),
+  );
 
-  get normalizedTarget(): readonly JNormalizedSelectionOption[] {
-    return jNormalizeSelectionOptions(
-      this.target,
-      this.optionLabel,
-      this.optionValue,
-      this.optionDisabled,
-    );
-  }
-
-  get visibleSource(): readonly JNormalizedSelectionOption[] {
-    const query = this.sourceFilter.trim().toLocaleLowerCase();
+  readonly visibleSource = computed<readonly JNormalizedSelectionOption[]>(() => {
+    const query = this.sourceFilter().trim().toLocaleLowerCase();
+    const normalized = this.normalizedSource();
     return query
-      ? this.normalizedSource.filter((item) => item.label.toLocaleLowerCase().includes(query))
-      : this.normalizedSource;
-  }
+      ? normalized.filter((item) => item.label.toLocaleLowerCase().includes(query))
+      : normalized;
+  });
 
-  get movableSource(): readonly JNormalizedSelectionOption[] {
-    return this.normalizedSource.filter((item) => !item.disabled);
-  }
+  readonly movableSource = computed<readonly JNormalizedSelectionOption[]>(() =>
+    this.normalizedSource().filter((item) => !item.disabled),
+  );
 
-  get movableTarget(): readonly JNormalizedSelectionOption[] {
-    return this.normalizedTarget.filter((item) => !item.disabled);
-  }
+  readonly movableTarget = computed<readonly JNormalizedSelectionOption[]>(() =>
+    this.normalizedTarget().filter((item) => !item.disabled),
+  );
 
   updateSourceFilter(event: Event): void {
-    this.sourceFilter = event.target instanceof HTMLInputElement ? event.target.value : '';
+    this.sourceFilter.set(event.target instanceof HTMLInputElement ? event.target.value : '');
   }
 
   add(item: JNormalizedSelectionOption): void {
@@ -341,17 +342,17 @@ export class JPickListComponent {
   }
 
   addAll(): void {
-    this.moveToTarget(this.movableSource.map((item) => item.value));
+    this.moveToTarget(this.movableSource().map((item) => item.value));
   }
 
   removeAll(): void {
-    this.moveToSource(this.movableTarget.map((item) => item.value));
+    this.moveToSource(this.movableTarget().map((item) => item.value));
   }
 
   move(item: JNormalizedSelectionOption, direction: -1 | 1): void {
     if (item.disabled) return;
-    const next = [...this.target];
-    const index = this.normalizedTarget.findIndex((candidate) =>
+    const next = [...this.target()];
+    const index = this.normalizedTarget().findIndex((candidate) =>
       jSameSelectionValue(candidate.value, item.value),
     );
     const targetIndex = index + direction;
@@ -360,34 +361,29 @@ export class JPickListComponent {
       next[targetIndex] as JSelectionOptionSource,
       next[index] as JSelectionOptionSource,
     ];
-    this.target = next;
-    this.targetChange.emit(this.target);
+    this.target.set(next);
   }
 
   private moveToTarget(values: readonly unknown[]): void {
-    const moving = this.source.filter((option) => this.includesValue(option, values));
+    const moving = this.source().filter((option) => this.includesValue(option, values));
     if (!moving.length) return;
-    this.source = this.source.filter((option) => !this.includesValue(option, values));
-    this.target = [...this.target, ...moving];
-    this.sourceChange.emit(this.source);
-    this.targetChange.emit(this.target);
+    this.source.set(this.source().filter((option) => !this.includesValue(option, values)));
+    this.target.set([...this.target(), ...moving]);
   }
 
   private moveToSource(values: readonly unknown[]): void {
-    const moving = this.target.filter((option) => this.includesValue(option, values));
+    const moving = this.target().filter((option) => this.includesValue(option, values));
     if (!moving.length) return;
-    this.target = this.target.filter((option) => !this.includesValue(option, values));
-    this.source = [...this.source, ...moving];
-    this.sourceChange.emit(this.source);
-    this.targetChange.emit(this.target);
+    this.target.set(this.target().filter((option) => !this.includesValue(option, values)));
+    this.source.set([...this.source(), ...moving]);
   }
 
   private includesValue(option: JSelectionOptionSource, values: readonly unknown[]): boolean {
     const normalized = jNormalizeSelectionOptions(
       [option],
-      this.optionLabel,
-      this.optionValue,
-      this.optionDisabled,
+      this.optionLabel(),
+      this.optionValue(),
+      this.optionDisabled(),
     )[0];
     return values.some((value) => jSameSelectionValue(value, normalized?.value));
   }

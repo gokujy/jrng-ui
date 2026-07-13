@@ -122,7 +122,7 @@ export class JOrderListComponent {
 
   private shiftSelected(direction: 1 | -1): void {
     const indexes = [...this.selectedIndexes].sort((a, b) => direction > 0 ? b - a : a - b);
-    let next = [...this.value];
+    const next = [...this.value];
     for (const index of indexes) {
       const target = index + direction;
       if (target < 0 || target >= next.length) continue;

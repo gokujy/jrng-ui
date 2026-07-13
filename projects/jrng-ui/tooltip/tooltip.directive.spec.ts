@@ -20,9 +20,10 @@ class DisabledHostComponent {}
 
 const tick = () => new Promise((resolve) => setTimeout(resolve, 0));
 
-function getDirective(
-  fixtureComponent: new () => object,
-): { directive: JTooltipDirective; destroy: () => void } {
+function getDirective(fixtureComponent: new () => object): {
+  directive: JTooltipDirective;
+  destroy: () => void;
+} {
   const fixture = TestBed.createComponent(fixtureComponent);
   fixture.detectChanges();
   const directive = fixture.debugElement

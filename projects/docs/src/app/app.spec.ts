@@ -58,9 +58,21 @@ describe('App', () => {
     expect(app.navOpen()).toBe(false);
     app.toggleNavigation();
     expect(app.navOpen()).toBe(true);
-    const before = app.mode();
-    app.cycleMode();
-    expect(app.mode()).not.toBe(before);
+    const before = app.isDark();
+    app.toggleDark();
+    expect(app.isDark()).toBe(!before);
+  });
+
+  it('opens the theme configurator and applies a color preset', () => {
+    const fixture = TestBed.createComponent(App);
+    const app = fixture.componentInstance;
+    expect(app.configOpen()).toBe(false);
+    app.toggleConfig();
+    expect(app.configOpen()).toBe(true);
+    app.selectPreset('emerald');
+    expect(app.activePreset()).toBe('emerald');
+    app.closeConfig();
+    expect(app.configOpen()).toBe(false);
   });
 
   it('updates canonical and social metadata for documentation routes', async () => {

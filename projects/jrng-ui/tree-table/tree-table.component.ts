@@ -270,18 +270,9 @@ export class JTreeTableComponent {
 
   readonly visibleEntries = computed(() => {
     const nodes = this.filterValue() ? this.filterNodes(this.value()) : this.value();
-    const entries = this.flatten(nodes);
-    if (!this.sortField() || this.sortOrder() === 0) {
-      return entries;
-    }
-    return [...entries].sort(
-      (a, b) =>
-        String(
-          this.cellValue(a.node, { field: this.sortField(), header: this.sortField() }),
-        ).localeCompare(
-          String(this.cellValue(b.node, { field: this.sortField(), header: this.sortField() })),
-        ) * this.sortOrder(),
-    );
+    // Sorting happens per sibling group inside flatten(), so children stay
+    // grouped under their parent instead of being interleaved by a global sort.
+    return this.flatten(nodes);
   });
 
   setFilter(event: Event): void {
@@ -369,13 +360,32 @@ export class JTreeTableComponent {
   }
 
   private flatten(nodes: readonly JTreeNode[], level = 1, parent = 'root'): JTreeTableEntry[] {
-    return nodes.flatMap((node, index) => {
+    // Pair each node with its original index so keys (and therefore expand
+    // state) stay stable regardless of the active sort order.
+    const ordered = this.sortSiblings(nodes.map((node, index) => ({ node, index })));
+    return ordered.flatMap(({ node, index }) => {
       const key = node.key ?? `${parent}-${index}-${node.label}`;
       const children = this.expandedKeys().has(key)
         ? this.flatten(node.children ?? [], level + 1, key)
         : [];
       return [{ node, level, key }, ...children];
     });
+  }
+
+  private sortSiblings(
+    entries: { node: JTreeNode; index: number }[],
+  ): { node: JTreeNode; index: number }[] {
+    const field = this.sortField();
+    const order = this.sortOrder();
+    if (!field || order === 0) {
+      return entries;
+    }
+    return [...entries].sort(
+      (a, b) =>
+        String(this.cellValue(a.node, { field, header: field })).localeCompare(
+          String(this.cellValue(b.node, { field, header: field })),
+        ) * order,
+    );
   }
 
   private filterNodes(nodes: readonly JTreeNode[]): readonly JTreeNode[] {

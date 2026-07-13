@@ -3,8 +3,8 @@ import {
   ChangeDetectionStrategy,
   Component,
   ContentChild,
-  Input,
   TemplateRef,
+  input,
 } from '@angular/core';
 import { JMenuItem, JMenuItemTemplateContext } from 'jrng-ui/menu';
 
@@ -25,10 +25,10 @@ export interface JMegaMenuItem extends JMenuItem {
       class="j-mega-menu"
       data-jc-name="mega-menu"
       data-jc-section="root"
-      [attr.aria-label]="ariaLabel"
+      [attr.aria-label]="ariaLabel()"
     >
       <ul class="j-mega-menu__triggers">
-        @for (item of model; track item.label || item.icon || $index) {
+        @for (item of model(); track item.label || item.icon || $index) {
           <li
             class="j-mega-menu__trigger"
             (mouseenter)="activeItem = item"
@@ -38,7 +38,7 @@ export interface JMegaMenuItem extends JMenuItem {
             @if (activeItem === item) {
               <div
                 class="j-mega-menu__panel"
-                [style.grid-template-columns]="'repeat(' + columns + ', minmax(0, 1fr))'"
+                [style.grid-template-columns]="'repeat(' + columns() + ', minmax(0, 1fr))'"
               >
                 @for (group of item.groups || []; track group.label) {
                   <section class="j-mega-menu__group">
@@ -138,9 +138,9 @@ export interface JMegaMenuItem extends JMenuItem {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JMegaMenuComponent {
-  @Input() model: readonly JMegaMenuItem[] = [];
-  @Input() ariaLabel = 'Mega menu';
-  @Input() columns = 3;
+  readonly model = input<readonly JMegaMenuItem[]>([]);
+  readonly ariaLabel = input('Mega menu');
+  readonly columns = input(3);
   @ContentChild('jMegaMenuItem', { read: TemplateRef })
   itemTemplate?: TemplateRef<JMenuItemTemplateContext>;
 
