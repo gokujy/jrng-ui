@@ -24,6 +24,7 @@ import { JRNG_LOCALE } from 'jrng-ui/core';
 import { JPassThrough } from 'jrng-ui/core';
 import { JSize } from 'jrng-ui/core';
 import { jCreateId } from 'jrng-ui/core';
+import { JIconComponent } from 'jrng-ui/icon';
 
 export interface JDateRangeValue {
   readonly start: string | Date | null;
@@ -54,7 +55,7 @@ interface JRangePreset {
 
 @Component({
   selector: 'j-date-range-picker',
-  imports: [JClickOutsideDirective],
+  imports: [JClickOutsideDirective, JIconComponent],
   template: `
     <div
       [class]="rootClasses"
@@ -80,18 +81,20 @@ interface JRangePreset {
           class="j-date-range-picker__control"
           type="button"
           [disabled]="isDisabled() || readonly()"
-        [attr.aria-labelledby]="label() ? labelId : null"
-        [attr.aria-describedby]="describedBy"
-        [attr.aria-invalid]="hasError ? 'true' : null"
-        [attr.aria-expanded]="isOpen"
-        [attr.aria-controls]="isOpen ? panelId : null"
-        (click)="toggle()"
-        (keydown)="handleTriggerKeydown($event)"
+          [attr.aria-labelledby]="label() ? labelId : null"
+          [attr.aria-describedby]="describedBy"
+          [attr.aria-invalid]="hasError ? 'true' : null"
+          [attr.aria-expanded]="isOpen"
+          [attr.aria-controls]="isOpen ? panelId : null"
+          (click)="toggle()"
+          (keydown)="handleTriggerKeydown($event)"
         >
           <span class="j-date-range-picker__value" [class.is-placeholder]="!startDate && !endDate">
             {{ displayValue || placeholder() }}
           </span>
-          <span class="j-date-range-picker__icon" aria-hidden="true">cal</span>
+          <span class="j-date-range-picker__icon" aria-hidden="true">
+            <j-icon name="calendar" size="1.125rem" />
+          </span>
         </button>
         @if (canClear) {
           <button
@@ -100,7 +103,7 @@ interface JRangePreset {
             (click)="clearValue($event)"
             [attr.aria-label]="locale.clear"
           >
-            x
+            <j-icon name="close" size="1rem" aria-hidden="true" />
           </button>
         }
       </div>
@@ -133,7 +136,7 @@ interface JRangePreset {
                 aria-label="Previous month"
                 (click)="previousMonth()"
               >
-                &lt;
+                <j-icon name="chevron-left" size="1rem" aria-hidden="true" />
               </button>
               <span class="j-date-range-picker__heading"
                 >{{ monthNames[viewDate.getMonth()] }} {{ viewDate.getFullYear() }}</span
@@ -144,7 +147,7 @@ interface JRangePreset {
                 aria-label="Next month"
                 (click)="nextMonth()"
               >
-                &gt;
+                <j-icon name="chevron-right" size="1rem" aria-hidden="true" />
               </button>
             </div>
 

@@ -95,8 +95,10 @@ describe('JSelectComponent', () => {
     host.error = 'Required';
     detectHostChanges();
 
-    const control = fixture.debugElement.query(By.css('.j-select-field')).nativeElement as HTMLElement;
-    const message = fixture.debugElement.query(By.css('.j-select-field__message')).nativeElement as HTMLElement;
+    const control = fixture.debugElement.query(By.css('.j-select-field'))
+      .nativeElement as HTMLElement;
+    const message = fixture.debugElement.query(By.css('.j-select-field__message'))
+      .nativeElement as HTMLElement;
 
     expect(control.classList).toContain('is-invalid');
     expect(message.textContent).toContain('Required');
@@ -111,7 +113,8 @@ describe('JSelectComponent', () => {
 
     expect(trigger().getAttribute('aria-expanded')).toBe('true');
 
-    const filter = fixture.debugElement.query(By.css('.j-select__filter')).nativeElement as HTMLInputElement;
+    const filter = fixture.debugElement.query(By.css('.j-select__filter'))
+      .nativeElement as HTMLInputElement;
     expect(filter.getAttribute('aria-label')).toBe('Search');
 
     filter.value = 'app';
@@ -125,9 +128,9 @@ describe('JSelectComponent', () => {
 
     trigger().dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
     detectHostChanges();
-    fixture.debugElement.query(By.css('.j-select__filter')).nativeElement.dispatchEvent(
-      new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }),
-    );
+    fixture.debugElement
+      .query(By.css('.j-select__filter'))
+      .nativeElement.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
     detectHostChanges();
     await Promise.resolve();
 

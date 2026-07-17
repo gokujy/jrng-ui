@@ -200,11 +200,12 @@ function verifyForbiddenContent(files) {
 }
 
 function verifySizeBudgets(report) {
-  // v0.0.9 ships 126 independently tree-shakable entrypoints. The declaration
+  // v0.0.9 ships 131 independently tree-shakable entrypoints. The declaration
   // and FESM pairs are legitimate runtime package content; these limits retain
-  // roughly an 8% regression margin over the measured release candidate.
+  // a narrow regression margin over the measured release candidate, including
+  // the typed Table family declarations and compatibility surface.
   const maximumPackedBytes = 400_000;
-  const maximumUnpackedBytes = 2_650_000;
+  const maximumUnpackedBytes = 2_800_000;
   const maximumFileCount = 300;
   const maximumFileBytes = 256_000;
 

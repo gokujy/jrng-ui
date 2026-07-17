@@ -22,19 +22,25 @@ export interface JPaginatorChange {
   readonly pageSize: number;
 }
 
+export type JPaginatorVariant = 'default' | 'simple';
+
 @Component({
   selector: 'j-paginator',
   imports: [],
   template: `
-    <nav class="j-paginator" aria-label="Pagination">
-      @if (showCurrentPageReport()) {
+    <nav
+      [class]="'j-paginator j-paginator--' + variant()"
+      [attr.data-j-variant]="variant()"
+      aria-label="Pagination"
+    >
+      @if (showCurrentPageReport() || variant() === 'simple') {
         <span class="j-paginator__report">{{ currentReport }}</span>
       }
 
       <div class="j-paginator__controls">
         <button
           type="button"
-          class="j-paginator__button"
+          class="j-paginator__button j-paginator__first"
           aria-label="First page"
           [disabled]="currentPage <= 1"
           (click)="setPage(1)"
@@ -54,7 +60,7 @@ export interface JPaginatorChange {
         @for (pageNumber of pageLinks; track pageNumber) {
           <button
             type="button"
-            class="j-paginator__button"
+            class="j-paginator__button j-paginator__page-link"
             [class.is-active]="pageNumber === currentPage"
             [attr.aria-current]="pageNumber === currentPage ? 'page' : null"
             (click)="setPage(pageNumber)"
@@ -62,6 +68,10 @@ export interface JPaginatorChange {
             {{ pageNumber }}
           </button>
         }
+
+        <span class="j-paginator__page-count" aria-live="polite">
+          Page {{ currentPage }} of {{ pageCount }}
+        </span>
 
         <button
           type="button"
@@ -74,7 +84,7 @@ export interface JPaginatorChange {
         </button>
         <button
           type="button"
-          class="j-paginator__button"
+          class="j-paginator__button j-paginator__last"
           aria-label="Last page"
           [disabled]="currentPage >= pageCount"
           (click)="setPage(pageCount)"
@@ -131,6 +141,35 @@ export interface JPaginatorChange {
         cursor: pointer;
       }
 
+      .j-paginator__page-count {
+        display: none;
+      }
+
+      .j-paginator--simple .j-paginator__controls {
+        background: var(--j-color-surface, #ffffff);
+        border: 1px solid var(--j-color-border, #dbe2ea);
+        border-radius: var(--j-radius-full, 999px);
+        padding: var(--j-spacing-xs, 0.25rem);
+      }
+
+      .j-paginator--simple .j-paginator__first,
+      .j-paginator--simple .j-paginator__last,
+      .j-paginator--simple .j-paginator__page-link {
+        display: none;
+      }
+
+      .j-paginator--simple .j-paginator__page-count {
+        color: var(--j-color-text, #111827);
+        display: inline-block;
+        min-width: 6.5rem;
+        text-align: center;
+      }
+
+      .j-paginator--simple .j-paginator__button {
+        border: 0;
+        border-radius: var(--j-radius-full, 999px);
+      }
+
       .j-paginator__button.is-active {
         background: var(--j-color-primary, #4f46e5);
         border-color: var(--j-color-primary, #4f46e5);
@@ -173,6 +212,7 @@ export class JPaginatorComponent {
   readonly pageLinkSize = input(5, { transform: numberAttribute });
   readonly showCurrentPageReport = input(false, { transform: booleanAttribute });
   readonly currentPageReportTemplate = input('Showing {first} to {last} of {totalRecords}');
+  readonly variant = input<JPaginatorVariant>('default');
 
   /** `page`/`pageSize` are convenience inputs that map onto `first`/`rows`. */
   readonly pageInput = input<number | undefined>(undefined, { alias: 'page' });

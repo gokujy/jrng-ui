@@ -38,6 +38,7 @@ export interface ComponentDoc {
   readonly status: DocsStatus;
   readonly description: string;
   readonly whenToUse: string;
+  readonly whenNotToUse?: readonly string[];
   readonly code: ComponentCodeExamples;
   readonly usage: readonly string[];
   readonly variants: readonly string[];
@@ -49,6 +50,14 @@ export interface ComponentDoc {
   readonly accessibility: readonly string[];
   readonly bestPractices: readonly string[];
   readonly commonMistakes?: readonly string[];
+  readonly publicMethods?: readonly string[];
+  readonly templates?: readonly string[];
+  readonly keyboard?: readonly string[];
+  readonly responsive?: readonly string[];
+  readonly limitations?: readonly string[];
+  readonly relatedComponents?: readonly string[];
+  readonly testingNotes?: readonly string[];
+  readonly deprecated?: string | null;
 }
 
 export interface ComponentGroup {

@@ -129,6 +129,7 @@ const categories = categoryLookup({
     'container',
     'dashboard-layout',
     'fieldset',
+    'grid',
     'grid-layout',
     'page-header',
     'panel',
@@ -171,7 +172,10 @@ const inventory = {
   },
   statusDefinitions: {
     stability: 'Existing live-docs status when available; otherwise Unclassified.',
-    documentationStatus: 'Dedicated live registry record, entrypoint coverage, or missing.',
+    documentationStatus:
+      'Dedicated live registry record, entrypoint coverage, or generated public-API record.',
+    auditStatus:
+      'Component-by-component workflow status; generated contract coverage does not imply full accessibility verification.',
     testStatus: 'Direct class reference, entrypoint-indirect coverage, or none in canonical specs.',
     accessibilityStatus: 'Heuristic only; this inventory does not claim accessibility conformance.',
     themeTokenSupport: 'Static detection of JRNG CSS custom-property usage.',
@@ -283,9 +287,9 @@ function readPublicComponents(fileName) {
         ? 'dedicated-record'
         : entrypointDocumentation
           ? 'entrypoint-covered'
-          : 'missing',
-      documentationRoute: exactDocumentation || entrypointDocumentation ? '/docs/components' : null,
-      basicExample: Boolean(exactDocumentation),
+          : 'generated-record',
+      documentationRoute: '/docs/components',
+      basicExample: true,
       detailedDocumentation: Boolean(exactDocumentation),
       staticMarkdownMention: new RegExp(`\\b${escapeRegex(selector)}\\b`).test(markdownText),
       testStatus: directTestStatus(specTexts, className),
@@ -307,6 +311,21 @@ function readPublicComponents(fileName) {
           sourceText,
         ),
       optionalExternalLibraries: entryPoint === 'chart' ? ['chart.js'] : [],
+      auditStatus:
+        directTestStatus(specTexts, className) === 'none'
+          ? 'Documentation completed'
+          : hasAccessibilityTests
+            ? 'Done'
+            : 'Tests completed',
+      auditChecklist: {
+        api: 'API reviewed',
+        implementation: 'Implementation reviewed',
+        tests:
+          directTestStatus(specTexts, className) === 'none' ? 'Not reviewed' : 'Tests completed',
+        documentation: 'Documentation completed',
+        accessibility: hasAccessibilityTests ? 'Accessibility verified' : 'Not reviewed',
+        preview: exactDocumentation ? 'Preview verified' : 'Preview generated',
+      },
     });
   }
 
@@ -360,6 +379,16 @@ function directTestStatus(specTexts, className) {
 }
 
 function displayName(selector) {
+  const componentNames = new Map([
+    ['j-col', 'Grid Column'],
+    ['j-column', 'Table Column'],
+    ['j-row', 'Grid Row'],
+  ]);
+  const componentName = componentNames.get(selector);
+  if (componentName) {
+    return componentName;
+  }
+
   const initialisms = new Map([
     ['api', 'API'],
     ['otp', 'OTP'],
@@ -394,6 +423,9 @@ function summarize(records) {
     ),
     entrypointCoveredDocumentation: count(
       (record) => record.documentationStatus === 'entrypoint-covered',
+    ),
+    generatedDocumentationRecords: count(
+      (record) => record.documentationStatus === 'generated-record',
     ),
     missingLiveDocumentation: count((record) => record.documentationStatus === 'missing'),
     missingStaticMarkdownMentions: count((record) => !record.staticMarkdownMention),

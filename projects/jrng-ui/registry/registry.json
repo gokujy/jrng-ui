@@ -14,10 +14,17 @@
         "activeIndex",
         "disabled",
         "header",
-        "multiple"
+        "multiple",
+        "variant"
       ],
       "outputs": [
-        "toggleRequest"
+        "toggleRequest",
+        "activeIndexChange"
+      ],
+      "methods": [
+        "ngAfterContentInit()",
+        "requestToggle()",
+        "togglePanel()"
       ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-accordion></j-accordion>",
@@ -54,10 +61,17 @@
         "activeIndex",
         "disabled",
         "header",
-        "multiple"
+        "multiple",
+        "variant"
       ],
       "outputs": [
-        "toggleRequest"
+        "toggleRequest",
+        "activeIndexChange"
+      ],
+      "methods": [
+        "ngAfterContentInit()",
+        "requestToggle()",
+        "togglePanel()"
       ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-accordion-panel></j-accordion-panel>",
@@ -101,6 +115,12 @@
       "outputs": [
         "actionClick"
       ],
+      "methods": [
+        "activate()",
+        "handleMenuKeydown()",
+        "handleTriggerKeydown()",
+        "toggle()"
+      ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-action-menu></j-action-menu>",
       "importExample": "import { JActionMenuComponent } from 'jrng-ui/table';",
@@ -138,7 +158,13 @@
         "sidebarOpen",
         "styleClass"
       ],
-      "outputs": [],
+      "outputs": [
+        "sidebarCollapsedChange",
+        "sidebarOpenChange"
+      ],
+      "methods": [
+        "toggleSidebar()"
+      ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-app-shell></j-app-shell>",
       "importExample": "import { JAppShellComponent } from 'jrng-ui/app-shell';",
@@ -175,6 +201,7 @@
         "variant"
       ],
       "outputs": [],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-auth-layout></j-auth-layout>",
       "importExample": "import { JAuthLayoutComponent } from 'jrng-ui/auth-layout';",
@@ -240,6 +267,19 @@
         "selectionChange",
         "valueChange"
       ],
+      "methods": [
+        "close()",
+        "handleBlur()",
+        "handleInput()",
+        "handleKeydown()",
+        "isSelected()",
+        "open()",
+        "optionId()",
+        "selectSuggestion()",
+        "setDisabledState()",
+        "toggle()",
+        "writeValue()"
+      ],
       "formCompatibility": "ControlValueAccessor",
       "usageExample": "<j-autocomplete></j-autocomplete>",
       "importExample": "import { JAutocompleteComponent } from 'jrng-ui/autocomplete';",
@@ -273,6 +313,7 @@
       "description": "Angular Avatar component for reusable admin, dashboard, and business application interfaces.",
       "inputs": [
         "ariaLabel",
+        "canZoom",
         "image",
         "initials",
         "label",
@@ -280,14 +321,24 @@
         "shape",
         "size",
         "status",
-        "styleClass"
+        "styleClass",
+        "zoomAriaLabel",
+        "zoomOverlay"
       ],
-      "outputs": [],
+      "outputs": [
+        "imageZoom"
+      ],
+      "methods": [
+        "handleImageError()",
+        "handlePreviewClosed()",
+        "handleZoom()",
+        "handleZoomKeydown()"
+      ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-avatar></j-avatar>",
       "importExample": "import { JAvatarComponent } from 'jrng-ui/avatar';",
       "documentationUrl": "https://jrngui.dev/docs/components#avatar",
-      "status": "Basic",
+      "status": "Complete",
       "stability": "Stable",
       "sinceVersion": null,
       "deprecation": null,
@@ -323,6 +374,9 @@
         "styleClass"
       ],
       "outputs": [],
+      "methods": [
+        "initials()"
+      ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-avatar-group></j-avatar-group>",
       "importExample": "import { JAvatarGroupComponent } from 'jrng-ui/avatar-group';",
@@ -364,6 +418,7 @@
         "value"
       ],
       "outputs": [],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-badge></j-badge>",
       "importExample": "import { JBadgeComponent } from 'jrng-ui/badge';",
@@ -409,8 +464,10 @@
       ],
       "outputs": [
         "closed",
-        "opened"
+        "opened",
+        "visibleChange"
       ],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-bottom-sheet></j-bottom-sheet>",
       "importExample": "import { JBottomSheetComponent } from 'jrng-ui/bottom-sheet';",
@@ -442,10 +499,14 @@
       "description": "Angular Breadcrumb component for reusable admin, dashboard, and business application interfaces.",
       "inputs": [
         "home",
-        "model"
+        "model",
+        "variant"
       ],
       "outputs": [
         "itemClick"
+      ],
+      "methods": [
+        "handleClick()"
       ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-breadcrumb></j-breadcrumb>",
@@ -480,6 +541,8 @@
       "description": "Angular Button component for reusable admin, dashboard, and business application interfaces.",
       "inputs": [
         "ariaLabel",
+        "badge",
+        "badgeAriaLabel",
         "disabled",
         "fullWidth",
         "icon",
@@ -487,9 +550,12 @@
         "iconPosition",
         "label",
         "loading",
+        "loadingLabel",
         "outlined",
+        "pill",
         "pt",
         "raised",
+        "ripple",
         "rounded",
         "severity",
         "size",
@@ -500,6 +566,9 @@
       ],
       "outputs": [
         "onClick"
+      ],
+      "methods": [
+        "handleClick()"
       ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-button></j-button>",
@@ -543,6 +612,15 @@
         "dateSelect",
         "monthChange"
       ],
+      "methods": [
+        "cellClasses()",
+        "cloneDate()",
+        "handleGridKeydown()",
+        "if()",
+        "nextMonth()",
+        "previousMonth()",
+        "selectDate()"
+      ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-calendar></j-calendar>",
       "importExample": "import { JCalendarComponent } from 'jrng-ui/calendar';",
@@ -584,7 +662,17 @@
       "outputs": [
         "dateClick",
         "eventClick",
+        "viewChange",
+        "activeDateChange",
         "viewChange"
+      ],
+      "methods": [
+        "handleEventClick()",
+        "if()",
+        "next()",
+        "previous()",
+        "setView()",
+        "today()"
       ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-calendar-scheduler></j-calendar-scheduler>",
@@ -634,11 +722,12 @@
         "variant"
       ],
       "outputs": [],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-card></j-card>",
       "importExample": "import { JrCardComponent } from 'jrng-ui/card';",
       "documentationUrl": "https://jrngui.dev/docs/components#card",
-      "status": "Basic",
+      "status": "Complete",
       "stability": "Stable",
       "sinceVersion": null,
       "deprecation": null,
@@ -675,7 +764,15 @@
         "value",
         "visibleItems"
       ],
-      "outputs": [],
+      "outputs": [
+        "activeIndexChange"
+      ],
+      "methods": [
+        "itemContext()",
+        "next()",
+        "previous()",
+        "transform()"
+      ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-carousel></j-carousel>",
       "importExample": "import { JCarouselComponent } from 'jrng-ui/carousel';",
@@ -723,6 +820,12 @@
       "outputs": [
         "chartClick",
         "chartHover"
+      ],
+      "methods": [
+        "destroy()",
+        "exportImage()",
+        "refresh()",
+        "resize()"
       ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-chart></j-chart>",
@@ -776,6 +879,12 @@
       "outputs": [
         "valueChange"
       ],
+      "methods": [
+        "handleBlur()",
+        "handleChange()",
+        "setDisabledState()",
+        "writeValue()"
+      ],
       "formCompatibility": "ControlValueAccessor",
       "usageExample": "<j-checkbox></j-checkbox>",
       "importExample": "import { JCheckboxComponent } from 'jrng-ui/checkbox';",
@@ -818,6 +927,7 @@
       "outputs": [
         "remove"
       ],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-chip></j-chip>",
       "importExample": "import { JChipComponent } from 'jrng-ui/chip';",
@@ -870,10 +980,72 @@
         "remove",
         "valueChange"
       ],
+      "methods": [
+        "handleBlur()",
+        "handleInput()",
+        "handleKeydown()",
+        "removeAt()",
+        "setDisabledState()",
+        "writeValue()"
+      ],
       "formCompatibility": "ControlValueAccessor",
       "usageExample": "<j-chips></j-chips>",
       "importExample": "import { JChipsComponent } from 'jrng-ui/chips';",
       "documentationUrl": "https://jrngui.dev/docs/components#chips",
+      "status": "Basic",
+      "stability": "Stable",
+      "sinceVersion": null,
+      "deprecation": null,
+      "angularCompatibility": ">=21.2.0 <22.0.0",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ]
+    },
+    {
+      "name": "Grid Column",
+      "selector": "j-col",
+      "importPath": "jrng-ui/grid",
+      "entryPoint": "jrng-ui/grid",
+      "category": "Layout",
+      "description": "Angular Grid Column component for reusable admin, dashboard, and business application interfaces.",
+      "inputs": [
+        "lg",
+        "md",
+        "offset",
+        "offsetLg",
+        "offsetMd",
+        "offsetSm",
+        "offsetXl",
+        "offsetXxl",
+        "order",
+        "orderLg",
+        "orderMd",
+        "orderSm",
+        "orderXl",
+        "orderXxl",
+        "size",
+        "sm",
+        "styleClass",
+        "xl",
+        "xxl"
+      ],
+      "outputs": [],
+      "methods": [],
+      "formCompatibility": "Not a form control",
+      "usageExample": "<j-col></j-col>",
+      "importExample": "import { JGridColumnComponent } from 'jrng-ui/grid';",
+      "documentationUrl": "https://jrngui.dev/docs/components#col",
       "status": "Basic",
       "stability": "Stable",
       "sinceVersion": null,
@@ -917,6 +1089,16 @@
       "outputs": [
         "valueChange"
       ],
+      "methods": [
+        "clearValue()",
+        "close()",
+        "handleInput()",
+        "handleTextInput()",
+        "setDisabledState()",
+        "setValue()",
+        "toggle()",
+        "writeValue()"
+      ],
       "formCompatibility": "ControlValueAccessor",
       "usageExample": "<j-color-picker></j-color-picker>",
       "importExample": "import { JColorPickerComponent } from 'jrng-ui/color-picker';",
@@ -942,26 +1124,35 @@
       ]
     },
     {
-      "name": "Column",
+      "name": "Table Column",
       "selector": "j-column",
       "importPath": "jrng-ui/table",
       "entryPoint": "jrng-ui/table",
       "category": "Data & Tables",
-      "description": "Angular Column component for reusable admin, dashboard, and business application interfaces.",
+      "description": "Angular Table Column component for reusable admin, dashboard, and business application interfaces.",
       "inputs": [
         "actions",
         "align",
         "filterable",
+        "formatter",
         "frozen",
+        "frozenAlign",
         "header",
+        "headerAlign",
+        "hidden",
+        "maxWidth",
         "minWidth",
+        "reorderable",
+        "resizable",
         "sortable",
         "templateKey",
         "type",
+        "valueGetter",
         "visible",
         "width"
       ],
       "outputs": [],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-column></j-column>",
       "importExample": "import { JColumnComponent } from 'jrng-ui/table';",
@@ -969,7 +1160,9 @@
       "status": "Basic",
       "stability": "Stable",
       "sinceVersion": null,
-      "deprecation": null,
+      "deprecation": {
+        "message": "Prefer the strongly typed `JTableColumn<T>` configuration model. This non-visual compatibility component remains available for projected-column usage."
+      },
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
@@ -992,11 +1185,30 @@
       "category": "Data & Tables",
       "description": "Angular Column Filter component for reusable admin, dashboard, and business application interfaces.",
       "inputs": [
+        "ariaLabel",
+        "hideOperator",
         "label",
+        "max",
+        "min",
+        "operator",
+        "operators",
+        "options",
+        "placeholder",
+        "step",
+        "type",
         "value"
       ],
       "outputs": [
-        "filterChange"
+        "filterChange",
+        "filterModelChange"
+      ],
+      "methods": [
+        "handleInput()",
+        "handleMultiSelect()",
+        "handleOperator()",
+        "handleRangeInput()",
+        "isOptionSelected()",
+        "operatorLabel()"
       ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-column-filter></j-column-filter>",
@@ -1048,6 +1260,18 @@
         "selectionChange",
         "valueChange"
       ],
+      "methods": [
+        "close()",
+        "handleInput()",
+        "handleKeydown()",
+        "isSelected()",
+        "optionId()",
+        "selectOption()",
+        "setDisabledState()",
+        "show()",
+        "toggle()",
+        "writeValue()"
+      ],
       "formCompatibility": "ControlValueAccessor",
       "usageExample": "<j-combobox></j-combobox>",
       "importExample": "import { JComboboxComponent } from 'jrng-ui/combobox';",
@@ -1088,7 +1312,14 @@
         "visible"
       ],
       "outputs": [
-        "command"
+        "command",
+        "visibleChange"
+      ],
+      "methods": [
+        "handleClosed()",
+        "handleSearchKeydown()",
+        "itemClasses()",
+        "run()"
       ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-command-palette></j-command-palette>",
@@ -1123,6 +1354,12 @@
       "description": "Angular Confirm Dialog component for reusable admin, dashboard, and business application interfaces.",
       "inputs": [],
       "outputs": [],
+      "methods": [
+        "accept()",
+        "handleOverlayMouseDown()",
+        "reject()",
+        "severityIcon()"
+      ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-confirm-dialog></j-confirm-dialog>",
       "importExample": "import { JConfirmDialogComponent } from 'jrng-ui/confirm-dialog';",
@@ -1156,6 +1393,12 @@
       "description": "Angular Confirm Popup component for reusable admin, dashboard, and business application interfaces.",
       "inputs": [],
       "outputs": [],
+      "methods": [
+        "accept()",
+        "focusPanel()",
+        "handleKeydown()",
+        "reject()"
+      ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-confirm-popup></j-confirm-popup>",
       "importExample": "import { JConfirmPopupComponent } from 'jrng-ui/confirm-popup';",
@@ -1192,6 +1435,9 @@
         "styleClass"
       ],
       "outputs": [],
+      "methods": [
+        "classes()"
+      ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-container></j-container>",
       "importExample": "import { JContainerComponent } from 'jrng-ui/container';",
@@ -1229,6 +1475,10 @@
         "target"
       ],
       "outputs": [],
+      "methods": [
+        "hide()",
+        "show()"
+      ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-context-menu></j-context-menu>",
       "importExample": "import { JContextMenuComponent } from 'jrng-ui/context-menu';",
@@ -1263,6 +1513,8 @@
         "copiedLabel",
         "disabled",
         "failedLabel",
+        "icon",
+        "iconOnly",
         "label",
         "pt",
         "styleClass",
@@ -1272,6 +1524,7 @@
         "copied",
         "copyFailed"
       ],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-copy-button></j-copy-button>",
       "importExample": "import { JCopyButtonComponent } from 'jrng-ui/copy-button';",
@@ -1307,6 +1560,7 @@
         "styleClass"
       ],
       "outputs": [],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-dashboard-layout></j-dashboard-layout>",
       "importExample": "import { JDashboardLayoutComponent } from 'jrng-ui/dashboard-layout';",
@@ -1418,6 +1672,15 @@
         "stateRestoreError",
         "stateSave"
       ],
+      "methods": [
+        "emitRowClick()",
+        "emitRowCollapse()",
+        "emitRowDoubleClick()",
+        "emitRowExpand()",
+        "emitRowSelect()",
+        "emitSelectionChange()",
+        "handleSearch()"
+      ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-data-grid></j-data-grid>",
       "importExample": "import { JDataGridComponent } from 'jrng-ui/data-grid';",
@@ -1465,6 +1728,13 @@
         "pageChange",
         "sortChange"
       ],
+      "methods": [
+        "changeSort()",
+        "handlePageChange()",
+        "itemContext()",
+        "setLayout()",
+        "trackItem()"
+      ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-data-view></j-data-view>",
       "importExample": "import { JDataViewComponent } from 'jrng-ui/data-view';",
@@ -1511,8 +1781,11 @@
         "label",
         "maxDate",
         "minDate",
+        "multipleSeparator",
         "placeholder",
+        "presets",
         "pt",
+        "rangeSeparator",
         "readonly",
         "required",
         "selectionMode",
@@ -1533,6 +1806,39 @@
         "opened",
         "select",
         "valueChange"
+      ],
+      "methods": [
+        "applyPreset()",
+        "changeHours()",
+        "changeMinutes()",
+        "changeSeconds()",
+        "clearValue()",
+        "cloneDate()",
+        "close()",
+        "dayClasses()",
+        "dayContext()",
+        "handleBlur()",
+        "handleFocus()",
+        "handleGridKeydown()",
+        "handleInputKeydown()",
+        "handleTextInput()",
+        "if()",
+        "isDateDisabled()",
+        "isPresetAvailable()",
+        "next()",
+        "open()",
+        "previous()",
+        "selectDate()",
+        "selectMonth()",
+        "selectToday()",
+        "selectYear()",
+        "setDisabledState()",
+        "shiftYearPage()",
+        "showMonthView()",
+        "showYearView()",
+        "toggle()",
+        "toggleMeridiem()",
+        "writeValue()"
       ],
       "formCompatibility": "ControlValueAccessor",
       "usageExample": "<j-date-picker></j-date-picker>",
@@ -1592,6 +1898,25 @@
         "select",
         "valueChange"
       ],
+      "methods": [
+        "applyPreset()",
+        "clearValue()",
+        "clone()",
+        "close()",
+        "dayClasses()",
+        "handleGridKeydown()",
+        "handleTriggerKeydown()",
+        "if()",
+        "isDateDisabled()",
+        "nextMonth()",
+        "onDayFocus()",
+        "open()",
+        "previousMonth()",
+        "selectDate()",
+        "setDisabledState()",
+        "toggle()",
+        "writeValue()"
+      ],
       "formCompatibility": "ControlValueAccessor",
       "usageExample": "<j-date-range-picker></j-date-range-picker>",
       "importExample": "import { JDateRangePickerComponent } from 'jrng-ui/date-range-picker';",
@@ -1650,7 +1975,20 @@
         "jrClose",
         "openChange",
         "opened",
-        "show"
+        "show",
+        "visibleChange"
+      ],
+      "methods": [
+        "close()",
+        "endDrag()",
+        "endResize()",
+        "handleBackdropClick()",
+        "handleEscape()",
+        "moveDrag()",
+        "moveResize()",
+        "openDialog()",
+        "startDrag()",
+        "startResize()"
       ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-dialog></j-dialog>",
@@ -1689,6 +2027,7 @@
         "styleClass"
       ],
       "outputs": [],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-divider></j-divider>",
       "importExample": "import { JDividerComponent } from 'jrng-ui/divider';",
@@ -1741,7 +2080,18 @@
       "outputs": [
         "closed",
         "openChange",
-        "opened"
+        "opened",
+        "visibleChange"
+      ],
+      "methods": [
+        "cancelGesture()",
+        "close()",
+        "endGesture()",
+        "handleEscape()",
+        "handleMask()",
+        "moveGesture()",
+        "openDrawer()",
+        "startGesture()"
       ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-drawer></j-drawer>",
@@ -1788,6 +2138,13 @@
         "remove",
         "upload"
       ],
+      "methods": [
+        "handleDragLeave()",
+        "handleDragOver()",
+        "handleDrop()",
+        "handleInput()",
+        "removeFile()"
+      ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-dropzone></j-dropzone>",
       "importExample": "import { JDropzoneComponent } from 'jrng-ui/dropzone';",
@@ -1821,6 +2178,7 @@
       "description": "Angular Dynamic Dialog component for reusable admin, dashboard, and business application interfaces.",
       "inputs": [],
       "outputs": [],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-dynamic-dialog></j-dynamic-dialog>",
       "importExample": "import { JDynamicDialogComponent } from 'jrng-ui/dynamic-dialog';",
@@ -1866,6 +2224,21 @@
       "outputs": [
         "valueChange"
       ],
+      "methods": [
+        "canInteract()",
+        "clearFormatting()",
+        "createLink()",
+        "execute()",
+        "handleInput()",
+        "handlePaste()",
+        "handleToolbarMouseDown()",
+        "insertImage()",
+        "markTouched()",
+        "rememberSelection()",
+        "setBlock()",
+        "setDisabledState()",
+        "writeValue()"
+      ],
       "formCompatibility": "ControlValueAccessor",
       "usageExample": "<j-editor></j-editor>",
       "importExample": "import { JEditorComponent } from 'jrng-ui/editor';",
@@ -1904,6 +2277,7 @@
         "title"
       ],
       "outputs": [],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-empty-page></j-empty-page>",
       "importExample": "import { JEmptyPageComponent } from 'jrng-ui/empty-page';",
@@ -1924,9 +2298,7 @@
         "jrng-ui/styles"
       ],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": []
     },
     {
       "name": "Empty State",
@@ -1943,9 +2315,11 @@
         "imageUrl",
         "pt",
         "styleClass",
-        "title"
+        "title",
+        "variant"
       ],
       "outputs": [],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-empty-state></j-empty-state>",
       "importExample": "import { JEmptyStateComponent } from 'jrng-ui/empty-state';",
@@ -1984,10 +2358,51 @@
         "title"
       ],
       "outputs": [],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-error-page></j-error-page>",
       "importExample": "import { JErrorPageComponent } from 'jrng-ui/error-page';",
       "documentationUrl": "https://jrngui.dev/docs/components#error-page",
+      "status": "Basic",
+      "stability": "Stable",
+      "sinceVersion": null,
+      "deprecation": null,
+      "angularCompatibility": ">=21.2.0 <22.0.0",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": []
+    },
+    {
+      "name": "Fieldset",
+      "selector": "j-fieldset",
+      "importPath": "jrng-ui/fieldset",
+      "entryPoint": "jrng-ui/fieldset",
+      "category": "Layout",
+      "description": "Angular Fieldset component for reusable admin, dashboard, and business application interfaces.",
+      "inputs": [
+        "collapsed",
+        "legend",
+        "toggleable"
+      ],
+      "outputs": [
+        "collapsedChange"
+      ],
+      "methods": [
+        "toggle()"
+      ],
+      "formCompatibility": "Not a form control",
+      "usageExample": "<j-fieldset></j-fieldset>",
+      "importExample": "import { JFieldsetComponent } from 'jrng-ui/fieldset';",
+      "documentationUrl": "https://jrngui.dev/docs/components#fieldset",
       "status": "Basic",
       "stability": "Stable",
       "sinceVersion": null,
@@ -2009,24 +2424,66 @@
       ]
     },
     {
-      "name": "Fieldset",
-      "selector": "j-fieldset",
-      "importPath": "jrng-ui/fieldset",
-      "entryPoint": "jrng-ui/fieldset",
-      "category": "Layout",
-      "description": "Angular Fieldset component for reusable admin, dashboard, and business application interfaces.",
+      "name": "File Browser",
+      "selector": "j-file-browser",
+      "importPath": "jrng-ui/file-browser",
+      "entryPoint": "jrng-ui/file-browser",
+      "category": "Uncategorized",
+      "description": "Angular File Browser component for reusable admin, dashboard, and business application interfaces.",
       "inputs": [
-        "collapsed",
-        "legend",
-        "toggleable"
+        "actions",
+        "ariaLabel",
+        "breadcrumbs",
+        "createFolderLabel",
+        "disabled",
+        "emptyDescription",
+        "emptyTitle",
+        "items",
+        "loading",
+        "loadingLabel",
+        "refreshLabel",
+        "selectedLabel",
+        "selection",
+        "selectionLimit",
+        "selectionMode",
+        "showCreateFolder",
+        "showRefresh",
+        "showSelection",
+        "showToolbar",
+        "showUpload",
+        "sortDirection",
+        "sortField",
+        "title",
+        "uploadLabel",
+        "variant",
+        "viewMode"
       ],
       "outputs": [
-        "collapsedChange"
+        "action",
+        "breadcrumbSelect",
+        "createFolder",
+        "folderOpen",
+        "itemOpen",
+        "refresh",
+        "selectionChange",
+        "sortChange",
+        "upload",
+        "viewModeChange"
+      ],
+      "methods": [
+        "actionAvailable()",
+        "emitAction()",
+        "formatDate()",
+        "formatSize()",
+        "handleItemKeydown()",
+        "isSelected()",
+        "openItem()",
+        "toggleSelection()"
       ],
       "formCompatibility": "Not a form control",
-      "usageExample": "<j-fieldset></j-fieldset>",
-      "importExample": "import { JFieldsetComponent } from 'jrng-ui/fieldset';",
-      "documentationUrl": "https://jrngui.dev/docs/components#fieldset",
+      "usageExample": "<j-file-browser></j-file-browser>",
+      "importExample": "import { JFileBrowserComponent } from 'jrng-ui/file-browser';",
+      "documentationUrl": "https://jrngui.dev/docs/components#file-browser",
       "status": "Basic",
       "stability": "Stable",
       "sinceVersion": null,
@@ -2061,6 +2518,7 @@
         "fileName",
         "fileSize",
         "icon",
+        "mimeType",
         "previewLabel",
         "removable",
         "removeLabel",
@@ -2074,6 +2532,7 @@
         "preview",
         "remove"
       ],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-file-preview></j-file-preview>",
       "importExample": "import { JFilePreviewComponent } from 'jrng-ui/file-preview';",
@@ -2131,6 +2590,24 @@
         "retryUpload",
         "upload"
       ],
+      "methods": [
+        "cancel()",
+        "clear()",
+        "emitUpload()",
+        "filePreviewLabel()",
+        "formatSize()",
+        "handleDragLeave()",
+        "handleDragOver()",
+        "handleDrop()",
+        "handleFileInput()",
+        "if()",
+        "openFilePicker()",
+        "removeItem()",
+        "retry()",
+        "setComplete()",
+        "setError()",
+        "setProgress()"
+      ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-file-upload></j-file-upload>",
       "importExample": "import { JFileUploadComponent } from 'jrng-ui/file-upload';",
@@ -2185,12 +2662,21 @@
         "filterChange",
         "reset"
       ],
+      "methods": [
+        "applyFilters()",
+        "resetFilters()",
+        "toggleAdvanced()",
+        "updateEndDate()",
+        "updateSearch()",
+        "updateStartDate()",
+        "updateStatus()"
+      ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-filter-bar></j-filter-bar>",
       "importExample": "import { JFilterBarComponent } from 'jrng-ui/filter-bar';",
       "documentationUrl": "https://jrngui.dev/docs/components#filter-bar",
       "status": "Complete",
-      "stability": "New",
+      "stability": "Stable",
       "sinceVersion": null,
       "deprecation": null,
       "angularCompatibility": ">=21.2.0 <22.0.0",
@@ -2225,6 +2711,11 @@
         "styleClass"
       ],
       "outputs": [],
+      "methods": [
+        "handleFocusIn()",
+        "handleFocusOut()",
+        "handleInput()"
+      ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-float-label></j-float-label>",
       "importExample": "import { JFloatLabelComponent } from 'jrng-ui/float-label';",
@@ -2272,6 +2763,7 @@
         "variant"
       ],
       "outputs": [],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-form-field></j-form-field>",
       "importExample": "import { JFormFieldComponent } from 'jrng-ui/form-field';",
@@ -2310,7 +2802,14 @@
         "styleClass",
         "value"
       ],
-      "outputs": [],
+      "outputs": [
+        "activeIndexChange",
+        "previewVisibleChange"
+      ],
+      "methods": [
+        "next()",
+        "previous()"
+      ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-gallery></j-gallery>",
       "importExample": "import { JGalleryComponent } from 'jrng-ui/gallery';",
@@ -2352,10 +2851,58 @@
         "tasks"
       ],
       "outputs": [],
+      "methods": [
+        "dependencyLabel()",
+        "if()",
+        "progress()",
+        "taskContext()"
+      ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-gantt></j-gantt>",
       "importExample": "import { JGanttComponent } from 'jrng-ui/gantt';",
       "documentationUrl": "https://jrngui.dev/docs/components#gantt",
+      "status": "Basic",
+      "stability": "Stable",
+      "sinceVersion": null,
+      "deprecation": null,
+      "angularCompatibility": ">=21.2.0 <22.0.0",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ]
+    },
+    {
+      "name": "Grid",
+      "selector": "j-grid",
+      "importPath": "jrng-ui/grid",
+      "entryPoint": "jrng-ui/grid",
+      "category": "Layout",
+      "description": "Angular Grid component for reusable admin, dashboard, and business application interfaces.",
+      "inputs": [
+        "columns",
+        "containerPadding",
+        "fixed",
+        "gutterX",
+        "gutterY",
+        "maxWidth",
+        "styleClass"
+      ],
+      "outputs": [],
+      "methods": [],
+      "formCompatibility": "Not a form control",
+      "usageExample": "<j-grid></j-grid>",
+      "importExample": "import { JGridComponent } from 'jrng-ui/grid';",
+      "documentationUrl": "https://jrngui.dev/docs/components#grid",
       "status": "Basic",
       "stability": "Stable",
       "sinceVersion": null,
@@ -2390,6 +2937,7 @@
         "styleClass"
       ],
       "outputs": [],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-grid-layout></j-grid-layout>",
       "importExample": "import { JGridLayoutComponent } from 'jrng-ui/grid-layout';",
@@ -2430,6 +2978,7 @@
         "styleClass"
       ],
       "outputs": [],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-icon></j-icon>",
       "importExample": "import { JIconComponent } from 'jrng-ui/icon';",
@@ -2468,6 +3017,7 @@
         "suffixIcon"
       ],
       "outputs": [],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-icon-field></j-icon-field>",
       "importExample": "import { JIconFieldComponent } from 'jrng-ui/icon-field';",
@@ -2508,6 +3058,11 @@
         "styleClass"
       ],
       "outputs": [],
+      "methods": [
+        "handleFocusIn()",
+        "handleFocusOut()",
+        "handleInput()"
+      ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-ifta-label></j-ifta-label>",
       "importExample": "import { JIftaLabelComponent } from 'jrng-ui/ifta-label';",
@@ -2551,7 +3106,13 @@
         "width"
       ],
       "outputs": [
-        "closed"
+        "closed",
+        "visibleChange"
+      ],
+      "methods": [
+        "close()",
+        "openPreview()",
+        "useFallback()"
       ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-image></j-image>",
@@ -2596,7 +3157,13 @@
         "width"
       ],
       "outputs": [
-        "closed"
+        "closed",
+        "visibleChange"
+      ],
+      "methods": [
+        "close()",
+        "openPreview()",
+        "useFallback()"
       ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-image-preview></j-image-preview>",
@@ -2657,6 +3224,13 @@
         "clear",
         "valueChange"
       ],
+      "methods": [
+        "clearValue()",
+        "handleBlur()",
+        "handleInput()",
+        "setDisabledState()",
+        "writeValue()"
+      ],
       "formCompatibility": "ControlValueAccessor",
       "usageExample": "<j-input></j-input>",
       "importExample": "import { JrInputComponent } from 'jrng-ui/input';",
@@ -2703,6 +3277,7 @@
         "variant"
       ],
       "outputs": [],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-input-group></j-input-group>",
       "importExample": "import { JInputGroupComponent } from 'jrng-ui/input-group';",
@@ -2741,6 +3316,7 @@
         "styleClass"
       ],
       "outputs": [],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-input-icon></j-input-icon>",
       "importExample": "import { JInputIconComponent } from 'jrng-ui/input-icon';",
@@ -2797,6 +3373,13 @@
       "outputs": [
         "clear",
         "valueChange"
+      ],
+      "methods": [
+        "clearValue()",
+        "handleBlur()",
+        "handleInput()",
+        "setDisabledState()",
+        "writeValue()"
       ],
       "formCompatibility": "ControlValueAccessor",
       "usageExample": "<j-input-mask></j-input-mask>",
@@ -2863,6 +3446,15 @@
         "clear",
         "valueChange"
       ],
+      "methods": [
+        "clearValue()",
+        "handleBlur()",
+        "handleFocus()",
+        "handleInput()",
+        "handleKeydown()",
+        "setDisabledState()",
+        "writeValue()"
+      ],
       "formCompatibility": "ControlValueAccessor",
       "usageExample": "<j-input-number></j-input-number>",
       "importExample": "import { JInputNumberComponent } from 'jrng-ui/input-number';",
@@ -2916,6 +3508,15 @@
       "outputs": [
         "valueChange"
       ],
+      "methods": [
+        "ariaLabelFor()",
+        "handleBlur()",
+        "handleInput()",
+        "handleKeydown()",
+        "handlePaste()",
+        "setDisabledState()",
+        "writeValue()"
+      ],
       "formCompatibility": "ControlValueAccessor",
       "usageExample": "<j-input-otp></j-input-otp>",
       "importExample": "import { JInputOtpComponent } from 'jrng-ui/input-otp';",
@@ -2957,6 +3558,15 @@
         "addCard",
         "removeCard",
         "reorder"
+      ],
+      "methods": [
+        "cardContext()",
+        "columnContext()",
+        "handleDragEnd()",
+        "handleDragLeave()",
+        "handleDragOver()",
+        "handleDragStart()",
+        "handleDrop()"
       ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-kanban></j-kanban>",
@@ -3002,6 +3612,11 @@
       ],
       "outputs": [
         "valueChange"
+      ],
+      "methods": [
+        "handleKeydown()",
+        "setDisabledState()",
+        "writeValue()"
       ],
       "formCompatibility": "ControlValueAccessor",
       "usageExample": "<j-knob></j-knob>",
@@ -3057,6 +3672,16 @@
         "filterChange",
         "valueChange"
       ],
+      "methods": [
+        "handleFilterInput()",
+        "handleKeydown()",
+        "isSelected()",
+        "optionContext()",
+        "optionId()",
+        "selectOption()",
+        "setDisabledState()",
+        "writeValue()"
+      ],
       "formCompatibility": "ControlValueAccessor",
       "usageExample": "<j-listbox></j-listbox>",
       "importExample": "import { JListboxComponent } from 'jrng-ui/listbox';",
@@ -3089,19 +3714,26 @@
       "category": "Data Display",
       "description": "Angular Loader component for reusable admin, dashboard, and business application interfaces.",
       "inputs": [
+        "fullscreen",
+        "inline",
         "label",
+        "overlay",
         "pt",
         "size",
+        "speed",
         "strokeWidth",
         "styleClass",
+        "type",
+        "value",
         "variant"
       ],
       "outputs": [],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-loader></j-loader>",
       "importExample": "import { JLoaderComponent } from 'jrng-ui/loader';",
       "documentationUrl": "https://jrngui.dev/docs/components#loader",
-      "status": "Basic",
+      "status": "Complete",
       "stability": "Stable",
       "sinceVersion": null,
       "deprecation": null,
@@ -3136,6 +3768,7 @@
         "title"
       ],
       "outputs": [],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-maintenance-page></j-maintenance-page>",
       "importExample": "import { JMaintenancePageComponent } from 'jrng-ui/maintenance-page';",
@@ -3156,9 +3789,7 @@
         "jrng-ui/styles"
       ],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": []
     },
     {
       "name": "Mega Menu",
@@ -3173,6 +3804,9 @@
         "model"
       ],
       "outputs": [],
+      "methods": [
+        "templateContext()"
+      ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-mega-menu></j-mega-menu>",
       "importExample": "import { JMegaMenuComponent } from 'jrng-ui/mega-menu';",
@@ -3217,6 +3851,20 @@
       "outputs": [
         "visibleChange"
       ],
+      "methods": [
+        "activate()",
+        "handleKeydown()",
+        "hide()",
+        "isPathActive()",
+        "itemKey()",
+        "scheduleSubmenu()",
+        "scheduleSubmenuClose()",
+        "setActive()",
+        "show()",
+        "submenuOpen()",
+        "templateContext()",
+        "toggle()"
+      ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-menu></j-menu>",
       "importExample": "import { JMenuComponent } from 'jrng-ui/menu';",
@@ -3255,6 +3903,10 @@
         "model"
       ],
       "outputs": [],
+      "methods": [
+        "activate()",
+        "templateContext()"
+      ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-menubar></j-menubar>",
       "importExample": "import { JMenubarComponent } from 'jrng-ui/menubar';",
@@ -3292,6 +3944,7 @@
         "value"
       ],
       "outputs": [],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-meter-group></j-meter-group>",
       "importExample": "import { JMeterGroupComponent } from 'jrng-ui/meter-group';",
@@ -3334,6 +3987,7 @@
         "value"
       ],
       "outputs": [],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-metric-card></j-metric-card>",
       "importExample": "import { JMetricCardComponent } from 'jrng-ui/metric-card';",
@@ -3341,7 +3995,9 @@
       "status": "Complete",
       "stability": "Stable",
       "sinceVersion": null,
-      "deprecation": null,
+      "deprecation": {
+        "message": "Compose dashboard metrics with `j-card`, typography, badges, progress, and chart components. This compatibility component remains available throughout the 0.0.x line."
+      },
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
@@ -3408,6 +4064,22 @@
         "selectionChange",
         "valueChange"
       ],
+      "methods": [
+        "clearAll()",
+        "close()",
+        "handleFilterInput()",
+        "handleKeydown()",
+        "isSelected()",
+        "itemContext()",
+        "open()",
+        "optionId()",
+        "selectAllVisible()",
+        "setDisabledState()",
+        "toggle()",
+        "toggleOption()",
+        "unselectAllVisible()",
+        "writeValue()"
+      ],
       "formCompatibility": "ControlValueAccessor",
       "usageExample": "<j-multiselect></j-multiselect>",
       "importExample": "import { JMultiselectComponent } from 'jrng-ui/multiselect';",
@@ -3446,7 +4118,10 @@
         "target",
         "visible"
       ],
-      "outputs": [],
+      "outputs": [
+        "visibleChange"
+      ],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-notification-center></j-notification-center>",
       "importExample": "import { JNotificationCenterComponent } from 'jrng-ui/notification-center';",
@@ -3491,7 +4166,17 @@
         "value"
       ],
       "outputs": [
-        "reorder"
+        "reorder",
+        "valueChange"
+      ],
+      "methods": [
+        "handleFilter()",
+        "isSelected()",
+        "moveBottom()",
+        "moveDown()",
+        "moveTop()",
+        "moveUp()",
+        "toggleSelected()"
       ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-order-list></j-order-list>",
@@ -3531,6 +4216,12 @@
         "value"
       ],
       "outputs": [],
+      "methods": [
+        "isExpanded()",
+        "nodeContext()",
+        "nodeKeyFor()",
+        "toggle()"
+      ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-org-chart></j-org-chart>",
       "importExample": "import { JOrgChartComponent } from 'jrng-ui/org-chart';",
@@ -3573,7 +4264,14 @@
       ],
       "outputs": [
         "hidden",
-        "shown"
+        "shown",
+        "targetChange",
+        "visibleChange"
+      ],
+      "methods": [
+        "hide()",
+        "show()",
+        "toggle()"
       ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-overlay-panel></j-overlay-panel>",
@@ -3612,11 +4310,13 @@
         "showBack",
         "styleClass",
         "subtitle",
-        "title"
+        "title",
+        "variant"
       ],
       "outputs": [
         "back"
       ],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-page-header></j-page-header>",
       "importExample": "import { JPageHeaderComponent } from 'jrng-ui/page-header';",
@@ -3657,10 +4357,15 @@
         "rowsInput",
         "rowsPerPageOptions",
         "showCurrentPageReport",
-        "totalRecords"
+        "totalRecords",
+        "variant"
       ],
       "outputs": [
         "pageChange"
+      ],
+      "methods": [
+        "setPage()",
+        "setRows()"
       ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-paginator></j-paginator>",
@@ -3700,6 +4405,9 @@
       ],
       "outputs": [
         "collapsedChange"
+      ],
+      "methods": [
+        "toggle()"
       ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-panel></j-panel>",
@@ -3758,6 +4466,13 @@
         "clear",
         "valueChange"
       ],
+      "methods": [
+        "clearValue()",
+        "handleBlur()",
+        "handleInput()",
+        "setDisabledState()",
+        "writeValue()"
+      ],
       "formCompatibility": "ControlValueAccessor",
       "usageExample": "<j-password></j-password>",
       "importExample": "import { JPasswordComponent } from 'jrng-ui/password';",
@@ -3790,11 +4505,19 @@
       "category": "Data & Tables",
       "description": "Angular Pick List component for reusable admin, dashboard, and business application interfaces.",
       "inputs": [
+        "addAllAriaLabel",
+        "addAllLabel",
+        "addLabel",
+        "clearAriaLabel",
+        "clearLabel",
         "filter",
         "filterPlaceholder",
+        "moveDownLabel",
+        "moveUpLabel",
         "optionDisabled",
         "optionLabel",
         "optionValue",
+        "removeLabel",
         "source",
         "sourceAriaLabel",
         "sourceHeader",
@@ -3802,7 +4525,19 @@
         "targetAriaLabel",
         "targetHeader"
       ],
-      "outputs": [],
+      "outputs": [
+        "sourceChange",
+        "targetChange"
+      ],
+      "methods": [
+        "actionContext()",
+        "add()",
+        "addAll()",
+        "move()",
+        "remove()",
+        "removeAll()",
+        "updateSourceFilter()"
+      ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-pick-list></j-pick-list>",
       "importExample": "import { JPickListComponent } from 'jrng-ui/pick-list';",
@@ -3823,7 +4558,9 @@
         "jrng-ui/styles"
       ],
       "assets": [],
-      "themeRequirements": []
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ]
     },
     {
       "name": "Popover",
@@ -3844,14 +4581,22 @@
       ],
       "outputs": [
         "closed",
-        "opened"
+        "opened",
+        "targetChange",
+        "visibleChange"
+      ],
+      "methods": [
+        "handleOutside()",
+        "hide()",
+        "show()",
+        "toggle()"
       ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-popover></j-popover>",
       "importExample": "import { JPopoverComponent } from 'jrng-ui/popover';",
       "documentationUrl": "https://jrngui.dev/docs/components#popover",
       "status": "Basic",
-      "stability": "Beta",
+      "stability": "Stable",
       "sinceVersion": null,
       "deprecation": null,
       "angularCompatibility": ">=21.2.0 <22.0.0",
@@ -3883,9 +4628,11 @@
         "pt",
         "severity",
         "styleClass",
-        "value"
+        "value",
+        "variant"
       ],
       "outputs": [],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-progress-bar></j-progress-bar>",
       "importExample": "import { JProgressBarComponent } from 'jrng-ui/progress-bar';",
@@ -3925,6 +4672,7 @@
         "styleClass"
       ],
       "outputs": [],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-progress-spinner></j-progress-spinner>",
       "importExample": "import { JProgressSpinnerComponent } from 'jrng-ui/progress-spinner';",
@@ -3970,6 +4718,12 @@
       ],
       "outputs": [
         "valueChange"
+      ],
+      "methods": [
+        "handleBlur()",
+        "handleChange()",
+        "setDisabledState()",
+        "writeValue()"
       ],
       "formCompatibility": "ControlValueAccessor",
       "usageExample": "<j-radio></j-radio>",
@@ -4022,6 +4776,13 @@
         "selectionChange",
         "valueChange"
       ],
+      "methods": [
+        "handleKeydown()",
+        "isSelected()",
+        "selectOption()",
+        "setDisabledState()",
+        "writeValue()"
+      ],
       "formCompatibility": "ControlValueAccessor",
       "usageExample": "<j-radio-group></j-radio-group>",
       "importExample": "import { JRadioGroupComponent } from 'jrng-ui/radio-group';",
@@ -4067,6 +4828,13 @@
       "outputs": [
         "valueChange"
       ],
+      "methods": [
+        "handleKeydown()",
+        "rovingTabindex()",
+        "setDisabledState()",
+        "setValue()",
+        "writeValue()"
+      ],
       "formCompatibility": "ControlValueAccessor",
       "usageExample": "<j-rating></j-rating>",
       "importExample": "import { JRatingComponent } from 'jrng-ui/rating';",
@@ -4103,12 +4871,56 @@
         "styleClass",
         "title"
       ],
-      "outputs": [],
+      "outputs": [
+        "openChange"
+      ],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-responsive-sidebar></j-responsive-sidebar>",
       "importExample": "import { JResponsiveSidebarComponent } from 'jrng-ui/responsive-sidebar';",
       "documentationUrl": "https://jrngui.dev/docs/components#responsive-sidebar",
       "status": "Complete",
+      "stability": "Stable",
+      "sinceVersion": null,
+      "deprecation": null,
+      "angularCompatibility": ">=21.2.0 <22.0.0",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ]
+    },
+    {
+      "name": "Grid Row",
+      "selector": "j-row",
+      "importPath": "jrng-ui/grid",
+      "entryPoint": "jrng-ui/grid",
+      "category": "Layout",
+      "description": "Angular Grid Row component for reusable admin, dashboard, and business application interfaces.",
+      "inputs": [
+        "align",
+        "gutterX",
+        "gutterY",
+        "justify",
+        "styleClass",
+        "wrap"
+      ],
+      "outputs": [],
+      "methods": [],
+      "formCompatibility": "Not a form control",
+      "usageExample": "<j-row></j-row>",
+      "importExample": "import { JGridRowComponent } from 'jrng-ui/grid';",
+      "documentationUrl": "https://jrngui.dev/docs/components#row",
+      "status": "Basic",
       "stability": "Stable",
       "sinceVersion": null,
       "deprecation": null,
@@ -4139,6 +4951,7 @@
         "styleClass"
       ],
       "outputs": [],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-section-footer></j-section-footer>",
       "importExample": "import { JSectionFooterComponent } from 'jrng-ui/section-footer';",
@@ -4176,6 +4989,7 @@
         "title"
       ],
       "outputs": [],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-section-header></j-section-header>",
       "importExample": "import { JSectionHeaderComponent } from 'jrng-ui/section-header';",
@@ -4246,6 +5060,22 @@
         "selectionChange",
         "valueChange"
       ],
+      "methods": [
+        "clearValue()",
+        "close()",
+        "handleButtonBlur()",
+        "handleFilterInput()",
+        "handleKeydown()",
+        "handleOutsideClick()",
+        "isSelected()",
+        "itemContext()",
+        "open()",
+        "optionId()",
+        "selectOption()",
+        "setDisabledState()",
+        "toggle()",
+        "writeValue()"
+      ],
       "formCompatibility": "ControlValueAccessor",
       "usageExample": "<j-select></j-select>",
       "importExample": "import { JSelectComponent } from 'jrng-ui/select';",
@@ -4294,6 +5124,12 @@
       "outputs": [
         "valueChange"
       ],
+      "methods": [
+        "isSelected()",
+        "setDisabledState()",
+        "toggleOption()",
+        "writeValue()"
+      ],
       "formCompatibility": "ControlValueAccessor",
       "usageExample": "<j-select-button></j-select-button>",
       "importExample": "import { JSelectButtonComponent } from 'jrng-ui/select-button';",
@@ -4329,6 +5165,7 @@
         "styleClass"
       ],
       "outputs": [],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-sidebar-layout></j-sidebar-layout>",
       "importExample": "import { JSidebarLayoutComponent } from 'jrng-ui/sidebar-layout';",
@@ -4371,6 +5208,11 @@
       ],
       "outputs": [
         "collapsedChange"
+      ],
+      "methods": [
+        "handleClick()",
+        "isActive()",
+        "toggle()"
       ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-sidebar-nav></j-sidebar-nav>",
@@ -4415,6 +5257,7 @@
         "width"
       ],
       "outputs": [],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-skeleton></j-skeleton>",
       "importExample": "import { JSkeletonComponent } from 'jrng-ui/skeleton';",
@@ -4468,6 +5311,12 @@
       "outputs": [
         "valueChange"
       ],
+      "methods": [
+        "handleLowerInput()",
+        "handleUpperInput()",
+        "setDisabledState()",
+        "writeValue()"
+      ],
       "formCompatibility": "ControlValueAccessor",
       "usageExample": "<j-slider></j-slider>",
       "importExample": "import { JSliderComponent } from 'jrng-ui/slider';",
@@ -4503,6 +5352,7 @@
         "order"
       ],
       "outputs": [],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-sort-icon></j-sort-icon>",
       "importExample": "import { JSortIconComponent } from 'jrng-ui/table';",
@@ -4543,6 +5393,7 @@
         "width"
       ],
       "outputs": [],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-sparkline></j-sparkline>",
       "importExample": "import { JSparklineComponent } from 'jrng-ui/sparkline';",
@@ -4580,6 +5431,7 @@
         "styleClass"
       ],
       "outputs": [],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-splitter></j-splitter>",
       "importExample": "import { JSplitterComponent } from 'jrng-ui/splitter';",
@@ -4617,6 +5469,9 @@
         "styleClass"
       ],
       "outputs": [],
+      "methods": [
+        "classes()"
+      ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-stack></j-stack>",
       "importExample": "import { JStackComponent } from 'jrng-ui/stack';",
@@ -4659,6 +5514,7 @@
         "value"
       ],
       "outputs": [],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-stat-card></j-stat-card>",
       "importExample": "import { JStatCardComponent } from 'jrng-ui/stat-card';",
@@ -4700,11 +5556,59 @@
         "styleClass"
       ],
       "outputs": [],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-status-chip></j-status-chip>",
       "importExample": "import { JStatusChipComponent } from 'jrng-ui/status-chip';",
       "documentationUrl": "https://jrngui.dev/docs/components#status-chip",
       "status": "Complete",
+      "stability": "Stable",
+      "sinceVersion": null,
+      "deprecation": null,
+      "angularCompatibility": ">=21.2.0 <22.0.0",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ]
+    },
+    {
+      "name": "Status Page",
+      "selector": "j-status-page",
+      "importPath": "jrng-ui/status-page",
+      "entryPoint": "jrng-ui/status-page",
+      "category": "Uncategorized",
+      "description": "Angular Status Page component for reusable admin, dashboard, and business application interfaces.",
+      "inputs": [
+        "compatibilityActionClass",
+        "compatibilityClass",
+        "compatibilityMarkerClass",
+        "componentName",
+        "description",
+        "detail",
+        "marker",
+        "styleClass",
+        "title",
+        "variant"
+      ],
+      "outputs": [],
+      "methods": [
+        "markerClasses()"
+      ],
+      "formCompatibility": "Not a form control",
+      "usageExample": "<j-status-page></j-status-page>",
+      "importExample": "import { JStatusPageComponent } from 'jrng-ui/status-page';",
+      "documentationUrl": "https://jrngui.dev/docs/components#status-page",
+      "status": "Basic",
       "stability": "Stable",
       "sinceVersion": null,
       "deprecation": null,
@@ -4733,12 +5637,19 @@
       "description": "Angular Stepper component for reusable admin, dashboard, and business application interfaces.",
       "inputs": [
         "activeIndex",
+        "ariaLabel",
         "items",
         "linear",
-        "orientation"
+        "orientation",
+        "variant"
       ],
       "outputs": [
         "activeIndexChange"
+      ],
+      "methods": [
+        "activate()",
+        "isCompleted()",
+        "isDisabled()"
       ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-stepper></j-stepper>",
@@ -4787,6 +5698,12 @@
       "outputs": [
         "valueChange"
       ],
+      "methods": [
+        "handleBlur()",
+        "handleChange()",
+        "setDisabledState()",
+        "writeValue()"
+      ],
       "formCompatibility": "ControlValueAccessor",
       "usageExample": "<j-switch></j-switch>",
       "importExample": "import { JSwitchComponent } from 'jrng-ui/switch';",
@@ -4826,11 +5743,19 @@
         "lazy",
         "orientation",
         "scrollable",
-        "selectedIndex"
+        "selectedIndex",
+        "variant"
       ],
       "outputs": [
         "selectedIndexChange",
         "tabClose"
+      ],
+      "methods": [
+        "closeTab()",
+        "handleCloseKeydown()",
+        "handleKeydown()",
+        "ngAfterContentInit()",
+        "selectTab()"
       ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-tab></j-tab>",
@@ -4869,10 +5794,21 @@
         "columns",
         "config",
         "dataKey",
+        "density",
+        "emptyActionLabel",
+        "emptyDescription",
+        "emptyIcon",
         "emptyMessage",
+        "emptyState",
+        "emptyTitle",
+        "error",
+        "errorDescription",
+        "errorIcon",
+        "errorTitle",
         "expandableRows",
         "exportConfig",
         "exportFilename",
+        "filterModel",
         "filterRow",
         "filters",
         "first",
@@ -4883,10 +5819,14 @@
         "lazy",
         "loading",
         "loadingMessage",
+        "loadingVariant",
         "lockableRows",
         "lockedRowKeys",
         "maximizable",
         "multiSortMeta",
+        "noResultsDescription",
+        "noResultsIcon",
+        "noResultsTitle",
         "paginator",
         "reorderableColumns",
         "reorderableRows",
@@ -4904,6 +5844,8 @@
         "showGlobalFilter",
         "showTableState",
         "size",
+        "skeletonColumns",
+        "skeletonRows",
         "sortField",
         "sortMode",
         "sortOrder",
@@ -4913,7 +5855,8 @@
         "styleClass",
         "totalRecords",
         "transform",
-        "value"
+        "value",
+        "variant"
       ],
       "outputs": [
         "actionClick",
@@ -4922,8 +5865,10 @@
         "columnResize",
         "columnVisibilityChange",
         "contextMenu",
+        "emptyAction",
         "export",
         "filterChange",
+        "filterModelChange",
         "lazyLoad",
         "maximize",
         "minimize",
@@ -4960,6 +5905,66 @@
         "stateRestoreError",
         "stateSave"
       ],
+      "methods": [
+        "actionTemplateFor()",
+        "allPageRowsSelected()",
+        "applyFilters()",
+        "applyTemplateFilter()",
+        "ariaSort()",
+        "cellContext()",
+        "cellImageSource()",
+        "cellTemplateFor()",
+        "cellValue()",
+        "columnClass()",
+        "commitCellEdit()",
+        "dropColumn()",
+        "dropRow()",
+        "exportCSV()",
+        "filterContext()",
+        "filterTemplateFor()",
+        "filterValue()",
+        "formattedCellValue()",
+        "handleActionClick()",
+        "handleCellEditKeydown()",
+        "handleCheckboxChange()",
+        "handleContextMenu()",
+        "handleDocumentKeydown()",
+        "handleFilterModelChange()",
+        "handleGlobalFilter()",
+        "handlePageChange()",
+        "handleRowClick()",
+        "handleRowDoubleClick()",
+        "handleRowKeydown()",
+        "headerColumnClass()",
+        "headerContext()",
+        "headerTemplateFor()",
+        "isColumnFilterable()",
+        "isColumnSortable()",
+        "isEditingCell()",
+        "isExpanded()",
+        "isFrozenRow()",
+        "isRowLocked()",
+        "isSelected()",
+        "ngAfterContentInit()",
+        "resetColumns()",
+        "resetFilters()",
+        "restoreState()",
+        "rowId()",
+        "saveState()",
+        "setMaximized()",
+        "sortOrderFor()",
+        "startCellEdit()",
+        "startColumnDrag()",
+        "startColumnResize()",
+        "startRowDrag()",
+        "toggleAllPageRows()",
+        "toggleColumnVisibility()",
+        "toggleRowExpansion()",
+        "toggleRowLock()",
+        "toggleSelection()",
+        "toggleSort()",
+        "triggerEmptyAction()"
+      ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-table></j-table>",
       "importExample": "import { JTableComponent } from 'jrng-ui/table';",
@@ -4992,10 +5997,16 @@
       "category": "Data & Tables",
       "description": "Angular Table Empty State component for reusable admin, dashboard, and business application interfaces.",
       "inputs": [
+        "actionLabel",
+        "icon",
         "message",
+        "state",
         "title"
       ],
-      "outputs": [],
+      "outputs": [
+        "action"
+      ],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-table-empty-state></j-table-empty-state>",
       "importExample": "import { JTableEmptyStateComponent } from 'jrng-ui/table';",
@@ -5003,7 +6014,9 @@
       "status": "Basic",
       "stability": "Stable",
       "sinceVersion": null,
-      "deprecation": null,
+      "deprecation": {
+        "message": "Prefer the integrated `j-table` empty-state inputs and `jTableEmpty` template. This compatibility component remains available for existing applications."
+      },
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
@@ -5028,10 +6041,12 @@
       "category": "Data & Tables",
       "description": "Angular Table Skeleton component for reusable admin, dashboard, and business application interfaces.",
       "inputs": [
+        "columnConfig",
         "columns",
         "rows"
       ],
       "outputs": [],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-table-skeleton></j-table-skeleton>",
       "importExample": "import { JTableSkeletonComponent } from 'jrng-ui/table';",
@@ -5039,7 +6054,9 @@
       "status": "Basic",
       "stability": "Stable",
       "sinceVersion": null,
-      "deprecation": null,
+      "deprecation": {
+        "message": "Prefer `j-table` with `loading`, `loadingVariant` and `jTableLoading`. Use the general `j-skeleton` component for loading content outside tables."
+      },
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
@@ -5071,11 +6088,19 @@
         "lazy",
         "orientation",
         "scrollable",
-        "selectedIndex"
+        "selectedIndex",
+        "variant"
       ],
       "outputs": [
         "selectedIndexChange",
         "tabClose"
+      ],
+      "methods": [
+        "closeTab()",
+        "handleCloseKeydown()",
+        "handleKeydown()",
+        "ngAfterContentInit()",
+        "selectTab()"
       ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-tabs></j-tabs>",
@@ -5121,11 +6146,64 @@
       "outputs": [
         "remove"
       ],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-tag></j-tag>",
       "importExample": "import { JTagComponent } from 'jrng-ui/tag';",
       "documentationUrl": "https://jrngui.dev/docs/components#tag",
       "status": "Basic",
+      "stability": "Stable",
+      "sinceVersion": null,
+      "deprecation": null,
+      "angularCompatibility": ">=21.2.0 <22.0.0",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ]
+    },
+    {
+      "name": "Text Expand",
+      "selector": "j-text-expand",
+      "importPath": "jrng-ui/text-expand",
+      "entryPoint": "jrng-ui/text-expand",
+      "category": "Uncategorized",
+      "description": "Angular Text Expand component for reusable admin, dashboard, and business application interfaces.",
+      "inputs": [
+        "animation",
+        "collapsedLength",
+        "collapsedLines",
+        "disabled",
+        "ellipsis",
+        "expanded",
+        "mode",
+        "preserveWords",
+        "showLessLabel",
+        "showMoreLabel",
+        "text"
+      ],
+      "outputs": [
+        "toggle",
+        "expandedChange"
+      ],
+      "methods": [
+        "recalculate()",
+        "toggleExpanded()"
+      ],
+      "formCompatibility": "Not a form control",
+      "usageExample": "<j-text-expand></j-text-expand>",
+      "importExample": "import { JTextExpandComponent } from 'jrng-ui/text-expand';",
+      "documentationUrl": "https://jrngui.dev/docs/components#text-expand",
+      "status": "Complete",
       "stability": "Stable",
       "sinceVersion": null,
       "deprecation": null,
@@ -5180,6 +6258,13 @@
         "clear",
         "valueChange"
       ],
+      "methods": [
+        "clearValue()",
+        "handleBlur()",
+        "handleInput()",
+        "setDisabledState()",
+        "writeValue()"
+      ],
       "formCompatibility": "ControlValueAccessor",
       "usageExample": "<j-textarea></j-textarea>",
       "importExample": "import { JTextareaComponent } from 'jrng-ui/textarea';",
@@ -5220,7 +6305,12 @@
         "submenuOpenDelay",
         "visible"
       ],
-      "outputs": [],
+      "outputs": [
+        "visibleChange"
+      ],
+      "methods": [
+        "setVisible()"
+      ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-tiered-menu></j-tiered-menu>",
       "importExample": "import { JTieredMenuComponent } from 'jrng-ui/tiered-menu';",
@@ -5279,6 +6369,23 @@
         "select",
         "valueChange"
       ],
+      "methods": [
+        "clearValue()",
+        "close()",
+        "for()",
+        "handleHourChange()",
+        "handleMinuteChange()",
+        "handlePeriodChange()",
+        "handleSecondChange()",
+        "handleTriggerKeydown()",
+        "if()",
+        "open()",
+        "pad()",
+        "selectNow()",
+        "setDisabledState()",
+        "toggle()",
+        "writeValue()"
+      ],
       "formCompatibility": "ControlValueAccessor",
       "usageExample": "<j-time-picker></j-time-picker>",
       "importExample": "import { JTimePickerComponent } from 'jrng-ui/time-picker';",
@@ -5314,9 +6421,13 @@
         "compact",
         "layout",
         "styleClass",
-        "value"
+        "value",
+        "variant"
       ],
       "outputs": [],
+      "methods": [
+        "itemContext()"
+      ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-timeline></j-timeline>",
       "importExample": "import { JTimelineComponent } from 'jrng-ui/timeline';",
@@ -5352,6 +6463,12 @@
         "position"
       ],
       "outputs": [],
+      "methods": [
+        "endSwipe()",
+        "startSwipe()",
+        "templateContext()",
+        "visibleToasts()"
+      ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-toast></j-toast>",
       "importExample": "import { JrToastContainerComponent } from 'jrng-ui/toast';",
@@ -5399,6 +6516,11 @@
       "outputs": [
         "valueChange"
       ],
+      "methods": [
+        "setDisabledState()",
+        "toggle()",
+        "writeValue()"
+      ],
       "formCompatibility": "ControlValueAccessor",
       "usageExample": "<j-toggle-button></j-toggle-button>",
       "importExample": "import { JToggleButtonComponent } from 'jrng-ui/toggle-button';",
@@ -5432,6 +6554,7 @@
       "description": "Angular Toolbar component for reusable admin, dashboard, and business application interfaces.",
       "inputs": [],
       "outputs": [],
+      "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-toolbar></j-toolbar>",
       "importExample": "import { JToolbarComponent } from 'jrng-ui/toolbar';",
@@ -5470,6 +6593,9 @@
         "showNavigation"
       ],
       "outputs": [],
+      "methods": [
+        "isActive()"
+      ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-topbar></j-topbar>",
       "importExample": "import { JTopbarComponent } from 'jrng-ui/topbar';",
@@ -5514,7 +6640,23 @@
         "targetAriaLabel",
         "targetHeader"
       ],
-      "outputs": [],
+      "outputs": [
+        "sourceChange",
+        "targetChange"
+      ],
+      "methods": [
+        "isSourceSelected()",
+        "isTargetSelected()",
+        "moveAllToSource()",
+        "moveAllToTarget()",
+        "moveSelectedToSource()",
+        "moveSelectedToTarget()",
+        "reorderTarget()",
+        "toggleSource()",
+        "toggleTarget()",
+        "updateSourceFilter()",
+        "updateTargetFilter()"
+      ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-transfer-list></j-transfer-list>",
       "importExample": "import { JTransferListComponent } from 'jrng-ui/transfer-list';",
@@ -5560,7 +6702,23 @@
       "outputs": [
         "lazyLoad",
         "nodeCollapse",
-        "nodeExpand"
+        "nodeExpand",
+        "selectionChange"
+      ],
+      "methods": [
+        "filteredChildren()",
+        "handleKeydown()",
+        "hasChildren()",
+        "iconFor()",
+        "isExpandedKey()",
+        "isSelected()",
+        "nodeContext()",
+        "nodeKey()",
+        "selectNode()",
+        "setActive()",
+        "setFilter()",
+        "toggle()",
+        "toggleSelection()"
       ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-tree></j-tree>",
@@ -5595,21 +6753,49 @@
       "description": "Angular Tree Table component for reusable admin, dashboard, and business application interfaces.",
       "inputs": [
         "ariaLabel",
+        "childrenField",
         "columns",
         "emptyMessage",
+        "expandedKeys",
         "filter",
         "filterPlaceholder",
         "lazy",
+        "propagateSelectionDown",
+        "propagateSelectionUp",
         "selection",
         "selectionMode",
         "styleClass",
+        "togglerColumn",
         "value"
       ],
       "outputs": [
         "lazyLoad",
         "nodeCollapse",
         "nodeExpand",
-        "sortChange"
+        "nodeSelect",
+        "nodeUnselect",
+        "sortChange",
+        "expandedKeysChange",
+        "selectionChange"
+      ],
+      "methods": [
+        "ariaSort()",
+        "cellContext()",
+        "cellValue()",
+        "columnClass()",
+        "formattedCellValue()",
+        "handleRowClick()",
+        "handleRowKeydown()",
+        "hasChildren()",
+        "isMultiSelect()",
+        "isPartiallySelected()",
+        "isSelected()",
+        "resolvedCellTemplate()",
+        "rowTabIndex()",
+        "setFilter()",
+        "toggle()",
+        "toggleSelection()",
+        "toggleSort()"
       ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-tree-table></j-tree-table>",
@@ -5658,6 +6844,10 @@
         "paused",
         "played"
       ],
+      "methods": [
+        "pause()",
+        "play()"
+      ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-video-player></j-video-player>",
       "importExample": "import { JVideoPlayerComponent } from 'jrng-ui/video-player';",
@@ -5699,6 +6889,12 @@
       ],
       "outputs": [
         "lazyLoad"
+      ],
+      "methods": [
+        "handleScroll()",
+        "itemContext()",
+        "scrollToIndex()",
+        "trackItem()"
       ],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-virtual-scroller></j-virtual-scroller>",

@@ -1,0 +1,8 @@
+.metric-row {
+  align-items: center;
+  display: flex;
+  gap: var(--j-spacing-md);
+}
+.metric-row strong {
+  font-size: var(--j-font-size-3xl);
+}

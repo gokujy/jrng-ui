@@ -1,5 +1,5 @@
 <button
-  [jRipple]="!isBlocked()"
+  [jRipple]="ripple() && !isBlocked()"
   [class]="buttonClasses()"
   data-jc-name="button"
   data-jc-section="root"
@@ -15,6 +15,7 @@
 >
   @if (loading()) {
     <span class="j-button__spinner" data-jc-section="loader" aria-hidden="true"></span>
+    <span class="j-hidden-accessible">{{ loadingLabel() }}</span>
   }
   @if (icon() && iconPosition() === 'left') {
     <span class="j-button__icon" data-jc-section="icon" aria-hidden="true">{{ icon() }}</span>
@@ -34,5 +35,14 @@
   ></span>
   @if (icon() && iconPosition() === 'right') {
     <span class="j-button__icon" data-jc-section="icon" aria-hidden="true">{{ icon() }}</span>
+  }
+  @if (badge() !== null && badge() !== '') {
+    <span
+      class="j-button__badge"
+      data-jc-section="badge"
+      [attr.aria-label]="badgeAriaLabel() || null"
+    >
+      {{ badge() }}
+    </span>
   }
 </button>

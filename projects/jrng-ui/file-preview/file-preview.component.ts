@@ -7,6 +7,7 @@ import {
   output,
 } from '@angular/core';
 import { JIconComponent } from 'jrng-ui/icon';
+import { formatFileSize, resolveFileType } from './file-type';
 
 @Component({
   selector: 'j-file-preview',
@@ -121,6 +122,7 @@ export class JFilePreviewComponent {
   readonly file = input<File | null>(null);
   readonly fileName = input('');
   readonly fileSize = input(0);
+  readonly mimeType = input('');
   readonly description = input('');
   readonly url = input('');
   readonly previewLabel = input('Preview');
@@ -137,29 +139,16 @@ export class JFilePreviewComponent {
   readonly download = output<void>();
 
   readonly name = computed(() => this.file()?.name || this.fileName());
-  readonly extension = computed(
-    () => this.name().split('.').pop()?.slice(0, 4).toUpperCase() || 'FILE',
+  readonly extension = computed(() => this.presentation().extension.toUpperCase() || 'FILE');
+  readonly presentation = computed(() =>
+    resolveFileType({ fileName: this.name(), mimeType: this.file()?.type || this.mimeType() }),
   );
   readonly resolvedIcon = computed(() => {
     if (this.icon()) return this.icon();
-    const extension = this.extension().toLocaleLowerCase();
-    if (['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'].includes(extension)) return 'image';
-    if (['mp4', 'webm', 'mov'].includes(extension)) return 'video';
-    if (['zip', 'rar', '7z'].includes(extension)) return 'archive';
-    if (['txt', 'md', 'doc', 'docx', 'pdf'].includes(extension)) return 'file-text';
-    return 'file';
+    return this.presentation().icon;
   });
   readonly sizeLabel = computed(() => {
     const size = this.file()?.size || this.fileSize();
-    if (!size) {
-      return '';
-    }
-    if (size < 1024) {
-      return `${size} B`;
-    }
-    if (size < 1024 * 1024) {
-      return `${(size / 1024).toFixed(1)} KB`;
-    }
-    return `${(size / 1024 / 1024).toFixed(1)} MB`;
+    return size ? formatFileSize(size) : '';
   });
 }

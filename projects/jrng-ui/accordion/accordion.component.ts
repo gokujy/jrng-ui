@@ -12,9 +12,11 @@ import {
   input,
   model,
   output,
+  signal,
 } from '@angular/core';
 
 export type JAccordionActiveIndex = number | readonly number[] | null;
+export type JAccordionVariant = 'default' | 'separated' | 'minimal';
 
 @Component({
   selector: 'j-accordion-panel',
@@ -22,6 +24,8 @@ export type JAccordionActiveIndex = number | readonly number[] | null;
   template: `
     <section
       class="j-accordion-panel"
+      [class.j-accordion-panel--separated]="presentation() === 'separated'"
+      [class.j-accordion-panel--minimal]="presentation() === 'minimal'"
       [class.is-active]="active"
       [class.is-disabled]="disabled()"
       data-jc-name="accordion"
@@ -99,6 +103,27 @@ export type JAccordionActiveIndex = number | readonly number[] | null;
         line-height: 1.6;
         padding: var(--j-spacing-4, 1rem);
       }
+
+      .j-accordion-panel--separated {
+        border: 1px solid var(--j-color-border, #dbe2ea);
+        border-radius: var(--j-radius-lg, 0.75rem);
+        overflow: hidden;
+      }
+
+      .j-accordion-panel--minimal {
+        border-bottom-style: dashed;
+      }
+
+      .j-accordion-panel--minimal .j-accordion-panel__button,
+      .j-accordion-panel--minimal .j-accordion-panel__content {
+        background: transparent;
+        padding-inline: 0;
+      }
+
+      .j-accordion-panel--minimal .j-accordion-panel__content {
+        border-top: 0;
+        padding-top: 0;
+      }
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -110,6 +135,8 @@ export class JAccordionPanelComponent {
 
   index = -1;
   active = false;
+  /** Presentation inherited from the owning accordion. */
+  readonly presentation = signal<JAccordionVariant>('default');
 
   requestToggle(): void {
     if (!this.disabled()) {
@@ -121,7 +148,12 @@ export class JAccordionPanelComponent {
 @Component({
   selector: 'j-accordion',
   imports: [],
-  template: `<div class="j-accordion" data-jc-name="accordion" data-jc-section="root">
+  template: `<div
+    [class]="'j-accordion j-accordion--' + variant()"
+    [attr.data-j-variant]="variant()"
+    data-jc-name="accordion"
+    data-jc-section="root"
+  >
     <ng-content></ng-content>
   </div>`,
   styles: [
@@ -134,6 +166,23 @@ export class JAccordionPanelComponent {
         color: var(--j-color-text, #111827);
         overflow: hidden;
       }
+
+      .j-accordion--separated {
+        background: transparent;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+        display: grid;
+        gap: var(--j-spacing-sm, 0.5rem);
+        overflow: visible;
+      }
+
+      .j-accordion--minimal {
+        background: transparent;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+      }
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -144,6 +193,7 @@ export class JAccordionComponent implements AfterContentInit, OnChanges {
   @ContentChildren(JAccordionPanelComponent) panels?: QueryList<JAccordionPanelComponent>;
   readonly multiple = input(false, { transform: booleanAttribute });
   readonly activeIndex = model<JAccordionActiveIndex>(null);
+  readonly variant = input<JAccordionVariant>('default');
 
   ngAfterContentInit(): void {
     this.syncPanels();
@@ -156,7 +206,7 @@ export class JAccordionComponent implements AfterContentInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['activeIndex'] || changes['multiple']) {
+    if (changes['activeIndex'] || changes['multiple'] || changes['variant']) {
       this.syncPanels();
     }
   }
@@ -187,6 +237,7 @@ export class JAccordionComponent implements AfterContentInit, OnChanges {
     this.panels?.forEach((panel, index) => {
       panel.index = index;
       panel.active = activeIndexes.includes(index);
+      panel.presentation.set(this.variant());
     });
   }
 

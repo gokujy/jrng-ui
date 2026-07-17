@@ -32,6 +32,24 @@
 
 ## 0.0.9
 
+### Documentation and requested components
+
+- Added the accessible `j-text-expand` component with character and responsive line truncation, two-way expanded state, projected content, custom labels, and reduced-motion support.
+- Expanded Button with help and contrast intent, pill presentation, badges, loading labels, and configurable ripple while retaining the safe native button default.
+- Added optional Avatar image zoom with pointer and keyboard activation, reusable preview overlay behavior, image fallback, Escape close, and focus restoration.
+- Expanded Loader with spinner, dots, pulse, ring, dual-ring, bars, wave, bounce, orbit, typing, inline, overlay, fullscreen, and determinate presentations.
+- Deprecated Metric Card for new work; dashboard metrics are now documented as compositions of Card, Badge, Progress, and chart components.
+- Expanded every component page with usage boundaries, keyboard, responsive, template, limitation, related-component, and testing guidance.
+
+### Table family
+
+- Kept `j-table` and `j-tree-table` as separate public components with shared table contracts.
+- Added strongly typed `JTableColumn<T>`, semantic column types, value getters, formatters, focused templates, and visual variants separated from density.
+- Integrated no-data, no-results, error, skeleton, spinner, progress, and overlay states into `j-table`.
+- Added Tree Table expansion, controlled expanded keys, lazy children, keyboard focus, tree-grid ARIA metadata, and propagated checkbox selection.
+- Retained `j-column`, `j-table-empty-state`, and `j-table-skeleton` as deprecated compatibility APIs; no selector was removed.
+- Added Table-family previews, copyable code, accessibility guidance, migration notes, and focused tests.
+
 ### Fixes
 
 - Preserved and sanitized Editor values written before view initialization, including `ngModel`, Reactive Forms, resets, disabled updates, text mode, and HTML mode.
@@ -59,11 +77,15 @@
 ### Testing
 
 - Added lifecycle/security/command Editor tests, locale Input Number tests, upload-mode and validation tests, overlay/config/SSR tests, and frozen-row behavior coverage.
+- Added adjacent specification files for every canonical component, directive, pipe, and service, plus a CI verifier that rejects future public artifacts without tests.
+- Added enforced statement, branch, function, and line coverage thresholds and direct interaction suites for Button, Avatar zoom, Image Preview, Avatar Group, Loader, Text Expand, Table, and Tree Table.
 - Kept the normal full library, docs, and starter commands as required gates without forced process termination or skipped suites.
 
 ### Documentation
 
 - Replaced stale Editor placeholder guidance and documented number formatting, upload modes, overlay targets, global configuration, SSR verification, Node requirements, and the 0.0.9 migration.
+- Added generated beginner guidance and complete public input, output, and method coverage for every public component page, with focused file-backed demos for the primary additions.
+- Added automated checks for demo file existence, non-empty code tabs, valid public selectors, and documentation/API registry consistency.
 - Added mergeable Hindi and Gujarati locale examples.
 
 ### Tooling

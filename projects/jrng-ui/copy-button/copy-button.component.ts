@@ -10,14 +10,16 @@ import {
   signal,
 } from '@angular/core';
 import { JClipboardService, JPassThrough, jMergePartClasses } from 'jrng-ui/core';
+import { JIconComponent, JIconName } from 'jrng-ui/icon';
 
 @Component({
   selector: 'j-copy-button',
-  imports: [],
+  imports: [JIconComponent],
   template: `
     <button
       type="button"
       [class]="buttonClasses()"
+      [class.j-copy-button--icon-only]="iconOnly()"
       data-jc-name="copy-button"
       data-jc-section="root"
       [attr.data-j-active]="copiedState() ? 'true' : null"
@@ -27,14 +29,24 @@ import { JClipboardService, JPassThrough, jMergePartClasses } from 'jrng-ui/core
       [attr.aria-label]="ariaLabel()"
       (click)="copy()"
     >
-      @if (copiedState()) {
+      @if (icon()) {
+        <j-icon
+          data-jc-section="icon"
+          [name]="displayIcon()"
+          aria-hidden="true"
+        />
+      } @else if (copiedState()) {
         <span data-jc-section="icon" aria-hidden="true">&#10003;</span>
       } @else if (failedState()) {
         <span data-jc-section="icon" aria-hidden="true">!</span>
       } @else {
         <span data-jc-section="icon" aria-hidden="true">&#10697;</span>
       }
-      <span data-jc-section="label" aria-live="polite">{{ statusLabel() }}</span>
+      <span
+        data-jc-section="label"
+        aria-live="polite"
+        [class.j-copy-button__label--hidden]="iconOnly()"
+      >{{ statusLabel() }}</span>
     </button>
   `,
   styles: [
@@ -72,6 +84,22 @@ import { JClipboardService, JPassThrough, jMergePartClasses } from 'jrng-ui/core
         cursor: not-allowed;
         opacity: var(--j-disabled-opacity);
       }
+
+      .j-copy-button__label--hidden {
+        clip: rect(0 0 0 0);
+        clip-path: inset(50%);
+        height: 1px;
+        overflow: hidden;
+        position: absolute;
+        white-space: nowrap;
+        width: 1px;
+      }
+
+      .j-copy-button--icon-only {
+        justify-content: center;
+        padding: 0;
+        width: 2.25rem;
+      }
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -86,6 +114,8 @@ export class JCopyButtonComponent {
   readonly copiedLabel = input('Copied');
   readonly failedLabel = input('Copy failed');
   readonly ariaLabel = input('Copy to clipboard');
+  readonly icon = input<JIconName | null>(null);
+  readonly iconOnly = input(false, { transform: booleanAttribute });
   readonly styleClass = input('');
   readonly pt = input<JPassThrough | null>(null);
   readonly disabled = input(false, { transform: booleanAttribute });
@@ -95,6 +125,9 @@ export class JCopyButtonComponent {
   readonly copyState = signal<'idle' | 'copied' | 'failed'>('idle');
   readonly copiedState = computed(() => this.copyState() === 'copied');
   readonly failedState = computed(() => this.copyState() === 'failed');
+  readonly displayIcon = computed<JIconName>(() =>
+    this.copiedState() ? 'check-check' : (this.icon() ?? 'copy'),
+  );
   readonly statusLabel = computed(() => {
     if (this.copiedState()) {
       return this.copiedLabel();

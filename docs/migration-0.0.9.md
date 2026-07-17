@@ -1,5 +1,31 @@
 # Migrating to 0.0.9
 
+## Metric Card composition
+
+`j-metric-card` remains available for compatibility but is deprecated for new work. Compose metrics with `j-card` and focused content components. This keeps Card flexible and avoids metric-only public inputs.
+
+```html
+<j-card title="Monthly revenue" subtitle="Compared with last month">
+  <strong class="metric-value">$84,250</strong>
+  <j-badge value="+12.4%" severity="success" />
+  <j-progress-bar [value]="72" label="72% of target" />
+</j-card>
+```
+
+## Additive component APIs
+
+Button, Avatar, and Loader additions are opt-in. Existing Button variants, non-zoomable Avatars, and Loader `variant` usage remain supported. Prefer Loader `type` in new code; `variant` remains a compatibility alias.
+
+## Table family
+
+There is no required Table migration. Existing `j-table`, `j-tree-table`, `j-column`, `j-table-empty-state`, and `j-table-skeleton` consumers continue to compile.
+
+For new code, define flat columns with `JTableColumn<T>`, place empty and error handling on `j-table`, and select loading through `[loading]` plus `loadingVariant`. Use the focused header, cell, filter, action, empty, and loading template directives for customization.
+
+The column, table-empty-state, and table-skeleton selectors remain temporary compatibility APIs. They are deprecated for new Table implementations but are not removed in this release. The general `j-skeleton` remains reusable outside tables.
+
+Keep hierarchical data in the separate `j-tree-table`; hierarchy is not a Table variant. Loading, empty, error, selection, pagination, and editability are also states or behavior rather than visual variants.
+
 Version 0.0.9 preserves existing selectors, modular entrypoints, CSS classes, form outputs, and primary event names. No new mandatory runtime dependency is introduced; Chart.js and Driver.js remain optional peers.
 
 ## Editor values

@@ -13,7 +13,7 @@ import { JSeverity } from 'jrng-ui/core';
 export type JButtonType = 'button' | 'submit' | 'reset';
 export type JButtonIconPosition = 'left' | 'right';
 export type JButtonVariant = 'filled' | 'outline' | 'outlined' | 'ghost' | 'soft' | 'link' | 'text';
-export type JButtonSeverity = JSeverity;
+export type JButtonSeverity = JSeverity | 'help' | 'contrast';
 export type JButtonSize = 'sm' | 'md' | 'lg' | 'xl';
 export type JrButtonVariant = JButtonVariant | JButtonSeverity;
 export type JrButtonSize = JButtonSize;
@@ -40,11 +40,16 @@ export class JrButtonComponent {
   readonly disabled = input(false, { transform: booleanAttribute });
   readonly loading = input(false, { transform: booleanAttribute });
   readonly rounded = input(false, { transform: booleanAttribute });
+  readonly pill = input(false, { transform: booleanAttribute });
   readonly outlined = input(false, { transform: booleanAttribute });
   readonly text = input(false, { transform: booleanAttribute });
   readonly raised = input(false, { transform: booleanAttribute });
   readonly fullWidth = input(false, { transform: booleanAttribute });
   readonly iconOnly = input(false, { transform: booleanAttribute });
+  readonly ripple = input(true, { transform: booleanAttribute });
+  readonly badge = input<string | number | null>(null);
+  readonly badgeAriaLabel = input('');
+  readonly loadingLabel = input('Loading');
 
   readonly onClick = output<MouseEvent>();
 
@@ -59,7 +64,9 @@ export class JrButtonComponent {
       legacySeverity === 'warning' ||
       legacySeverity === 'danger' ||
       legacySeverity === 'info' ||
-      legacySeverity === 'neutral'
+      legacySeverity === 'neutral' ||
+      legacySeverity === 'help' ||
+      legacySeverity === 'contrast'
     ) {
       return legacySeverity;
     }
@@ -92,7 +99,7 @@ export class JrButtonComponent {
         `j-button--${this.resolvedSeverity()}`,
         `j-button--${this.resolvedVariant()}`,
         `j-button--${this.size()}`,
-        this.rounded() ? 'j-button--rounded' : '',
+        this.rounded() || this.pill() ? 'j-button--rounded' : '',
         this.raised() ? 'j-button--raised' : '',
         this.fullWidth() ? 'j-button--full' : '',
         this.iconOnly() ? 'j-button--icon-only' : '',

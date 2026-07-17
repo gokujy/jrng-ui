@@ -75,6 +75,29 @@ readonly breadcrumbs: JPageHeaderBreadcrumb[] = [
 
 Use `j-container`, `j-stack`, and `j-grid-layout` to compose pages without generic global utility classes.
 
+Use `j-grid`, `j-row`, and `j-col` when the layout needs explicit responsive spans,
+offsets, ordering, alignment, or gutters. This is a presentation grid, not a data table.
+
+```ts
+import { JGridColumnComponent, JGridComponent, JGridRowComponent } from 'jrng-ui/grid';
+```
+
+```html
+<j-grid fixed>
+  <j-row>
+    <j-col size="12" md="8">Main content</j-col>
+    <j-col size="12" md="4">Sidebar</j-col>
+  </j-row>
+</j-grid>
+```
+
+The breakpoint inputs are mobile-first: `size`, `sm`, `md`, `lg`, `xl`, and `xxl`.
+Omit a size for an equal-width column, use `auto` for intrinsic width, and use the
+matching `offset*` or `order*` input only when the layout genuinely requires it.
+
+`j-grid-layout` remains the simpler choice for an automatic collection of repeated
+items whose minimum width determines wrapping:
+
 ```html
 <j-container size="xl">
   <j-stack gap="var(--j-spacing-5)">

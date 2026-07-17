@@ -81,7 +81,10 @@ describe('JFileUploadComponent', () => {
     fixture.componentRef.setInput('multiple', true);
     fixture.detectChanges();
     const file = new File(['x'], 'drop.txt', { type: 'text/plain' });
-    component.handleDrop({ preventDefault: vi.fn(), dataTransfer: { files: [file] } } as unknown as DragEvent);
+    component.handleDrop({
+      preventDefault: vi.fn(),
+      dataTransfer: { files: [file] },
+    } as unknown as DragEvent);
     const item = component.queue()[0]!;
     component.emitUpload();
     component.cancel(item);

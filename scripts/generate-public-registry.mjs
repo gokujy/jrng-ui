@@ -29,6 +29,10 @@ const completeSlugs = new Set([
   'metric-card',
   'page-header',
   'tour-guide',
+  'text-expand',
+  'avatar',
+  'loader',
+  'card',
 ]);
 
 const components = [];
@@ -45,6 +49,13 @@ for (const component of inventory.components) {
     /(?:readonly\s+)?([A-Za-z_$][\w$]*)\s*=\s*output(?:<[^;\n]+?>)?\s*\(/g,
     /@Output(?:\([^)]*\))?[^;\n]*?\b([A-Za-z_$][\w$]*)\s*(?::|=|;)/g,
   );
+  const methods = exportedMethods(source);
+  for (const modelName of exportedMembers(
+    source,
+    /(?:readonly\s+)?([A-Za-z_$][\w$]*)\s*=\s*model(?:<[^;\n]+?>)?\s*\(/g,
+  )) {
+    outputs.push(`${modelName}Change`);
+  }
   components.push({
     name: component.name,
     selector: component.selector,
@@ -54,6 +65,7 @@ for (const component of inventory.components) {
     description: `Angular ${component.name} component for reusable admin, dashboard, and business application interfaces.`,
     inputs,
     outputs,
+    methods,
     formCompatibility: /ControlValueAccessor|NG_VALUE_ACCESSOR/.test(source)
       ? 'ControlValueAccessor'
       : 'Not a form control',
@@ -63,7 +75,7 @@ for (const component of inventory.components) {
     status: completeSlugs.has(slug) ? 'Complete' : 'Basic',
     stability: component.stability === 'Unclassified' ? 'Stable' : component.stability,
     sinceVersion: null,
-    deprecation: null,
+    deprecation: componentDeprecation(source, component.className),
     angularCompatibility: packageJson.peerDependencies['@angular/core'],
     files: [],
     dependencies: [],
@@ -108,6 +120,40 @@ function exportedMembers(source, ...patterns) {
   for (const pattern of patterns) {
     for (const match of source.matchAll(pattern))
       if (match[1] && !match[1].startsWith('_')) names.add(match[1]);
+  }
+  return [...names].sort();
+}
+
+function componentDeprecation(source, className) {
+  const classIndex = source.indexOf(`export class ${className}`);
+  if (classIndex < 0) return null;
+  const leadingSource = source.slice(0, classIndex);
+  const jsDoc = /\/\*\*([\s\S]*?)\*\/\s*$/.exec(leadingSource)?.[1] ?? '';
+  if (!/@deprecated\b/.test(jsDoc)) return null;
+  const message = jsDoc
+    .slice(jsDoc.indexOf('@deprecated') + '@deprecated'.length)
+    .split('\n')
+    .map((line) => line.replace(/^\s*\*?\s?/, '').trim())
+    .filter(Boolean)
+    .join(' ');
+  return {
+    message: message || 'Deprecated compatibility API.',
+  };
+}
+
+function exportedMethods(source) {
+  const names = new Set();
+  const pattern =
+    /^\s{2}(?!private\b|protected\b|static\b)(?:readonly\s+)?([A-Za-z_$][\w$]*)\s*\([^)]*\)\s*(?::\s*[^\{]+)?\{/gm;
+  const excluded = new Set([
+    'constructor',
+    'ngOnInit',
+    'ngOnChanges',
+    'ngAfterViewInit',
+    'ngOnDestroy',
+  ]);
+  for (const match of source.matchAll(pattern)) {
+    if (match[1] && !excluded.has(match[1])) names.add(`${match[1]}()`);
   }
   return [...names].sort();
 }

@@ -126,6 +126,10 @@ import { JStatTrend } from 'jrng-ui/stat-card';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
+/**
+ * @deprecated Compose dashboard metrics with `j-card`, typography, badges, progress, and chart
+ * components. This compatibility component remains available throughout the 0.0.x line.
+ */
 export class JMetricCardComponent {
   readonly title = input('');
   readonly value = input<string | number>('');

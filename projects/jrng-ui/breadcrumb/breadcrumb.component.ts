@@ -23,12 +23,15 @@ export interface JBreadcrumbClickEvent {
   readonly originalEvent: MouseEvent;
 }
 
+export type JBreadcrumbVariant = 'default' | 'steps' | 'contained';
+
 @Component({
   selector: 'j-breadcrumb',
   imports: [NgTemplateOutlet, RouterLink],
   template: `
     <nav
-      class="j-breadcrumb"
+      [class]="'j-breadcrumb j-breadcrumb--' + variant()"
+      [attr.data-j-variant]="variant()"
       data-jc-name="breadcrumb"
       data-jc-section="root"
       aria-label="Breadcrumb"
@@ -137,6 +140,57 @@ export interface JBreadcrumbClickEvent {
         color: var(--j-color-foreground);
         font-weight: var(--j-font-weight-medium);
       }
+
+      .j-breadcrumb--contained .j-breadcrumb__list {
+        background: var(--j-color-surface-subtle, #eef2f7);
+        border-radius: var(--j-radius-lg, 0.75rem);
+        padding: var(--j-spacing-sm, 0.5rem) var(--j-spacing-md, 0.75rem);
+      }
+
+      .j-breadcrumb--steps .j-breadcrumb__list {
+        align-items: stretch;
+        flex-wrap: nowrap;
+        gap: 0;
+        overflow-x: auto;
+      }
+
+      .j-breadcrumb--steps .j-breadcrumb__item {
+        background: var(--j-color-surface-subtle, #eef2f7);
+        min-height: 2.5rem;
+        padding-inline: var(--j-spacing-md, 0.75rem);
+      }
+
+      .j-breadcrumb--steps .j-breadcrumb__item:first-child {
+        border-end-start-radius: var(--j-radius-md, 0.5rem);
+        border-start-start-radius: var(--j-radius-md, 0.5rem);
+      }
+
+      .j-breadcrumb--steps .j-breadcrumb__item:last-child {
+        background: var(--j-color-primary, #4f46e5);
+        border-end-end-radius: var(--j-radius-md, 0.5rem);
+        border-start-end-radius: var(--j-radius-md, 0.5rem);
+      }
+
+      .j-breadcrumb--steps .j-breadcrumb__item:last-child .j-breadcrumb__current {
+        color: var(--j-color-on-primary, #ffffff);
+      }
+
+      .j-breadcrumb--steps .j-breadcrumb__separator {
+        font-size: 0;
+      }
+
+      .j-breadcrumb--steps .j-breadcrumb__separator::after {
+        color: var(--j-color-muted-foreground, #64748b);
+        content: '›';
+        font-size: var(--j-font-size-lg, 1.125rem);
+        margin-inline-end: var(--j-spacing-md, 0.75rem);
+      }
+
+      @media (max-width: 640px) {
+        .j-breadcrumb--steps .j-breadcrumb__item:not(:nth-last-child(-n + 2)):not(:first-child) {
+          display: none;
+        }
+      }
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -144,6 +198,7 @@ export interface JBreadcrumbClickEvent {
 export class JBreadcrumbComponent {
   readonly model = input<readonly JBreadcrumbItem[]>([]);
   readonly home = input<JBreadcrumbItem>();
+  readonly variant = input<JBreadcrumbVariant>('default');
   @ContentChild('jBreadcrumbSeparator', { read: TemplateRef })
   separatorTemplate?: TemplateRef<unknown>;
   readonly itemClick = output<JBreadcrumbClickEvent>();

@@ -117,7 +117,7 @@ export const componentGroups: readonly ComponentGroup[] = [
   {
     name: 'Business',
     icon: 'briefcase-business',
-    slugs: ['metric-card', 'stat-card', 'status-chip', 'page-header', 'empty-state'],
+    slugs: ['card', 'stat-card', 'status-chip', 'page-header', 'empty-state'],
   },
   {
     name: 'Feedback',
@@ -134,6 +134,214 @@ export const componentGroups: readonly ComponentGroup[] = [
     name: 'Utilities',
     icon: 'wrench',
     slugs: ['ripple', 'timeline', 'file-upload', 'formatting', 'tour-guide'],
+  },
+];
+
+const variantComponentDocs: readonly ComponentDoc[] = [
+  {
+    slug: 'accordion',
+    name: 'Accordion',
+    category: 'Navigation',
+    icon: 'panel-top',
+    selector: 'j-accordion',
+    importPath: 'jrng-ui/accordion',
+    status: 'Stable',
+    description: 'A keyboard-accessible disclosure group for related sections of content.',
+    whenToUse: 'Use Accordion when several related sections should share limited vertical space.',
+    code: {
+      importCode: `import { JAccordionComponent, JAccordionPanelComponent } from 'jrng-ui/accordion';`,
+      basic: `<j-accordion [activeIndex]="0">
+  <j-accordion-panel header="Account">Account content</j-accordion-panel>
+</j-accordion>`,
+      variants: `<j-accordion variant="default">...</j-accordion>
+<j-accordion variant="separated">...</j-accordion>
+<j-accordion variant="minimal">...</j-accordion>`,
+      states: `<j-accordion [activeIndex]="0">
+  <j-accordion-panel header="Open">Visible content</j-accordion-panel>
+  <j-accordion-panel header="Unavailable" disabled>Hidden</j-accordion-panel>
+</j-accordion>`,
+    },
+    usage: ['Use separated panels for settings and minimal rows for dense help or filter content.'],
+    variants: [
+      'default for a visually grouped disclosure set',
+      'separated for independent settings cards',
+      'minimal for content-led lists with low visual weight',
+    ],
+    sizes: ['Content determines height; spacing follows theme tokens.'],
+    states: ['collapsed', 'expanded', 'disabled', 'single', 'multiple'],
+    inputs: [
+      prop('variant', 'default | separated | minimal', "'default'", 'Presentation concept.'),
+      prop('multiple', 'boolean', 'false', 'Allows more than one panel to be expanded.'),
+      prop('activeIndex', 'number | readonly number[] | null', 'null', 'Expanded panel index.'),
+    ],
+    outputs: [
+      event('activeIndexChange', 'JAccordionActiveIndex', 'Emits after expansion changes.'),
+    ],
+    cssVariables: surfaceCssVariables,
+    accessibility: [
+      'Panel headers use buttons with aria-expanded and retain native focus behavior.',
+    ],
+    bestPractices: ['Use concise headers that describe the hidden content.'],
+  },
+  {
+    slug: 'paginator',
+    name: 'Paginator',
+    category: 'Navigation',
+    icon: 'ellipsis',
+    selector: 'j-paginator',
+    importPath: 'jrng-ui/paginator',
+    status: 'Stable',
+    description: 'Page navigation for local and server-backed result sets.',
+    whenToUse: 'Use Paginator when a result set is intentionally divided into discrete pages.',
+    code: {
+      importCode: `import { JPaginatorComponent } from 'jrng-ui/paginator';`,
+      basic: `<j-paginator [totalRecords]="96" [rows]="10" (pageChange)="loadPage($event)" />`,
+      variants: `<j-paginator variant="default" [totalRecords]="96" [rows]="10" />
+<j-paginator variant="simple" [totalRecords]="96" [rows]="10" />`,
+      states: `<j-paginator [first]="20" [totalRecords]="96" [rowsPerPageOptions]="[10, 20, 50]" showCurrentPageReport />`,
+    },
+    usage: [
+      'Use simple presentation when only previous/next navigation and page context are needed.',
+    ],
+    variants: [
+      'default for direct access to nearby page numbers',
+      'simple for narrow regions and focused reading flows',
+    ],
+    sizes: ['The layout wraps below 640px and remains touch friendly.'],
+    states: ['first page', 'middle page', 'last page', 'empty result set'],
+    inputs: [
+      prop('variant', 'default | simple', "'default'", 'Presentation concept.'),
+      prop('first', 'number', '0', 'Zero-based first record offset.'),
+      prop('rows', 'number', '10', 'Records per page.'),
+      prop('totalRecords', 'number', '0', 'Total records.'),
+    ],
+    outputs: [event('pageChange', 'JPaginatorPageChange', 'Emits the next page state.')],
+    accessibility: [
+      'The root is a named navigation landmark and every control has an accessible label.',
+    ],
+    bestPractices: ['Keep page size stable while users work through a result set.'],
+  },
+  {
+    slug: 'stepper',
+    name: 'Stepper',
+    category: 'Navigation',
+    icon: 'route',
+    selector: 'j-stepper',
+    importPath: 'jrng-ui/stepper',
+    status: 'Stable',
+    description: 'A selectable progress path for multi-step tasks and status workflows.',
+    whenToUse:
+      'Use Stepper when users benefit from seeing position, completion, and upcoming steps.',
+    code: {
+      importCode: `import { JStepperComponent, JStepItem } from 'jrng-ui/stepper';`,
+      basic: `<j-stepper [items]="steps" [activeIndex]="1" (activeIndexChange)="goTo($event)" />`,
+      variants: `<j-stepper variant="default" [items]="steps" />
+<j-stepper variant="rail" [items]="steps" />
+<j-stepper variant="progress" [items]="steps" />`,
+      states: `<j-stepper [items]="stepsWithCompletedDisabledAndErrorStates" [activeIndex]="1" linear />`,
+    },
+    usage: ['Use rail for wizard progression and progress for compact application workflows.'],
+    variants: [
+      'default for descriptive step cards',
+      'rail for a connected wizard path',
+      'progress for compact in-context progression',
+    ],
+    sizes: ['Long horizontal paths scroll; supporting descriptions collapse on narrow screens.'],
+    states: ['active', 'completed', 'error', 'disabled', 'linear'],
+    inputs: [
+      prop('variant', 'default | rail | progress', "'default'", 'Presentation concept.'),
+      prop('items', 'readonly JStepItem[]', '[]', 'Step labels and states.'),
+      prop('activeIndex', 'number', '0', 'Current step index.'),
+      prop('linear', 'boolean', 'false', 'Prevents skipping ahead.'),
+      prop('orientation', 'horizontal | vertical', "'horizontal'", 'Layout direction.'),
+    ],
+    outputs: [event('activeIndexChange', 'number', 'Emits after a permitted step activation.')],
+    accessibility: ['The current step uses aria-current and disabled steps remain unavailable.'],
+    bestPractices: ['Keep labels short and place task content outside the progress indicator.'],
+  },
+  {
+    slug: 'text-expand',
+    name: 'Text Expand',
+    category: 'Data Display',
+    icon: 'text-cursor-input',
+    selector: 'j-text-expand',
+    importPath: 'jrng-ui/text-expand',
+    status: 'Stable',
+    description:
+      'Shortens long plain text or line-clamped projected content and reveals it on demand.',
+    whenToUse:
+      'Use Text Expand for descriptions, comments, summaries, and policy text that should not dominate the initial layout.',
+    whenNotToUse: [
+      'Avoid it when the complete text is required to make a decision.',
+      'Do not hide validation, safety, pricing, or consent information behind expansion.',
+    ],
+    code: {
+      importCode: `import { JTextExpandComponent } from 'jrng-ui/text-expand';`,
+      basic: `<j-text-expand [text]="productDescription" [collapsedLength]="120" />`,
+      variants: `<j-text-expand [text]="comment" mode="characters" [collapsedLength]="90" />
+<j-text-expand mode="lines" [collapsedLines]="3">{{ policySummary }}</j-text-expand>`,
+      states: `<j-text-expand [text]="description" [expanded]="true" />
+<j-text-expand [text]="description" [animation]="false" />
+<j-text-expand [text]="shortText" />`,
+      angular: `productDescription = 'A durable task light with adjustable brightness, a compact base, and a warm reading mode for desks and bedside tables.';
+comment = 'The release is ready after the final keyboard and responsive checks are complete.';
+policySummary = 'Review the retention, access, and deletion rules that apply to workspace records.';
+description = productDescription;
+shortText = 'Ready to publish.';`,
+    },
+    usage: [
+      'Common placements include product cards, comments, activity feeds, profile summaries, and policy previews.',
+    ],
+    variants: ['character truncation', 'line truncation', 'projected plain content'],
+    sizes: ['Inherits the surrounding typography and available width.'],
+    states: [
+      'collapsed',
+      'expanded',
+      'disabled',
+      'short content',
+      'empty content',
+      'animation disabled',
+    ],
+    inputs: [
+      prop('text', 'string | null | undefined', "''", 'Plain text content.'),
+      prop('mode', 'characters | lines', "'characters'", 'Truncation strategy.'),
+      prop('collapsedLength', 'number', '150', 'Visible character target.'),
+      prop('collapsedLines', 'number', '3', 'Visible line count.'),
+      prop('showMoreLabel / showLessLabel', 'string', 'Show more / Show less', 'Toggle labels.'),
+      prop('expanded', 'boolean', 'false', 'Controlled or two-way expanded state.'),
+      prop('disabled', 'boolean', 'false', 'Prevents toggling.'),
+      prop('animation', 'boolean', 'true', 'Enables expansion transition where motion is allowed.'),
+      prop('preserveWords', 'boolean', 'true', 'Avoids splitting the final visible word.'),
+      prop('ellipsis', 'string', "'…'", 'Collapsed character suffix.'),
+    ],
+    outputs: [
+      event('expandedChange', 'boolean', 'Supports two-way expanded state.'),
+      event('toggle', 'boolean', 'Emits after the user expands or collapses content.'),
+    ],
+    publicMethods: ['recalculate(): void'],
+    templates: [
+      'Default projection supports safe plain Angular content; line mode is recommended for projected content.',
+    ],
+    accessibility: [
+      'Uses a native button with aria-expanded and aria-controls.',
+      'Collapsed content is rendered once and focus remains on the toggle.',
+    ],
+    keyboard: ['Tab reaches the toggle. Enter and Space activate the native button.'],
+    responsive: [
+      'Line overflow is recalculated with ResizeObserver when the container changes size.',
+    ],
+    bestPractices: ['Keep labels action-oriented and preserve words for prose.'],
+    commonMistakes: [
+      'Do not pass unsafe HTML. Render rich content through sanitized application templates.',
+    ],
+    limitations: [
+      'Character mode applies to the text input; projected content should use line mode.',
+      'Line overflow measurement requires a rendered browser layout.',
+    ],
+    relatedComponents: ['Card', 'Tooltip', 'Accordion'],
+    testingNotes: [
+      'Test short and long content, dynamic updates, keyboard toggling, two-way state, and responsive line recalculation.',
+    ],
   },
 ];
 
@@ -467,17 +675,66 @@ teams = [
       prop('label', 'string', "''", 'Text label.'),
       prop(
         'severity',
-        'primary | secondary | neutral | success | warning | danger | info',
+        'primary | secondary | neutral | success | warning | danger | info | help | contrast',
         "'primary'",
         'Action intent.',
       ),
-      prop('variant', 'filled | outline | ghost | soft | link', "'filled'", 'Visual treatment.'),
+      prop(
+        'variant',
+        'filled | outline | outlined | ghost | soft | link | text',
+        "'filled'",
+        'Visual treatment.',
+      ),
+      prop(
+        'type',
+        'button | submit | reset',
+        "'button'",
+        'Native button type; button is the safe default.',
+      ),
+      prop('size', 'sm | md | lg | xl', "'md'", 'Physical control size.'),
+      prop('icon', 'string', "''", 'Icon name or short icon content.'),
+      prop('iconPosition', 'left | right', "'left'", 'Icon placement relative to the label.'),
+      prop('ariaLabel', 'string', "''", 'Accessible name, required for icon-only usage.'),
+      prop('disabled', 'boolean', 'false', 'Disables native activation and onClick.'),
       prop('loading', 'boolean', 'false', 'Shows a spinner and blocks clicks.'),
+      prop('loadingLabel', 'string', "'Loading'", 'Screen-reader loading status.'),
+      prop('rounded / pill', 'boolean', 'false', 'Applies fully rounded corners.'),
+      prop('outlined / text / raised', 'boolean', 'false', 'Compatibility presentation shortcuts.'),
+      prop('fullWidth', 'boolean', 'false', 'Fills the available inline width.'),
       prop('iconOnly', 'boolean', 'false', 'Optimizes dimensions for icon-only buttons.'),
+      prop('badge', 'string | number | null', 'null', 'Compact count or value after the label.'),
+      prop('badgeAriaLabel', 'string', "''", 'Accessible context for the badge value.'),
+      prop(
+        'ripple',
+        'boolean',
+        'true',
+        'Enables pointer ripple when global motion settings allow it.',
+      ),
+      prop('styleClass', 'string', "''", 'Additional host button classes.'),
+      prop('pt', 'JPassThrough | null', 'null', 'Pass-through styling hooks.'),
     ],
     outputs: [event('onClick', 'MouseEvent', 'Emits when activated and not disabled or loading.')],
     cssVariables: buttonCssVariables,
     accessibility: ['Icon-only buttons need ariaLabel. Loading buttons expose busy state.'],
+    keyboard: [
+      'Tab moves focus to the native button.',
+      'Enter and Space activate it unless disabled or loading.',
+    ],
+    responsive: ['Use fullWidth in narrow forms and keep toolbar groups able to wrap.'],
+    templates: [
+      'Default content is used when label is empty.',
+      'jButtonPrefix and jButtonSuffix add focused projected content.',
+    ],
+    relatedComponents: [
+      'Icon Button',
+      'Button Group',
+      'Toolbar',
+      'Toggle Button',
+      'Confirm Dialog',
+    ],
+    testingNotes: [
+      'Verify native type forwarding, click suppression while disabled or loading, accessible icon naming, projected content, badge output, and form behavior.',
+    ],
     bestPractices: [
       'Use destructive severity only for actions with destructive outcomes.',
       'Keep labels verb-first: Save, Create, Delete, Export.',
@@ -544,12 +801,22 @@ teams = [
 <j-card title="Bordered" bordered></j-card>
 <j-card title="Soft" variant="soft"></j-card>`,
       states: `<j-card title="Loading" skeleton></j-card>
-<j-card title="Interactive" interactive></j-card>`,
+<j-card title="Interactive" interactive></j-card>
+
+<!-- KPI composition -->
+<j-card title="Monthly revenue" subtitle="Compared with last month">
+  <strong class="metric-value">$84,250</strong>
+  <j-badge value="+12.4%" severity="success" />
+  <j-progress-bar [value]="72" label="72% of target" />
+</j-card>`,
     },
-    usage: ['Use cards for repeated items, dashboard widgets, and short content groups.'],
+    usage: [
+      'Use cards for repeated items, dashboard widgets, forms, profiles, products, pricing, and short content groups.',
+      'Compose KPI cards from Card slots, typography, Badge, Progress Bar, and chart components instead of using metric-specific Card inputs.',
+    ],
     variants: ['default', 'elevated', 'bordered', 'soft'],
     sizes: ['Use compact for denser lists and default for standard content.'],
-    states: ['default', 'interactive', 'loading skeleton'],
+    states: ['default', 'interactive', 'loading skeleton', 'empty content', 'error content'],
     inputs: [
       prop('title / header', 'string', "''", 'Main heading.'),
       prop('subtitle / subheader', 'string', "''", 'Secondary text.'),
@@ -559,6 +826,11 @@ teams = [
     outputs: noOutputs,
     accessibility: ['Use semantic headings inside cards when the card starts a section.'],
     bestPractices: ['Do not nest cards inside cards. Put repeated card items in a grid or list.'],
+    templates: ['jCardHeader, jCardBody, jCardFooter, and jCardActions projection regions.'],
+    relatedComponents: ['Badge', 'Progress Bar', 'Chart', 'Skeleton', 'Empty State'],
+    limitations: [
+      'Card intentionally has no metric-specific inputs; compose dashboard content inside its slots.',
+    ],
   },
   {
     slug: 'badge',
@@ -627,6 +899,273 @@ teams = [
     bestPractices: ['Avoid long tag text. Wrap tags to multiple lines in narrow containers.'],
   },
   {
+    slug: 'pick-list',
+    name: 'Pick List',
+    category: 'Data & Tables',
+    icon: 'list-check',
+    selector: 'j-pick-list',
+    importPath: 'jrng-ui/pick-list',
+    status: 'Stable',
+    description: 'A compact two-panel chooser for adding, removing, and ordering selected options.',
+    whenToUse:
+      'Use Pick List when users assemble a small ordered selection from an available collection.',
+    code: {
+      importCode: `import { JPickListComponent } from 'jrng-ui/pick-list';`,
+      basic: `<j-pick-list
+  [(source)]="availableFields"
+  [(target)]="selectedFields"
+  sourceHeader="Available fields"
+  targetHeader="Report columns"
+  filter
+/>`,
+      variants: `<j-pick-list [(source)]="availableFields" [(target)]="selectedFields">
+  <ng-template #jPickListAdd><j-icon name="plus" /></ng-template>
+  <ng-template #jPickListAddAll><span><j-icon name="plus" /> Add all</span></ng-template>
+  <ng-template #jPickListMoveUp><j-icon name="chevron-up" /></ng-template>
+  <ng-template #jPickListMoveDown><j-icon name="chevron-down" /></ng-template>
+  <ng-template #jPickListRemove><j-icon name="minus" /></ng-template>
+  <ng-template #jPickListClear><span><j-icon name="close" /> Clear</span></ng-template>
+</j-pick-list>`,
+      angular: `availableFields = [
+  { label: 'Customer', value: 'customer' },
+  { label: 'Status', value: 'status' },
+  { label: 'Created date', value: 'createdAt' },
+  { label: 'Internal notes', value: 'notes', disabled: true }
+];
+
+selectedFields = [
+  { label: 'Order number', value: 'order' },
+  { label: 'Total', value: 'total' }
+];`,
+    },
+    usage: [
+      'Use two-way source and target bindings when the parent must retain the changed collections.',
+      'Project an action template when an icon or richer content is useful; omit it to retain the readable default label.',
+    ],
+    variants: ['default text actions', 'custom labels', 'projected icon or rich action content'],
+    sizes: ['The two panels stack below 720px and remain touch friendly.'],
+    states: ['available', 'selected', 'disabled option', 'filtered', 'empty'],
+    inputs: [
+      prop(
+        'source / target',
+        'readonly JSelectionOptionSource[]',
+        '[]',
+        'Available and selected collections.',
+      ),
+      prop('sourceHeader / targetHeader', 'string', 'descriptive defaults', 'Panel headings.'),
+      prop('filter', 'boolean', 'false', 'Shows the available-item search field.'),
+      prop('addLabel / addAllLabel', 'string', "'Add' / 'Add all'", 'Default add action text.'),
+      prop(
+        'removeLabel / clearLabel',
+        'string',
+        "'Remove' / 'Clear'",
+        'Default removal action text.',
+      ),
+      prop(
+        'moveUpLabel / moveDownLabel',
+        'string',
+        "'Up' / 'Down'",
+        'Default ordering action text.',
+      ),
+      prop(
+        'addAllAriaLabel / clearAriaLabel',
+        'string',
+        'descriptive defaults',
+        'Accessible names retained for custom content.',
+      ),
+    ],
+    outputs: [
+      event(
+        'sourceChange',
+        'readonly JSelectionOptionSource[]',
+        'Emits when the available collection changes.',
+      ),
+      event(
+        'targetChange',
+        'readonly JSelectionOptionSource[]',
+        'Emits when the selected collection or order changes.',
+      ),
+    ],
+    cssVariables: surfaceCssVariables,
+    accessibility: [
+      'Every item action keeps an item-specific aria-label even when its visible content is replaced by an icon.',
+      'Disabled options and unavailable move directions disable their corresponding buttons.',
+    ],
+    bestPractices: [
+      'Keep source and target labels explicit and preserve a meaningful DOM order.',
+      'For icon-only templates, rely on the component button aria-label rather than adding duplicate icon speech.',
+    ],
+    commonMistakes: [
+      'Do not use one-way bindings if the parent needs the updated source and target arrays.',
+    ],
+  },
+  {
+    slug: 'grid',
+    name: 'Grid',
+    category: 'Layout',
+    icon: 'layout-grid',
+    selector: 'j-grid',
+    importPath: 'jrng-ui/grid',
+    status: 'Stable',
+    description:
+      'A responsive layout grid composed from containers, rows, and columns—not a data table.',
+    whenToUse:
+      'Use Grid to arrange page regions, forms, dashboards, and cards across responsive breakpoints.',
+    code: {
+      importCode: `import { JGridComponent, JGridRowComponent, JGridColumnComponent } from 'jrng-ui/grid';`,
+      basic: `<j-grid>
+  <j-row>
+    <j-col size="12" md="8">Main content</j-col>
+    <j-col size="12" md="4">Sidebar</j-col>
+  </j-row>
+</j-grid>`,
+      variants: `<j-grid fixed>
+  <j-row>
+    <j-col size="12" sm="6" lg="3">Quarter 1</j-col>
+    <j-col size="12" sm="6" lg="3">Quarter 2</j-col>
+    <j-col size="12" sm="6" lg="3">Quarter 3</j-col>
+    <j-col size="12" sm="6" lg="3">Quarter 4</j-col>
+  </j-row>
+</j-grid>`,
+      states: `<j-grid gutterX="var(--j-spacing-6)" gutterY="var(--j-spacing-5)">
+  <j-row align="center" justify="between">
+    <j-col size="auto">Intrinsic-width actions</j-col>
+    <j-col size="12" lg="6" offsetLg="1" order="first" orderLg="last">
+      Responsive offset and order
+    </j-col>
+  </j-row>
+</j-grid>`,
+    },
+    usage: [
+      'Grid establishes the column count and gutters; Row groups columns; Col owns spans and responsive changes.',
+      'Breakpoint inputs are mobile-first: a value continues at wider sizes until another value overrides it.',
+      'Use j-grid-layout for an automatic repeated-item grid when explicit rows and spans are unnecessary.',
+    ],
+    variants: ['fluid container', 'fixed responsive container', 'custom max-width container'],
+    sizes: ['sm 576px', 'md 768px', 'lg 992px', 'xl 1200px', 'xxl 1400px'],
+    states: ['equal width', 'fixed span', 'auto width', 'offset', 'ordered', 'wrapped'],
+    inputs: [
+      prop('columns', 'number', '12', 'Number of tracks used to calculate spans and offsets.'),
+      prop('gutterX', 'string', 'var(--j-spacing-4)', 'Horizontal row and column gutter.'),
+      prop('gutterY', 'string', 'var(--j-spacing-4)', 'Vertical row gutter.'),
+      prop('fixed', 'boolean', 'false', 'Uses responsive container maximum widths.'),
+      prop('containerPadding', 'boolean', 'true', 'Keeps the outer half-gutter alignment.'),
+      prop('maxWidth', 'string', "''", 'Overrides the fluid container maximum width.'),
+      prop('styleClass', 'string', "''", 'Additional host class.'),
+    ],
+    outputs: noOutputs,
+    cssVariables: [
+      cssVar('--j-grid-column-count', '12', 'Inherited track count used by columns.'),
+      cssVar('--j-grid-gutter-x', 'var(--j-spacing-4)', 'Inherited horizontal gutter.'),
+      cssVar('--j-grid-gutter-y', 'var(--j-spacing-4)', 'Inherited vertical gutter.'),
+      cssVar('--j-grid-max-width', 'none', 'Optional container maximum width.'),
+    ],
+    accessibility: [
+      'Grid is presentation-only and does not add table, grid, row, or cell ARIA roles.',
+      'Keep content in its natural semantic reading order; responsive order changes only visual placement.',
+    ],
+    bestPractices: [
+      'Start with a full-width mobile span, then add only the breakpoints where the layout changes.',
+      'Prefer natural source order and use responsive ordering sparingly.',
+    ],
+    commonMistakes: [
+      'Do not use Grid for tabular records; use j-table or j-data-grid.',
+      'Do not confuse j-col with j-column: j-col is layout, while j-column declares table metadata.',
+    ],
+  },
+  {
+    slug: 'row',
+    name: 'Grid Row',
+    category: 'Layout',
+    icon: 'rows-3',
+    selector: 'j-row',
+    importPath: 'jrng-ui/grid',
+    status: 'Stable',
+    description: 'A wrapping flex row that aligns layout columns and coordinates their gutters.',
+    whenToUse: 'Use Grid Row directly inside j-grid to group one responsive line of j-col items.',
+    code: {
+      importCode: `import { JGridRowComponent } from 'jrng-ui/grid';`,
+      basic: `<j-row align="center" justify="between">
+  <j-col size="auto">Heading</j-col>
+  <j-col size="auto">Actions</j-col>
+</j-row>`,
+    },
+    usage: ['Rows wrap by default and inherit gutters from the nearest j-grid.'],
+    variants: ['wrapped', 'no-wrap', 'custom gutters'],
+    sizes: ['Size is determined by projected columns and content.'],
+    states: ['start', 'center', 'end', 'between', 'around', 'evenly'],
+    inputs: [
+      prop(
+        'align',
+        'start | center | end | stretch | baseline',
+        "'stretch'",
+        'Cross-axis alignment.',
+      ),
+      prop(
+        'justify',
+        'start | center | end | between | around | evenly',
+        "'start'",
+        'Main-axis distribution.',
+      ),
+      prop('wrap', 'boolean', 'true', 'Allows columns to move onto additional lines.'),
+      prop('gutterX / gutterY', 'string', "''", 'Overrides inherited gutters for this row.'),
+    ],
+    outputs: noOutputs,
+    accessibility: ['The row is visual layout and intentionally adds no ARIA row role.'],
+    bestPractices: ['Project j-col children directly so gutter alignment remains predictable.'],
+  },
+  {
+    slug: 'col',
+    name: 'Grid Column',
+    category: 'Layout',
+    icon: 'columns-3',
+    selector: 'j-col',
+    importPath: 'jrng-ui/grid',
+    status: 'Stable',
+    description: 'A responsive layout column with spans, auto width, offsets, and visual ordering.',
+    whenToUse: 'Use Grid Column inside j-row to define how content occupies the responsive grid.',
+    code: {
+      importCode: `import { JGridColumnComponent } from 'jrng-ui/grid';`,
+      basic: `<j-col size="12" sm="6" lg="4">Responsive content</j-col>`,
+      variants: `<j-col>Equal width</j-col>
+<j-col size="auto">Intrinsic width</j-col>
+<j-col size="12" md="6" offsetMd="3">Centered at md</j-col>`,
+    },
+    usage: [
+      'Omit size for equal-width columns, use auto for intrinsic width, or set a numeric span.',
+    ],
+    variants: ['equal width', 'numeric span', 'auto width', 'responsive offset and order'],
+    sizes: ['size', 'sm', 'md', 'lg', 'xl', 'xxl'],
+    states: ['base and mobile-first breakpoint overrides'],
+    inputs: [
+      prop(
+        'size / sm / md / lg / xl / xxl',
+        'number | numeric string | auto | null',
+        'null',
+        'Base and responsive spans.',
+      ),
+      prop(
+        'offset / offsetSm / ...',
+        'number | numeric string | null',
+        'null',
+        'Base and responsive start offsets.',
+      ),
+      prop(
+        'order / orderSm / ...',
+        'number | numeric string | first | last | null',
+        'null',
+        'Base and responsive visual order.',
+      ),
+      prop('styleClass', 'string', "''", 'Additional host class.'),
+    ],
+    outputs: noOutputs,
+    accessibility: ['Responsive ordering does not change screen-reader or keyboard order.'],
+    bestPractices: ['Keep DOM order meaningful and let columns wrap on small screens.'],
+    commonMistakes: [
+      'j-col is not a table column definition; j-column remains part of jrng-ui/table.',
+    ],
+  },
+  {
     slug: 'table',
     name: 'Table',
     category: 'Data Display',
@@ -638,19 +1177,43 @@ teams = [
       'A data table for structured rows and columns with sorting, pagination, selection, and states.',
     whenToUse: 'Use Table for comparable data where users need to scan across columns.',
     code: {
-      importCode: `import { JTableComponent, JTableColumn, JTableConfig } from 'jrng-ui/table';`,
-      basic: `<j-table [value]="orders" [columns]="columns"></j-table>`,
-      variants: `<j-table [value]="orders" [columns]="columns" striped paginator [rows]="10"></j-table>
-<j-table [value]="orders" [columns]="columns" showGlobalFilter showColumnManager showExport></j-table>
-<j-table [value]="orders" [columns]="columns" sortMode="multiple" selectionMode="checkbox"></j-table>
-<j-table [value]="orders" [columns]="columns" [config]="tableConfig"></j-table>`,
-      states: `<j-table [value]="[]" [columns]="columns" emptyMessage="No orders found"></j-table>
-<j-table [value]="orders" [columns]="columns" loading></j-table>
-<j-table [value]="orders" [columns]="columns" lockableRows maximizable></j-table>`,
-      angular: `columns: JTableColumn[] = [
+      importCode: `import { JTableCellTemplateDirective, JTableComponent, JTableColumn, JTableEmptyTemplateDirective, JTableHeaderTemplateDirective, JTableLoadingTemplateDirective } from 'jrng-ui/table';`,
+      basic: `<j-table [value]="orders" [columns]="columns" caption="Recent orders" />`,
+      variants: `<j-table [value]="orders" [columns]="columns" variant="striped"></j-table>
+<j-table [value]="orders" [columns]="columns" variant="bordered"></j-table>
+<j-table [value]="orders" [columns]="columns" variant="minimal"></j-table>
+<j-table [value]="orders" [columns]="columns" variant="card"></j-table>`,
+      sizes: `<j-table [value]="orders" [columns]="columns" density="compact"></j-table>
+<j-table [value]="orders" [columns]="columns" density="spacious"></j-table>`,
+      states: `<j-table [value]="[]" [columns]="columns" emptyTitle="No orders yet" emptyActionLabel="Create order"></j-table>
+<j-table [value]="orders" [columns]="columns" loading loadingVariant="skeleton" [skeletonRows]="4"></j-table>
+<j-table [value]="orders" [columns]="columns" loading loadingVariant="overlay"></j-table>
+<j-table [value]="[]" [columns]="columns" [error]="loadError" emptyActionLabel="Retry"></j-table>`,
+      angular: `interface OrderRow {
+  id: number;
+  order: string;
+  status: 'paid' | 'overdue';
+  total: number;
+}
+
+orders: OrderRow[] = [
+  { id: 1001, order: 'ORD-1001', status: 'paid', total: 428 },
+  { id: 1002, order: 'ORD-1002', status: 'overdue', total: 185 }
+];
+
+actions: JTableAction[] = [
+  { key: 'view', label: 'View' },
+  { key: 'edit', label: 'Edit' }
+];
+
+columns: JTableColumn<OrderRow>[] = [
   { field: 'order', header: 'Order', sortable: true },
-  { field: 'status', header: 'Status', filterable: true },
-  { field: 'total', header: 'Total', align: 'end' },
+  { field: 'status', header: 'Status', filterable: true, filter: {
+      type: 'select', operator: 'equals',
+      options: [{ label: 'Paid', value: 'paid' }, { label: 'Overdue', value: 'overdue' }]
+  }},
+  { field: 'total', header: 'Total', align: 'end', filterable: true,
+    filter: { type: 'number', operator: 'between' } },
   { field: 'actions', header: 'Actions', type: 'action', actions }
 ];
 
@@ -672,10 +1235,17 @@ tableConfig: JTableConfig = {
   columnManager: true,
   size: 'medium',
   export: { rows: 'selected', visibleColumnsOnly: true }
-};`,
+};
+
+loadError = new Error('Orders could not be loaded.');`,
     },
     usage: ['Use for orders, users, files, tasks, invoices, and audit logs.'],
     variants: [
+      'default - preserves the established table presentation',
+      'striped - alternates row grouping for long scanning tasks',
+      'bordered - emphasizes both row and column relationships',
+      'minimal - reduces chrome inside cards and detail pages',
+      'card - groups each row as an independent responsive surface',
       'basic table',
       'pagination',
       'sorting',
@@ -693,7 +1263,7 @@ tableConfig: JTableConfig = {
       'stateful table',
       'export event',
     ],
-    sizes: ['small', 'medium', 'large'],
+    sizes: ['compact density', 'comfortable density', 'spacious density'],
     states: [
       'default',
       'loading skeleton',
@@ -704,13 +1274,73 @@ tableConfig: JTableConfig = {
       'maximized',
     ],
     inputs: [
-      prop('value', 'readonly JTableRow[]', '[]', 'Rows to render.'),
-      prop('columns', 'readonly JTableColumn[]', '[]', 'Column definitions and header metadata.'),
+      prop('value', 'readonly T[]', '[]', 'Flat rows to render.'),
+      prop(
+        'columns',
+        'readonly JTableColumn<T>[]',
+        '[]',
+        'Strongly typed column configuration, formatting, and behavior.',
+      ),
       prop('config', 'JTableConfig', 'null', 'Object API for enterprise table behavior.'),
+      prop(
+        'variant',
+        'default | striped | bordered | minimal | card',
+        "'default'",
+        'Selects a complete table presentation concept without changing its data or events.',
+      ),
       prop('paginator', 'boolean', 'false', 'Shows pagination controls.'),
       prop('loading', 'boolean', 'false', 'Shows loading rows.'),
+      prop(
+        'loadingVariant',
+        'skeleton | spinner | progress | overlay',
+        "'skeleton'",
+        'Loading presentation; this is a state, not a visual variant.',
+      ),
+      prop('skeletonRows', 'number', '5', 'Number of loading placeholder rows.'),
+      prop(
+        'skeletonColumns',
+        'readonly JTableSkeletonColumn[]',
+        '[]',
+        'Optional loading placeholder widths.',
+      ),
+      prop(
+        'emptyState',
+        'auto | no-data | no-results | error',
+        "'auto'",
+        'Selects or automatically derives the integrated empty state.',
+      ),
+      prop(
+        'emptyTitle / emptyDescription / emptyIcon',
+        'string',
+        'state defaults',
+        'No-data content.',
+      ),
+      prop(
+        'noResultsTitle / noResultsDescription / noResultsIcon',
+        'string',
+        'state defaults',
+        'Filtered no-results content.',
+      ),
+      prop(
+        'error',
+        'unknown',
+        'null',
+        'Activates the loading-failed state and exposes its value to templates.',
+      ),
+      prop(
+        'emptyActionLabel',
+        'string',
+        "''",
+        'Optional action for the active empty or error state.',
+      ),
       prop('selectionMode', 'single | multiple | checkbox | none', "'none'", 'Selection behavior.'),
       prop('filterRow', 'boolean', 'true', 'Shows column filter controls for filterable columns.'),
+      prop(
+        'filterModel',
+        'JTableFilterModel',
+        '{ items: [] }',
+        'Controlled field, operator, and value model for local or server filtering.',
+      ),
       prop('lockableRows', 'boolean', 'false', 'Shows row lock/unlock controls.'),
       prop(
         'maximizable',
@@ -730,7 +1360,18 @@ tableConfig: JTableConfig = {
         '{}',
         'CSV export mode, filename, and visible-column behavior.',
       ),
-      prop('size', 'small | medium | large', "'medium'", 'Table density.'),
+      prop(
+        'size',
+        'small | medium | large',
+        "'medium'",
+        'Physical table size retained for compatibility.',
+      ),
+      prop(
+        'density',
+        'compact | comfortable | spacious',
+        "'comfortable'",
+        'Information spacing independent from variant.',
+      ),
     ],
     outputs: [
       event('sortChange / onSortChange', 'JTableSort', 'Emits when sorting changes.'),
@@ -740,6 +1381,7 @@ tableConfig: JTableConfig = {
         'JTableFilterChange',
         'Emits when global or column filters change.',
       ),
+      event('filterModelChange', 'JTableFilterModel', 'Emits the normalized typed filter model.'),
       event(
         'export / onExport',
         'JTableExportEvent',
@@ -778,6 +1420,11 @@ tableConfig: JTableConfig = {
       event('stateRestore / onStateRestore', 'JTableState', 'Emits after state is restored.'),
       event('maximize / onMaximize', 'void', 'Emits when expanded table mode opens.'),
       event('minimize / onMinimize', 'void', 'Emits when expanded table mode closes.'),
+      event(
+        'emptyAction',
+        'JTableEmptyActionEvent',
+        'Emits when the integrated-state action is activated.',
+      ),
     ],
     cssVariables: [
       cssVar('--j-table-bg', 'var(--j-color-card, #ffffff)', 'Table surface background.'),
@@ -825,10 +1472,124 @@ tableConfig: JTableConfig = {
     ],
     accessibility: [
       'Use clear column headers and do not hide critical actions behind hover-only UI.',
+      'Sortable headers expose aria-sort and remain keyboard operable.',
+      'Selection exposes row state; loading uses aria-busy and one restrained status announcement.',
+      'Use Tree Table for hierarchical rows so level and expansion semantics remain correct.',
     ],
     bestPractices: [
       'Use pagination or lazy loading for large datasets.',
       'Keep column labels short and align numeric columns to the end.',
+      'Use focused template directives only where column configuration does not express the content.',
+    ],
+    commonMistakes: [
+      'Do not use variant for loading, error, selection, pagination, or hierarchy.',
+      'Do not model hierarchical records in Table; use the separately tested Tree Table.',
+      'Compatibility column, empty-state, and table-skeleton selectors should not be used in new table implementations.',
+    ],
+  },
+  {
+    slug: 'tree-table',
+    name: 'Tree Table',
+    category: 'Data Display',
+    icon: 'table',
+    selector: 'j-tree-table',
+    importPath: 'jrng-ui/tree-table',
+    status: 'Stable',
+    description:
+      'A separate hierarchical tree grid with expansion, lazy children, and propagated node selection.',
+    whenToUse:
+      'Use Tree Table when each row can own child rows and users must navigate or select that hierarchy.',
+    code: {
+      importCode: `import { JTreeTableCellTemplateDirective, JTreeTableComponent } from 'jrng-ui/tree-table';
+import { JTableColumn } from 'jrng-ui/table';
+import { TreeNode } from 'jrng-ui/tree';`,
+      basic: `<j-tree-table [value]="nodes" [columns]="columns" [(expandedKeys)]="expandedKeys" />`,
+      variants: `<j-tree-table [value]="nodes" [columns]="columns" selectionMode="checkbox" [propagateSelectionDown]="true" [propagateSelectionUp]="true" />`,
+      states: `<j-tree-table [value]="lazyNodes" [columns]="columns" lazy (nodeExpand)="loadChildren($event)" />`,
+      angular: `interface FileRecord { type: string; size: string; }
+
+nodes: TreeNode<FileRecord>[] = [
+  { key: 'workspace', label: 'Workspace', data: { type: 'Folder', size: '24 items' }, children: [
+    { key: 'brief', label: 'Project brief', data: { type: 'Document', size: '1.2 MB' }, leaf: true }
+  ]}
+];
+
+columns: JTableColumn<FileRecord>[] = [
+  { field: 'type', header: 'Type' },
+  { field: 'size', header: 'Size', align: 'end' }
+];
+
+expandedKeys = new Set(['workspace']);`,
+    },
+    usage: ['Use for folders, work breakdowns, nested permissions, and hierarchical inventories.'],
+    variants: [
+      'Tree grid',
+      'lazy hierarchy',
+      'single selection',
+      'multiple selection',
+      'checkbox selection',
+    ],
+    sizes: ['Uses the shared table spacing and column tokens.'],
+    states: [
+      'collapsed',
+      'expanded',
+      'selected',
+      'partially selected',
+      'loading children',
+      'disabled',
+    ],
+    inputs: [
+      prop('value', 'readonly TreeNode<T>[]', '[]', 'Hierarchical nodes.'),
+      prop('columns', 'readonly JTableColumn<T>[]', '[]', 'Columns for each node data object.'),
+      prop('expandedKeys', 'Set<string>', 'new Set()', 'Controlled expanded node keys.'),
+      prop('childrenField', 'string', "'children'", 'Custom child collection field.'),
+      prop(
+        'togglerColumn',
+        'string',
+        'first column',
+        'Column containing hierarchy indentation and toggler.',
+      ),
+      prop('lazy', 'boolean', 'false', 'Requests children when an unloaded node expands.'),
+      prop(
+        'selectionMode',
+        'none | single | multiple | checkbox',
+        "'none'",
+        'Node selection behavior.',
+      ),
+      prop(
+        'propagateSelectionDown / propagateSelectionUp',
+        'boolean',
+        'true',
+        'Checkbox hierarchy propagation.',
+      ),
+    ],
+    outputs: [
+      event(
+        'nodeExpand',
+        'JTreeTableNodeEvent<T>',
+        'Emits when a node expands; load lazy children here.',
+      ),
+      event('nodeCollapse', 'JTreeTableNodeEvent<T>', 'Emits when a node collapses.'),
+      event('nodeSelect', 'JTreeTableNodeEvent<T>', 'Emits when a node is selected.'),
+      event('nodeUnselect', 'JTreeTableNodeEvent<T>', 'Emits when a node is unselected.'),
+      event('selectionChange', 'readonly TreeNode<T>[]', 'Emits the controlled node selection.'),
+    ],
+    cssVariables: [
+      cssVar('--j-table-border-color', 'var(--j-color-border)', 'Shared row and column boundary.'),
+      cssVar('--j-tree-table-indent', '1.25rem', 'Logical indentation for each hierarchy depth.'),
+    ],
+    accessibility: [
+      'Uses treegrid, row, and gridcell roles with aria-level, aria-expanded, aria-selected, aria-posinset, and aria-setsize.',
+      'Arrow Up and Down move between visible nodes; Right expands or enters children; Left collapses or returns to the parent.',
+      'Home and End move to the first and last visible node; Enter or Space selects.',
+    ],
+    bestPractices: [
+      'Provide stable node keys and mark terminal nodes as leaf.',
+      'Keep the hierarchy toggler in the primary identifying column.',
+    ],
+    commonMistakes: [
+      'Do not use flat Table for hierarchical records.',
+      'Do not mutate expanded or selected sets without updating their bound values.',
     ],
   },
   {
@@ -854,7 +1615,14 @@ tableConfig: JTableConfig = {
   { key: 'reject', label: 'Reject', severity: 'warning' },
   { key: 'archive', label: 'Archive', disabled: true },
   { key: 'delete', label: 'Delete', severity: 'danger' }
-];`,
+];
+
+row = {
+  id: 1001,
+  order: 'ORD-1001',
+  customer: 'Acme Ltd',
+  status: 'Processing'
+};`,
     },
     usage: [
       'Use inside table cells or compact list rows.',
@@ -885,22 +1653,57 @@ tableConfig: JTableConfig = {
     selector: 'j-column-filter',
     importPath: 'jrng-ui/table',
     status: 'Stable',
-    description: 'A small search control for filtering a single table column.',
+    description:
+      'A configurable table-header filter for text, numbers, dates, booleans, selects, multi-selects, ranges, and match modes.',
     whenToUse: 'Use Column Filter inside table headers when users need per-column filtering.',
     code: {
       importCode: `import { JColumnFilterComponent } from 'jrng-ui/table';`,
-      basic: `<j-column-filter field="status" label="Status" (filterChange)="filter($event)"></j-column-filter>`,
+      basic: `<j-column-filter
+  field="status"
+  label="Status"
+  type="select"
+  operator="equals"
+  [options]="statusOptions"
+  (filterModelChange)="filter($event)" />`,
     },
-    usage: ['Use for text-based column filtering in advanced data tables.'],
-    variants: ['field label', 'current value binding'],
+    usage: ['Use in table headers, advanced filter panels, or any configured filtering surface.'],
+    variants: [
+      'text',
+      'number and range',
+      'date and range',
+      'boolean',
+      'select',
+      'multi-select',
+      'custom operator list',
+    ],
     sizes: ['Compact by default for table headers.'],
     states: ['empty', 'typed value', 'focused'],
     inputs: [
       prop('field', 'string', "''", 'Field being filtered.'),
       prop('label', 'string', "''", 'Accessible label suffix.'),
       prop('value', 'unknown', "''", 'Current filter value.'),
+      prop(
+        'type',
+        'JTableFilterType',
+        "'text'",
+        'Selects the appropriate accessible input control.',
+      ),
+      prop(
+        'operator / operators',
+        'JTableFilterOperator',
+        "'contains'",
+        'Current and available match modes.',
+      ),
+      prop('options', 'readonly JTableFilterOption[]', '[]', 'Options for select filters.'),
     ],
-    outputs: [event('filterChange', 'JColumnFilterChange', 'Emits field and text value.')],
+    outputs: [
+      event('filterChange', 'JColumnFilterChange', 'Legacy field and string value event.'),
+      event(
+        'filterModelChange',
+        'JColumnFilterModelChange',
+        'Emits field, operator, and typed value.',
+      ),
+    ],
     cssVariables: formCssVariables,
     accessibility: ['The visible label is screen-reader only so table headers stay compact.'],
     bestPractices: [
@@ -944,7 +1747,12 @@ tableConfig: JTableConfig = {
     states: ['idle', 'edited filters', 'advanced expanded', 'reset'],
     inputs: [
       prop('statuses', 'readonly string[]', '[]', 'Status select options.'),
-      prop('showDateRange', 'boolean', 'false', 'Shows start and end date inputs.'),
+      prop(
+        'showDateRange',
+        'boolean',
+        'false',
+        'Shows accessible JRNG date pickers while preserving YYYY-MM-DD filter values.',
+      ),
       prop('showExport', 'boolean', 'false', 'Shows export button.'),
       prop('showAdvancedToggle', 'boolean', 'false', 'Shows advanced filter toggle.'),
     ],
@@ -971,7 +1779,9 @@ tableConfig: JTableConfig = {
         'Apply button background.',
       ),
     ],
-    accessibility: ['Search, status, and date controls use labels and native inputs/selects.'],
+    accessibility: [
+      'Search, status, and date controls have visible labels; date pickers support keyboard grid navigation and constrained start/end dates.',
+    ],
     bestPractices: [
       'Emit filters to application state and keep server-side export behavior in the app.',
     ],
@@ -1108,15 +1918,15 @@ tableConfig: JTableConfig = {
   <j-button jPageSecondaryActions label="Export" variant="outline"></j-button>
   <j-button jPagePrimaryAction label="Create order"></j-button>
 </j-page-header>`,
+      variants: `<j-page-header variant="default" title="Orders">...</j-page-header>
+<j-page-header variant="stacked" title="Orders">...</j-page-header>
+<j-page-header variant="centered" title="Welcome">...</j-page-header>`,
     },
     usage: ['Use to standardize title, context, and actions across business app pages.'],
     variants: [
-      'breadcrumbs',
-      'back button',
-      'primary action',
-      'secondary actions',
-      'right-side action slot',
-      'tabs slot',
+      'default for ordinary admin pages',
+      'stacked when actions need a full row',
+      'centered for onboarding and focused landing views',
     ],
     sizes: ['Responsive layout collapses actions below the title on narrow screens.'],
     states: ['with breadcrumbs', 'with actions', 'with tabs'],
@@ -1126,6 +1936,7 @@ tableConfig: JTableConfig = {
       prop('description', 'string', "''", 'Legacy supporting text alias.'),
       prop('breadcrumbs', 'readonly JPageHeaderBreadcrumb[]', '[]', 'Breadcrumb path.'),
       prop('showBack', 'boolean', 'false', 'Shows a back button.'),
+      prop('variant', 'default | stacked | centered', "'default'", 'Presentation concept.'),
       prop('styleClass', 'string', "''", 'Custom class.'),
     ],
     outputs: [event('back', 'void', 'Emits when the back button is activated.')],
@@ -1149,9 +1960,16 @@ tableConfig: JTableConfig = {
       basic: `<j-empty-state title="No orders found" description="Try changing filters or create a new order.">
   <j-button jEmptyStateAction label="Create order"></j-button>
 </j-empty-state>`,
+      variants: `<j-empty-state variant="default" title="No orders" />
+<j-empty-state variant="inline" title="No matching rows" />
+<j-empty-state variant="panel" title="Start your first project" />`,
     },
     usage: ['Use for search misses, first-run states, empty tables, and missing records.'],
-    variants: ['default', 'compact', 'with action'],
+    variants: [
+      'default for full empty regions',
+      'inline for tables and compact result areas',
+      'panel for first-run and creation prompts',
+    ],
     sizes: ['Default and compact density.'],
     states: ['empty result', 'first run', 'filtered empty'],
     inputs: [
@@ -1159,6 +1977,7 @@ tableConfig: JTableConfig = {
       prop('description', 'string', "''", 'Supporting text.'),
       prop('icon', 'string', "''", 'Optional visual marker.'),
       prop('compact', 'boolean', 'false', 'Reduces spacing.'),
+      prop('variant', 'default | inline | panel', "'default'", 'Presentation concept.'),
     ],
     outputs: noOutputs,
     accessibility: [
@@ -1220,20 +2039,25 @@ toast.info('Export started');`,
     code: {
       importCode: `import { JProgressBarComponent } from 'jrng-ui/progress-bar';`,
       basic: `<j-progress-bar [value]="64" label="Upload progress"></j-progress-bar>`,
-      variants: `<j-progress-bar [value]="72" severity="success"></j-progress-bar>
-<j-progress-bar [value]="42" severity="warning"></j-progress-bar>
-<j-progress-bar indeterminate label="Loading"></j-progress-bar>`,
+      variants: `<j-progress-bar variant="default" [value]="72"></j-progress-bar>
+<j-progress-bar variant="segmented" [value]="80"></j-progress-bar>
+<j-progress-bar variant="labeled" [value]="42"></j-progress-bar>`,
     },
     usage: [
       'Use determinate progress when you know the percentage and indeterminate when work has started but duration is unknown.',
     ],
-    variants: ['determinate', 'indeterminate', 'severity colors'],
+    variants: [
+      'default for general progress',
+      'segmented for staged or checkpoint-oriented work',
+      'labeled when the percentage must remain visible inside the control',
+    ],
     sizes: ['Progress bar height is fixed by component styling; wrap with labels for context.'],
     states: ['0%', 'in progress', 'complete', 'indeterminate'],
     inputs: [
       prop('value', 'number', '0', 'Progress percentage from 0 to 100.'),
       prop('indeterminate', 'boolean', 'false', 'Shows a looping loading indicator.'),
       prop('label', 'string', "''", 'Accessible label.'),
+      prop('variant', 'default | segmented | labeled', "'default'", 'Presentation concept.'),
     ],
     outputs: noOutputs,
     accessibility: [
@@ -1342,17 +2166,21 @@ toast.info('Export started');`,
   <j-tab header="Overview">Overview content</j-tab>
   <j-tab header="Activity">Activity content</j-tab>
 </j-tabs>`,
-      variants: `<j-tabs [selectedIndex]="1" lazy>
-  <j-tab header="Details">Details</j-tab>
-  <j-tab header="Settings">Settings</j-tab>
-</j-tabs>`,
+      variants: `<j-tabs variant="default">...</j-tabs>
+<j-tabs variant="pills">...</j-tabs>
+<j-tabs variant="segmented">...</j-tabs>`,
     },
     usage: ['Use for a small number of related panels.'],
-    variants: ['default', 'lazy', 'scrollable', 'closable tabs'],
+    variants: [
+      'default for content-heavy application tabs',
+      'pills for lightweight category switching',
+      'segmented for a small mutually exclusive view switch',
+    ],
     sizes: ['Tabs use standard control sizing.'],
     states: ['active', 'disabled', 'closable'],
     inputs: [
       prop('selectedIndex', 'number', '0', 'Active tab index.'),
+      prop('variant', 'default | pills | segmented', "'default'", 'Presentation concept.'),
       prop('lazy', 'boolean', 'false', 'Renders tab content after activation.'),
       prop('scrollable', 'boolean', 'true', 'Allows horizontal scrolling.'),
     ],
@@ -1376,6 +2204,9 @@ toast.info('Export started');`,
     code: {
       importCode: `import { JBreadcrumbComponent } from 'jrng-ui/breadcrumb';`,
       basic: `<j-breadcrumb [home]="home" [model]="items"></j-breadcrumb>`,
+      variants: `<j-breadcrumb variant="default" [home]="home" [model]="items" />
+<j-breadcrumb variant="contained" [home]="home" [model]="items" />
+<j-breadcrumb variant="steps" [home]="home" [model]="items" />`,
       angular: `home = { label: 'Home', routerLink: '/' };
 items = [
   { label: 'Docs', routerLink: '/docs' },
@@ -1383,12 +2214,17 @@ items = [
 ];`,
     },
     usage: ['Use in nested admin, documentation, or file-manager pages.'],
-    variants: ['home item', 'router links', 'custom separator template'],
+    variants: [
+      'default for ordinary page hierarchy',
+      'contained when the trail needs its own visual region',
+      'steps for short task or setup hierarchies',
+    ],
     sizes: ['Breadcrumb is compact by default.'],
     states: ['link', 'current page', 'disabled'],
     inputs: [
       prop('home', 'JBreadcrumbItem', 'undefined', 'Optional first item.'),
       prop('model', 'readonly JBreadcrumbItem[]', '[]', 'Breadcrumb items.'),
+      prop('variant', 'default | contained | steps', "'default'", 'Presentation concept.'),
     ],
     outputs: [
       event('itemClick', 'JBreadcrumbClickEvent', 'Emits when a breadcrumb item is clicked.'),
@@ -1927,6 +2763,9 @@ export class DashboardComponent {
     code: {
       importCode: `import { JTimelineComponent, JTimelineItem } from 'jrng-ui/timeline';`,
       basic: `<j-timeline [value]="events"></j-timeline>`,
+      variants: `<j-timeline variant="default" [value]="events" />
+<j-timeline variant="activity" [value]="events" />
+<j-timeline variant="alternating" [value]="events" />`,
       angular: `events: JTimelineItem[] = [
   { title: 'Created', content: 'Order was created.', opposite: '09:00', severity: 'info' },
   { title: 'Updated', content: 'Customer address changed.', opposite: '09:30', icon: 'U' },
@@ -1936,16 +2775,9 @@ export class DashboardComponent {
     },
     usage: ['Use for audit trails, fulfillment progress, approvals, and release history.'],
     variants: [
-      'created',
-      'updated',
-      'approved',
-      'rejected',
-      'status changed',
-      'comment added',
-      'file uploaded',
-      'custom icon',
-      'custom color',
-      'compact mode',
+      'default for milestone cards with opposite metadata',
+      'activity for dense audit and comment feeds',
+      'alternating for editorial histories and release narratives',
     ],
     sizes: ['Timeline size follows content and layout.'],
     states: ['neutral event', 'success', 'warning', 'danger', 'info'],
@@ -1953,12 +2785,93 @@ export class DashboardComponent {
       prop('value', 'readonly JTimelineItem[]', '[]', 'Timeline items.'),
       prop('layout', 'vertical | horizontal', "'vertical'", 'Timeline orientation.'),
       prop('compact', 'boolean', 'false', 'Reduces item spacing for activity logs.'),
+      prop('variant', 'default | activity | alternating', "'default'", 'Presentation concept.'),
       prop('styleClass', 'string', "''", 'Custom root class.'),
     ],
     outputs: [],
     cssVariables: surfaceCssVariables,
     accessibility: ['Timeline renders as an ordered list so the event order is meaningful.'],
     bestPractices: ['Keep each event title short and put details in content text.'],
+  },
+  {
+    slug: 'file-browser',
+    name: 'File Browser',
+    category: 'Data Display',
+    icon: 'folder',
+    selector: 'j-file-browser',
+    importPath: 'jrng-ui/file-browser',
+    status: 'Stable',
+    description:
+      'A transport-agnostic file explorer with breadcrumbs, semantic file types, list and grid views, sorting, selection, bulk actions, and responsive states.',
+    whenToUse:
+      'Use File Browser for document libraries, cloud-drive adapters, attachment pickers, media collections, and admin file management.',
+    code: {
+      importCode: `import { JFileBrowserComponent, JFileBrowserItem } from 'jrng-ui/file-browser';`,
+      basic: `<j-file-browser
+  title="Client documents"
+  [items]="files"
+  [breadcrumbs]="path"
+  [selection]="selectedIds"
+  selectionMode="multiple"
+  (folderOpen)="loadFolder($event.item)"
+  (selectionChange)="selectedIds = $event" />`,
+      variants: `<j-file-browser variant="default" viewMode="list" [items]="files" />
+<j-file-browser variant="compact" viewMode="list" [items]="files" />
+<j-file-browser variant="picker" selectionMode="single" [items]="files" />
+<j-file-browser variant="gallery" viewMode="grid" [items]="media" />`,
+      states: `<j-file-browser [items]="[]" />
+<j-file-browser [items]="files" loading />
+<j-file-browser [items]="files" disabled />`,
+      angular: `files: JFileBrowserItem[] = [
+  { id: 'folder-1', name: 'Invoices', kind: 'folder', modifiedAt: new Date() },
+  { id: 'file-1', name: 'Quarterly report.xlsx', kind: 'file', size: 245760 },
+  { id: 'file-2', name: 'Signed agreement.pdf', kind: 'file', size: 845120 }
+];
+
+path = [
+  { id: 'root', label: 'Files' },
+  { id: 'clients', label: 'Clients' }
+];
+
+selectedIds: string[] = ['file-2'];`,
+    },
+    usage: ['Connect events to Google Drive, S3, REST, IndexedDB, or any application data source.'],
+    variants: [
+      'default full explorer',
+      'compact admin list',
+      'picker selection flow',
+      'gallery media hierarchy',
+    ],
+    sizes: ['Responsive list becomes a compact three-column row on narrow screens.'],
+    states: ['populated', 'empty', 'loading', 'disabled', 'selected', 'selection limit'],
+    inputs: [
+      prop('items', 'readonly JFileBrowserItem[]', '[]', 'Files and folders to render.'),
+      prop('breadcrumbs', 'readonly JFileBrowserBreadcrumb[]', '[]', 'Current folder path.'),
+      prop('selection', 'readonly string[]', '[]', 'Controlled selected item IDs.'),
+      prop('viewMode', 'list | grid', "'list'", 'Current layout mode.'),
+      prop(
+        'variant',
+        'default | compact | picker | gallery',
+        "'default'",
+        'Complete presentation concept.',
+      ),
+      prop('selectionMode', 'none | single | multiple', "'none'", 'Selection behavior.'),
+      prop('actions', 'readonly JFileBrowserAction[]', '[]', 'Transport-independent bulk actions.'),
+    ],
+    outputs: [
+      event('itemOpen / folderOpen', 'JFileBrowserItemEvent', 'Emits item navigation intentions.'),
+      event('selectionChange', 'readonly string[]', 'Emits the next controlled selection.'),
+      event('action', 'JFileBrowserActionEvent', 'Emits a configured bulk action.'),
+      event('sortChange', 'JFileBrowserSort', 'Emits requested sorting.'),
+      event('upload / createFolder / refresh', 'void', 'Emits toolbar intentions.'),
+    ],
+    cssVariables: surfaceCssVariables,
+    accessibility: [
+      'Arrow keys move between items, Enter opens, Space selects, selection changes are announced, and breadcrumbs expose the current page.',
+    ],
+    bestPractices: [
+      'Keep storage APIs and permissions in the consuming application; provide only display data and handle emitted intentions.',
+    ],
   },
   {
     slug: 'file-upload',
@@ -2072,7 +2985,9 @@ import { JFilePreviewComponent } from 'jrng-ui/file-preview';`,
   },
 ];
 
-const detailedSlugs = new Set(detailedComponentDocs.map((doc) => doc.slug));
+const detailedSlugs = new Set(
+  [...detailedComponentDocs, ...variantComponentDocs].map((doc) => doc.slug),
+);
 
 const generatedBasicExamples: Readonly<Record<string, string>> = {
   accordion: `<j-accordion [multiple]="true" [activeIndex]="[0]">
@@ -2086,7 +3001,15 @@ const generatedBasicExamples: Readonly<Record<string, string>> = {
   avatar: `<j-avatar initials="AR" ariaLabel="Avery Reed" status="online"></j-avatar>`,
   chip: `<j-chip label="Approved" severity="success" removable></j-chip>`,
   'color-picker': `<j-color-picker label="Brand colour" [(ngModel)]="brandColor" clearable></j-color-picker>`,
-  'date-picker': `<j-date-picker label="Due date" placeholder="Choose a date" [(ngModel)]="dueDate"></j-date-picker>`,
+  'date-picker': `<j-date-picker label="Due date" placeholder="Choose a date" [(ngModel)]="dueDate"></j-date-picker>
+
+<j-date-picker
+  label="Reporting range"
+  selectionMode="range"
+  variant="filled"
+  [presets]="datePresets"
+  [(ngModel)]="dateRange">
+</j-date-picker>`,
   divider: `<j-divider></j-divider>`,
   icon: `<j-icon name="search" ariaLabel="Search" size="24"></j-icon>`,
   'input-mask': `<j-input-mask label="Phone" mask="(999) 999-9999" placeholder="(555) 123-4567"></j-input-mask>`,
@@ -2097,6 +3020,12 @@ const generatedBasicExamples: Readonly<Record<string, string>> = {
   paginator: `<j-paginator [first]="20" [rows]="10" [totalRecords]="96" [rowsPerPageOptions]="[10, 20, 50]" showCurrentPageReport></j-paginator>`,
   password: `<j-password label="Password" placeholder="Enter a secure password" feedback toggleMask></j-password>`,
   'progress-spinner': `<j-progress-spinner label="Loading orders" [size]="48"></j-progress-spinner>`,
+  'status-page': `<j-status-page
+  variant="empty"
+  marker="?"
+  title="No matching records"
+  description="Adjust the filters and try again">
+</j-status-page>`,
   rating: `<j-rating label="Product rating" [(ngModel)]="rating"></j-rating>`,
   slider: `<j-slider label="Completion" [min]="0" [max]="100" [step]="5" tooltip [(ngModel)]="completion"></j-slider>`,
   'avatar-group': `<j-avatar-group [items]="teamMembers" [max]="3" ariaLabel="Project team"></j-avatar-group>`,
@@ -2280,10 +3209,42 @@ const createGeneratedBasicExample = (
 };
 
 const generatedDisplayNames: Readonly<Record<string, string>> = {
+  column: 'Table Column',
   combobox: 'Searchable Select',
 };
 
 const generatedInputDocs: Readonly<Record<string, readonly DocsApiRow[]>> = {
+  avatar: [
+    prop('label', 'string', "''", 'Person or entity name used for fallback initials.'),
+    prop('image', 'string', "''", 'Local or application-managed image URL.'),
+    prop('initials', 'string', "''", 'Explicit fallback initials.'),
+    prop('ariaLabel', 'string', "''", 'Accessible name for the represented person or entity.'),
+    prop('size', 'sm | md | lg', "'md'", 'Avatar dimensions.'),
+    prop('shape', 'circle | square', "'circle'", 'Avatar silhouette.'),
+    prop('status', 'online | offline | away | busy | none', "'none'", 'Presence indicator.'),
+    prop('canZoom', 'boolean', 'false', 'Makes a valid image pointer and keyboard zoomable.'),
+    prop('zoomAriaLabel', 'string', "'View profile image'", 'Accessible zoom action name.'),
+    prop('zoomOverlay', 'boolean', 'true', 'Opens the built-in image preview after imageZoom.'),
+    prop('styleClass', 'string', "''", 'Additional avatar classes.'),
+    prop('pt', 'JPassThrough | null', 'null', 'Pass-through styling hooks.'),
+  ],
+  loader: [
+    prop('type', 'JLoaderVariant', "'dots'", 'Loading animation type.'),
+    prop('variant', 'JLoaderVariant | string', "''", 'Deprecated compatibility alias for type.'),
+    prop('size', 'sm | md | lg | number', "'md'", 'Named or pixel size.'),
+    prop('label', 'string', "'Loading'", 'Readable loading status.'),
+    prop('inline', 'boolean', 'false', 'Shows the label beside the visual.'),
+    prop('overlay', 'boolean', 'false', 'Covers the nearest positioned container.'),
+    prop('fullscreen', 'boolean', 'false', 'Covers the viewport.'),
+    prop('strokeWidth', 'number', '3', 'Indicator stroke or bar thickness.'),
+    prop('speed', 'slow | normal | fast', "'normal'", 'Animation timing preset.'),
+    prop(
+      'value',
+      'number | null',
+      'null',
+      'Optional determinate percentage, clamped from 0 to 100.',
+    ),
+  ],
   'file-preview': [
     prop('icon', 'JIconName | string', "''", 'Overrides the inferred file-type icon.'),
     prop('showTypeLabel', 'boolean', 'false', 'Shows an optional type label beside the icon.'),
@@ -2307,8 +3268,174 @@ const generatedInputDocs: Readonly<Record<string, readonly DocsApiRow[]>> = {
   ],
 };
 
+const exampleValueOverrides: Readonly<Record<string, string>> = {
+  availableItems: `[
+  { label: 'Customer', value: 'customer' },
+  { label: 'Status', value: 'status' },
+  { label: 'Created date', value: 'createdAt' }
+]`,
+  availableTasks: `[
+  { label: 'Review proposal', value: 'review' },
+  { label: 'Approve budget', value: 'approve' }
+]`,
+  assignedTasks: `[{ label: 'Publish release', value: 'publish' }]`,
+  columns: `[
+  { field: 'order', header: 'Order', sortable: true },
+  { field: 'customer', header: 'Customer' },
+  { field: 'status', header: 'Status', filterable: true }
+]`,
+  commands: `[
+  { label: 'Create project', icon: 'plus', command: () => console.log('Create project') },
+  { label: 'Open settings', icon: 'settings', command: () => console.log('Open settings') }
+]`,
+  events: `[
+  { title: 'Created', content: 'Project created.', opposite: '09:00' },
+  { title: 'Approved', content: 'Budget approved.', opposite: '10:30' }
+]`,
+  files: `[
+  { id: 'reports', name: 'Reports', kind: 'folder' },
+  { id: 'budget', name: 'Budget.xlsx', kind: 'file', size: 24832 }
+]`,
+  items: `[
+  { id: 1, label: 'First item', status: 'Active' },
+  { id: 2, label: 'Second item', status: 'Pending' }
+]`,
+  menuItems: `[
+  { label: 'Dashboard', icon: 'layout-dashboard' },
+  { label: 'Projects', icon: 'folder' }
+]`,
+  navigationItems: `[
+  { label: 'Overview', route: '/overview' },
+  { label: 'Activity', route: '/activity' }
+]`,
+  nodes: `[
+  { key: 'documents', label: 'Documents', children: [{ key: 'reports', label: 'Reports' }] }
+]`,
+  orders: `[
+  { id: 1001, order: 'ORD-1001', customer: 'Acme Ltd', status: 'Processing' },
+  { id: 1002, order: 'ORD-1002', customer: 'Northwind', status: 'Complete' }
+]`,
+  plans: `[
+  { label: 'Starter', value: 'starter' },
+  { label: 'Business', value: 'business' }
+]`,
+  products: `[
+  { id: 1, name: 'Desk lamp', price: 49, category: 'Office' },
+  { id: 2, name: 'Notebook', price: 12, category: 'Stationery' }
+]`,
+  records: `Array.from({ length: 100 }, (_, index) => ({
+  id: index + 1,
+  name: \`Record \${index + 1}\`
+}))`,
+  segments: `[
+  { label: 'Complete', value: 68, color: 'var(--j-color-success)' },
+  { label: 'Remaining', value: 32, color: 'var(--j-color-muted)' }
+]`,
+  steps: `[
+  { label: 'Details', description: 'Enter project details' },
+  { label: 'Review', description: 'Confirm the information' },
+  { label: 'Complete', description: 'Project created' }
+]`,
+  tasks: `[
+  { id: 1, title: 'Review proposal', category: 'Review' },
+  { id: 2, title: 'Approve budget', category: 'Approval' }
+]`,
+  treeNodes: `[
+  { key: 'workspace', label: 'Workspace', children: [{ key: 'design', label: 'Design' }] }
+]`,
+};
+
+const createExampleValues = (doc: ComponentDoc): string => {
+  const fields = new Set<string>();
+  const methods = new Map<string, boolean>();
+  const template = doc.code.basic;
+  const existing = doc.code.angular?.trim() ?? '';
+
+  for (const match of template.matchAll(/(?:\[\([^\]]+\)\]|\[[^\]]+\])="([^"]+)"/g)) {
+    collectExampleField(fields, match[1] ?? '');
+  }
+  for (const match of template.matchAll(/\([^)]+\)="([^"]+)"/g)) {
+    const expression = match[1] ?? '';
+    const assignedField = expression.match(/^([A-Za-z_$][\w$]*)\s*=/)?.[1];
+    if (assignedField) fields.add(assignedField);
+    const method = expression.match(/^([A-Za-z_$][\w$]*)\s*\(([^)]*)\)/);
+    if (method?.[1]) methods.set(method[1], (method[2] ?? '').includes('$event'));
+  }
+  for (const match of template.matchAll(/{{\s*([A-Za-z_$][\w$]*)/g)) {
+    if (match[1]) fields.add(match[1]);
+  }
+
+  const additions: string[] = [];
+  for (const field of [...fields].sort()) {
+    if (!new RegExp(`\\b${field}\\b`).test(existing)) {
+      additions.push(`${field} = ${exampleValue(field)};`);
+    }
+  }
+  for (const [method, receivesEvent] of [...methods].sort(([left], [right]) =>
+    left.localeCompare(right),
+  )) {
+    if (!new RegExp(`\\b${method}\\s*\\(`).test(existing)) {
+      additions.push(
+        receivesEvent
+          ? `${method}(event: unknown): void {\n  console.log(event);\n}`
+          : `${method}(): void {\n  // Handle the component event here.\n}`,
+      );
+    }
+  }
+
+  if (!existing && !additions.length) {
+    return `// ${doc.name} uses static values in this example; no backing fields are required.`;
+  }
+  return [existing, ...additions].filter(Boolean).join('\n\n');
+};
+
+const collectExampleField = (fields: Set<string>, expression: string): void => {
+  const normalized = expression.trim();
+  if (!normalized || /^(?:true|false|null|undefined|['"`]|\d|\[|\{)/.test(normalized)) {
+    return;
+  }
+  const root = normalized.match(/^([A-Za-z_$][\w$]*)/)?.[1];
+  if (root && root !== '$event') fields.add(root);
+};
+
+const exampleValue = (field: string): string => {
+  const override = exampleValueOverrides[field];
+  if (override) return override;
+
+  if (/^(?:is|has|show|enable|disable|loading|visible|open|published)/i.test(field)) {
+    return field.toLocaleLowerCase().includes('visible') ||
+      field.toLocaleLowerCase().includes('open')
+      ? 'true'
+      : 'false';
+  }
+  if (/range/i.test(field)) {
+    return `[new Date('2026-07-14'), new Date('2026-07-18')]`;
+  }
+  if (/date/i.test(field)) return `new Date('2026-07-14T09:30:00')`;
+  if (/^(?:selected|active)/i.test(field)) {
+    return /(?:items|skills|options|keys)$/i.test(field) ? '[]' : 'null';
+  }
+  if (/(?:count|index|quantity|amount|budget|completion|rating|value)$/i.test(field)) {
+    return '50';
+  }
+  if (
+    /(?:items|options|records|tasks|orders|events|files|columns|nodes|source|target)$/i.test(field)
+  ) {
+    return `[
+  { id: 1, label: 'First option', value: 'first' },
+  { id: 2, label: 'Second option', value: 'second' }
+]`;
+  }
+  if (/config/i.test(field)) return `{}`;
+  if (/(?:trackBy|compareWith)/i.test(field)) {
+    return `(left: unknown, right: unknown) => left === right`;
+  }
+  return `''`;
+};
+
 const mergedComponentDocs: readonly ComponentDoc[] = [
   ...detailedComponentDocs,
+  ...variantComponentDocs,
   ...generatedComponentRegistry
     .filter((record) => !detailedSlugs.has(record.slug))
     .map<ComponentDoc>((record) => ({
@@ -2321,22 +3448,74 @@ const mergedComponentDocs: readonly ComponentDoc[] = [
       status: 'Stable',
       description: record.description,
       whenToUse: `Use ${record.name} when its ${record.category.toLowerCase()} behavior matches the application workflow.`,
+      whenNotToUse: [
+        `Avoid ${record.name} when a simpler native element or an existing focused JRNG UI component communicates the workflow more clearly.`,
+      ],
       code: {
         importCode: `import { ${record.className} } from '${record.importPath}';`,
         basic: createGeneratedBasicExample(record),
       },
-      usage: [`Import ${record.className} from the public ${record.importPath} entry point.`],
+      usage: [
+        `Import ${record.className} from the public ${record.importPath} entry point.`,
+        `Common placements include ${record.category.toLowerCase()} screens, focused workflows, and responsive application layouts.`,
+      ],
       variants: [],
       sizes: [],
       states: [],
-      inputs: generatedInputDocs[record.slug] ?? [],
-      outputs: [],
+      inputs: [
+        ...(generatedInputDocs[record.slug] ?? []),
+        ...record.inputs
+          .filter(
+            (name) => !(generatedInputDocs[record.slug] ?? []).some((row) => row.name === name),
+          )
+          .map((name) =>
+            prop(
+              name,
+              'See exported declaration',
+              'Component default',
+              `Public ${name} input. Use the exported TypeScript declaration for its exact value contract.`,
+            ),
+          ),
+      ],
+      outputs: record.outputs.map((name) =>
+        event(
+          name,
+          'See exported declaration',
+          `Emits when the ${name} interaction or state change occurs.`,
+        ),
+      ),
       accessibility: [
         'Provide an accessible name and verify keyboard behavior for the configured content.',
       ],
       bestPractices: ['Use only the documented public entry point and selector.'],
+      publicMethods: record.methods,
+      templates: [
+        'Default content can be projected where the component template exposes an Angular content slot.',
+      ],
+      keyboard:
+        record.accessibilityStatus === 'implementation-signals-only'
+          ? [
+              'Use Tab to reach interactive controls and activate native buttons with Enter or Space.',
+            ]
+          : ['The component follows the keyboard behavior of its rendered native controls.'],
+      responsive: [
+        'Place the component in a flexible container and verify long labels at narrow widths.',
+      ],
+      limitations: [
+        'Only documented public inputs, outputs, methods, and template slots are supported.',
+      ],
+      relatedComponents: [],
+      testingNotes: [
+        'Test visible behavior, public events, keyboard use, disabled states, and accessible naming in the consuming workflow.',
+      ],
+      deprecated: record.deprecation,
     })),
 ];
+
+const registryRecordFor = (doc: ComponentDoc) =>
+  generatedComponentRegistry.find(
+    (record) => record.selector === doc.selector && record.importPath === doc.importPath,
+  );
 
 export const componentDocs: readonly ComponentDoc[] = mergedComponentDocs
   .filter(
@@ -2346,4 +3525,77 @@ export const componentDocs: readonly ComponentDoc[] = mergedComponentDocs
           candidate.selector === doc.selector && candidate.importPath === doc.importPath,
       ) === index,
   )
+  .map((doc) => {
+    const registryRecord = registryRecordFor(doc);
+    const documentedInputs = new Set(doc.inputs.map((row) => row.name));
+    const documentedOutputs = new Set(doc.outputs.map((row) => row.event));
+    return {
+      ...doc,
+      inputs: [
+        ...doc.inputs,
+        ...(registryRecord?.inputs ?? [])
+          .filter(
+            (name) =>
+              ![...documentedInputs].some((documented) =>
+                documented.split(/\s*\/\s*/).includes(name),
+              ),
+          )
+          .map((name) =>
+            prop(
+              name,
+              'See exported declaration',
+              'Component default',
+              `Public ${name} input. See the exported declaration for its exact contract.`,
+            ),
+          ),
+      ],
+      outputs: [
+        ...doc.outputs,
+        ...(registryRecord?.outputs ?? [])
+          .filter(
+            (name) =>
+              ![...documentedOutputs].some((documented) =>
+                documented.split(/\s*\/\s*/).includes(name),
+              ),
+          )
+          .map((name) =>
+            event(
+              name,
+              'See exported declaration',
+              `Emits when ${name} changes or its interaction occurs.`,
+            ),
+          ),
+      ],
+      whenNotToUse: doc.whenNotToUse ?? [
+        `Avoid ${doc.name} when a simpler native element communicates the same task without losing consistency or accessibility.`,
+      ],
+      publicMethods: [
+        ...(doc.publicMethods ?? []),
+        ...(registryRecord?.methods ?? []).filter(
+          (method) => !(doc.publicMethods ?? []).some((documented) => documented.includes(method)),
+        ),
+      ],
+      templates: doc.templates ?? [
+        'Use documented content projection or template directives; do not target internal markup.',
+      ],
+      keyboard: doc.keyboard ?? [
+        'Tab follows the page focus order. Native interactive elements use Enter and Space where applicable.',
+      ],
+      responsive: doc.responsive ?? [
+        'Use a flexible parent width and verify long content at mobile and desktop breakpoints.',
+      ],
+      limitations: doc.limitations ?? [
+        'Only documented public APIs and template slots are supported across releases.',
+      ],
+      relatedComponents: doc.relatedComponents ?? [],
+      testingNotes: doc.testingNotes ?? [
+        'Test visible behavior, public events, keyboard use, state changes, and accessible naming.',
+      ],
+      deprecated: doc.deprecated ?? registryRecord?.deprecation ?? null,
+      code: {
+        ...doc.code,
+        angular: createExampleValues(doc),
+      },
+    };
+  })
   .sort((left, right) => left.name.localeCompare(right.name));

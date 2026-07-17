@@ -37,8 +37,7 @@ describe('JrToastContainerComponent', () => {
     fixture.componentRef.setInput('position', 'bottom-left');
     fixture.detectChanges();
 
-    const stack = fixture.debugElement.query(By.css('.j-toast-stack'))
-      .nativeElement as HTMLElement;
+    const stack = fixture.debugElement.query(By.css('.j-toast-stack')).nativeElement as HTMLElement;
 
     expect(stack.classList).toContain('j-toast-stack--bottom-left');
   });

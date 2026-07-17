@@ -1,6 +1,21 @@
-import { ChangeDetectionStrategy, Component, inject, input, signal } from '@angular/core';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import {
+  PLATFORM_ID,
+  ChangeDetectionStrategy,
+  Component,
+  afterRenderEffect,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { JAccordionComponent, JAccordionPanelComponent } from 'jrng-ui/accordion';
+import {
+  JAccordionComponent,
+  JAccordionPanelComponent,
+  JAccordionVariant,
+} from 'jrng-ui/accordion';
 import { JAppShellComponent } from 'jrng-ui/app-shell';
 import { JAuthLayoutComponent } from 'jrng-ui/auth-layout';
 import { JAutocompleteComponent } from 'jrng-ui/autocomplete';
@@ -8,8 +23,8 @@ import { JAvatarGroupComponent } from 'jrng-ui/avatar-group';
 import { JAvatarComponent } from 'jrng-ui/avatar';
 import { JBadgeComponent } from 'jrng-ui/badge';
 import { JBottomSheetComponent } from 'jrng-ui/bottom-sheet';
-import { JBreadcrumbComponent, JBreadcrumbItem } from 'jrng-ui/breadcrumb';
-import { JButtonComponent } from 'jrng-ui/button';
+import { JBreadcrumbComponent, JBreadcrumbItem, JBreadcrumbVariant } from 'jrng-ui/breadcrumb';
+import { JButtonComponent, JButtonVariant } from 'jrng-ui/button';
 import { JCalendarSchedulerComponent } from 'jrng-ui/calendar-scheduler';
 import { JCalendarComponent } from 'jrng-ui/calendar';
 import { JCardComponent } from 'jrng-ui/card';
@@ -29,7 +44,7 @@ import { JColorPickerComponent } from 'jrng-ui/color-picker';
 import { JDataGridComponent } from 'jrng-ui/data-grid';
 import { JDataViewComponent } from 'jrng-ui/data-view';
 import { JDashboardLayoutComponent } from 'jrng-ui/dashboard-layout';
-import { JDatePickerComponent } from 'jrng-ui/date-picker';
+import { JDatePickerComponent, JDatePickerPreset } from 'jrng-ui/date-picker';
 import { JDateRangePickerComponent } from 'jrng-ui/date-range-picker';
 import { JDividerComponent } from 'jrng-ui/divider';
 import { JDialogComponent, JrDialogService } from 'jrng-ui/dialog';
@@ -37,17 +52,19 @@ import { JDrawerComponent } from 'jrng-ui/drawer';
 import { JDropzoneComponent } from 'jrng-ui/dropzone';
 import { JDynamicDialogComponent } from 'jrng-ui/dynamic-dialog';
 import { JEditorComponent } from 'jrng-ui/editor';
-import { JEmptyStateComponent } from 'jrng-ui/empty-state';
+import { JEmptyStateComponent, JEmptyStateVariant } from 'jrng-ui/empty-state';
 import { JEmptyPageComponent } from 'jrng-ui/empty-page';
 import { JErrorPageComponent } from 'jrng-ui/error-page';
 import { JFieldsetComponent } from 'jrng-ui/fieldset';
 import { JFilterBarComponent } from 'jrng-ui/filter-bar';
+import { JFileBrowserComponent, JFileBrowserItem } from 'jrng-ui/file-browser';
 import { JFilePreviewComponent } from 'jrng-ui/file-preview';
 import { JFileUploadComponent } from 'jrng-ui/file-upload';
 import { JFloatLabelComponent } from 'jrng-ui/float-label';
 import { JFormFieldComponent } from 'jrng-ui/form-field';
 import { JGalleryComponent } from 'jrng-ui/gallery';
 import { JGanttComponent } from 'jrng-ui/gantt';
+import { JGridColumnComponent, JGridComponent, JGridRowComponent } from 'jrng-ui/grid';
 import { JGridLayoutComponent } from 'jrng-ui/grid-layout';
 import {
   JCurrencyFormatPipe,
@@ -56,7 +73,7 @@ import {
   JPercentFormatPipe,
   JTextTruncatePipe,
 } from 'jrng-ui/formatting';
-import { JIconComponent } from 'jrng-ui/icon';
+import { JIconComponent, JIconName } from 'jrng-ui/icon';
 import { JIftaLabelComponent } from 'jrng-ui/ifta-label';
 import { JImageComponent, JImagePreviewComponent } from 'jrng-ui/image-preview';
 import { JIconFieldComponent } from 'jrng-ui/icon-field';
@@ -65,9 +82,9 @@ import { JInputIconComponent } from 'jrng-ui/input-icon';
 import { JInputMaskComponent } from 'jrng-ui/input-mask';
 import { JInputNumberComponent } from 'jrng-ui/input-number';
 import { JInputOtpComponent } from 'jrng-ui/input-otp';
-import { JInputComponent } from 'jrng-ui/input';
+import { JInputComponent, JInputVariant } from 'jrng-ui/input';
 import { JListboxComponent } from 'jrng-ui/listbox';
-import { JLoaderComponent } from 'jrng-ui/loader';
+import { JLoaderComponent, JLoaderVariant } from 'jrng-ui/loader';
 import { JMaintenancePageComponent } from 'jrng-ui/maintenance-page';
 import { JMegaMenuComponent } from 'jrng-ui/mega-menu';
 import { JMenuComponent, JMenuItem } from 'jrng-ui/menu';
@@ -79,13 +96,13 @@ import { JNotificationCenterComponent } from 'jrng-ui/notification-center';
 import { JOrderListComponent } from 'jrng-ui/order-list';
 import { JOrgChartComponent } from 'jrng-ui/org-chart';
 import { JOverlayPanelComponent } from 'jrng-ui/overlay-panel';
-import { JPaginatorComponent } from 'jrng-ui/paginator';
+import { JPaginatorComponent, JPaginatorVariant } from 'jrng-ui/paginator';
 import { JPasswordComponent } from 'jrng-ui/password';
 import { JPickListComponent } from 'jrng-ui/pick-list';
 import { JPanelComponent } from 'jrng-ui/panel';
-import { JPageHeaderComponent } from 'jrng-ui/page-header';
+import { JPageHeaderComponent, JPageHeaderVariant } from 'jrng-ui/page-header';
 import { JPopoverComponent } from 'jrng-ui/popover';
-import { JProgressBarComponent } from 'jrng-ui/progress-bar';
+import { JProgressBarComponent, JProgressBarVariant } from 'jrng-ui/progress-bar';
 import { JProgressSpinnerComponent } from 'jrng-ui/progress-spinner';
 import { JRadioGroupComponent } from 'jrng-ui/radio-group';
 import { JRadioComponent } from 'jrng-ui/radio';
@@ -103,10 +120,11 @@ import { JStackComponent } from 'jrng-ui/stack';
 import { JResponsiveSidebarComponent } from 'jrng-ui/responsive-sidebar';
 import { JStatCardComponent } from 'jrng-ui/stat-card';
 import { JStatusChipComponent } from 'jrng-ui/status-chip';
-import { JStepperComponent } from 'jrng-ui/stepper';
+import { JStatusPageComponent } from 'jrng-ui/status-page';
+import { JStepperComponent, JStepperVariant } from 'jrng-ui/stepper';
 import { JSliderComponent } from 'jrng-ui/slider';
 import { JSwitchComponent } from 'jrng-ui/switch';
-import { JTabComponent, JTabsComponent } from 'jrng-ui/tabs';
+import { JTabComponent, JTabsComponent, JTabsVariant } from 'jrng-ui/tabs';
 import { JTagComponent } from 'jrng-ui/tag';
 import { JToggleButtonComponent } from 'jrng-ui/toggle-button';
 import { JToolbarComponent } from 'jrng-ui/toolbar';
@@ -119,14 +137,19 @@ import {
   JTableColumn,
   JTableComponent,
   JTableConfig,
+  JTableCellTemplateDirective,
+  JTableEmptyTemplateDirective,
   JTableEmptyStateComponent,
   JTableExportEvent,
+  JTableHeaderTemplateDirective,
   JTableSkeletonComponent,
+  JTableVariant,
 } from 'jrng-ui/table';
 import { JTextareaComponent } from 'jrng-ui/textarea';
+import { JTextExpandComponent } from 'jrng-ui/text-expand';
 import { JTieredMenuComponent } from 'jrng-ui/tiered-menu';
 import { JTimePickerComponent } from 'jrng-ui/time-picker';
-import { JTimelineComponent, JTimelineItem } from 'jrng-ui/timeline';
+import { JTimelineComponent, JTimelineItem, JTimelineVariant } from 'jrng-ui/timeline';
 import { JTopbarComponent } from 'jrng-ui/topbar';
 import { JTooltipDirective } from 'jrng-ui/tooltip';
 import { JTourService, JTourStepDirective } from 'jrng-ui/tour';
@@ -147,18 +170,592 @@ import { JKnobComponent } from 'jrng-ui/knob';
 import { JRippleDirective } from 'jrng-ui';
 import { ComponentDoc } from './docs-types';
 import { CodeBlockComponent } from './code-block.component';
+import { ButtonBasicDemoComponent } from '../demos/button-basic-demo/button-basic-demo.component';
+import { AvatarZoomDemoComponent } from '../demos/avatar-zoom-demo/avatar-zoom-demo.component';
+import { LoaderTypesDemoComponent } from '../demos/loader-types-demo/loader-types-demo.component';
+import { TextExpandBasicDemoComponent } from '../demos/text-expand-basic-demo/text-expand-basic-demo.component';
+import { CardMetricDemoComponent } from '../demos/card-metric-demo/card-metric-demo.component';
+import { demoSources } from '../demos/demo-sources.generated';
 import {
   PriorityComponentGuidance,
   priorityComponentGuidance,
 } from './priority-component-guidance';
 
-type DetailTab = 'preview' | 'code';
+type DetailCodeTab = 'html' | 'ts' | 'scss' | 'data';
+
+interface DetailFeatureExample {
+  readonly name: string;
+  readonly details: string;
+  readonly key: string;
+  readonly index: number;
+  readonly html: string;
+  readonly ts?: string;
+  readonly scss?: string;
+}
+
+interface DetailContentsItem {
+  readonly id: string;
+  readonly label: string;
+  readonly level: 0 | 1;
+}
+
+const FEATURE_VARIANT_KEYS: Readonly<Record<string, readonly string[]>> = {
+  accordion: ['default', 'separated', 'minimal'],
+  breadcrumb: ['default', 'contained', 'steps'],
+  button: ['filled', 'outline', 'ghost', 'soft', 'link'],
+  card: ['default', 'elevated', 'bordered', 'soft'],
+  'empty-state': ['default', 'inline', 'panel'],
+  input: ['outlined', 'filled'],
+  'icon-button': ['filled', 'ghost', 'outline'],
+  paginator: ['default', 'simple'],
+  'page-header': ['default', 'stacked', 'centered'],
+  'progress-bar': ['default', 'segmented', 'labeled'],
+  stepper: ['default', 'rail', 'progress'],
+  tabs: ['default', 'pills', 'segmented'],
+  textarea: ['outlined', 'filled'],
+  timeline: ['default', 'activity', 'alternating'],
+};
+
+const TABLE_FEATURE_EXAMPLES = [
+  {
+    key: 'basic',
+    name: 'Basic table',
+    details: 'Render flat, comparable records with semantic column headers.',
+    html: `<j-table [value]="orders" [columns]="columns" caption="Recent orders" />`,
+  },
+  {
+    key: 'columns',
+    name: 'Typed columns',
+    details:
+      'Use JTableColumn<T> for checked fields, widths, alignment, value getters, and formatters.',
+    html: `<j-table [value]="orders" [columns]="columns" />`,
+  },
+  {
+    key: 'templates',
+    name: 'Header and cell templates',
+    details:
+      'Replace selected headers or cells while retaining the table data and interaction model.',
+    html: `<j-table [value]="orders" [columns]="columns">
+  <ng-template jTableHeader="status" let-column>{{ column.header }} / owner</ng-template>
+  <ng-template jTableCell="status" let-value="formattedValue"><strong>{{ value }}</strong></ng-template>
+</j-table>`,
+  },
+  {
+    key: 'variants',
+    name: 'Visual variants',
+    details: 'Choose a recognizable surface concept without changing table behavior.',
+    html: `<j-table [value]="orders" [columns]="columns" variant="card" />`,
+  },
+  {
+    key: 'density',
+    name: 'Density',
+    details: 'Set information spacing independently from the visual variant.',
+    html: `<j-table [value]="orders" [columns]="columns" density="compact" />`,
+  },
+  {
+    key: 'skeleton',
+    name: 'Skeleton loading',
+    details: 'Reserve table space with representative rows while records load.',
+    html: `<j-table [value]="[]" [columns]="columns" loading loadingVariant="skeleton" [skeletonRows]="4" />`,
+  },
+  {
+    key: 'overlay',
+    name: 'Spinner and overlay loading',
+    details: 'Keep existing rows visible when refreshing data in place.',
+    html: `<j-table [value]="orders" [columns]="columns" loading loadingVariant="overlay" />`,
+  },
+  {
+    key: 'no-data',
+    name: 'No data',
+    details:
+      'Explain that the source dataset has no records and optionally offer a recovery action.',
+    html: `<j-table [value]="[]" [columns]="columns" emptyTitle="No orders yet" emptyDescription="New orders will appear here." emptyActionLabel="Create order" />`,
+  },
+  {
+    key: 'no-results',
+    name: 'No results',
+    details:
+      'Automatically distinguish an active filter returning zero matches from an empty dataset.',
+    html: `<j-table [value]="orders" [columns]="columns" globalFilter="not-a-match" noResultsTitle="No matching orders" />`,
+  },
+  {
+    key: 'error',
+    name: 'Error state',
+    details: 'Present a loading failure as an alert without treating it as ordinary emptiness.',
+    html: `<j-table [value]="[]" [columns]="columns" [error]="loadError" emptyActionLabel="Retry" />`,
+  },
+  {
+    key: 'selection',
+    name: 'Selection',
+    details: 'Use the established row or checkbox selection behavior with any presentation.',
+    html: `<j-table [value]="orders" [columns]="columns" selectionMode="checkbox" />`,
+  },
+  {
+    key: 'pagination',
+    name: 'Pagination',
+    details: 'Page local or server-backed rows without changing empty-state semantics.',
+    html: `<j-table [value]="orders" [columns]="columns" paginator [rows]="3" />`,
+  },
+  {
+    key: 'sorting',
+    name: 'Sorting',
+    details: 'Mark sortable columns and activate them with pointer or keyboard input.',
+    html: `<j-table [value]="orders" [columns]="columns" sortField="total" [sortOrder]="-1" />`,
+  },
+  {
+    key: 'filtering',
+    name: 'Filtering',
+    details: 'Use the reusable filter row and typed match-mode configuration.',
+    html: `<j-table [value]="orders" [columns]="columns" filterRow showGlobalFilter />`,
+  },
+  {
+    key: 'tree-table',
+    name: 'Tree Table',
+    details: 'Use the separate tree grid for hierarchical records, expansion, and node selection.',
+    html: `<j-tree-table [value]="treeNodes" [columns]="treeColumns" />`,
+  },
+  {
+    key: 'lazy-tree-table',
+    name: 'Lazy Tree Table',
+    details: 'Load a node’s children on demand while preserving hierarchy and focus.',
+    html: `<j-tree-table [value]="lazyTreeNodes" [columns]="treeColumns" lazy (nodeExpand)="loadChildren($event)" />`,
+  },
+  {
+    key: 'accessibility',
+    name: 'Accessibility and keyboard',
+    details:
+      'Tables expose semantic headers and sort state; Tree Table exposes tree-grid level, selection, and expansion state.',
+    html: `<j-table [value]="orders" [columns]="columns" caption="Orders awaiting review" selectionMode="checkbox" />`,
+  },
+  {
+    key: 'migration',
+    name: 'Compatibility and migration',
+    details:
+      'Column metadata, empty content, and loading content are integrated capabilities. Compatibility selectors remain available during migration.',
+    html: `<j-table [value]="orders" [columns]="columns" loadingVariant="skeleton">
+  <ng-template jTableEmpty let-state>{{ state }}</ng-template>
+  <ng-template jTableLoading let-variant>{{ variant }}</ng-template>
+</j-table>`,
+  },
+] as const;
+
+const TEXT_EXPAND_FEATURE_EXAMPLES = [
+  {
+    key: 'characters',
+    name: 'Character limit',
+    details: 'Shorten prose without splitting the final visible word.',
+    html: `<j-text-expand [text]="productDescription" [collapsedLength]="120" />`,
+  },
+  {
+    key: 'lines',
+    name: 'Line limit',
+    details: 'Clamp responsive content by its rendered line count.',
+    html: `<j-text-expand [text]="productDescription" mode="lines" [collapsedLines]="3" />`,
+  },
+  {
+    key: 'labels',
+    name: 'Custom labels',
+    details: 'Use labels that match the surrounding product language.',
+    html: `<j-text-expand [text]="comment" showMoreLabel="Read comment" showLessLabel="Collapse comment" />`,
+  },
+  {
+    key: 'expanded',
+    name: 'Initially expanded',
+    details: 'Start open when the full content is initially important.',
+    html: `<j-text-expand [text]="productDescription" [expanded]="true" />`,
+  },
+  {
+    key: 'short',
+    name: 'Short text',
+    details: 'No toggle is rendered when all text already fits.',
+    html: `<j-text-expand text="Ready to publish." />`,
+  },
+  {
+    key: 'dynamic',
+    name: 'Dynamic update',
+    details: 'The visible result recalculates when input text changes.',
+    html: `<j-text-expand [text]="dynamicSummary" [collapsedLength]="90" />`,
+  },
+  {
+    key: 'responsive',
+    name: 'Responsive card content',
+    details: 'Line mode responds to card width changes.',
+    html: `<j-card title="Release summary"><j-text-expand [text]="productDescription" mode="lines" [collapsedLines]="2" /></j-card>`,
+  },
+  {
+    key: 'product',
+    name: 'Product description',
+    details: 'Keep product grids scannable while preserving full details.',
+    html: `<j-text-expand [text]="productDescription" [collapsedLength]="100" />`,
+  },
+  {
+    key: 'comment',
+    name: 'User comment',
+    details: 'Collapse long discussion content in activity feeds.',
+    html: `<j-text-expand [text]="comment" [collapsedLength]="80" />`,
+  },
+  {
+    key: 'policy',
+    name: 'Policy summary',
+    details: 'Show a concise summary while keeping the complete text available.',
+    html: `<j-text-expand [text]="policySummary" mode="lines" [collapsedLines]="3" />`,
+  },
+  {
+    key: 'projected',
+    name: 'Projected content',
+    details: 'Use line mode for safe projected Angular content.',
+    html: `<j-text-expand mode="lines" [collapsedLines]="2"><strong>Release note:</strong> {{ projectedSummary }}</j-text-expand>`,
+  },
+  {
+    key: 'motion',
+    name: 'Animation disabled',
+    details: 'Disable transitions explicitly in addition to automatic reduced-motion support.',
+    html: `<j-text-expand [text]="productDescription" [animation]="false" />`,
+  },
+] as const;
+
+const BUTTON_FEATURE_EXAMPLES = [
+  {
+    key: 'basic',
+    name: 'Basic buttons',
+    details: 'Use a clear verb for the primary action.',
+    html: `<j-button label="Save changes" (onClick)="save()" />`,
+  },
+  {
+    key: 'severity',
+    name: 'Severity intents',
+    details: 'Communicate action intent independently from surface treatment.',
+    html: `<j-button label="Primary" /><j-button label="Success" severity="success" /><j-button label="Info" severity="info" /><j-button label="Warning" severity="warning" /><j-button label="Danger" severity="danger" /><j-button label="Help" severity="help" /><j-button label="Contrast" severity="contrast" />`,
+  },
+  {
+    key: 'outline',
+    name: 'Outlined buttons',
+    details: 'Use outline for supporting actions with visible boundaries.',
+    html: `<j-button label="Export" variant="outline" />`,
+  },
+  {
+    key: 'text',
+    name: 'Text buttons',
+    details: 'Use text treatment for low-emphasis actions.',
+    html: `<j-button label="Learn more" variant="text" />`,
+  },
+  {
+    key: 'link',
+    name: 'Link-style buttons',
+    details: 'Use link treatment for action semantics presented inline.',
+    html: `<j-button label="View details" variant="link" />`,
+  },
+  {
+    key: 'raised',
+    name: 'Raised buttons',
+    details: 'Add restrained elevation when an action must stand above a busy surface.',
+    html: `<j-button label="Create project" raised />`,
+  },
+  {
+    key: 'pill',
+    name: 'Rounded and pill',
+    details: 'Use pill shape for compact filters and friendly calls to action.',
+    html: `<j-button label="Follow" pill /><j-button label="Next" rounded />`,
+  },
+  {
+    key: 'icon-before',
+    name: 'Icon before label',
+    details: 'Place a familiar icon before the action label.',
+    html: `<j-button label="Save" icon="save" />`,
+  },
+  {
+    key: 'icon-after',
+    name: 'Icon after label',
+    details: 'Place a directional icon after navigation-oriented text.',
+    html: `<j-button label="Continue" icon="arrow-right" iconPosition="right" />`,
+  },
+  {
+    key: 'icon-only',
+    name: 'Icon-only buttons',
+    details: 'Always provide an accessible label.',
+    html: `<j-button icon="settings" iconOnly ariaLabel="Open settings" />`,
+  },
+  {
+    key: 'loading',
+    name: 'Loading buttons',
+    details: 'Busy buttons prevent repeated activation and expose status.',
+    html: `<j-button label="Saving" loading loadingLabel="Saving changes" />`,
+  },
+  {
+    key: 'disabled',
+    name: 'Disabled buttons',
+    details: 'Unavailable actions remain visible but cannot emit onClick.',
+    html: `<j-button label="Publish" disabled />`,
+  },
+  {
+    key: 'full-width',
+    name: 'Full-width buttons',
+    details: 'Use full width in narrow forms and mobile panels.',
+    html: `<j-button label="Continue" fullWidth />`,
+  },
+  {
+    key: 'badge',
+    name: 'Button with badge',
+    details: 'Add a compact count without changing the action label.',
+    html: `<j-button label="Notifications" icon="bell" [badge]="4" badgeAriaLabel="4 unread notifications" />`,
+  },
+  {
+    key: 'group',
+    name: 'Button group',
+    details: 'Place related actions together with one clear primary action.',
+    html: `<div class="j-preview-row"><j-button label="Save" /><j-button label="Preview" variant="outline" /><j-button label="Cancel" variant="ghost" /></div>`,
+  },
+  {
+    key: 'form',
+    name: 'Form submit and reset',
+    details: 'Native types integrate with Angular and browser forms.',
+    html: `<form (submit)="save()"><j-button label="Submit" type="submit" /><j-button label="Reset" type="reset" variant="ghost" /></form>`,
+  },
+  {
+    key: 'toolbar',
+    name: 'Toolbar actions',
+    details: 'Use compact treatments for repeated workspace commands.',
+    html: `<j-toolbar><j-button label="New" icon="plus" /><j-button label="Export" variant="outline" /><j-button icon="settings" iconOnly ariaLabel="Toolbar settings" variant="ghost" /></j-toolbar>`,
+  },
+  {
+    key: 'destructive',
+    name: 'Destructive confirmation',
+    details: 'Reserve danger intent for the final destructive action.',
+    html: `<j-button label="Delete project" severity="danger" />`,
+  },
+  {
+    key: 'template',
+    name: 'Custom content',
+    details: 'Project concise content while retaining native button behavior.',
+    html: `<j-button><strong>Approve</strong><span jButtonSuffix>⌘ Enter</span></j-button>`,
+  },
+] as const;
+
+const AVATAR_FEATURE_EXAMPLES = [
+  ['initials', 'Initials avatar', `<j-avatar initials="AR" ariaLabel="Avery Reed" />`],
+  ['character', 'Single character', `<j-avatar initials="A" ariaLabel="Avery" />`],
+  [
+    'icon',
+    'Icon avatar',
+    `<j-avatar ariaLabel="Unassigned user"><j-icon name="user" aria-hidden="true" /></j-avatar>`,
+  ],
+  [
+    'image',
+    'User image',
+    `<j-avatar image="/assets/avatars/avery.svg" label="Avery Reed" size="lg" />`,
+  ],
+  ['circle', 'Circle shape', `<j-avatar initials="AR" ariaLabel="Avery Reed" />`],
+  [
+    'square',
+    'Square shape',
+    `<j-avatar initials="AR" ariaLabel="Avery Reed" shape="square" size="lg" />`,
+  ],
+  [
+    'sizes',
+    'Sizes',
+    `<j-avatar initials="AR" ariaLabel="Avery Reed" size="sm" />
+<j-avatar initials="AR" ariaLabel="Avery Reed" />
+<j-avatar initials="AR" ariaLabel="Avery Reed" size="lg" />`,
+  ],
+  [
+    'colors',
+    'Custom colours',
+    `<j-avatar initials="AR" ariaLabel="Avery Reed" style="--j-color-surface-subtle: var(--j-color-primary-soft); --j-color-text: var(--j-color-primary)" />`,
+  ],
+  [
+    'status',
+    'Presence status',
+    `<j-avatar initials="AR" ariaLabel="Avery Reed, online" status="online" />
+<j-avatar initials="MK" ariaLabel="Morgan Kim, away" status="away" />
+<j-avatar initials="JL" ariaLabel="Jordan Lee, offline" status="offline" />`,
+  ],
+  [
+    'badge',
+    'Avatar with badge',
+    `<span class="avatar-badge"><j-avatar image="/assets/avatars/avery.svg" label="Avery Reed" /><j-badge value="4" severity="danger" /></span>`,
+  ],
+  [
+    'group',
+    'Avatar group',
+    `<j-avatar-group [items]="avatarPeople" [max]="3" ariaLabel="Project team" />`,
+  ],
+  [
+    'overflow',
+    'Overflow count',
+    `<j-avatar-group [items]="avatarPeople" [max]="2" ariaLabel="Project team, three more members" />`,
+  ],
+  [
+    'profile',
+    'Profile header',
+    `<div class="profile"><j-avatar image="/assets/avatars/avery.svg" label="Avery Reed" size="lg" canZoom /><div><strong>Avery Reed</strong><span>Product designer</span></div></div>`,
+  ],
+  [
+    'comment',
+    'Comment author',
+    `<div class="comment"><j-avatar image="/assets/avatars/morgan.svg" label="Morgan Kim" /><div><strong>Morgan Kim</strong><span>Updated the release checklist.</span></div></div>`,
+  ],
+  [
+    'team',
+    'Assigned team',
+    `<j-avatar-group [items]="avatarPeople" [max]="4" ariaLabel="Assigned team" />`,
+  ],
+  [
+    'fallback',
+    'Image fallback',
+    `<j-avatar image="/assets/avatars/missing.svg" label="Avery Reed" initials="AR" />`,
+  ],
+  [
+    'clickable',
+    'Clickable avatar',
+    `<j-avatar image="/assets/avatars/avery.svg" label="Avery Reed" canZoom [zoomOverlay]="false" zoomAriaLabel="Open Avery Reed profile" />`,
+  ],
+  [
+    'zoom',
+    'Zoomable avatar',
+    `<j-avatar image="/assets/avatars/avery.svg" label="Avery Reed" canZoom />`,
+  ],
+  [
+    'static',
+    'Non-zoomable avatar',
+    `<j-avatar image="/assets/avatars/avery.svg" label="Avery Reed" size="lg" />`,
+  ],
+].map(([key, name, html]) => ({
+  key,
+  name,
+  details: `${name} in a realistic people or assignment context.`,
+  html,
+}));
+
+const LOADER_FEATURE_EXAMPLES = [
+  ['basic', 'Loader types', `<j-loader type="spinner" label="Loading records" />`],
+  ['spinner', 'Spinner', `<j-loader type="spinner" label="Loading" />`],
+  ['dots', 'Dots', `<j-loader type="dots" label="Loading" />`],
+  ['pulse', 'Pulse', `<j-loader type="pulse" label="Loading" />`],
+  ['bars', 'Bars', `<j-loader type="bars" label="Loading" />`],
+  ['ring', 'Ring', `<j-loader type="ring" label="Loading" />`],
+  ['inline', 'Inline text loader', `<j-loader type="spinner" inline label="Loading" />`],
+  ['button', 'Button loading', `<j-button label="Saving" loading loadingLabel="Saving record" />`],
+  [
+    'card',
+    'Card loading',
+    `<j-card title="Account summary"><j-loader type="spinner" inline label="Loading account summary" /></j-card>`,
+  ],
+  ['page', 'Page loading', `<j-loader type="spinner" label="Loading page" />`],
+  ['overlay', 'Overlay loading', `<j-loader type="spinner" overlay label="Loading workspace" />`],
+  [
+    'fullscreen',
+    'Fullscreen loading',
+    `<j-loader type="spinner" fullscreen label="Loading application" />`,
+  ],
+  [
+    'determinate',
+    'Determinate loader',
+    `<j-loader type="ring" [value]="68" label="Upload progress" />`,
+  ],
+  ['size', 'Custom size', `<j-loader type="spinner" [size]="56" label="Loading" />`],
+  ['label', 'Custom label', `<j-loader type="spinner" inline label="Loading customer profile" />`],
+  ['motion', 'Reduced-motion behaviour', `<j-loader type="spinner" label="Loading" />`],
+].map(([key, name, html]) => ({
+  key,
+  name,
+  details: `${name} for an appropriate loading context.`,
+  html,
+}));
+
+const CARD_FEATURE_EXAMPLES = [
+  [
+    'basic',
+    'Basic content card',
+    `<j-card title="Design review"><p>Review navigation and responsive behavior before release.</p></j-card>`,
+  ],
+  [
+    'slots',
+    'Header and footer',
+    `<j-card title="Release plan" subtitle="Version 0.0.9" footer="Updated today">All milestones are on track.</j-card>`,
+  ],
+  [
+    'form',
+    'Form card',
+    `<j-card title="Workspace settings"><j-input label="Workspace name" value="Operations" /><j-button jCardActions label="Save" /></j-card>`,
+  ],
+  [
+    'profile',
+    'Profile card',
+    `<j-card title="Avery Reed" subtitle="Product designer"><j-avatar image="/assets/avatars/avery.svg" label="Avery Reed" size="lg" /></j-card>`,
+  ],
+  [
+    'product',
+    'Product card',
+    `<j-card title="Team plan" subtitle="For growing teams"><strong>$24 / month</strong><j-button jCardActions label="Choose plan" /></j-card>`,
+  ],
+  [
+    'pricing',
+    'Pricing card',
+    `<j-card title="Business" subtitle="Advanced controls"><strong>$49 / month</strong><j-button jCardActions label="Start trial" /></j-card>`,
+  ],
+  [
+    'metric',
+    'Metric or KPI card',
+    `<j-card title="Monthly revenue" subtitle="Compared with last month"><strong>$84,250</strong><j-badge value="+12.4%" severity="success" /><j-progress-bar [value]="72" label="72% of target" /></j-card>`,
+  ],
+  [
+    'trend',
+    'Metric with change',
+    `<j-card title="Active accounts"><strong>1,284</strong><j-badge value="+8.2%" severity="success" /></j-card>`,
+  ],
+  [
+    'chart',
+    'Metric with mini chart',
+    `<j-card title="Weekly volume"><j-progress-bar [value]="64" label="64% of weekly target" /></j-card>`,
+  ],
+  [
+    'progress',
+    'Metric with progress',
+    `<j-card title="Storage"><strong>72 GB of 100 GB</strong><j-progress-bar [value]="72" label="72% used" /></j-card>`,
+  ],
+  [
+    'status',
+    'Status summary',
+    `<j-card title="Release status"><j-badge value="Ready" severity="success" /><p>All required checks passed.</p></j-card>`,
+  ],
+  [
+    'clickable',
+    'Clickable card',
+    `<j-card title="Open project" subtitle="Keyboard focusable" clickable><p>View project details.</p></j-card>`,
+  ],
+  ['loading', 'Loading card', `<j-card title="Loading report" skeleton />`],
+  [
+    'empty',
+    'Empty card',
+    `<j-card title="Saved views"><j-empty-state title="No saved views" description="Save a filter to reuse it here." variant="inline" /></j-card>`,
+  ],
+  [
+    'error',
+    'Error-state card',
+    `<j-card title="Account summary"><j-empty-state title="Could not load summary" description="Try again in a moment." variant="inline" /></j-card>`,
+  ],
+  [
+    'template',
+    'Custom template card',
+    `<j-card><div jCardHeader><strong>Custom header</strong></div><p>Projected card content.</p><j-button jCardActions label="Continue" /></j-card>`,
+  ],
+].map(([key, name, html]) => ({
+  key,
+  name,
+  details: `${name} composed from Card slots and focused JRNG UI components.`,
+  html,
+}));
 
 @Component({
   selector: 'app-component-detail-view',
   imports: [
     FormsModule,
     CodeBlockComponent,
+    ButtonBasicDemoComponent,
+    AvatarZoomDemoComponent,
+    LoaderTypesDemoComponent,
+    TextExpandBasicDemoComponent,
+    CardMetricDemoComponent,
     JAccordionComponent,
     JAccordionPanelComponent,
     JAutocompleteComponent,
@@ -183,6 +780,7 @@ type DetailTab = 'preview' | 'code';
     JErrorPageComponent,
     JFieldsetComponent,
     JFilterBarComponent,
+    JFileBrowserComponent,
     JFilePreviewComponent,
     JFileUploadComponent,
     JFloatLabelComponent,
@@ -222,6 +820,7 @@ type DetailTab = 'preview' | 'code';
     JResponsiveSidebarComponent,
     JStatCardComponent,
     JStatusChipComponent,
+    JStatusPageComponent,
     JSliderComponent,
     JSwitchComponent,
     JTabComponent,
@@ -230,9 +829,13 @@ type DetailTab = 'preview' | 'code';
     JToggleButtonComponent,
     JToolbarComponent,
     JTableComponent,
+    JTableCellTemplateDirective,
+    JTableEmptyTemplateDirective,
+    JTableHeaderTemplateDirective,
     JActionMenuComponent,
     JColumnFilterComponent,
     JTextareaComponent,
+    JTextExpandComponent,
     JTimelineComponent,
     JTooltipDirective,
     JTourStepDirective,
@@ -258,6 +861,9 @@ type DetailTab = 'preview' | 'code';
     JEditorComponent,
     JGalleryComponent,
     JGanttComponent,
+    JGridComponent,
+    JGridRowComponent,
+    JGridColumnComponent,
     JGridLayoutComponent,
     JIftaLabelComponent,
     JImageComponent,
@@ -294,1820 +900,2824 @@ type DetailTab = 'preview' | 'code';
     JTextTruncatePipe,
   ],
   template: `
-    <article class="j-doc-detail">
-      <header class="j-doc-detail__header">
-        <div class="j-doc-detail__title">
-          <span class="j-doc-icon"><j-icon [name]="doc().icon" /></span>
-          <div>
-            <p class="j-page-eyebrow">{{ doc().category }}</p>
-            <h2>{{ doc().name }}</h2>
-          </div>
-        </div>
-      </header>
-
-      <p class="j-doc-lead">{{ doc().description }}</p>
-
-      <dl class="j-doc-meta">
-        <div>
-          <dt>Selector / usage</dt>
-          <dd>
-            <code>{{ doc().selector }}</code>
-          </dd>
-        </div>
-        <div>
-          <dt>Import</dt>
-          <dd>
-            <code>{{ doc().importPath }}</code>
-          </dd>
-        </div>
-      </dl>
-
-      <section class="j-callout">
-        <j-icon name="lightbulb" />
-        <div>
-          <strong>When to use</strong>
-          <p>{{ doc().whenToUse }}</p>
-        </div>
-      </section>
-
-      <section class="j-preview-code-tabs" aria-label="Component preview and code">
-        <div class="j-doc-tabs" role="tablist" aria-label="Preview and code">
+    <div class="j-doc-detail-layout">
+      <article class="j-doc-detail" [class.j-doc-detail--api]="detailViewTab() === 'api'">
+        <nav class="j-component-view-tabs" aria-label="Component documentation view">
           <button
             type="button"
-            [class.is-active]="activeTab() === 'preview'"
-            (click)="activeTab.set('preview')"
+            [class.is-active]="detailViewTab() === 'features'"
+            [attr.aria-pressed]="detailViewTab() === 'features'"
+            (click)="detailViewTab.set('features')"
           >
-            <j-icon name="component" />
-            Preview
+            Features
           </button>
           <button
             type="button"
-            [class.is-active]="activeTab() === 'code'"
-            (click)="activeTab.set('code')"
+            [class.is-active]="detailViewTab() === 'api'"
+            [attr.aria-pressed]="detailViewTab() === 'api'"
+            (click)="detailViewTab.set('api')"
           >
-            <j-icon name="code-xml" />
-            Code
+            API
           </button>
-        </div>
+        </nav>
 
-        @if (activeTab() === 'preview') {
-          <div class="j-preview-card">
-            <div class="j-preview-card__header">
-              <div>
-                <strong>{{ doc().name }} preview</strong>
-                <span>Live examples using the current component API.</span>
-              </div>
+        @if (detailViewTab() === 'features') {
+          <header class="j-doc-detail__header">
+            <div>
+              <h2>{{ doc().name }}</h2>
+              <p class="j-doc-lead">{{ doc().description }}</p>
             </div>
-            <div
-              class="j-preview-surface"
-              [class.j-preview-surface--overlay]="overlayPreviewSlugs.has(doc().slug)"
-              [class.j-preview-surface--status]="statusPreviewSlugs.has(doc().slug)"
+          </header>
+
+          <section class="j-doc-opening-section" id="component-overview">
+            <h3>Overview</h3>
+            <p>{{ doc().description }}</p>
+            @if (doc().deprecated) {
+              <p class="j-preview-note"><strong>Deprecated:</strong> {{ doc().deprecated }}</p>
+            }
+          </section>
+
+          <section class="j-doc-grid-sections" id="component-usage-guidance">
+            <div class="j-doc-section-block">
+              <h3>When to Use</h3>
+              <p>{{ doc().whenToUse }}</p>
+            </div>
+            <div class="j-doc-section-block">
+              <h3>When Not to Use</h3>
+              <ul>
+                @for (item of doc().whenNotToUse ?? []; track item) {
+                  <li>{{ item }}</li>
+                } @empty {
+                  <li>
+                    Choose a simpler native element when the component adds no useful behavior.
+                  </li>
+                }
+              </ul>
+            </div>
+          </section>
+
+          <section class="j-doc-opening-section" id="component-import">
+            <h3>Import</h3>
+            <app-code-block label="Import" language="ts" [code]="doc().code.importCode" />
+          </section>
+
+          @for (example of featureExamples(); track example.key) {
+            <section
+              class="j-preview-code-tabs j-feature-example"
+              [attr.id]="'component-preview-' + example.key"
+              [attr.aria-label]="example.name + ' preview and code'"
             >
-              @defer (when activeTab() === 'preview') {
-                @switch (doc().slug) {
-                  @case ('accordion') {
-                    <j-accordion [multiple]="true" [activeIndex]="[0]">
-                      <j-accordion-panel header="Account details"
-                        >Update profile and contact information.</j-accordion-panel
-                      >
-                      <j-accordion-panel header="Notifications"
-                        >Choose which product updates you receive.</j-accordion-panel
-                      >
-                      <j-accordion-panel header="Disabled section" disabled
-                        >Unavailable content.</j-accordion-panel
-                      >
-                    </j-accordion>
-                  }
-                  @case ('accordion-panel') {
-                    <j-accordion [activeIndex]="0">
-                      <j-accordion-panel header="Project summary"
-                        >This panel is expanded by default.</j-accordion-panel
-                      >
-                      <j-accordion-panel header="Team members"
-                        >Panel content can contain any Angular template.</j-accordion-panel
-                      >
-                    </j-accordion>
-                  }
-                  @case ('autocomplete') {
-                    <div class="j-overlay-form-preview">
-                      <j-autocomplete
-                        label="Customer"
-                        [suggestions]="autocompleteSuggestions"
-                        placeholder="Type a customer name"
-                        (completeMethod)="filterCustomerSuggestions($event)"
-                      />
-                      <p class="j-preview-note">
-                        Type “Acme” or “Northwind” to filter suggestions.
-                      </p>
-                    </div>
-                  }
-                  @case ('avatar') {
-                    <div class="j-preview-row">
-                      <j-avatar initials="AR" ariaLabel="Avery Reed" />
-                      <j-avatar
-                        initials="MK"
-                        ariaLabel="Morgan Kim"
-                        size="lg"
-                        shape="square"
-                        status="online"
-                      />
-                      <j-avatar label="Project owner" ariaLabel="Project owner" size="sm" />
-                    </div>
-                  }
-                  @case ('chip') {
-                    <div class="j-preview-row">
-                      <j-chip label="Design" />
-                      <j-chip label="Approved" severity="success" />
-                      <j-chip label="Removable filter" removable removeAriaLabel="Remove filter" />
-                    </div>
-                  }
-                  @case ('color-picker') {
-                    <div class="j-overlay-form-preview j-overlay-form-preview--compact">
-                      <j-color-picker
-                        label="Brand colour"
-                        [(ngModel)]="brandColor"
-                        [presetColors]="brandPresets"
-                        clearable
-                      />
-                    </div>
-                  }
-                  @case ('date-picker') {
-                    <div class="j-preview-grid j-overlay-form-preview">
-                      <j-date-picker
-                        label="Due date"
-                        placeholder="Choose a date"
-                        [(ngModel)]="dueDate"
-                      />
-                      <j-date-picker
-                        label="Date range"
-                        selectionMode="range"
-                        placeholder="Choose dates"
-                        [(ngModel)]="pickerRange"
-                      />
-                    </div>
-                  }
-                  @case ('divider') {
-                    <div class="j-preview-stack">
-                      <span>Profile details</span>
-                      <j-divider />
-                      <span>Notification preferences</span>
-                    </div>
-                  }
-                  @case ('icon') {
-                    <div class="j-preview-row">
-                      <j-icon name="search" ariaLabel="Search" />
-                      <j-icon name="settings" ariaLabel="Settings" size="24" />
-                      <j-icon name="circle-check" ariaLabel="Complete" size="32" />
-                    </div>
-                  }
-                  @case ('input-mask') {
-                    <div class="j-preview-grid">
-                      <j-input-mask
-                        label="Phone number"
-                        mask="(999) 999-9999"
-                        placeholder="(555) 123-4567"
-                        [(ngModel)]="maskedPhone"
-                      />
-                      <j-input-mask
-                        label="Employee ID"
-                        mask="aa-9999"
-                        placeholder="AB-2048"
-                        [(ngModel)]="employeeId"
-                      />
-                    </div>
-                  }
-                  @case ('input-number') {
-                    <div class="j-preview-grid">
-                      <j-input-number
-                        label="Quantity"
-                        [min]="1"
-                        [max]="100"
-                        [(ngModel)]="quantity"
-                      />
-                      <j-input-number
-                        label="Budget"
-                        mode="currency"
-                        currency="USD"
-                        [(ngModel)]="budget"
-                      />
-                    </div>
-                  }
-                  @case ('input-otp') {
-                    <j-input-otp
-                      label="Verification code"
-                      [length]="6"
-                      numericOnly
-                      [(ngModel)]="otp"
-                    />
-                  }
-                  @case ('listbox') {
-                    <j-listbox label="Team" [options]="teamOptions" [(ngModel)]="selectedTeam" />
-                  }
-                  @case ('multiselect') {
-                    <j-multiselect
-                      label="Skills"
-                      [options]="skillOptions"
-                      placeholder="Select skills"
-                      [(ngModel)]="selectedSkills"
-                    />
-                  }
-                  @case ('paginator') {
-                    <j-paginator
-                      [first]="20"
-                      [rows]="10"
-                      [totalRecords]="96"
-                      [rowsPerPageOptions]="[10, 20, 50]"
-                      showCurrentPageReport
-                    />
-                  }
-                  @case ('password') {
-                    <j-password
-                      label="Password"
-                      placeholder="Enter a secure password"
-                      feedback
-                      toggleMask
-                    />
-                  }
-                  @case ('progress-spinner') {
-                    <div class="j-preview-row">
-                      <j-progress-spinner label="Loading orders" />
-                      <j-progress-spinner label="Loading report" [size]="48" [strokeWidth]="3" />
-                    </div>
-                  }
-                  @case ('rating') {
-                    <j-rating label="Product rating" [(ngModel)]="rating" />
-                  }
-                  @case ('slider') {
-                    <j-slider
-                      label="Completion"
-                      [min]="0"
-                      [max]="100"
-                      [step]="5"
-                      tooltip
-                      [(ngModel)]="completion"
-                    />
-                  }
-                  @case ('input') {
-                    <div class="j-preview-grid">
-                      <j-input label="Email" placeholder="name@example.com" />
-                      <j-input label="Search" type="search" value="orders" clearable />
-                      <j-input label="Disabled" value="Read only value" disabled />
-                      <j-input label="Email" invalid error="Enter a valid email address" />
-                    </div>
-                  }
-                  @case ('textarea') {
-                    <div class="j-preview-grid">
-                      <j-textarea
-                        label="Message"
-                        placeholder="Write a short message"
-                        showCount
-                        [maxLength]="120"
-                        [rows]="4"
-                        fullWidth
-                      />
-                      <j-textarea
-                        label="Disabled note"
-                        placeholder="Existing support note"
-                        [rows]="4"
-                        fullWidth
-                        disabled
-                      />
-                      <j-textarea
-                        label="Required bio"
-                        [rows]="4"
-                        fullWidth
-                        invalid
-                        error="Bio is required"
-                      />
-                    </div>
-                  }
-                  @case ('select') {
-                    <div class="j-preview-grid j-overlay-form-preview">
-                      <j-select
-                        label="Status"
-                        [options]="statuses"
-                        placeholder="Choose status"
-                        clearable
-                      />
-                      <j-select
-                        label="Searchable team"
-                        [options]="teams"
-                        optionLabel="name"
-                        optionValue="id"
-                        searchable
-                      />
-                      <j-select label="Loading" [options]="statuses" loading />
-                      <j-select
-                        label="Required"
-                        [options]="statuses"
-                        invalid
-                        error="Choose a status"
-                      />
-                    </div>
-                  }
-                  @case ('checkbox') {
-                    <div class="j-preview-row">
-                      <j-checkbox label="Send receipt" [(ngModel)]="checked" />
-                      <j-checkbox label="Partial selection" indeterminate />
-                      <j-checkbox label="Disabled" disabled />
-                      <j-checkbox label="Invalid" invalid error="Required" />
-                    </div>
-                  }
-                  @case ('radio') {
-                    <div class="j-preview-row">
-                      <j-radio
-                        name="plan-docs"
-                        label="Starter"
-                        value="starter"
-                        [(ngModel)]="plan"
-                      />
-                      <j-radio name="plan-docs" label="Pro" value="pro" [(ngModel)]="plan" />
-                      <j-radio
-                        name="plan-docs"
-                        label="Enterprise"
-                        value="enterprise"
-                        disabled
-                        [(ngModel)]="plan"
-                      />
-                    </div>
-                  }
-                  @case ('switch') {
-                    <div class="j-preview-row">
-                      <j-switch label="Email alerts" [(ngModel)]="enabled" />
-                      <j-switch onLabel="Published" offLabel="Draft" [(ngModel)]="published" />
-                      <j-switch label="Disabled" disabled />
-                      <j-switch label="Large" size="lg" [(ngModel)]="enabled" />
-                    </div>
-                  }
-                  @case ('button') {
-                    <div class="j-preview-stack">
-                      <div class="j-preview-row">
-                        <j-button label="Primary" />
-                        <j-button label="Secondary" severity="secondary" />
-                        <j-button label="Danger" severity="danger" />
-                        <j-button label="Outline" variant="outline" />
-                        <j-button label="Ghost" variant="ghost" />
-                      </div>
-                      <div class="j-preview-row">
-                        <j-button label="Small" size="sm" />
-                        <j-button label="Large" size="lg" />
-                        <j-button label="Saving" loading />
-                        <j-button label="Disabled" disabled />
-                      </div>
-                    </div>
-                  }
-                  @case ('icon-button') {
-                    <div class="j-preview-row">
-                      <button
-                        class="j-doc-icon-button"
-                        type="button"
-                        aria-label="Search"
-                        jTooltip="Search"
-                      >
-                        <j-icon name="search" />
-                      </button>
-                      <button
-                        class="j-doc-icon-button"
-                        type="button"
-                        aria-label="Settings"
-                        jTooltip="Settings"
-                      >
-                        <j-icon name="settings" />
-                      </button>
-                      <button
-                        class="j-doc-icon-button j-doc-icon-button--ghost"
-                        type="button"
-                        aria-label="Copy"
-                        jTooltip="Copy"
-                      >
-                        <j-icon name="copy" />
-                      </button>
-                      <button
-                        class="j-doc-icon-button"
-                        type="button"
-                        aria-label="Disabled"
-                        disabled
-                      >
-                        <j-icon name="filter" />
-                      </button>
-                    </div>
-                  }
-                  @case ('card') {
-                    <div class="j-preview-grid j-preview-grid--cards">
-                      <j-card title="Design review" subtitle="Tuesday, 10:30 AM" elevated>
-                        <p>Review navigation, spacing, and responsive behavior before release.</p>
-                        <j-button label="Open agenda" size="sm" variant="outline" />
-                      </j-card>
-                      <j-card title="Team members" subtitle="4 collaborators" bordered>
-                        <j-avatar-group [items]="avatarGroupItems" [max]="3" />
-                      </j-card>
-                      <j-card title="Compact card" subtitle="Reduced padding" compact>
-                        Reusable content container.
-                      </j-card>
-                    </div>
-                  }
-                  @case ('badge') {
-                    <div class="j-preview-row">
-                      <j-badge value="12" />
-                      <j-badge value="Active" severity="success" />
-                      <j-badge value="Warning" severity="warning" />
-                      <j-badge value="Error" severity="danger" />
-                      <j-badge value="Info" severity="info" size="lg" />
-                    </div>
-                  }
-                  @case ('tag') {
-                    <div class="j-preview-row">
-                      <j-tag label="Design" />
-                      <j-tag label="Published" severity="success" rounded />
-                      <j-tag label="Blocked" severity="danger" />
-                      <j-tag label="Filter" removable removeLabel="Remove Filter" />
-                    </div>
-                  }
-                  @case ('table') {
-                    <j-table
-                      [value]="orders"
-                      [columns]="orderColumns"
-                      striped
-                      hover
-                      [paginator]="false"
-                    />
-                  }
-                  @case ('data-grid') {
-                    <j-data-grid
-                      title="Orders"
-                      description="Sortable, filterable operational data with pagination."
-                      [value]="orders"
-                      [columns]="orderColumns"
-                      [rows]="3"
-                      [totalRecords]="orders.length"
-                      [globalFilterFields]="['order', 'customer', 'status']"
-                      [config]="tableConfig"
-                      selectionMode="checkbox"
-                      bulkActions
-                      showColumnManager
-                      showExport
-                      striped
-                      hover
-                    >
-                      <j-button jDataGridActions label="Create order" size="sm" />
-                      <j-button
-                        jDataGridBulkActions
-                        label="Archive selected"
-                        size="sm"
-                        variant="outline"
-                      />
-                    </j-data-grid>
-                  }
-                  @case ('action-menu') {
-                    <div class="j-action-menu-preview">
-                      <section>
-                        <span class="j-preview-label">Inline actions</span>
-                        <j-action-menu [actions]="rowActions" [row]="orders[0]" />
-                      </section>
-                      <section>
-                        <span class="j-preview-label">Compact popup</span>
-                        <j-action-menu
-                          popup
-                          triggerIcon="More"
-                          triggerLabel="Open order actions"
-                          [actions]="rowActions"
-                          [row]="orders[0]"
-                        />
-                      </section>
-                    </div>
-                  }
-                  @case ('column-filter') {
-                    <div class="j-preview-grid">
-                      <j-column-filter field="status" label="Status" />
-                      <j-column-filter field="customer" label="Customer" value="Acme" />
-                    </div>
-                  }
-                  @case ('filter-bar') {
-                    <div class="j-filter-bar-preview">
-                      <j-filter-bar
-                        [statuses]="statuses"
-                        showDateRange
-                        showExport
-                        showAdvancedToggle
-                        (apply)="showToast('success')"
-                      >
-                        <div jFilterBarAdvanced class="j-doc-muted">
-                          Advanced filters can host app-specific controls.
-                        </div>
-                      </j-filter-bar>
-                    </div>
-                  }
-                  @case ('metric-card') {
-                    <div class="j-preview-grid j-preview-grid--cards">
-                      <j-metric-card
-                        title="Revenue"
-                        value="$42.8k"
-                        trend="up"
-                        trendLabel="+12%"
-                        icon="$"
-                        footer="Month to date"
-                      />
-                      <j-metric-card
-                        title="Churn"
-                        value="1.8%"
-                        trend="down"
-                        trendLabel="-0.4%"
-                        icon="%"
-                        footer="Rolling 30 days"
-                      />
-                      <j-metric-card title="Loading" loading />
-                    </div>
-                  }
-                  @case ('stat-card') {
-                    <div class="j-preview-grid j-preview-grid--cards">
-                      <j-stat-card
-                        title="Open orders"
-                        value="128"
-                        trend="up"
-                        trendLabel="+18 today"
-                        icon="#"
-                        footer="Updated 4 minutes ago"
-                      />
-                      <j-stat-card
-                        title="SLA risk"
-                        value="7"
-                        trend="neutral"
-                        trendLabel="No change"
-                        icon="!"
-                        footer="Across active queues"
-                      />
-                      <j-stat-card title="Loading" loading />
-                    </div>
-                  }
-                  @case ('status-chip') {
-                    <div class="j-preview-row">
-                      <j-status-chip status="active" />
-                      <j-status-chip status="pending" />
-                      <j-status-chip status="approved" />
-                      <j-status-chip status="rejected" />
-                      <j-status-chip status="overdue" />
-                    </div>
-                  }
-                  @case ('page-header') {
-                    <j-page-header
-                      title="Orders"
-                      subtitle="Review fulfillment, exceptions, and exportable operational data."
-                      showBack
-                      [breadcrumbs]="pageHeaderBreadcrumbs"
-                      (back)="showToast('success')"
-                    >
-                      <j-button jPageActions label="Export" variant="outline" />
-                      <j-button jPageActions label="Create order" />
-                    </j-page-header>
-                  }
-                  @case ('empty-state') {
-                    <j-empty-state
-                      title="No orders found"
-                      description="Try changing filters or create a new order."
-                      icon="0"
-                    >
-                      <j-button jEmptyStateAction label="Create order" />
-                    </j-empty-state>
-                  }
-                  @case ('toast') {
-                    <div class="j-preview-stack">
-                      <div class="j-preview-row">
-                        <j-button label="Show success" (onClick)="showToast('success')" />
-                        <j-button
-                          label="Show error"
-                          severity="danger"
-                          (onClick)="showToast('error')"
-                        />
-                        <j-button
-                          label="Show warning"
-                          severity="warning"
-                          (onClick)="showToast('warning')"
-                        />
-                      </div>
-                      <j-toast position="bottom-right" />
-                    </div>
-                  }
-                  @case ('progress-bar') {
-                    <div class="j-progress-preview-list">
-                      <section>
-                        <span><strong>Upload</strong><small>64%</small></span>
-                        <j-progress-bar [value]="64" label="Upload progress" />
-                      </section>
-                      <section>
-                        <span><strong>Import</strong><small>88%</small></span>
-                        <j-progress-bar [value]="88" severity="success" label="Import progress" />
-                      </section>
-                      <section>
-                        <span><strong>Processing</strong><small>In progress</small></span>
-                        <j-progress-bar indeterminate label="Loading data" />
-                      </section>
-                    </div>
-                  }
-                  @case ('skeleton') {
-                    <div class="j-preview-grid">
-                      <j-skeleton variant="text" />
-                      <j-skeleton variant="avatar" />
-                      <j-skeleton variant="button" width="8rem" />
-                      <j-skeleton variant="card" />
-                      <j-skeleton variant="table" [rows]="3" />
-                    </div>
-                  }
-                  @case ('copy-button') {
-                    <div class="j-preview-row">
-                      <j-copy-button text="npm install jrng-ui" />
-                      <j-copy-button text="INV-2048" label="Copy ID" copiedLabel="Copied ID" />
-                      <j-copy-button text="Disabled" disabled />
-                    </div>
-                  }
-                  @case ('tabs') {
-                    <j-tabs>
-                      <j-tab header="Overview">
-                        <p>Summary content for the current record.</p>
-                      </j-tab>
-                      <j-tab header="Activity">
-                        <p>Recent updates and audit history.</p>
-                      </j-tab>
-                      <j-tab header="Settings" disabled>
-                        <p>Settings are disabled in this preview.</p>
-                      </j-tab>
-                    </j-tabs>
-                  }
-                  @case ('breadcrumb') {
-                    <j-breadcrumb [home]="breadcrumbHome" [model]="breadcrumbItems" />
-                  }
-                  @case ('menu') {
-                    <j-menu [model]="menuItems" ariaLabel="Project actions" />
-                  }
-                  @case ('responsive-sidebar') {
-                    <div class="j-sidebar-demo">
-                      <j-responsive-sidebar title="Workspace" [open]="true">
-                        <nav class="j-sidebar-demo__nav" aria-label="Preview sidebar">
-                          <a>Dashboard</a>
-                          <a class="is-active">Projects</a>
-                          <a>Settings</a>
-                        </nav>
-                      </j-responsive-sidebar>
-                    </div>
-                  }
-                  @case ('dialog') {
-                    <div class="j-preview-row">
-                      <j-button label="Open dialog" (onClick)="dialogOpen.set(true)" />
-                      <j-dialog
-                        header="Edit project"
-                        [visible]="dialogOpen()"
-                        (visibleChange)="dialogOpen.set($event)"
-                      >
-                        <div class="j-dialog-demo">
-                          <j-input label="Project name" value="JRNG UI Docs" />
-                          <div class="j-preview-row">
-                            <j-button
-                              label="Cancel"
-                              variant="ghost"
-                              (onClick)="dialogOpen.set(false)"
-                            />
-                            <j-button label="Save" (onClick)="dialogOpen.set(false)" />
-                          </div>
-                        </div>
-                      </j-dialog>
-                    </div>
-                  }
-                  @case ('confirm-dialog') {
-                    <div class="j-preview-row">
-                      <j-button label="Confirm save" (onClick)="openConfirm()" />
-                      <j-button
-                        label="Delete record"
-                        severity="danger"
-                        (onClick)="openConfirm('danger')"
-                      />
-                    </div>
-                  }
-                  @case ('drawer') {
-                    <div class="j-preview-row">
-                      <j-button label="Open drawer" (onClick)="drawerOpen.set(true)" />
-                      <j-drawer
-                        header="Filters"
-                        styleClass="j-doc-preview-drawer"
-                        [modal]="false"
-                        contained
-                        [visible]="drawerOpen()"
-                        (openChange)="drawerOpen.set($event)"
-                      >
-                        <div class="j-preview-stack">
-                          <j-input label="Search" type="search" clearable />
-                          <j-select label="Status" [options]="statuses" />
-                        </div>
-                      </j-drawer>
-                    </div>
-                  }
-                  @case ('tooltip') {
-                    <div class="j-preview-row">
-                      <button
-                        class="j-doc-preview-button"
-                        type="button"
-                        jTooltip="Refresh data"
-                        tooltipPosition="top"
-                      >
-                        Hover or focus me
-                      </button>
-                      <button
-                        class="j-doc-icon-button"
-                        type="button"
-                        aria-label="Settings"
-                        jTooltip="Settings"
-                        tooltipPosition="right"
-                      >
-                        <j-icon name="settings" />
-                      </button>
-                    </div>
-                  }
-                  @case ('popover') {
-                    <div class="j-preview-row">
-                      <button
-                        #popoverTrigger
-                        class="j-doc-preview-button"
-                        type="button"
-                        (click)="previewPopover.toggle(popoverTrigger)"
-                      >
-                        Toggle popover
-                      </button>
-                      <j-popover
-                        #previewPopover
-                        [target]="popoverTrigger"
-                        position="bottom"
-                        [dismissable]="false"
-                      >
-                        <strong>Project health</strong>
-                        <p>Build is passing and docs coverage improved.</p>
-                      </j-popover>
-                    </div>
-                  }
-                  @case ('ripple') {
-                    <div class="j-preview-row">
-                      <button class="j-doc-preview-button" type="button" jRipple>
-                        Ripple button
-                      </button>
-                      <button class="j-doc-preview-button" type="button" [jRipple]="false">
-                        Disabled ripple
-                      </button>
-                    </div>
-                  }
-                  @case ('tour-guide') {
-                    <div class="j-preview-stack">
-                      <div class="j-preview-row">
-                        <button
-                          id="createBtn"
-                          class="j-doc-preview-button"
-                          type="button"
-                          jTourStep="create-button"
-                          tourTitle="Create"
-                          tourDescription="Click here to create a new record."
-                        >
-                          Create
-                        </button>
-                        <button
-                          class="j-doc-preview-button"
-                          type="button"
-                          jTourStep="filter-button"
-                          tourTitle="Filter"
-                          tourDescription="Narrow the table to the records that matter."
-                        >
-                          Filter
-                        </button>
-                      </div>
-                      <j-button label="Start guided tour" (onClick)="startPreviewTour()" />
-                    </div>
-                  }
-                  @case ('timeline') {
-                    <j-timeline [value]="timelineItems" />
-                  }
-                  @case ('file-upload') {
-                    <div class="j-preview-stack">
-                      <j-file-upload
-                        title="Upload documents"
-                        description="Drag files here or choose from your device."
-                        multiple
-                      />
-                      <j-file-preview
-                        fileName="statement.pdf"
-                        [fileSize]="245760"
-                        description="Uploaded 2 minutes ago"
-                        url="#"
-                      />
-                    </div>
-                  }
-                  @case ('file-preview') {
-                    <div class="j-preview-row">
-                      <j-file-preview
-                        fileName="statement.pdf"
-                        [fileSize]="245760"
-                        description="Uploaded 2 minutes ago"
-                        url="#"
-                      />
-                      <j-file-preview
-                        fileName="avatar.png"
-                        [fileSize]="56320"
-                        description="Image asset"
-                        showTypeLabel
-                        typeLabel="PNG image"
-                      />
-                    </div>
-                  }
-                  @case ('avatar-group') {
-                    <j-avatar-group [items]="avatarGroupItems" [max]="3" ariaLabel="Project team" />
-                  }
-                  @case ('container') {
-                    <j-container>
-                      <j-card title="Contained content" subtitle="Max-width layout helper" bordered>
-                        <p>
-                          Container keeps page content aligned with consistent horizontal rhythm.
-                        </p>
-                      </j-card>
-                    </j-container>
-                  }
-                  @case ('fieldset') {
-                    <j-fieldset legend="Billing address" toggleable>
-                      <div class="j-preview-grid">
-                        <j-input label="Street" placeholder="123 Market St" />
-                        <j-input label="City" placeholder="San Francisco" />
-                      </div>
-                    </j-fieldset>
-                  }
-                  @case ('float-label') {
-                    <j-float-label label="Email address" fullWidth>
-                      <j-input type="email" [(ngModel)]="floatEmail" fullWidth />
-                    </j-float-label>
-                  }
-                  @case ('form-field') {
-                    <j-form-field
-                      label="Workspace name"
-                      hint="Use a short, recognizable team name."
-                    >
-                      <j-input placeholder="Operations" />
-                    </j-form-field>
-                  }
-                  @case ('icon-field') {
-                    <j-icon-field prefixIcon="search" suffixIcon="filter" fullWidth>
-                      <j-input placeholder="Search projects" fullWidth />
-                    </j-icon-field>
-                  }
-                  @case ('input-group') {
-                    <j-input-group prefixAddon="$" suffixAddon=".00">
-                      <j-input placeholder="Amount" />
-                    </j-input-group>
-                  }
-                  @case ('input-icon') {
-                    <div class="j-preview-row">
-                      <j-input-icon icon="search" />
-                      <j-input-icon icon="calendar" position="right" />
-                    </div>
-                  }
-                  @case ('panel') {
-                    <j-panel header="Project health" toggleable>
-                      The latest build passed and documentation coverage is improving.
-                    </j-panel>
-                  }
-                  @case ('radio-group') {
-                    <j-radio-group
-                      label="Plan"
-                      [options]="radioGroupOptions"
-                      direction="horizontal"
-                      [(ngModel)]="plan"
-                    />
-                  }
-                  @case ('select-button') {
-                    <j-select-button
-                      label="View mode"
-                      [options]="viewModes"
-                      [(ngModel)]="viewMode"
-                    />
-                  }
-                  @case ('section-header') {
-                    <j-section-header
-                      title="Projects"
-                      description="Track active work and ownership."
-                    >
-                      <j-button label="New project" />
-                    </j-section-header>
-                  }
-                  @case ('section-footer') {
-                    <j-section-footer>
-                      <j-button label="Cancel" variant="ghost" />
-                      <j-button label="Save changes" />
-                    </j-section-footer>
-                  }
-                  @case ('stack') {
-                    <j-stack direction="horizontal" align="center" gap="var(--j-spacing-3)">
-                      <j-badge value="New" />
-                      <span>Composable spacing primitive</span>
-                      <j-button label="Open" size="sm" />
-                    </j-stack>
-                  }
-                  @case ('toolbar') {
-                    <j-toolbar>
-                      <j-button label="New" />
-                      <j-button label="Export" variant="outline" />
-                      <j-button label="Archive" variant="ghost" />
-                    </j-toolbar>
-                  }
-                  @case ('toggle-button') {
-                    <j-toggle-button onLabel="Published" offLabel="Draft" [(ngModel)]="published" />
-                  }
-                  @case ('loader') {
-                    <div class="j-loader-preview-grid">
-                      <section>
-                        <j-loader variant="dots" label="Loading report" /><span>Dots</span>
-                      </section>
-                      <section>
-                        <j-loader variant="bars" label="Syncing data" /><span>Bars</span>
-                      </section>
-                      <section>
-                        <j-loader variant="pulse" label="Preparing view" /><span>Pulse</span>
-                      </section>
-                    </div>
-                  }
-                  @case ('empty-page') {
-                    <j-empty-page
-                      title="No results"
-                      description="Try changing the filters."
-                      icon="search"
-                      ><j-button label="Clear filters"
-                    /></j-empty-page>
-                  }
-                  @case ('error-page') {
-                    <j-error-page
-                      code="500"
-                      title="Something went wrong"
-                      description="The page could not be loaded."
-                      ><j-button label="Try again"
-                    /></j-error-page>
-                  }
-                  @case ('maintenance-page') {
-                    <j-maintenance-page
-                      title="Maintenance in progress"
-                      description="The application will be back soon."
-                      detail="Estimated recovery: 20 minutes"
-                      ><j-button label="View system status" variant="outline"
-                    /></j-maintenance-page>
-                  }
-                  @case ('meter-group') {
-                    <j-meter-group [value]="meterSegments" />
-                  }
-                  @case ('sparkline') {
-                    <div class="j-preview-row">
-                      <j-sparkline [value]="sparklineValues" ariaLabel="Revenue trend" />
-                      <j-sparkline [value]="sparklineValues" type="bar" ariaLabel="Volume trend" />
-                    </div>
-                  }
-                  @case ('app-shell') {
-                    <div class="j-layout-preview-frame">
-                      <j-app-shell styleClass="j-doc-compact-shell">
-                        <strong jShellHeader>Workspace</strong>
-                        <nav jShellSidebar class="j-preview-mini-nav">
-                          <span class="is-active">Overview</span><span>Projects</span
-                          ><span>Settings</span>
-                        </nav>
-                        <j-card title="Dashboard" subtitle="Application shell content" bordered />
-                        <small jShellFooter>JRNG UI workspace</small>
-                      </j-app-shell>
-                    </div>
-                  }
-                  @case ('auth-layout') {
-                    <div class="j-layout-preview-frame">
-                      <j-auth-layout variant="centered" styleClass="j-doc-compact-auth">
-                        <div class="j-preview-stack">
-                          <strong>Welcome back</strong>
-                          <j-input label="Email" type="email" placeholder="name@example.com" />
-                          <j-button label="Sign in" />
-                        </div>
-                      </j-auth-layout>
-                    </div>
-                  }
-                  @case ('bottom-sheet') {
-                    <div class="j-preview-row">
-                      <j-button label="Open bottom sheet" (onClick)="bottomSheetVisible = true" />
-                      <j-bottom-sheet
-                        header="Project actions"
-                        [(visible)]="bottomSheetVisible"
-                        [modal]="false"
-                      >
-                        <div class="j-preview-stack">
-                          <j-button label="Duplicate" variant="outline" />
-                          <j-button label="Archive" variant="ghost" />
-                        </div>
-                      </j-bottom-sheet>
-                    </div>
-                  }
-                  @case ('calendar') {
-                    <div class="j-calendar-preview">
-                      <j-calendar [value]="calendarDate" (dateSelect)="calendarDate = $event" />
-                    </div>
-                  }
-                  @case ('calendar-scheduler') {
-                    <j-calendar-scheduler [events]="schedulerEvents" ariaLabel="Team schedule" />
-                  }
-                  @case ('carousel') {
-                    <j-carousel [value]="carouselItems" [visibleItems]="2" autoplay />
-                  }
-                  @case ('chart') {
-                    <div class="j-live-chart-preview-grid">
-                      <section>
-                        <strong>Monthly signups</strong>
-                        <j-chart type="bar" [data]="chartData" ariaLabel="Monthly signups" />
-                      </section>
-                      <section>
-                        <strong>Active users</strong>
-                        <j-chart type="line" [data]="lineChartData" ariaLabel="Active users" />
-                      </section>
-                    </div>
-                  }
-                  @case ('chips') {
-                    <j-chips label="Skills" placeholder="Add a skill" [(ngModel)]="tags" />
-                  }
-                  @case ('column') {
-                    <j-table [value]="orders" [paginator]="false">
-                      <j-column field="order" header="Order" [sortable]="true" />
-                      <j-column field="customer" header="Customer" />
-                      <j-column field="status" header="Status" />
-                    </j-table>
-                  }
-                  @case ('combobox') {
-                    <div class="j-overlay-form-preview">
-                      <j-combobox
-                        label="Searchable customer"
-                        [options]="customerSuggestions"
-                        placeholder="Choose or type a customer"
-                        [(ngModel)]="selectedCustomer"
-                      />
-                      <p class="j-preview-note">
-                        Select an option or enter a permitted custom value.
-                      </p>
-                    </div>
-                  }
-                  @case ('command-palette') {
-                    <div class="j-preview-row">
-                      <j-button
-                        label="Open command palette"
-                        (onClick)="commandPaletteOpen = true"
-                      />
-                      <j-command-palette
-                        [commands]="commands"
-                        [(visible)]="commandPaletteOpen"
-                        placeholder="Search commands"
-                      />
-                    </div>
-                  }
-                  @case ('confirm-popup') {
-                    <div class="j-preview-row">
-                      <j-button label="Confirm archive" (onClick)="openConfirmPopup($event)" />
-                      <j-confirm-popup />
-                    </div>
-                  }
-                  @case ('context-menu') {
-                    <div #contextTarget class="j-context-preview-target" tabindex="0">
-                      Right-click this area
-                    </div>
-                    <j-context-menu [target]="contextTarget" [model]="menubarItems" />
-                  }
-                  @case ('dashboard-layout') {
-                    <div class="j-layout-preview-frame">
-                      <j-dashboard-layout styleClass="j-doc-compact-dashboard">
-                        <section class="j-dashboard-preview-heading">
-                          <span>Operations overview</span><strong>Weekly performance</strong>
-                        </section>
-                        <div class="j-dashboard-preview-metrics">
-                          <j-stat-card label="Revenue" value="$42.8k" />
-                          <j-stat-card label="Orders" value="1,284" />
-                        </div>
-                        <section class="j-dashboard-preview-activity">
-                          <strong>Recent activity</strong>
-                          <span>12 orders are ready for review</span>
-                        </section>
-                      </j-dashboard-layout>
-                    </div>
-                  }
-                  @case ('data-view') {
-                    <j-data-view
-                      [value]="dataViewItems"
-                      layout="grid"
-                      [rows]="3"
-                      [paginator]="false"
-                    />
-                  }
-                  @case ('date-range-picker') {
-                    <div class="j-overlay-form-preview">
-                      <j-date-range-picker label="Campaign window" [(ngModel)]="dateRange" />
-                    </div>
-                  }
-                  @case ('dropzone') {
-                    <j-dropzone accept=".csv,.xlsx" multiple title="Import records" />
-                  }
-                  @case ('dynamic-dialog') {
-                    <div class="j-preview-row">
-                      <j-button label="Open dynamic dialog" (onClick)="openDynamicDialog()" />
-                      <j-dynamic-dialog />
-                    </div>
-                  }
-                  @case ('editor') {
-                    <j-editor
-                      label="Description"
-                      placeholder="Write a short summary"
-                      hint="Select text, then use formatting, alignment, list, link, image, undo, or redo controls."
-                      [(ngModel)]="editorValue"
-                    />
-                  }
-                  @case ('gallery') {
-                    <div class="j-preview-stack">
-                      <div class="j-preview-row">
-                        @for (animation of galleryAnimations; track animation) {
-                          <button
-                            type="button"
-                            class="j-doc-preview-button"
-                            [class.is-active]="galleryAnimation === animation"
-                            (click)="galleryAnimation = animation"
+              <div class="j-doc-opening-section">
+                <h3>{{ example.name }}</h3>
+                <p>{{ example.details }}</p>
+              </div>
+              <div class="j-preview-card" [attr.id]="'component-live-preview-' + example.key">
+                <div
+                  class="j-preview-surface"
+                  [class.j-preview-surface--overlay]="overlayPreviewSlugs.has(doc().slug)"
+                  [class.j-preview-surface--status]="statusPreviewSlugs.has(doc().slug)"
+                >
+                  @defer {
+                    @switch (doc().slug) {
+                      @case ('accordion') {
+                        <j-accordion [variant]="accordionVariants[example.index]" [activeIndex]="0">
+                          <j-accordion-panel header="Account details"
+                            >Update profile and contact information.</j-accordion-panel
                           >
-                            {{ animation }}
-                          </button>
-                        }
-                      </div>
-                      <j-gallery [value]="galleryItems" [animation]="galleryAnimation" />
-                    </div>
-                  }
-                  @case ('gantt') {
-                    <j-gantt [tasks]="ganttTasks" scale="week" />
-                  }
-                  @case ('grid-layout') {
-                    <j-grid-layout [columns]="3" minItemWidth="10rem">
-                      <j-card title="Design" bordered /><j-card title="Build" bordered /><j-card
-                        title="Ship"
-                        bordered
-                      />
-                    </j-grid-layout>
-                  }
-                  @case ('ifta-label') {
-                    <j-ifta-label label="Email address" fullWidth>
-                      <j-input value="avery@example.com" />
-                    </j-ifta-label>
-                  }
-                  @case ('image') {
-                    <j-image
-                      [src]="previewImage"
-                      alt="Abstract product preview"
-                      width="18rem"
-                      preview
-                    />
-                  }
-                  @case ('image-preview') {
-                    <div class="j-preview-row">
-                      <j-button label="Open image preview" (onClick)="imagePreviewOpen = true" />
-                      <j-image-preview
-                        [src]="previewImage"
-                        alt="Abstract product preview"
-                        [(visible)]="imagePreviewOpen"
-                      />
-                    </div>
-                  }
-                  @case ('kanban') {
-                    <j-kanban
-                      [value]="kanbanPreviewColumns"
-                      (reorder)="handleKanbanReorder($event)"
-                      (addCard)="addKanbanCard($event)"
-                      (removeCard)="removeKanbanCard($event)"
-                    />
-                  }
-                  @case ('knob') {
-                    <j-knob label="Completion" [(ngModel)]="completion" />
-                  }
-                  @case ('mega-menu') {
-                    <j-mega-menu [model]="megaMenuItems" ariaLabel="Product navigation" />
-                  }
-                  @case ('menubar') {
-                    <j-menubar [model]="menubarItems" ariaLabel="Application menu" />
-                  }
-                  @case ('notification-center') {
-                    <div class="j-preview-row">
-                      <button
-                        #notificationTrigger
-                        class="j-doc-preview-button"
-                        type="button"
-                        (click)="notificationOpen = !notificationOpen"
-                      >
-                        Notifications
-                      </button>
-                      <j-notification-center
-                        [target]="notificationTrigger"
-                        [(visible)]="notificationOpen"
-                      />
-                    </div>
-                  }
-                  @case ('order-list') {
-                    <j-order-list header="Priorities" [value]="transferSource" filter />
-                  }
-                  @case ('org-chart') {
-                    <j-org-chart [value]="organization" />
-                  }
-                  @case ('overlay-panel') {
-                    <div class="j-preview-row">
-                      <button
-                        #overlayTrigger
-                        class="j-doc-preview-button"
-                        type="button"
-                        (click)="previewOverlay.toggle(overlayTrigger)"
-                      >
-                        Toggle details
-                      </button>
-                      <j-overlay-panel #previewOverlay>
-                        <strong>Project details</strong>
-                        <p>Owned by the design systems team.</p>
-                      </j-overlay-panel>
-                    </div>
-                  }
-                  @case ('pick-list') {
-                    <j-pick-list [source]="transferSource" [target]="transferTarget" filter />
-                  }
-                  @case ('sidebar-layout') {
-                    <div class="j-layout-preview-frame">
-                      <j-sidebar-layout styleClass="j-doc-compact-sidebar-layout">
-                        <nav jSidebar class="j-preview-mini-nav">
-                          <span class="is-active">Inbox</span><span>Archive</span>
-                        </nav>
-                        <j-card title="Inbox" subtitle="12 unread messages" bordered />
-                      </j-sidebar-layout>
-                    </div>
-                  }
-                  @case ('sidebar-nav') {
-                    <j-sidebar-nav [model]="menuItems" activeKey="Open" />
-                  }
-                  @case ('sort-icon') {
-                    <div class="j-preview-row">
-                      <span>Name <j-sort-icon [order]="1" /></span>
-                      <span>Created <j-sort-icon [order]="-1" /></span>
-                      <span>Status <j-sort-icon [order]="0" /></span>
-                    </div>
-                  }
-                  @case ('splitter') {
-                    <j-splitter styleClass="j-doc-splitter">
-                      <section>Navigation panel</section>
-                      <section>Content panel</section>
-                    </j-splitter>
-                  }
-                  @case ('stepper') {
-                    <j-stepper [items]="stepperItems" [activeIndex]="1" />
-                  }
-                  @case ('tab') {
-                    <j-tabs>
-                      <j-tab header="Overview">Overview content</j-tab>
-                      <j-tab header="Activity">Activity content</j-tab>
-                    </j-tabs>
-                  }
-                  @case ('table-empty-state') {
-                    <j-table-empty-state title="No orders" message="Try adjusting your filters." />
-                  }
-                  @case ('table-skeleton') {
-                    <j-table-skeleton [rows]="4" [columns]="4" />
-                  }
-                  @case ('tiered-menu') {
-                    <j-tiered-menu [model]="menuItems" />
-                  }
-                  @case ('time-picker') {
-                    <j-time-picker label="Meeting time" [(ngModel)]="meetingTime" />
-                  }
-                  @case ('topbar') {
-                    <j-topbar [model]="menuItems" activeKey="Open">
-                      <strong jTopbarBrand>JRNG UI</strong>
-                    </j-topbar>
-                  }
-                  @case ('transfer-list') {
-                    <j-transfer-list
-                      [source]="transferSource"
-                      [target]="transferTarget"
-                      sourceHeader="Available fields"
-                      targetHeader="Visible fields"
-                      filter
-                    />
-                  }
-                  @case ('tree') {
-                    <j-tree [value]="treeNodes" filter ariaLabel="Workspace folders" />
-                  }
-                  @case ('tree-table') {
-                    <j-tree-table
-                      [value]="treeNodes"
-                      [columns]="treeColumns"
-                      ariaLabel="Project hierarchy"
-                    />
-                  }
-                  @case ('video-player') {
-                    <j-video-player
-                      src="https://www.youtube.com/watch?v=M7lc1UVf-VE"
-                      caption="YouTube embed example"
-                    />
-                  }
-                  @case ('virtual-scroller') {
-                    <j-virtual-scroller
-                      [items]="virtualItems"
-                      [itemSize]="40"
-                      [viewportItems]="5"
-                      height="12rem"
-                    />
-                  }
-                  @case ('formatting') {
-                    <div class="j-format-demo">
-                      <span
-                        >Date/time <strong>{{ sampleDate | jDateTimeFormat }}</strong></span
-                      >
-                      <span
-                        >Currency <strong>{{ 42800 | jCurrencyFormat: 'USD' }}</strong></span
-                      >
-                      <span
-                        >Percent <strong>{{ 0.128 | jPercentFormat }}</strong></span
-                      >
-                      <span
-                        >File size <strong>{{ 2457600 | jFileSizeFormat }}</strong></span
-                      >
-                      <span
-                        >Truncate <strong>{{ longText | jTruncate: 36 }}</strong></span
-                      >
-                    </div>
-                  }
-                  @default {
-                    <div class="j-generated-component-preview">
-                      <header>
-                        <span class="j-doc-icon"><j-icon [name]="doc().icon" /></span>
-                        <div>
-                          <strong>{{ doc().name }} preview</strong>
-                          <p>
-                            Generated preview built from the public selector and import metadata.
-                            Use the code tab for the exact starter snippet.
+                          <j-accordion-panel header="Disabled section" disabled
+                            >Unavailable content.</j-accordion-panel
+                          >
+                        </j-accordion>
+                      }
+                      @case ('accordion-panel') {
+                        <j-accordion [activeIndex]="0">
+                          <j-accordion-panel header="Project summary"
+                            >This panel is expanded by default.</j-accordion-panel
+                          >
+                          <j-accordion-panel header="Team members"
+                            >Panel content can contain any Angular template.</j-accordion-panel
+                          >
+                        </j-accordion>
+                      }
+                      @case ('autocomplete') {
+                        <div class="j-overlay-form-preview">
+                          <j-autocomplete
+                            label="Customer"
+                            [suggestions]="autocompleteSuggestions"
+                            placeholder="Type a customer name"
+                            (completeMethod)="filterCustomerSuggestions($event)"
+                          />
+                          <p class="j-preview-note">
+                            Type “Acme” or “Northwind” to filter suggestions.
                           </p>
                         </div>
-                      </header>
-
-                      <div
-                        class="j-generated-component-preview__sample"
-                        [attr.data-category]="doc().category"
-                      >
-                        <div class="j-generated-preview-card">
-                          <div class="j-generated-preview-card__header">
-                            <span class="j-generated-preview-card__icon">
-                              <j-icon [name]="doc().icon" />
-                            </span>
+                      }
+                      @case ('avatar') {
+                        <div class="j-preview-row">
+                          @if (example.key === 'zoom') {
+                            <app-avatar-zoom-demo />
+                          } @else {
+                            @switch (example.key) {
+                              @case ('character') {
+                                <j-avatar initials="A" ariaLabel="Avery" />
+                              }
+                              @case ('icon') {
+                                <j-avatar ariaLabel="Unassigned user"
+                                  ><j-icon name="user" aria-hidden="true"
+                                /></j-avatar>
+                              }
+                              @case ('image') {
+                                <j-avatar
+                                  image="/assets/avatars/avery.svg"
+                                  label="Avery Reed"
+                                  size="lg"
+                                />
+                              }
+                              @case ('square') {
+                                <j-avatar
+                                  initials="AR"
+                                  ariaLabel="Avery Reed"
+                                  shape="square"
+                                  size="lg"
+                                />
+                              }
+                              @case ('sizes') {
+                                <j-avatar initials="AR" ariaLabel="Avery Reed" size="sm" /><j-avatar
+                                  initials="AR"
+                                  ariaLabel="Avery Reed"
+                                /><j-avatar initials="AR" ariaLabel="Avery Reed" size="lg" />
+                              }
+                              @case ('colors') {
+                                <j-avatar
+                                  initials="AR"
+                                  ariaLabel="Avery Reed"
+                                  style="--j-color-surface-subtle: var(--j-color-primary-soft); --j-color-text: var(--j-color-primary)"
+                                />
+                              }
+                              @case ('status') {
+                                <j-avatar
+                                  initials="AR"
+                                  ariaLabel="Avery Reed, online"
+                                  status="online"
+                                /><j-avatar
+                                  initials="MK"
+                                  ariaLabel="Morgan Kim, away"
+                                  status="away"
+                                /><j-avatar
+                                  initials="JL"
+                                  ariaLabel="Jordan Lee, offline"
+                                  status="offline"
+                                />
+                              }
+                              @case ('badge') {
+                                <span class="j-avatar-doc-badge"
+                                  ><j-avatar
+                                    image="/assets/avatars/avery.svg"
+                                    label="Avery Reed" /><j-badge value="4" severity="danger"
+                                /></span>
+                              }
+                              @case ('group') {
+                                <j-avatar-group
+                                  [items]="avatarPeople"
+                                  [max]="3"
+                                  ariaLabel="Project team"
+                                />
+                              }
+                              @case ('overflow') {
+                                <j-avatar-group
+                                  [items]="avatarPeople"
+                                  [max]="2"
+                                  ariaLabel="Project team, three more members"
+                                />
+                              }
+                              @case ('profile') {
+                                <div class="j-profile-avatar-example">
+                                  <j-avatar
+                                    image="/assets/avatars/avery.svg"
+                                    label="Avery Reed"
+                                    size="lg"
+                                    canZoom
+                                  />
+                                  <div>
+                                    <strong>Avery Reed</strong><span>Product designer</span>
+                                  </div>
+                                </div>
+                              }
+                              @case ('comment') {
+                                <div class="j-profile-avatar-example">
+                                  <j-avatar image="/assets/avatars/morgan.svg" label="Morgan Kim" />
+                                  <div>
+                                    <strong>Morgan Kim</strong
+                                    ><span>Updated the release checklist.</span>
+                                  </div>
+                                </div>
+                              }
+                              @case ('team') {
+                                <j-avatar-group
+                                  [items]="avatarPeople"
+                                  [max]="4"
+                                  ariaLabel="Assigned team"
+                                />
+                              }
+                              @case ('fallback') {
+                                <j-avatar
+                                  image="/assets/avatars/missing.svg"
+                                  label="Avery Reed"
+                                  initials="AR"
+                                />
+                              }
+                              @case ('clickable') {
+                                <j-avatar
+                                  image="/assets/avatars/avery.svg"
+                                  label="Avery Reed"
+                                  canZoom
+                                  [zoomOverlay]="false"
+                                  zoomAriaLabel="Open Avery Reed profile"
+                                />
+                              }
+                              @case ('static') {
+                                <j-avatar
+                                  image="/assets/avatars/avery.svg"
+                                  label="Avery Reed"
+                                  size="lg"
+                                />
+                              }
+                              @default {
+                                <j-avatar initials="AR" ariaLabel="Avery Reed" />
+                              }
+                            }
+                          }
+                        </div>
+                      }
+                      @case ('chip') {
+                        <div class="j-preview-row">
+                          <j-chip label="Design" />
+                          <j-chip label="Approved" severity="success" />
+                          <j-chip
+                            label="Removable filter"
+                            removable
+                            removeAriaLabel="Remove filter"
+                          />
+                        </div>
+                      }
+                      @case ('color-picker') {
+                        <div class="j-overlay-form-preview j-overlay-form-preview--compact">
+                          <j-color-picker
+                            label="Brand colour"
+                            [(ngModel)]="brandColor"
+                            [presetColors]="brandPresets"
+                            clearable
+                          />
+                        </div>
+                      }
+                      @case ('date-picker') {
+                        <div class="j-preview-grid j-overlay-form-preview">
+                          <j-date-picker
+                            label="Due date"
+                            placeholder="Choose a date"
+                            [(ngModel)]="dueDate"
+                          />
+                          <j-date-picker
+                            label="Date range"
+                            selectionMode="range"
+                            placeholder="Choose dates"
+                            [presets]="datePresets"
+                            [(ngModel)]="pickerRange"
+                          />
+                        </div>
+                      }
+                      @case ('divider') {
+                        <div class="j-preview-stack">
+                          <span>Profile details</span>
+                          <j-divider />
+                          <span>Notification preferences</span>
+                        </div>
+                      }
+                      @case ('icon') {
+                        <div class="j-preview-row">
+                          <j-icon name="search" ariaLabel="Search" />
+                          <j-icon name="settings" ariaLabel="Settings" size="24" />
+                          <j-icon name="circle-check" ariaLabel="Complete" size="32" />
+                        </div>
+                      }
+                      @case ('input-mask') {
+                        <div class="j-preview-grid">
+                          <j-input-mask
+                            label="Phone number"
+                            mask="(999) 999-9999"
+                            placeholder="(555) 123-4567"
+                            [(ngModel)]="maskedPhone"
+                          />
+                          <j-input-mask
+                            label="Employee ID"
+                            mask="aa-9999"
+                            placeholder="AB-2048"
+                            [(ngModel)]="employeeId"
+                          />
+                        </div>
+                      }
+                      @case ('input-number') {
+                        <div class="j-preview-grid">
+                          <j-input-number
+                            label="Quantity"
+                            [min]="1"
+                            [max]="100"
+                            [(ngModel)]="quantity"
+                          />
+                          <j-input-number
+                            label="Budget"
+                            mode="currency"
+                            currency="USD"
+                            [(ngModel)]="budget"
+                          />
+                        </div>
+                      }
+                      @case ('input-otp') {
+                        <j-input-otp
+                          label="Verification code"
+                          [length]="6"
+                          numericOnly
+                          [(ngModel)]="otp"
+                        />
+                      }
+                      @case ('listbox') {
+                        <j-listbox
+                          label="Team"
+                          [options]="teamOptions"
+                          [(ngModel)]="selectedTeam"
+                        />
+                      }
+                      @case ('multiselect') {
+                        <j-multiselect
+                          label="Skills"
+                          [options]="skillOptions"
+                          placeholder="Select skills"
+                          [(ngModel)]="selectedSkills"
+                        />
+                      }
+                      @case ('paginator') {
+                        <j-paginator
+                          [variant]="paginatorVariants[example.index]"
+                          [first]="20"
+                          [rows]="10"
+                          [totalRecords]="96"
+                          [rowsPerPageOptions]="[10, 20, 50]"
+                          showCurrentPageReport
+                        />
+                      }
+                      @case ('password') {
+                        <j-password
+                          label="Password"
+                          placeholder="Enter a secure password"
+                          feedback
+                          toggleMask
+                        />
+                      }
+                      @case ('progress-spinner') {
+                        <div class="j-preview-row">
+                          <j-progress-spinner label="Loading orders" />
+                          <j-progress-spinner
+                            label="Loading report"
+                            [size]="48"
+                            [strokeWidth]="3"
+                          />
+                        </div>
+                      }
+                      @case ('rating') {
+                        <j-rating label="Product rating" [(ngModel)]="rating" />
+                      }
+                      @case ('slider') {
+                        <j-slider
+                          label="Completion"
+                          [min]="0"
+                          [max]="100"
+                          [step]="5"
+                          tooltip
+                          [(ngModel)]="completion"
+                        />
+                      }
+                      @case ('input') {
+                        <j-input
+                          label="Email"
+                          placeholder="name@example.com"
+                          [variant]="inputVariants[example.index]"
+                        />
+                      }
+                      @case ('textarea') {
+                        <j-textarea
+                          label="Message"
+                          placeholder="Write a short message"
+                          [variant]="inputVariants[example.index]"
+                          showCount
+                          [maxLength]="120"
+                          [rows]="4"
+                          fullWidth
+                        />
+                      }
+                      @case ('select') {
+                        <div class="j-preview-grid j-overlay-form-preview">
+                          <j-select
+                            label="Status"
+                            [options]="statuses"
+                            placeholder="Choose status"
+                            clearable
+                          />
+                          <j-select
+                            label="Searchable team"
+                            [options]="teams"
+                            optionLabel="name"
+                            optionValue="id"
+                            searchable
+                          />
+                          <j-select label="Loading" [options]="statuses" loading />
+                          <j-select
+                            label="Required"
+                            [options]="statuses"
+                            invalid
+                            error="Choose a status"
+                          />
+                        </div>
+                      }
+                      @case ('checkbox') {
+                        <div class="j-preview-row">
+                          <j-checkbox label="Send receipt" [(ngModel)]="checked" />
+                          <j-checkbox label="Partial selection" indeterminate />
+                          <j-checkbox label="Disabled" disabled />
+                          <j-checkbox label="Invalid" invalid error="Required" />
+                        </div>
+                      }
+                      @case ('radio') {
+                        <div class="j-preview-row">
+                          <j-radio
+                            name="plan-docs"
+                            label="Starter"
+                            value="starter"
+                            [(ngModel)]="plan"
+                          />
+                          <j-radio name="plan-docs" label="Pro" value="pro" [(ngModel)]="plan" />
+                          <j-radio
+                            name="plan-docs"
+                            label="Enterprise"
+                            value="enterprise"
+                            disabled
+                            [(ngModel)]="plan"
+                          />
+                        </div>
+                      }
+                      @case ('switch') {
+                        <div class="j-preview-row">
+                          <j-switch label="Email alerts" [(ngModel)]="enabled" />
+                          <j-switch onLabel="Published" offLabel="Draft" [(ngModel)]="published" />
+                          <j-switch label="Disabled" disabled />
+                          <j-switch label="Large" size="lg" [(ngModel)]="enabled" />
+                        </div>
+                      }
+                      @case ('button') {
+                        @if (example.key === 'basic') {
+                          <app-button-basic-demo />
+                        } @else if (example.key === 'group') {
+                          <div class="j-preview-row">
+                            <j-button label="Save" /><j-button
+                              label="Preview"
+                              variant="outline"
+                            /><j-button label="Cancel" variant="ghost" />
+                          </div>
+                        } @else if (example.key === 'toolbar') {
+                          <j-toolbar
+                            ><j-button label="New" icon="plus" /><j-button
+                              label="Export"
+                              variant="outline" /><j-button
+                              icon="settings"
+                              iconOnly
+                              ariaLabel="Toolbar settings"
+                              variant="ghost"
+                          /></j-toolbar>
+                        } @else if (example.key === 'form') {
+                          <form class="j-preview-row">
+                            <j-button label="Submit" type="submit" /><j-button
+                              label="Reset"
+                              type="reset"
+                              variant="ghost"
+                            />
+                          </form>
+                        } @else if (example.key === 'severity') {
+                          <div class="j-preview-row">
+                            <j-button label="Primary" /><j-button
+                              label="Success"
+                              severity="success"
+                            /><j-button label="Info" severity="info" /><j-button
+                              label="Warning"
+                              severity="warning"
+                            /><j-button label="Danger" severity="danger" /><j-button
+                              label="Help"
+                              severity="help"
+                            /><j-button label="Contrast" severity="contrast" />
+                          </div>
+                        } @else if (example.key === 'template') {
+                          <j-button
+                            ><strong>Approve</strong><span jButtonSuffix>⌘ Enter</span></j-button
+                          >
+                        } @else {
+                          <j-button
+                            [label]="buttonExampleLabel(example.key)"
+                            [variant]="buttonExampleVariant(example.key)"
+                            [severity]="example.key === 'destructive' ? 'danger' : 'primary'"
+                            [raised]="example.key === 'raised'"
+                            [pill]="example.key === 'pill'"
+                            [icon]="buttonExampleIcon(example.key)"
+                            [iconPosition]="example.key === 'icon-after' ? 'right' : 'left'"
+                            [iconOnly]="example.key === 'icon-only'"
+                            [ariaLabel]="example.key === 'icon-only' ? 'Open settings' : ''"
+                            [loading]="example.key === 'loading'"
+                            [disabled]="example.key === 'disabled'"
+                            [fullWidth]="example.key === 'full-width'"
+                            [badge]="example.key === 'badge' ? 4 : null"
+                            badgeAriaLabel="4 unread notifications"
+                          />
+                        }
+                      }
+                      @case ('icon-button') {
+                        <j-button
+                          icon="settings"
+                          ariaLabel="Settings"
+                          iconOnly
+                          [variant]="buttonVariants[example.index]"
+                        />
+                      }
+                      @case ('card') {
+                        @if (example.key === 'metric') {
+                          <app-card-metric-demo />
+                        } @else {
+                          @switch (example.key) {
+                            @case ('slots') {
+                              <j-card
+                                title="Release plan"
+                                subtitle="Version 0.0.9"
+                                footer="Updated today"
+                                >All milestones are on track.</j-card
+                              >
+                            }
+                            @case ('form') {
+                              <j-card title="Workspace settings"
+                                ><j-input label="Workspace name" value="Operations" /><j-button
+                                  jCardActions
+                                  label="Save"
+                              /></j-card>
+                            }
+                            @case ('profile') {
+                              <j-card title="Avery Reed" subtitle="Product designer"
+                                ><j-avatar
+                                  image="/assets/avatars/avery.svg"
+                                  label="Avery Reed"
+                                  size="lg"
+                              /></j-card>
+                            }
+                            @case ('product') {
+                              <j-card title="Team plan" subtitle="For growing teams"
+                                ><strong>$24 / month</strong
+                                ><j-button jCardActions label="Choose plan"
+                              /></j-card>
+                            }
+                            @case ('pricing') {
+                              <j-card title="Business" subtitle="Advanced controls"
+                                ><strong>$49 / month</strong
+                                ><j-button jCardActions label="Start trial"
+                              /></j-card>
+                            }
+                            @case ('trend') {
+                              <j-card title="Active accounts"
+                                ><strong>1,284</strong><j-badge value="+8.2%" severity="success"
+                              /></j-card>
+                            }
+                            @case ('chart') {
+                              <j-card title="Weekly volume"
+                                ><j-progress-bar [value]="64" label="64% of weekly target"
+                              /></j-card>
+                            }
+                            @case ('progress') {
+                              <j-card title="Storage"
+                                ><strong>72 GB of 100 GB</strong
+                                ><j-progress-bar [value]="72" label="72% used"
+                              /></j-card>
+                            }
+                            @case ('status') {
+                              <j-card title="Release status"
+                                ><j-badge value="Ready" severity="success" />
+                                <p>All required checks passed.</p></j-card
+                              >
+                            }
+                            @case ('clickable') {
+                              <j-card title="Open project" subtitle="Keyboard focusable" clickable
+                                ><p>View project details.</p></j-card
+                              >
+                            }
+                            @case ('loading') {
+                              <j-card title="Loading report" skeleton />
+                            }
+                            @case ('empty') {
+                              <j-card title="Saved views"
+                                ><j-empty-state
+                                  title="No saved views"
+                                  description="Save a filter to reuse it here."
+                                  variant="inline"
+                              /></j-card>
+                            }
+                            @case ('error') {
+                              <j-card title="Account summary"
+                                ><j-empty-state
+                                  title="Could not load summary"
+                                  description="Try again in a moment."
+                                  variant="inline"
+                              /></j-card>
+                            }
+                            @case ('template') {
+                              <j-card
+                                ><div jCardHeader><strong>Custom header</strong></div>
+                                <p>Projected card content.</p>
+                                <j-button jCardActions label="Continue"
+                              /></j-card>
+                            }
+                            @default {
+                              <j-card title="Design review"
+                                ><p>
+                                  Review navigation and responsive behavior before release.
+                                </p></j-card
+                              >
+                            }
+                          }
+                        }
+                      }
+                      @case ('badge') {
+                        <div class="j-preview-row">
+                          <j-badge value="12" />
+                          <j-badge value="Active" severity="success" />
+                          <j-badge value="Warning" severity="warning" />
+                          <j-badge value="Error" severity="danger" />
+                          <j-badge value="Info" severity="info" size="lg" />
+                        </div>
+                      }
+                      @case ('tag') {
+                        <div class="j-preview-row">
+                          <j-tag label="Design" />
+                          <j-tag label="Published" severity="success" rounded />
+                          <j-tag label="Blocked" severity="danger" />
+                          <j-tag label="Filter" removable removeLabel="Remove Filter" />
+                        </div>
+                      }
+                      @case ('table') {
+                        <div class="j-table-doc-example">
+                          @switch (example.key) {
+                            @case ('templates') {
+                              <j-table [value]="clientRows" [columns]="clientColumns">
+                                <ng-template jTableHeader="legalName" let-column>
+                                  {{ column.header }} / account
+                                </ng-template>
+                                <ng-template jTableCell="active" let-value="formattedValue">
+                                  <strong>{{ value }}</strong>
+                                </ng-template>
+                              </j-table>
+                            }
+                            @case ('variants') {
+                              @for (variant of tableVariants; track variant) {
+                                <div class="j-table-doc-variant">
+                                  <span class="j-preview-label">{{ variant }}</span>
+                                  <j-table
+                                    [value]="clientRows.slice(0, 2)"
+                                    [columns]="clientColumns"
+                                    [variant]="variant"
+                                  />
+                                </div>
+                              }
+                            }
+                            @case ('density') {
+                              @for (density of tableDensities; track density) {
+                                <div class="j-table-doc-variant">
+                                  <span class="j-preview-label">{{ density }}</span>
+                                  <j-table
+                                    [value]="clientRows.slice(0, 2)"
+                                    [columns]="clientColumns"
+                                    [density]="density"
+                                  />
+                                </div>
+                              }
+                            }
+                            @case ('skeleton') {
+                              <j-table
+                                [value]="[]"
+                                [columns]="clientColumns"
+                                loading
+                                loadingVariant="skeleton"
+                                [skeletonRows]="4"
+                              />
+                            }
+                            @case ('overlay') {
+                              <j-table
+                                [value]="clientRows.slice(0, 3)"
+                                [columns]="clientColumns"
+                                loading
+                                loadingVariant="overlay"
+                              />
+                            }
+                            @case ('no-data') {
+                              <j-table
+                                [value]="[]"
+                                [columns]="clientColumns"
+                                emptyTitle="No clients yet"
+                                emptyDescription="New client records will appear here."
+                                emptyActionLabel="Create client"
+                              />
+                            }
+                            @case ('no-results') {
+                              <j-table
+                                [value]="clientRows"
+                                [columns]="clientColumns"
+                                globalFilter="no matching client"
+                                noResultsTitle="No matching clients"
+                              />
+                            }
+                            @case ('error') {
+                              <j-table
+                                [value]="[]"
+                                [columns]="clientColumns"
+                                [error]="tableLoadError"
+                                emptyActionLabel="Retry"
+                              />
+                            }
+                            @case ('tree-table') {
+                              <j-tree-table [value]="treeNodes" [columns]="treeColumns" />
+                            }
+                            @case ('lazy-tree-table') {
+                              <j-tree-table [value]="lazyTreeNodes" [columns]="treeColumns" lazy />
+                            }
+                            @case ('migration') {
+                              <j-table [value]="[]" [columns]="clientColumns">
+                                <ng-template jTableEmpty let-state>
+                                  <div class="j-preview-note">Integrated state: {{ state }}</div>
+                                </ng-template>
+                              </j-table>
+                            }
+                            @default {
+                              <j-table
+                                [value]="clientRows"
+                                [columns]="clientColumns"
+                                [selectionMode]="
+                                  example.key === 'selection' || example.key === 'accessibility'
+                                    ? 'checkbox'
+                                    : 'none'
+                                "
+                                [paginator]="example.key === 'pagination'"
+                                [rows]="3"
+                                [filterRow]="example.key === 'filtering'"
+                                [showGlobalFilter]="example.key === 'filtering'"
+                                [sortField]="example.key === 'sorting' ? 'legalName' : ''"
+                                [sortOrder]="example.key === 'sorting' ? 1 : 0"
+                                [caption]="
+                                  example.key === 'accessibility' ? 'Clients awaiting review' : ''
+                                "
+                                hover
+                              />
+                            }
+                          }
+                        </div>
+                      }
+                      @case ('data-grid') {
+                        <j-data-grid
+                          title="Orders"
+                          description="Sortable, filterable operational data with pagination."
+                          [value]="orders"
+                          [columns]="orderColumns"
+                          [rows]="3"
+                          [totalRecords]="orders.length"
+                          [globalFilterFields]="['order', 'customer', 'status']"
+                          [config]="tableConfig"
+                          selectionMode="checkbox"
+                          bulkActions
+                          showColumnManager
+                          showExport
+                          striped
+                          hover
+                        >
+                          <j-button jDataGridActions label="Create order" size="sm" />
+                          <j-button
+                            jDataGridBulkActions
+                            label="Archive selected"
+                            size="sm"
+                            variant="outline"
+                          />
+                        </j-data-grid>
+                      }
+                      @case ('action-menu') {
+                        <div class="j-action-menu-preview">
+                          <section>
+                            <span class="j-preview-label">Inline actions</span>
+                            <j-action-menu [actions]="rowActions" [row]="orders[0]" />
+                          </section>
+                          <section>
+                            <span class="j-preview-label">Compact popup</span>
+                            <j-action-menu
+                              popup
+                              triggerIcon="More"
+                              triggerLabel="Open order actions"
+                              [actions]="rowActions"
+                              [row]="orders[0]"
+                            />
+                          </section>
+                        </div>
+                      }
+                      @case ('column-filter') {
+                        <div class="j-preview-grid">
+                          <j-column-filter field="status" label="Status" />
+                          <j-column-filter field="customer" label="Customer" value="Acme" />
+                        </div>
+                      }
+                      @case ('filter-bar') {
+                        <div class="j-filter-bar-preview">
+                          <j-filter-bar
+                            [statuses]="statuses"
+                            showDateRange
+                            showExport
+                            showAdvancedToggle
+                            (apply)="showToast('success')"
+                          >
+                            <div jFilterBarAdvanced class="j-doc-muted">
+                              Advanced filters can host app-specific controls.
+                            </div>
+                          </j-filter-bar>
+                        </div>
+                      }
+                      @case ('metric-card') {
+                        <div class="j-preview-grid j-preview-grid--cards">
+                          <j-metric-card
+                            title="Revenue"
+                            value="$42.8k"
+                            trend="up"
+                            trendLabel="+12%"
+                            icon="$"
+                            footer="Month to date"
+                          />
+                          <j-metric-card
+                            title="Churn"
+                            value="1.8%"
+                            trend="down"
+                            trendLabel="-0.4%"
+                            icon="%"
+                            footer="Rolling 30 days"
+                          />
+                          <j-metric-card title="Loading" loading />
+                        </div>
+                      }
+                      @case ('stat-card') {
+                        <div class="j-preview-grid j-preview-grid--cards">
+                          <j-stat-card
+                            title="Open orders"
+                            value="128"
+                            trend="up"
+                            trendLabel="+18 today"
+                            icon="#"
+                            footer="Updated 4 minutes ago"
+                          />
+                          <j-stat-card
+                            title="SLA risk"
+                            value="7"
+                            trend="neutral"
+                            trendLabel="No change"
+                            icon="!"
+                            footer="Across active queues"
+                          />
+                          <j-stat-card title="Loading" loading />
+                        </div>
+                      }
+                      @case ('status-chip') {
+                        <div class="j-preview-row">
+                          <j-status-chip status="active" />
+                          <j-status-chip status="pending" />
+                          <j-status-chip status="approved" />
+                          <j-status-chip status="rejected" />
+                          <j-status-chip status="overdue" />
+                        </div>
+                      }
+                      @case ('page-header') {
+                        <j-page-header
+                          [variant]="pageHeaderVariants[example.index]"
+                          title="Orders"
+                          subtitle="Review fulfillment, exceptions, and exportable operational data that may wrap on narrow screens."
+                          [breadcrumbs]="pageHeaderBreadcrumbs"
+                        >
+                          <j-button jPageActions label="Export" variant="outline" />
+                          <j-button jPageActions label="Create order" />
+                        </j-page-header>
+                      }
+                      @case ('empty-state') {
+                        <j-empty-state
+                          [variant]="emptyStateVariants[example.index]"
+                          title="No orders found"
+                          description="Try changing filters or create a new order."
+                          icon="0"
+                        >
+                          <j-button jEmptyStateAction label="Create order" />
+                        </j-empty-state>
+                      }
+                      @case ('toast') {
+                        <div class="j-preview-stack">
+                          <div class="j-preview-row">
+                            <j-button label="Show success" (onClick)="showToast('success')" />
+                            <j-button
+                              label="Show error"
+                              severity="danger"
+                              (onClick)="showToast('error')"
+                            />
+                            <j-button
+                              label="Show warning"
+                              severity="warning"
+                              (onClick)="showToast('warning')"
+                            />
+                          </div>
+                          <j-toast position="bottom-right" />
+                        </div>
+                      }
+                      @case ('progress-bar') {
+                        <j-progress-bar
+                          [variant]="progressBarVariants[example.index]"
+                          [value]="example.index === 1 ? 80 : example.index === 2 ? 42 : 64"
+                          [severity]="example.index === 1 ? 'success' : 'primary'"
+                          label="Operation progress"
+                        />
+                      }
+                      @case ('skeleton') {
+                        <div class="j-preview-grid">
+                          <j-skeleton variant="text" />
+                          <j-skeleton variant="avatar" />
+                          <j-skeleton variant="button" width="8rem" />
+                          <j-skeleton variant="card" />
+                          <j-skeleton variant="table" [rows]="3" />
+                        </div>
+                      }
+                      @case ('copy-button') {
+                        <div class="j-preview-row">
+                          <j-copy-button text="npm install jrng-ui" />
+                          <j-copy-button text="INV-2048" label="Copy ID" copiedLabel="Copied ID" />
+                          <j-copy-button text="Disabled" disabled />
+                        </div>
+                      }
+                      @case ('tabs') {
+                        <j-tabs [variant]="tabsVariants[example.index]">
+                          <j-tab header="Overview"><p>Summary for this record.</p></j-tab>
+                          <j-tab header="Activity"><p>Recent audit history.</p></j-tab>
+                          <j-tab header="Long settings label" disabled><p>Unavailable.</p></j-tab>
+                        </j-tabs>
+                      }
+                      @case ('breadcrumb') {
+                        <j-breadcrumb
+                          [variant]="breadcrumbVariants[example.index]"
+                          [home]="breadcrumbHome"
+                          [model]="breadcrumbItems"
+                        />
+                      }
+                      @case ('menu') {
+                        <j-menu [model]="menuItems" ariaLabel="Project actions" />
+                      }
+                      @case ('responsive-sidebar') {
+                        <div class="j-sidebar-demo">
+                          <j-responsive-sidebar title="Workspace" [open]="true">
+                            <nav class="j-sidebar-demo__nav" aria-label="Preview sidebar">
+                              <a>Dashboard</a>
+                              <a class="is-active">Projects</a>
+                              <a>Settings</a>
+                            </nav>
+                          </j-responsive-sidebar>
+                        </div>
+                      }
+                      @case ('dialog') {
+                        <div class="j-preview-row">
+                          <j-button label="Open dialog" (onClick)="dialogOpen.set(true)" />
+                          <j-dialog
+                            header="Edit project"
+                            [visible]="dialogOpen()"
+                            (visibleChange)="dialogOpen.set($event)"
+                          >
+                            <div class="j-dialog-demo">
+                              <j-input label="Project name" value="JRNG UI Docs" />
+                              <div class="j-preview-row">
+                                <j-button
+                                  label="Cancel"
+                                  variant="ghost"
+                                  (onClick)="dialogOpen.set(false)"
+                                />
+                                <j-button label="Save" (onClick)="dialogOpen.set(false)" />
+                              </div>
+                            </div>
+                          </j-dialog>
+                        </div>
+                      }
+                      @case ('confirm-dialog') {
+                        <div class="j-preview-row">
+                          <j-button label="Confirm save" (onClick)="openConfirm()" />
+                          <j-button
+                            label="Delete record"
+                            severity="danger"
+                            (onClick)="openConfirm('danger')"
+                          />
+                        </div>
+                      }
+                      @case ('drawer') {
+                        <div class="j-preview-row">
+                          <j-button label="Open drawer" (onClick)="drawerOpen.set(true)" />
+                          <j-drawer
+                            header="Filters"
+                            styleClass="j-doc-preview-drawer"
+                            [modal]="false"
+                            contained
+                            [visible]="drawerOpen()"
+                            (openChange)="drawerOpen.set($event)"
+                          >
+                            <div class="j-preview-stack">
+                              <j-input label="Search" type="search" clearable />
+                              <j-select label="Status" [options]="statuses" />
+                            </div>
+                          </j-drawer>
+                        </div>
+                      }
+                      @case ('tooltip') {
+                        <div class="j-preview-row">
+                          <button
+                            class="j-doc-preview-button"
+                            type="button"
+                            jTooltip="Refresh data"
+                            tooltipPosition="top"
+                          >
+                            Hover or focus me
+                          </button>
+                          <button
+                            class="j-doc-icon-button"
+                            type="button"
+                            aria-label="Settings"
+                            jTooltip="Settings"
+                            tooltipPosition="right"
+                          >
+                            <j-icon name="settings" />
+                          </button>
+                        </div>
+                      }
+                      @case ('popover') {
+                        <div class="j-preview-row">
+                          <button
+                            #popoverTrigger
+                            class="j-doc-preview-button"
+                            type="button"
+                            (click)="previewPopover.toggle(popoverTrigger)"
+                          >
+                            Toggle popover
+                          </button>
+                          <j-popover
+                            #previewPopover
+                            [target]="popoverTrigger"
+                            position="bottom"
+                            [dismissable]="false"
+                          >
+                            <strong>Project health</strong>
+                            <p>Build is passing and docs coverage improved.</p>
+                          </j-popover>
+                        </div>
+                      }
+                      @case ('ripple') {
+                        <div class="j-preview-row">
+                          <button class="j-doc-preview-button" type="button" jRipple>
+                            Ripple button
+                          </button>
+                          <button class="j-doc-preview-button" type="button" [jRipple]="false">
+                            Disabled ripple
+                          </button>
+                        </div>
+                      }
+                      @case ('tour-guide') {
+                        <div class="j-preview-stack">
+                          <div class="j-preview-row">
+                            <button
+                              id="createBtn"
+                              class="j-doc-preview-button"
+                              type="button"
+                              jTourStep="create-button"
+                              tourTitle="Create"
+                              tourDescription="Click here to create a new record."
+                            >
+                              Create
+                            </button>
+                            <button
+                              class="j-doc-preview-button"
+                              type="button"
+                              jTourStep="filter-button"
+                              tourTitle="Filter"
+                              tourDescription="Narrow the table to the records that matter."
+                            >
+                              Filter
+                            </button>
+                          </div>
+                          <j-button label="Start guided tour" (onClick)="startPreviewTour()" />
+                        </div>
+                      }
+                      @case ('timeline') {
+                        <j-timeline
+                          [variant]="timelineVariants[example.index]"
+                          [value]="timelineItems"
+                        />
+                      }
+                      @case ('file-upload') {
+                        <div class="j-preview-stack">
+                          <j-file-upload
+                            title="Upload documents"
+                            description="Drag files here or choose from your device."
+                            multiple
+                          />
+                          <j-file-preview
+                            fileName="statement.pdf"
+                            [fileSize]="245760"
+                            description="Uploaded 2 minutes ago"
+                            url="#"
+                          />
+                        </div>
+                      }
+                      @case ('file-browser') {
+                        <j-file-browser
+                          title="Client documents"
+                          [items]="fileBrowserItems"
+                          [breadcrumbs]="fileBrowserBreadcrumbs"
+                          [selection]="fileBrowserSelection"
+                          selectionMode="multiple"
+                          [actions]="fileBrowserActions"
+                          (selectionChange)="fileBrowserSelection = $event"
+                        />
+                      }
+                      @case ('file-preview') {
+                        <div class="j-preview-row">
+                          <j-file-preview
+                            fileName="statement.pdf"
+                            [fileSize]="245760"
+                            description="Uploaded 2 minutes ago"
+                            url="#"
+                          />
+                          <j-file-preview
+                            fileName="avatar.png"
+                            [fileSize]="56320"
+                            description="Image asset"
+                            showTypeLabel
+                            typeLabel="PNG image"
+                          />
+                        </div>
+                      }
+                      @case ('avatar-group') {
+                        <j-avatar-group
+                          [items]="avatarGroupItems"
+                          [max]="3"
+                          ariaLabel="Project team"
+                        />
+                      }
+                      @case ('container') {
+                        <j-container>
+                          <j-card
+                            title="Contained content"
+                            subtitle="Max-width layout helper"
+                            bordered
+                          >
+                            <p>
+                              Container keeps page content aligned with consistent horizontal
+                              rhythm.
+                            </p>
+                          </j-card>
+                        </j-container>
+                      }
+                      @case ('fieldset') {
+                        <j-fieldset legend="Billing address" toggleable>
+                          <div class="j-preview-grid">
+                            <j-input label="Street" placeholder="123 Market St" />
+                            <j-input label="City" placeholder="San Francisco" />
+                          </div>
+                        </j-fieldset>
+                      }
+                      @case ('float-label') {
+                        <j-float-label label="Email address" fullWidth>
+                          <j-input type="email" [(ngModel)]="floatEmail" fullWidth />
+                        </j-float-label>
+                      }
+                      @case ('form-field') {
+                        <j-form-field
+                          label="Workspace name"
+                          hint="Use a short, recognizable team name."
+                        >
+                          <j-input placeholder="Operations" />
+                        </j-form-field>
+                      }
+                      @case ('icon-field') {
+                        <j-icon-field prefixIcon="search" suffixIcon="filter" fullWidth>
+                          <j-input placeholder="Search projects" fullWidth />
+                        </j-icon-field>
+                      }
+                      @case ('input-group') {
+                        <j-input-group prefixAddon="$" suffixAddon=".00">
+                          <j-input placeholder="Amount" />
+                        </j-input-group>
+                      }
+                      @case ('input-icon') {
+                        <div class="j-preview-row">
+                          <j-input-icon icon="search" />
+                          <j-input-icon icon="calendar" position="right" />
+                        </div>
+                      }
+                      @case ('panel') {
+                        <j-panel header="Project health" toggleable>
+                          The latest build passed and documentation coverage is improving.
+                        </j-panel>
+                      }
+                      @case ('radio-group') {
+                        <j-radio-group
+                          label="Plan"
+                          [options]="radioGroupOptions"
+                          direction="horizontal"
+                          [(ngModel)]="plan"
+                        />
+                      }
+                      @case ('select-button') {
+                        <j-select-button
+                          label="View mode"
+                          [options]="viewModes"
+                          [(ngModel)]="viewMode"
+                        />
+                      }
+                      @case ('section-header') {
+                        <j-section-header
+                          title="Projects"
+                          description="Track active work and ownership."
+                        >
+                          <j-button label="New project" />
+                        </j-section-header>
+                      }
+                      @case ('section-footer') {
+                        <j-section-footer>
+                          <j-button label="Cancel" variant="ghost" />
+                          <j-button label="Save changes" />
+                        </j-section-footer>
+                      }
+                      @case ('stack') {
+                        <j-stack direction="horizontal" align="center" gap="var(--j-spacing-3)">
+                          <j-badge value="New" />
+                          <span>Composable spacing primitive</span>
+                          <j-button label="Open" size="sm" />
+                        </j-stack>
+                      }
+                      @case ('toolbar') {
+                        <j-toolbar>
+                          <j-button label="New" />
+                          <j-button label="Export" variant="outline" />
+                          <j-button label="Archive" variant="ghost" />
+                        </j-toolbar>
+                      }
+                      @case ('toggle-button') {
+                        <j-toggle-button
+                          onLabel="Published"
+                          offLabel="Draft"
+                          [(ngModel)]="published"
+                        />
+                      }
+                      @case ('loader') {
+                        @if (example.key === 'basic') {
+                          <app-loader-types-demo />
+                        } @else if (example.key === 'button') {
+                          <j-button label="Saving" loading loadingLabel="Saving record" />
+                        } @else if (example.key === 'card') {
+                          <j-card title="Account summary"
+                            ><j-loader type="spinner" inline label="Loading account summary"
+                          /></j-card>
+                        } @else {
+                          <div
+                            class="j-loader-preview-grid"
+                            [class.j-loader-demo-overlay]="example.key === 'overlay'"
+                          >
+                            <j-loader
+                              [type]="loaderExampleType(example.key)"
+                              [inline]="example.key === 'inline' || example.key === 'label'"
+                              [overlay]="example.key === 'overlay'"
+                              [fullscreen]="false"
+                              [value]="example.key === 'determinate' ? 68 : null"
+                              [size]="example.key === 'size' ? 56 : 'md'"
+                              [label]="
+                                example.key === 'label' ? 'Loading customer profile' : 'Loading'
+                              "
+                            />
+                          </div>
+                        }
+                      }
+                      @case ('text-expand') {
+                        <div class="j-preview-stack">
+                          @if (example.key === 'characters') {
+                            <app-text-expand-basic-demo />
+                          } @else if (example.key === 'responsive') {
+                            <j-card title="Release summary">
+                              <j-text-expand
+                                [text]="productDescription"
+                                mode="lines"
+                                [collapsedLines]="2"
+                              />
+                            </j-card>
+                          } @else if (example.key === 'projected') {
+                            <j-text-expand mode="lines" [collapsedLines]="2">
+                              <strong>Release note:</strong> {{ projectedSummary }}
+                            </j-text-expand>
+                          } @else {
+                            <j-text-expand
+                              [text]="textExpandValue(example.key)"
+                              [mode]="
+                                example.key === 'lines' || example.key === 'policy'
+                                  ? 'lines'
+                                  : 'characters'
+                              "
+                              [collapsedLength]="example.key === 'comment' ? 80 : 100"
+                              [collapsedLines]="3"
+                              [showMoreLabel]="
+                                example.key === 'labels' ? 'Read comment' : 'Show more'
+                              "
+                              [showLessLabel]="
+                                example.key === 'labels' ? 'Collapse comment' : 'Show less'
+                              "
+                              [expanded]="example.key === 'expanded'"
+                              [animation]="example.key !== 'motion'"
+                            />
+                          }
+                        </div>
+                      }
+                      @case ('empty-page') {
+                        <j-empty-page
+                          title="No results"
+                          description="Try changing the filters."
+                          icon="search"
+                          ><j-button label="Clear filters"
+                        /></j-empty-page>
+                      }
+                      @case ('error-page') {
+                        <j-error-page
+                          code="500"
+                          title="Something went wrong"
+                          description="The page could not be loaded."
+                          ><j-button label="Try again"
+                        /></j-error-page>
+                      }
+                      @case ('maintenance-page') {
+                        <j-maintenance-page
+                          title="Maintenance in progress"
+                          description="The application will be back soon."
+                          detail="Estimated recovery: 20 minutes"
+                          ><j-button label="View system status" variant="outline"
+                        /></j-maintenance-page>
+                      }
+                      @case ('status-page') {
+                        <div class="j-preview-stack">
+                          <j-status-page
+                            variant="empty"
+                            marker="?"
+                            title="No matching records"
+                            description="Adjust the current filters and try again."
+                          />
+                          <j-status-page
+                            variant="error"
+                            marker="404"
+                            title="Page not found"
+                            description="The requested page is unavailable."
+                          />
+                          <j-status-page
+                            variant="maintenance"
+                            marker="Maintenance"
+                            title="Service maintenance"
+                            description="This area is temporarily unavailable."
+                            detail="Estimated recovery: 20 minutes"
+                          />
+                        </div>
+                      }
+                      @case ('meter-group') {
+                        <j-meter-group [value]="meterSegments" />
+                      }
+                      @case ('sparkline') {
+                        <div class="j-preview-row">
+                          <j-sparkline [value]="sparklineValues" ariaLabel="Revenue trend" />
+                          <j-sparkline
+                            [value]="sparklineValues"
+                            type="bar"
+                            ariaLabel="Volume trend"
+                          />
+                        </div>
+                      }
+                      @case ('app-shell') {
+                        <div class="j-layout-preview-frame">
+                          <j-app-shell styleClass="j-doc-compact-shell">
+                            <strong jShellHeader>Workspace</strong>
+                            <nav jShellSidebar class="j-preview-mini-nav">
+                              <span class="is-active">Overview</span><span>Projects</span
+                              ><span>Settings</span>
+                            </nav>
+                            <j-card
+                              title="Dashboard"
+                              subtitle="Application shell content"
+                              bordered
+                            />
+                            <small jShellFooter>JRNG UI workspace</small>
+                          </j-app-shell>
+                        </div>
+                      }
+                      @case ('auth-layout') {
+                        <div class="j-layout-preview-frame">
+                          <j-auth-layout variant="centered" styleClass="j-doc-compact-auth">
+                            <div class="j-preview-stack">
+                              <strong>Welcome back</strong>
+                              <j-input label="Email" type="email" placeholder="name@example.com" />
+                              <j-button label="Sign in" />
+                            </div>
+                          </j-auth-layout>
+                        </div>
+                      }
+                      @case ('bottom-sheet') {
+                        <div class="j-preview-row">
+                          <j-button
+                            label="Open bottom sheet"
+                            (onClick)="bottomSheetVisible = true"
+                          />
+                          <j-bottom-sheet
+                            header="Project actions"
+                            [(visible)]="bottomSheetVisible"
+                            [modal]="false"
+                          >
+                            <div class="j-preview-stack">
+                              <j-button label="Duplicate" variant="outline" />
+                              <j-button label="Archive" variant="ghost" />
+                            </div>
+                          </j-bottom-sheet>
+                        </div>
+                      }
+                      @case ('calendar') {
+                        <div class="j-calendar-preview">
+                          <j-calendar [value]="calendarDate" (dateSelect)="calendarDate = $event" />
+                        </div>
+                      }
+                      @case ('calendar-scheduler') {
+                        <j-calendar-scheduler
+                          [events]="schedulerEvents"
+                          ariaLabel="Team schedule"
+                        />
+                      }
+                      @case ('carousel') {
+                        <j-carousel [value]="carouselItems" [visibleItems]="2" autoplay />
+                      }
+                      @case ('chart') {
+                        <div class="j-live-chart-preview-grid">
+                          <section>
+                            <strong>Monthly signups</strong>
+                            <j-chart type="bar" [data]="chartData" ariaLabel="Monthly signups" />
+                          </section>
+                          <section>
+                            <strong>Active users</strong>
+                            <j-chart type="line" [data]="lineChartData" ariaLabel="Active users" />
+                          </section>
+                        </div>
+                      }
+                      @case ('chips') {
+                        <j-chips label="Skills" placeholder="Add a skill" [(ngModel)]="tags" />
+                      }
+                      @case ('column') {
+                        <div class="j-preview-stack">
+                          <p class="j-preview-note">
+                            <strong>Table Column</strong> is declarative table metadata. For
+                            responsive page layout, use <code>j-col</code> from
+                            <code>jrng-ui/grid</code>.
+                          </p>
+                          <j-table [value]="orders" [paginator]="false">
+                            <j-column field="order" header="Order" [sortable]="true" />
+                            <j-column field="customer" header="Customer" />
+                            <j-column field="status" header="Status" />
+                          </j-table>
+                        </div>
+                      }
+                      @case ('combobox') {
+                        <div class="j-overlay-form-preview">
+                          <j-combobox
+                            label="Searchable customer"
+                            [options]="customerSuggestions"
+                            placeholder="Choose or type a customer"
+                            [(ngModel)]="selectedCustomer"
+                          />
+                          <p class="j-preview-note">
+                            Select an option or enter a permitted custom value.
+                          </p>
+                        </div>
+                      }
+                      @case ('command-palette') {
+                        <div class="j-preview-row">
+                          <j-button
+                            label="Open command palette"
+                            (onClick)="commandPaletteOpen = true"
+                          />
+                          <j-command-palette
+                            [commands]="commands"
+                            [(visible)]="commandPaletteOpen"
+                            placeholder="Search commands"
+                          />
+                        </div>
+                      }
+                      @case ('confirm-popup') {
+                        <div class="j-preview-row">
+                          <j-button label="Confirm archive" (onClick)="openConfirmPopup($event)" />
+                          <j-confirm-popup />
+                        </div>
+                      }
+                      @case ('context-menu') {
+                        <div #contextTarget class="j-context-preview-target" tabindex="0">
+                          Right-click this area
+                        </div>
+                        <j-context-menu [target]="contextTarget" [model]="menubarItems" />
+                      }
+                      @case ('dashboard-layout') {
+                        <div class="j-layout-preview-frame">
+                          <j-dashboard-layout styleClass="j-doc-compact-dashboard">
+                            <section class="j-dashboard-preview-heading">
+                              <span>Operations overview</span><strong>Weekly performance</strong>
+                            </section>
+                            <div class="j-dashboard-preview-metrics">
+                              <j-stat-card label="Revenue" value="$42.8k" />
+                              <j-stat-card label="Orders" value="1,284" />
+                            </div>
+                            <section class="j-dashboard-preview-activity">
+                              <strong>Recent activity</strong>
+                              <span>12 orders are ready for review</span>
+                            </section>
+                          </j-dashboard-layout>
+                        </div>
+                      }
+                      @case ('data-view') {
+                        <j-data-view
+                          [value]="dataViewItems"
+                          layout="grid"
+                          [rows]="3"
+                          [paginator]="false"
+                        />
+                      }
+                      @case ('date-range-picker') {
+                        <div class="j-overlay-form-preview">
+                          <j-date-range-picker label="Campaign window" [(ngModel)]="dateRange" />
+                        </div>
+                      }
+                      @case ('dropzone') {
+                        <j-dropzone accept=".csv,.xlsx" multiple title="Import records" />
+                      }
+                      @case ('dynamic-dialog') {
+                        <div class="j-preview-row">
+                          <j-button label="Open dynamic dialog" (onClick)="openDynamicDialog()" />
+                          <j-dynamic-dialog />
+                        </div>
+                      }
+                      @case ('editor') {
+                        <j-editor
+                          label="Description"
+                          placeholder="Write a short summary"
+                          hint="Select text, then use formatting, alignment, list, link, image, undo, or redo controls."
+                          [(ngModel)]="editorValue"
+                        />
+                      }
+                      @case ('gallery') {
+                        <div class="j-preview-stack">
+                          <div class="j-preview-row">
+                            @for (animation of galleryAnimations; track animation) {
+                              <button
+                                type="button"
+                                class="j-doc-preview-button"
+                                [class.is-active]="galleryAnimation === animation"
+                                (click)="galleryAnimation = animation"
+                              >
+                                {{ animation }}
+                              </button>
+                            }
+                          </div>
+                          <j-gallery [value]="galleryItems" [animation]="galleryAnimation" />
+                        </div>
+                      }
+                      @case ('gantt') {
+                        <j-gantt [tasks]="ganttTasks" scale="week" />
+                      }
+                      @case ('grid-layout') {
+                        <j-grid-layout [columns]="3" minItemWidth="10rem">
+                          <j-card title="Design" bordered /><j-card title="Build" bordered /><j-card
+                            title="Ship"
+                            bordered
+                          />
+                        </j-grid-layout>
+                      }
+                      @case ('grid') {
+                        <div class="j-doc-grid-demo">
+                          <j-grid gutterX="var(--j-spacing-4)" gutterY="var(--j-spacing-4)">
+                            <j-row>
+                              <j-col size="12" md="8">
+                                <div class="j-doc-grid-cell j-doc-grid-cell--primary">
+                                  <strong>Main workspace</strong>
+                                  <span>12 columns on mobile, 8 from md</span>
+                                </div>
+                              </j-col>
+                              <j-col size="12" md="4">
+                                <div class="j-doc-grid-cell">
+                                  <strong>Context panel</strong>
+                                  <span>12 columns on mobile, 4 from md</span>
+                                </div>
+                              </j-col>
+                              <j-col size="6" lg="3">
+                                <div class="j-doc-grid-cell">
+                                  <strong>25%</strong><span>at lg</span>
+                                </div>
+                              </j-col>
+                              <j-col size="6" lg="3">
+                                <div class="j-doc-grid-cell">
+                                  <strong>25%</strong><span>at lg</span>
+                                </div>
+                              </j-col>
+                              <j-col size="12" lg="6">
+                                <div class="j-doc-grid-cell">
+                                  <strong>50%</strong><span>at lg</span>
+                                </div>
+                              </j-col>
+                            </j-row>
+                          </j-grid>
+                        </div>
+                      }
+                      @case ('row') {
+                        <div class="j-doc-grid-demo">
+                          <j-grid>
+                            <j-row align="center" justify="between">
+                              <j-col size="auto">
+                                <div class="j-doc-grid-cell"><strong>Project title</strong></div>
+                              </j-col>
+                              <j-col size="auto">
+                                <div class="j-doc-grid-cell"><span>Header actions</span></div>
+                              </j-col>
+                            </j-row>
+                          </j-grid>
+                        </div>
+                      }
+                      @case ('col') {
+                        <div class="j-doc-grid-demo">
+                          <j-grid>
+                            <j-row>
+                              <j-col size="12" sm="6" lg="4">
+                                <div class="j-doc-grid-cell">
+                                  <strong>Responsive column</strong>
+                                </div>
+                              </j-col>
+                              <j-col size="12" sm="6" lg="4" offsetLg="4">
+                                <div class="j-doc-grid-cell">
+                                  <strong>Responsive offset</strong>
+                                </div>
+                              </j-col>
+                            </j-row>
+                          </j-grid>
+                        </div>
+                      }
+                      @case ('ifta-label') {
+                        <j-ifta-label label="Email address" fullWidth>
+                          <j-input value="avery@example.com" />
+                        </j-ifta-label>
+                      }
+                      @case ('image') {
+                        <j-image
+                          [src]="previewImage"
+                          alt="Abstract product preview"
+                          width="18rem"
+                          preview
+                        />
+                      }
+                      @case ('image-preview') {
+                        <div class="j-preview-row">
+                          <j-button
+                            label="Open image preview"
+                            (onClick)="imagePreviewOpen = true"
+                          />
+                          <j-image-preview
+                            [src]="previewImage"
+                            alt="Abstract product preview"
+                            [(visible)]="imagePreviewOpen"
+                          />
+                        </div>
+                      }
+                      @case ('kanban') {
+                        <j-kanban
+                          [value]="kanbanPreviewColumns"
+                          (reorder)="handleKanbanReorder($event)"
+                          (addCard)="addKanbanCard($event)"
+                          (removeCard)="removeKanbanCard($event)"
+                        />
+                      }
+                      @case ('knob') {
+                        <j-knob label="Completion" [(ngModel)]="completion" />
+                      }
+                      @case ('mega-menu') {
+                        <j-mega-menu [model]="megaMenuItems" ariaLabel="Product navigation" />
+                      }
+                      @case ('menubar') {
+                        <j-menubar [model]="menubarItems" ariaLabel="Application menu" />
+                      }
+                      @case ('notification-center') {
+                        <div class="j-preview-row">
+                          <button
+                            #notificationTrigger
+                            class="j-doc-preview-button"
+                            type="button"
+                            (click)="notificationOpen = !notificationOpen"
+                          >
+                            Notifications
+                          </button>
+                          <j-notification-center
+                            [target]="notificationTrigger"
+                            [(visible)]="notificationOpen"
+                          />
+                        </div>
+                      }
+                      @case ('order-list') {
+                        <j-order-list header="Priorities" [value]="transferSource" filter />
+                      }
+                      @case ('org-chart') {
+                        <j-org-chart [value]="organization" />
+                      }
+                      @case ('overlay-panel') {
+                        <div class="j-preview-row">
+                          <button
+                            #overlayTrigger
+                            class="j-doc-preview-button"
+                            type="button"
+                            (click)="previewOverlay.toggle(overlayTrigger)"
+                          >
+                            Toggle details
+                          </button>
+                          <j-overlay-panel #previewOverlay>
+                            <strong>Project details</strong>
+                            <p>Owned by the design systems team.</p>
+                          </j-overlay-panel>
+                        </div>
+                      }
+                      @case ('pick-list') {
+                        <j-pick-list [source]="transferSource" [target]="transferTarget" filter>
+                          <ng-template #jPickListAdd><j-icon name="plus" /></ng-template>
+                          <ng-template #jPickListAddAll>
+                            <span><j-icon name="plus" /> Add all</span>
+                          </ng-template>
+                          <ng-template #jPickListMoveUp><j-icon name="chevron-up" /></ng-template>
+                          <ng-template #jPickListMoveDown>
+                            <j-icon name="chevron-down" />
+                          </ng-template>
+                          <ng-template #jPickListRemove><j-icon name="minus" /></ng-template>
+                          <ng-template #jPickListClear>
+                            <span><j-icon name="close" /> Clear</span>
+                          </ng-template>
+                        </j-pick-list>
+                      }
+                      @case ('sidebar-layout') {
+                        <div class="j-layout-preview-frame">
+                          <j-sidebar-layout styleClass="j-doc-compact-sidebar-layout">
+                            <nav jSidebar class="j-preview-mini-nav">
+                              <span class="is-active">Inbox</span><span>Archive</span>
+                            </nav>
+                            <j-card title="Inbox" subtitle="12 unread messages" bordered />
+                          </j-sidebar-layout>
+                        </div>
+                      }
+                      @case ('sidebar-nav') {
+                        <j-sidebar-nav [model]="menuItems" activeKey="Open" />
+                      }
+                      @case ('sort-icon') {
+                        <div class="j-preview-row">
+                          <span>Name <j-sort-icon [order]="1" /></span>
+                          <span>Created <j-sort-icon [order]="-1" /></span>
+                          <span>Status <j-sort-icon [order]="0" /></span>
+                        </div>
+                      }
+                      @case ('splitter') {
+                        <j-splitter styleClass="j-doc-splitter">
+                          <section>Navigation panel</section>
+                          <section>Content panel</section>
+                        </j-splitter>
+                      }
+                      @case ('stepper') {
+                        <j-stepper
+                          [variant]="stepperVariants[example.index]"
+                          [items]="stepperItems"
+                          [activeIndex]="1"
+                        />
+                      }
+                      @case ('tab') {
+                        <j-tabs>
+                          <j-tab header="Overview">Overview content</j-tab>
+                          <j-tab header="Activity">Activity content</j-tab>
+                        </j-tabs>
+                      }
+                      @case ('table-empty-state') {
+                        <j-table-empty-state
+                          title="No orders"
+                          message="Try adjusting your filters."
+                        />
+                      }
+                      @case ('table-skeleton') {
+                        <j-table-skeleton [rows]="4" [columns]="4" />
+                      }
+                      @case ('tiered-menu') {
+                        <j-tiered-menu [model]="menuItems" />
+                      }
+                      @case ('time-picker') {
+                        <j-time-picker label="Meeting time" [(ngModel)]="meetingTime" />
+                      }
+                      @case ('topbar') {
+                        <j-topbar [model]="menuItems" activeKey="Open">
+                          <strong jTopbarBrand>JRNG UI</strong>
+                        </j-topbar>
+                      }
+                      @case ('transfer-list') {
+                        <j-transfer-list
+                          [source]="transferSource"
+                          [target]="transferTarget"
+                          sourceHeader="Available fields"
+                          targetHeader="Visible fields"
+                          filter
+                        />
+                      }
+                      @case ('tree') {
+                        <j-tree [value]="treeNodes" filter ariaLabel="Workspace folders" />
+                      }
+                      @case ('tree-table') {
+                        <j-tree-table
+                          [value]="treeNodes"
+                          [columns]="treeColumns"
+                          ariaLabel="Project hierarchy"
+                        />
+                      }
+                      @case ('video-player') {
+                        <j-video-player
+                          src="https://www.youtube.com/watch?v=M7lc1UVf-VE"
+                          caption="YouTube embed example"
+                        />
+                      }
+                      @case ('virtual-scroller') {
+                        <j-virtual-scroller
+                          [items]="virtualItems"
+                          [itemSize]="40"
+                          [viewportItems]="5"
+                          height="12rem"
+                        />
+                      }
+                      @case ('formatting') {
+                        <div class="j-format-demo">
+                          <span
+                            >Date/time <strong>{{ sampleDate | jDateTimeFormat }}</strong></span
+                          >
+                          <span
+                            >Currency <strong>{{ 42800 | jCurrencyFormat: 'USD' }}</strong></span
+                          >
+                          <span
+                            >Percent <strong>{{ 0.128 | jPercentFormat }}</strong></span
+                          >
+                          <span
+                            >File size <strong>{{ 2457600 | jFileSizeFormat }}</strong></span
+                          >
+                          <span
+                            >Truncate <strong>{{ longText | jTruncate: 36 }}</strong></span
+                          >
+                        </div>
+                      }
+                      @default {
+                        <div class="j-generated-component-preview">
+                          <header>
+                            <span class="j-doc-icon"><j-icon [name]="doc().icon" /></span>
                             <div>
-                              <strong>{{ doc().name }}</strong>
-                              <span>{{ doc().category }}</span>
+                              <strong>{{ doc().name }} preview</strong>
+                              <p>
+                                Generated preview built from the public selector and import
+                                metadata. Use the code tab for the exact starter snippet.
+                              </p>
+                            </div>
+                          </header>
+
+                          <div
+                            class="j-generated-component-preview__sample"
+                            [attr.data-category]="doc().category"
+                          >
+                            <div class="j-generated-preview-card">
+                              <div class="j-generated-preview-card__header">
+                                <span class="j-generated-preview-card__icon">
+                                  <j-icon [name]="doc().icon" />
+                                </span>
+                                <div>
+                                  <strong>{{ doc().name }}</strong>
+                                  <span>{{ doc().category }}</span>
+                                </div>
+                              </div>
+
+                              <div class="j-generated-preview-card__body">
+                                @if (doc().category.includes('Forms')) {
+                                  <div class="j-generated-field">
+                                    <span>{{ doc().name }}</span>
+                                    <span class="j-generated-input">Enter value</span>
+                                  </div>
+                                  <div class="j-generated-actions">
+                                    <span></span>
+                                    <span></span>
+                                  </div>
+                                } @else if (doc().category.includes('Layout')) {
+                                  <div class="j-generated-layout">
+                                    <aside></aside>
+                                    <main>
+                                      <span></span>
+                                      <span></span>
+                                      <span></span>
+                                    </main>
+                                  </div>
+                                } @else if (doc().category.includes('Data')) {
+                                  <div class="j-generated-table">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                  </div>
+                                } @else if (doc().category.includes('Navigation')) {
+                                  <nav class="j-generated-menu" aria-label="Generated preview">
+                                    <span class="is-active">Overview</span>
+                                    <span>Activity</span>
+                                    <span>Settings</span>
+                                  </nav>
+                                } @else if (
+                                  doc().category.includes('Overlay') ||
+                                  doc().category.includes('Status')
+                                ) {
+                                  <div class="j-generated-overlay">
+                                    <strong>{{ doc().name }}</strong>
+                                    <p>{{ doc().description }}</p>
+                                    <button type="button">Action</button>
+                                  </div>
+                                } @else if (
+                                  doc().category.includes('Media') ||
+                                  doc().category.includes('Visualization')
+                                ) {
+                                  <div class="j-generated-visual">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                  </div>
+                                } @else {
+                                  <div class="j-generated-surface">
+                                    <strong>{{ doc().name }}</strong>
+                                    <p>{{ doc().description }}</p>
+                                  </div>
+                                }
+                              </div>
+
+                              <footer>
+                                <code>{{ doc().selector }}</code>
+                              </footer>
                             </div>
                           </div>
 
-                          <div class="j-generated-preview-card__body">
-                            @if (doc().category.includes('Forms')) {
-                              <div class="j-generated-field">
-                                <span>{{ doc().name }}</span>
-                                <span class="j-generated-input">Enter value</span>
-                              </div>
-                              <div class="j-generated-actions">
-                                <span></span>
-                                <span></span>
-                              </div>
-                            } @else if (doc().category.includes('Layout')) {
-                              <div class="j-generated-layout">
-                                <aside></aside>
-                                <main>
-                                  <span></span>
-                                  <span></span>
-                                  <span></span>
-                                </main>
-                              </div>
-                            } @else if (doc().category.includes('Data')) {
-                              <div class="j-generated-table">
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                              </div>
-                            } @else if (doc().category.includes('Navigation')) {
-                              <nav class="j-generated-menu" aria-label="Generated preview">
-                                <span class="is-active">Overview</span>
-                                <span>Activity</span>
-                                <span>Settings</span>
-                              </nav>
-                            } @else if (
-                              doc().category.includes('Overlay') ||
-                              doc().category.includes('Status')
-                            ) {
-                              <div class="j-generated-overlay">
-                                <strong>{{ doc().name }}</strong>
-                                <p>{{ doc().description }}</p>
-                                <button type="button">Action</button>
-                              </div>
-                            } @else if (
-                              doc().category.includes('Media') ||
-                              doc().category.includes('Visualization')
-                            ) {
-                              <div class="j-generated-visual">
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                              </div>
-                            } @else {
-                              <div class="j-generated-surface">
-                                <strong>{{ doc().name }}</strong>
-                                <p>{{ doc().description }}</p>
-                              </div>
-                            }
+                          <div class="j-generated-component-preview__meta">
+                            <span
+                              >Selector <code>{{ doc().selector }}</code></span
+                            >
+                            <span
+                              >Import <code>{{ doc().importPath }}</code></span
+                            >
                           </div>
 
-                          <footer>
-                            <code>{{ doc().selector }}</code>
-                          </footer>
+                          <div class="j-generated-component-preview__code">
+                            <app-code-block
+                              label="Import"
+                              language="ts"
+                              [code]="doc().code.importCode"
+                            />
+                            <app-code-block
+                              label="Basic usage"
+                              language="html"
+                              [code]="doc().code.basic"
+                            />
+                            <app-code-block
+                              label="Example values"
+                              language="ts"
+                              [code]="doc().code.angular ?? ''"
+                            />
+                          </div>
                         </div>
-                      </div>
-
-                      <div class="j-generated-component-preview__meta">
-                        <span
-                          >Selector <code>{{ doc().selector }}</code></span
-                        >
-                        <span
-                          >Import <code>{{ doc().importPath }}</code></span
-                        >
-                      </div>
-
-                      <div class="j-generated-component-preview__code">
-                        <app-code-block
-                          label="Import"
-                          language="ts"
-                          [code]="doc().code.importCode"
-                        />
-                        <app-code-block
-                          label="Basic usage"
-                          language="html"
-                          [code]="doc().code.basic"
-                        />
-                      </div>
+                      }
+                    }
+                  } @placeholder {
+                    <div class="j-preview-stack" aria-label="Loading component preview">
+                      <j-skeleton variant="text" width="12rem" />
+                      <j-skeleton variant="card" />
                     </div>
                   }
-                }
-              } @placeholder {
-                <div class="j-preview-stack" aria-label="Loading component preview">
-                  <j-skeleton variant="text" width="12rem" />
-                  <j-skeleton variant="card" />
                 </div>
-              }
-            </div>
-          </div>
+              </div>
+              <div class="j-full-code" id="j-component-example-code">
+                <div class="j-code-header">
+                  <div class="j-code-tabs" role="tablist" aria-label="Example source files">
+                    @for (tab of codeTabs; track tab.value) {
+                      <button
+                        type="button"
+                        role="tab"
+                        [attr.aria-label]="tab.label"
+                        [attr.title]="tab.label"
+                        [attr.aria-selected]="featureCodeTab(example) === tab.value"
+                        [class.is-active]="featureCodeTab(example) === tab.value"
+                        (click)="setFeatureCodeTab(example, tab.value)"
+                      >
+                        @if (tab.icon) {
+                          <j-icon [name]="tab.icon" aria-hidden="true" />
+                        } @else {
+                          {{ tab.label }}
+                        }
+                      </button>
+                    }
+                  </div>
+                  <div class="j-example-toolbar" aria-label="Example code actions">
+                    <j-copy-button
+                      [text]="activeFeatureCode(example)"
+                      label="Copy"
+                      copiedLabel="Copied"
+                      ariaLabel="Copy active example code"
+                      icon="copy"
+                      iconOnly
+                    />
+                  </div>
+                </div>
+                <app-code-block
+                  [label]="activeCodeLabel(featureCodeTab(example))"
+                  [language]="featureCodeTab(example) === 'html' ? 'html' : 'ts'"
+                  [code]="activeFeatureCode(example)"
+                />
+              </div>
+            </section>
+          }
         } @else {
-          <div class="j-code-grid">
-            <app-code-block label="Import" language="ts" [code]="doc().code.importCode" />
-            <app-code-block label="Basic usage" language="html" [code]="doc().code.basic" />
-            @if (doc().code.variants) {
-              <app-code-block label="Variants" language="html" [code]="doc().code.variants ?? ''" />
-            }
-            @if (doc().code.sizes) {
-              <app-code-block label="Sizes" language="html" [code]="doc().code.sizes ?? ''" />
-            }
-            @if (doc().code.states) {
-              <app-code-block label="States" language="html" [code]="doc().code.states ?? ''" />
-            }
-            @if (doc().code.angular) {
-              <app-code-block
-                label="Angular example"
-                language="ts"
-                [code]="doc().code.angular ?? ''"
-              />
-            }
-          </div>
-        }
-      </section>
+          <section class="j-doc-opening-section" id="component-api-overview">
+            <h2>{{ doc().name }} API</h2>
+            <p>Public inputs, outputs, styling hooks, accessibility, and usage guidance.</p>
+          </section>
 
-      <section class="j-doc-section-block">
-        <h3>Usage</h3>
-        @if (doc().usage.length) {
-          <ul>
-            @for (item of doc().usage; track item) {
-              <li>{{ item }}</li>
-            }
-          </ul>
-        } @else {
-          <div class="j-doc-empty-detail">
-            <j-icon name="info" />
-            <p>No additional usage guidance is required for {{ doc().name }}.</p>
-          </div>
-        }
-      </section>
-
-      <section class="j-doc-grid-sections">
-        <div class="j-doc-section-block">
-          <h3>Variants</h3>
-          @if (doc().variants.length) {
-            <ul>
-              @for (item of doc().variants; track item) {
-                <li>{{ item }}</li>
-              }
-            </ul>
-          } @else {
-            <div class="j-doc-empty-detail">
-              <j-icon name="info" />
-              <p>{{ doc().name }} does not provide separate visual variants.</p>
-            </div>
-          }
-        </div>
-        <div class="j-doc-section-block">
-          <h3>Sizes</h3>
-          @if (doc().sizes.length) {
-            <ul>
-              @for (item of doc().sizes; track item) {
-                <li>{{ item }}</li>
-              }
-            </ul>
-          } @else {
-            <div class="j-doc-empty-detail">
-              <j-icon name="info" />
-              <p>{{ doc().name }} uses its natural or container-defined size.</p>
-            </div>
-          }
-        </div>
-        <div class="j-doc-section-block">
-          <h3>States</h3>
-          @if (doc().states.length) {
-            <ul>
-              @for (item of doc().states; track item) {
-                <li>{{ item }}</li>
-              }
-            </ul>
-          } @else {
-            <div class="j-doc-empty-detail">
-              <j-icon name="info" />
-              <p>No additional component-specific states are documented.</p>
-            </div>
-          }
-        </div>
-      </section>
-
-      @if (priorityGuidance(); as guide) {
-        <section class="j-doc-section-block">
-          <h3>Advanced example</h3>
-          <app-code-block label="Advanced usage" language="html" [code]="guide.advancedExample" />
-        </section>
-
-        <section class="j-doc-grid-sections j-priority-doc-grid">
-          <div class="j-doc-section-block">
-            <h3>Public methods</h3>
-            @if (guide.publicMethods.length) {
+          <section class="j-doc-section-block" id="component-usage">
+            <h3>Usage</h3>
+            @if (doc().usage.length) {
               <ul>
-                @for (item of guide.publicMethods; track item) {
-                  <li>
-                    <code>{{ item }}</code>
-                  </li>
+                @for (item of doc().usage; track item) {
+                  <li>{{ item }}</li>
                 }
               </ul>
             } @else {
               <div class="j-doc-empty-detail">
                 <j-icon name="info" />
-                <p>{{ doc().name }} has no imperative public methods; prefer inputs and outputs.</p>
+                <p>No additional usage guidance is required for {{ doc().name }}.</p>
               </div>
             }
-          </div>
-          <div class="j-doc-section-block">
-            <h3>Templates and slots</h3>
-            <ul>
-              @for (item of guide.templates; track item) {
-                <li>{{ item }}</li>
+          </section>
+
+          <section class="j-doc-grid-sections" id="component-variants">
+            <div class="j-doc-section-block">
+              <h3>Variants</h3>
+              @if (doc().variants.length) {
+                <ul>
+                  @for (item of doc().variants; track item) {
+                    <li>{{ item }}</li>
+                  }
+                </ul>
+              } @else {
+                <div class="j-doc-empty-detail">
+                  <j-icon name="info" />
+                  <p>{{ doc().name }} does not provide separate visual variants.</p>
+                </div>
               }
-            </ul>
-          </div>
-          <div class="j-doc-section-block">
-            <h3>Reactive Forms</h3>
-            <p>{{ guide.reactiveForms }}</p>
-          </div>
-          <div class="j-doc-section-block">
-            <h3>Validation states</h3>
-            <ul>
-              @for (item of guide.validationStates; track item) {
-                <li>{{ item }}</li>
+            </div>
+            <div class="j-doc-section-block">
+              <h3>Sizes</h3>
+              @if (doc().sizes.length) {
+                <ul>
+                  @for (item of doc().sizes; track item) {
+                    <li>{{ item }}</li>
+                  }
+                </ul>
+              } @else {
+                <div class="j-doc-empty-detail">
+                  <j-icon name="info" />
+                  <p>{{ doc().name }} uses its natural or container-defined size.</p>
+                </div>
               }
-            </ul>
-          </div>
-          <div class="j-doc-section-block">
-            <h3>Loading and disabled states</h3>
-            <ul>
-              @for (item of guide.loadingDisabledStates; track item) {
-                <li>{{ item }}</li>
+            </div>
+            <div class="j-doc-section-block">
+              <h3>States</h3>
+              @if (doc().states.length) {
+                <ul>
+                  @for (item of doc().states; track item) {
+                    <li>{{ item }}</li>
+                  }
+                </ul>
+              } @else {
+                <div class="j-doc-empty-detail">
+                  <j-icon name="info" />
+                  <p>No additional component-specific states are documented.</p>
+                </div>
               }
-            </ul>
-          </div>
-          <div class="j-doc-section-block">
-            <h3>Keyboard behaviour</h3>
-            <ul>
-              @for (item of guide.keyboardBehaviour; track item) {
-                <li>{{ item }}</li>
-              }
-            </ul>
-          </div>
-          <div class="j-doc-section-block">
-            <h3>Responsive behaviour</h3>
-            <p>{{ guide.responsiveBehaviour }}</p>
-          </div>
-          <div class="j-doc-section-block">
-            <h3>Dark-mode preview</h3>
-            <div class="j-dark-mode-preview j-dark">
-              <span><j-icon [name]="doc().icon" /></span>
-              <div>
-                <strong>{{ doc().name }}</strong>
-                <p>{{ guide.darkMode }}</p>
+            </div>
+          </section>
+
+          @if (priorityGuidance(); as guide) {
+            <section class="j-doc-section-block">
+              <h3>Advanced example</h3>
+              <app-code-block
+                label="Advanced usage"
+                language="html"
+                [code]="guide.advancedExample"
+              />
+            </section>
+
+            <section class="j-doc-grid-sections j-priority-doc-grid" id="component-advanced-api">
+              <div class="j-doc-section-block" id="component-methods">
+                <h3>Public methods</h3>
+                @if (guide.publicMethods.length) {
+                  <ul>
+                    @for (item of guide.publicMethods; track item) {
+                      <li>
+                        <code>{{ item }}</code>
+                      </li>
+                    }
+                  </ul>
+                } @else {
+                  <div class="j-doc-empty-detail">
+                    <j-icon name="info" />
+                    <p>
+                      {{ doc().name }} has no imperative public methods; prefer inputs and outputs.
+                    </p>
+                  </div>
+                }
               </div>
-            </div>
-          </div>
-        </section>
+              <div class="j-doc-section-block" id="component-templates">
+                <h3>Templates and slots</h3>
+                <ul>
+                  @for (item of guide.templates; track item) {
+                    <li>{{ item }}</li>
+                  }
+                </ul>
+              </div>
+              <div class="j-doc-section-block">
+                <h3>Reactive Forms</h3>
+                <p>{{ guide.reactiveForms }}</p>
+              </div>
+              <div class="j-doc-section-block">
+                <h3>Validation states</h3>
+                <ul>
+                  @for (item of guide.validationStates; track item) {
+                    <li>{{ item }}</li>
+                  }
+                </ul>
+              </div>
+              <div class="j-doc-section-block">
+                <h3>Loading and disabled states</h3>
+                <ul>
+                  @for (item of guide.loadingDisabledStates; track item) {
+                    <li>{{ item }}</li>
+                  }
+                </ul>
+              </div>
+              <div class="j-doc-section-block">
+                <h3>Keyboard behaviour</h3>
+                <ul>
+                  @for (item of guide.keyboardBehaviour; track item) {
+                    <li>{{ item }}</li>
+                  }
+                </ul>
+              </div>
+              <div class="j-doc-section-block">
+                <h3>Responsive behaviour</h3>
+                <p>{{ guide.responsiveBehaviour }}</p>
+              </div>
+              <div class="j-doc-section-block">
+                <h3>Dark-mode preview</h3>
+                <div class="j-dark-mode-preview j-dark">
+                  <span><j-icon [name]="doc().icon" /></span>
+                  <div>
+                    <strong>{{ doc().name }}</strong>
+                    <p>{{ guide.darkMode }}</p>
+                  </div>
+                </div>
+              </div>
+            </section>
 
-        <section class="j-doc-grid-sections">
-          <div class="j-doc-section-block">
-            <h3>Common real-world example</h3>
-            <p>{{ guide.realWorldExample }}</p>
-          </div>
-          <div class="j-doc-section-block">
-            <h3>Troubleshooting</h3>
-            <ul>
-              @for (item of guide.troubleshooting; track item) {
-                <li>{{ item }}</li>
-              }
-            </ul>
-          </div>
-        </section>
-      }
-
-      <section class="j-doc-section-block">
-        <h3>Props / Inputs</h3>
-        @if (doc().inputs.length) {
-          <div class="j-table-wrap">
-            <table class="j-api-table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Type</th>
-                  <th>Default</th>
-                  <th>Description</th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (row of doc().inputs; track row.name) {
-                  <tr>
-                    <td>
-                      <code>{{ row.name }}</code>
-                    </td>
-                    <td>{{ row.type }}</td>
-                    <td>
-                      <code>{{ row.defaultValue }}</code>
-                    </td>
-                    <td>{{ row.description }}</td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          </div>
-        } @else {
-          <div class="j-doc-empty-detail">
-            <j-icon name="info" />
-            <p>
-              {{ doc().name }} does not expose additional component-specific inputs. Use its
-              documented selector and projected content.
-            </p>
-          </div>
-        }
-      </section>
-
-      <section class="j-doc-section-block">
-        <h3>Events / Outputs</h3>
-        @if (doc().outputs.length) {
-          <div class="j-table-wrap">
-            <table class="j-api-table">
-              <thead>
-                <tr>
-                  <th>Event</th>
-                  <th>Payload</th>
-                  <th>Description</th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (row of doc().outputs; track row.event) {
-                  <tr>
-                    <td>
-                      <code>{{ row.event }}</code>
-                    </td>
-                    <td>{{ row.payload }}</td>
-                    <td>{{ row.description }}</td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          </div>
-        } @else {
-          <div class="j-doc-empty-detail">
-            <j-icon name="info" />
-            <p>{{ doc().name }} does not emit component-specific events.</p>
-          </div>
-        }
-      </section>
-
-      <section class="j-doc-section-block">
-        <h3>CSS variables</h3>
-        @if ((doc().cssVariables?.length ?? 0) > 0) {
-          <div class="j-table-wrap">
-            <table class="j-api-table">
-              <thead>
-                <tr>
-                  <th>Variable</th>
-                  <th>Default / fallback</th>
-                  <th>Description</th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (row of doc().cssVariables ?? []; track row.variable) {
-                  <tr>
-                    <td>
-                      <code>{{ row.variable }}</code>
-                    </td>
-                    <td>
-                      <code>{{ row.fallback }}</code>
-                    </td>
-                    <td>{{ row.description }}</td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          </div>
-        } @else {
-          <div class="j-doc-empty-detail">
-            <j-icon name="palette" />
-            <p>
-              {{ doc().name }} has no component-specific CSS variables. It inherits the shared JRNG
-              UI semantic theme tokens.
-            </p>
-          </div>
-        }
-      </section>
-
-      <section class="j-doc-grid-sections">
-        <div class="j-doc-section-block">
-          <h3>Accessibility</h3>
-          @if (doc().accessibility.length) {
-            <ul>
-              @for (item of doc().accessibility; track item) {
-                <li>{{ item }}</li>
-              }
-            </ul>
-          } @else {
-            <div class="j-doc-empty-detail">
-              <j-icon name="accessibility" />
-              <p>No additional accessibility requirements beyond the documented usage.</p>
-            </div>
+            <section class="j-doc-grid-sections">
+              <div class="j-doc-section-block">
+                <h3>Common real-world example</h3>
+                <p>{{ guide.realWorldExample }}</p>
+              </div>
+              <div class="j-doc-section-block">
+                <h3>Troubleshooting</h3>
+                <ul>
+                  @for (item of guide.troubleshooting; track item) {
+                    <li>{{ item }}</li>
+                  }
+                </ul>
+              </div>
+            </section>
           }
-        </div>
-        <div class="j-doc-section-block">
-          <h3>Best Practices</h3>
-          @if (doc().bestPractices.length) {
-            <ul>
-              @for (item of doc().bestPractices; track item) {
-                <li>{{ item }}</li>
-              }
-            </ul>
-          } @else {
-            <div class="j-doc-empty-detail">
-              <j-icon name="lightbulb" />
-              <p>No additional component-specific best practices are required.</p>
-            </div>
-          }
-        </div>
-      </section>
 
-      @if (doc().commonMistakes?.length) {
-        <section class="j-doc-section-block">
-          <h3>Common mistakes</h3>
-          <ul>
-            @for (item of doc().commonMistakes; track item) {
-              <li>{{ item }}</li>
+          @if (!priorityGuidance()) {
+            <section class="j-doc-grid-sections" id="component-advanced-api">
+              <div class="j-doc-section-block" id="component-methods">
+                <h3>Public methods</h3>
+                @if (doc().publicMethods?.length) {
+                  <ul>
+                    @for (item of doc().publicMethods ?? []; track item) {
+                      <li>
+                        <code>{{ item }}</code>
+                      </li>
+                    }
+                  </ul>
+                } @else {
+                  <p>No imperative method is required; prefer inputs and outputs.</p>
+                }
+              </div>
+              <div class="j-doc-section-block" id="component-templates">
+                <h3>Templates and content projection</h3>
+                <ul>
+                  @for (item of doc().templates ?? []; track item) {
+                    <li>{{ item }}</li>
+                  }
+                </ul>
+              </div>
+            </section>
+          }
+
+          <section class="j-doc-grid-sections" id="component-behaviour-guidance">
+            <div class="j-doc-section-block">
+              <h3>Keyboard support</h3>
+              <ul>
+                @for (item of doc().keyboard ?? []; track item) {
+                  <li>{{ item }}</li>
+                }
+              </ul>
+            </div>
+            <div class="j-doc-section-block">
+              <h3>Responsive behaviour</h3>
+              <ul>
+                @for (item of doc().responsive ?? []; track item) {
+                  <li>{{ item }}</li>
+                }
+              </ul>
+            </div>
+            <div class="j-doc-section-block">
+              <h3>Edge cases and limitations</h3>
+              <ul>
+                @for (item of doc().limitations ?? []; track item) {
+                  <li>{{ item }}</li>
+                }
+              </ul>
+            </div>
+            <div class="j-doc-section-block">
+              <h3>Related components</h3>
+              <ul>
+                @for (item of doc().relatedComponents ?? []; track item) {
+                  <li>{{ item }}</li>
+                } @empty {
+                  <li>See components in the same documentation category.</li>
+                }
+              </ul>
+            </div>
+            <div class="j-doc-section-block">
+              <h3>Testing notes</h3>
+              <ul>
+                @for (item of doc().testingNotes ?? []; track item) {
+                  <li>{{ item }}</li>
+                }
+              </ul>
+            </div>
+          </section>
+
+          <section class="j-doc-section-block" id="component-api">
+            <h3>Props / Inputs</h3>
+            @if (doc().inputs.length) {
+              <div class="j-table-wrap">
+                <table class="j-api-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Default</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (row of doc().inputs; track row.name) {
+                      <tr>
+                        <td>
+                          <code>{{ row.name }}</code>
+                        </td>
+                        <td>{{ row.type }}</td>
+                        <td>
+                          <code>{{ row.defaultValue }}</code>
+                        </td>
+                        <td>{{ row.description }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            } @else {
+              <div class="j-doc-empty-detail">
+                <j-icon name="info" />
+                <p>
+                  {{ doc().name }} does not expose additional component-specific inputs. Use its
+                  documented selector and projected content.
+                </p>
+              </div>
             }
-          </ul>
-        </section>
-      }
-    </article>
+          </section>
+
+          <section class="j-doc-section-block" id="component-events">
+            <h3>Events / Outputs</h3>
+            @if (doc().outputs.length) {
+              <div class="j-table-wrap">
+                <table class="j-api-table">
+                  <thead>
+                    <tr>
+                      <th>Event</th>
+                      <th>Payload</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (row of doc().outputs; track row.event) {
+                      <tr>
+                        <td>
+                          <code>{{ row.event }}</code>
+                        </td>
+                        <td>{{ row.payload }}</td>
+                        <td>{{ row.description }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            } @else {
+              <div class="j-doc-empty-detail">
+                <j-icon name="info" />
+                <p>{{ doc().name }} does not emit component-specific events.</p>
+              </div>
+            }
+          </section>
+
+          <section class="j-doc-section-block" id="component-css-variables">
+            <h3>CSS variables</h3>
+            @if ((doc().cssVariables?.length ?? 0) > 0) {
+              <div class="j-table-wrap">
+                <table class="j-api-table">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Default / fallback</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (row of doc().cssVariables ?? []; track row.variable) {
+                      <tr>
+                        <td>
+                          <code>{{ row.variable }}</code>
+                        </td>
+                        <td>
+                          <code>{{ row.fallback }}</code>
+                        </td>
+                        <td>{{ row.description }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            } @else {
+              <div class="j-doc-empty-detail">
+                <j-icon name="palette" />
+                <p>
+                  {{ doc().name }} has no component-specific CSS variables. It inherits the shared
+                  JRNG UI semantic theme tokens.
+                </p>
+              </div>
+            }
+          </section>
+
+          <section class="j-doc-grid-sections j-api-support-grid">
+            <div class="j-doc-section-block" id="component-accessibility">
+              <h3>Accessibility</h3>
+              @if (doc().accessibility.length) {
+                <ul>
+                  @for (item of doc().accessibility; track item) {
+                    <li>{{ item }}</li>
+                  }
+                </ul>
+              } @else {
+                <div class="j-doc-empty-detail">
+                  <j-icon name="accessibility" />
+                  <p>No additional accessibility requirements beyond the documented usage.</p>
+                </div>
+              }
+            </div>
+            <div class="j-doc-section-block" id="component-best-practices">
+              <h3>Best Practices</h3>
+              @if (doc().bestPractices.length) {
+                <ul>
+                  @for (item of doc().bestPractices; track item) {
+                    <li>{{ item }}</li>
+                  }
+                </ul>
+              } @else {
+                <div class="j-doc-empty-detail">
+                  <j-icon name="lightbulb" />
+                  <p>No additional component-specific best practices are required.</p>
+                </div>
+              }
+            </div>
+          </section>
+
+          @if (doc().commonMistakes?.length) {
+            <section class="j-doc-section-block">
+              <h3>Common mistakes</h3>
+              <ul>
+                @for (item of doc().commonMistakes; track item) {
+                  <li>{{ item }}</li>
+                }
+              </ul>
+            </section>
+          }
+        }
+      </article>
+      <aside class="j-component-contents" aria-label="On this page">
+        @for (item of contentsItems(); track item.id) {
+          <button
+            type="button"
+            [class.is-active]="activeContentsId() === item.id"
+            [class.is-nested]="item.level === 1"
+            [attr.aria-current]="activeContentsId() === item.id ? 'location' : null"
+            (click)="scrollToContents(item.id)"
+          >
+            {{ item.label }}
+          </button>
+        }
+      </aside>
+    </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ComponentDetailViewComponent {
+  private readonly documentRef = inject(DOCUMENT);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   private readonly toast = inject(JrToastService);
   private readonly confirmation = inject(JConfirmationService);
   private readonly dialogService = inject(JrDialogService);
   private readonly tour = inject(JTourService);
 
   readonly doc = input.required<ComponentDoc>();
+  readonly detailViewTab = signal<'features' | 'api'>('features');
+  readonly activeContentsId = signal('component-import');
 
   priorityGuidance(): PriorityComponentGuidance | null {
     return priorityComponentGuidance[this.doc().slug] ?? null;
   }
-  readonly activeTab = signal<DetailTab>('preview');
+  readonly featureCodeTabs = signal<Readonly<Record<string, DetailCodeTab>>>({});
+  readonly codeTabs: readonly { label: string; value: DetailCodeTab; icon?: JIconName }[] = [
+    { label: 'HTML', value: 'html' },
+    { label: 'TS', value: 'ts' },
+    { label: 'SCSS', value: 'scss' },
+    { label: 'Data', value: 'data', icon: 'database' },
+  ];
+  readonly featureExamples = computed<readonly DetailFeatureExample[]>(() => {
+    const doc = this.doc();
+    if (doc.slug === 'table') {
+      return TABLE_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+    }
+    if (doc.slug === 'text-expand') {
+      return TEXT_EXPAND_FEATURE_EXAMPLES.map((example, index) =>
+        example.key === 'characters'
+          ? { ...example, index, ...demoSources['text-expand-basic-demo'] }
+          : { ...example, index },
+      );
+    }
+    if (doc.slug === 'button') {
+      return BUTTON_FEATURE_EXAMPLES.map((example, index) =>
+        example.key === 'basic'
+          ? { ...example, index, ...demoSources['button-basic-demo'] }
+          : { ...example, index },
+      );
+    }
+    if (doc.slug === 'avatar') {
+      return AVATAR_FEATURE_EXAMPLES.map((example, index) =>
+        example.key === 'zoom'
+          ? { ...example, index, ...demoSources['avatar-zoom-demo'] }
+          : { ...example, index },
+      );
+    }
+    if (doc.slug === 'loader') {
+      return LOADER_FEATURE_EXAMPLES.map((example, index) =>
+        example.key === 'basic'
+          ? { ...example, index, ...demoSources['loader-types-demo'] }
+          : { ...example, index },
+      );
+    }
+    if (doc.slug === 'card') {
+      return CARD_FEATURE_EXAMPLES.map((example, index) =>
+        example.key === 'metric'
+          ? { ...example, index, ...demoSources['card-metric-demo'] }
+          : { ...example, index },
+      );
+    }
+    const keys = FEATURE_VARIANT_KEYS[doc.slug];
+
+    if (!keys?.length) {
+      const examples: DetailFeatureExample[] = [
+        {
+          name: 'Basic',
+          details: doc.whenToUse,
+          key: 'basic',
+          index: 0,
+          html: doc.code.basic,
+        },
+        {
+          name: 'Real-world placement',
+          details: doc.usage[0] ?? `Place ${doc.name} in a focused application workflow.`,
+          key: 'real-world',
+          index: 1,
+          html: doc.code.basic,
+        },
+        {
+          name: 'Accessibility',
+          details: doc.accessibility[0] ?? 'Provide a clear accessible name and test keyboard use.',
+          key: 'accessibility',
+          index: 2,
+          html: doc.code.basic,
+        },
+      ];
+      const stateInput = doc.inputs.find((row) =>
+        /^(?:disabled|loading|readonly|invalid)$/.test(row.name),
+      );
+      if (stateInput) {
+        examples.push({
+          name: `${stateInput.name.charAt(0).toUpperCase()}${stateInput.name.slice(1)} state`,
+          details: `Use the public ${stateInput.name} input to communicate this state consistently.`,
+          key: stateInput.name,
+          index: 3,
+          html: this.addExampleBooleanInput(doc.code.basic, stateInput.name),
+        });
+      }
+      return examples;
+    }
+
+    return keys.map((key, index) => ({
+      name: key.charAt(0).toUpperCase() + key.slice(1),
+      details: doc.variants[index] ?? doc.whenToUse,
+      key,
+      index,
+      html: variantExampleHtml(doc, key),
+    }));
+  });
+  readonly contentsItems = computed<readonly DetailContentsItem[]>(() => {
+    if (this.detailViewTab() === 'features') {
+      return [
+        { id: 'component-overview', label: 'Overview', level: 0 },
+        { id: 'component-usage-guidance', label: 'When to Use', level: 0 },
+        { id: 'component-import', label: 'Import', level: 0 },
+        ...this.featureExamples().map((example) => ({
+          id: `component-preview-${example.key}`,
+          label: example.name,
+          level: 0 as const,
+        })),
+      ];
+    }
+
+    const items: DetailContentsItem[] = [
+      { id: 'component-api-overview', label: this.doc().name, level: 0 },
+      { id: 'component-api', label: 'Properties', level: 1 },
+      { id: 'component-events', label: 'Events', level: 1 },
+    ];
+    items.push(
+      { id: 'component-methods', label: 'Methods', level: 1 },
+      { id: 'component-templates', label: 'Templates', level: 1 },
+    );
+    items.push(
+      { id: 'component-css-variables', label: 'CSS variables', level: 1 },
+      { id: 'component-accessibility', label: 'Accessibility', level: 1 },
+    );
+    return items;
+  });
+
+  constructor() {
+    effect(() => {
+      this.doc();
+      this.detailViewTab.set('features');
+      this.featureCodeTabs.set({});
+    });
+    effect(() => {
+      this.activeContentsId.set(this.contentsItems()[0]?.id ?? '');
+    });
+    afterRenderEffect((onCleanup) => {
+      const items = this.contentsItems();
+      if (!this.isBrowser) {
+        return;
+      }
+      const Observer = this.documentRef.defaultView?.IntersectionObserver;
+      if (!Observer) {
+        return;
+      }
+
+      const observer = new Observer(
+        (entries) => {
+          const visible = entries
+            .filter((entry) => entry.isIntersecting)
+            .sort((left, right) => left.boundingClientRect.top - right.boundingClientRect.top);
+          const id = visible[0]?.target.id;
+          if (id) {
+            this.activeContentsId.set(id);
+          }
+        },
+        { rootMargin: '-12% 0px -72% 0px', threshold: [0, 0.25, 1] },
+      );
+
+      for (const item of items) {
+        const element = this.documentRef.getElementById(item.id);
+        if (element) {
+          observer.observe(element);
+        }
+      }
+      onCleanup(() => observer.disconnect());
+    });
+  }
+
+  scrollToContents(id: string): void {
+    this.activeContentsId.set(id);
+    this.documentRef.getElementById(id)?.scrollIntoView({ block: 'start' });
+  }
+
+  addExampleBooleanInput(template: string, inputName: string): string {
+    return template.replace(/^(\s*<j-[a-z0-9-]+)/, `$1 ${inputName}`);
+  }
+  readonly tableVariants: readonly JTableVariant[] = [
+    'default',
+    'striped',
+    'bordered',
+    'minimal',
+    'card',
+  ];
+  readonly tableDensities = ['compact', 'comfortable', 'spacious'] as const;
+  readonly productDescription =
+    'A durable task light with adjustable brightness, a compact base, and a warm reading mode for desks and bedside tables. The metal arm rotates smoothly and the controls remain easy to reach.';
+  readonly comment =
+    'The release is ready after the final keyboard, responsive, and dark-theme checks are complete. Please include the migration note before publishing.';
+  readonly policySummary =
+    'Workspace records are retained according to the selected plan. Administrators can export, restrict, or delete records according to their organization policy.';
+  readonly projectedSummary =
+    'The component examples now use focused scenarios and accessible keyboard behavior.';
+  readonly dynamicSummary =
+    'This summary can be replaced by API data and the collapsed output updates automatically.';
+
+  textExpandValue(key: string): string {
+    if (key === 'short') return 'Ready to publish.';
+    if (key === 'dynamic') return this.dynamicSummary;
+    if (key === 'comment' || key === 'labels') return this.comment;
+    if (key === 'policy') return this.policySummary;
+    return this.productDescription;
+  }
+
+  activeFeatureCode(example: DetailFeatureExample): string {
+    const tab = this.featureCodeTab(example);
+    if (tab === 'html') return example.html;
+    if (tab === 'ts' && example.ts) return example.ts;
+    if (tab === 'scss') return example.scss ?? '// This example uses only JRNG UI theme tokens.';
+    return this.activeCode(tab);
+  }
+
+  featureCodeTab(example: DetailFeatureExample): DetailCodeTab {
+    return this.featureCodeTabs()[example.key] ?? 'html';
+  }
+
+  setFeatureCodeTab(example: DetailFeatureExample, tab: DetailCodeTab): void {
+    this.featureCodeTabs.update((tabs) => ({ ...tabs, [example.key]: tab }));
+  }
+
+  activeCode(tab: DetailCodeTab): string {
+    const code = this.doc().code;
+    if (tab === 'html') {
+      return [
+        code.basic,
+        code.variants ? `<!-- Variants -->\n${code.variants}` : '',
+        code.sizes ? `<!-- Sizes -->\n${code.sizes}` : '',
+        code.states ? `<!-- States -->\n${code.states}` : '',
+      ]
+        .filter(Boolean)
+        .join('\n\n');
+    }
+    if (tab === 'scss') {
+      return '// This example uses only JRNG UI theme tokens.';
+    }
+    if (tab === 'data') {
+      return code.angular || '// This example does not require additional data.';
+    }
+    const className = `${this.doc().name.replace(/[^a-zA-Z0-9]/g, '')}ExampleComponent`;
+    const body = code.angular
+      ? code.angular
+          .split('\n')
+          .map((line) => `  ${line}`)
+          .join('\n')
+      : '  // No additional component logic is required.';
+    return `${code.importCode}\n\nexport class ${className} {\n${body}\n}`;
+  }
+
+  activeCodeLabel(tab: DetailCodeTab): string {
+    return tab === 'html'
+      ? 'HTML template'
+      : tab === 'ts'
+        ? 'Angular component'
+        : tab === 'scss'
+          ? 'Example styles'
+          : 'Example data';
+  }
+  readonly accordionVariants: readonly JAccordionVariant[] = ['default', 'separated', 'minimal'];
+  readonly buttonVariants: readonly JButtonVariant[] = [
+    'filled',
+    'outline',
+    'ghost',
+    'soft',
+    'link',
+  ];
+  readonly avatarPeople = [
+    { label: 'Avery Reed', image: '/assets/avatars/avery.svg' },
+    { label: 'Morgan Kim', image: '/assets/avatars/morgan.svg' },
+    { label: 'Jordan Lee', image: '/assets/avatars/jordan.svg' },
+    { label: 'Sam Rivera' },
+    { label: 'Taylor Brooks' },
+  ] as const;
+
+  buttonExampleLabel(key: string): string {
+    const labels: Record<string, string> = {
+      basic: 'Save changes',
+      outline: 'Export',
+      text: 'Learn more',
+      link: 'View details',
+      raised: 'Create project',
+      pill: 'Follow',
+      'icon-before': 'Save',
+      'icon-after': 'Continue',
+      'icon-only': '',
+      loading: 'Saving',
+      disabled: 'Publish',
+      'full-width': 'Continue',
+      badge: 'Notifications',
+      destructive: 'Delete project',
+    };
+    return labels[key] ?? 'Action';
+  }
+
+  buttonExampleVariant(key: string): JButtonVariant {
+    if (key === 'outline') return 'outline';
+    if (key === 'text') return 'text';
+    if (key === 'link') return 'link';
+    return 'filled';
+  }
+
+  buttonExampleIcon(key: string): string {
+    if (key === 'icon-before') return 'save';
+    if (key === 'icon-after') return 'arrow-right';
+    if (key === 'icon-only') return 'settings';
+    if (key === 'badge') return 'bell';
+    return '';
+  }
+
+  loaderExampleType(key: string): JLoaderVariant {
+    const types: readonly JLoaderVariant[] = [
+      'spinner',
+      'dots',
+      'pulse',
+      'bars',
+      'ring',
+      'dual-ring',
+      'wave',
+      'bounce',
+      'orbit',
+      'typing',
+    ];
+    return types.includes(key as JLoaderVariant) ? (key as JLoaderVariant) : 'spinner';
+  }
+  readonly inputVariants: readonly JInputVariant[] = ['outlined', 'filled'];
+  readonly paginatorVariants: readonly JPaginatorVariant[] = ['default', 'simple'];
+  readonly progressBarVariants: readonly JProgressBarVariant[] = [
+    'default',
+    'segmented',
+    'labeled',
+  ];
+  readonly breadcrumbVariants: readonly JBreadcrumbVariant[] = ['default', 'contained', 'steps'];
+  readonly emptyStateVariants: readonly JEmptyStateVariant[] = ['default', 'inline', 'panel'];
+  readonly pageHeaderVariants: readonly JPageHeaderVariant[] = ['default', 'stacked', 'centered'];
+  readonly stepperVariants: readonly JStepperVariant[] = ['default', 'rail', 'progress'];
+  readonly tabsVariants: readonly JTabsVariant[] = ['default', 'pills', 'segmented'];
+  readonly timelineVariants: readonly JTimelineVariant[] = ['default', 'activity', 'alternating'];
   readonly dialogOpen = signal(false);
   readonly drawerOpen = signal(false);
   readonly popoverOpen = signal(false);
@@ -2142,6 +3752,18 @@ export class ComponentDetailViewComponent {
   brandColor = '#4f46e5';
   dueDate: Date | null = new Date(2026, 6, 18);
   pickerRange: readonly Date[] = [new Date(2026, 6, 12), new Date(2026, 6, 19)];
+  readonly datePresets: readonly JDatePickerPreset[] = [
+    {
+      label: 'Release week',
+      start: new Date(2026, 6, 13),
+      end: new Date(2026, 6, 17),
+    },
+    {
+      label: 'July reporting',
+      start: new Date(2026, 6, 1),
+      end: new Date(2026, 6, 31),
+    },
+  ];
   floatEmail = 'avery@example.com';
   quantity = 3;
   budget = 2500;
@@ -2268,6 +3890,34 @@ export class ComponentDetailViewComponent {
     { id: 'theme', label: 'Toggle theme', description: 'Switch color mode', group: 'Settings' },
   ] as const;
   readonly dataViewItems = ['Design system', 'Documentation portal', 'Admin workspace'];
+  readonly fileBrowserItems: readonly JFileBrowserItem[] = [
+    { id: 'invoices', name: 'Invoices', kind: 'folder', modifiedAt: '2026-07-14' },
+    {
+      id: 'report',
+      name: 'Quarterly report.xlsx',
+      kind: 'file',
+      size: 245760,
+      modifiedAt: '2026-07-12',
+    },
+    {
+      id: 'agreement',
+      name: 'Signed agreement.pdf',
+      kind: 'file',
+      size: 845120,
+      modifiedAt: '2026-07-10',
+    },
+    { id: 'logo', name: 'Brand mark.png', kind: 'file', size: 56320, modifiedAt: '2026-07-08' },
+  ];
+  readonly fileBrowserBreadcrumbs = [
+    { id: 'home', label: 'Home' },
+    { id: 'clients', label: 'Clients' },
+    { id: 'acme', label: 'Acme Pty Ltd' },
+  ] as const;
+  readonly fileBrowserActions = [
+    { id: 'download', label: 'Download', selection: 'any' as const },
+    { id: 'delete', label: 'Delete', selection: 'any' as const },
+  ];
+  fileBrowserSelection: readonly string[] = ['report'];
   readonly galleryItems = [
     {
       src: '/assets/gallery/alpine-dawn.png',
@@ -2355,6 +4005,11 @@ export class ComponentDetailViewComponent {
     },
     { key: 'archive', label: 'Archive', leaf: true },
   ] as const;
+  readonly lazyTreeNodes = [
+    { key: 'shared', label: 'Shared workspace', leaf: false },
+    { key: 'archive', label: 'Archive', leaf: true },
+  ] as const;
+  readonly tableLoadError = new Error('Client records could not be loaded.');
   readonly treeColumns: readonly JTableColumn[] = [
     { field: 'label', header: 'Name' },
     { field: 'type', header: 'Type' },
@@ -2373,6 +4028,139 @@ export class ComponentDetailViewComponent {
         { key: 'view', label: 'View' },
         { key: 'delete', label: 'Delete', severity: 'danger' },
       ],
+    },
+  ];
+  readonly clientColumns: readonly JTableColumn[] = [
+    {
+      field: 'code',
+      header: 'Client code',
+      sortable: true,
+      filterable: true,
+      resizable: true,
+      minWidth: '9rem',
+      filter: {
+        placeholder: 'Search code',
+        operators: ['contains', 'startsWith', 'equals', 'notEquals'],
+      },
+    },
+    {
+      field: 'legalName',
+      header: 'Legal name',
+      sortable: true,
+      filterable: true,
+      resizable: true,
+      minWidth: '13rem',
+      filter: {
+        placeholder: 'Search name',
+        operators: ['contains', 'startsWith', 'endsWith', 'equals', 'notContains'],
+      },
+    },
+    {
+      field: 'tradingName',
+      header: 'Trading name',
+      filterable: true,
+      minWidth: '12rem',
+      filter: { operators: ['contains', 'equals', 'notEquals'] },
+    },
+    {
+      field: 'parentClient',
+      header: 'Parent client',
+      filterable: true,
+      minWidth: '11rem',
+      filter: { operators: ['contains', 'equals', 'isEmpty', 'isNotEmpty'] },
+    },
+    {
+      field: 'billingType',
+      header: 'Billing type',
+      sortable: true,
+      filterable: true,
+      minWidth: '10rem',
+      filter: {
+        type: 'select',
+        operators: ['equals', 'notEquals'],
+        options: [
+          { label: 'Monthly', value: 'Monthly' },
+          { label: 'Prepaid', value: 'Prepaid' },
+          { label: 'Project', value: 'Project' },
+        ],
+      },
+    },
+    {
+      field: 'active',
+      header: 'Active',
+      type: 'boolean',
+      filterable: true,
+      align: 'center',
+      minWidth: '8rem',
+      filter: { type: 'boolean', operators: ['equals', 'notEquals'] },
+    },
+    {
+      field: 'actions',
+      header: 'Actions',
+      type: 'action',
+      minWidth: '8rem',
+      actions: [
+        { key: 'view', label: 'View client' },
+        { key: 'edit', label: 'Edit client' },
+        { key: 'archive', label: 'Archive', severity: 'danger' },
+      ],
+    },
+  ];
+
+  readonly clientRows = [
+    {
+      id: 1,
+      code: 'CL-10018',
+      legalName: 'Northstar Logistics Ltd.',
+      tradingName: 'Northstar',
+      parentClient: 'Northstar Group',
+      billingType: 'Monthly',
+      active: true,
+    },
+    {
+      id: 2,
+      code: 'CL-10024',
+      legalName: 'Harbor & Pine Retail Co.',
+      tradingName: 'Harbor & Pine',
+      parentClient: '',
+      billingType: 'Prepaid',
+      active: true,
+    },
+    {
+      id: 3,
+      code: 'CL-10031',
+      legalName: 'Summit Field Services',
+      tradingName: 'Summit Field',
+      parentClient: 'Summit Holdings',
+      billingType: 'Project',
+      active: false,
+    },
+    {
+      id: 4,
+      code: 'CL-10042',
+      legalName: 'Blue Cedar Technologies',
+      tradingName: 'Blue Cedar',
+      parentClient: '',
+      billingType: 'Monthly',
+      active: true,
+    },
+    {
+      id: 5,
+      code: 'CL-10056',
+      legalName: 'Crescent Energy Partners',
+      tradingName: 'Crescent Energy',
+      parentClient: 'Crescent Group',
+      billingType: 'Project',
+      active: true,
+    },
+    {
+      id: 6,
+      code: 'CL-10063',
+      legalName: 'Oakline Property Services',
+      tradingName: 'Oakline',
+      parentClient: '',
+      billingType: 'Prepaid',
+      active: false,
     },
   ];
 
@@ -2569,4 +4357,31 @@ export class ComponentDetailViewComponent {
       position: 'bottom-right',
     });
   }
+}
+
+function variantExampleHtml(doc: ComponentDoc, key: string): string {
+  const source = doc.code.variants ?? '';
+  const markerIndex = Math.max(
+    source.indexOf(`variant="${key}"`),
+    source.indexOf(`variant='${key}'`),
+  );
+
+  if (markerIndex >= 0) {
+    const start = source.lastIndexOf('<', markerIndex);
+    const opening = source.slice(start).match(/^<([\w-]+)[^>]*>/)?.[0] ?? '';
+    const tagName = opening.match(/^<([\w-]+)/)?.[1];
+
+    if (opening.endsWith('/>')) {
+      return opening;
+    }
+    if (tagName) {
+      const closingTag = `</${tagName}>`;
+      const closingIndex = source.indexOf(closingTag, markerIndex);
+      if (closingIndex >= 0) {
+        return source.slice(start, closingIndex + closingTag.length).trim();
+      }
+    }
+  }
+
+  return doc.code.basic.replace(/^<([\w-]+)/, `<$1 variant="${key}"`);
 }

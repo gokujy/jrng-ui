@@ -14,7 +14,7 @@ import {
 
 export type JTreeSelectionMode = 'single' | 'multiple' | 'checkbox' | 'none';
 
-export interface JTreeNode {
+export interface JTreeNode<T = unknown> {
   readonly key?: string;
   readonly label: string;
   readonly icon?: string;
@@ -24,9 +24,11 @@ export interface JTreeNode {
   readonly selectable?: boolean;
   readonly leaf?: boolean;
   readonly loading?: boolean;
-  readonly data?: unknown;
-  readonly children?: readonly JTreeNode[];
+  readonly data?: T;
+  readonly children?: readonly JTreeNode<T>[];
 }
+
+export type TreeNode<T = unknown> = JTreeNode<T>;
 
 export interface JTreeNodeContext {
   readonly $implicit: JTreeNode;

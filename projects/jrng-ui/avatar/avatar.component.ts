@@ -1,5 +1,16 @@
-import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnChanges,
+  SimpleChanges,
+  booleanAttribute,
+  computed,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
+import { JImagePreviewComponent } from 'jrng-ui/image-preview';
 import { JSize } from 'jrng-ui/core';
 
 export type JAvatarShape = 'circle' | 'square';
@@ -7,7 +18,7 @@ export type JAvatarStatus = 'online' | 'offline' | 'away' | 'busy' | 'none';
 
 @Component({
   selector: 'j-avatar',
-  imports: [],
+  imports: [JImagePreviewComponent],
   template: `
     <span
       [class]="avatarClasses()"
@@ -15,7 +26,15 @@ export type JAvatarStatus = 'online' | 'offline' | 'away' | 'busy' | 'none';
       data-jc-section="root"
       data-jc-extend="image fallback status"
       [attr.data-j-active]="status() !== 'none' ? 'true' : null"
-      [attr.aria-label]="ariaLabel() || label() || initials() || null"
+      [class.j-avatar--zoomable]="canZoom() && showImage()"
+      [attr.role]="canZoom() && showImage() ? 'button' : null"
+      [attr.tabindex]="canZoom() && showImage() ? 0 : null"
+      [attr.aria-label]="
+        canZoom() && showImage() ? zoomAriaLabel() : ariaLabel() || label() || initials() || null
+      "
+      [attr.aria-haspopup]="canZoom() && showImage() && zoomOverlay() ? 'dialog' : null"
+      (click)="handleZoom($event)"
+      (keydown)="handleZoomKeydown($event)"
     >
       @if (showImage()) {
         <img
@@ -39,6 +58,13 @@ export type JAvatarStatus = 'online' | 'offline' | 'away' | 'busy' | 'none';
       }
       <ng-content></ng-content>
     </span>
+    <j-image-preview
+      [src]="image()"
+      [alt]="ariaLabel() || label() || initials()"
+      [visible]="previewVisible()"
+      (visibleChange)="previewVisible.set($event)"
+      (closed)="handlePreviewClosed()"
+    />
   `,
   styles: [
     `
@@ -85,6 +111,15 @@ export type JAvatarStatus = 'online' | 'offline' | 'away' | 'busy' | 'none';
         width: 100%;
       }
 
+      .j-avatar--zoomable {
+        cursor: zoom-in;
+      }
+
+      .j-avatar--zoomable:focus-visible {
+        box-shadow: var(--j-focus-ring);
+        outline: none;
+      }
+
       .j-avatar__label {
         letter-spacing: 0;
         line-height: 1;
@@ -119,7 +154,8 @@ export type JAvatarStatus = 'online' | 'offline' | 'away' | 'busy' | 'none';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class JAvatarComponent {
+export class JAvatarComponent implements OnChanges {
+  private zoomTrigger: HTMLElement | null = null;
   readonly label = input('');
   readonly image = input('');
   readonly initials = input('');
@@ -127,9 +163,14 @@ export class JAvatarComponent {
   readonly size = input<JSize>('md');
   readonly shape = input<JAvatarShape>('circle');
   readonly status = input<JAvatarStatus>('none');
+  readonly canZoom = input(false, { transform: booleanAttribute });
+  readonly zoomAriaLabel = input('View profile image');
+  readonly zoomOverlay = input(true, { transform: booleanAttribute });
   readonly styleClass = input('');
   readonly pt = input<JPassThrough | null>(null);
   readonly imageFailed = signal(false);
+  readonly previewVisible = signal(false);
+  readonly imageZoom = output<Event>();
 
   readonly showImage = computed(() => !!this.image() && !this.imageFailed());
 
@@ -147,6 +188,36 @@ export class JAvatarComponent {
 
   handleImageError(): void {
     this.imageFailed.set(true);
+    this.previewVisible.set(false);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['image']) {
+      this.imageFailed.set(false);
+    }
+  }
+
+  handleZoom(event: Event): void {
+    if (!this.canZoom() || !this.showImage()) {
+      return;
+    }
+    this.zoomTrigger = event.currentTarget as HTMLElement;
+    this.imageZoom.emit(event);
+    if (this.zoomOverlay()) {
+      this.previewVisible.set(true);
+    }
+  }
+
+  handleZoomKeydown(event: KeyboardEvent): void {
+    if (event.key !== 'Enter' && event.key !== ' ') {
+      return;
+    }
+    event.preventDefault();
+    this.handleZoom(event);
+  }
+
+  handlePreviewClosed(): void {
+    this.zoomTrigger?.focus();
   }
 
   private createInitials(value: string): string {

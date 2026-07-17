@@ -95,7 +95,8 @@ describe('JrInputComponent', () => {
     detectHostChanges();
 
     const control = fixture.debugElement.query(By.css('.j-input')).nativeElement as HTMLElement;
-    const message = fixture.debugElement.query(By.css('.j-input__message')).nativeElement as HTMLElement;
+    const message = fixture.debugElement.query(By.css('.j-input__message'))
+      .nativeElement as HTMLElement;
 
     expect(control.classList).toContain('is-invalid');
     expect(message.textContent).toContain('Required');

@@ -17,6 +17,9 @@ import {
 
 let nextTabId = 0;
 
+/** Complete tab-list presentation presets. `default` preserves the underline treatment. */
+export type JTabsVariant = 'default' | 'pills' | 'segmented';
+
 @Component({
   selector: 'j-tab',
   imports: [],
@@ -79,6 +82,8 @@ export class JTabComponent {
     <div
       class="j-tabs"
       [class.is-scrollable]="scrollable()"
+      [class]="'j-tabs j-tabs--' + variant()"
+      [attr.data-j-variant]="variant()"
       data-jc-name="tabs"
       data-jc-section="root"
       data-jc-extend="tab panel close"
@@ -195,6 +200,73 @@ export class JTabComponent {
         line-height: 1;
         width: 1.5rem;
       }
+
+      .j-tabs--pills .j-tabs__list {
+        border: 0;
+        gap: var(--j-spacing-xs, 0.25rem);
+      }
+
+      .j-tabs--pills .j-tabs__tab {
+        border: 0;
+        border-radius: var(--j-radius-full, 999px);
+      }
+
+      .j-tabs--pills .j-tabs__tab.is-active {
+        background: var(--j-color-primary, #4f46e5);
+        color: var(--j-color-on-primary, #ffffff);
+      }
+
+      .j-tabs--segmented .j-tabs__list {
+        background: var(--j-color-surface-subtle, #eef2f7);
+        border: 0;
+        border-radius: var(--j-radius-lg, 0.75rem);
+        gap: var(--j-spacing-2xs, 0.125rem);
+        padding: var(--j-spacing-xs, 0.25rem);
+      }
+
+      .j-tabs--segmented .j-tabs__tab {
+        border: 0;
+        border-radius: var(--j-radius-md, 0.5rem);
+        min-height: 2.25rem;
+      }
+
+      .j-tabs--segmented .j-tabs__tab.is-active {
+        background: var(--j-color-surface, #ffffff);
+        box-shadow: var(--j-shadow-sm);
+        color: var(--j-color-text, #111827);
+      }
+
+      .j-tabs:has(.j-tabs__list[aria-orientation='vertical']) {
+        display: grid;
+        gap: var(--j-spacing-lg, 1rem);
+        grid-template-columns: minmax(10rem, auto) minmax(0, 1fr);
+      }
+
+      .j-tabs__list[aria-orientation='vertical'] {
+        align-items: stretch;
+        border-bottom: 0;
+        border-inline-end: 1px solid var(--j-color-border, #dbe2ea);
+        flex-direction: column;
+      }
+
+      .j-tabs__list[aria-orientation='vertical'] .j-tabs__tab-group,
+      .j-tabs__list[aria-orientation='vertical'] .j-tabs__tab {
+        justify-content: space-between;
+        width: 100%;
+      }
+
+      @media (max-width: 640px) {
+        .j-tabs:has(.j-tabs__list[aria-orientation='vertical']) {
+          display: block;
+        }
+
+        .j-tabs__list[aria-orientation='vertical'] {
+          border-bottom: 1px solid var(--j-color-border, #dbe2ea);
+          border-inline-end: 0;
+          flex-direction: row;
+          overflow-x: auto;
+        }
+      }
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -208,6 +280,7 @@ export class JTabsComponent implements AfterContentInit, OnChanges {
   readonly lazy = input(false, { transform: booleanAttribute });
   readonly scrollable = input(true, { transform: booleanAttribute });
   readonly orientation = input<'horizontal' | 'vertical'>('horizontal');
+  readonly variant = input<JTabsVariant>('default');
   readonly selectedIndexChange = output<number>();
   readonly tabClose = output<number>();
 
@@ -293,7 +366,10 @@ export class JTabsComponent implements AfterContentInit, OnChanges {
   }
 
   handleKeydown(event: KeyboardEvent): void {
-    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) {
+    const previousKey = this.orientation() === 'vertical' ? 'ArrowUp' : 'ArrowLeft';
+    const nextKey = this.orientation() === 'vertical' ? 'ArrowDown' : 'ArrowRight';
+
+    if (![previousKey, nextKey, 'Home', 'End'].includes(event.key)) {
       return;
     }
 
@@ -314,7 +390,7 @@ export class JTabsComponent implements AfterContentInit, OnChanges {
         ? 0
         : event.key === 'End'
           ? last
-          : event.key === 'ArrowRight'
+          : event.key === nextKey
             ? current === last
               ? 0
               : current + 1

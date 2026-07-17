@@ -1,12 +1,15 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  ContentChild,
+  TemplateRef,
   booleanAttribute,
   computed,
   input,
   model,
   signal,
 } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 import {
   JNormalizedSelectionOption,
   JSelectionOptionSource,
@@ -14,9 +17,15 @@ import {
   jSameSelectionValue,
 } from 'jrng-ui/core';
 
+export interface JPickListActionTemplateContext {
+  readonly $implicit: JNormalizedSelectionOption | null;
+  readonly item: JNormalizedSelectionOption | null;
+  readonly index: number;
+}
+
 @Component({
   selector: 'j-pick-list',
-  imports: [],
+  imports: [NgTemplateOutlet],
   template: `
     <section class="j-pick-list" data-jc-name="pick-list" data-jc-section="root">
       <header class="j-pick-list__summary" data-jc-section="header">
@@ -24,8 +33,20 @@ import {
           <strong>{{ sourceHeader() }}</strong>
           <span>{{ visibleSource().length }} available</span>
         </div>
-        <button type="button" (click)="addAll()" [disabled]="!movableSource().length">
-          Add all
+        <button
+          type="button"
+          (click)="addAll()"
+          [disabled]="!movableSource().length"
+          [attr.aria-label]="addAllAriaLabel()"
+        >
+          @if (addAllTemplate) {
+            <ng-container
+              [ngTemplateOutlet]="addAllTemplate"
+              [ngTemplateOutletContext]="actionContext()"
+            />
+          } @else {
+            {{ addAllLabel() }}
+          }
         </button>
       </header>
 
@@ -53,7 +74,14 @@ import {
                   [attr.aria-label]="'Add ' + item.label"
                   (click)="add(item)"
                 >
-                  Add
+                  @if (addTemplate) {
+                    <ng-container
+                      [ngTemplateOutlet]="addTemplate"
+                      [ngTemplateOutletContext]="actionContext(item, $index)"
+                    />
+                  } @else {
+                    {{ addLabel() }}
+                  }
                 </button>
               </article>
             } @empty {
@@ -68,8 +96,20 @@ import {
               <strong>{{ targetHeader() }}</strong>
               <span>{{ normalizedTarget().length }} selected</span>
             </div>
-            <button type="button" (click)="removeAll()" [disabled]="!movableTarget().length">
-              Clear
+            <button
+              type="button"
+              (click)="removeAll()"
+              [disabled]="!movableTarget().length"
+              [attr.aria-label]="clearAriaLabel()"
+            >
+              @if (clearTemplate) {
+                <ng-container
+                  [ngTemplateOutlet]="clearTemplate"
+                  [ngTemplateOutletContext]="actionContext()"
+                />
+              } @else {
+                {{ clearLabel() }}
+              }
             </button>
           </header>
 
@@ -85,7 +125,14 @@ import {
                     [attr.aria-label]="'Move ' + item.label + ' up'"
                     (click)="move(item, -1)"
                   >
-                    Up
+                    @if (moveUpTemplate) {
+                      <ng-container
+                        [ngTemplateOutlet]="moveUpTemplate"
+                        [ngTemplateOutletContext]="actionContext(item, index)"
+                      />
+                    } @else {
+                      {{ moveUpLabel() }}
+                    }
                   </button>
                   <button
                     type="button"
@@ -93,7 +140,14 @@ import {
                     [attr.aria-label]="'Move ' + item.label + ' down'"
                     (click)="move(item, 1)"
                   >
-                    Down
+                    @if (moveDownTemplate) {
+                      <ng-container
+                        [ngTemplateOutlet]="moveDownTemplate"
+                        [ngTemplateOutletContext]="actionContext(item, index)"
+                      />
+                    } @else {
+                      {{ moveDownLabel() }}
+                    }
                   </button>
                   <button
                     type="button"
@@ -102,7 +156,14 @@ import {
                     [attr.aria-label]="'Remove ' + item.label"
                     (click)="remove(item)"
                   >
-                    Remove
+                    @if (removeTemplate) {
+                      <ng-container
+                        [ngTemplateOutlet]="removeTemplate"
+                        [ngTemplateOutletContext]="actionContext(item, index)"
+                      />
+                    } @else {
+                      {{ removeLabel() }}
+                    }
                   </button>
                 </span>
               </article>
@@ -290,6 +351,32 @@ export class JPickListComponent {
   readonly targetAriaLabel = input('Selected options');
   readonly filterPlaceholder = input('Search available options');
   readonly filter = input(false, { transform: booleanAttribute });
+  readonly addLabel = input('Add');
+  readonly addAllLabel = input('Add all');
+  readonly removeLabel = input('Remove');
+  readonly clearLabel = input('Clear');
+  readonly moveUpLabel = input('Up');
+  readonly moveDownLabel = input('Down');
+  readonly addAllAriaLabel = input('Add all available items');
+  readonly clearAriaLabel = input('Clear selected items');
+
+  @ContentChild('jPickListAdd', { read: TemplateRef })
+  addTemplate?: TemplateRef<JPickListActionTemplateContext>;
+
+  @ContentChild('jPickListAddAll', { read: TemplateRef })
+  addAllTemplate?: TemplateRef<JPickListActionTemplateContext>;
+
+  @ContentChild('jPickListRemove', { read: TemplateRef })
+  removeTemplate?: TemplateRef<JPickListActionTemplateContext>;
+
+  @ContentChild('jPickListClear', { read: TemplateRef })
+  clearTemplate?: TemplateRef<JPickListActionTemplateContext>;
+
+  @ContentChild('jPickListMoveUp', { read: TemplateRef })
+  moveUpTemplate?: TemplateRef<JPickListActionTemplateContext>;
+
+  @ContentChild('jPickListMoveDown', { read: TemplateRef })
+  moveDownTemplate?: TemplateRef<JPickListActionTemplateContext>;
 
   readonly sourceFilter = signal('');
 
@@ -362,6 +449,13 @@ export class JPickListComponent {
       next[index] as JSelectionOptionSource,
     ];
     this.target.set(next);
+  }
+
+  actionContext(
+    item: JNormalizedSelectionOption | null = null,
+    index = -1,
+  ): JPickListActionTemplateContext {
+    return { $implicit: item, item, index };
   }
 
   private moveToTarget(values: readonly unknown[]): void {

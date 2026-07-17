@@ -5,13 +5,15 @@ export interface JPageHeaderBreadcrumb {
   readonly url?: string;
 }
 
+export type JPageHeaderVariant = 'default' | 'stacked' | 'centered';
+
 @Component({
   selector: 'j-page-header',
   imports: [],
   template: `
     <header
-      class="j-page-header"
-      [class]="styleClass()"
+      [class]="'j-page-header j-page-header--' + variant() + ' ' + styleClass()"
+      [attr.data-j-variant]="variant()"
       data-jc-name="page-header"
       data-jc-section="root"
     >
@@ -139,6 +141,28 @@ export interface JPageHeaderBreadcrumb {
         display: none;
       }
 
+      .j-page-header--stacked .j-page-header__main {
+        display: grid;
+      }
+
+      .j-page-header--stacked .j-page-header__actions {
+        justify-content: flex-start;
+      }
+
+      .j-page-header--centered {
+        justify-items: center;
+        text-align: center;
+      }
+
+      .j-page-header--centered .j-page-header__main {
+        align-items: center;
+        flex-direction: column;
+      }
+
+      .j-page-header--centered .j-page-header__actions {
+        justify-content: center;
+      }
+
       @media (max-width: 640px) {
         .j-page-header__main {
           display: grid;
@@ -157,6 +181,7 @@ export class JPageHeaderComponent {
   readonly backLabel = input('Go back');
   readonly backIcon = input('←');
   readonly styleClass = input('');
+  readonly variant = input<JPageHeaderVariant>('default');
 
   readonly back = output<void>();
 }

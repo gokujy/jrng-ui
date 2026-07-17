@@ -68,14 +68,17 @@ describe('JrDialogComponent', () => {
   });
 
   it('closes on escape when enabled', async () => {
-    const before = fixture.debugElement.query(By.css('#before-dialog')).nativeElement as HTMLButtonElement;
+    const before = fixture.debugElement.query(By.css('#before-dialog'))
+      .nativeElement as HTMLButtonElement;
     before.focus();
     host.open = true;
     detectHostChanges();
     await Promise.resolve();
 
-    const dialog = fixture.debugElement.query(By.css('[role="dialog"]')).nativeElement as HTMLElement;
-    const close = fixture.debugElement.query(By.css('.j-dialog__close')).nativeElement as HTMLButtonElement;
+    const dialog = fixture.debugElement.query(By.css('[role="dialog"]'))
+      .nativeElement as HTMLElement;
+    const close = fixture.debugElement.query(By.css('.j-dialog__close'))
+      .nativeElement as HTMLButtonElement;
     const labelledBy = dialog.getAttribute('aria-labelledby');
 
     expect(labelledBy).toBeTruthy();

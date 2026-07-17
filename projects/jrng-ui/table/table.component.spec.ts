@@ -20,6 +20,7 @@ import {
       [paginator]="paginator"
       [frozenRows]="frozenRows"
       [lockedRowKeys]="lockedRowKeys"
+      [variant]="variant"
       [rows]="2"
       (rowSelect)="selected = $event"
       (sortChange)="sortField = $event.field"
@@ -35,9 +36,10 @@ class TableHostComponent {
   selected: JTableRow | null = null;
   sortField = '';
   page = 1;
+  variant: 'default' | 'operations' = 'default';
   columns: readonly JTableColumn[] = [
     { field: 'code', header: 'Code', sortable: true },
-    { field: 'name', header: 'Name' },
+    { field: 'name', header: 'Name', filterable: true },
     { field: 'amount', header: 'Amount', sortable: true, align: 'end' },
   ];
   rows: readonly JTableRow[] = [
@@ -76,6 +78,23 @@ describe('JTableComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Records');
     expect(bodyRows().length).toBe(3);
     expect(fixture.nativeElement.textContent).toContain('REC-3');
+  });
+
+  it('keeps the default filter in its header cell for backward compatibility', () => {
+    expect(fixture.debugElement.query(By.css('.j-table--default'))).toBeTruthy();
+    expect(fixture.debugElement.query(By.css('.j-table__filter-row'))).toBeNull();
+    expect(fixture.debugElement.query(By.css('thead tr:first-child j-column-filter'))).toBeTruthy();
+  });
+
+  it('renders the operations presentation with a dedicated accessible filter row', () => {
+    host.variant = 'operations';
+    detectHostChanges();
+
+    expect(fixture.debugElement.query(By.css('.j-table--operations'))).toBeTruthy();
+    const filterRow = fixture.debugElement.query(By.css('.j-table__filter-row'));
+    expect(filterRow).toBeTruthy();
+    expect(filterRow.query(By.css('[aria-label="Filter Name"]'))).toBeTruthy();
+    expect(fixture.debugElement.query(By.css('thead tr:first-child j-column-filter'))).toBeNull();
   });
 
   it('sorts sortable columns and emits sortChange', () => {

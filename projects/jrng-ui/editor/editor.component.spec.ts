@@ -70,9 +70,7 @@ describe('JEditorComponent', () => {
     );
     fixture.detectChanges();
 
-    expect(fixture.componentInstance.value()).toBe(
-      '<p><strong>Safe</strong><a>link</a></p>',
-    );
+    expect(fixture.componentInstance.value()).toBe('<p><strong>Safe</strong><a>link</a></p>');
   });
 
   it('keeps plain-text mode literal and converts newlines only in the view', () => {
@@ -83,9 +81,9 @@ describe('JEditorComponent', () => {
     fixture.detectChanges();
 
     expect(fixture.componentInstance.value()).toBe('<b>literal</b>\nnext');
-    expect((fixture.nativeElement.querySelector('.j-editor__control') as HTMLElement).innerHTML).toBe(
-      '&lt;b&gt;literal&lt;/b&gt;<br>next',
-    );
+    expect(
+      (fixture.nativeElement.querySelector('.j-editor__control') as HTMLElement).innerHTML,
+    ).toBe('&lt;b&gt;literal&lt;/b&gt;<br>next');
   });
 
   it('emits once for user input, marks touched on blur, and does not emit from writeValue', () => {
@@ -134,15 +132,20 @@ describe('JEditorComponent', () => {
     expect(execute).not.toHaveBeenCalled();
   });
 
-  it.each(['bold', 'italic', 'underline', 'insertOrderedList', 'insertUnorderedList', 'undo', 'redo'])(
-    'routes %s through the guarded command adapter',
-    (command) => {
-      const fixture: ComponentFixture<JEditorComponent> = TestBed.createComponent(JEditorComponent);
-      fixture.detectChanges();
-      const commands = TestBed.inject(JEditorCommandService);
-      const execute = vi.spyOn(commands, 'execute').mockReturnValue(true);
-      fixture.componentInstance.execute(command);
-      expect(execute).toHaveBeenCalledWith(command, undefined);
-    },
-  );
+  it.each([
+    'bold',
+    'italic',
+    'underline',
+    'insertOrderedList',
+    'insertUnorderedList',
+    'undo',
+    'redo',
+  ])('routes %s through the guarded command adapter', (command) => {
+    const fixture: ComponentFixture<JEditorComponent> = TestBed.createComponent(JEditorComponent);
+    fixture.detectChanges();
+    const commands = TestBed.inject(JEditorCommandService);
+    const execute = vi.spyOn(commands, 'execute').mockReturnValue(true);
+    fixture.componentInstance.execute(command);
+    expect(execute).toHaveBeenCalledWith(command, undefined);
+  });
 });

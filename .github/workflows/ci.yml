@@ -32,6 +32,8 @@ jobs:
       - run: npm run verify:registry
       - run: npm run verify:docs-registry
       - run: npm run verify:docs-links
+      - run: npm run verify:spec-coverage
+      - run: npm run verify:doc-examples
 
   tests:
     name: Tests
@@ -43,7 +45,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
       - run: npm ci
-      - run: npm run test:lib
+      - run: npm run test:coverage
       - run: npm run test:docs
       - run: npm run test:starter
 

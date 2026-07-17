@@ -10,6 +10,7 @@ import {
 
 export type JTimelineAlign = 'vertical' | 'horizontal';
 export type JTimelineSeverity = 'success' | 'warning' | 'danger' | 'info' | 'neutral';
+export type JTimelineVariant = 'default' | 'activity' | 'alternating';
 
 export interface JTimelineItem {
   readonly title?: string;
@@ -36,6 +37,9 @@ export interface JTimelineItemContext {
       [class]="styleClass()"
       [class.j-timeline--horizontal]="layout() === 'horizontal'"
       [class.j-timeline--compact]="compact()"
+      [class.j-timeline--activity]="variant() === 'activity'"
+      [class.j-timeline--alternating]="variant() === 'alternating'"
+      [attr.data-j-variant]="variant()"
       data-jc-name="timeline"
       data-jc-section="root"
     >
@@ -195,6 +199,78 @@ export interface JTimelineItemContext {
       .j-timeline--horizontal .j-timeline__opposite {
         text-align: start;
       }
+
+      .j-timeline--activity .j-timeline__item {
+        grid-template-columns: auto minmax(0, 1fr);
+      }
+
+      .j-timeline--activity .j-timeline__opposite {
+        grid-column: 2;
+        grid-row: 2;
+        text-align: start;
+      }
+
+      .j-timeline--activity .j-timeline__axis {
+        grid-column: 1;
+        grid-row: 1 / span 2;
+      }
+
+      .j-timeline--activity .j-timeline__marker {
+        height: 1rem;
+        margin-top: 0.25rem;
+        width: 1rem;
+      }
+
+      .j-timeline--activity .j-timeline__content {
+        background: transparent;
+        border: 0;
+        padding: 0;
+      }
+
+      .j-timeline--alternating .j-timeline__item {
+        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      }
+
+      .j-timeline--alternating .j-timeline__item:nth-child(even) .j-timeline__opposite {
+        grid-column: 3;
+        text-align: start;
+      }
+
+      .j-timeline--alternating .j-timeline__item:nth-child(even) .j-timeline__axis {
+        grid-column: 2;
+        grid-row: 1;
+      }
+
+      .j-timeline--alternating .j-timeline__item:nth-child(even) .j-timeline__content {
+        grid-column: 1;
+        grid-row: 1;
+      }
+
+      @media (max-width: 640px) {
+        .j-timeline:not(.j-timeline--horizontal) .j-timeline__item,
+        .j-timeline--alternating .j-timeline__item {
+          grid-template-columns: auto minmax(0, 1fr);
+        }
+
+        .j-timeline:not(.j-timeline--horizontal) .j-timeline__opposite,
+        .j-timeline--alternating .j-timeline__item:nth-child(even) .j-timeline__opposite {
+          grid-column: 2;
+          grid-row: 2;
+          text-align: start;
+        }
+
+        .j-timeline:not(.j-timeline--horizontal) .j-timeline__axis,
+        .j-timeline--alternating .j-timeline__item:nth-child(even) .j-timeline__axis {
+          grid-column: 1;
+          grid-row: 1 / span 2;
+        }
+
+        .j-timeline:not(.j-timeline--horizontal) .j-timeline__content,
+        .j-timeline--alternating .j-timeline__item:nth-child(even) .j-timeline__content {
+          grid-column: 2;
+          grid-row: 1;
+        }
+      }
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -203,6 +279,7 @@ export class JTimelineComponent {
   readonly value = input<readonly JTimelineItem[]>([]);
   readonly layout = input<JTimelineAlign>('vertical');
   readonly compact = input(false, { transform: booleanAttribute });
+  readonly variant = input<JTimelineVariant>('default');
   readonly styleClass = input('');
 
   readonly contentTemplate = contentChild<unknown, TemplateRef<JTimelineItemContext>>(

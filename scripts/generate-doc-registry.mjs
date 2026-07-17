@@ -6,6 +6,12 @@ const workspace = resolve(import.meta.dirname, '..');
 const inventory = JSON.parse(
   await readFile(resolve(workspace, 'docs/component-inventory.json'), 'utf8'),
 );
+const publicRegistry = JSON.parse(
+  await readFile(resolve(workspace, 'projects/jrng-ui/registry/registry.json'), 'utf8'),
+);
+const publicBySelector = new Map(
+  publicRegistry.components.map((component) => [component.selector, component]),
+);
 const records = inventory.components.map((component) => ({
   slug: component.selector.slice(2),
   name: component.name,
@@ -21,6 +27,10 @@ const records = inventory.components.map((component) => ({
   themeTokenSupport: component.themeTokenSupport,
   browserOnly: component.browserApiUsage,
   optionalDependency: component.optionalExternalLibraries,
+  inputs: publicBySelector.get(component.selector)?.inputs ?? [],
+  outputs: publicBySelector.get(component.selector)?.outputs ?? [],
+  methods: publicBySelector.get(component.selector)?.methods ?? [],
+  deprecation: publicBySelector.get(component.selector)?.deprecation?.message ?? null,
   keywords: [component.name, component.selector, component.category, component.publicImportPath],
 }));
 

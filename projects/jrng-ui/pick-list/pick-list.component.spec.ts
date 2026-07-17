@@ -24,11 +24,33 @@ class PickListHostComponent {
   target: readonly JSelectionOptionSource[] = [{ label: 'Order', value: 'order' }];
 }
 
+@Component({
+  imports: [JPickListComponent],
+  template: `
+    <j-pick-list [source]="source" [target]="target">
+      <ng-template #jPickListAdd let-item>
+        <span data-action="add">+ {{ item.label }}</span>
+      </ng-template>
+      <ng-template #jPickListAddAll><span data-action="add-all">++</span></ng-template>
+      <ng-template #jPickListRemove><span data-action="remove">−</span></ng-template>
+      <ng-template #jPickListClear><span data-action="clear">Clear selection</span></ng-template>
+      <ng-template #jPickListMoveUp><span data-action="up">↑</span></ng-template>
+      <ng-template #jPickListMoveDown><span data-action="down">↓</span></ng-template>
+    </j-pick-list>
+  `,
+})
+class CustomPickListHostComponent {
+  readonly source: readonly JSelectionOptionSource[] = [{ label: 'Customer', value: 'customer' }];
+  readonly target: readonly JSelectionOptionSource[] = [{ label: 'Order', value: 'order' }];
+}
+
 describe('JPickListComponent', () => {
   let fixture: ComponentFixture<PickListHostComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({ imports: [PickListHostComponent] }).compileComponents();
+    await TestBed.configureTestingModule({
+      imports: [PickListHostComponent, CustomPickListHostComponent],
+    }).compileComponents();
     fixture = TestBed.createComponent(PickListHostComponent);
     fixture.detectChanges();
   });
@@ -59,5 +81,27 @@ describe('JPickListComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Status');
     expect(fixture.nativeElement.textContent).not.toContain('Customer');
     expect(fixture.componentInstance.target).toHaveLength(1);
+  });
+
+  it('keeps readable action labels by default', () => {
+    const text = fixture.nativeElement.textContent as string;
+
+    expect(text).toContain('Add all');
+    expect(text).toContain('Add');
+    expect(text).toContain('Up');
+    expect(text).toContain('Down');
+    expect(text).toContain('Remove');
+    expect(text).toContain('Clear');
+  });
+
+  it('accepts arbitrary projected content for every action without losing aria labels', () => {
+    const customFixture = TestBed.createComponent(CustomPickListHostComponent);
+    customFixture.detectChanges();
+
+    const actions = customFixture.nativeElement.querySelectorAll('[data-action]');
+    expect(actions).toHaveLength(6);
+    expect(customFixture.nativeElement.textContent).toContain('+ Customer');
+    expect(customFixture.nativeElement.querySelector('[aria-label="Add Customer"]')).not.toBeNull();
+    expect(customFixture.nativeElement.querySelector('[aria-label="Remove Order"]')).not.toBeNull();
   });
 });

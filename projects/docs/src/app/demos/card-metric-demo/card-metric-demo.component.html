@@ -1,0 +1,7 @@
+<j-card title="Monthly revenue" subtitle="Compared with last month">
+  <div class="metric-row">
+    <strong>{{ revenue }}</strong>
+    <j-badge value="+12.4%" severity="success" />
+  </div>
+  <j-progress-bar [value]="targetProgress" label="72% of target" />
+</j-card>

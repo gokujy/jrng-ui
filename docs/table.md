@@ -7,9 +7,12 @@
 ```ts
 import {
   JTableComponent,
-  JColumnComponent,
+  JTableColumn,
   JTableCellTemplateDirective,
+  JTableEmptyTemplateDirective,
+  JTableFilterTemplateDirective,
   JTableHeaderTemplateDirective,
+  JTableLoadingTemplateDirective,
 } from 'jrng-ui/table';
 ```
 
@@ -192,7 +195,10 @@ columns = [
 
 ## Custom Templates
 
-Column templates can be declared with `j-column`:
+Column templates can still be declared with the compatibility `j-column` metadata selector:
+
+> `j-column` is table metadata and renders only through `j-table`. For responsive
+> page-layout columns, use `j-col` from `jrng-ui/grid`.
 
 ```html
 <j-table [value]="rows">
@@ -258,3 +264,135 @@ Or by using keyed templates with an input column model:
 
 - Virtual scroll is handled by `j-virtual-scroller`.
 - Row grouping and advanced filter match-mode menus are not part of the current table API.
+
+## Typed Column Configuration
+
+For new implementations, prefer `JTableColumn<T>`. It supports checked fields, semantic types, dimensions, alignment, visibility, freezing, sorting, filtering, resizing, reordering, value getters, and formatters.
+
+```ts
+interface OrderRow {
+  id: number;
+  order: string;
+  status: 'paid' | 'overdue';
+  total: number;
+}
+
+columns: JTableColumn<OrderRow>[] = [
+  { field: 'order', header: 'Order', sortable: true, minWidth: '9rem' },
+  { field: 'status', header: 'Status', type: 'status', filterable: true },
+  {
+    field: 'total', header: 'Total', type: 'number', align: 'end',
+    valueGetter: row => row.total,
+    formatter: value => new Intl.NumberFormat('en', {
+      style: 'currency', currency: 'USD'
+    }).format(Number(value)),
+  },
+];
+```
+
+## Visual Variants and Density
+
+`variant` selects a complete visual presentation. `density` controls spacing independently.
+
+```html
+<j-table [value]="rows" [columns]="columns" variant="striped" density="compact" />
+<j-table [value]="rows" [columns]="columns" variant="bordered" />
+<j-table [value]="rows" [columns]="columns" variant="minimal" />
+<j-table [value]="rows" [columns]="columns" variant="card" density="spacious" />
+```
+
+The established `operations` and `gridlines` values remain supported for compatibility. Loading, empty, error, selection, pagination, and hierarchy are states or behaviors, not variants.
+
+## Integrated Loading
+
+```html
+<j-table loading loadingVariant="skeleton" [skeletonRows]="5" [value]="[]" [columns]="columns" />
+<j-table loading loadingVariant="spinner" [value]="[]" [columns]="columns" />
+<j-table loading loadingVariant="progress" [value]="[]" [columns]="columns" />
+<j-table loading loadingVariant="overlay" [value]="rows" [columns]="columns" />
+```
+
+Skeleton, spinner, and progress replace rows. Overlay retains current rows during refresh. Empty content is not rendered while loading.
+
+```html
+<j-table loading [value]="[]" [columns]="columns">
+  <ng-template jTableLoading let-variant let-rows="rows">
+    <p role="status">Loading {{ rows }} rows with {{ variant }} presentation.</p>
+  </ng-template>
+</j-table>
+```
+
+## Integrated Empty and Error States
+
+```html
+<j-table
+  [value]="[]"
+  [columns]="columns"
+  emptyTitle="No orders yet"
+  emptyDescription="New orders will appear here."
+  emptyActionLabel="Create order"
+  (emptyAction)="createOrder()"
+/>
+
+<j-table
+  [value]="rows"
+  [columns]="columns"
+  globalFilter="no-match"
+  noResultsTitle="No matching orders"
+/>
+
+<j-table
+  [value]="[]"
+  [columns]="columns"
+  [error]="loadError"
+  emptyActionLabel="Retry"
+  (emptyAction)="reload()"
+/>
+```
+
+In `auto` mode, an active filter with zero rows selects `no-results`, an untouched empty dataset selects `no-data`, and an `error` value selects `error`. Server-side consumers can set `emptyState` explicitly.
+
+```html
+<j-table [value]="[]" [columns]="columns" emptyState="no-results">
+  <ng-template jTableEmpty let-state let-title="title" let-action="action">
+    <section>
+      <h3>{{ title }}</h3>
+      <p>Current state: {{ state }}</p>
+      <button type="button" (click)="action()">Clear filters</button>
+    </section>
+  </ng-template>
+</j-table>
+```
+
+## Tree Table
+
+Hierarchical records use the separate `j-tree-table`. This keeps tree-grid keyboard behavior, levels, expansion, lazy children, partial selection, and propagation out of the flat Table API.
+
+```html
+<j-tree-table
+  [value]="nodes"
+  [columns]="treeColumns"
+  [(expandedKeys)]="expandedKeys"
+  selectionMode="checkbox"
+  [propagateSelectionDown]="true"
+  [propagateSelectionUp]="true"
+/>
+
+<j-tree-table
+  [value]="lazyNodes"
+  [columns]="treeColumns"
+  lazy
+  (nodeExpand)="loadChildren($event)"
+/>
+```
+
+## Compatibility Migration
+
+No public selector was removed in 0.0.9. Existing `j-column`, `j-table-empty-state`, and `j-table-skeleton` usage continues to compile. For new work:
+
+- Move column metadata to `JTableColumn<T>[]`.
+- Move table empty and error content to `j-table` inputs or `jTableEmpty`.
+- Move table loading to `[loading]`, `loadingVariant`, or `jTableLoading`.
+- Continue using general `j-skeleton` for loading layouts outside tables.
+
+The compatibility selectors are deprecated for new Table implementations, but there is no mandatory migration in this release.

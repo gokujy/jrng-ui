@@ -5,9 +5,28 @@ import { JRNG_DEFAULT_LOCALE, jMergeLocale } from './locale';
 describe('locale', () => {
   it('default locale has every required public action and accessibility string', () => {
     for (const key of [
-      'accept', 'cancel', 'close', 'clear', 'chooseFile', 'uploadFiles', 'dropFilesHere',
-      'remove', 'retry', 'preview', 'download', 'search', 'loading', 'now', 'hour',
-      'minute', 'second', 'period', 'nextPage', 'previousPage', 'selectAll', 'unselectAll',
+      'accept',
+      'cancel',
+      'close',
+      'clear',
+      'chooseFile',
+      'uploadFiles',
+      'dropFilesHere',
+      'remove',
+      'retry',
+      'preview',
+      'download',
+      'search',
+      'loading',
+      'now',
+      'hour',
+      'minute',
+      'second',
+      'period',
+      'nextPage',
+      'previousPage',
+      'selectAll',
+      'unselectAll',
     ] as const) {
       expect(JRNG_DEFAULT_LOCALE[key], key).toBeTruthy();
     }

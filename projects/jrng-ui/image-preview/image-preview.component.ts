@@ -3,8 +3,10 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
+  ElementRef,
   PLATFORM_ID,
   Renderer2,
+  afterRenderEffect,
   booleanAttribute,
   inject,
   input,
@@ -12,6 +14,7 @@ import {
   OnChanges,
   output,
   signal,
+  viewChild,
 } from '@angular/core';
 
 @Component({
@@ -37,6 +40,7 @@ import {
           <button
             type="button"
             class="j-image-preview__close"
+            #closeButton
             aria-label="Close preview"
             (click)="close()"
           >
@@ -107,6 +111,9 @@ export class JImagePreviewComponent {
   private readonly renderer = inject(Renderer2);
   private readonly destroyRef = inject(DestroyRef);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  private readonly closeButton = viewChild<ElementRef<HTMLButtonElement>>('closeButton');
+  private previousFocus: HTMLElement | null = null;
+  private wasVisible = false;
 
   readonly src = input('');
   readonly alt = input('');
@@ -130,6 +137,18 @@ export class JImagePreviewComponent {
     );
 
     this.destroyRef.onDestroy(removeKeydownListener);
+
+    afterRenderEffect(() => {
+      const visible = this.visible();
+      if (visible && !this.wasVisible) {
+        this.previousFocus = this.documentRef.activeElement as HTMLElement | null;
+        this.closeButton()?.nativeElement.focus();
+      } else if (!visible && this.wasVisible) {
+        this.previousFocus?.focus();
+        this.previousFocus = null;
+      }
+      this.wasVisible = visible;
+    });
   }
 
   close(): void {

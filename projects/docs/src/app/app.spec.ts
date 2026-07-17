@@ -40,6 +40,46 @@ describe('App', () => {
     expect(sidebar?.textContent).toContain('Charts');
   });
 
+  it('nests the searchable component catalog under Components', async () => {
+    const router = TestBed.inject(Router);
+    const fixture = TestBed.createComponent(App);
+    await router.navigateByUrl('/docs/components#table');
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const compiled = fixture.nativeElement as HTMLElement;
+    const catalog = compiled.querySelector('#docs-component-catalog');
+
+    expect(catalog).not.toBeNull();
+    expect(catalog?.querySelector('input[type="search"]')).not.toBeNull();
+    expect(catalog?.textContent).toContain('Data & Tables');
+    expect(catalog?.querySelector('a.is-active')?.textContent?.trim()).toBe('Table');
+    expect(compiled.querySelector('.j-components-sidebar')).toBeNull();
+  });
+
+  it('allows component categories to be collapsed', async () => {
+    const router = TestBed.inject(Router);
+    const fixture = TestBed.createComponent(App);
+    await router.navigateByUrl('/docs/components#table');
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const compiled = fixture.nativeElement as HTMLElement;
+    const categoryButton = compiled.querySelector<HTMLButtonElement>(
+      '.docs-component-catalog__group h3 button',
+    );
+    const controlledId = categoryButton?.getAttribute('aria-controls');
+
+    expect(categoryButton?.getAttribute('aria-expanded')).toBe('true');
+    expect(controlledId && compiled.querySelector(`#${controlledId}`)).not.toBeNull();
+
+    categoryButton?.click();
+    fixture.detectChanges();
+
+    expect(categoryButton?.getAttribute('aria-expanded')).toBe('false');
+    expect(controlledId && compiled.querySelector<HTMLElement>(`#${controlledId}`)?.hidden).toBe(
+      true,
+    );
+  });
+
   it('should keep the homepage in the full-width layout', async () => {
     const router = TestBed.inject(Router);
     const fixture = TestBed.createComponent(App);
