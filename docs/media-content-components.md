@@ -23,29 +23,9 @@ Toolbar actions include bold, italic, underline, strike, headings, ordered list,
 
 Initial `ngModel` and Reactive Forms values are sanitized before rendering, including values written before view initialization. `writeValue` never emits `valueChange`; user input emits once and blur marks the control touched. Scripts, event handlers, styles, executable embeds, unsupported elements, and unsafe URL protocols are removed. The editor is safe to render on the server; browser editing commands run only after a capability check.
 
-## Dropzone
-
-`j-dropzone` is a focused drag and drop primitive for custom upload flows.
-
-```ts
-import { JDropzoneComponent } from 'jrng-ui/dropzone';
-```
-
-```html
-<j-dropzone
-  multiple
-  accept="image/*,.pdf"
-  [maxFileSize]="5000000"
-  (upload)="uploadFiles($event.files)"
-  (remove)="removeFile($event)"
-/>
-```
-
-It supports drag and drop, multiple files, accept rules, max size validation, selected file preview rows, remove actions, and a custom upload event.
-
 ## File Upload
 
-`j-file-upload` supports basic and advanced modes, queue management, progress, cancel, retry, validation, and custom upload.
+`j-file-upload` owns file selection, drag and drop, queue management, progress, cancel, retry, validation, and upload adapters.
 
 ```ts
 import { JFileUploadComponent } from 'jrng-ui/file-upload';
@@ -68,7 +48,7 @@ Use component methods such as `setProgress(itemId, progress)` and `setError(item
 ## Image And Preview
 
 ```ts
-import { JImageComponent, JImagePreviewComponent } from 'jrng-ui/image';
+import { JImageComponent } from 'jrng-ui/image';
 ```
 
 ```html
@@ -82,7 +62,7 @@ import { JImageComponent, JImagePreviewComponent } from 'jrng-ui/image';
 />
 ```
 
-`j-image` supports preview, fallback source, lazy or eager loading, and object-fit styling. `j-image-preview` can also be used directly with two-way `visible` binding.
+`j-image` supports an optional internal preview viewer, fallback source, lazy or eager loading, and object-fit styling.
 
 ## Gallery
 

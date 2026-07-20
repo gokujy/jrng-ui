@@ -50,15 +50,16 @@
               <ng-content select="[jDialogHeader], [jrDialogHeader]"></ng-content>
             </div>
             @if (closable()) {
-              <button
-                class="j-dialog__close"
+              <j-button
+                styleClass="j-dialog__close"
                 data-jc-section="close"
-                type="button"
-                aria-label="Close dialog"
-                (click)="close('close-button')"
-              >
-                x
-              </button>
+                variant="text"
+                actionDisplay="icon"
+                icon="close"
+                ariaLabel="Close dialog"
+                title="Close dialog"
+                (onClick)="close('close-button')"
+              />
             }
           </header>
         }

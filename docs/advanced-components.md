@@ -61,7 +61,7 @@ import { JImagePreviewComponent } from 'jrng-ui/image-preview';
 ```
 
 ```html
-<j-image-preview src="/assets/document.png" alt="Document preview" [(visible)]="previewOpen" />
+<j-image src="/assets/document.png" alt="Document preview" preview />
 ```
 
 ## Avatar Group
@@ -124,7 +124,7 @@ import { JEditorComponent } from 'jrng-ui/editor';
 <j-editor label="Notes" placeholder="Enter private notes" [formControl]="notes" />
 ```
 
-`j-editor` is a dependency-free contenteditable rich-text control. HTML mode sanitizes initial values, programmatic updates, user edits, and paste through the same allowlist; text mode preserves literal text. It supports Reactive Forms and `ngModel`, independent readonly and disabled states, touched tracking, and a guarded command adapter for bold, italic, underline, lists, links, undo, and redo. The adapter isolates the legacy browser editing-command API so a future Selection/Range implementation will not change the public component API.
+`j-editor` is a dependency-free contenteditable rich-text control. HTML mode sanitizes initial values, programmatic updates, user edits, and paste through the same allowlist; text mode preserves literal text. It supports Reactive Forms and `ngModel`, independent readonly and disabled states, touched tracking, and an isolated command adapter for bold, italic, underline, lists, links, undo, and redo.
 
 ## Pending Items
 

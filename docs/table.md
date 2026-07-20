@@ -83,6 +83,8 @@ rows = [
 
 For multi-column sorting, set `sortMode="multiple"` and listen to `sortChange`.
 
+Columns can opt into typed custom ordering with `sortComparator(left, right, column)`.
+
 ```html
 <j-table
   [value]="rows"
@@ -116,7 +118,7 @@ Set `filterable: true` on a column to show the column filter control.
 <j-table
   [value]="pageRows"
   [columns]="columns"
-  [lazy]="true"
+  dataMode="lazy"
   [paginator]="true"
   [first]="first"
   [rows]="25"
@@ -152,6 +154,12 @@ Lazy load events use this shape:
 
 Supported modes are `single`, `multiple`, `checkbox`, and `none`.
 
+Use `rowSelectable` to exclude disabled or permission-restricted rows. Select-all operates on eligible rows in the current filtered page (or the currently supplied lazy/virtual page), and exposes native checked/indeterminate state.
+
+```html
+<j-table selectionMode="checkbox" [rowSelectable]="canSelectOrder" [(selection)]="selectedRows" />
+```
+
 ## Expansion, Editing, and Reorder
 
 ```html
@@ -172,6 +180,34 @@ Supported modes are `single`, `multiple`, `checkbox`, and `none`.
 </j-table>
 ```
 
+## Row grouping
+
+```html
+<j-table [value]="rows" [columns]="columns" groupRowsBy="department" collapsibleRowGroups>
+  <ng-template #jTableGroupHeader let-department> {{ department }} department </ng-template>
+</j-table>
+```
+
+Group headers use `scope="rowgroup"`. Optional `#jTableGroupHeader` and `#jTableGroupFooter` templates receive the group value, current row, and row index.
+
+## Virtual scrolling
+
+Virtual scrolling is opt-in and keeps simple tables unchanged:
+
+```html
+<j-table
+  [value]="largeResultSet"
+  [columns]="columns"
+  virtualScroll
+  [virtualItemSize]="44"
+  [virtualOverscan]="4"
+  scrollHeight="32rem"
+>
+</j-table>
+```
+
+For backend windows, combine `dataMode="virtual"` with the application’s lazy query handling.
+
 ## Row Actions
 
 ```ts
@@ -180,7 +216,7 @@ columns = [
   {
     field: 'actions',
     header: 'Actions',
-    type: 'action',
+    type: 'actions',
     actions: [
       { key: 'view', label: 'View' },
       { key: 'delete', label: 'Delete', severity: 'danger' },
@@ -190,28 +226,12 @@ columns = [
 ```
 
 ```html
-<j-table [value]="rows" [columns]="columns" (actionClick)="handleAction($event)" />
+<j-table [value]="rows" [columns]="columns" (action)="handleAction($event)" />
 ```
 
 ## Custom Templates
 
-Column templates can still be declared with the compatibility `j-column` metadata selector:
-
-> `j-column` is table metadata and renders only through `j-table`. For responsive
-> page-layout columns, use `j-col` from `jrng-ui/grid`.
-
-```html
-<j-table [value]="rows">
-  <j-column field="name" header="Name" sortable>
-    <ng-template let-row>
-      <strong>{{ row.name }}</strong>
-      <small>{{ row.code }}</small>
-    </ng-template>
-  </j-column>
-</j-table>
-```
-
-Or by using keyed templates with an input column model:
+Use keyed templates with the typed input column model:
 
 ```html
 <j-table [value]="rows" [columns]="columns">
@@ -249,6 +269,7 @@ Or by using keyed templates with an input column model:
 - Custom cell templates
 - Header templates
 - Selection support
+- Eligible-row select-all with checked and indeterminate states
 - Responsive layout
 - Basic text column filters
 - Global filter toolbar
@@ -256,14 +277,11 @@ Or by using keyed templates with an input column model:
 - State save and restore
 - CSV export
 - Row expansion
+- Row grouping with custom, collapsible headers and footers
 - Cell and row edit events
 - Row and column reorder events
 - Frozen row and column styling hooks
-
-## Not Included
-
-- Virtual scroll is handled by `j-virtual-scroller`.
-- Row grouping and advanced filter match-mode menus are not part of the current table API.
+- Local and backend-window virtual scrolling
 
 ## Typed Column Configuration
 
@@ -296,12 +314,10 @@ columns: JTableColumn<OrderRow>[] = [
 
 ```html
 <j-table [value]="rows" [columns]="columns" variant="striped" density="compact" />
-<j-table [value]="rows" [columns]="columns" variant="bordered" />
+<j-table [value]="rows" [columns]="columns" variant="gridlines" />
 <j-table [value]="rows" [columns]="columns" variant="minimal" />
-<j-table [value]="rows" [columns]="columns" variant="card" density="spacious" />
+<j-table [value]="rows" [columns]="columns" variant="standard" density="spacious" />
 ```
-
-The established `operations` and `gridlines` values remain supported for compatibility. Loading, empty, error, selection, pagination, and hierarchy are states or behaviors, not variants.
 
 ## Integrated Loading
 
@@ -344,7 +360,7 @@ Skeleton, spinner, and progress replace rows. Overlay retains current rows durin
 <j-table
   [value]="[]"
   [columns]="columns"
-  [error]="loadError"
+  [errorState]="loadError"
   emptyActionLabel="Retry"
   (emptyAction)="reload()"
 />
@@ -385,14 +401,3 @@ Hierarchical records use the separate `j-tree-table`. This keeps tree-grid keybo
   (nodeExpand)="loadChildren($event)"
 />
 ```
-
-## Compatibility Migration
-
-No public selector was removed in 0.0.9. Existing `j-column`, `j-table-empty-state`, and `j-table-skeleton` usage continues to compile. For new work:
-
-- Move column metadata to `JTableColumn<T>[]`.
-- Move table empty and error content to `j-table` inputs or `jTableEmpty`.
-- Move table loading to `[loading]`, `loadingVariant`, or `jTableLoading`.
-- Continue using general `j-skeleton` for loading layouts outside tables.
-
-The compatibility selectors are deprecated for new Table implementations, but there is no mandatory migration in this release.

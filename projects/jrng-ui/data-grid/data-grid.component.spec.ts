@@ -25,7 +25,7 @@ interface ProductRow {
       [selection]="selection"
       (globalFilterChange)="globalFilter = $event"
       (selectionChange)="selection = $event"
-      (stateRestoreError)="restoreError = $event"
+      (stateError)="restoreError = $event"
     />
   `,
 })
@@ -98,7 +98,7 @@ describe('JDataGridComponent', () => {
       error: new SyntaxError('Invalid JSON'),
     };
 
-    table().stateRestoreError.emit(error);
+    table().error.emit(error);
 
     expect(host.restoreError).toBe(error);
   });

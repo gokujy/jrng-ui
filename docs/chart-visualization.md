@@ -88,43 +88,17 @@ readonly meters: JMeterGroupItem[] = [
 
 Each item supports `label`, `value`, optional `max`, and optional `severity`.
 
-## Stat Card
-
-```ts
-import { JStatCardComponent } from 'jrng-ui/stat-card';
-```
+## Metric composition
 
 ```html
-<j-stat-card
-  title="Orders"
-  [value]="1280"
-  trend="up"
-  trendLabel="12% increase"
-  icon="chart"
-  footer="Compared with previous period"
-/>
+<j-card header="Orders" subheader="Compared with the previous period">
+  <strong>1,280</strong>
+  <j-badge value="12% increase" severity="success" />
+  <j-progress-bar [value]="72" label="72% of target" />
+</j-card>
 ```
 
-`j-stat-card` supports `title`, `value`, `trend`, `trendLabel`, `icon`, `footer`, `loading`, and `styleClass`.
-
-## Metric Card
-
-```ts
-import { JMetricCardComponent } from 'jrng-ui/metric-card';
-```
-
-```html
-<j-metric-card
-  title="Revenue"
-  value="$42,800"
-  trend="neutral"
-  trendLabel="On target"
-  icon="metric"
-  footer="Updated today"
-/>
-```
-
-`j-metric-card` uses a stronger dashboard presentation for key metrics and supports the same core inputs as `j-stat-card`.
+Metrics compose Card, Badge, Progress Bar, and chart primitives without a metric-specific surface API.
 
 ## Design Rules
 

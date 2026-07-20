@@ -73,6 +73,20 @@ describe('JEditorComponent', () => {
     expect(fixture.componentInstance.value()).toBe('<p><strong>Safe</strong><a>link</a></p>');
   });
 
+  it('reports maximum-length validation and dirty state', () => {
+    const fixture = TestBed.createComponent(JEditorComponent);
+    fixture.componentRef.setInput('maxLength', 3);
+    fixture.detectChanges();
+    fixture.componentInstance.writeValue('<p>abc</p>');
+    const validation = vi.fn();
+    fixture.componentInstance.validationChange.subscribe(validation);
+    const editable = fixture.nativeElement.querySelector('.j-editor__control') as HTMLElement;
+    editable.innerHTML = '<p>abcd</p>';
+    editable.dispatchEvent(new InputEvent('input', { bubbles: true }));
+    expect(fixture.componentInstance.dirty()).toBe(true);
+    expect(validation).toHaveBeenLastCalledWith(expect.objectContaining({ valid: false }));
+  });
+
   it('keeps plain-text mode literal and converts newlines only in the view', () => {
     const fixture = TestBed.createComponent(JEditorComponent);
     fixture.componentRef.setInput('outputFormat', 'text');

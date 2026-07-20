@@ -13,24 +13,27 @@ import {
   output,
 } from '@angular/core';
 import { JTableAction, JTableActionEvent, JTableRow } from './table.types';
+import { JButtonComponent } from 'jrng-ui/button';
 
 @Component({
   selector: 'j-action-menu',
-  imports: [],
+  imports: [JButtonComponent],
   template: `
     <div class="j-action-menu" [class.is-popup]="popup()" [attr.aria-label]="ariaLabel()">
       @if (popup()) {
-        <button
-          type="button"
-          class="j-action-menu__trigger"
-          [attr.aria-label]="triggerLabel()"
-          aria-haspopup="menu"
-          [attr.aria-expanded]="open"
-          (click)="toggle($event)"
+        <j-button
+          styleClass="j-action-menu__trigger"
+          actionDisplay="icon"
+          variant="text"
+          size="sm"
+          [icon]="triggerIcon()"
+          [ariaLabel]="triggerLabel()"
+          [title]="triggerLabel()"
+          [ariaExpanded]="open"
+          ariaHasPopup="menu"
+          (onClick)="toggle($event)"
           (keydown)="handleTriggerKeydown($event)"
-        >
-          {{ triggerIcon() }}
-        </button>
+        />
       }
 
       @if (!popup() || open) {
@@ -42,19 +45,19 @@ import { JTableAction, JTableActionEvent, JTableRow } from './table.types';
           (keydown)="handleMenuKeydown($event)"
         >
           @for (action of normalizedActions(); track action.key || action.label || $index) {
-            <button
-              type="button"
-              class="j-action-menu__item"
-              [class]="'j-action-menu__item j-action-menu__item--' + (action.severity || 'neutral')"
-              [attr.role]="popup() ? 'menuitem' : null"
-              [disabled]="action.disabled"
-              (click)="activate(action, $event)"
-            >
-              @if (action.icon) {
-                <span class="j-action-menu__icon" aria-hidden="true">{{ action.icon }}</span>
-              }
-              <span>{{ action.label }}</span>
-            </button>
+            <j-button
+              [styleClass]="
+                'j-action-menu__item j-action-menu__item--' + (action.severity || 'neutral')
+              "
+              [label]="action.label"
+              [icon]="action.icon || ''"
+              [severity]="action.severity || 'neutral'"
+              variant="text"
+              size="sm"
+              [disabled]="action.disabled || false"
+              [ariaRole]="popup() ? 'menuitem' : ''"
+              (onClick)="activate(action, $event)"
+            />
           }
         </div>
       }
@@ -136,6 +139,15 @@ import { JTableAction, JTableActionEvent, JTableRow } from './table.types';
       .j-action-menu__item--danger {
         color: var(--j-color-danger, #dc2626);
       }
+
+      :host ::ng-deep .j-action-menu__trigger {
+        min-width: 2rem;
+      }
+
+      :host ::ng-deep .j-action-menu.is-popup .j-action-menu__item {
+        justify-content: flex-start;
+        width: 100%;
+      }
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -154,7 +166,7 @@ export class JActionMenuComponent {
   readonly triggerLabel = input('Open row actions');
   readonly triggerIcon = input('...');
   readonly popup = input(false, { transform: booleanAttribute });
-  readonly actionClick = output<JTableActionEvent>();
+  readonly action = output<JTableActionEvent>();
 
   open = false;
 
@@ -192,7 +204,7 @@ export class JActionMenuComponent {
       originalEvent,
     };
     action.command?.(event);
-    this.actionClick.emit(event);
+    this.action.emit(event);
     this.open = false;
   }
 

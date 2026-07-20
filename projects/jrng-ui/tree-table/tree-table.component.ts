@@ -418,7 +418,7 @@ export class JTreeTableComponent {
   columnClass(column: JTableColumn, header = false): string {
     const align = header ? (column.headerAlign ?? column.align) : column.align;
     const normalized =
-      align === 'center' ? 'center' : align === 'end' || align === 'right' ? 'end' : 'start';
+      align === 'center' ? 'center' : align === 'end' ? 'end' : 'start';
     return [`j-tree-table__align-${normalized}`, column.frozen ? 'j-tree-table__frozen' : '']
       .filter(Boolean)
       .join(' ');

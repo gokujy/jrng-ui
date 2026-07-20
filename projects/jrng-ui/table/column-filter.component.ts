@@ -5,13 +5,10 @@ import {
   JTableFilterOption,
   JTableFilterType,
 } from './table.types';
+import { JButtonComponent } from 'jrng-ui/button';
 
-export interface JColumnFilterChange {
-  readonly field: string;
-  readonly value: string;
-}
-
-export type JColumnFilterModelChange = JTableFilterItem;
+export type JColumnFilterChange = JTableFilterItem;
+export type JColumnFilterDisplay = 'inline' | 'row' | 'menu' | 'toolbar';
 
 const DEFAULT_OPERATORS: Readonly<Record<JTableFilterType, readonly JTableFilterOperator[]>> = {
   text: [
@@ -45,11 +42,15 @@ const DEFAULT_OPERATORS: Readonly<Record<JTableFilterType, readonly JTableFilter
 
 @Component({
   selector: 'j-column-filter',
-  imports: [],
+  imports: [JButtonComponent],
   template: `
-    <div class="j-column-filter" role="group" [attr.aria-label]="resolvedAriaLabel()">
+    <div
+      [class]="'j-column-filter j-column-filter--' + display()"
+      role="group"
+      [attr.aria-label]="resolvedAriaLabel()"
+    >
       <span class="j-column-filter__label">Filter {{ label() || field() }}</span>
-      @if (!hideOperator()) {
+      @if (!hideOperator() && display() !== 'row') {
         <select
           class="j-column-filter__operator"
           [attr.aria-label]="'Filter operator for ' + (label() || field())"
@@ -143,6 +144,35 @@ const DEFAULT_OPERATORS: Readonly<Record<JTableFilterType, readonly JTableFilter
           }
         }
       }
+      @if (!hideOperator() && display() === 'row') {
+        <details class="j-column-filter__match-menu">
+          <summary
+            class="j-column-filter__match-button"
+            [attr.aria-label]="'Choose match mode for ' + (label() || field())"
+            [attr.data-j-active]="resolvedOperator() !== defaultOperator() ? 'true' : null"
+          >
+            &#8801;
+          </summary>
+          <div class="j-column-filter__match-popup" role="menu">
+            @for (item of resolvedOperators(); track item) {
+              <j-button
+                [label]="operatorLabel(item)"
+                variant="text"
+                size="sm"
+                ariaRole="menuitemradio"
+                [ariaChecked]="item === resolvedOperator()"
+                (onClick)="selectOperator(item, $event)"
+              />
+            }
+          </div>
+        </details>
+      }
+      @if (showActions()) {
+        <div class="j-column-filter__actions">
+          <j-button label="Clear" variant="text" size="sm" (onClick)="clearFilter()" />
+          <j-button label="Apply" size="sm" (onClick)="applyFilter()" />
+        </div>
+      }
     </div>
   `,
   styles: [
@@ -151,6 +181,71 @@ const DEFAULT_OPERATORS: Readonly<Record<JTableFilterType, readonly JTableFilter
         display: grid;
         gap: var(--j-spacing-1, 0.25rem);
         margin-top: var(--j-spacing-sm, 0.5rem);
+      }
+
+      .j-column-filter--row {
+        align-items: center;
+        display: flex;
+        margin: 0;
+        position: relative;
+      }
+      .j-column-filter--row .j-column-filter__control,
+      .j-column-filter--row .j-column-filter__range {
+        flex: 1;
+        min-width: 0;
+      }
+      .j-column-filter__match-menu {
+        flex: 0 0 auto;
+        position: relative;
+      }
+      .j-column-filter__match-button {
+        align-items: center;
+        border: 1px solid var(--j-color-border);
+        border-radius: var(--j-radius-sm);
+        cursor: pointer;
+        display: inline-flex;
+        height: 2rem;
+        justify-content: center;
+        list-style: none;
+        width: 2rem;
+      }
+      .j-column-filter__match-button:focus-visible {
+        box-shadow: var(--j-focus-ring);
+        outline: none;
+      }
+      .j-column-filter__match-popup {
+        background: var(--j-color-popover);
+        border: 1px solid var(--j-color-border);
+        border-radius: var(--j-radius-md);
+        box-shadow: var(--j-shadow-md);
+        display: grid;
+        inset-inline-end: 0;
+        min-width: 12rem;
+        padding: var(--j-spacing-1);
+        position: absolute;
+        top: calc(100% + var(--j-spacing-1));
+        z-index: var(--j-z-index-popover);
+      }
+      .j-column-filter__match-popup button,
+      .j-column-filter__actions button {
+        background: transparent;
+        border: 0;
+        border-radius: var(--j-radius-sm);
+        color: inherit;
+        font: inherit;
+        min-height: 2rem;
+        padding: 0 var(--j-spacing-2);
+        text-align: start;
+      }
+      .j-column-filter__match-popup button:hover,
+      .j-column-filter__match-popup button:focus-visible {
+        background: var(--j-color-hover-background);
+        outline: none;
+      }
+      .j-column-filter__actions {
+        display: flex;
+        gap: var(--j-spacing-1);
+        justify-content: flex-end;
       }
 
       .j-column-filter__label {
@@ -209,8 +304,11 @@ export class JColumnFilterComponent {
   readonly min = input<number | string | null>(null);
   readonly max = input<number | string | null>(null);
   readonly step = input<number | null>(null);
+  readonly display = input<JColumnFilterDisplay>('inline');
+  readonly showActions = input(false);
   readonly filterChange = output<JColumnFilterChange>();
-  readonly filterModelChange = output<JColumnFilterModelChange>();
+  readonly apply = output<JColumnFilterChange>();
+  readonly clear = output<void>();
 
   readonly resolvedOperators = computed(() =>
     this.operators().length ? this.operators() : DEFAULT_OPERATORS[this.type()],
@@ -220,6 +318,7 @@ export class JColumnFilterComponent {
       ? this.operator()
       : (this.resolvedOperators()[0] ?? 'equals'),
   );
+  readonly defaultOperator = computed(() => this.resolvedOperators()[0] ?? 'equals');
   readonly resolvedAriaLabel = computed(
     () => this.ariaLabel() || `Filter ${this.label() || this.field()}`,
   );
@@ -275,9 +374,24 @@ export class JColumnFilterComponent {
     this.emitValue(next);
   }
   handleOperator(event: Event): void {
-    this.filterModelChange.emit({
+    this.filterChange.emit({
       field: this.field(),
       operator: (event.target as HTMLSelectElement).value as JTableFilterOperator,
+      value: this.value(),
+    });
+  }
+  selectOperator(operator: JTableFilterOperator, event: Event): void {
+    this.filterChange.emit({ field: this.field(), operator, value: this.value() });
+    (event.currentTarget as HTMLElement | null)?.closest('details')?.removeAttribute('open');
+  }
+  clearFilter(): void {
+    this.emitValue('');
+    this.clear.emit();
+  }
+  applyFilter(): void {
+    this.apply.emit({
+      field: this.field(),
+      operator: this.resolvedOperator(),
       value: this.value(),
     });
   }
@@ -290,10 +404,6 @@ export class JColumnFilterComponent {
   }
 
   private emitValue(value: unknown): void {
-    this.filterChange.emit({
-      field: this.field(),
-      value: Array.isArray(value) ? value.join(',') : value == null ? '' : String(value),
-    });
-    this.filterModelChange.emit({ field: this.field(), operator: this.resolvedOperator(), value });
+    this.filterChange.emit({ field: this.field(), operator: this.resolvedOperator(), value });
   }
 }

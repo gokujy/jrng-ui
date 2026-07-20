@@ -1,19 +1,35 @@
-import { reflectComponentType } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { describe, expect, it } from 'vitest';
 import { JDividerComponent } from './divider.component';
 
-describe('JDividerComponent public contract', () => {
-  const metadata = reflectComponentType(JDividerComponent);
+describe('JDividerComponent', () => {
+  it('exposes semantic orientation and visual line variants', () => {
+    const fixture = TestBed.createComponent(JDividerComponent);
+    fixture.componentRef.setInput('layout', 'vertical');
+    fixture.componentRef.setInput('lineStyle', 'dashed');
+    fixture.componentRef.setInput('strength', 'strong');
+    fixture.componentRef.setInput('spacing', 'spacious');
+    fixture.detectChanges();
 
-  it('keeps its public selector stable', () => {
-    expect(metadata).not.toBeNull();
-    expect(metadata?.selector).toBe('j-divider');
+    const divider = fixture.nativeElement.querySelector('[role="separator"]') as HTMLElement;
+    expect(divider.getAttribute('aria-orientation')).toBe('vertical');
+    expect(divider.classList).toContain('j-divider--dashed');
+    expect(divider.classList).toContain('j-divider--strong');
+    expect(divider.classList).toContain('j-divider--spacious');
   });
 
-  it('publishes unambiguous input, output, and projection metadata', () => {
-    const inputs = metadata?.inputs.map((item) => item.propName) ?? [];
-    const outputs = metadata?.outputs.map((item) => item.propName) ?? [];
-    expect(new Set(inputs).size).toBe(inputs.length);
-    expect(new Set(outputs).size).toBe(outputs.length);
-    expect(metadata?.ngContentSelectors).toBeDefined();
+  it('renders positioned text and JRNG icon content', () => {
+    const fixture = TestBed.createComponent(JDividerComponent);
+    fixture.componentRef.setInput('text', 'Account settings');
+    fixture.componentRef.setInput('icon', 'settings');
+    fixture.componentRef.setInput('position', 'start');
+    fixture.componentRef.setInput('inset', true);
+    fixture.detectChanges();
+
+    const divider = fixture.nativeElement.querySelector('.j-divider') as HTMLElement;
+    expect(divider.classList).toContain('j-divider--start');
+    expect(divider.classList).toContain('j-divider--inset');
+    expect(divider.textContent).toContain('Account settings');
+    expect(divider.querySelector('j-icon svg')).toBeTruthy();
   });
 });

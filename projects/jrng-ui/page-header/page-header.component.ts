@@ -5,7 +5,7 @@ export interface JPageHeaderBreadcrumb {
   readonly url?: string;
 }
 
-export type JPageHeaderVariant = 'default' | 'stacked' | 'centered';
+export type JPageHeaderVariant = 'standard' | 'stacked' | 'centered' | 'hero';
 
 @Component({
   selector: 'j-page-header',
@@ -14,6 +14,8 @@ export type JPageHeaderVariant = 'default' | 'stacked' | 'centered';
     <header
       [class]="'j-page-header j-page-header--' + variant() + ' ' + styleClass()"
       [attr.data-j-variant]="variant()"
+      [class.j-page-header--sticky]="sticky()"
+      [attr.aria-busy]="loading() ? 'true' : null"
       data-jc-name="page-header"
       data-jc-section="root"
     >
@@ -32,6 +34,7 @@ export type JPageHeaderVariant = 'default' | 'stacked' | 'centered';
           }
         </nav>
       }
+      <ng-content select="[jPageHeaderStart]" />
       <div class="j-page-header__main">
         <div [class.has-back]="showBack()">
           @if (showBack()) {
@@ -44,18 +47,27 @@ export type JPageHeaderVariant = 'default' | 'stacked' | 'centered';
               {{ backIcon() }}
             </button>
           }
-          <h1>{{ title() }}</h1>
-          @if (subtitle() || description()) {
-            <p>{{ subtitle() || description() }}</p>
+          @if (loading()) {
+            <span class="j-page-header__skeleton" aria-label="Loading page header"></span>
+          } @else {
+            <h1>{{ title() }}</h1>
           }
+          @if (subtitle()) {
+            <p>{{ subtitle() }}</p>
+          }
+          <div class="j-page-header__metadata"><ng-content select="[jPageMetadata]" /></div>
+          <div class="j-page-header__status"><ng-content select="[jPageStatus]" /></div>
         </div>
+        <ng-content select="[jPageHeaderCenter]" />
         <div class="j-page-header__actions" data-jc-section="actions">
           <ng-content select="[jPageSecondaryActions]" />
           <ng-content select="[jPageActions]" />
           <ng-content select="[jPagePrimaryAction]" />
           <ng-content select="[jPageRightActions]" />
+          <ng-content select="[jPageActionMenu]" />
         </div>
       </div>
+      <ng-content select="[jPageHeaderEnd]" />
       <div class="j-page-header__tabs" data-jc-section="tabs">
         <ng-content select="[jPageTabs]" />
       </div>
@@ -163,6 +175,50 @@ export type JPageHeaderVariant = 'default' | 'stacked' | 'centered';
         justify-content: center;
       }
 
+      .j-page-header--hero {
+        background: var(--j-surface-elevated);
+        border-radius: var(--j-radius-xl);
+        padding: var(--j-spacing-8);
+      }
+      .j-page-header--hero h1 {
+        font-size: var(--j-font-size-4xl, 2.25rem);
+      }
+      .j-page-header--sticky {
+        background: var(--j-color-background);
+        inset-block-start: 0;
+        padding-block: var(--j-spacing-3);
+        position: sticky;
+        z-index: var(--j-z-sticky, 20);
+      }
+      .j-page-header__metadata,
+      .j-page-header__status {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--j-spacing-2);
+      }
+      .j-page-header__metadata:empty,
+      .j-page-header__status:empty {
+        display: none;
+      }
+      .j-page-header__skeleton {
+        animation: j-page-header-pulse 1.2s ease-in-out infinite;
+        background: var(--j-surface-soft);
+        border-radius: var(--j-radius-md);
+        display: block;
+        height: 2.25rem;
+        width: min(20rem, 60vw);
+      }
+      @keyframes j-page-header-pulse {
+        50% {
+          opacity: var(--j-loading-opacity);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .j-page-header__skeleton {
+          animation: none;
+        }
+      }
+
       @media (max-width: 640px) {
         .j-page-header__main {
           display: grid;
@@ -175,13 +231,14 @@ export type JPageHeaderVariant = 'default' | 'stacked' | 'centered';
 export class JPageHeaderComponent {
   readonly title = input('');
   readonly subtitle = input('');
-  readonly description = input('');
   readonly breadcrumbs = input<readonly JPageHeaderBreadcrumb[]>([]);
   readonly showBack = input(false, { transform: booleanAttribute });
   readonly backLabel = input('Go back');
   readonly backIcon = input('←');
   readonly styleClass = input('');
-  readonly variant = input<JPageHeaderVariant>('default');
+  readonly variant = input<JPageHeaderVariant>('standard');
+  readonly sticky = input(false, { transform: booleanAttribute });
+  readonly loading = input(false, { transform: booleanAttribute });
 
   readonly back = output<void>();
 }

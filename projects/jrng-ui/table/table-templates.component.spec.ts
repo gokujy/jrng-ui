@@ -9,6 +9,7 @@ import {
   JTableHeaderTemplateDirective,
 } from './table-template.directive';
 import { JTableColumn } from './table.types';
+import { JButtonComponent } from 'jrng-ui/button';
 
 interface OrderRow {
   readonly id: number;
@@ -26,9 +27,10 @@ interface OrderRow {
     JTableCellTemplateDirective,
     JTableFilterTemplateDirective,
     JTableHeaderTemplateDirective,
+    JButtonComponent,
   ],
   template: `
-    <j-table variant="bordered" [columns]="columns" [value]="rows">
+    <j-table variant="gridlines" filterDisplay="row" [columns]="columns" [value]="rows">
       <ng-template [jTableHeader]="columns[0]" let-column>
         <span class="custom-header">{{ column.header }} account</span>
       </ng-template>
@@ -36,10 +38,10 @@ interface OrderRow {
         <strong class="custom-cell">{{ row.customer }}: {{ value }}</strong>
       </ng-template>
       <ng-template [jTableFilter]="columns[2]" let-apply="apply">
-        <button class="custom-filter" type="button" (click)="apply('Ready')">Ready only</button>
+        <j-button class="custom-filter" variant="text" (onClick)="apply('Ready')">Ready only</j-button>
       </ng-template>
       <ng-template [jTableActions]="columns[3]" let-row>
-        <button class="custom-action" type="button">Open {{ row.id }}</button>
+        <j-button class="custom-action" variant="text">Open {{ row.id }}</j-button>
       </ng-template>
     </j-table>
   `,
@@ -93,7 +95,7 @@ describe('JTableComponent typed columns and templates', () => {
   });
 
   it('applies a custom filter template without replacing table filtering', () => {
-    const filterButton = fixture.debugElement.query(By.css('.custom-filter'))
+    const filterButton = fixture.debugElement.query(By.css('.custom-filter button'))
       .nativeElement as HTMLButtonElement;
     const table = fixture.debugElement.query(By.directive(JTableComponent))
       .componentInstance as JTableComponent;
@@ -108,6 +110,6 @@ describe('JTableComponent typed columns and templates', () => {
   it('keeps semantic header and cell markup', () => {
     expect(fixture.debugElement.queryAll(By.css('th[scope="col"]'))).toHaveLength(4);
     expect(fixture.debugElement.queryAll(By.css('tbody td'))).toHaveLength(4);
-    expect(fixture.debugElement.query(By.css('.j-table--bordered'))).toBeTruthy();
+    expect(fixture.debugElement.query(By.css('.j-table--gridlines'))).toBeTruthy();
   });
 });

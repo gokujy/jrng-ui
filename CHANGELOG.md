@@ -1,34 +1,47 @@
 # Changelog
 
-## Unreleased
+## 0.1.0
 
 ### Added
 
-- Public project trust files, adoption documentation, compatibility guidance, and release checks.
+- Added the unified `j-label` component, canonical `j-empty` entry point, internal `j-image` viewer, and native `j-tour-guide` renderer/controller.
+- Established the first supported public API baseline with 119 documented components and modular secondary entrypoints.
+- Added fractional Rating steps, Select async pagination/infinite loading, MultiSelect severity chips, and Table row grouping/virtual scrolling/custom sorting.
+- Added final shared size, severity, density, orientation, shape, width, action-display, and component-family variant types.
+- Added generated public inventory, documentation, preview, API, direct-test, accessibility, responsive, theme, SSR, and package status records.
+- Added architecture references for forms, tables, selects, overlays, editor extensions, themes, and documentation navigation.
 
 ### Changed
 
-- Positioned JRNG UI for Angular admin panels, dashboards, and business applications.
+- Merged Date Range Picker into Date Picker range mode, Combobox into Select searchable/async modes, Float/Ifta Label into `j-label`, Image Preview into `j-image`, and Empty Page into `j-empty` page variants.
+- Replaced the Driver.js adapter with a native, SSR-safe JRNG Tour Guide supporting placement, progress, async targets, lifecycle hooks, persistence, keyboard control, focus restoration and cleanup.
+- Normalized public classes to `J...`, selectors to `j-...`, action events, property responsibilities, and narrow variant families.
+- Consolidated duplicate component responsibilities and internal implementations across cards, loading, transfers, overlays, tables, selects, forms, images, and file interactions.
+- Made responsive preview controls opt-in and synchronized component/example routing, history, scroll position, heading focus, navigation selection, and mobile navigation state.
+- Updated Table/Data Grid scrolling, final saved state, filtering axes, Transfer List responsiveness, Float Label state detection, Password visibility, Chips severity, Gallery transitions, Grid gaps, Avatar preview, and File Preview actions.
+- Standardized Table toolbar, filter, row expansion, row locking, and action-menu controls on JRNG Button and Tooltip primitives.
 
 ### Fixed
 
-- Documentation sections with unavailable details now show contextual guidance instead of empty tables.
-
-### Deprecated
-
-- No APIs are currently scheduled for deprecation.
+- Invalid Table state restores defaults and emits a typed non-fatal error without crashing rendering.
+- Table select-all now computes checked and indeterminate state from eligible rows in the current filtered, paged, lazy, or virtual window.
+- Time Picker now blocks every mutation path while disabled and uses a constrained viewport-aware panel with a JRNG clock icon.
+- Overlay lifecycle, focus restoration, cleanup, responsive containment, and reduced-motion behavior were tightened across interactive components.
+- Documentation preview sources use deterministic local data and JRNG action controls.
 
 ### Removed
 
-- No public APIs have been removed.
+- Removed Activity Feed, Approval Flow, Audit Log, Navigation Progress, Dashboard Layout, Sidebar Layout, Stack, Status Page, Input Icon, Date Range Picker, Combobox, Float Label, Ifta Label, Image Preview and Empty Page entry points after migrating their supported behavior.
+- Removed the Driver.js dependency, dynamic import and external stylesheet.
+- Removed the duplicated library source tree and duplicate public components: Metric Card, Stat Card, Dropzone, Overlay Panel, Pick List, Column, Sort Icon, Table Empty State, and Table Skeleton.
+- Removed pre-stable aliases, deprecated declarations, old variant values, old Table state handling, and duplicated input/output names.
 
 ### Security
 
-- Package validation rejects internal instruction, temporary, private, and test-output files.
+- Editor and HTML preview sanitization remove executable markup, inline event handlers, and dangerous URLs.
+- Package validation excludes tests, coverage, internal instructions, private audit drafts, caches, archives, and development-only preview sources.
 
-### Migration notes
-
-- No migration is required for the current documentation and developer-experience changes.
+This is an intentional breaking reset of the pre-stable API. Removed declarations have no runtime wrappers or aliases.
 
 ## 0.0.9
 
@@ -39,7 +52,7 @@
 - Added optional Avatar image zoom with pointer and keyboard activation, reusable preview overlay behavior, image fallback, Escape close, and focus restoration.
 - Expanded Loader with spinner, dots, pulse, ring, dual-ring, bars, wave, bounce, orbit, typing, inline, overlay, fullscreen, and determinate presentations.
 - Deprecated Metric Card for new work; dashboard metrics are now documented as compositions of Card, Badge, Progress, and chart components.
-- Expanded every component page with usage boundaries, keyboard, responsive, template, limitation, related-component, and testing guidance.
+- Expanded every component page with keyboard, responsive, template, limitation, related-component, and testing contracts.
 
 ### Table family
 
@@ -84,7 +97,7 @@
 ### Documentation
 
 - Replaced stale Editor placeholder guidance and documented number formatting, upload modes, overlay targets, global configuration, SSR verification, Node requirements, and the 0.0.9 migration.
-- Added generated beginner guidance and complete public input, output, and method coverage for every public component page, with focused file-backed demos for the primary additions.
+- Added generated technical summaries and complete public input, output, and method coverage for every public component page, with focused file-backed previews for the primary additions.
 - Added automated checks for demo file existence, non-empty code tabs, valid public selectors, and documentation/API registry consistency.
 - Added mergeable Hindi and Gujarati locale examples.
 

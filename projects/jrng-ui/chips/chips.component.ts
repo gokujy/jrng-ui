@@ -3,19 +3,23 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  contentChild,
   effect,
   forwardRef,
   inject,
   input,
   numberAttribute,
   output,
+  TemplateRef,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { jCreateId } from 'jrng-ui/core';
+import { NgTemplateOutlet } from '@angular/common';
+import { jCreateId, JSeverity } from 'jrng-ui/core';
+import { JChipComponent, JChipItem, JChipVariant } from 'jrng-ui/chip';
 
 @Component({
   selector: 'j-chips',
-  imports: [],
+  imports: [JChipComponent, NgTemplateOutlet],
   template: `
     <div
       [class]="rootClasses"
@@ -39,17 +43,24 @@ import { jCreateId } from 'jrng-ui/core';
       }
       <div class="j-chips" data-jc-section="control">
         @for (item of value; track item; let i = $index) {
-          <span class="j-chips__chip" data-jc-section="chip">
-            {{ item }}
-            <button
-              data-jc-section="remove"
-              type="button"
-              [disabled]="isDisabled || readonly()"
-              (click)="removeAt(i); $event.stopPropagation()"
-            >
-              x
-            </button>
-          </span>
+          @if (itemTemplate(); as template) {
+            <ng-container
+              [ngTemplateOutlet]="template"
+              [ngTemplateOutletContext]="{ $implicit: item, index: i }"
+            />
+          } @else {
+            <j-chip
+              data-jc-section="chip"
+              [label]="item.label"
+              [icon]="item.icon || ''"
+              [severity]="item.severity || severity()"
+              [variant]="variant()"
+              [disabled]="item.disabled || isDisabled || readonly()"
+              [removable]="item.removable !== false && !item.disabled"
+              [removeAriaLabel]="'Remove ' + item.label"
+              (remove)="removeAt(i)"
+            />
+          }
         }
         <input
           #input
@@ -181,16 +192,20 @@ export class JChipsComponent implements ControlValueAccessor {
   readonly readonly = input(false, { transform: booleanAttribute });
   readonly allowDuplicate = input(false, { transform: booleanAttribute });
   readonly disabled = input(false, { transform: booleanAttribute });
+  readonly severity = input<JSeverity>('neutral');
+  readonly variant = input<JChipVariant>('soft');
 
-  readonly valueChange = output<readonly string[]>();
-  readonly add = output<string>();
-  readonly remove = output<string>();
+  readonly itemTemplate = contentChild<TemplateRef<{ $implicit: JChipItem; index: number }>>('item');
 
-  value: readonly string[] = [];
+  readonly valueChange = output<readonly JChipItem[]>();
+  readonly add = output<JChipItem>();
+  readonly remove = output<JChipItem>();
+
+  value: readonly JChipItem[] = [];
   draft = '';
   isDisabled = false;
 
-  private onChange: (value: readonly string[]) => void = () => undefined;
+  private onChange: (value: readonly JChipItem[]) => void = () => undefined;
   private onTouched: () => void = () => undefined;
 
   constructor() {
@@ -215,12 +230,12 @@ export class JChipsComponent implements ControlValueAccessor {
       .join(' ');
   }
 
-  writeValue(value: readonly string[] | null | undefined): void {
-    this.value = Array.isArray(value) ? value : [];
+  writeValue(value: readonly JChipItem[] | null | undefined): void {
+    this.value = Array.isArray(value) ? value.map((item) => ({ ...item })) : [];
     this.changeDetectorRef.markForCheck();
   }
 
-  registerOnChange(fn: (value: readonly string[]) => void): void {
+  registerOnChange(fn: (value: readonly JChipItem[]) => void): void {
     this.onChange = fn;
   }
 
@@ -280,16 +295,17 @@ export class JChipsComponent implements ControlValueAccessor {
     if (
       !next ||
       (this.max() > 0 && this.value.length >= this.max()) ||
-      (!this.allowDuplicate() && this.value.includes(next))
+      (!this.allowDuplicate() && this.value.some((item) => item.label === next))
     ) {
       return;
     }
-    this.commit([...this.value, next]);
-    this.add.emit(next);
+    const item: JChipItem = { label: next, severity: this.severity() };
+    this.commit([...this.value, item]);
+    this.add.emit(item);
   }
 
-  private commit(value: readonly string[]): void {
-    this.value = value;
+  private commit(value: readonly JChipItem[]): void {
+    this.value = value.map((item) => ({ ...item }));
     this.onChange(this.value);
     this.valueChange.emit(this.value);
     this.changeDetectorRef.markForCheck();

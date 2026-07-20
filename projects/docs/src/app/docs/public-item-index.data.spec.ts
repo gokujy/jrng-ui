@@ -26,12 +26,12 @@ describe('publicItemIndex', () => {
     }
   });
 
-  it('includes searchable common-use-case text', () => {
+  it('includes selector, category, and import-path search text', () => {
     const matches = publicItemIndex.filter((item) =>
-      [item.name, item.identifier, item.category, item.description, ...item.useCases]
+      [item.name, item.identifier, item.category, item.description, ...item.searchTerms]
         .join(' ')
         .toLowerCase()
-        .includes('dashboard'),
+        .includes('jrng-ui/'),
     );
     expect(matches.length).toBeGreaterThan(0);
   });

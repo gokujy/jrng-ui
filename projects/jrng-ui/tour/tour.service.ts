@@ -1,8 +1,7 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { Injectable, PLATFORM_ID, inject, signal } from '@angular/core';
+import { DestroyRef, Injectable, PLATFORM_ID, inject, signal } from '@angular/core';
 import { Subject } from 'rxjs';
 import { jPrefersReducedMotion, jRememberFocus } from 'jrng-ui/core';
-
 import {
   JTourConfig,
   JTourDefaults,
@@ -12,73 +11,27 @@ import {
   JTourStepInput,
 } from './tour.types';
 
-const DRIVER_INSTALL_MESSAGE =
-  'JRNG UI tour requires driver.js. Install it with: npm install driver.js';
-
-interface JTourDriverPopover {
-  readonly title?: string;
-  readonly description?: string;
-  readonly side?: string;
-  readonly align?: string;
-  readonly popoverClass?: string;
-  readonly disableButtons?: readonly string[];
-  readonly nextBtnText?: string;
-  readonly prevBtnText?: string;
-  readonly doneBtnText?: string;
-  readonly closeBtnText?: string;
+export interface JTourTargetRect {
+  readonly top: number;
+  readonly left: number;
+  readonly width: number;
+  readonly height: number;
 }
-
-interface JTourDriverStep {
-  readonly element?: string | Element;
-  readonly popover?: JTourDriverPopover;
-  readonly __jTourIndex?: number;
-}
-
-interface JTourDriverOptions {
-  readonly steps: readonly JTourDriverStep[];
-  readonly animate?: boolean;
-  readonly allowClose?: boolean;
-  readonly smoothScroll?: boolean;
-  readonly showProgress?: boolean;
-  readonly overlayColor?: string;
-  readonly stagePadding?: number;
-  readonly stageRadius?: number;
-  readonly popoverClass?: string;
-  readonly nextBtnText?: string;
-  readonly prevBtnText?: string;
-  readonly doneBtnText?: string;
-  readonly closeBtnText?: string;
-  readonly onNextClick?: () => void;
-  readonly onPrevClick?: () => void;
-  readonly onCloseClick?: () => void;
-  readonly onDestroyed?: () => void;
-  readonly onHighlightStarted?: (element?: Element, step?: JTourDriverStep) => void;
-  readonly onDeselected?: (element?: Element, step?: JTourDriverStep) => void;
-}
-
-interface JTourDriver {
-  drive(stepIndex?: number): void;
-  moveNext(): void;
-  movePrevious(): void;
-  moveTo?(index: number): void;
-  destroy(): void;
-  isActive?(): boolean;
-  getActiveIndex?(): number | undefined;
-}
-
-type JTourDriverFactory = (options: JTourDriverOptions) => JTourDriver;
 
 @Injectable({ providedIn: 'root' })
 export class JTourService {
-  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  private readonly browser = isPlatformBrowser(inject(PLATFORM_ID));
   private readonly documentRef = inject(DOCUMENT);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly eventsSubject = new Subject<JTourEvent>();
   private readonly registeredSteps = new Map<string, JTourStep>();
   private readonly _isActive = signal(false);
   private readonly _activeTourId = signal<string | null>(null);
   private readonly _activeIndex = signal(-1);
+  private readonly _currentStep = signal<JTourStep | null>(null);
+  private readonly _targetRect = signal<JTourTargetRect | null>(null);
+  private readonly _config = signal<JTourConfig | null>(null);
   private readonly _lastError = signal('');
-
   private defaults: JTourDefaults = {
     animate: true,
     allowClose: true,
@@ -88,364 +41,296 @@ export class JTourService {
     previousText: 'Previous',
     doneText: 'Done',
     closeText: 'Close',
+    stagePadding: 8,
+    stageRadius: 8,
   };
-  private driverFactory: JTourDriverFactory | null = null;
-  private driver: JTourDriver | null = null;
-  private activeConfig: JTourConfig | null = null;
-  private resolvedSteps: readonly JTourStep[] = [];
-  private pendingDestroyEvent = true;
+  private steps: readonly JTourStep[] = [];
+  private target: Element | null = null;
   private restoreFocus: (() => void) | null = null;
-  private startVersion = 0;
+  private removeListeners: (() => void) | null = null;
+  private runVersion = 0;
 
   readonly events$ = this.eventsSubject.asObservable();
   readonly isActive = this._isActive.asReadonly();
   readonly activeTourId = this._activeTourId.asReadonly();
   readonly activeIndex = this._activeIndex.asReadonly();
+  readonly currentStep = this._currentStep.asReadonly();
+  readonly targetRect = this._targetRect.asReadonly();
+  readonly config = this._config.asReadonly();
   readonly lastError = this._lastError.asReadonly();
 
+  constructor() {
+    this.destroyRef.onDestroy(() => this.finish(false));
+  }
   setDefaults(defaults: JTourDefaults): void {
     this.defaults = { ...this.defaults, ...defaults };
   }
-
   registerStep(step: JTourStep): void {
-    if (!step.id) {
-      return;
-    }
-
-    this.registeredSteps.set(step.id, step);
+    if (step.id) this.registeredSteps.set(step.id, step);
   }
-
   unregisterStep(id: string): void {
     this.registeredSteps.delete(id);
   }
 
   async start(config: JTourConfig): Promise<void> {
-    if (!this.isBrowser) {
-      return;
-    }
-
-    const version = ++this.startVersion;
-    const resolvedConfig = {
+    if (!this.browser) return;
+    const merged: JTourConfig = {
       ...this.defaults,
       ...config,
-      animate:
-        config.animate ?? (jPrefersReducedMotion(this.documentRef) ? false : this.defaults.animate),
+      animate: config.animate ?? !jPrefersReducedMotion(this.documentRef),
     };
-    this.activeConfig = resolvedConfig;
-    const steps = config.steps
-      .map((step) => this.resolveStep(step))
-      .filter((step): step is JTourStep => Boolean(step))
-      .filter((step) => this.hasTarget(step));
-
-    if (!steps.length) {
-      this.activeConfig = null;
+    const storageKey = this.storageKey(merged);
+    if (
+      merged.showOnce &&
+      storageKey &&
+      this.documentRef.defaultView?.localStorage.getItem(storageKey) === 'complete'
+    )
       return;
-    }
-
-    this.destroy(false);
-
+    if ((await merged.beforeStart?.()) === false) return;
+    this.finish(false);
+    const version = ++this.runVersion;
+    this.steps = config.steps
+      .map((step) => this.resolveStep(step))
+      .filter((step): step is JTourStep => !!step);
+    if (!this.steps.length) return;
+    this._config.set(merged);
+    this._activeTourId.set(merged.id ?? null);
     this.restoreFocus = jRememberFocus(this.documentRef);
-    let factory: JTourDriverFactory;
-    try {
-      factory = await this.loadDriverFactory();
-    } catch (error) {
-      this.emitError(error instanceof Error ? error.message : DRIVER_INSTALL_MESSAGE);
-      this.restoreAndClearFocus();
-      throw error;
-    }
-    if (version !== this.startVersion) return;
-    this.activeConfig = resolvedConfig;
-    this.resolvedSteps = steps;
-    this._activeTourId.set(resolvedConfig.id ?? null);
-    this._activeIndex.set(0);
-    this.pendingDestroyEvent = true;
-
-    this.driver = factory({
-      steps: steps.map((step, index) => this.toDriverStep(step, index, resolvedConfig)),
-      animate: resolvedConfig.animate,
-      allowClose: resolvedConfig.allowClose,
-      smoothScroll: resolvedConfig.smoothScroll,
-      showProgress: resolvedConfig.showProgress,
-      overlayColor: resolvedConfig.overlayColor,
-      stagePadding: resolvedConfig.stagePadding,
-      stageRadius: resolvedConfig.stageRadius,
-      popoverClass: resolvedConfig.popoverClass,
-      nextBtnText: resolvedConfig.nextText,
-      prevBtnText: resolvedConfig.previousText,
-      doneBtnText: resolvedConfig.doneText,
-      closeBtnText: resolvedConfig.closeText,
-      onNextClick: () => this.next(),
-      onPrevClick: () => this.previous(),
-      onCloseClick: () => this.skip(),
-      onDestroyed: () => this.handleDestroyed(),
-      onHighlightStarted: (_element, step) => this.handleHighlight(step),
-      onDeselected: (_element, step) => this.handleDeselected(step),
-    });
-
+    this.installListeners();
     this._isActive.set(true);
     this.emit('start', 0);
-    this.driver.drive();
+    await this.activate(0, version);
   }
 
-  next(): void {
-    if (!this.driver || !this._isActive()) {
+  async next(): Promise<void> {
+    if (!this._isActive()) return;
+    if (this._activeIndex() >= this.steps.length - 1) {
+      await this.complete();
       return;
     }
-
-    const index = this.currentIndex();
-    if (index >= this.resolvedSteps.length - 1) {
-      this.complete();
-      return;
-    }
-
-    const nextIndex = index + 1;
-    this._activeIndex.set(nextIndex);
-    this.emit('next', nextIndex);
-    this.driver.moveNext();
+    this.emit('next', this._activeIndex() + 1);
+    await this.activate(this._activeIndex() + 1, this.runVersion);
   }
-
-  previous(): void {
-    if (!this.driver || !this._isActive()) {
-      return;
+  async previous(): Promise<void> {
+    if (this._isActive()) {
+      const index = Math.max(0, this._activeIndex() - 1);
+      this.emit('previous', index);
+      await this.activate(index, this.runVersion);
     }
-
-    const previousIndex = Math.max(0, this.currentIndex() - 1);
-    this._activeIndex.set(previousIndex);
-    this.emit('previous', previousIndex);
-    this.driver.movePrevious();
   }
-
+  async goTo(index: number): Promise<void> {
+    if (this._isActive())
+      await this.activate(Math.max(0, Math.min(index, this.steps.length - 1)), this.runVersion);
+  }
   moveTo(index: number): void {
-    if (!this.driver || !this._isActive()) {
-      return;
-    }
-
-    const target = Math.max(0, Math.min(index, this.resolvedSteps.length - 1));
-    this._activeIndex.set(target);
-    if (typeof this.driver.moveTo === 'function') {
-      this.driver.moveTo(target);
-    } else {
-      this.driver.drive(target);
-    }
+    void this.goTo(index);
+  }
+  close(): void {
+    this.skip();
+  }
+  highlight(step: JTourStep): void {
+    void this.start({ steps: [step] });
+  }
+  updateSteps(steps: readonly JTourStepInput[]): void {
+    this.steps = steps
+      .map((step) => this.resolveStep(step))
+      .filter((step): step is JTourStep => !!step);
+    if (this._isActive() && !this.steps.length) this.close();
+  }
+  reset(id?: string): void {
+    const key = id ? `jrng-tour:${id}` : this.storageKey(this._config());
+    if (key) this.documentRef.defaultView?.localStorage.removeItem(key);
   }
 
-  complete(): void {
-    if (!this._isActive()) {
-      return;
-    }
-
-    this.emit('complete', this.currentIndex());
-    this.destroy();
+  async complete(): Promise<void> {
+    if (!this._isActive()) return;
+    this.emit('complete', this._activeIndex());
+    const key = this.storageKey(this._config());
+    if (key) this.documentRef.defaultView?.localStorage.setItem(key, 'complete');
+    await this._config()?.afterEnd?.();
+    this.finish(true);
   }
-
   skip(): void {
-    if (!this._isActive()) {
-      return;
+    if (this._isActive()) {
+      if (
+        this._config()?.confirmOnExit &&
+        !this.documentRef.defaultView?.confirm('Exit this tour?')
+      )
+        return;
+      this.emit('skip', this._activeIndex());
+      this.finish(true);
     }
-
-    this.emit('skip', this.currentIndex());
-    this.destroy();
   }
-
   destroy(emitEvent = true): void {
-    this.startVersion += 1;
-    this.pendingDestroyEvent = emitEvent;
-
-    if (this.driver) {
-      const driver = this.driver;
-      this.driver = null;
-      driver.destroy();
-      return;
-    }
-
-    this.handleDestroyed();
+    this.finish(emitEvent);
   }
 
-  private resolveStep(step: JTourStepInput): JTourStep | null {
-    if (typeof step === 'string') {
-      return this.registeredSteps.get(step) ?? { id: step };
+  private async activate(index: number, version: number): Promise<void> {
+    const previous = this._currentStep();
+    if (previous) await previous.afterLeave?.(previous);
+    const step = this.steps[index];
+    if (!step || version !== this.runVersion) return;
+    if ((await step.beforeEnter?.(step)) === false) {
+      if (index < this.steps.length - 1) await this.activate(index + 1, version);
+      else this.close();
+      return;
     }
+    const target = await this.resolveTarget(step, version);
+    if (version !== this.runVersion || !this._isActive()) return;
+    if (!target && step.element) {
+      const strategy = step.missingTarget ?? 'error';
+      this.emitError(`Tour target was not found: ${String(step.element)}`);
+      if (strategy === 'skip' && index < this.steps.length - 1) {
+        await this.activate(index + 1, version);
+        return;
+      }
+      this.finish(strategy !== 'error');
+      return;
+    }
+    this.target = target;
+    if (target && this._config()?.smoothScroll && typeof target.scrollIntoView === 'function')
+      target.scrollIntoView({
+        behavior: this._config()?.animate ? 'smooth' : 'auto',
+        block: 'center',
+        inline: 'center',
+      });
+    this._activeIndex.set(index);
+    this._currentStep.set(step);
+    this.refreshRect();
+    this.emit('highlightStarted', index);
+    queueMicrotask(() =>
+      this.documentRef.querySelector<HTMLElement>('.j-tour-guide__popover button')?.focus(),
+    );
+  }
 
+  private async resolveTarget(step: JTourStep, version: number): Promise<Element | null> {
+    if (!step.element) return null;
+    if (typeof step.element !== 'string') return step.element;
+    const deadline = Date.now() + Math.max(0, step.waitForTargetMs ?? 0);
+    while (version === this.runVersion) {
+      try {
+        const found = this.documentRef.querySelector(step.element);
+        if (found) return found;
+      } catch {
+        this.emitError(`Invalid tour target selector: ${step.element}`);
+        return null;
+      }
+      if (Date.now() >= deadline || version !== this.runVersion) break;
+      await new Promise<void>((resolve) => this.documentRef.defaultView?.setTimeout(resolve, 50));
+    }
+    return null;
+  }
+
+  private refreshRect = (): void => {
+    if (!this._isActive()) return;
+    if (!this.target) {
+      const view = this.documentRef.defaultView;
+      this._targetRect.set({
+        top: (view?.innerHeight ?? 0) / 2,
+        left: (view?.innerWidth ?? 0) / 2,
+        width: 0,
+        height: 0,
+      });
+      return;
+    }
+    const rect = this.target.getBoundingClientRect();
+    const padding = this._currentStep()?.padding ?? this._config()?.stagePadding ?? 8;
+    this._targetRect.set({
+      top: rect.top - padding,
+      left: rect.left - padding,
+      width: rect.width + padding * 2,
+      height: rect.height + padding * 2,
+    });
+  };
+
+  private installListeners(): void {
+    const view = this.documentRef.defaultView;
+    if (!view) return;
+    const key = (event: KeyboardEvent) => {
+      if (!this._isActive()) return;
+      if (event.key === 'Escape' && this._config()?.allowClose !== false) {
+        event.preventDefault();
+        this.skip();
+      } else if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        void this.next();
+      } else if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        void this.previous();
+      }
+    };
+    this.documentRef.addEventListener('keydown', key);
+    view.addEventListener('resize', this.refreshRect);
+    view.addEventListener('scroll', this.refreshRect, true);
+    this.removeListeners = () => {
+      this.documentRef.removeEventListener('keydown', key);
+      view.removeEventListener('resize', this.refreshRect);
+      view.removeEventListener('scroll', this.refreshRect, true);
+    };
+  }
+  private finish(emitDestroy: boolean): void {
+    const index = this._activeIndex();
+    const wasActive = this._isActive();
+    ++this.runVersion;
+    this.removeListeners?.();
+    this.removeListeners = null;
+    this.target = null;
+    this.steps = [];
+    this._isActive.set(false);
+    this._activeIndex.set(-1);
+    this._activeTourId.set(null);
+    this._currentStep.set(null);
+    this._targetRect.set(null);
+    this._config.set(null);
+    if (emitDestroy && wasActive) this.emit('destroy', index);
+    const restore = this.restoreFocus;
+    this.restoreFocus = null;
+    queueMicrotask(() => restore?.());
+  }
+  private resolveStep(step: JTourStepInput): JTourStep | null {
+    if (typeof step === 'string') return this.registeredSteps.get(step) ?? { id: step };
     const registered = step.id ? this.registeredSteps.get(step.id) : null;
     return registered
       ? { ...registered, ...step, element: step.element ?? registered.element }
       : step;
   }
-
-  private toDriverStep(step: JTourStep, index: number, config: JTourConfig): JTourDriverStep {
-    return {
-      element: step.element,
-      __jTourIndex: index,
-      popover: {
-        title: step.title,
-        description: step.description,
-        side: step.side,
-        align: step.align,
-        popoverClass: step.popoverClass,
-        disableButtons: step.disableButtons,
-        nextBtnText: step.nextText ?? config.nextText,
-        prevBtnText: step.previousText ?? config.previousText,
-        doneBtnText: step.doneText ?? config.doneText,
-        closeBtnText: step.closeText ?? config.closeText,
-      },
-    };
+  private storageKey(config: JTourConfig | null): string | null {
+    return config?.storageKey ?? (config?.id ? `jrng-tour:${config.id}` : null);
   }
-
-  private async loadDriverFactory(): Promise<JTourDriverFactory> {
-    if (this.driverFactory) {
-      return this.driverFactory;
-    }
-
-    try {
-      const module: unknown = await import('driver.js');
-      const candidate = this.extractDriverFactory(module);
-
-      if (!candidate) {
-        throw new Error(DRIVER_INSTALL_MESSAGE);
-      }
-
-      this._lastError.set('');
-      this.driverFactory = candidate;
-      return candidate;
-    } catch {
-      this._lastError.set(DRIVER_INSTALL_MESSAGE);
-      throw new Error(DRIVER_INSTALL_MESSAGE);
-    }
-  }
-
-  private extractDriverFactory(module: unknown): JTourDriverFactory | null {
-    if (!isRecord(module)) {
-      return null;
-    }
-
-    const named = module['driver'];
-    if (typeof named === 'function') {
-      return named as JTourDriverFactory;
-    }
-
-    const defaultExport = module['default'];
-    if (typeof defaultExport === 'function') {
-      return defaultExport as JTourDriverFactory;
-    }
-
-    if (isRecord(defaultExport) && typeof defaultExport['driver'] === 'function') {
-      return defaultExport['driver'] as JTourDriverFactory;
-    }
-
-    return null;
-  }
-
-  private handleHighlight(step?: JTourDriverStep): void {
-    const index = this.stepIndex(step);
-    this._activeIndex.set(index);
-    this.emit('highlightStarted', index);
-  }
-
-  private handleDeselected(step?: JTourDriverStep): void {
-    this.emit('deselected', this.stepIndex(step));
-  }
-
-  private handleDestroyed(): void {
-    const shouldEmit = this.pendingDestroyEvent;
-    const index = this.currentIndex();
-
-    this.driver = null;
-    this.activeConfig = null;
-    this.resolvedSteps = [];
-    this._isActive.set(false);
-    this._activeTourId.set(null);
-    this._activeIndex.set(-1);
-    this.pendingDestroyEvent = true;
-
-    if (shouldEmit) {
-      this.emit('destroy', index);
-    }
-    this.restoreAndClearFocus();
-  }
-
-  private currentIndex(): number {
-    const driverIndex = this.driver?.getActiveIndex?.();
-    if (typeof driverIndex === 'number') {
-      return Math.max(0, driverIndex);
-    }
-
-    return Math.max(0, this._activeIndex());
-  }
-
-  private stepIndex(step?: JTourDriverStep): number {
-    if (typeof step?.__jTourIndex === 'number') {
-      return step.__jTourIndex;
-    }
-
-    return this.currentIndex();
-  }
-
   private emit(type: JTourEventType, index: number): void {
-    const event: JTourEvent = {
-      type,
-      tourId: this.activeConfig?.id,
-      step: this.resolvedSteps[index],
-      index,
-    };
-
+    const event: JTourEvent = { type, tourId: this._config()?.id, step: this.steps[index], index };
     this.eventsSubject.next(event);
     this.callbackFor(type)?.(event);
   }
-
   private callbackFor(type: JTourEventType): ((event: JTourEvent) => void) | undefined {
-    switch (type) {
-      case 'start':
-        return this.activeConfig?.onStart;
-      case 'next':
-        return this.activeConfig?.onNext;
-      case 'previous':
-        return this.activeConfig?.onPrevious;
-      case 'complete':
-        return this.activeConfig?.onComplete;
-      case 'skip':
-        return this.activeConfig?.onSkip;
-      case 'destroy':
-        return this.activeConfig?.onDestroy;
-      case 'highlightStarted':
-        return this.activeConfig?.onHighlightStarted;
-      case 'deselected':
-        return this.activeConfig?.onDeselected;
-      case 'error':
-        return this.activeConfig?.onError;
-    }
+    const c = this._config();
+    return type === 'start'
+      ? c?.onStart
+      : type === 'next'
+        ? c?.onNext
+        : type === 'previous'
+          ? c?.onPrevious
+          : type === 'complete'
+            ? c?.onComplete
+            : type === 'skip'
+              ? c?.onSkip
+              : type === 'destroy'
+                ? c?.onDestroy
+                : type === 'highlightStarted'
+                  ? c?.onHighlightStarted
+                  : type === 'deselected'
+                    ? c?.onDeselected
+                    : c?.onError;
   }
-
-  private hasTarget(step: JTourStep): boolean {
-    if (!step.element || typeof step.element !== 'string') return true;
-    try {
-      if (this.documentRef.querySelector(step.element)) return true;
-    } catch {
-      this.emitError(`Invalid tour target selector: ${step.element}`);
-      return false;
-    }
-    this.emitError(`Tour target was not found: ${step.element}`);
-    return false;
-  }
-
   private emitError(message: string): void {
     this._lastError.set(message);
     const event: JTourEvent = {
       type: 'error',
-      tourId: this.activeConfig?.id,
+      tourId: this._config()?.id,
       index: -1,
       error: message,
     };
     this.eventsSubject.next(event);
-    this.activeConfig?.onError?.(event);
+    this._config()?.onError?.(event);
   }
-
-  private restoreAndClearFocus(): void {
-    const restore = this.restoreFocus;
-    this.restoreFocus = null;
-    queueMicrotask(() => restore?.());
-  }
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null;
 }

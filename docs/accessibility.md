@@ -29,7 +29,7 @@ Component-specific keyboard behavior:
 - `j-select`: ArrowUp/ArrowDown move active option, Enter selects, Escape closes, Tab closes.
 - `j-dialog`: Escape closes when `closeOnEscape` is enabled; modal content uses focus trap.
 - `j-drawer`: Escape closes when `closeOnEscape` is enabled.
-- `j-image-preview`: Escape closes preview.
+- `j-image` preview: Escape closes the internal viewer.
 - `j-menu`: ArrowUp/ArrowDown navigate and Enter/Space activate items.
 - `j-rating`, `j-radio-group`, and `j-slider`: keyboard interaction is implemented for common form use.
 
@@ -54,7 +54,7 @@ Form components that own values implement ControlValueAccessor and support React
 - `j-slider`
 - `j-date-picker`
 - `j-time-picker`
-- `j-date-range-picker`
+- `j-date-picker` range mode
 - `j-color-picker`
 - `j-editor` labelled multiline rich-text textbox and keyboard-focusable toolbar
 

@@ -14,7 +14,7 @@ import {
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { jAriaDescribedBy } from 'jrng-ui/core';
 import { jCreateId } from 'jrng-ui/core';
-import { JSize } from 'jrng-ui/core';
+import { JComponentSize } from 'jrng-ui/core';
 
 export type JSliderValue = number | readonly [number, number];
 
@@ -177,7 +177,7 @@ export class JSliderComponent implements ControlValueAccessor {
   readonly hint = input('');
   readonly error = input('');
   readonly styleClass = input('');
-  readonly size = input<JSize>('md');
+  readonly size = input<JComponentSize>('md');
   readonly min = input(0, { transform: numberAttribute });
   readonly max = input(100, { transform: numberAttribute });
   readonly step = input(1, { transform: numberAttribute });

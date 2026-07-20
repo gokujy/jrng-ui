@@ -11,7 +11,7 @@ import {
   signal,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { JSize } from 'jrng-ui/core';
+import { JComponentSize } from 'jrng-ui/core';
 
 @Component({
   selector: 'j-toggle-button',
@@ -98,7 +98,7 @@ export class JToggleButtonComponent implements ControlValueAccessor {
   readonly trueValue = input<unknown>(true);
   readonly falseValue = input<unknown>(false);
   readonly styleClass = input('');
-  readonly size = input<JSize>('md');
+  readonly size = input<JComponentSize>('md');
   readonly readonly = input(false, { transform: booleanAttribute });
   readonly invalid = input(false, { transform: booleanAttribute });
   readonly disabled = input(false, { transform: booleanAttribute });

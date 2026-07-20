@@ -10,15 +10,15 @@ import {
   signal,
 } from '@angular/core';
 import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
-import { JImagePreviewComponent } from 'jrng-ui/image-preview';
-import { JSize } from 'jrng-ui/core';
+import { JInternalImageViewerComponent } from 'jrng-ui/image';
+import { JComponentSize } from 'jrng-ui/core';
 
-export type JAvatarShape = 'circle' | 'square';
+export type JAvatarShape = 'circle' | 'square' | 'rounded';
 export type JAvatarStatus = 'online' | 'offline' | 'away' | 'busy' | 'none';
 
 @Component({
   selector: 'j-avatar',
-  imports: [JImagePreviewComponent],
+  imports: [JInternalImageViewerComponent],
   template: `
     <span
       [class]="avatarClasses()"
@@ -26,13 +26,15 @@ export type JAvatarStatus = 'online' | 'offline' | 'away' | 'busy' | 'none';
       data-jc-section="root"
       data-jc-extend="image fallback status"
       [attr.data-j-active]="status() !== 'none' ? 'true' : null"
-      [class.j-avatar--zoomable]="canZoom() && showImage()"
-      [attr.role]="canZoom() && showImage() ? 'button' : null"
-      [attr.tabindex]="canZoom() && showImage() ? 0 : null"
+      [class.j-avatar--zoomable]="previewable() && showImage()"
+      [attr.role]="previewable() && showImage() ? 'button' : null"
+      [attr.tabindex]="previewable() && showImage() ? 0 : null"
       [attr.aria-label]="
-        canZoom() && showImage() ? zoomAriaLabel() : ariaLabel() || label() || initials() || null
+        previewable() && showImage()
+          ? previewAriaLabel()
+          : ariaLabel() || label() || initials() || null
       "
-      [attr.aria-haspopup]="canZoom() && showImage() && zoomOverlay() ? 'dialog' : null"
+      [attr.aria-haspopup]="previewable() && showImage() ? 'dialog' : null"
       (click)="handleZoom($event)"
       (keydown)="handleZoomKeydown($event)"
     >
@@ -42,11 +44,14 @@ export type JAvatarStatus = 'online' | 'offline' | 'away' | 'busy' | 'none';
           data-jc-section="image"
           [src]="image()"
           [alt]="ariaLabel() || label() || initials() || ''"
+          [attr.loading]="imageLoading()"
           (error)="handleImageError()"
         />
       }
       @if (!showImage()) {
-        <span class="j-avatar__label" data-jc-section="fallback">{{ displayInitials() }}</span>
+        <span class="j-avatar__label" data-jc-section="fallback">
+          {{ displayInitials() || icon() }}
+        </span>
       }
       @if (status() !== 'none') {
         <span
@@ -58,9 +63,11 @@ export type JAvatarStatus = 'online' | 'offline' | 'away' | 'busy' | 'none';
       }
       <ng-content></ng-content>
     </span>
-    <j-image-preview
+    <j-internal-image-viewer
       [src]="image()"
       [alt]="ariaLabel() || label() || initials()"
+      width="400px"
+      height="400px"
       [visible]="previewVisible()"
       (visibleChange)="previewVisible.set($event)"
       (closed)="handlePreviewClosed()"
@@ -97,12 +104,27 @@ export type JAvatarStatus = 'online' | 'offline' | 'away' | 'busy' | 'none';
         width: 3rem;
       }
 
+      .j-avatar--xs {
+        font-size: var(--j-font-size-xs);
+        height: 1.375rem;
+        width: 1.375rem;
+      }
+      .j-avatar--xl {
+        font-size: var(--j-font-size-lg);
+        height: 4rem;
+        width: 4rem;
+      }
+
       .j-avatar--circle {
         border-radius: var(--j-radius-full);
       }
 
       .j-avatar--square {
         border-radius: var(--j-radius-md);
+      }
+
+      .j-avatar--rounded {
+        border-radius: var(--j-radius-lg);
       }
 
       .j-avatar__image {
@@ -159,18 +181,19 @@ export class JAvatarComponent implements OnChanges {
   readonly label = input('');
   readonly image = input('');
   readonly initials = input('');
+  readonly icon = input('');
   readonly ariaLabel = input('');
-  readonly size = input<JSize>('md');
+  readonly size = input<JComponentSize | 'xs' | 'xl'>('md');
+  readonly imageLoading = input<'eager' | 'lazy'>('eager');
   readonly shape = input<JAvatarShape>('circle');
   readonly status = input<JAvatarStatus>('none');
-  readonly canZoom = input(false, { transform: booleanAttribute });
-  readonly zoomAriaLabel = input('View profile image');
-  readonly zoomOverlay = input(true, { transform: booleanAttribute });
+  readonly previewable = input(false, { transform: booleanAttribute });
+  readonly previewAriaLabel = input('Preview profile image');
   readonly styleClass = input('');
   readonly pt = input<JPassThrough | null>(null);
   readonly imageFailed = signal(false);
   readonly previewVisible = signal(false);
-  readonly imageZoom = output<Event>();
+  readonly open = output<Event>();
 
   readonly showImage = computed(() => !!this.image() && !this.imageFailed());
 
@@ -198,14 +221,12 @@ export class JAvatarComponent implements OnChanges {
   }
 
   handleZoom(event: Event): void {
-    if (!this.canZoom() || !this.showImage()) {
+    if (!this.previewable() || !this.showImage()) {
       return;
     }
     this.zoomTrigger = event.currentTarget as HTMLElement;
-    this.imageZoom.emit(event);
-    if (this.zoomOverlay()) {
-      this.previewVisible.set(true);
-    }
+    this.open.emit(event);
+    this.previewVisible.set(true);
   }
 
   handleZoomKeydown(event: KeyboardEvent): void {

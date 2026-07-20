@@ -23,7 +23,7 @@ import {
   jNormalizeSelectionOptions,
   jSameSelectionValue,
 } from 'jrng-ui/core';
-import { JSize } from 'jrng-ui/core';
+import { JComponentSize } from 'jrng-ui/core';
 
 export type JRadioGroupDirection = 'horizontal' | 'vertical';
 export type JRadioGroupOption = JSelectionOptionSource;
@@ -179,7 +179,7 @@ export class JRadioGroupComponent implements ControlValueAccessor {
   readonly hint = input('');
   readonly error = input('');
   readonly styleClass = input('');
-  readonly size = input<JSize>('md');
+  readonly size = input<JComponentSize>('md');
   readonly direction = input<JRadioGroupDirection>('vertical');
   readonly required = input(false, { transform: booleanAttribute });
   readonly invalid = input(false, { transform: booleanAttribute });

@@ -1,24 +1,19 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { JStatusPageComponent } from 'jrng-ui/status-page';
+import { JEmptyComponent } from 'jrng-ui/empty';
 
 @Component({
   selector: 'j-maintenance-page',
-  imports: [JStatusPageComponent],
+  imports: [JEmptyComponent],
   template: `
-    <j-status-page
-      variant="maintenance"
-      compatibilityClass="j-maintenance-page"
-      compatibilityMarkerClass="j-maintenance-page__badge"
-      compatibilityActionClass="j-maintenance-page__actions"
-      componentName="maintenance-page"
-      [marker]="badge()"
+    <j-empty
+      variant="offline"
+      [icon]="badge()"
       [title]="title()"
-      [description]="description()"
-      [detail]="detail()"
+      [description]="detail() ? description() + ' ' + detail() : description()"
       [styleClass]="styleClass()"
     >
       <ng-content />
-    </j-status-page>
+    </j-empty>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

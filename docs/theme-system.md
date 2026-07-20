@@ -1,6 +1,6 @@
 # JRNG UI Theme System
 
-`provideJrngUI()` immutably merges partial configuration with library defaults. Component inputs override global values. v0.0.9 applies `themeMode`, `inputStyle`, `ripple`, `locale`, `zIndex`, `appendTo`, `animation`, and `density` through configuration tokens and document-level behavior hooks. Reduced-motion preferences always suppress ripple and motion. `unstyled` remains a compatibility styling hook (`j-unstyled` on the root) and is deprecated as a behavioral option because components continue to retain accessibility-critical layout and focus styles.
+`provideJrngUI()` immutably merges partial configuration with library defaults. Component inputs override global values. Version 0.1.0 applies `themeMode`, `inputStyle`, `ripple`, `locale`, `zIndex`, `appendTo`, `animation`, and `density` through configuration tokens and document-level behavior hooks. Reduced-motion preferences suppress non-essential ripple and motion.
 
 ```ts
 provideJrngUI({
@@ -86,12 +86,6 @@ Dark theme is enabled with `.j-dark` on the application root:
 
 ```html
 <app-root class="j-dark"></app-root>
-```
-
-Compatibility selectors are also supported:
-
-```html
-<app-root class="j-theme-dark"></app-root> <app-root data-j-theme="dark"></app-root>
 ```
 
 ## Overriding Tokens

@@ -4,8 +4,6 @@ import { DestroyRef, Injectable, PLATFORM_ID, inject, signal } from '@angular/co
 export type JToastSeverity = 'success' | 'error' | 'warning' | 'info' | 'neutral';
 export type JToastPosition =
   'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' | 'top-center' | 'bottom-center';
-export type JrToastType = JToastSeverity;
-export type JrToastPosition = JToastPosition;
 
 export interface JToastAction {
   readonly label: string;
@@ -47,11 +45,9 @@ export interface JToastOptions {
   readonly cancelAction?: JToastAction;
 }
 
-export type JrToast = JToast;
-export type JrToastOptions = JToastOptions;
 
 @Injectable({ providedIn: 'root' })
-export class JrToastService {
+export class JToastService {
   private readonly destroyRef = inject(DestroyRef);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   private readonly toastList = signal<readonly JToast[]>([]);

@@ -9,7 +9,7 @@ describe('JPageHeaderComponent variants', () => {
     await TestBed.configureTestingModule({ imports: [JPageHeaderComponent] }).compileComponents();
     fixture = TestBed.createComponent(JPageHeaderComponent);
     fixture.componentRef.setInput('title', 'Customer account');
-    fixture.componentRef.setInput('description', 'A deliberately long description that may wrap.');
+    fixture.componentRef.setInput('subtitle', 'A deliberately long description that may wrap.');
   });
 
   it('renders stacked and centered hierarchy presets with the same heading', () => {

@@ -71,7 +71,7 @@ function verifyMetadata(packageJson) {
     }
   }
 
-  for (const optionalPeer of ['@angular/router', 'chart.js', 'driver.js']) {
+  for (const optionalPeer of ['@angular/router', 'chart.js']) {
     if (!packageJson.peerDependencies?.[optionalPeer]) {
       fail(`Optional peer dependency is missing: ${optionalPeer}.`);
     }
@@ -200,13 +200,13 @@ function verifyForbiddenContent(files) {
 }
 
 function verifySizeBudgets(report) {
-  // v0.0.9 ships 131 independently tree-shakable entrypoints. The declaration
-  // and FESM pairs are legitimate runtime package content; these limits retain
-  // a narrow regression margin over the measured release candidate, including
-  // the typed Table family declarations and compatibility surface.
-  const maximumPackedBytes = 400_000;
-  const maximumUnpackedBytes = 2_800_000;
-  const maximumFileCount = 300;
+  // Phase 3 adds seven independently tree-shakable enterprise-pattern
+  // entrypoints and expands editor/chart/core declarations. Consumers still
+  // pay only for imported entrypoints. Keep a narrow margin over the measured
+  // 448,829-byte / 3,189,438-byte / 306-file package.
+  const maximumPackedBytes = 460_000;
+  const maximumUnpackedBytes = 3_300_000;
+  const maximumFileCount = 315;
   const maximumFileBytes = 256_000;
 
   if (report.size > maximumPackedBytes) {

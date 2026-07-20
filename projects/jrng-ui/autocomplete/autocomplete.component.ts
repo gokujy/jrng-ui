@@ -16,6 +16,12 @@ import {
   ViewChild,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  JAsyncDataController,
+  JAsyncDataSource,
+  JAsyncDataState,
+  JAsyncOptionsQuery,
+} from 'jrng-ui/async-data';
 import { jAriaDescribedBy } from 'jrng-ui/core';
 import { JClickOutsideDirective } from 'jrng-ui/core';
 import { jCreateId } from 'jrng-ui/core';
@@ -27,7 +33,7 @@ import {
   jNormalizeSelectionOptions,
   jSameSelectionValue,
 } from 'jrng-ui/core';
-import { JSize } from 'jrng-ui/core';
+import { JComponentSize } from 'jrng-ui/core';
 import { JInputVariant } from 'jrng-ui/input';
 
 export type JAutocompleteSuggestion = JSelectionOptionSource;
@@ -100,7 +106,18 @@ export type JAutocompleteSuggestion = JSelectionOptionSource;
           [id]="listboxId"
           role="listbox"
         >
-          @if (!normalizedSuggestions.length) {
+          @if (asyncState().loading) {
+            <div class="j-autocomplete__empty" role="status" aria-live="polite">
+              Loading suggestions
+            </div>
+          }
+          @if (asyncState().error) {
+            <div class="j-autocomplete__empty" role="alert">
+              Suggestions could not be loaded
+              <button type="button" (click)="retryAsync()">Retry</button>
+            </div>
+          }
+          @if (!asyncState().loading && !asyncState().error && !normalizedSuggestions.length) {
             <div class="j-autocomplete__empty" data-jc-section="empty">{{ emptyMessage() }}</div>
           }
           @for (
@@ -306,6 +323,11 @@ export class JAutocompleteComponent implements ControlValueAccessor {
   readonly id = input(jCreateId('j-autocomplete'));
   readonly label = input('');
   readonly suggestions = input<readonly JAutocompleteSuggestion[]>([]);
+  readonly dataSource = input<JAsyncDataSource<JAutocompleteSuggestion, JAsyncOptionsQuery> | null>(
+    null,
+  );
+  readonly asyncPageSize = input(50);
+  readonly cache = input(true, { transform: booleanAttribute });
   readonly optionLabel = input('label');
   readonly optionValue = input('value');
   readonly optionDisabled = input('disabled');
@@ -316,7 +338,7 @@ export class JAutocompleteComponent implements ControlValueAccessor {
   readonly hint = input('');
   readonly emptyMessage = input('No suggestions found');
   readonly styleClass = input('');
-  readonly size = input<JSize>('md');
+  readonly size = input<JComponentSize>('md');
   readonly variant = input<JInputVariant>('outlined');
   readonly delay = input(250);
   readonly minLength = input(1);
@@ -333,6 +355,7 @@ export class JAutocompleteComponent implements ControlValueAccessor {
   readonly completeMethod = output<string>();
   readonly opened = output<void>();
   readonly closed = output<void>();
+  readonly asyncError = output<unknown>();
 
   readonly hintId = jCreateId('j-autocomplete-hint');
   readonly errorId = jCreateId('j-autocomplete-error');
@@ -340,21 +363,46 @@ export class JAutocompleteComponent implements ControlValueAccessor {
   value: unknown = null;
   query = '';
   readonly isDisabled = signal(false);
+  readonly asyncState = signal<JAsyncDataState<JAutocompleteSuggestion>>({
+    loading: false,
+    items: [],
+    error: null,
+  });
   isOpen = false;
   activeIndex = -1;
 
   private onChange: (value: unknown) => void = () => undefined;
   private onTouched: () => void = () => undefined;
+  private asyncController?: JAsyncDataController<JAutocompleteSuggestion, JAsyncOptionsQuery>;
 
   readonly disabled = input(false, { transform: booleanAttribute });
 
   constructor() {
-    this.destroyRef.onDestroy(() => this.clearCompleteTimer());
+    this.destroyRef.onDestroy(() => {
+      this.clearCompleteTimer();
+      this.asyncController?.destroy();
+    });
     effect(() => this.isDisabled.set(this.disabled()));
+    effect(() => {
+      const source = this.dataSource();
+      this.asyncController?.destroy();
+      this.asyncController = source
+        ? new JAsyncDataController(source, {
+            cache: this.cache(),
+            onStateChange: (state) => {
+              this.asyncState.set(state);
+              if (state.error) this.asyncError.emit(state.error);
+              this.changeDetectorRef.markForCheck();
+            },
+          })
+        : undefined;
+      if (source) void this.loadAsync('');
+    });
   }
 
   get normalizedSuggestions(): readonly JNormalizedSelectionOption[] {
-    return this.suggestions().flatMap((suggestion) => this.normalizeSuggestion(suggestion));
+    const source = this.dataSource() ? this.asyncState().items : this.suggestions();
+    return source.flatMap((suggestion) => this.normalizeSuggestion(suggestion));
   }
 
   get suggestionItems(): readonly (
@@ -418,6 +466,7 @@ export class JAutocompleteComponent implements ControlValueAccessor {
 
   writeValue(value: unknown): void {
     this.value = value ?? null;
+    if (this.value != null) void this.asyncController?.hydrate([this.value]);
     const selected = this.normalizedSuggestions.find((suggestion) =>
       jSameSelectionValue(suggestion.value, this.value),
     );
@@ -449,7 +498,29 @@ export class JAutocompleteComponent implements ControlValueAccessor {
     this.valueChange.emit(this.value);
     this.searchChange.emit(this.query);
     this.scheduleComplete(this.query);
+    if (this.dataSource()) {
+      this.clearCompleteTimer();
+      this.completeTimer = setTimeout(() => void this.loadAsync(this.query), this.delay());
+    }
     this.open();
+  }
+
+  retryAsync(): void {
+    this.asyncController?.invalidate();
+    void this.loadAsync(this.query);
+  }
+
+  private loadAsync(search: string): Promise<unknown> {
+    return (
+      this.asyncController
+        ?.load({
+          search,
+          page: 0,
+          pageSize: this.asyncPageSize(),
+          selectedValues: this.value == null ? [] : [this.value],
+        })
+        .catch(() => undefined) ?? Promise.resolve()
+    );
   }
 
   selectSuggestion(suggestion: JNormalizedSelectionOption): void {

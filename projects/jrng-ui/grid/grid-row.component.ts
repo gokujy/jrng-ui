@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, booleanAttribute, input } from '@angular/core';
-import { JGridAlignment, JGridJustification } from './grid.types';
+import { JGridAlignment, JGridGap, JGridJustification, jGridGapToken } from './grid.types';
 
 @Component({
   selector: 'j-row',
@@ -12,38 +12,26 @@ import { JGridAlignment, JGridJustification } from './grid.types';
     '[class]': 'styleClass()',
     '[style.--j-row-align]': 'alignValue()',
     '[style.--j-row-justify]': 'justifyValue()',
-    '[style.--j-row-gutter-x]': 'gutterX() || null',
-    '[style.--j-row-gutter-y]': 'gutterY() || null',
+    '[style.--j-row-column-gap]': 'resolvedColumnGap()',
+    '[style.--j-row-row-gap]': 'resolvedRowGap()',
   },
   styles: [
     `
       :host {
-        --j-row-gutter-x-resolved: var(
-          --j-row-gutter-x,
-          var(--j-grid-gutter-x, var(--j-spacing-4))
-        );
-        --j-row-gutter-y-resolved: var(
-          --j-row-gutter-y,
-          var(--j-grid-gutter-y, var(--j-spacing-4))
-        );
-
         align-items: var(--j-row-align, stretch);
         box-sizing: border-box;
         display: flex;
         flex-wrap: wrap;
         justify-content: var(--j-row-justify, flex-start);
-        margin-inline: calc(var(--j-row-gutter-x-resolved) / -2);
+        column-gap: var(--j-row-column-gap, var(--j-grid-column-gap));
         min-width: 0;
-        row-gap: var(--j-row-gutter-y-resolved);
+        row-gap: var(--j-row-row-gap, var(--j-grid-row-gap));
       }
 
       :host(.j-row--nowrap) {
         flex-wrap: nowrap;
       }
 
-      :host > j-col {
-        padding-inline: calc(var(--j-row-gutter-x-resolved) / 2);
-      }
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -52,8 +40,9 @@ export class JGridRowComponent {
   readonly align = input<JGridAlignment>('stretch');
   readonly justify = input<JGridJustification>('start');
   readonly wrap = input(true, { transform: booleanAttribute });
-  readonly gutterX = input('');
-  readonly gutterY = input('');
+  readonly gap = input<JGridGap | null>(null);
+  readonly rowGap = input<JGridGap | null>(null);
+  readonly columnGap = input<JGridGap | null>(null);
   readonly styleClass = input('');
 
   protected alignValue(): string {
@@ -72,5 +61,15 @@ export class JGridRowComponent {
       evenly: 'space-evenly',
     };
     return values[this.justify()];
+  }
+
+  protected resolvedColumnGap(): string | null {
+    const value = this.columnGap() ?? this.gap();
+    return value ? jGridGapToken(value) : null;
+  }
+
+  protected resolvedRowGap(): string | null {
+    const value = this.rowGap() ?? this.gap();
+    return value ? jGridGapToken(value) : null;
   }
 }

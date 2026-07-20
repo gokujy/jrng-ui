@@ -15,5 +15,14 @@ describe('JChartComponent public contract', () => {
     expect(new Set(inputs).size).toBe(inputs.length);
     expect(new Set(outputs).size).toBe(outputs.length);
     expect(metadata?.ngContentSelectors).toBeDefined();
+    expect(outputs).toEqual(
+      expect.arrayContaining([
+        'dataPointClick',
+        'datasetClick',
+        'legendClick',
+        'exportImageRequest',
+        'print',
+      ]),
+    );
   });
 });

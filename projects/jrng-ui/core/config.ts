@@ -6,14 +6,14 @@ import {
   makeEnvironmentProviders,
   provideEnvironmentInitializer,
 } from '@angular/core';
+import { JDensity } from './types';
 
 export type JThemeMode = 'light' | 'dark' | 'system';
 export type JInputStyle = 'outlined' | 'filled';
 export type JAnimationMode = 'enabled' | 'disabled';
-export type JDensity = 'comfortable' | 'compact' | 'spacious';
 export type JAppendTo = 'self' | 'body' | HTMLElement | string;
 
-export interface JrngZIndexConfig {
+export interface JZIndexConfig {
   readonly base: number;
   readonly dropdown: number;
   readonly sticky: number;
@@ -24,24 +24,22 @@ export interface JrngZIndexConfig {
   readonly tooltip: number;
 }
 
-export interface JrngConfig {
+export interface JConfig {
   readonly themeMode: JThemeMode;
   readonly inputStyle: JInputStyle;
   readonly ripple: boolean;
   readonly locale: string;
-  readonly zIndex: JrngZIndexConfig;
+  readonly zIndex: JZIndexConfig;
   readonly appendTo: JAppendTo;
-  /** @deprecated Retained as a root styling hook; accessibility-critical styles remain. */
-  readonly unstyled: boolean;
   readonly animation: JAnimationMode;
   readonly density: JDensity;
 }
 
-export type JrngConfigInput = Partial<Omit<JrngConfig, 'zIndex'>> & {
-  readonly zIndex?: Partial<JrngZIndexConfig>;
+export type JConfigInput = Partial<Omit<JConfig, 'zIndex'>> & {
+  readonly zIndex?: Partial<JZIndexConfig>;
 };
 
-export const JRNG_DEFAULT_CONFIG: JrngConfig = {
+export const JRNG_DEFAULT_CONFIG: JConfig = {
   themeMode: 'light',
   inputStyle: 'outlined',
   ripple: true,
@@ -57,17 +55,16 @@ export const JRNG_DEFAULT_CONFIG: JrngConfig = {
     tooltip: 1120,
   },
   appendTo: 'self',
-  unstyled: false,
   animation: 'enabled',
   density: 'comfortable',
 };
 
-export const JRNG_CONFIG = new InjectionToken<JrngConfig>('JRNG_CONFIG', {
+export const JRNG_CONFIG = new InjectionToken<JConfig>('JRNG_CONFIG', {
   providedIn: 'root',
   factory: () => JRNG_DEFAULT_CONFIG,
 });
 
-export function jMergeConfig(config: JrngConfigInput = {}): JrngConfig {
+export function jMergeConfig(config: JConfigInput = {}): JConfig {
   return {
     ...JRNG_DEFAULT_CONFIG,
     ...config,
@@ -78,7 +75,7 @@ export function jMergeConfig(config: JrngConfigInput = {}): JrngConfig {
   };
 }
 
-export function provideJrngUI(config: JrngConfigInput = {}) {
+export function provideJrngUI(config: JConfigInput = {}) {
   const merged = jMergeConfig(config);
   return makeEnvironmentProviders([
     {
@@ -91,7 +88,6 @@ export function provideJrngUI(config: JrngConfigInput = {}) {
       root.dataset['jDensity'] = merged.density;
       root.dataset['jInputStyle'] = merged.inputStyle;
       root.dataset['jLocale'] = merged.locale;
-      root.classList.toggle('j-unstyled', merged.unstyled);
       root.classList.toggle('j-animations-disabled', merged.animation === 'disabled');
       root.classList.toggle('j-dark', merged.themeMode === 'dark');
     }),

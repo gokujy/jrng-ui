@@ -65,7 +65,10 @@ export type JIconName =
   | 'file-text'
   | 'image'
   | 'video'
-  | 'archive';
+  | 'archive'
+  | 'eye'
+  | 'eye-off'
+  | 'trash';
 
 export type JIconMap = Readonly<Record<string, string>>;
 
@@ -82,6 +85,9 @@ export const JRNG_DEFAULT_ICONS: JIconMap = {
   clock: 'M12 6v6l4 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
   upload: 'M12 16V4m0 0 5 5m-5-5-5 5M4 20h16',
   download: 'M12 4v12m0 0 5-5m-5 5-5-5M4 20h16',
+  eye: 'M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Zm10 3a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z',
+  'eye-off': 'm3 3 18 18M10.6 10.6a2 2 0 0 0 2.8 2.8M9.9 5.1A11 11 0 0 1 12 5c6.5 0 10 7 10 7a18 18 0 0 1-2.1 3M6.6 6.6C3.6 8.4 2 12 2 12s3.5 7 10 7c1.5 0 2.8-.4 4-.9',
+  trash: 'M4 7h16M9 7V4h6v3m3 0-1 14H7L6 7m4 4v6m4-6v6',
   plus: 'M12 5v14M5 12h14',
   minus: 'M5 12h14',
   info: 'M12 16v-4M12 8h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',

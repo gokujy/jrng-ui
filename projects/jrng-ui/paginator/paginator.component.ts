@@ -7,7 +7,6 @@ import {
   numberAttribute,
   output,
   signal,
-  untracked,
 } from '@angular/core';
 
 export interface JPaginatorPageChange {
@@ -17,12 +16,7 @@ export interface JPaginatorPageChange {
   readonly pageCount: number;
 }
 
-export interface JPaginatorChange {
-  readonly page: number;
-  readonly pageSize: number;
-}
-
-export type JPaginatorVariant = 'default' | 'simple';
+export type JPaginatorVariant = 'standard' | 'simple';
 
 @Component({
   selector: 'j-paginator',
@@ -212,11 +206,7 @@ export class JPaginatorComponent {
   readonly pageLinkSize = input(5, { transform: numberAttribute });
   readonly showCurrentPageReport = input(false, { transform: booleanAttribute });
   readonly currentPageReportTemplate = input('Showing {first} to {last} of {totalRecords}');
-  readonly variant = input<JPaginatorVariant>('default');
-
-  /** `page`/`pageSize` are convenience inputs that map onto `first`/`rows`. */
-  readonly pageInput = input<number | undefined>(undefined, { alias: 'page' });
-  readonly pageSizeInput = input<number | undefined>(undefined, { alias: 'pageSize' });
+  readonly variant = input<JPaginatorVariant>('standard');
 
   readonly pageChange = output<JPaginatorPageChange>();
 
@@ -226,26 +216,6 @@ export class JPaginatorComponent {
   constructor() {
     effect(() => this.first.set(this.firstInput()));
     effect(() => this.rows.set(this.rowsInput()));
-    effect(() => {
-      const value = this.pageInput();
-      if (value !== undefined) {
-        this.first.set(untracked(() => Math.max(0, ((Number(value) || 1) - 1) * this.rows())));
-      }
-    });
-    effect(() => {
-      const value = this.pageSizeInput();
-      if (value !== undefined) {
-        this.rows.set(Math.max(1, Number(value) || 10));
-      }
-    });
-  }
-
-  get page(): number {
-    return this.currentPage;
-  }
-
-  get pageSize(): number {
-    return this.rows();
   }
 
   get pageCount(): number {

@@ -67,10 +67,6 @@ import { JTableSkeletonColumn } from './table.types';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-/**
- * @deprecated Prefer `j-table` with `loading`, `loadingVariant` and `jTableLoading`.
- * Use the general `j-skeleton` component for loading content outside tables.
- */
 export class JTableSkeletonComponent {
   readonly rows = input(5, { transform: numberAttribute });
   readonly columns = input(4, { transform: numberAttribute });

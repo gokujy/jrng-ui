@@ -94,15 +94,22 @@ readonly orderEvents: JTimelineItem[] = [
 ```
 
 ```html
-<j-timeline [value]="orderEvents" />
+<j-timeline [value]="orderEvents" variant="activity" collapsible>
+  <ng-template #jTimelineContent let-item>
+    <strong>{{ item.title }}</strong>
+    <p>{{ item.content }}</p>
+  </ng-template>
+</j-timeline>
 
-<ng-template #jTimelineContent let-item>
-  <strong>{{ item.title }}</strong>
-  <p>{{ item.content }}</p>
-</ng-template>
+<j-timeline [value]="milestones" layout="horizontal" compact />
+
+<j-timeline [value]="[]" emptyTitle="No deployment events" />
+
+<j-timeline [value]="[]" [loading]="true" loadingLabel="Loading deployment history" />
+
 ```
 
-Timeline supports vertical and horizontal layouts, opposite content, custom content templates, custom markers, and severity styling.
+Timeline supports vertical, horizontal, activity, and alternating layouts; opposite content; JRNG icon markers; collapsible keyboard-accessible detail; custom templates; loading, empty, and error states; responsive stacking; RTL; and reduced-motion-safe presentation.
 
 ## Org Chart
 

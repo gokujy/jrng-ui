@@ -49,4 +49,37 @@ describe('JMultiselectComponent', () => {
     fixture.componentRef.setInput('loading', true);
     expect(component.useVirtual).toBe(false);
   });
+
+  it('renders severity-aware removable JRNG chips with overflow', () => {
+    fixture.componentRef.setInput('options', [
+      { label: 'Stable', value: 'stable', severity: 'success', icon: 'check' },
+      { label: 'At risk', value: 'risk', severity: 'warning' },
+      { label: 'Blocked', value: 'blocked', severity: 'danger' },
+    ]);
+    fixture.componentRef.setInput('displayMode', 'chips');
+    fixture.componentRef.setInput('maxSelectedLabels', 2);
+    component.writeValue(['stable', 'risk', 'blocked']);
+    fixture.detectChanges();
+
+    const chips = fixture.nativeElement.querySelectorAll('j-chip');
+    expect(chips).toHaveLength(3);
+    expect(chips[0].querySelector('.j-chip')?.getAttribute('data-j-severity')).toBe('success');
+    expect(chips[1].querySelector('.j-chip')?.getAttribute('data-j-severity')).toBe('warning');
+    expect(chips[2].textContent).toContain('+1');
+  });
+
+  it('supports resolver severity and keyboard chip removal', () => {
+    fixture.componentRef.setInput('options', [
+      { label: 'First', value: 1 },
+      { label: 'Second', value: 2 },
+    ]);
+    fixture.componentRef.setInput('displayMode', 'chips');
+    fixture.componentRef.setInput('chipSeverityResolver', () => 'info');
+    component.writeValue([1, 2]);
+    fixture.detectChanges();
+
+    expect(component.resolveChipSeverity(component.selectedOptions[0])).toBe('info');
+    component.handleKeydown(new KeyboardEvent('keydown', { key: 'Backspace' }));
+    expect(component.value).toEqual([1]);
+  });
 });

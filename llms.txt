@@ -13,7 +13,7 @@ Registry: https://jrngui.dev/registry/registry.json
 Registry schema: https://jrngui.dev/registry/schema.json
 Source: https://github.com/gokujy/jrng-ui
 
-Compatibility: JRNG UI 0.0.8 is verified with Angular 21.2.x.
+Compatibility: JRNG UI 0.1.0 is verified with Angular 21.2.x.
 Imports: use modular public entrypoints such as jrng-ui/button.
 Styles: load jrng-ui/styles once.
 Button activation: use (onClick).

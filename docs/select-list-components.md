@@ -78,12 +78,13 @@ Custom templates:
   (completeMethod)="searchProducts($event)"
 />
 
-<j-combobox
+<j-select
   formControlName="customer"
   label="Customer"
   [options]="customers"
   optionLabel="name"
   optionValue="id"
+  searchable
 />
 ```
 
@@ -134,7 +135,12 @@ Custom templates:
   (targetChange)="selectedProducts = $event"
 />
 
-<j-pick-list [source]="availableUsers" [target]="teamUsers" optionLabel="name" optionValue="id" />
+<j-transfer-list
+  [source]="availableUsers"
+  [target]="teamUsers"
+  optionLabel="name"
+  optionValue="id"
+/>
 ```
 
 ## Chips

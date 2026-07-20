@@ -12,7 +12,7 @@
   transition: var(--j-transition-colors), var(--j-transition-shadow), var(--j-transition-transform);
 }
 
-.j-card--default {
+.j-card--filled {
   border-color: var(--j-card-border-color);
   box-shadow: var(--j-card-shadow);
 }
@@ -21,11 +21,11 @@
   box-shadow: var(--j-shadow-md);
 }
 
-.j-card--bordered {
+.j-card--outlined {
   border-color: var(--j-color-border-strong);
 }
 
-.j-card--soft {
+.j-card--minimal {
   background: var(--j-color-surface-muted);
   border-color: var(--j-color-border);
 }
@@ -55,10 +55,16 @@
   padding: var(--j-spacing-xl);
 }
 
-.j-card--compact .j-card__header,
-.j-card--compact .j-card__body,
-.j-card--compact .j-card__footer {
+.j-card--density-compact .j-card__header,
+.j-card--density-compact .j-card__body,
+.j-card--density-compact .j-card__footer {
   padding: var(--j-spacing-lg);
+}
+
+.j-card--density-spacious .j-card__header,
+.j-card--density-spacious .j-card__body,
+.j-card--density-spacious .j-card__footer {
+  padding: var(--j-spacing-2xl);
 }
 
 .j-card__header + .j-card__body,

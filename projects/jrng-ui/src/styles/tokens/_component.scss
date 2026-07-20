@@ -1,6 +1,11 @@
 @layer j-theme {
   :root,
   .j-theme {
+    --j-component-size-xs: 1.75rem;
+    --j-component-size-sm: 2rem;
+    --j-component-size-md: 2.5rem;
+    --j-component-size-lg: 3rem;
+    --j-component-size-xl: 3.5rem;
     --j-control-height-sm: 2rem;
     --j-control-height-md: 2.5rem;
     --j-control-height-lg: 3rem;
@@ -13,6 +18,12 @@
     --j-control-color: var(--j-color-card-foreground);
     --j-control-placeholder-color: var(--j-color-muted-foreground);
     --j-control-focus-ring: var(--j-focus-ring);
+    --j-highlight-background: #fde68a;
+    --j-navigation-progress-color: var(--j-color-primary);
+    --j-navigation-progress-height: 0.2rem;
+    --j-diff-added-background: color-mix(in srgb, var(--j-color-success) 12%, transparent);
+    --j-diff-removed-background: color-mix(in srgb, var(--j-color-danger) 12%, transparent);
+    --j-diff-changed-background: color-mix(in srgb, var(--j-color-warning) 12%, transparent);
 
     --j-button-height-sm: var(--j-control-height-sm);
     --j-button-height-md: var(--j-control-height-md);
@@ -61,6 +72,13 @@
     --j-dialog-border-color: var(--j-color-border);
     --j-dialog-shadow: var(--j-shadow-lg);
     --j-overlay-backdrop-bg: rgb(15 23 42 / 56%);
+    --j-loading-opacity: 0.72;
+    --j-surface-filled: var(--j-color-muted);
+    --j-surface-outlined: transparent;
+    --j-surface-soft: var(--j-color-surface-subtle);
+    --j-surface-minimal: transparent;
+    --j-surface-elevated: var(--j-color-surface-elevated);
+    --j-surface-elevated-shadow: var(--j-elevation-2);
 
     --j-table-bg: var(--j-color-card);
     --j-table-color: var(--j-color-card-foreground);

@@ -23,9 +23,10 @@ describe('componentDocs', () => {
     expect(componentDocs.some((doc) => doc.slug === 'responsive-sidebar')).toBe(true);
   });
 
-  it('provides copyable example values or an explicit static-value note for every component', () => {
+  it('omits filler TypeScript for examples that require no backing state', () => {
     for (const doc of componentDocs) {
-      expect(doc.code.angular?.trim().length, `${doc.slug} example values`).toBeGreaterThan(0);
+      expect(doc.code.angular, `${doc.slug} example values`).toBeDefined();
+      expect(doc.code.angular).not.toMatch(/static example|no backing fields are required/i);
     }
   });
 
@@ -80,12 +81,11 @@ describe('componentDocs', () => {
     }
   });
 
-  it('provides complete beginner guidance and multiple focused examples for every page', () => {
+  it('provides a concise technical contract and focused examples for every page', () => {
     for (const doc of componentDocs) {
       expect(doc.description.trim().length, `${doc.slug} purpose`).toBeGreaterThan(0);
-      expect(doc.whenToUse.trim().length, `${doc.slug} when to use`).toBeGreaterThan(0);
-      expect(doc.whenNotToUse?.length, `${doc.slug} when not to use`).toBeGreaterThan(0);
-      expect(doc.usage.length, `${doc.slug} placements`).toBeGreaterThan(0);
+      expect(doc.whenToUse.trim().length, `${doc.slug} technical summary`).toBeGreaterThan(0);
+      expect(doc.usage.length, `${doc.slug} integration notes`).toBeGreaterThan(0);
       expect(doc.accessibility.length, `${doc.slug} accessibility`).toBeGreaterThan(0);
       expect(doc.keyboard?.length, `${doc.slug} keyboard`).toBeGreaterThan(0);
       expect(doc.responsive?.length, `${doc.slug} responsive`).toBeGreaterThan(0);

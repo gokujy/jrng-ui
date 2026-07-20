@@ -7,8 +7,8 @@ import { JGridComponent } from './grid.component';
 @Component({
   imports: [JGridComponent, JGridRowComponent, JGridColumnComponent],
   template: `
-    <j-grid fixed [columns]="12" gutterX="24px" gutterY="16px" styleClass="workspace-grid">
-      <j-row justify="between" align="center" gutterX="12px">
+    <j-grid fixed [columns]="12" gap="lg" rowGap="xl" styleClass="workspace-grid">
+      <j-row justify="between" align="center" columnGap="md">
         <j-col size="12" md="8" [offsetLg]="1" order="last" orderMd="first">
           <article>Primary content</article>
         </j-col>
@@ -43,7 +43,7 @@ describe('responsive grid', () => {
 
     expect(row.style.getPropertyValue('--j-row-align')).toBe('center');
     expect(row.style.getPropertyValue('--j-row-justify')).toBe('space-between');
-    expect(row.style.getPropertyValue('--j-row-gutter-x')).toBe('12px');
+    expect(row.style.getPropertyValue('--j-row-column-gap')).toBe('var(--j-spacing-md)');
   });
 
   it('maps responsive spans, offsets, and order while preserving projected content', () => {

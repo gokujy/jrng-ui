@@ -19,6 +19,12 @@ import {
   ViewChild,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  JAsyncDataController,
+  JAsyncDataSource,
+  JAsyncDataState,
+  JAsyncOptionsQuery,
+} from 'jrng-ui/async-data';
 import { jAriaDescribedBy } from 'jrng-ui/core';
 import { JClickOutsideDirective } from 'jrng-ui/core';
 import { jCreateId } from 'jrng-ui/core';
@@ -30,11 +36,15 @@ import {
   jNormalizeSelectionOptions,
   jSameSelectionValue,
 } from 'jrng-ui/core';
-import { JSize } from 'jrng-ui/core';
+import { JComponentSize } from 'jrng-ui/core';
+import { JSeverity } from 'jrng-ui/core';
+import { JChipComponent } from 'jrng-ui/chip';
 import { JInputVariant } from 'jrng-ui/input';
+import { JTooltipDirective } from 'jrng-ui/tooltip';
 import { JVirtualScrollerComponent } from 'jrng-ui/virtual-scroller';
 
 export type JMultiselectOption = JSelectionOptionSource;
+export type JMultiselectDisplayMode = 'comma' | 'count' | 'chips';
 
 export interface JMultiselectItemContext {
   readonly $implicit: JSelectionOptionSource;
@@ -47,7 +57,13 @@ export interface JMultiselectItemContext {
 
 @Component({
   selector: 'j-multiselect',
-  imports: [JClickOutsideDirective, NgTemplateOutlet, JVirtualScrollerComponent],
+  imports: [
+    JChipComponent,
+    JClickOutsideDirective,
+    JTooltipDirective,
+    NgTemplateOutlet,
+    JVirtualScrollerComponent,
+  ],
   template: `
     <div
       [class]="rootClasses"
@@ -69,13 +85,13 @@ export interface JMultiselectItemContext {
         </label>
       }
 
-      <button
+      <div
         class="j-multiselect"
         data-jc-section="trigger"
-        type="button"
         role="combobox"
         [id]="id()"
-        [disabled]="isDisabled()"
+        [attr.tabindex]="isDisabled() ? -1 : 0"
+        [attr.aria-disabled]="isDisabled() || readonly()"
         [attr.aria-expanded]="isOpen"
         [attr.aria-controls]="listboxId"
         [attr.aria-invalid]="hasError ? 'true' : null"
@@ -85,15 +101,42 @@ export interface JMultiselectItemContext {
         (keydown)="handleKeydown($event)"
         (blur)="onTouched()"
       >
-        @if (displayChips() && selectedOptions.length) {
-          <span class="j-multiselect__chips" data-jc-section="chips">
+        @if (resolvedDisplayMode === 'chips' && selectedOptions.length) {
+          <span
+            class="j-multiselect__chips"
+            data-jc-section="chips"
+            [class.is-nowrap]="!chipWrap()"
+          >
             @for (option of visibleSelectedOptions; track option.value) {
-              <span class="j-multiselect__chip" data-jc-section="chip">{{ option.label }}</span>
+              <j-chip
+                data-jc-section="chip"
+                [label]="chipTemplate ? '' : option.label"
+                [severity]="resolveChipSeverity(option)"
+                [icon]="resolveChipIcon(option)"
+                [size]="chipCompact() ? 'sm' : size()"
+                [removable]="chipsRemovable()"
+                [disabled]="isDisabled() || readonly() || option.disabled"
+                [removeAriaLabel]="'Remove ' + option.label"
+                [jTooltip]="option.label"
+                [tooltipDisabled]="option.label.length < 24"
+                (click)="$event.stopPropagation()"
+                (remove)="removeChip(option)"
+              >
+                @if (chipTemplate) {
+                  <ng-container
+                    [ngTemplateOutlet]="chipTemplate"
+                    [ngTemplateOutletContext]="itemContext(option)"
+                  />
+                }
+              </j-chip>
             }
             @if (selectedOverflowCount > 0) {
-              <span class="j-multiselect__chip" data-jc-section="overflow"
-                >+{{ selectedOverflowCount }}</span
-              >
+              <j-chip
+                data-jc-section="overflow"
+                severity="neutral"
+                [label]="'+' + selectedOverflowCount"
+                [jTooltip]="overflowTooltip"
+              />
             }
           </span>
         } @else {
@@ -120,7 +163,7 @@ export interface JMultiselectItemContext {
           data-jc-section="indicator"
           aria-hidden="true"
         ></span>
-      </button>
+      </div>
 
       @if (isOpen) {
         <div
@@ -153,12 +196,18 @@ export interface JMultiselectItemContext {
               </button>
             </div>
           }
-          @if (loading()) {
+          @if (isLoading) {
             <div class="j-multiselect__empty" data-jc-section="loading" data-j-loading="true">
               {{ loadingMessage() }}
             </div>
           }
-          @if (!loading() && !visibleOptions.length) {
+          @if (asyncState().error) {
+            <div class="j-multiselect__empty" role="alert">
+              Options could not be loaded
+              <button type="button" (click)="retryAsync()">Retry</button>
+            </div>
+          }
+          @if (!isLoading && !asyncState().error && !visibleOptions.length) {
             <div class="j-multiselect__empty" data-jc-section="empty">{{ emptyMessage() }}</div>
           }
           <ng-template #optionTpl let-option let-i="index">
@@ -294,6 +343,10 @@ export interface JMultiselectItemContext {
         flex-wrap: wrap;
         gap: var(--j-spacing-xs);
       }
+      .j-multiselect__chips.is-nowrap {
+        flex-wrap: nowrap;
+        overflow: hidden;
+      }
       .j-multiselect__chip {
         background: var(--j-color-surface-muted);
         border-radius: var(--j-radius-full);
@@ -409,9 +462,18 @@ export class JMultiselectComponent implements ControlValueAccessor {
   @ContentChild('jMultiselectItem', { read: TemplateRef })
   itemTemplate?: TemplateRef<JMultiselectItemContext>;
 
+  @ContentChild('jMultiselectChip', { read: TemplateRef })
+  chipTemplate?: TemplateRef<JMultiselectItemContext>;
+
   readonly id = input(jCreateId('j-multiselect'));
   readonly label = input('');
   readonly options = input<readonly JMultiselectOption[]>([]);
+  readonly dataSource = input<JAsyncDataSource<JMultiselectOption, JAsyncOptionsQuery> | null>(
+    null,
+  );
+  readonly asyncPageSize = input(50, { transform: numberAttribute });
+  readonly debounce = input(250, { transform: numberAttribute });
+  readonly cache = input(true, { transform: booleanAttribute });
   readonly optionLabel = input('label');
   readonly optionValue = input('value');
   readonly optionDisabled = input('disabled');
@@ -424,7 +486,7 @@ export class JMultiselectComponent implements ControlValueAccessor {
   readonly selectAllLabel = input('Select all');
   readonly unselectAllLabel = input('Unselect all');
   readonly styleClass = input('');
-  readonly size = input<JSize>('md');
+  readonly size = input<JComponentSize>('md');
   readonly variant = input<JInputVariant>('outlined');
   readonly maxSelectedLabels = input(3, { transform: numberAttribute });
   readonly virtualScroll = input(false, { transform: booleanAttribute });
@@ -439,6 +501,15 @@ export class JMultiselectComponent implements ControlValueAccessor {
   readonly appendTo = input<JAppendTo | undefined>(undefined);
   readonly clearable = input(false, { transform: booleanAttribute });
   readonly displayChips = input(false, { transform: booleanAttribute });
+  readonly displayMode = input<JMultiselectDisplayMode>('comma');
+  readonly chipSeverityField = input('severity');
+  readonly chipIconField = input('icon');
+  readonly chipSeverityResolver = input<
+    ((option: JMultiselectOption) => JSeverity | null | undefined) | null
+  >(null);
+  readonly chipsRemovable = input(true, { transform: booleanAttribute });
+  readonly chipWrap = input(true, { transform: booleanAttribute });
+  readonly chipCompact = input(false, { transform: booleanAttribute });
   readonly showSelectAll = input(true, { transform: booleanAttribute });
   readonly loading = input(false, { transform: booleanAttribute });
   readonly disabled = input(false, { transform: booleanAttribute });
@@ -449,26 +520,57 @@ export class JMultiselectComponent implements ControlValueAccessor {
   readonly clear = output<void>();
   readonly opened = output<void>();
   readonly closed = output<void>();
+  readonly asyncError = output<unknown>();
 
   readonly hintId = jCreateId('j-multiselect-hint');
   readonly errorId = jCreateId('j-multiselect-error');
   readonly listboxId = jCreateId('j-multiselect-listbox');
   value: readonly unknown[] = [];
   readonly isDisabled = signal(false);
+  readonly asyncState = signal<JAsyncDataState<JMultiselectOption>>({
+    loading: false,
+    items: [],
+    error: null,
+  });
   isOpen = false;
   filterText = '';
   activeIndex = -1;
+  private asyncController?: JAsyncDataController<JMultiselectOption, JAsyncOptionsQuery>;
+  private searchTimer?: ReturnType<typeof setTimeout>;
 
   onTouched: () => void = () => undefined;
   private onChange: (value: readonly unknown[]) => void = () => undefined;
 
   constructor() {
     effect(() => this.isDisabled.set(this.disabled()));
+    effect(() => {
+      const source = this.dataSource();
+      this.asyncController?.destroy();
+      this.asyncController = source
+        ? new JAsyncDataController(source, {
+            cache: this.cache(),
+            onStateChange: (state) => {
+              this.asyncState.set(state);
+              if (state.error) this.asyncError.emit(state.error);
+              this.changeDetectorRef.markForCheck();
+            },
+          })
+        : undefined;
+      if (source) void this.loadAsync('');
+    });
+    this.destroyRef.onDestroy(() => {
+      if (this.searchTimer) clearTimeout(this.searchTimer);
+      this.asyncController?.destroy();
+    });
+  }
+
+  get isLoading(): boolean {
+    return this.loading() || this.asyncState().loading;
   }
 
   get normalizedOptions(): readonly JNormalizedSelectionOption[] {
     return jNormalizeSelectionOptions(
-      this.options(),
+      this.dataSource() ? this.asyncState().items : this.options(),
       this.optionLabel(),
       this.optionValue(),
       this.optionDisabled(),
@@ -500,7 +602,7 @@ export class JMultiselectComponent implements ControlValueAccessor {
 
   /** Virtual scrolling renders the (flat) option list through the virtual scroller. */
   get useVirtual(): boolean {
-    return this.virtualScroll() && !this.loading();
+    return this.virtualScroll() && !this.isLoading;
   }
 
   private scrollActiveIntoView(): void {
@@ -524,12 +626,37 @@ export class JMultiselectComponent implements ControlValueAccessor {
   }
 
   get selectedText(): string {
+    if (this.resolvedDisplayMode === 'count' && this.selectedOptions.length) {
+      return `${this.selectedOptions.length} selected`;
+    }
     return this.selectedOptions.length
       ? this.selectedOptions
           .map((option) => option.label)
           .slice(0, this.maxSelectedLabels())
           .join(', ') + (this.selectedOverflowCount ? ` +${this.selectedOverflowCount}` : '')
       : this.placeholder();
+  }
+
+  get resolvedDisplayMode(): JMultiselectDisplayMode {
+    return this.displayChips() ? 'chips' : this.displayMode();
+  }
+
+  get overflowTooltip(): string {
+    return this.selectedOptions
+      .slice(this.visibleSelectedOptions.length)
+      .map((option) => option.label)
+      .join(', ');
+  }
+
+  resolveChipSeverity(option: JNormalizedSelectionOption): JSeverity {
+    const resolved = this.chipSeverityResolver()?.(option.source);
+    const fieldValue = readOptionField(option.source, this.chipSeverityField());
+    return isSeverity(resolved) ? resolved : isSeverity(fieldValue) ? fieldValue : 'neutral';
+  }
+
+  resolveChipIcon(option: JNormalizedSelectionOption): string {
+    const value = readOptionField(option.source, this.chipIconField());
+    return typeof value === 'string' ? value : '';
   }
 
   get hasError(): boolean {
@@ -560,6 +687,7 @@ export class JMultiselectComponent implements ControlValueAccessor {
 
   writeValue(value: readonly unknown[] | null | undefined): void {
     this.value = Array.isArray(value) ? value : [];
+    if (this.value.length) void this.asyncController?.hydrate(this.value);
     this.changeDetectorRef.markForCheck();
   }
 
@@ -633,9 +761,27 @@ export class JMultiselectComponent implements ControlValueAccessor {
     this.filterText = target.value;
     this.activeIndex = this.visibleOptions.findIndex((option) => !option.disabled);
     this.filterChange.emit(this.filterText);
+    if (this.dataSource()) {
+      if (this.searchTimer) clearTimeout(this.searchTimer);
+      this.searchTimer = setTimeout(() => void this.loadAsync(this.filterText), this.debounce());
+    }
+  }
+
+  retryAsync(): void {
+    this.asyncController?.invalidate();
+    void this.loadAsync(this.filterText);
+  }
+
+  private loadAsync(search: string): Promise<unknown> {
+    return (
+      this.asyncController
+        ?.load({ search, page: 0, pageSize: this.asyncPageSize(), selectedValues: this.value })
+        .catch(() => undefined) ?? Promise.resolve()
+    );
   }
 
   handleKeydown(event: KeyboardEvent): void {
+    if (this.isDisabled() || this.readonly()) return;
     if (event.key === 'Escape' || event.key === 'Tab') {
       this.close();
       return;
@@ -657,10 +803,14 @@ export class JMultiselectComponent implements ControlValueAccessor {
         this.toggleOption(option);
       }
     }
+    if (event.key === 'Backspace' && !this.isOpen && this.value.length) {
+      event.preventDefault();
+      this.commitValue(this.value.slice(0, -1));
+    }
   }
 
   toggleOption(option: JNormalizedSelectionOption): void {
-    if (option.disabled) {
+    if (option.disabled || this.isDisabled() || this.readonly()) {
       return;
     }
 
@@ -671,6 +821,7 @@ export class JMultiselectComponent implements ControlValueAccessor {
   }
 
   selectAllVisible(): void {
+    if (this.isDisabled() || this.readonly()) return;
     const nextValue = [
       ...this.value,
       ...this.visibleOptions
@@ -682,6 +833,7 @@ export class JMultiselectComponent implements ControlValueAccessor {
   }
 
   unselectAllVisible(): void {
+    if (this.isDisabled() || this.readonly()) return;
     const visibleValues = this.visibleOptions.map((option) => option.value);
     this.commitValue(
       this.value.filter(
@@ -692,8 +844,14 @@ export class JMultiselectComponent implements ControlValueAccessor {
 
   clearAll(event?: Event): void {
     event?.stopPropagation();
+    if (this.isDisabled() || this.readonly()) return;
     this.commitValue([]);
     this.clear.emit();
+  }
+
+  removeChip(option: JNormalizedSelectionOption): void {
+    if (this.isDisabled() || this.readonly() || option.disabled) return;
+    this.commitValue(this.value.filter((value) => !jSameSelectionValue(value, option.value)));
   }
 
   isSelected(option: JNormalizedSelectionOption): boolean {
@@ -737,4 +895,26 @@ export class JMultiselectComponent implements ControlValueAccessor {
       }
     }
   }
+}
+
+function readOptionField(option: JSelectionOptionSource, field: string): unknown {
+  return typeof option === 'object' && option !== null
+    ? (option as Record<string, unknown>)[field]
+    : undefined;
+}
+
+function isSeverity(value: unknown): value is JSeverity {
+  return (
+    typeof value === 'string' &&
+    [
+      'primary',
+      'secondary',
+      'success',
+      'info',
+      'warning',
+      'danger',
+      'contrast',
+      'neutral',
+    ].includes(value)
+  );
 }

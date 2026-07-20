@@ -185,9 +185,9 @@ export class CodeBlockComponent {
             </div>
           </div>
           <j-card
-            title="Reusable primitives"
-            subtitle="Generic controls for application screens"
-            elevated
+            header="Reusable primitives"
+            subheader="Generic controls for application screens"
+            variant="elevated"
           >
             <div class="j-preview-form">
               <j-badge value="Active" severity="success" />
@@ -237,7 +237,7 @@ export class CodeBlockComponent {
             <h2 id="preview-heading">Simple component preview</h2>
           </div>
           <div class="j-preview-panel">
-            <j-card title="Order summary" subtitle="Current period" bordered>
+            <j-card header="Order summary" subheader="Current period" variant="outlined">
               <div class="j-preview-toolbar">
                 <j-button label="Create order" />
                 <j-badge value="Ready" severity="info" />
@@ -785,13 +785,11 @@ import { JSelectComponent } from 'jrng-ui/select';`,
     {
       title: 'Tour Guide',
       body: [
-        'JRNG UI includes an optional Tour Guide wrapper for short onboarding and feature walkthroughs.',
-        'Install Driver.js only in applications that use tours. App code should use JTourService and jTourStep rather than direct Driver.js APIs.',
+        'JRNG UI includes a native Tour Guide for short onboarding and feature walkthroughs.',
+        'App code uses JTourService, jTourStep and one j-tour-guide host with no third-party runtime.',
       ],
       codeLabel: 'TypeScript',
-      code: `npm install driver.js
-
-this.jTour.start({
+      code: `this.jTour.start({
   id: 'dashboard-intro-v1',
   steps: [
     {
@@ -805,7 +803,7 @@ this.jTour.start({
     {
       title: 'Changelog',
       body: [
-        'Read the changelog before upgrading. Version 0.0.6 removes legacy button events and standardizes examples on onClick.',
+        'Review the 0.1.0 changelog before adopting the final Button event and variant contracts.',
       ],
       codeLabel: 'HTML',
       code: `<j-button label="Save" (onClick)="save()"></j-button>`,
@@ -1149,13 +1147,6 @@ this.jTour.start({
           'Width-constrained content wrapper.',
           'ready',
         ),
-        summary(
-          'Stack',
-          'j-stack',
-          'jrng-ui/stack',
-          'Simple vertical or horizontal spacing layout.',
-          'ready',
-        ),
       ],
     },
     {
@@ -1222,14 +1213,14 @@ this.jTour.start({
 <j-button icon="search" ariaLabel="Search"></j-button>`,
       variants: `<j-button label="Primary"></j-button>
 <j-button label="Secondary" severity="secondary"></j-button>
-<j-button label="Outline" variant="outline"></j-button>
-<j-button label="Ghost" variant="ghost"></j-button>`,
+<j-button label="Outline" variant="outlined"></j-button>
+<j-button label="Ghost" variant="soft"></j-button>`,
       sizes: `<j-button label="Small" size="sm"></j-button>
 <j-button label="Medium" size="md"></j-button>
 <j-button label="Large" size="lg"></j-button>`,
       states: `<j-button label="Disabled" disabled></j-button>
 <j-button label="Loading" loading></j-button>
-<j-button label="Full width" fullWidth></j-button>`,
+<j-button label="Full width" width="full"></j-button>`,
       inputs: [
         api('label', 'string', "''", 'Text displayed inside the button.'),
         api(
@@ -1413,8 +1404,8 @@ readonly products = [
   <p>Card content goes here.</p>
 </j-card>`,
       variants: `<j-card header="Default"></j-card>
-<j-card header="Elevated" elevated></j-card>
-<j-card header="Bordered" bordered></j-card>`,
+<j-card header="Elevated" variant="elevated"></j-card>
+<j-card header="Bordered" variant="outlined"></j-card>`,
       states: `<j-card header="Loading" skeleton></j-card>
 <j-card header="Interactive" interactive></j-card>`,
       inputs: [
@@ -1493,7 +1484,7 @@ readonly products = [
         'Toast displays short feedback messages such as saved, failed, loading, or completed states.',
         'Place one j-toast near the application root and use the toast service from actions or workflows.',
       ],
-      importCode: `import { JrToastContainerComponent, ToastService } from 'jrng-ui/toast';`,
+      importCode: `import { JToastContainerComponent, ToastService } from 'jrng-ui/toast';`,
       basicUsage: `<j-toast position="top-right"></j-toast>`,
       variants: `toast.success('Saved successfully');
 toast.error('Could not save');

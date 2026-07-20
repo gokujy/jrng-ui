@@ -1,4 +1,5 @@
 import { readFile, readdir, writeFile } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const workspace = resolve(import.meta.dirname, '..');
@@ -26,17 +27,28 @@ const completeSlugs = new Set([
   'tooltip',
   'filter-bar',
   'status-chip',
-  'metric-card',
   'page-header',
   'tour-guide',
   'text-expand',
   'avatar',
   'loader',
   'card',
+  'diff-viewer',
+  'highlight',
+  'html-preview',
+  'label',
+  'empty',
 ]);
 
 const components = [];
 for (const component of inventory.components) {
+  const componentDirectory = resolve(
+    libraryRoot,
+    component.publicImportPath.replace('jrng-ui/', '') === 'empty'
+      ? 'empty-state'
+      : component.publicImportPath.replace('jrng-ui/', ''),
+  );
+  if (!existsSync(componentDirectory)) continue;
   const slug = component.selector.slice(2);
   const source = await componentSource(component);
   const inputs = exportedMembers(
@@ -75,7 +87,6 @@ for (const component of inventory.components) {
     status: completeSlugs.has(slug) ? 'Complete' : 'Basic',
     stability: component.stability === 'Unclassified' ? 'Stable' : component.stability,
     sinceVersion: null,
-    deprecation: componentDeprecation(source, component.className),
     angularCompatibility: packageJson.peerDependencies['@angular/core'],
     files: [],
     dependencies: [],
@@ -99,7 +110,8 @@ await writeFile(
 console.log(`Generated public registry with ${components.length} components.`);
 
 async function componentSource(component) {
-  const directory = resolve(libraryRoot, component.publicImportPath.replace('jrng-ui/', ''));
+  const slug = component.publicImportPath.replace('jrng-ui/', '');
+  const directory = resolve(libraryRoot, slug === 'empty' ? 'empty-state' : slug);
   const files = await readdir(directory, { recursive: true });
   const sources = [];
   for (const file of files.filter(
@@ -122,23 +134,6 @@ function exportedMembers(source, ...patterns) {
       if (match[1] && !match[1].startsWith('_')) names.add(match[1]);
   }
   return [...names].sort();
-}
-
-function componentDeprecation(source, className) {
-  const classIndex = source.indexOf(`export class ${className}`);
-  if (classIndex < 0) return null;
-  const leadingSource = source.slice(0, classIndex);
-  const jsDoc = /\/\*\*([\s\S]*?)\*\/\s*$/.exec(leadingSource)?.[1] ?? '';
-  if (!/@deprecated\b/.test(jsDoc)) return null;
-  const message = jsDoc
-    .slice(jsDoc.indexOf('@deprecated') + '@deprecated'.length)
-    .split('\n')
-    .map((line) => line.replace(/^\s*\*?\s?/, '').trim())
-    .filter(Boolean)
-    .join(' ');
-  return {
-    message: message || 'Deprecated compatibility API.',
-  };
 }
 
 function exportedMethods(source) {

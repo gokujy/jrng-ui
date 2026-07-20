@@ -47,7 +47,9 @@ describe('JTooltipDirective', () => {
     expect(tooltip).not.toBeNull();
     expect(tooltip?.textContent).toBe('Hello');
     expect(tooltip?.getAttribute('role')).toBe('tooltip');
-    expect(tooltip?.classList.contains('j-tooltip--top')).toBe(true);
+    expect(['top', 'bottom']).toContain(tooltip?.getAttribute('data-j-placement'));
+    expect(tooltip?.querySelector('.j-tooltip__arrow')).not.toBeNull();
+    expect(document.querySelector('button')?.getAttribute('aria-describedby')).toBe(tooltip?.id);
   });
 
   it('removes the tooltip element on hide()', async () => {
@@ -80,5 +82,14 @@ describe('JTooltipDirective', () => {
 
     destroy();
     expect(document.querySelector('.j-tooltip')).toBeNull();
+  });
+
+  it('closes on Escape and clears the ARIA relationship', async () => {
+    const { directive } = getDirective(HostComponent);
+    directive.show();
+    await tick();
+    directive.closeOnEscape(new KeyboardEvent('keydown', { key: 'Escape' }));
+    expect(document.querySelector('.j-tooltip')).toBeNull();
+    expect(document.querySelector('button')?.hasAttribute('aria-describedby')).toBe(false);
   });
 });

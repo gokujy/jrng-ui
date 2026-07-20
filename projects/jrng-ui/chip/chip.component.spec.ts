@@ -40,7 +40,7 @@ describe('JChipComponent', () => {
     fixture.componentInstance.remove.subscribe(() => (emitted = true));
 
     const removeButton: HTMLButtonElement = fixture.nativeElement.querySelector(
-      '[data-jc-section="remove"]',
+      '[data-jc-section="remove"] button',
     );
     removeButton.click();
 

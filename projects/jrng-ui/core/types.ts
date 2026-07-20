@@ -1,9 +1,41 @@
-export type JSize = 'sm' | 'md' | 'lg';
+export type JComponentSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 export type JSeverity =
-  'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | 'neutral';
+  'primary' | 'secondary' | 'success' | 'info' | 'warning' | 'danger' | 'contrast' | 'neutral';
 
-export type JVariant = 'filled' | 'outlined' | 'text';
+export type JDensity = 'compact' | 'comfortable' | 'spacious';
+
+export type JOrientation = 'horizontal' | 'vertical';
+
+export type JShape = 'square' | 'rounded' | 'pill' | 'circle';
+
+export type JComponentWidth = 'auto' | 'full';
+
+export type JActionVariant = 'solid' | 'outlined' | 'soft' | 'text' | 'link';
+
+export type JSurfaceVariant = 'elevated' | 'outlined' | 'filled' | 'minimal';
+
+export type JFieldVariant = 'outlined' | 'filled' | 'underlined';
+
+export type JStatusVariant = 'solid' | 'soft' | 'outlined' | 'dot';
+
+export type JNavigationVariant = 'underline' | 'pill' | 'boxed' | 'minimal';
+
+export type JActionDisplay = 'icon' | 'icon-label' | 'label';
+
+export type JComponentState =
+  | 'default'
+  | 'loading'
+  | 'empty'
+  | 'error'
+  | 'success'
+  | 'warning'
+  | 'disabled'
+  | 'readonly'
+  | 'invalid';
+
+/** Release maturity assigned to a public JRNG component. */
+export type JComponentStability = 'stable' | 'beta' | 'experimental';
 
 export type JPosition =
   | 'top'

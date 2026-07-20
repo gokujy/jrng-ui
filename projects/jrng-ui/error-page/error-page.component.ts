@@ -1,23 +1,19 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { JStatusPageComponent } from 'jrng-ui/status-page';
+import { JEmptyComponent } from 'jrng-ui/empty';
 
 @Component({
   selector: 'j-error-page',
-  imports: [JStatusPageComponent],
+  imports: [JEmptyComponent],
   template: `
-    <j-status-page
+    <j-empty
       variant="error"
-      compatibilityClass="j-error-page"
-      compatibilityMarkerClass="j-error-page__code"
-      compatibilityActionClass="j-error-page__actions"
-      componentName="error-page"
-      [marker]="code()"
+      [icon]="code()"
       [title]="title()"
       [description]="description()"
       [styleClass]="styleClass()"
     >
       <ng-content />
-    </j-status-page>
+    </j-empty>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

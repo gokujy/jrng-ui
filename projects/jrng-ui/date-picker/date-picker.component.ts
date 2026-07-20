@@ -24,7 +24,7 @@ import { JClickOutsideDirective } from 'jrng-ui/core';
 import { JAppendTo, JOverlayHandle, JOverlayService } from 'jrng-ui/core';
 import { JRNG_LOCALE } from 'jrng-ui/core';
 import { JPassThrough } from 'jrng-ui/core';
-import { JSize } from 'jrng-ui/core';
+import { JComponentSize } from 'jrng-ui/core';
 import { jCreateId } from 'jrng-ui/core';
 import { JIconComponent } from 'jrng-ui/icon';
 
@@ -822,7 +822,7 @@ export class JDatePickerComponent implements ControlValueAccessor {
   readonly view = input<JDatePickerView>('date');
   readonly appendTo = input<JAppendTo | undefined>(undefined);
   readonly styleClass = input('');
-  readonly size = input<JSize>('md');
+  readonly size = input<JComponentSize>('md');
   readonly variant = input<'outlined' | 'filled'>('outlined');
   readonly pt = input<JPassThrough | null>(null);
   readonly readonly = input(false, { transform: booleanAttribute });

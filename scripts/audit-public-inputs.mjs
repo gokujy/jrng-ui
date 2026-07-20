@@ -23,8 +23,7 @@ for (const directory of fs.readdirSync(root, { withFileTypes: true })) {
     if (!name) continue;
     const references = source.match(new RegExp(`\\b${name}\\b`, 'g'))?.length ?? 0;
     const declarationText = declaration[0];
-    const deprecated = source.slice(Math.max(0, declaration.index - 160), declaration.index).includes('@deprecated');
-    if (references < 2 && !deprecated && !declarationText.includes('model')) {
+    if (references < 2 && !declarationText.includes('model')) {
       candidates.push(`${directory.name}: ${name}`);
     }
   }

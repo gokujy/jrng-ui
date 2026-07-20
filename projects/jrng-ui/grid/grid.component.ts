@@ -5,6 +5,7 @@ import {
   input,
   numberAttribute,
 } from '@angular/core';
+import { JGridGap, jGridGapToken } from './grid.types';
 
 @Component({
   selector: 'j-grid',
@@ -17,8 +18,9 @@ import {
     '[class.j-grid--no-padding]': '!containerPadding()',
     '[class]': 'styleClass()',
     '[style.--j-grid-column-count]': 'columnCount()',
-    '[style.--j-grid-gutter-x]': 'gutterX()',
-    '[style.--j-grid-gutter-y]': 'gutterY()',
+    '[style.--j-grid-column-gap]': 'resolvedColumnGap()',
+    '[style.--j-grid-row-gap]': 'resolvedRowGap()',
+    '[style.--j-grid-padding]': 'resolvedPadding()',
     '[style.--j-grid-max-width]': 'maxWidth() || null',
   },
   styles: [
@@ -28,7 +30,7 @@ import {
         display: block;
         margin-inline: auto;
         max-width: var(--j-grid-max-width, var(--j-grid-fixed-max-width, none));
-        padding-inline: calc(var(--j-grid-gutter-x, var(--j-spacing-4)) / 2);
+        padding-inline: var(--j-grid-padding);
         width: 100%;
       }
 
@@ -71,8 +73,10 @@ import {
 })
 export class JGridComponent {
   readonly columns = input(12, { transform: numberAttribute });
-  readonly gutterX = input('var(--j-spacing-4)');
-  readonly gutterY = input('var(--j-spacing-4)');
+  readonly gap = input<JGridGap>('md');
+  readonly rowGap = input<JGridGap | null>(null);
+  readonly columnGap = input<JGridGap | null>(null);
+  readonly padding = input<JGridGap>('md');
   readonly fixed = input(false, { transform: booleanAttribute });
   readonly containerPadding = input(true, { transform: booleanAttribute });
   readonly maxWidth = input('');
@@ -80,5 +84,17 @@ export class JGridComponent {
 
   protected columnCount(): number {
     return Math.max(1, this.columns());
+  }
+
+  protected resolvedColumnGap(): string {
+    return jGridGapToken(this.columnGap() ?? this.gap());
+  }
+
+  protected resolvedRowGap(): string {
+    return jGridGapToken(this.rowGap() ?? this.gap());
+  }
+
+  protected resolvedPadding(): string {
+    return jGridGapToken(this.padding());
   }
 }

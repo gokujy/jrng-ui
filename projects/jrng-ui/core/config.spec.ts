@@ -7,7 +7,7 @@ describe('JRNG UI configuration', () => {
     document.documentElement.removeAttribute('data-j-density');
     document.documentElement.removeAttribute('data-j-input-style');
     document.documentElement.removeAttribute('data-j-locale');
-    document.documentElement.classList.remove('j-dark', 'j-unstyled', 'j-animations-disabled');
+    document.documentElement.classList.remove('j-dark', 'j-animations-disabled');
     TestBed.resetTestingModule();
   });
 
@@ -29,7 +29,6 @@ describe('JRNG UI configuration', () => {
           inputStyle: 'filled',
           density: 'compact',
           animation: 'disabled',
-          unstyled: true,
           locale: 'de-DE',
         }),
       ],
@@ -41,6 +40,5 @@ describe('JRNG UI configuration', () => {
     expect(document.documentElement.dataset['jLocale']).toBe('de-DE');
     expect(document.documentElement.classList.contains('j-dark')).toBe(true);
     expect(document.documentElement.classList.contains('j-animations-disabled')).toBe(true);
-    expect(document.documentElement.classList.contains('j-unstyled')).toBe(true);
   });
 });

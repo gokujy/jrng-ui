@@ -18,6 +18,24 @@ import {
 export type JAccordionActiveIndex = number | readonly number[] | null;
 export type JAccordionVariant = 'default' | 'separated' | 'minimal';
 
+/** Projected header primitive for the compositional accordion API. */
+@Component({
+  selector: 'j-accordion-header',
+  template: `<ng-content />`,
+  host: { class: 'j-accordion-header' },
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class JAccordionHeaderComponent {}
+
+/** Projected content primitive for the compositional accordion API. */
+@Component({
+  selector: 'j-accordion-content',
+  template: `<ng-content />`,
+  host: { class: 'j-accordion-content' },
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class JAccordionContentComponent {}
+
 @Component({
   selector: 'j-accordion-panel',
   imports: [],
@@ -41,11 +59,17 @@ export type JAccordionVariant = 'default' | 'separated' | 'minimal';
           [attr.aria-expanded]="active"
           (click)="requestToggle()"
         >
-          <span>{{ header() }}</span>
+          <span class="j-accordion-panel__header-content">
+            @if (header()) {
+              {{ header() }}
+            }
+            <ng-content select="j-accordion-header"></ng-content>
+          </span>
           <span aria-hidden="true">{{ active ? '−' : '+' }}</span>
         </button>
       </h3>
       <div class="j-accordion-panel__content" [hidden]="!active">
+        <ng-content select="j-accordion-content"></ng-content>
         <ng-content></ng-content>
       </div>
     </section>
@@ -130,6 +154,7 @@ export type JAccordionVariant = 'default' | 'separated' | 'minimal';
 })
 export class JAccordionPanelComponent {
   readonly header = input('');
+  readonly value = input<string | number | null>(null);
   readonly disabled = input(false, { transform: booleanAttribute });
   readonly toggleRequest = output<JAccordionPanelComponent>();
 
@@ -193,6 +218,8 @@ export class JAccordionComponent implements AfterContentInit, OnChanges {
   @ContentChildren(JAccordionPanelComponent) panels?: QueryList<JAccordionPanelComponent>;
   readonly multiple = input(false, { transform: booleanAttribute });
   readonly activeIndex = model<JAccordionActiveIndex>(null);
+  /** Value-based controlled state for stable dynamic collections. */
+  readonly value = model<string | number | readonly (string | number)[] | null>(null);
   readonly variant = input<JAccordionVariant>('default');
 
   ngAfterContentInit(): void {
@@ -206,7 +233,7 @@ export class JAccordionComponent implements AfterContentInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['activeIndex'] || changes['multiple'] || changes['variant']) {
+    if (changes['activeIndex'] || changes['value'] || changes['multiple'] || changes['variant']) {
       this.syncPanels();
     }
   }
@@ -216,26 +243,34 @@ export class JAccordionComponent implements AfterContentInit, OnChanges {
       return;
     }
 
-    const current = this.activeIndex();
+    const currentIndexes = this.currentActiveIndexes();
 
     if (this.multiple()) {
-      const active = Array.isArray(current) ? [...current] : [];
-      this.activeIndex.set(
-        active.includes(panel.index)
-          ? active.filter((index) => index !== panel.index)
-          : [...active, panel.index],
+      const next = currentIndexes.includes(panel.index)
+        ? currentIndexes.filter((index) => index !== panel.index)
+        : [...currentIndexes, panel.index];
+      this.activeIndex.set(next);
+      this.value.set(
+        next.map((index) => {
+          const candidate = this.panels?.get(index);
+          return candidate ? this.panelValue(candidate) : index;
+        }),
       );
     } else {
-      this.activeIndex.set(current === panel.index ? null : panel.index);
+      const next = currentIndexes.includes(panel.index) ? null : panel.index;
+      this.activeIndex.set(next);
+      this.value.set(next === null ? null : this.panelValue(panel));
     }
 
     this.syncPanels();
   }
 
   private syncPanels(): void {
-    const activeIndexes = this.activeIndexes();
     this.panels?.forEach((panel, index) => {
       panel.index = index;
+    });
+    const activeIndexes = this.currentActiveIndexes();
+    this.panels?.forEach((panel, index) => {
       panel.active = activeIndexes.includes(index);
       panel.presentation.set(this.variant());
     });
@@ -255,5 +290,23 @@ export class JAccordionComponent implements AfterContentInit, OnChanges {
     }
 
     return typeof current === 'number' ? [current] : [];
+  }
+
+  private currentActiveIndexes(): readonly number[] {
+    const controlled = this.value();
+    if (controlled === null) {
+      return this.activeIndexes();
+    }
+
+    const values: readonly (string | number)[] = Array.isArray(controlled)
+      ? controlled
+      : [controlled];
+    return (this.panels?.toArray() ?? [])
+      .filter((panel) => values.includes(this.panelValue(panel)))
+      .map((panel) => panel.index);
+  }
+
+  private panelValue(panel: JAccordionPanelComponent): string | number {
+    return panel.value() ?? panel.index;
   }
 }

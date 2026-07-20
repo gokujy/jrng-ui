@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { JIconComponent } from 'jrng-ui/icon';
+import { JButtonComponent } from 'jrng-ui/button';
 import { JTableEmptyState } from './table.types';
 
 @Component({
   selector: 'j-table-empty-state',
-  imports: [JIconComponent],
+  imports: [JButtonComponent, JIconComponent],
   template: `
     <div
       class="j-table-empty-state"
@@ -17,7 +18,7 @@ import { JTableEmptyState } from './table.types';
       <strong>{{ title() }}</strong>
       <p>{{ message() }}</p>
       @if (actionLabel()) {
-        <button type="button" (click)="action.emit()">{{ actionLabel() }}</button>
+        <j-button [label]="actionLabel()" (onClick)="action.emit()" />
       }
     </div>
   `,
@@ -46,30 +47,10 @@ import { JTableEmptyState } from './table.types';
         margin: 0;
       }
 
-      .j-table-empty-state button {
-        background: var(--j-color-primary, #4f46e5);
-        border: 0;
-        border-radius: var(--j-radius-md, 0.5rem);
-        color: var(--j-color-primary-foreground, #ffffff);
-        cursor: pointer;
-        font: inherit;
-        font-weight: var(--j-font-weight-semibold, 600);
-        min-height: 2.25rem;
-        padding-inline: var(--j-spacing-md, 0.75rem);
-      }
-
-      .j-table-empty-state button:focus-visible {
-        box-shadow: var(--j-focus-ring);
-        outline: none;
-      }
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-/**
- * @deprecated Prefer the integrated `j-table` empty-state inputs and `jTableEmpty` template.
- * This compatibility component remains available for existing applications.
- */
 export class JTableEmptyStateComponent {
   readonly state = input<JTableEmptyState>('no-data');
   readonly title = input('No records');

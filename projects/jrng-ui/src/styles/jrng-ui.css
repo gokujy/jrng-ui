@@ -56,6 +56,14 @@
     --j-spacing-3xl: var(--j-spacing-8);
     --j-spacing-4xl: var(--j-spacing-10);
     --j-spacing-5xl: var(--j-spacing-12);
+    --j-density-compact-gap: var(--j-spacing-1);
+    --j-density-compact-padding: var(--j-spacing-2);
+    --j-density-comfortable-gap: var(--j-spacing-2);
+    --j-density-comfortable-padding: var(--j-spacing-3);
+    --j-density-spacious-gap: var(--j-spacing-3);
+    --j-density-spacious-padding: var(--j-spacing-4);
+    --j-density-gap: var(--j-density-comfortable-gap);
+    --j-density-padding: var(--j-density-comfortable-padding);
     --j-radius-none: 0;
     --j-radius-xs: 0.25rem;
     --j-radius-sm: 0.375rem;
@@ -70,6 +78,11 @@
     --j-shadow-md: 0 10px 24px rgb(15 23 42 / 10%), 0 2px 6px rgb(15 23 42 / 6%);
     --j-shadow-lg: 0 22px 60px rgb(15 23 42 / 14%);
     --j-shadow-inner: inset 0 1px 2px rgb(15 23 42 / 6%);
+    --j-elevation-0: var(--j-shadow-none);
+    --j-elevation-1: var(--j-shadow-xs);
+    --j-elevation-2: var(--j-shadow-sm);
+    --j-elevation-3: var(--j-shadow-md);
+    --j-elevation-4: var(--j-shadow-lg);
     --j-font-family:
       Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     --j-font-size-xs: 0.75rem;
@@ -85,6 +98,9 @@
     --j-font-weight-medium: 550;
     --j-font-weight-semibold: 650;
     --j-font-weight-bold: 700;
+    --j-icon-size-sm: 1rem;
+    --j-icon-size-md: 1.25rem;
+    --j-icon-size-lg: 1.5rem;
     --j-duration-instant: 0ms;
     --j-duration-fast: 120ms;
     --j-duration-normal: 180ms;
@@ -149,7 +165,14 @@
     --j-color-info: var(--j-color-sky-600);
     --j-color-info-soft: var(--j-color-sky-50);
     --j-color-info-foreground: var(--j-color-white);
+    --j-color-neutral: var(--j-color-slate-600);
+    --j-color-neutral-soft: var(--j-color-slate-100);
+    --j-color-neutral-foreground: var(--j-color-white);
+    --j-color-contrast: var(--j-color-slate-950);
+    --j-color-contrast-soft: var(--j-color-slate-200);
+    --j-color-contrast-foreground: var(--j-color-white);
     --j-color-surface: var(--j-color-card);
+    --j-color-surface-elevated: var(--j-color-popover);
     --j-color-surface-muted: var(--j-color-muted);
     --j-color-surface-subtle: var(--j-color-slate-100);
     --j-color-page: var(--j-color-background);
@@ -157,6 +180,10 @@
     --j-color-text: var(--j-color-foreground);
     --j-color-text-muted: var(--j-color-muted-foreground);
     --j-color-text-soft: var(--j-color-slate-400);
+    --j-color-hover-background: var(--j-color-muted);
+    --j-color-selected-background: var(--j-color-primary-soft);
+    --j-color-disabled-background: var(--j-color-slate-100);
+    --j-color-disabled-text: var(--j-color-slate-400);
     --j-color-on-primary: var(--j-color-primary-foreground);
     --j-color-on-danger: var(--j-color-danger-foreground);
     --j-focus-ring: 0 0 0 3px var(--j-color-ring);
@@ -167,7 +194,7 @@
 @layer j-theme {
   .j-dark,
   .j-theme-dark,
-  [data-j-theme=dark] {
+  [data-j-theme='dark'] {
     color-scheme: dark;
     --j-color-background: #0b1120;
     --j-color-foreground: var(--j-color-slate-50);
@@ -201,7 +228,14 @@
     --j-color-info: #38bdf8;
     --j-color-info-soft: #075985;
     --j-color-info-foreground: #082f49;
+    --j-color-neutral: var(--j-color-slate-300);
+    --j-color-neutral-soft: var(--j-color-slate-800);
+    --j-color-neutral-foreground: var(--j-color-slate-950);
+    --j-color-contrast: var(--j-color-white);
+    --j-color-contrast-soft: var(--j-color-slate-700);
+    --j-color-contrast-foreground: var(--j-color-slate-950);
     --j-color-surface: var(--j-color-card);
+    --j-color-surface-elevated: var(--j-color-popover);
     --j-color-surface-muted: var(--j-color-muted);
     --j-color-surface-subtle: #1f2a3d;
     --j-color-page: var(--j-color-background);
@@ -209,6 +243,10 @@
     --j-color-text: var(--j-color-foreground);
     --j-color-text-muted: var(--j-color-muted-foreground);
     --j-color-text-soft: var(--j-color-slate-500);
+    --j-color-hover-background: var(--j-color-muted);
+    --j-color-selected-background: var(--j-color-primary-soft);
+    --j-color-disabled-background: #1e293b;
+    --j-color-disabled-text: var(--j-color-slate-500);
     --j-color-on-primary: var(--j-color-primary-foreground);
     --j-color-on-danger: var(--j-color-danger-foreground);
     --j-focus-ring: 0 0 0 3px var(--j-color-ring);
@@ -221,6 +259,11 @@
 @layer j-theme {
   :root,
   .j-theme {
+    --j-component-size-xs: 1.75rem;
+    --j-component-size-sm: 2rem;
+    --j-component-size-md: 2.5rem;
+    --j-component-size-lg: 3rem;
+    --j-component-size-xl: 3.5rem;
     --j-control-height-sm: 2rem;
     --j-control-height-md: 2.5rem;
     --j-control-height-lg: 3rem;
@@ -276,18 +319,84 @@
     --j-dialog-border-color: var(--j-color-border);
     --j-dialog-shadow: var(--j-shadow-lg);
     --j-overlay-backdrop-bg: rgb(15 23 42 / 56%);
+    --j-loading-opacity: 0.72;
+    --j-surface-filled: var(--j-color-muted);
+    --j-surface-outlined: transparent;
+    --j-surface-soft: var(--j-color-surface-subtle);
+    --j-surface-minimal: transparent;
+    --j-surface-elevated: var(--j-color-surface-elevated);
+    --j-surface-elevated-shadow: var(--j-elevation-2);
     --j-table-bg: var(--j-color-card);
     --j-table-color: var(--j-color-card-foreground);
     --j-table-border-color: var(--j-color-border);
     --j-table-header-bg: var(--j-color-muted);
     --j-table-header-color: var(--j-color-muted-foreground);
     --j-table-row-hover-bg: color-mix(in srgb, var(--j-color-primary) 5%, transparent);
+    --j-select-bg: var(--j-control-bg);
+    --j-select-color: var(--j-control-color);
+    --j-select-border-color: var(--j-control-border-color);
+    --j-select-option-hover-bg: var(--j-color-hover-background);
+    --j-select-option-selected-bg: var(--j-color-selected-background);
+    --j-tabs-border-color: var(--j-color-border);
+    --j-tabs-active-color: var(--j-color-primary);
+    --j-tabs-hover-bg: var(--j-color-hover-background);
+    --j-menu-bg: var(--j-color-surface-elevated);
+    --j-menu-color: var(--j-color-text);
+    --j-menu-item-hover-bg: var(--j-color-hover-background);
+    --j-menu-border-color: var(--j-color-border);
+    --j-toast-bg: var(--j-color-surface-elevated);
+    --j-toast-color: var(--j-color-text);
+    --j-toast-border-color: var(--j-color-border);
+    --j-toast-shadow: var(--j-shadow-md);
+    --j-tooltip-bg: var(--j-color-foreground);
+    --j-tooltip-color: var(--j-color-background);
+    --j-tooltip-radius: var(--j-radius-sm);
+    --j-drawer-bg: var(--j-color-surface-elevated);
+    --j-drawer-color: var(--j-color-text);
+    --j-drawer-border-color: var(--j-color-border);
+    --j-editor-bg: var(--j-control-bg);
+    --j-editor-color: var(--j-control-color);
+    --j-editor-border-color: var(--j-control-border-color);
+    --j-editor-toolbar-bg: var(--j-color-muted);
+    --j-tour-overlay-color: rgb(15 23 42 / 58%);
+    --j-tour-popover-bg: var(--j-color-popover);
+    --j-tour-popover-color: var(--j-color-popover-foreground);
+    --j-tour-popover-border: var(--j-color-border);
+    --j-tour-popover-radius: var(--j-radius-lg);
+    --j-tour-button-bg: var(--j-color-muted);
+    --j-tour-button-color: var(--j-color-foreground);
+    --j-tour-primary-button-bg: var(--j-color-primary);
+    --j-tour-primary-button-color: var(--j-color-primary-foreground);
     --j-skeleton-bg: var(--j-color-surface-subtle);
     --j-skeleton-shimmer-color: rgb(255 255 255 / 42%);
   }
 }
 @layer j-theme, j-base, j-components, j-utilities;
-:root[data-j-density=compact]{--j-input-height-sm:1.875rem;--j-input-height-md:2.25rem;--j-input-height-lg:2.75rem}:root[data-j-density=spacious]{--j-input-height-sm:2.5rem;--j-input-height-md:3rem;--j-input-height-lg:3.5rem}:root.j-animations-disabled *,:root.j-animations-disabled *:before,:root.j-animations-disabled *:after{animation-duration:1ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:1ms!important}
+:root[data-j-density='compact'] {
+  --j-density-gap: var(--j-density-compact-gap);
+  --j-density-padding: var(--j-density-compact-padding);
+  --j-input-height-sm: 1.875rem;
+  --j-input-height-md: 2.25rem;
+  --j-input-height-lg: 2.75rem;
+}
+
+:root[data-j-density='spacious'] {
+  --j-density-gap: var(--j-density-spacious-gap);
+  --j-density-padding: var(--j-density-spacious-padding);
+  --j-input-height-sm: 2.5rem;
+  --j-input-height-md: 3rem;
+  --j-input-height-lg: 3.5rem;
+}
+
+:root.j-animations-disabled *,
+:root.j-animations-disabled *::before,
+:root.j-animations-disabled *::after {
+  animation-duration: 1ms !important;
+  animation-iteration-count: 1 !important;
+  scroll-behavior: auto !important;
+  transition-duration: 1ms !important;
+}
+
 @layer j-base {
   *,
   *::before,
@@ -319,7 +428,7 @@
   }
   @media (forced-colors: active) {
     .j-focus-ring:focus-visible,
-    :where(button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])):focus-visible {
+    :where(button, [href], input, select, textarea, [tabindex]:not([tabindex='-1'])):focus-visible {
       box-shadow: none;
       outline: 2px solid CanvasText;
       outline-offset: 2px;
@@ -395,7 +504,7 @@
   .j-ripple::after {
     background: var(--j-ripple-color, currentColor);
     border-radius: var(--j-radius-full);
-    content: "";
+    content: '';
     height: 0;
     left: var(--j-ripple-x, 50%);
     opacity: 0;
@@ -424,5 +533,61 @@
       opacity: 0;
       width: 12rem;
     }
+  }
+}
+@layer j-components {
+  .driver-overlay {
+    background: var(--j-tour-overlay-color, rgba(15, 23, 42, 0.58)) !important;
+  }
+  .driver-popover {
+    background: var(--j-tour-popover-bg, var(--j-color-popover, #ffffff));
+    border: 1px solid var(--j-tour-popover-border, var(--j-color-border, #e2e8f0));
+    border-radius: var(--j-tour-popover-radius, var(--j-radius-lg, 0.75rem));
+    box-shadow: var(--j-shadow-lg, 0 16px 40px rgba(15, 23, 42, 0.18));
+    color: var(--j-tour-popover-color, var(--j-color-popover-foreground, #111827));
+    font-family: var(--j-font-family, inherit);
+    max-width: min(22rem, 100vw - 2rem);
+    padding: var(--j-spacing-4, 1rem);
+  }
+  .driver-popover-title {
+    color: var(--j-tour-popover-color, var(--j-color-popover-foreground, #111827));
+    font-size: var(--j-font-size-lg, 1.125rem);
+    font-weight: var(--j-font-weight-semibold, 600);
+    line-height: var(--j-line-height-tight, 1.25);
+  }
+  .driver-popover-description {
+    color: var(--j-color-muted-foreground, #64748b);
+    font-size: var(--j-font-size-sm, 0.875rem);
+    line-height: var(--j-line-height-relaxed, 1.625);
+  }
+  .driver-popover-footer {
+    align-items: center;
+    gap: var(--j-spacing-2, 0.5rem);
+    margin-top: var(--j-spacing-4, 1rem);
+  }
+  .driver-popover-close-btn {
+    color: var(--j-color-muted-foreground, #64748b);
+  }
+  .driver-popover button {
+    border-radius: var(--j-radius-md, 0.5rem);
+    font-family: var(--j-font-family, inherit);
+    font-weight: var(--j-font-weight-semibold, 600);
+  }
+  .driver-popover-prev-btn,
+  .driver-popover-next-btn {
+    background: var(--j-tour-button-bg, var(--j-color-muted, #f1f5f9));
+    border: 1px solid var(--j-tour-popover-border, var(--j-color-border, #e2e8f0));
+    color: var(--j-tour-button-color, var(--j-color-foreground, #111827));
+    text-shadow: none;
+  }
+  .driver-popover-next-btn {
+    background: var(--j-tour-primary-button-bg, var(--j-color-primary, #2563eb));
+    border-color: var(--j-tour-primary-button-bg, var(--j-color-primary, #2563eb));
+    color: var(--j-tour-primary-button-color, var(--j-color-primary-foreground, #ffffff));
+  }
+  .driver-popover button:focus-visible,
+  .driver-popover-close-btn:focus-visible {
+    box-shadow: var(--j-focus-ring, 0 0 0 3px rgba(37, 99, 235, 0.28));
+    outline: none;
   }
 }

@@ -11,7 +11,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { JConfirmDialogComponent } from 'jrng-ui/confirm-dialog';
 import { JThemePresetName, JThemeService, jThemePresets } from 'jrng-ui/theming';
-import { JrToastContainerComponent } from 'jrng-ui/toast';
+import { JToastContainerComponent } from 'jrng-ui/toast';
 import { filter, map } from 'rxjs';
 import { DocsSeoService } from './core/seo.service';
 import { DocsAnalyticsService } from './core/analytics.service';
@@ -35,7 +35,7 @@ interface DocsNavGroup {
     RouterLinkActive,
     RouterOutlet,
     JConfirmDialogComponent,
-    JrToastContainerComponent,
+    JToastContainerComponent,
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss',
@@ -85,7 +85,6 @@ export class App {
       label: 'Resources',
       items: [
         { label: 'Community', path: '/community' },
-        { label: 'Admin Starter', path: '/admin-starter' },
         { label: 'GitHub', path: this.githubUrl },
       ],
     },
@@ -123,15 +122,7 @@ export class App {
   });
   readonly componentNavGroups = computed(() => {
     const query = this.componentQuery().trim().toLowerCase();
-    const capabilityOrDeprecatedSlugs = new Set([
-      'column',
-      'table-empty-state',
-      'table-skeleton',
-      'metric-card',
-    ]);
-    const navigableDocs = componentDocs.filter(
-      (doc) => !capabilityOrDeprecatedSlugs.has(doc.slug),
-    );
+    const navigableDocs = componentDocs;
     const categories = [...new Set(navigableDocs.map((doc) => doc.category))].sort();
 
     return categories
@@ -155,12 +146,20 @@ export class App {
       .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
       .subscribe((event) => {
         const path = event.urlAfterRedirects.split(/[?#]/)[0];
+        this.navOpen.set(false);
         this.componentsExpanded.set(path === '/docs/components');
         if (path.startsWith('/docs/components')) {
           this.analytics.track('component_page_view', { path });
         }
         if (path.startsWith('/guides/')) {
           this.analytics.track('guide_page_view', { path });
+        }
+        if (this.isBrowser && path === '/docs/components') {
+          setTimeout(() =>
+            this.documentRef
+              .querySelector<HTMLElement>('.docs-component-catalog__items a.is-active')
+              ?.scrollIntoView({ block: 'nearest' }),
+          );
         }
       });
   }

@@ -1,0 +1,607 @@
+{
+  "schemaVersion": 1,
+  "deterministic": true,
+  "network": "blocked",
+  "animations": "disabled",
+  "timestamps": "fixed",
+  "remoteAssets": false,
+  "themes": ["light", "dark", "high-contrast"],
+  "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+  "components": [
+    {
+      "component": "button",
+      "selector": "j-button",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "input",
+      "selector": "j-input",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "textarea",
+      "selector": "j-textarea",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "select",
+      "selector": "j-select",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "multiselect",
+      "selector": "j-multiselect",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "autocomplete",
+      "selector": "j-autocomplete",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "date-picker",
+      "selector": "j-date-picker",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "checkbox",
+      "selector": "j-checkbox",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "radio",
+      "selector": "j-radio",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "switch",
+      "selector": "j-switch",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "form-field",
+      "selector": "j-form-field",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "validation-message",
+      "selector": "j-validation-message",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "card",
+      "selector": "j-card",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "badge",
+      "selector": "j-badge",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "tag",
+      "selector": "j-tag",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "avatar",
+      "selector": "j-avatar",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "avatar-group",
+      "selector": "j-avatar-group",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "table",
+      "selector": "j-table",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "data-grid",
+      "selector": "j-data-grid",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "filter-bar",
+      "selector": "j-filter-bar",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "paginator",
+      "selector": "j-paginator",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "dialog",
+      "selector": "j-dialog",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "drawer",
+      "selector": "j-drawer",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "popover",
+      "selector": "j-popover",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "tooltip",
+      "selector": "j-tooltip",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "toast",
+      "selector": "j-toast",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "file-upload",
+      "selector": "j-file-upload",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "page-header",
+      "selector": "j-page-header",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "tabs",
+      "selector": "j-tabs",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "menu",
+      "selector": "j-menu",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "editor",
+      "selector": "j-editor",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "timeline",
+      "selector": "j-timeline",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "diff-viewer",
+      "selector": "j-diff-viewer",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "stepper",
+      "selector": "j-stepper",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "empty",
+      "selector": "j-empty",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    }
+  ]
+}

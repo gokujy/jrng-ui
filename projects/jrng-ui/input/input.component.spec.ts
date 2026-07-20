@@ -2,10 +2,10 @@ import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { JInputType, JrInputComponent } from './input.component';
+import { JInputType, JInputComponent } from './input.component';
 
 @Component({
-  imports: [JrInputComponent, ReactiveFormsModule],
+  imports: [JInputComponent, ReactiveFormsModule],
   template: `
     <j-input
       label="Email"
@@ -26,7 +26,7 @@ class InputHostComponent {
   type: JInputType = 'text';
 }
 
-describe('JrInputComponent', () => {
+describe('JInputComponent', () => {
   let fixture: ComponentFixture<InputHostComponent>;
   let host: InputHostComponent;
 

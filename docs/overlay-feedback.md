@@ -165,17 +165,17 @@ confirmation.confirm({
 
 Inputs: `tooltipPosition`, `showDelay`, `hideDelay`, `tooltipDisabled`.
 
-## Popover And Overlay Panel
+## Popover
 
 ```html
-<button #trigger type="button" (click)="panel.toggle(trigger)">More</button>
-<j-overlay-panel #panel position="bottom">
-  <button>Archive</button>
-  <button>Export</button>
-</j-overlay-panel>
+<j-button #trigger label="More" (onClick)="popover.open(trigger)" />
+<j-popover #popover [target]="trigger">
+  <j-button label="Archive" variant="text" />
+  <j-button label="Export" variant="text" />
+</j-popover>
 ```
 
-`j-popover` and `j-overlay-panel` support anchored positioning, outside click close, escape close, z-index management, and `[(visible)]`.
+`j-popover` supports anchored positioning, outside-click and Escape dismissal, focus restoration, stacking, and `[(visible)]`.
 
 ## Notification Center
 

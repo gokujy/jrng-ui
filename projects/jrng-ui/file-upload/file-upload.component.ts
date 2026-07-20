@@ -12,6 +12,8 @@ import {
   viewChild,
 } from '@angular/core';
 import { JRNG_LOCALE } from 'jrng-ui/core';
+import { isObservable } from 'rxjs';
+import { JFileChunkUploadAdapter, JFileRemoteItem, JFileUploadAdapter } from './file-upload.types';
 
 export type JFileUploadMode = 'basic' | 'advanced';
 export type JFileUploadStatus = 'pending' | 'uploading' | 'complete' | 'error' | 'cancelled';
@@ -27,6 +29,9 @@ export interface JFileUploadItem {
   readonly progress: number;
   readonly status: JFileUploadStatus;
   readonly error?: string;
+  readonly displayName?: string;
+  readonly metadata?: Readonly<Record<string, unknown>>;
+  readonly remote?: unknown;
 }
 
 export interface JFileUploadEvent {
@@ -52,6 +57,8 @@ export interface JFileUploadItemEvent {
       (dragover)="handleDragOver($event)"
       (dragleave)="handleDragLeave($event)"
       (drop)="handleDrop($event)"
+      (paste)="handlePaste($event)"
+      [attr.tabindex]="allowPaste() && !disabled() ? 0 : null"
     >
       <input
         #fileInput
@@ -115,7 +122,7 @@ export interface JFileUploadItemEvent {
                 {{ filePreviewLabel(item.file) }}
               </div>
               <div class="j-file-upload__meta">
-                <span>{{ item.file.name }}</span>
+                <span>{{ item.displayName || item.file.name }}</span>
                 <small>{{ formatSize(item.file.size) }} - {{ item.status }}</small>
                 <span class="j-file-upload__progress"
                   ><span [style.width.%]="item.progress"></span
@@ -126,14 +133,37 @@ export interface JFileUploadItemEvent {
               </div>
               <div class="j-file-upload__row-actions">
                 @if (item.status === 'error' || item.status === 'cancelled') {
-                  <button type="button" [disabled]="disabled()" (click)="retry(item)">{{ locale.retry }}</button>
+                  <button type="button" [disabled]="disabled()" (click)="retry(item)">
+                    {{ locale.retry }}
+                  </button>
                 }
                 @if (item.status === 'uploading') {
-                  <button type="button" [disabled]="disabled()" (click)="cancel(item)">{{ locale.cancel }}</button>
+                  <button type="button" [disabled]="disabled()" (click)="cancel(item)">
+                    {{ locale.cancel }}
+                  </button>
                 }
-                <button type="button" [disabled]="disabled()" (click)="previewFile.emit(item)">{{ locale.preview }}</button>
-                <button type="button" [disabled]="disabled()" (click)="downloadFile.emit(item)">{{ locale.download }}</button>
-                <button type="button" [disabled]="disabled()" (click)="removeItem(item)">{{ locale.remove }}</button>
+                <button type="button" [disabled]="disabled()" (click)="previewFile.emit(item)">
+                  {{ locale.preview }}
+                </button>
+                <button type="button" [disabled]="disabled()" (click)="downloadFile.emit(item)">
+                  {{ locale.download }}
+                </button>
+                <button type="button" [disabled]="disabled()" (click)="removeItem(item)">
+                  {{ locale.remove }}
+                </button>
+              </div>
+            </li>
+          }
+        </ul>
+      }
+
+      @if (existingFiles().length) {
+        <ul class="j-file-upload__list" data-jc-section="remote-files">
+          @for (item of existingFiles(); track item.id) {
+            <li>
+              <div class="j-file-upload__meta">
+                <span>{{ item.name }}</span
+                ><small>Existing file</small>
               </div>
             </li>
           }
@@ -315,6 +345,11 @@ export class JFileUploadComponent {
   readonly description = input('');
   readonly auto = input(false, { transform: booleanAttribute });
   readonly customUpload = input(true, { transform: booleanAttribute });
+  readonly uploadAdapter = input<JFileUploadAdapter | null>(null);
+  readonly chunkUploadAdapter = input<JFileChunkUploadAdapter | null>(null);
+  readonly existingFiles = input<readonly JFileRemoteItem[]>([]);
+  readonly allowPaste = input(true, { transform: booleanAttribute });
+  readonly metadata = input<Readonly<Record<string, unknown>>>({});
   readonly disabled = input(false, { transform: booleanAttribute });
   readonly styleClass = input('');
 
@@ -329,6 +364,7 @@ export class JFileUploadComponent {
   readonly queue = signal<readonly JFileUploadItem[]>([]);
   readonly errors = signal<readonly JFileUploadError[]>([]);
   readonly dragover = signal(false);
+  private readonly uploadTasks = new Map<string, AbortController>();
 
   readonly uploaderClasses = computed(() =>
     ['j-file-upload', this.mode() === 'basic' ? 'j-file-upload--basic' : '', this.styleClass()]
@@ -364,6 +400,14 @@ export class JFileUploadComponent {
     }
   }
 
+  handlePaste(event: ClipboardEvent): void {
+    if (this.disabled() || !this.allowPaste()) return;
+    const files = Array.from(event.clipboardData?.files ?? []);
+    if (!files.length) return;
+    event.preventDefault();
+    this.addFiles(files);
+  }
+
   openFilePicker(): void {
     if (this.disabled()) return;
     this.fileInput()?.nativeElement.click();
@@ -395,10 +439,17 @@ export class JFileUploadComponent {
     }));
     this.queue.set(items);
     this.upload.emit({ files: items.map((item) => item.file), items });
+    if (this.uploadAdapter() || this.chunkUploadAdapter()) {
+      for (const item of items.filter((entry) => entry.status !== 'complete')) {
+        void this.startUpload(item);
+      }
+    }
   }
 
   cancel(item: JFileUploadItem): void {
     if (this.disabled()) return;
+    this.uploadTasks.get(item.id)?.abort();
+    this.uploadTasks.delete(item.id);
     this.updateItem(item.id, { status: 'cancelled', progress: item.progress });
     this.cancelUpload.emit({ item });
   }
@@ -407,6 +458,24 @@ export class JFileUploadComponent {
     if (this.disabled()) return;
     this.updateItem(item.id, { status: 'pending', progress: 0, error: undefined });
     this.retryUpload.emit({ item });
+    if (this.uploadAdapter() || this.chunkUploadAdapter()) void this.startUpload(item);
+  }
+
+  rename(item: JFileUploadItem, name: string): void {
+    const safeName = name.trim();
+    if (safeName) this.updateItem(item.id, { displayName: safeName });
+  }
+
+  setMetadata(item: JFileUploadItem, metadata: Readonly<Record<string, unknown>>): void {
+    this.updateItem(item.id, { metadata });
+  }
+
+  moveItem(fromIndex: number, toIndex: number): void {
+    const next = [...this.queue()];
+    if (fromIndex < 0 || fromIndex >= next.length || toIndex < 0 || toIndex >= next.length) return;
+    const [item] = next.splice(fromIndex, 1);
+    next.splice(toIndex, 0, item);
+    this.queue.set(next);
   }
 
   setProgress(itemId: string, progress: number): void {
@@ -449,18 +518,17 @@ export class JFileUploadComponent {
       const duplicate = existingKeys.has(fileKey(file));
       const countExceeded =
         this.maxFileCount() > 0 && this.queue().length + accepted.length >= this.maxFileCount();
-      const totalExceeded =
-        this.maxTotalSize() > 0 && totalSize + file.size > this.maxTotalSize();
+      const totalExceeded = this.maxTotalSize() > 0 && totalSize + file.size > this.maxTotalSize();
       const fileError = this.validateFile(file);
       const error = duplicate
         ? 'File is already selected'
         : fileError
           ? fileError
           : countExceeded
-          ? `Maximum file count is ${this.maxFileCount()}`
-          : totalExceeded
-            ? `Total size exceeds ${this.formatSize(this.maxTotalSize())}`
-            : '';
+            ? `Maximum file count is ${this.maxFileCount()}`
+            : totalExceeded
+              ? `Total size exceeds ${this.formatSize(this.maxTotalSize())}`
+              : '';
       if (error) {
         errors.push({ file, message: error });
       } else {
@@ -493,9 +561,84 @@ export class JFileUploadComponent {
     this.queue.set(this.queue().map((item) => (item.id === itemId ? { ...item, ...patch } : item)));
   }
 
+  private async startUpload(item: JFileUploadItem): Promise<void> {
+    this.uploadTasks.get(item.id)?.abort();
+    const abort = new AbortController();
+    this.uploadTasks.set(item.id, abort);
+    this.updateItem(item.id, { status: 'uploading', progress: 0, error: undefined });
+    const context = {
+      signal: abort.signal,
+      metadata: { ...this.metadata(), ...item.metadata },
+      reportProgress: (progress: number) => this.setProgress(item.id, progress),
+    };
+    try {
+      const chunkAdapter = this.chunkUploadAdapter();
+      let result: { remote?: unknown; serverErrors?: readonly string[] } | undefined;
+      if (chunkAdapter) {
+        const size = Math.max(1, chunkAdapter.chunkSize);
+        const count = Math.ceil(item.file.size / size) || 1;
+        for (let index = 0; index < count; index += 1) {
+          if (abort.signal.aborted) return;
+          const start = index * size;
+          const end = Math.min(item.file.size, start + size);
+          await resolveUpload(
+            chunkAdapter.uploadChunk(item.file, item.file.slice(start, end), {
+              ...context,
+              chunkIndex: index,
+              chunkCount: count,
+              start,
+              end,
+            }),
+            abort.signal,
+          );
+          context.reportProgress(((index + 1) / count) * 100);
+        }
+        result = await chunkAdapter.complete?.(item.file, context);
+      } else {
+        const adapter = this.uploadAdapter();
+        if (!adapter) return;
+        result = await resolveUpload(adapter.upload(item.file, context), abort.signal);
+      }
+      if (abort.signal.aborted) return;
+      if (result?.serverErrors?.length) this.setError(item.id, result.serverErrors.join('. '));
+      else {
+        this.updateItem(item.id, { remote: result?.remote });
+        this.setComplete(item.id);
+      }
+    } catch (error) {
+      if (!abort.signal.aborted)
+        this.setError(item.id, error instanceof Error ? error.message : 'Upload failed');
+    } finally {
+      this.uploadTasks.delete(item.id);
+    }
+  }
+
   private emitFilesChange(): void {
     this.filesChange.emit(this.queue().map((item) => item.file));
   }
+}
+
+function resolveUpload<T>(
+  value: import('rxjs').Observable<T> | Promise<T>,
+  signal?: AbortSignal,
+): Promise<T> {
+  if (!isObservable(value)) return Promise.resolve(value);
+  return new Promise<T>((resolve, reject) => {
+    let latest: T;
+    const subscription = value.subscribe({
+      next: (entry) => (latest = entry),
+      error: reject,
+      complete: () => resolve(latest),
+    });
+    signal?.addEventListener(
+      'abort',
+      () => {
+        subscription.unsubscribe();
+        reject(new Error('Upload cancelled'));
+      },
+      { once: true },
+    );
+  });
 }
 
 let nextFileId = 0;

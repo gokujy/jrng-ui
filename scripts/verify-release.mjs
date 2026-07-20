@@ -26,7 +26,6 @@ for (const args of [
   ['run', 'lint'],
   ['run', 'test:lib'],
   ['run', 'test:docs'],
-  ['run', 'test:starter'],
   ['run', 'build:lib'],
   ['run', 'verify:api'],
   ['run', 'verify:registry'],
@@ -101,7 +100,7 @@ function verifyChangelog() {
 }
 
 function verifyPublicSourcePrivacy() {
-  const roots = ['projects/jrng-ui', 'projects/docs', 'projects/admin-starter', 'docs'];
+  const roots = ['projects/jrng-ui', 'projects/docs', 'docs'];
   const rootFiles = ['CHANGELOG.md', 'CONTRIBUTING.md', 'README.md', 'package.json'];
   const forbiddenTerms = privateTerms();
   const absolutePathPatterns = [

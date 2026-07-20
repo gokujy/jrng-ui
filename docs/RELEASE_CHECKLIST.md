@@ -6,7 +6,7 @@ This checklist validates a release; it does not publish the npm package.
 
 - [ ] Choose the intended semantic version.
 - [ ] Confirm workspace and library package versions match.
-- [ ] Confirm the changelog has Added, Changed, Fixed, Deprecated, Removed, Security, and Migration notes sections.
+- [ ] Confirm the changelog records Added, Changed, Fixed, Removed, and Security sections for 0.1.0.
 - [ ] Review public API changes and migration guidance.
 - [ ] Confirm Angular compatibility claims match CI evidence.
 

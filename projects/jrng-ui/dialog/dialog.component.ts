@@ -24,6 +24,7 @@ import { jCreateId } from 'jrng-ui/core';
 import { JOverlayStackService } from 'jrng-ui/core';
 import { JAppendTo, JOverlayHandle, JOverlayService } from 'jrng-ui/core';
 import { JZIndexManagerService } from 'jrng-ui/core';
+import { JButtonComponent } from 'jrng-ui/button';
 
 export type JDialogCloseReason = 'close-button' | 'backdrop' | 'escape' | 'api';
 export type JDialogSize = 'sm' | 'md' | 'lg' | 'xl' | 'full';
@@ -37,16 +38,15 @@ export type JDialogPosition =
   | 'top-right'
   | 'bottom-left'
   | 'bottom-right';
-export type JrDialogCloseReason = JDialogCloseReason;
 
 @Component({
   selector: 'j-dialog',
-  imports: [JFocusTrapDirective],
+  imports: [JFocusTrapDirective, JButtonComponent],
   templateUrl: './dialog.component.html',
   styleUrl: './dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class JrDialogComponent implements OnDestroy {
+export class JDialogComponent implements OnDestroy {
   private readonly documentRef = inject(DOCUMENT);
   private readonly bodyScrollLock = inject(JBodyScrollLockService);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);

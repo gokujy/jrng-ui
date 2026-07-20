@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { JColumnFilterComponent, JColumnFilterModelChange } from './column-filter.component';
+import { JColumnFilterChange, JColumnFilterComponent } from './column-filter.component';
 
 @Component({
   imports: [JColumnFilterComponent],
@@ -11,12 +11,12 @@ import { JColumnFilterComponent, JColumnFilterModelChange } from './column-filte
     type="number"
     operator="between"
     [value]="value"
-    (filterModelChange)="changed = $event"
+    (filterChange)="changed = $event"
   />`,
 })
 class ColumnFilterHostComponent {
   value: readonly number[] = [];
-  changed?: JColumnFilterModelChange;
+  changed?: JColumnFilterChange;
 }
 
 describe('JColumnFilterComponent', () => {

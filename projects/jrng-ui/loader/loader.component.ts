@@ -276,8 +276,6 @@ const LOADER_VARIANTS: readonly JLoaderVariant[] = [
 })
 export class JLoaderComponent {
   readonly type = input<JLoaderVariant | string>('dots');
-  /** @deprecated Use `type`; retained for compatibility. */
-  readonly variant = input<JLoaderVariant | string>('');
   readonly size = input<JLoaderSize>('md');
   readonly strokeWidth = input(3, { transform: numberAttribute });
   readonly label = input('Loading');
@@ -293,7 +291,7 @@ export class JLoaderComponent {
   readonly pt = input<JPassThrough | null>(null);
 
   readonly resolvedType = computed<JLoaderVariant>(() => {
-    const requested = this.variant() || this.type();
+    const requested = this.type();
     return LOADER_VARIANTS.includes(requested as JLoaderVariant)
       ? (requested as JLoaderVariant)
       : 'spinner';

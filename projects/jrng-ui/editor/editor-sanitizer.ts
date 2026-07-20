@@ -17,6 +17,12 @@ const ALLOWED_ELEMENTS = new Set([
   'PRE',
   'S',
   'STRONG',
+  'TABLE',
+  'TBODY',
+  'TD',
+  'TH',
+  'THEAD',
+  'TR',
   'U',
   'UL',
 ]);
@@ -26,6 +32,14 @@ const ELEMENT_ATTRIBUTES: Readonly<Record<string, ReadonlySet<string>>> = {
   A: new Set(['href', 'target', 'rel']),
   IMG: new Set(['src', 'alt', 'width', 'height']),
 };
+
+export interface JEditorSanitizerAdapter {
+  sanitize(html: string, documentRef: Document): string;
+}
+
+export interface JEditorImageAdapter {
+  selectAndUpload(): Promise<{ readonly url: string; readonly alt?: string } | null>;
+}
 
 export function jSanitizeEditorHtml(html: string, documentRef: Document): string {
   const template = documentRef.createElement('template');

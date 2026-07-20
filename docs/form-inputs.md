@@ -81,13 +81,13 @@ Use `j-form-field` as a lightweight wrapper when a native or custom projected co
 
 ## j-password
 
-`j-password` supports `toggleMask` and optional `feedback`.
+`j-password` supports an icon-based visibility control and optional strength feedback.
 
 ```html
 <j-password
   label="Password"
   [formControl]="password"
-  toggleMask
+  toggleVisibility
   feedback
   error="Password is required"
 />
@@ -134,7 +134,7 @@ Use `j-icon-field` to compose icon-prefixed controls. It does not own a value.
 
 ```html
 <j-icon-field prefixIcon="search">
-  <j-input placeholder="Search records" [formControl]="search" fluid />
+  <j-input placeholder="Search records" [formControl]="search" width="full" />
 </j-icon-field>
 ```
 
@@ -143,7 +143,7 @@ Projected prefix/suffix slots are also supported:
 ```html
 <j-icon-field>
   <span jIconFieldPrefix>@</span>
-  <j-input label="Handle" [formControl]="handle" fluid />
+  <j-input label="Handle" [formControl]="handle" width="full" />
   <span jIconFieldSuffix>.com</span>
 </j-icon-field>
 ```

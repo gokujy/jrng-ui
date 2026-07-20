@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
-import { JSeverity, JSize } from 'jrng-ui/core';
+import { JSeverity, JComponentSize } from 'jrng-ui/core';
 
 export type JBusinessStatus =
   | 'active'
@@ -125,7 +125,7 @@ export class JStatusChipComponent {
   readonly label = input('');
   readonly status = input<JBusinessStatus | string>('');
   readonly severity = input<JSeverity>('neutral');
-  readonly size = input<JSize>('md');
+  readonly size = input<JComponentSize>('md');
   readonly colorMap = input<Record<string, JStatusChipColor>>({});
   readonly styleClass = input('');
   readonly pt = input<JPassThrough | null>(null);

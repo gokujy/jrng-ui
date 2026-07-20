@@ -161,4 +161,34 @@ describe('JSelectComponent', () => {
     expect(select.isGrouped).toBe(true);
     expect(select.useVirtual).toBe(false); // grouped lists fall back to normal rendering
   });
+
+  it('loads and appends async pages without complicating simple select usage', async () => {
+    const asyncFixture = TestBed.createComponent(JSelectComponent);
+    const pages: number[] = [];
+    asyncFixture.componentRef.setInput('dataSource', {
+      load: async (query: { page: number }) => {
+        pages.push(query.page);
+        return {
+          items: [{ label: `Page ${query.page + 1}`, value: query.page + 1 }],
+          page: query.page,
+          hasMore: query.page === 0,
+        };
+      },
+    });
+    asyncFixture.detectChanges();
+    await asyncFixture.whenStable();
+    await Promise.resolve();
+
+    const select = asyncFixture.componentInstance;
+    expect(select.visibleOptions.map((option) => option.value)).toEqual([1]);
+    expect(select.asyncState().hasMore).toBe(true);
+
+    select.loadMoreAsync();
+    await asyncFixture.whenStable();
+    await Promise.resolve();
+
+    expect(pages).toEqual([0, 1]);
+    expect(select.visibleOptions.map((option) => option.value)).toEqual([1, 2]);
+    expect(select.asyncState().hasMore).toBe(false);
+  });
 });

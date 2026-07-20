@@ -6,7 +6,7 @@ import {
   input,
 } from '@angular/core';
 import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
-import { JSize } from 'jrng-ui/core';
+import { JComponentSize } from 'jrng-ui/core';
 import { JInputVariant } from 'jrng-ui/input';
 
 @Component({
@@ -18,6 +18,11 @@ import { JInputVariant } from 'jrng-ui/input';
       data-jc-name="input-group"
       data-jc-section="root"
       data-jc-extend="prefix suffix addon button"
+      role="group"
+      [attr.aria-label]="ariaLabel() || null"
+      [attr.aria-disabled]="disabled()"
+      [attr.aria-readonly]="readonly()"
+      [attr.inert]="disabled() ? '' : null"
       [attr.data-j-disabled]="disabled() ? 'true' : null"
       [attr.data-j-invalid]="invalid() ? 'true' : null"
     >
@@ -59,6 +64,11 @@ import { JInputVariant } from 'jrng-ui/input';
 
       .j-input-group--compact {
         gap: 0;
+      }
+
+      .j-input-group--compact:focus-within {
+        border-radius: var(--j-input-radius, var(--j-radius-md));
+        box-shadow: var(--j-focus-ring);
       }
 
       .j-input-group--comfortable {
@@ -114,8 +124,55 @@ import { JInputVariant } from 'jrng-ui/input';
         border-radius: 0 var(--j-input-radius) var(--j-input-radius) 0;
       }
 
+      .j-input-group--compact > :not(:first-child),
+      .j-input-group--compact > .j-input-group__control:not(:first-child) {
+        margin-inline-start: -1px;
+      }
+
+      :host ::ng-deep .j-input-group--compact .j-input-group__control > * {
+        flex: 1 1 auto;
+        min-width: 0;
+      }
+
+      :host ::ng-deep .j-input-group--compact .j-input-group__control .j-input,
+      :host ::ng-deep .j-input-group--compact .j-input-group__control .j-select,
+      :host ::ng-deep .j-input-group--compact .j-input-group__control .j-button {
+        border-radius: 0;
+        box-shadow: none;
+        height: 100%;
+      }
+
+      :host ::ng-deep .j-input-group--compact > :first-child,
+      :host ::ng-deep .j-input-group--compact > :first-child .j-input,
+      :host ::ng-deep .j-input-group--compact > :first-child .j-select,
+      :host ::ng-deep .j-input-group--compact > :first-child .j-button {
+        border-end-start-radius: var(--j-input-radius, var(--j-radius-md));
+        border-start-start-radius: var(--j-input-radius, var(--j-radius-md));
+      }
+
+      :host ::ng-deep .j-input-group--compact > :last-child,
+      :host ::ng-deep .j-input-group--compact > :last-child .j-input,
+      :host ::ng-deep .j-input-group--compact > :last-child .j-select,
+      :host ::ng-deep .j-input-group--compact > :last-child .j-button {
+        border-end-end-radius: var(--j-input-radius, var(--j-radius-md));
+        border-start-end-radius: var(--j-input-radius, var(--j-radius-md));
+      }
+
+      .j-input-group.is-invalid:focus-within {
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--j-color-danger) 22%, transparent);
+      }
+
+      .j-input-group.is-invalid .j-input-group__addon,
+      .j-input-group.is-invalid .j-input-group__icon {
+        border-color: var(--j-color-danger);
+      }
+
       .j-input-group.is-disabled {
         opacity: var(--j-disabled-opacity);
+      }
+
+      .j-input-group.is-readonly {
+        background: var(--j-color-muted);
       }
     `,
   ],
@@ -126,13 +183,15 @@ export class JInputGroupComponent {
   readonly suffixAddon = input('');
   readonly prefixIcon = input('');
   readonly suffixIcon = input('');
-  readonly size = input<JSize>('md');
+  readonly ariaLabel = input('');
+  readonly size = input<JComponentSize>('md');
   readonly variant = input<JInputVariant>('outlined');
   readonly styleClass = input('');
   readonly pt = input<JPassThrough | null>(null);
-  readonly compact = input(false, { transform: booleanAttribute });
+  readonly compact = input(true, { transform: booleanAttribute });
   readonly disabled = input(false, { transform: booleanAttribute });
   readonly invalid = input(false, { transform: booleanAttribute });
+  readonly readonly = input(false, { transform: booleanAttribute });
   readonly fullWidth = input(false, { transform: booleanAttribute });
 
   readonly groupClasses = computed(() =>
@@ -145,6 +204,7 @@ export class JInputGroupComponent {
         this.fullWidth() ? 'j-input-group--fluid' : '',
         this.disabled() ? 'is-disabled' : '',
         this.invalid() ? 'is-invalid' : '',
+        this.readonly() ? 'is-readonly' : '',
       ],
       this.styleClass(),
       this.pt(),

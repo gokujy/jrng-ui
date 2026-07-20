@@ -6,7 +6,7 @@
   [attr.data-j-open]="isOpen ? 'true' : null"
   [attr.data-j-disabled]="isDisabled() ? 'true' : null"
   [attr.data-j-invalid]="hasError ? 'true' : null"
-  [attr.data-j-loading]="loading() ? 'true' : null"
+  [attr.data-j-loading]="isLoading ? 'true' : null"
   jClickOutside
   (jClickOutside)="handleOutsideClick()"
 >
@@ -31,7 +31,7 @@
       [attr.data-j-open]="isOpen ? 'true' : null"
       [attr.data-j-disabled]="isDisabled() ? 'true' : null"
       [attr.data-j-invalid]="hasError ? 'true' : null"
-      [attr.data-j-loading]="loading() ? 'true' : null"
+      [attr.data-j-loading]="isLoading ? 'true' : null"
       [attr.aria-expanded]="isOpen"
       [attr.aria-controls]="panelId"
       [attr.aria-activedescendant]="activeDescendant"
@@ -43,16 +43,16 @@
       (blur)="handleButtonBlur()"
     >
       <span class="j-select__value" data-jc-section="value" [class.is-placeholder]="!displayLabel">
-      @if (selectedItemTemplate && selectedOption) {
-        <ng-container
-          [ngTemplateOutlet]="selectedItemTemplate"
-          [ngTemplateOutletContext]="itemContext(selectedOption, activeIndex)"
-        ></ng-container>
-      } @else {
-        {{ displayLabel || placeholder() || 'Select' }}
-      }
+        @if (selectedItemTemplate && selectedOption) {
+          <ng-container
+            [ngTemplateOutlet]="selectedItemTemplate"
+            [ngTemplateOutletContext]="itemContext(selectedOption, activeIndex)"
+          ></ng-container>
+        } @else {
+          {{ displayLabel || placeholder() || 'Select' }}
+        }
       </span>
-      @if (loading()) {
+      @if (isLoading) {
         <span class="j-select__loader" data-jc-section="loader" aria-hidden="true"></span>
       }
       <span class="j-select__indicator" data-jc-section="indicator" aria-hidden="true"></span>
@@ -80,6 +80,7 @@
       [class.j-select__panel--fixed]="appendToBody"
       [id]="listboxId"
       role="listbox"
+      (scroll)="handlePanelScroll($event)"
       (mousedown)="$event.stopPropagation()"
       (touchstart)="$event.stopPropagation()"
     >
@@ -97,12 +98,24 @@
           (keydown)="handleKeydown($event)"
         />
       }
-      @if (!loading() && visibleOptions.length === 0) {
+      @if (!isLoading && !asyncState().error && visibleOptions.length === 0) {
         <div class="j-select__empty" data-jc-section="empty">{{ emptyMessage() }}</div>
       }
-      @if (loading()) {
-        <div class="j-select__empty" data-jc-section="loading" data-j-loading="true">
-          Loading...
+      @if (isLoading) {
+        <div
+          class="j-select__empty"
+          data-jc-section="loading"
+          data-j-loading="true"
+          role="status"
+          aria-live="polite"
+        >
+          {{ loadingMessage() }}
+        </div>
+      }
+      @if (asyncState().error) {
+        <div class="j-select__empty" data-jc-section="error" role="alert">
+          {{ loadErrorMessage() }}
+          <j-button label="Retry" size="sm" variant="text" (onClick)="retryAsync()" />
         </div>
       }
       <ng-template #optionTpl let-option let-index="index">
@@ -158,6 +171,17 @@
             ></ng-container>
           }
         }
+      }
+      @if (dataSource() && asyncState().hasMore && !infiniteLoading()) {
+        <div class="j-select__load-more">
+          <j-button
+            [label]="loadMoreLabel()"
+            size="sm"
+            variant="text"
+            [loading]="isLoading"
+            (onClick)="loadMoreAsync()"
+          />
+        </div>
       }
     </div>
   }

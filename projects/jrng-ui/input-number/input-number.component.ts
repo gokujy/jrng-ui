@@ -15,7 +15,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { JRNG_CONFIG, jAriaDescribedBy } from 'jrng-ui/core';
 import { jCreateId } from 'jrng-ui/core';
 import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
-import { JSize } from 'jrng-ui/core';
+import { JComponentSize } from 'jrng-ui/core';
 import { JInputVariant } from 'jrng-ui/input';
 
 export type JInputNumberMode = 'decimal' | 'currency';
@@ -200,7 +200,7 @@ export class JInputNumberComponent implements ControlValueAccessor {
   readonly styleClass = input('');
   readonly pt = input<JPassThrough | null>(null);
   readonly ariaDescribedby = input('', { alias: 'aria-describedby' });
-  readonly size = input<JSize>('md');
+  readonly size = input<JComponentSize>('md');
   readonly variant = input<JInputVariant | undefined>(undefined);
   readonly mode = input<JInputNumberMode>('decimal');
   readonly currency = input('');

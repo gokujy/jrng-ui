@@ -27,6 +27,11 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
       - run: npm ci
+      - run: npm run build:lib
+      - run: npm run generate:enterprise-audits
+      - run: npm run verify:enterprise-audits
+      - run: npm run verify:circular
+      - run: npm run verify:optional-dependencies
       - run: npm run lint
       - run: npm run verify:api
       - run: npm run verify:registry
@@ -34,6 +39,7 @@ jobs:
       - run: npm run verify:docs-links
       - run: npm run verify:spec-coverage
       - run: npm run verify:doc-examples
+      - run: npm run docs:audit
 
   tests:
     name: Tests
@@ -47,7 +53,7 @@ jobs:
       - run: npm ci
       - run: npm run test:coverage
       - run: npm run test:docs
-      - run: npm run test:starter
+      - run: npm run test:compatibility
 
   builds:
     name: Production builds
@@ -61,7 +67,7 @@ jobs:
       - run: npm ci
       - run: npm run build:lib
       - run: npm run build:docs:app
-      - run: npm run build:starter
+      - run: npm run typecheck:library
 
   package:
     name: Package and clean consumer
@@ -75,6 +81,7 @@ jobs:
       - run: npm ci
       - run: npm run verify:package
       - run: npm run verify:consumer
+      - run: npm run verify:visual-manifest
 
   ssr:
     name: SSR and hydration build

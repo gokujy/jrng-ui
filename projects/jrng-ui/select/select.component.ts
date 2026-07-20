@@ -19,19 +19,27 @@ import {
   ViewChild,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { JAsyncDataController, JAsyncDataSource, JAsyncDataState } from 'jrng-ui/async-data';
+import { JButtonComponent } from 'jrng-ui/button';
 import { JRNG_CONFIG, jAriaDescribedBy } from 'jrng-ui/core';
 import { JClickOutsideDirective } from 'jrng-ui/core';
 import { jCreateTypeahead } from 'jrng-ui/core';
 import { jCreateId } from 'jrng-ui/core';
 import { JFilterMatchMode, jMatchesFilter } from 'jrng-ui/core';
 import { JAppendTo, JOverlayHandle, JOverlayService } from 'jrng-ui/core';
-import { JSize } from 'jrng-ui/core';
+import { JComponentSize } from 'jrng-ui/core';
 import { JInputVariant } from 'jrng-ui/input';
 import { JVirtualScrollerComponent } from 'jrng-ui/virtual-scroller';
 
 export type JSelectPrimitive = string | number | boolean;
 export type JSelectOptionRecord = Readonly<Record<string, unknown>>;
 export type JSelectOptionSource = JSelectPrimitive | JSelectOptionRecord;
+
+export interface JSelectAsyncQuery {
+  readonly search: string;
+  readonly page: number;
+  readonly pageSize: number;
+}
 
 export interface JSelectOption {
   readonly label: string;
@@ -66,7 +74,7 @@ export interface JSelectItemContext {
 
 @Component({
   selector: 'j-select',
-  imports: [NgTemplateOutlet, JClickOutsideDirective, JVirtualScrollerComponent],
+  imports: [JButtonComponent, NgTemplateOutlet, JClickOutsideDirective, JVirtualScrollerComponent],
   templateUrl: './select.component.html',
   styleUrl: './select.component.scss',
   providers: [
@@ -99,6 +107,14 @@ export class JSelectComponent implements ControlValueAccessor {
   readonly id = input(jCreateId('j-select'));
   readonly label = input('');
   readonly options = input<readonly JSelectOptionSource[]>([]);
+  readonly dataSource = input<JAsyncDataSource<JSelectOptionSource, JSelectAsyncQuery> | null>(
+    null,
+  );
+  readonly asyncPageSize = input(50, { transform: numberAttribute });
+  readonly debounce = input(250, { transform: numberAttribute });
+  readonly cache = input(true, { transform: booleanAttribute });
+  readonly infiniteLoading = input(false, { transform: booleanAttribute });
+  readonly loadMoreLabel = input('Load more');
   readonly optionLabel = input('label');
   readonly optionValue = input('value');
   readonly optionDisabled = input('disabled');
@@ -111,7 +127,7 @@ export class JSelectComponent implements ControlValueAccessor {
   readonly emptyMessage = input('No options found');
   readonly appendTo = input<JAppendTo | undefined>(undefined);
   readonly styleClass = input('');
-  readonly size = input<JSize>('md');
+  readonly size = input<JComponentSize>('md');
   readonly variant = input<JInputVariant | undefined>(undefined);
   readonly readonly = input(false, { transform: booleanAttribute });
   readonly invalid = input(false, { transform: booleanAttribute });
@@ -119,6 +135,8 @@ export class JSelectComponent implements ControlValueAccessor {
   readonly searchable = input(false, { transform: booleanAttribute });
   readonly clearable = input(false, { transform: booleanAttribute });
   readonly loading = input(false, { transform: booleanAttribute });
+  readonly loadingMessage = input('Loading options');
+  readonly loadErrorMessage = input('Options could not be loaded');
   readonly filter = input(false, { transform: booleanAttribute });
   readonly filterMatchMode = input<JFilterMatchMode>('contains');
   readonly virtualScroll = input(false, { transform: booleanAttribute });
@@ -132,6 +150,7 @@ export class JSelectComponent implements ControlValueAccessor {
   readonly clear = output<void>();
   readonly opened = output<void>();
   readonly closed = output<void>();
+  readonly asyncError = output<unknown>();
 
   readonly hintId = jCreateId('j-select-hint');
   readonly errorId = jCreateId('j-select-error');
@@ -140,17 +159,49 @@ export class JSelectComponent implements ControlValueAccessor {
 
   value: unknown = null;
   readonly isDisabled = signal(false);
+  readonly asyncState = signal<JAsyncDataState<JSelectOptionSource>>({
+    loading: false,
+    items: [],
+    error: null,
+  });
   isOpen = false;
 
   filterText = '';
   activeIndex = -1;
   private readonly typeahead = jCreateTypeahead<JSelectOption>();
+  private asyncController?: JAsyncDataController<JSelectOptionSource, JSelectAsyncQuery>;
+  private searchTimer?: ReturnType<typeof setTimeout>;
+  private asyncPage = 0;
+  private asyncSearch = '';
 
   private onChange: (value: unknown) => void = () => undefined;
   private onTouched: () => void = () => undefined;
 
   constructor() {
     effect(() => this.isDisabled.set(this.disabled()));
+    effect(() => {
+      const source = this.dataSource();
+      this.asyncController?.destroy();
+      this.asyncController = source
+        ? new JAsyncDataController(source, {
+            cache: this.cache(),
+            onStateChange: (state) => {
+              this.asyncState.set(state);
+              if (state.error) this.asyncError.emit(state.error);
+              this.changeDetectorRef.markForCheck();
+            },
+          })
+        : undefined;
+      if (source) void this.loadAsync('');
+    });
+    this.destroyRef.onDestroy(() => {
+      if (this.searchTimer) clearTimeout(this.searchTimer);
+      this.asyncController?.destroy();
+    });
+  }
+
+  get isLoading(): boolean {
+    return this.loading() || this.asyncState().loading;
   }
 
   get hasError(): boolean {
@@ -162,7 +213,8 @@ export class JSelectComponent implements ControlValueAccessor {
   }
 
   get normalizedOptions(): readonly JSelectOption[] {
-    return this.options().flatMap((option) => this.normalizeOptionSource(option));
+    const source = this.dataSource() ? this.asyncState().items : this.options();
+    return source.flatMap((option) => this.normalizeOptionSource(option));
   }
 
   get visibleOptions(): readonly JSelectOption[] {
@@ -199,7 +251,7 @@ export class JSelectComponent implements ControlValueAccessor {
 
   /** Virtual scrolling applies only to flat (ungrouped) lists. */
   get useVirtual(): boolean {
-    return this.virtualScroll() && !this.isGrouped && !this.loading();
+    return this.virtualScroll() && !this.isGrouped && !this.isLoading;
   }
 
   private scrollActiveIntoView(): void {
@@ -256,6 +308,7 @@ export class JSelectComponent implements ControlValueAccessor {
 
   writeValue(value: unknown): void {
     this.value = value ?? null;
+    if (this.value != null) void this.asyncController?.hydrate([this.value]);
     this.changeDetectorRef.markForCheck();
   }
 
@@ -376,10 +429,47 @@ export class JSelectComponent implements ControlValueAccessor {
     this.filterText = target.value;
     this.activeIndex = this.firstEnabledIndex();
     this.filterChange.emit(this.filterText);
+    if (this.dataSource()) {
+      if (this.searchTimer) clearTimeout(this.searchTimer);
+      this.searchTimer = setTimeout(() => void this.loadAsync(this.filterText), this.debounce());
+    }
+  }
+
+  retryAsync(): void {
+    this.asyncController?.invalidate();
+    void this.loadAsync(this.filterText);
+  }
+
+  loadMoreAsync(): void {
+    if (!this.dataSource() || this.isLoading || !this.asyncState().hasMore) return;
+    void this.loadAsync(this.asyncSearch, this.asyncPage + 1, true);
+  }
+
+  handlePanelScroll(event: Event): void {
+    if (!this.infiniteLoading()) return;
+    const panel = event.currentTarget as HTMLElement;
+    if (panel.scrollHeight - panel.scrollTop - panel.clientHeight <= 32) this.loadMoreAsync();
+  }
+
+  private loadAsync(search: string, page = 0, append = false): Promise<unknown> {
+    if (!append) {
+      this.asyncPage = 0;
+      this.asyncSearch = search;
+    }
+    return (
+      this.asyncController
+        ?.load({ search, page, pageSize: this.asyncPageSize() }, append)
+        .then((result) => {
+          this.asyncPage = result.page ?? page;
+          this.asyncSearch = search;
+          return result;
+        })
+        .catch(() => undefined) ?? Promise.resolve()
+    );
   }
 
   selectOption(option: JSelectOption): void {
-    if (option.disabled) {
+    if (option.disabled || this.isDisabled() || this.readonly()) {
       return;
     }
 

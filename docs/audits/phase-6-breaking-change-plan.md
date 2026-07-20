@@ -1,0 +1,19 @@
+# Phase 6 breaking-change plan
+
+Target: `jrng-ui` 0.1.0. The pre-Phase-6 inventory contained 141 public components. The final inventory is generated from compiled secondary entrypoints; no compatibility exports are retained.
+
+| Current API | Problem | Final decision | Final replacement | Files affected | Documentation impact | Test impact | Package impact |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Metric Card, Stat Card | Card content was hard-coded into duplicate surfaces. | Remove and compose. | `j-card` with Badge, Progress Bar, Chart, and typography. | Removed secondary entrypoints and docs previews. | Card composition is documented. | Obsolete contract tests removed. | Two entrypoints removed. |
+| Pick List | Duplicated source-to-target transfer behavior. | Remove. | `j-transfer-list`. | Entry point, docs registry, previews, inventory. | Transfer List owns responsive transfer examples. | Transfer List layout and state tests are authoritative. | Entry point removed. |
+| Dropzone | Duplicated File Upload selection behavior. | Remove as a public component. | File Upload drop area. | Entry point, docs registry, previews, inventory. | File Upload documents drag/drop. | File Upload tests cover drop selection. | Entry point removed. |
+| Overlay Panel | Duplicated anchored Popover responsibility. | Remove. | `j-popover`. | Entry point, docs registry, previews, inventory. | Popover owns connected overlays. | Popover lifecycle tests are authoritative. | Entry point removed. |
+| Column, Sort Icon | Table implementation details leaked publicly. | Make internal/remove metadata projection. | Typed `JTableColumn` configuration. | Table entrypoint, template, docs. | Table API uses column definitions only. | Old selector tests removed. | Public declarations removed. |
+| Table Empty State, Table Skeleton | Table-specific wrappers duplicated generic states. | Make internal. | `j-empty-state`, `j-skeleton`, or Table state inputs. | Table public API and docs. | Parent composition is documented. | Table state tests remain. | Exports removed. |
+| `Jr…` classes and class aliases | Mixed naming and duplicate symbols. | Rename without aliases. | `J…` classes. | Library, docs, tests, generated registries. | Imports use modular `jrng-ui/*` paths. | Tests compile final names only. | Aliases removed. |
+| Universal/boolean visual APIs | Values mixed presentation, size, and behavior. | Replace with final typed axes. | Shared core types plus narrow variant families. | Core, Button, Card, Table, Paginator, Grid, Password. | Examples use final values only. | Old API tests removed. | Public declarations changed. |
+| Table event/state aliases | One interaction emitted multiple events and old state was accepted. | Keep one event and state version. | Typed final outputs and state version `1`. | Table, Data Grid, docs, tests. | Malformed state documents non-fatal `error`. | State tests reject malformed/non-v1 data. | No migration code shipped. |
+| `canZoom`, `zoomOverlay`, `imageZoom` | Avatar preview had overlapping controls and event names. | Replace directly. | `previewable`, `previewAriaLabel`, `open`. | Avatar, docs, tests. | Preview behavior is explicit. | Mouse, keyboard, Escape, focus restore covered. | Old declarations removed. |
+| Password text visibility action | Default action was text-only and APIs were inconsistent. | Replace directly. | `toggleVisibility`, `showIcon`, `hideIcon`, named icon templates. | Password, Button/Icon registry, docs, tests. | Eye/eye-off behavior documented. | Visibility and accessibility tests cover final API. | Old input removed. |
+| Image exported from Image Preview | Two responsibilities shared one entrypoint/file. | Split. | `jrng-ui/image` and `jrng-ui/image-preview`. | Components, entrypoints, tests, docs imports. | Each responsibility has its own record. | Direct tests split by component. | Canonical entrypoints retained without aliases. |
+

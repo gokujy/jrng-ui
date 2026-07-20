@@ -1,4 +1,4 @@
-export type JTourSide = 'top' | 'right' | 'bottom' | 'left' | 'over';
+export type JTourSide = 'auto' | 'top' | 'right' | 'bottom' | 'left' | 'over';
 export type JTourAlign = 'start' | 'center' | 'end';
 export type JTourButton = 'next' | 'previous' | 'close';
 export type JTourEventType =
@@ -25,6 +25,13 @@ export interface JTourStep {
   readonly previousText?: string;
   readonly doneText?: string;
   readonly closeText?: string;
+  readonly padding?: number;
+  readonly radius?: number;
+  readonly interactive?: boolean;
+  readonly waitForTargetMs?: number;
+  readonly missingTarget?: 'skip' | 'close' | 'error';
+  readonly beforeEnter?: (step: JTourStep) => void | boolean | Promise<void | boolean>;
+  readonly afterLeave?: (step: JTourStep) => void | Promise<void>;
 }
 
 export type JTourStepInput = string | JTourStep;
@@ -52,6 +59,12 @@ export interface JTourConfig {
   readonly previousText?: string;
   readonly doneText?: string;
   readonly closeText?: string;
+  readonly showOnce?: boolean;
+  readonly storageKey?: string;
+  readonly confirmOnExit?: boolean;
+  readonly interactive?: boolean;
+  readonly beforeStart?: () => void | boolean | Promise<void | boolean>;
+  readonly afterEnd?: () => void | Promise<void>;
   readonly onStart?: (event: JTourEvent) => void;
   readonly onNext?: (event: JTourEvent) => void;
   readonly onPrevious?: (event: JTourEvent) => void;

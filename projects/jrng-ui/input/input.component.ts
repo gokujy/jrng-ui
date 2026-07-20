@@ -14,11 +14,10 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { jAriaDescribedBy } from 'jrng-ui/core';
 import { jCreateId } from 'jrng-ui/core';
 import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
-import { JSize } from 'jrng-ui/core';
+import { JComponentSize, JComponentWidth } from 'jrng-ui/core';
 
 export type JInputType = 'text' | 'password' | 'search' | 'email' | 'number' | 'tel' | 'url';
 export type JInputVariant = 'outlined' | 'filled';
-export type JrInputType = JInputType;
 
 @Component({
   selector: 'j-input',
@@ -28,13 +27,13 @@ export type JrInputType = JInputType;
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => JrInputComponent),
+      useExisting: forwardRef(() => JInputComponent),
       multi: true,
     },
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class JrInputComponent implements ControlValueAccessor {
+export class JInputComponent implements ControlValueAccessor {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
   protected readonly internalValue = signal('');
 
@@ -50,14 +49,13 @@ export class JrInputComponent implements ControlValueAccessor {
   readonly styleClass = input('');
   readonly pt = input<JPassThrough | null>(null);
   readonly ariaDescribedby = input('', { alias: 'aria-describedby' });
-  readonly size = input<JSize>('md');
+  readonly size = input<JComponentSize>('md');
   readonly variant = input<JInputVariant>('outlined');
   readonly readonly = input(false, { transform: booleanAttribute });
   readonly invalid = input(false, { transform: booleanAttribute });
   readonly required = input(false, { transform: booleanAttribute });
   readonly clearable = input(false, { transform: booleanAttribute });
-  readonly fluid = input(false, { transform: booleanAttribute });
-  readonly fullWidth = input(false, { transform: booleanAttribute });
+  readonly width = input<JComponentWidth>('auto');
   readonly value = input<string | number | null | undefined>();
   readonly disabled = input(false, { transform: booleanAttribute });
 
@@ -102,7 +100,7 @@ export class JrInputComponent implements ControlValueAccessor {
         this.hasError ? 'is-invalid' : '',
         this.isDisabled() ? 'is-disabled' : '',
         this.readonly() ? 'is-readonly' : '',
-        this.fluid() || this.fullWidth() ? 'j-input--fluid' : '',
+        this.width() === 'full' ? 'j-input--fluid' : '',
       ],
       this.styleClass(),
       this.pt(),

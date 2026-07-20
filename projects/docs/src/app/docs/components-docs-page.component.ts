@@ -5,7 +5,11 @@ import {
   computed,
   inject,
   signal,
+  ElementRef,
+  PLATFORM_ID,
+  viewChild,
 } from '@angular/core';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -22,8 +26,8 @@ import { DocsAnalyticsService } from '../core/analytics.service';
       <span class="j-page-eyebrow">Components</span>
       <h1>Component Documentation</h1>
       <p>
-        Browse the reusable JRNG UI building blocks from one page. Select a component on the left to
-        preview it, copy code, and read beginner-friendly usage guidance without navigating away.
+        Browse public JRNG components, rendered previews, code examples, API contracts, and design
+        tokens from one addressable documentation surface.
       </p>
       <div class="j-doc-hero-links">
         <a routerLink="/docs/charts"><j-icon name="chart-no-axes-column" /> Charts</a>
@@ -32,11 +36,12 @@ import { DocsAnalyticsService } from '../core/analytics.service';
     </section>
 
     <section class="j-components-layout j-components-layout--detail">
-      <main class="j-components-content">
+      <main #content class="j-components-content">
         @if (selectedDoc(); as doc) {
           <app-component-detail-view [doc]="doc" />
         }
       </main>
+      <p class="j-hidden-accessible" aria-live="polite">{{ announcement() }}</p>
     </section>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -47,7 +52,11 @@ export class ComponentsDocsPageComponent {
   private readonly analytics = inject(DocsAnalyticsService);
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly documentRef = inject(DOCUMENT);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  private readonly content = viewChild.required<ElementRef<HTMLElement>>('content');
   readonly selectedSlug = signal(componentDocs[0]?.slug ?? 'input');
+  readonly announcement = signal('');
 
   readonly selectedDoc = computed(
     () => componentDocs.find((doc) => doc.slug === this.selectedSlug()) ?? componentDocs[0],
@@ -58,7 +67,26 @@ export class ComponentsDocsPageComponent {
       if (fragment && componentDocs.some((doc) => doc.slug === fragment)) {
         this.selectedSlug.set(fragment);
         this.updateMetadata(fragment);
+        this.moveToSelectedComponent();
       }
+    });
+  }
+
+  private moveToSelectedComponent(): void {
+    if (!this.isBrowser) return;
+    setTimeout(() => {
+      const reduceMotion =
+        typeof window.matchMedia === 'function' &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const content = this.content().nativeElement;
+      if (typeof content.scrollTo === 'function') {
+        content.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+      } else {
+        content.scrollTop = 0;
+      }
+      const heading = this.documentRef.querySelector<HTMLElement>('[data-component-heading]');
+      heading?.focus({ preventScroll: true });
+      this.announcement.set(`${this.selectedDoc()?.name ?? 'Component'} documentation loaded`);
     });
   }
 

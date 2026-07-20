@@ -1,13 +1,13 @@
-import { JrDialogService } from './dialog.service';
+import { JDialogService } from './dialog.service';
 
-describe('JrDialogService public contract', () => {
+describe('JDialogService public contract', () => {
   it('remains constructable as a public service type', () => {
-    expect(typeof JrDialogService).toBe('function');
-    expect(JrDialogService.prototype).toBeDefined();
+    expect(typeof JDialogService).toBe('function');
+    expect(JDialogService.prototype).toBeDefined();
   });
 
   it('does not expose duplicate public method names', () => {
-    const methods = Object.getOwnPropertyNames(JrDialogService.prototype).filter(
+    const methods = Object.getOwnPropertyNames(JDialogService.prototype).filter(
       (name) => name !== 'constructor',
     );
     expect(new Set(methods).size).toBe(methods.length);

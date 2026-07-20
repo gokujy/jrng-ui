@@ -33,39 +33,38 @@ import { JChartComponent } from 'jrng-ui/chart';
 import { JChipComponent } from 'jrng-ui/chip';
 import { JChipsComponent } from 'jrng-ui/chips';
 import { JCheckboxComponent } from 'jrng-ui/checkbox';
-import { JComboboxComponent } from 'jrng-ui/combobox';
 import { JCommandPaletteComponent } from 'jrng-ui/command-palette';
-import { JConfirmationService } from 'jrng-ui/confirm-dialog';
+import { JConfirmDialogComponent, JConfirmationService } from 'jrng-ui/confirm-dialog';
 import { JConfirmPopupComponent } from 'jrng-ui/confirm-popup';
 import { JContainerComponent } from 'jrng-ui/container';
 import { JContextMenuComponent } from 'jrng-ui/context-menu';
 import { JCopyButtonComponent } from 'jrng-ui/copy-button';
 import { JColorPickerComponent } from 'jrng-ui/color-picker';
 import { JDataGridComponent } from 'jrng-ui/data-grid';
+import { JDataDisplayComponent } from 'jrng-ui/data-display';
 import { JDataViewComponent } from 'jrng-ui/data-view';
-import { JDashboardLayoutComponent } from 'jrng-ui/dashboard-layout';
 import { JDatePickerComponent, JDatePickerPreset } from 'jrng-ui/date-picker';
-import { JDateRangePickerComponent } from 'jrng-ui/date-range-picker';
 import { JDividerComponent } from 'jrng-ui/divider';
-import { JDialogComponent, JrDialogService } from 'jrng-ui/dialog';
+import { JDiffViewerComponent } from 'jrng-ui/diff-viewer';
+import { JDialogComponent, JDialogService } from 'jrng-ui/dialog';
 import { JDrawerComponent } from 'jrng-ui/drawer';
-import { JDropzoneComponent } from 'jrng-ui/dropzone';
 import { JDynamicDialogComponent } from 'jrng-ui/dynamic-dialog';
 import { JEditorComponent } from 'jrng-ui/editor';
-import { JEmptyStateComponent, JEmptyStateVariant } from 'jrng-ui/empty-state';
-import { JEmptyPageComponent } from 'jrng-ui/empty-page';
+import { JEmptyComponent, JEmptyStateVariant } from 'jrng-ui/empty';
 import { JErrorPageComponent } from 'jrng-ui/error-page';
 import { JFieldsetComponent } from 'jrng-ui/fieldset';
 import { JFilterBarComponent } from 'jrng-ui/filter-bar';
 import { JFileBrowserComponent, JFileBrowserItem } from 'jrng-ui/file-browser';
 import { JFilePreviewComponent } from 'jrng-ui/file-preview';
 import { JFileUploadComponent } from 'jrng-ui/file-upload';
-import { JFloatLabelComponent } from 'jrng-ui/float-label';
+import { JLabelComponent } from 'jrng-ui/label';
 import { JFormFieldComponent } from 'jrng-ui/form-field';
 import { JGalleryComponent } from 'jrng-ui/gallery';
 import { JGanttComponent } from 'jrng-ui/gantt';
 import { JGridColumnComponent, JGridComponent, JGridRowComponent } from 'jrng-ui/grid';
 import { JGridLayoutComponent } from 'jrng-ui/grid-layout';
+import { JHighlightComponent } from 'jrng-ui/highlight';
+import { JHtmlPreviewComponent } from 'jrng-ui/html-preview';
 import {
   JCurrencyFormatPipe,
   JDateTimeFormatPipe,
@@ -74,11 +73,9 @@ import {
   JTextTruncatePipe,
 } from 'jrng-ui/formatting';
 import { JIconComponent, JIconName } from 'jrng-ui/icon';
-import { JIftaLabelComponent } from 'jrng-ui/ifta-label';
-import { JImageComponent, JImagePreviewComponent } from 'jrng-ui/image-preview';
+import { JImageComponent } from 'jrng-ui/image';
 import { JIconFieldComponent } from 'jrng-ui/icon-field';
 import { JInputGroupComponent } from 'jrng-ui/input-group';
-import { JInputIconComponent } from 'jrng-ui/input-icon';
 import { JInputMaskComponent } from 'jrng-ui/input-mask';
 import { JInputNumberComponent } from 'jrng-ui/input-number';
 import { JInputOtpComponent } from 'jrng-ui/input-otp';
@@ -90,15 +87,12 @@ import { JMegaMenuComponent } from 'jrng-ui/mega-menu';
 import { JMenuComponent, JMenuItem } from 'jrng-ui/menu';
 import { JMenubarComponent } from 'jrng-ui/menubar';
 import { JMeterGroupComponent } from 'jrng-ui/meter-group';
-import { JMetricCardComponent } from 'jrng-ui/metric-card';
 import { JMultiselectComponent } from 'jrng-ui/multiselect';
 import { JNotificationCenterComponent } from 'jrng-ui/notification-center';
 import { JOrderListComponent } from 'jrng-ui/order-list';
 import { JOrgChartComponent } from 'jrng-ui/org-chart';
-import { JOverlayPanelComponent } from 'jrng-ui/overlay-panel';
 import { JPaginatorComponent, JPaginatorVariant } from 'jrng-ui/paginator';
 import { JPasswordComponent } from 'jrng-ui/password';
-import { JPickListComponent } from 'jrng-ui/pick-list';
 import { JPanelComponent } from 'jrng-ui/panel';
 import { JPageHeaderComponent, JPageHeaderVariant } from 'jrng-ui/page-header';
 import { JPopoverComponent } from 'jrng-ui/popover';
@@ -111,16 +105,12 @@ import { JSelectComponent } from 'jrng-ui/select';
 import { JSelectButtonComponent } from 'jrng-ui/select-button';
 import { JSectionFooterComponent } from 'jrng-ui/section-footer';
 import { JSectionHeaderComponent } from 'jrng-ui/section-header';
-import { JSidebarLayoutComponent } from 'jrng-ui/sidebar-layout';
 import { JSidebarNavComponent } from 'jrng-ui/sidebar-nav';
 import { JSkeletonComponent } from 'jrng-ui/skeleton';
 import { JSparklineComponent } from 'jrng-ui/sparkline';
-import { JSplitterComponent } from 'jrng-ui/splitter';
-import { JStackComponent } from 'jrng-ui/stack';
+import { JSplitterComponent, JSplitterPanelComponent } from 'jrng-ui/splitter';
 import { JResponsiveSidebarComponent } from 'jrng-ui/responsive-sidebar';
-import { JStatCardComponent } from 'jrng-ui/stat-card';
 import { JStatusChipComponent } from 'jrng-ui/status-chip';
-import { JStatusPageComponent } from 'jrng-ui/status-page';
 import { JStepperComponent, JStepperVariant } from 'jrng-ui/stepper';
 import { JSliderComponent } from 'jrng-ui/slider';
 import { JSwitchComponent } from 'jrng-ui/switch';
@@ -130,19 +120,15 @@ import { JToggleButtonComponent } from 'jrng-ui/toggle-button';
 import { JToolbarComponent } from 'jrng-ui/toolbar';
 import {
   JActionMenuComponent,
-  JColumnComponent,
   JColumnFilterComponent,
-  JSortIconComponent,
   JTableAction,
   JTableColumn,
   JTableComponent,
   JTableConfig,
   JTableCellTemplateDirective,
   JTableEmptyTemplateDirective,
-  JTableEmptyStateComponent,
   JTableExportEvent,
   JTableHeaderTemplateDirective,
-  JTableSkeletonComponent,
   JTableVariant,
 } from 'jrng-ui/table';
 import { JTextareaComponent } from 'jrng-ui/textarea';
@@ -152,13 +138,14 @@ import { JTimePickerComponent } from 'jrng-ui/time-picker';
 import { JTimelineComponent, JTimelineItem, JTimelineVariant } from 'jrng-ui/timeline';
 import { JTopbarComponent } from 'jrng-ui/topbar';
 import { JTooltipDirective } from 'jrng-ui/tooltip';
-import { JTourService, JTourStepDirective } from 'jrng-ui/tour';
-import { JrToastContainerComponent, JrToastService } from 'jrng-ui/toast';
+import { JTourGuideComponent, JTourService, JTourStepDirective } from 'jrng-ui/tour';
+import { JToastContainerComponent, JToastService } from 'jrng-ui/toast';
 import { JTransferListComponent } from 'jrng-ui/transfer-list';
 import { JTreeComponent } from 'jrng-ui/tree';
 import { JTreeTableComponent } from 'jrng-ui/tree-table';
 import { JVideoPlayerComponent } from 'jrng-ui/video-player';
 import { JVirtualScrollerComponent } from 'jrng-ui/virtual-scroller';
+import { JValidationMessageComponent } from 'jrng-ui/validation-message';
 import {
   JKanbanCardEvent,
   JKanbanColumn,
@@ -187,6 +174,7 @@ interface DetailFeatureExample {
   readonly name: string;
   readonly details: string;
   readonly key: string;
+  readonly responsivePreview?: boolean;
   readonly index: number;
   readonly html: string;
   readonly ts?: string;
@@ -244,7 +232,7 @@ const TABLE_FEATURE_EXAMPLES = [
     key: 'variants',
     name: 'Visual variants',
     details: 'Choose a recognizable surface concept without changing table behavior.',
-    html: `<j-table [value]="orders" [columns]="columns" variant="card" />`,
+    html: `<j-table [value]="orders" [columns]="columns" variant="gridlines" />`,
   },
   {
     key: 'density',
@@ -282,7 +270,7 @@ const TABLE_FEATURE_EXAMPLES = [
     key: 'error',
     name: 'Error state',
     details: 'Present a loading failure as an alert without treating it as ordinary emptiness.',
-    html: `<j-table [value]="[]" [columns]="columns" [error]="loadError" emptyActionLabel="Retry" />`,
+    html: `<j-table [value]="[]" [columns]="columns" [errorState]="loadError" emptyActionLabel="Retry" />`,
   },
   {
     key: 'selection',
@@ -306,7 +294,7 @@ const TABLE_FEATURE_EXAMPLES = [
     key: 'filtering',
     name: 'Filtering',
     details: 'Use the reusable filter row and typed match-mode configuration.',
-    html: `<j-table [value]="orders" [columns]="columns" filterRow showGlobalFilter />`,
+    html: `<j-table [value]="orders" [columns]="columns" filterDisplay="row" showGlobalFilter />`,
   },
   {
     key: 'tree-table',
@@ -328,10 +316,10 @@ const TABLE_FEATURE_EXAMPLES = [
     html: `<j-table [value]="orders" [columns]="columns" caption="Orders awaiting review" selectionMode="checkbox" />`,
   },
   {
-    key: 'migration',
-    name: 'Compatibility and migration',
+    key: 'composition',
+    name: 'Composition',
     details:
-      'Column metadata, empty content, and loading content are integrated capabilities. Compatibility selectors remain available during migration.',
+      'Column metadata, empty content, and loading content are integrated Table capabilities.',
     html: `<j-table [value]="orders" [columns]="columns" loadingVariant="skeleton">
   <ng-template jTableEmpty let-state>{{ state }}</ng-template>
   <ng-template jTableLoading let-variant>{{ variant }}</ng-template>
@@ -380,7 +368,7 @@ const TEXT_EXPAND_FEATURE_EXAMPLES = [
     key: 'responsive',
     name: 'Responsive card content',
     details: 'Line mode responds to card width changes.',
-    html: `<j-card title="Release summary"><j-text-expand [text]="productDescription" mode="lines" [collapsedLines]="2" /></j-card>`,
+    html: `<j-card header="Release summary"><j-text-expand [text]="productDescription" mode="lines" [collapsedLines]="2" /></j-card>`,
   },
   {
     key: 'product',
@@ -431,7 +419,7 @@ const BUTTON_FEATURE_EXAMPLES = [
     key: 'outline',
     name: 'Outlined buttons',
     details: 'Use outline for supporting actions with visible boundaries.',
-    html: `<j-button label="Export" variant="outline" />`,
+    html: `<j-button label="Export" variant="outlined" />`,
   },
   {
     key: 'text',
@@ -449,13 +437,13 @@ const BUTTON_FEATURE_EXAMPLES = [
     key: 'raised',
     name: 'Raised buttons',
     details: 'Add restrained elevation when an action must stand above a busy surface.',
-    html: `<j-button label="Create project" raised />`,
+    html: `<j-button label="Create project" variant="solid" />`,
   },
   {
     key: 'pill',
     name: 'Rounded and pill',
     details: 'Use pill shape for compact filters and friendly calls to action.',
-    html: `<j-button label="Follow" pill /><j-button label="Next" rounded />`,
+    html: `<j-button label="Follow" shape="pill" /><j-button label="Next" shape="rounded" />`,
   },
   {
     key: 'icon-before',
@@ -473,7 +461,7 @@ const BUTTON_FEATURE_EXAMPLES = [
     key: 'icon-only',
     name: 'Icon-only buttons',
     details: 'Always provide an accessible label.',
-    html: `<j-button icon="settings" iconOnly ariaLabel="Open settings" />`,
+    html: `<j-button icon="settings" actionDisplay="icon" ariaLabel="Open settings" />`,
   },
   {
     key: 'loading',
@@ -491,7 +479,7 @@ const BUTTON_FEATURE_EXAMPLES = [
     key: 'full-width',
     name: 'Full-width buttons',
     details: 'Use full width in narrow forms and mobile panels.',
-    html: `<j-button label="Continue" fullWidth />`,
+    html: `<j-button label="Continue" width="full" />`,
   },
   {
     key: 'badge',
@@ -503,19 +491,19 @@ const BUTTON_FEATURE_EXAMPLES = [
     key: 'group',
     name: 'Button group',
     details: 'Place related actions together with one clear primary action.',
-    html: `<div class="j-preview-row"><j-button label="Save" /><j-button label="Preview" variant="outline" /><j-button label="Cancel" variant="ghost" /></div>`,
+    html: `<div class="j-preview-row"><j-button label="Save" /><j-button label="Preview" variant="outlined" /><j-button label="Cancel" variant="soft" /></div>`,
   },
   {
     key: 'form',
     name: 'Form submit and reset',
     details: 'Native types integrate with Angular and browser forms.',
-    html: `<form (submit)="save()"><j-button label="Submit" type="submit" /><j-button label="Reset" type="reset" variant="ghost" /></form>`,
+    html: `<form (submit)="save()"><j-button label="Submit" type="submit" /><j-button label="Reset" type="reset" variant="soft" /></form>`,
   },
   {
     key: 'toolbar',
     name: 'Toolbar actions',
     details: 'Use compact treatments for repeated workspace commands.',
-    html: `<j-toolbar><j-button label="New" icon="plus" /><j-button label="Export" variant="outline" /><j-button icon="settings" iconOnly ariaLabel="Toolbar settings" variant="ghost" /></j-toolbar>`,
+    html: `<j-toolbar><j-button label="New" icon="plus" /><j-button label="Export" variant="outlined" /><j-button icon="settings" actionDisplay="icon" ariaLabel="Toolbar settings" variant="soft" /></j-toolbar>`,
   },
   {
     key: 'destructive',
@@ -587,7 +575,7 @@ const AVATAR_FEATURE_EXAMPLES = [
   [
     'profile',
     'Profile header',
-    `<div class="profile"><j-avatar image="/assets/avatars/avery.svg" label="Avery Reed" size="lg" canZoom /><div><strong>Avery Reed</strong><span>Product designer</span></div></div>`,
+    `<div class="profile"><j-avatar image="/assets/avatars/avery.svg" label="Avery Reed" size="lg" previewable /><div><strong>Avery Reed</strong><span>Product designer</span></div></div>`,
   ],
   [
     'comment',
@@ -607,12 +595,12 @@ const AVATAR_FEATURE_EXAMPLES = [
   [
     'clickable',
     'Clickable avatar',
-    `<j-avatar image="/assets/avatars/avery.svg" label="Avery Reed" canZoom [zoomOverlay]="false" zoomAriaLabel="Open Avery Reed profile" />`,
+    `<j-avatar image="/assets/avatars/avery.svg" label="Avery Reed" previewable previewAriaLabel="Preview Avery Reed profile image" />`,
   ],
   [
     'zoom',
     'Zoomable avatar',
-    `<j-avatar image="/assets/avatars/avery.svg" label="Avery Reed" canZoom />`,
+    `<j-avatar image="/assets/avatars/avery.svg" label="Avery Reed" previewable />`,
   ],
   [
     'static',
@@ -638,7 +626,7 @@ const LOADER_FEATURE_EXAMPLES = [
   [
     'card',
     'Card loading',
-    `<j-card title="Account summary"><j-loader type="spinner" inline label="Loading account summary" /></j-card>`,
+    `<j-card header="Account summary"><j-loader type="spinner" inline label="Loading account summary" /></j-card>`,
   ],
   ['page', 'Page loading', `<j-loader type="spinner" label="Loading page" />`],
   ['overlay', 'Overlay loading', `<j-loader type="spinner" overlay label="Loading workspace" />`],
@@ -666,73 +654,73 @@ const CARD_FEATURE_EXAMPLES = [
   [
     'basic',
     'Basic content card',
-    `<j-card title="Design review"><p>Review navigation and responsive behavior before release.</p></j-card>`,
+    `<j-card header="Design review"><p>Review navigation and responsive behavior before release.</p></j-card>`,
   ],
   [
     'slots',
     'Header and footer',
-    `<j-card title="Release plan" subtitle="Version 0.0.9" footer="Updated today">All milestones are on track.</j-card>`,
+    `<j-card header="Release plan" subheader="Version 0.0.9" footer="Updated today">All milestones are on track.</j-card>`,
   ],
   [
     'form',
     'Form card',
-    `<j-card title="Workspace settings"><j-input label="Workspace name" value="Operations" /><j-button jCardActions label="Save" /></j-card>`,
+    `<j-card header="Workspace settings"><j-input label="Workspace name" value="Operations" /><j-button jCardActions label="Save" /></j-card>`,
   ],
   [
     'profile',
     'Profile card',
-    `<j-card title="Avery Reed" subtitle="Product designer"><j-avatar image="/assets/avatars/avery.svg" label="Avery Reed" size="lg" /></j-card>`,
+    `<j-card header="Avery Reed" subheader="Product designer"><j-avatar image="/assets/avatars/avery.svg" label="Avery Reed" size="lg" /></j-card>`,
   ],
   [
     'product',
     'Product card',
-    `<j-card title="Team plan" subtitle="For growing teams"><strong>$24 / month</strong><j-button jCardActions label="Choose plan" /></j-card>`,
+    `<j-card header="Team plan" subheader="For growing teams"><strong>$24 / month</strong><j-button jCardActions label="Choose plan" /></j-card>`,
   ],
   [
     'pricing',
     'Pricing card',
-    `<j-card title="Business" subtitle="Advanced controls"><strong>$49 / month</strong><j-button jCardActions label="Start trial" /></j-card>`,
+    `<j-card header="Business" subheader="Advanced controls"><strong>$49 / month</strong><j-button jCardActions label="Start trial" /></j-card>`,
   ],
   [
     'metric',
     'Metric or KPI card',
-    `<j-card title="Monthly revenue" subtitle="Compared with last month"><strong>$84,250</strong><j-badge value="+12.4%" severity="success" /><j-progress-bar [value]="72" label="72% of target" /></j-card>`,
+    `<j-card header="Monthly revenue" subheader="Compared with last month"><strong>$84,250</strong><j-badge value="+12.4%" severity="success" /><j-progress-bar [value]="72" label="72% of target" /></j-card>`,
   ],
   [
     'trend',
     'Metric with change',
-    `<j-card title="Active accounts"><strong>1,284</strong><j-badge value="+8.2%" severity="success" /></j-card>`,
+    `<j-card header="Active accounts"><strong>1,284</strong><j-badge value="+8.2%" severity="success" /></j-card>`,
   ],
   [
     'chart',
     'Metric with mini chart',
-    `<j-card title="Weekly volume"><j-progress-bar [value]="64" label="64% of weekly target" /></j-card>`,
+    `<j-card header="Weekly volume"><j-progress-bar [value]="64" label="64% of weekly target" /></j-card>`,
   ],
   [
     'progress',
     'Metric with progress',
-    `<j-card title="Storage"><strong>72 GB of 100 GB</strong><j-progress-bar [value]="72" label="72% used" /></j-card>`,
+    `<j-card header="Storage"><strong>72 GB of 100 GB</strong><j-progress-bar [value]="72" label="72% used" /></j-card>`,
   ],
   [
     'status',
     'Status summary',
-    `<j-card title="Release status"><j-badge value="Ready" severity="success" /><p>All required checks passed.</p></j-card>`,
+    `<j-card header="Release status"><j-badge value="Ready" severity="success" /><p>All required checks passed.</p></j-card>`,
   ],
   [
     'clickable',
     'Clickable card',
-    `<j-card title="Open project" subtitle="Keyboard focusable" clickable><p>View project details.</p></j-card>`,
+    `<j-card header="Open project" subheader="Keyboard focusable" interactive><p>View project details.</p></j-card>`,
   ],
-  ['loading', 'Loading card', `<j-card title="Loading report" skeleton />`],
+  ['loading', 'Loading card', `<j-card header="Loading report" skeleton />`],
   [
     'empty',
     'Empty card',
-    `<j-card title="Saved views"><j-empty-state title="No saved views" description="Save a filter to reuse it here." variant="inline" /></j-card>`,
+    `<j-card header="Saved views"><j-empty title="No saved views" description="Save a filter to reuse it here." variant="inline" /></j-card>`,
   ],
   [
     'error',
     'Error-state card',
-    `<j-card title="Account summary"><j-empty-state title="Could not load summary" description="Try again in a moment." variant="inline" /></j-card>`,
+    `<j-card header="Account summary"><j-empty title="Could not load summary" description="Try again in a moment." variant="inline" /></j-card>`,
   ],
   [
     'template',
@@ -767,28 +755,31 @@ const CARD_FEATURE_EXAMPLES = [
     JCardComponent,
     JChipComponent,
     JCheckboxComponent,
+    JConfirmDialogComponent,
     JContainerComponent,
     JCopyButtonComponent,
     JColorPickerComponent,
     JDataGridComponent,
+    JDataDisplayComponent,
     JDatePickerComponent,
     JDividerComponent,
+    JDiffViewerComponent,
     JDialogComponent,
     JDrawerComponent,
-    JEmptyPageComponent,
-    JEmptyStateComponent,
+    JEmptyComponent,
     JErrorPageComponent,
     JFieldsetComponent,
     JFilterBarComponent,
     JFileBrowserComponent,
     JFilePreviewComponent,
     JFileUploadComponent,
-    JFloatLabelComponent,
+    JLabelComponent,
     JFormFieldComponent,
+    JHighlightComponent,
+    JHtmlPreviewComponent,
     JIconComponent,
     JIconFieldComponent,
     JInputGroupComponent,
-    JInputIconComponent,
     JInputMaskComponent,
     JInputNumberComponent,
     JInputOtpComponent,
@@ -798,7 +789,6 @@ const CARD_FEATURE_EXAMPLES = [
     JMaintenancePageComponent,
     JMenuComponent,
     JMeterGroupComponent,
-    JMetricCardComponent,
     JMultiselectComponent,
     JPaginatorComponent,
     JPasswordComponent,
@@ -816,11 +806,8 @@ const CARD_FEATURE_EXAMPLES = [
     JSectionHeaderComponent,
     JSkeletonComponent,
     JSparklineComponent,
-    JStackComponent,
     JResponsiveSidebarComponent,
-    JStatCardComponent,
     JStatusChipComponent,
-    JStatusPageComponent,
     JSliderComponent,
     JSwitchComponent,
     JTabComponent,
@@ -839,8 +826,9 @@ const CARD_FEATURE_EXAMPLES = [
     JTimelineComponent,
     JTooltipDirective,
     JTourStepDirective,
+    JTourGuideComponent,
     JRippleDirective,
-    JrToastContainerComponent,
+    JToastContainerComponent,
     JAppShellComponent,
     JAuthLayoutComponent,
     JBottomSheetComponent,
@@ -849,14 +837,10 @@ const CARD_FEATURE_EXAMPLES = [
     JCarouselComponent,
     JChartComponent,
     JChipsComponent,
-    JComboboxComponent,
     JCommandPaletteComponent,
     JConfirmPopupComponent,
     JContextMenuComponent,
-    JDashboardLayoutComponent,
     JDataViewComponent,
-    JDateRangePickerComponent,
-    JDropzoneComponent,
     JDynamicDialogComponent,
     JEditorComponent,
     JGalleryComponent,
@@ -865,9 +849,7 @@ const CARD_FEATURE_EXAMPLES = [
     JGridRowComponent,
     JGridColumnComponent,
     JGridLayoutComponent,
-    JIftaLabelComponent,
     JImageComponent,
-    JImagePreviewComponent,
     JKanbanComponent,
     JKnobComponent,
     JMegaMenuComponent,
@@ -875,16 +857,10 @@ const CARD_FEATURE_EXAMPLES = [
     JNotificationCenterComponent,
     JOrderListComponent,
     JOrgChartComponent,
-    JOverlayPanelComponent,
-    JPickListComponent,
-    JSidebarLayoutComponent,
     JSidebarNavComponent,
-    JSortIconComponent,
     JSplitterComponent,
+    JSplitterPanelComponent,
     JStepperComponent,
-    JColumnComponent,
-    JTableEmptyStateComponent,
-    JTableSkeletonComponent,
     JTieredMenuComponent,
     JTimePickerComponent,
     JTopbarComponent,
@@ -893,6 +869,7 @@ const CARD_FEATURE_EXAMPLES = [
     JTreeTableComponent,
     JVideoPlayerComponent,
     JVirtualScrollerComponent,
+    JValidationMessageComponent,
     JCurrencyFormatPipe,
     JDateTimeFormatPipe,
     JFileSizeFormatPipe,
@@ -924,7 +901,7 @@ const CARD_FEATURE_EXAMPLES = [
         @if (detailViewTab() === 'features') {
           <header class="j-doc-detail__header">
             <div>
-              <h2>{{ doc().name }}</h2>
+              <h1 tabindex="-1" data-component-heading>{{ doc().name }}</h1>
               <p class="j-doc-lead">{{ doc().description }}</p>
             </div>
           </header>
@@ -932,28 +909,6 @@ const CARD_FEATURE_EXAMPLES = [
           <section class="j-doc-opening-section" id="component-overview">
             <h3>Overview</h3>
             <p>{{ doc().description }}</p>
-            @if (doc().deprecated) {
-              <p class="j-preview-note"><strong>Deprecated:</strong> {{ doc().deprecated }}</p>
-            }
-          </section>
-
-          <section class="j-doc-grid-sections" id="component-usage-guidance">
-            <div class="j-doc-section-block">
-              <h3>When to Use</h3>
-              <p>{{ doc().whenToUse }}</p>
-            </div>
-            <div class="j-doc-section-block">
-              <h3>When Not to Use</h3>
-              <ul>
-                @for (item of doc().whenNotToUse ?? []; track item) {
-                  <li>{{ item }}</li>
-                } @empty {
-                  <li>
-                    Choose a simpler native element when the component adds no useful behavior.
-                  </li>
-                }
-              </ul>
-            </div>
           </section>
 
           <section class="j-doc-opening-section" id="component-import">
@@ -972,8 +927,22 @@ const CARD_FEATURE_EXAMPLES = [
                 <p>{{ example.details }}</p>
               </div>
               <div class="j-preview-card" [attr.id]="'component-live-preview-' + example.key">
+                @if (example.responsivePreview) {
+                  <div class="j-preview-viewport-toolbar" aria-label="Preview viewport">
+                    @for (viewport of previewWidths; track viewport.label) {
+                      <button
+                        type="button"
+                        [attr.aria-pressed]="previewWidth() === viewport.width"
+                        (click)="previewWidth.set(viewport.width)"
+                      >
+                        {{ viewport.label }}
+                      </button>
+                    }
+                  </div>
+                }
                 <div
                   class="j-preview-surface"
+                  [style.max-width.px]="example.responsivePreview ? previewWidth() : null"
                   [class.j-preview-surface--overlay]="overlayPreviewSlugs.has(doc().slug)"
                   [class.j-preview-surface--status]="statusPreviewSlugs.has(doc().slug)"
                 >
@@ -1096,7 +1065,7 @@ const CARD_FEATURE_EXAMPLES = [
                                     image="/assets/avatars/avery.svg"
                                     label="Avery Reed"
                                     size="lg"
-                                    canZoom
+                                    previewable
                                   />
                                   <div>
                                     <strong>Avery Reed</strong><span>Product designer</span>
@@ -1130,9 +1099,8 @@ const CARD_FEATURE_EXAMPLES = [
                                 <j-avatar
                                   image="/assets/avatars/avery.svg"
                                   label="Avery Reed"
-                                  canZoom
-                                  [zoomOverlay]="false"
-                                  zoomAriaLabel="Open Avery Reed profile"
+                                  previewable
+                                  previewAriaLabel="Preview Avery Reed profile image"
                                 />
                               }
                               @case ('static') {
@@ -1270,7 +1238,7 @@ const CARD_FEATURE_EXAMPLES = [
                           label="Password"
                           placeholder="Enter a secure password"
                           feedback
-                          toggleMask
+                          toggleVisibility
                         />
                       }
                       @case ('progress-spinner') {
@@ -1379,25 +1347,25 @@ const CARD_FEATURE_EXAMPLES = [
                           <div class="j-preview-row">
                             <j-button label="Save" /><j-button
                               label="Preview"
-                              variant="outline"
-                            /><j-button label="Cancel" variant="ghost" />
+                              variant="outlined"
+                            /><j-button label="Cancel" variant="soft" />
                           </div>
                         } @else if (example.key === 'toolbar') {
                           <j-toolbar
                             ><j-button label="New" icon="plus" /><j-button
                               label="Export"
-                              variant="outline" /><j-button
+                              variant="outlined" /><j-button
                               icon="settings"
-                              iconOnly
+                              actionDisplay="icon"
                               ariaLabel="Toolbar settings"
-                              variant="ghost"
+                              variant="soft"
                           /></j-toolbar>
                         } @else if (example.key === 'form') {
                           <form class="j-preview-row">
                             <j-button label="Submit" type="submit" /><j-button
                               label="Reset"
                               type="reset"
-                              variant="ghost"
+                              variant="soft"
                             />
                           </form>
                         } @else if (example.key === 'severity') {
@@ -1409,8 +1377,8 @@ const CARD_FEATURE_EXAMPLES = [
                               label="Warning"
                               severity="warning"
                             /><j-button label="Danger" severity="danger" /><j-button
-                              label="Help"
-                              severity="help"
+                              label="Neutral"
+                              severity="neutral"
                             /><j-button label="Contrast" severity="contrast" />
                           </div>
                         } @else if (example.key === 'template') {
@@ -1422,15 +1390,14 @@ const CARD_FEATURE_EXAMPLES = [
                             [label]="buttonExampleLabel(example.key)"
                             [variant]="buttonExampleVariant(example.key)"
                             [severity]="example.key === 'destructive' ? 'danger' : 'primary'"
-                            [raised]="example.key === 'raised'"
-                            [pill]="example.key === 'pill'"
+                            [shape]="example.key === 'pill' ? 'pill' : 'rounded'"
                             [icon]="buttonExampleIcon(example.key)"
                             [iconPosition]="example.key === 'icon-after' ? 'right' : 'left'"
-                            [iconOnly]="example.key === 'icon-only'"
+                            [actionDisplay]="example.key === 'icon-only' ? 'icon' : 'icon-label'"
                             [ariaLabel]="example.key === 'icon-only' ? 'Open settings' : ''"
                             [loading]="example.key === 'loading'"
                             [disabled]="example.key === 'disabled'"
-                            [fullWidth]="example.key === 'full-width'"
+                            [width]="example.key === 'full-width' ? 'full' : 'auto'"
                             [badge]="example.key === 'badge' ? 4 : null"
                             badgeAriaLabel="4 unread notifications"
                           />
@@ -1440,7 +1407,7 @@ const CARD_FEATURE_EXAMPLES = [
                         <j-button
                           icon="settings"
                           ariaLabel="Settings"
-                          iconOnly
+                          actionDisplay="icon"
                           [variant]="buttonVariants[example.index]"
                         />
                       }
@@ -1451,21 +1418,21 @@ const CARD_FEATURE_EXAMPLES = [
                           @switch (example.key) {
                             @case ('slots') {
                               <j-card
-                                title="Release plan"
-                                subtitle="Version 0.0.9"
+                                header="Release plan"
+                                subheader="Version 0.0.9"
                                 footer="Updated today"
                                 >All milestones are on track.</j-card
                               >
                             }
                             @case ('form') {
-                              <j-card title="Workspace settings"
+                              <j-card header="Workspace settings"
                                 ><j-input label="Workspace name" value="Operations" /><j-button
                                   jCardActions
                                   label="Save"
                               /></j-card>
                             }
                             @case ('profile') {
-                              <j-card title="Avery Reed" subtitle="Product designer"
+                              <j-card header="Avery Reed" subheader="Product designer"
                                 ><j-avatar
                                   image="/assets/avatars/avery.svg"
                                   label="Avery Reed"
@@ -1473,58 +1440,61 @@ const CARD_FEATURE_EXAMPLES = [
                               /></j-card>
                             }
                             @case ('product') {
-                              <j-card title="Team plan" subtitle="For growing teams"
+                              <j-card header="Team plan" subheader="For growing teams"
                                 ><strong>$24 / month</strong
                                 ><j-button jCardActions label="Choose plan"
                               /></j-card>
                             }
                             @case ('pricing') {
-                              <j-card title="Business" subtitle="Advanced controls"
+                              <j-card header="Business" subheader="Advanced controls"
                                 ><strong>$49 / month</strong
                                 ><j-button jCardActions label="Start trial"
                               /></j-card>
                             }
                             @case ('trend') {
-                              <j-card title="Active accounts"
+                              <j-card header="Active accounts"
                                 ><strong>1,284</strong><j-badge value="+8.2%" severity="success"
                               /></j-card>
                             }
                             @case ('chart') {
-                              <j-card title="Weekly volume"
+                              <j-card header="Weekly volume"
                                 ><j-progress-bar [value]="64" label="64% of weekly target"
                               /></j-card>
                             }
                             @case ('progress') {
-                              <j-card title="Storage"
+                              <j-card header="Storage"
                                 ><strong>72 GB of 100 GB</strong
                                 ><j-progress-bar [value]="72" label="72% used"
                               /></j-card>
                             }
                             @case ('status') {
-                              <j-card title="Release status"
+                              <j-card header="Release status"
                                 ><j-badge value="Ready" severity="success" />
                                 <p>All required checks passed.</p></j-card
                               >
                             }
                             @case ('clickable') {
-                              <j-card title="Open project" subtitle="Keyboard focusable" clickable
+                              <j-card
+                                header="Open project"
+                                subheader="Keyboard focusable"
+                                interactive
                                 ><p>View project details.</p></j-card
                               >
                             }
                             @case ('loading') {
-                              <j-card title="Loading report" skeleton />
+                              <j-card header="Loading report" skeleton />
                             }
                             @case ('empty') {
-                              <j-card title="Saved views"
-                                ><j-empty-state
+                              <j-card header="Saved views"
+                                ><j-empty
                                   title="No saved views"
                                   description="Save a filter to reuse it here."
                                   variant="inline"
                               /></j-card>
                             }
                             @case ('error') {
-                              <j-card title="Account summary"
-                                ><j-empty-state
+                              <j-card header="Account summary"
+                                ><j-empty
                                   title="Could not load summary"
                                   description="Try again in a moment."
                                   variant="inline"
@@ -1538,7 +1508,7 @@ const CARD_FEATURE_EXAMPLES = [
                               /></j-card>
                             }
                             @default {
-                              <j-card title="Design review"
+                              <j-card header="Design review"
                                 ><p>
                                   Review navigation and responsive behavior before release.
                                 </p></j-card
@@ -1639,7 +1609,7 @@ const CARD_FEATURE_EXAMPLES = [
                               <j-table
                                 [value]="[]"
                                 [columns]="clientColumns"
-                                [error]="tableLoadError"
+                                [errorState]="tableLoadError"
                                 emptyActionLabel="Retry"
                               />
                             }
@@ -1667,7 +1637,7 @@ const CARD_FEATURE_EXAMPLES = [
                                 "
                                 [paginator]="example.key === 'pagination'"
                                 [rows]="3"
-                                [filterRow]="example.key === 'filtering'"
+                                [filterDisplay]="example.key === 'filtering' ? 'row' : 'none'"
                                 [showGlobalFilter]="example.key === 'filtering'"
                                 [sortField]="example.key === 'sorting' ? 'legalName' : ''"
                                 [sortOrder]="example.key === 'sorting' ? 1 : 0"
@@ -1694,7 +1664,7 @@ const CARD_FEATURE_EXAMPLES = [
                           bulkActions
                           showColumnManager
                           showExport
-                          striped
+                          variant="striped"
                           hover
                         >
                           <j-button jDataGridActions label="Create order" size="sm" />
@@ -1702,7 +1672,7 @@ const CARD_FEATURE_EXAMPLES = [
                             jDataGridBulkActions
                             label="Archive selected"
                             size="sm"
-                            variant="outline"
+                            variant="outlined"
                           />
                         </j-data-grid>
                       }
@@ -1745,48 +1715,6 @@ const CARD_FEATURE_EXAMPLES = [
                           </j-filter-bar>
                         </div>
                       }
-                      @case ('metric-card') {
-                        <div class="j-preview-grid j-preview-grid--cards">
-                          <j-metric-card
-                            title="Revenue"
-                            value="$42.8k"
-                            trend="up"
-                            trendLabel="+12%"
-                            icon="$"
-                            footer="Month to date"
-                          />
-                          <j-metric-card
-                            title="Churn"
-                            value="1.8%"
-                            trend="down"
-                            trendLabel="-0.4%"
-                            icon="%"
-                            footer="Rolling 30 days"
-                          />
-                          <j-metric-card title="Loading" loading />
-                        </div>
-                      }
-                      @case ('stat-card') {
-                        <div class="j-preview-grid j-preview-grid--cards">
-                          <j-stat-card
-                            title="Open orders"
-                            value="128"
-                            trend="up"
-                            trendLabel="+18 today"
-                            icon="#"
-                            footer="Updated 4 minutes ago"
-                          />
-                          <j-stat-card
-                            title="SLA risk"
-                            value="7"
-                            trend="neutral"
-                            trendLabel="No change"
-                            icon="!"
-                            footer="Across active queues"
-                          />
-                          <j-stat-card title="Loading" loading />
-                        </div>
-                      }
                       @case ('status-chip') {
                         <div class="j-preview-row">
                           <j-status-chip status="active" />
@@ -1803,19 +1731,19 @@ const CARD_FEATURE_EXAMPLES = [
                           subtitle="Review fulfillment, exceptions, and exportable operational data that may wrap on narrow screens."
                           [breadcrumbs]="pageHeaderBreadcrumbs"
                         >
-                          <j-button jPageActions label="Export" variant="outline" />
+                          <j-button jPageActions label="Export" variant="outlined" />
                           <j-button jPageActions label="Create order" />
                         </j-page-header>
                       }
                       @case ('empty-state') {
-                        <j-empty-state
+                        <j-empty
                           [variant]="emptyStateVariants[example.index]"
                           title="No orders found"
                           description="Try changing filters or create a new order."
                           icon="0"
                         >
                           <j-button jEmptyStateAction label="Create order" />
-                        </j-empty-state>
+                        </j-empty>
                       }
                       @case ('toast') {
                         <div class="j-preview-stack">
@@ -1900,7 +1828,7 @@ const CARD_FEATURE_EXAMPLES = [
                               <div class="j-preview-row">
                                 <j-button
                                   label="Cancel"
-                                  variant="ghost"
+                                  variant="soft"
                                   (onClick)="dialogOpen.set(false)"
                                 />
                                 <j-button label="Save" (onClick)="dialogOpen.set(false)" />
@@ -1917,7 +1845,28 @@ const CARD_FEATURE_EXAMPLES = [
                             severity="danger"
                             (onClick)="openConfirm('danger')"
                           />
+                          <j-confirm-dialog />
                         </div>
+                      }
+                      @case ('data-display') {
+                        <div class="j-preview-grid">
+                          <j-data-display label="Name" value="Item A" />
+                          <j-data-display label="Amount" type="currency" [value]="1250" />
+                          <j-data-display
+                            label="Status"
+                            type="status"
+                            value="Active"
+                            severity="success"
+                          />
+                        </div>
+                      }
+                      @case ('diff-viewer') {
+                        <j-diff-viewer
+                          mode="object"
+                          layout="side-by-side"
+                          [before]="diffBefore"
+                          [after]="diffAfter"
+                        />
                       }
                       @case ('drawer') {
                         <div class="j-preview-row">
@@ -2074,9 +2023,9 @@ const CARD_FEATURE_EXAMPLES = [
                       @case ('container') {
                         <j-container>
                           <j-card
-                            title="Contained content"
-                            subtitle="Max-width layout helper"
-                            bordered
+                            header="Contained content"
+                            subheader="Max-width layout helper"
+                            variant="outlined"
                           >
                             <p>
                               Container keeps page content aligned with consistent horizontal
@@ -2093,10 +2042,14 @@ const CARD_FEATURE_EXAMPLES = [
                           </div>
                         </j-fieldset>
                       }
-                      @case ('float-label') {
-                        <j-float-label label="Email address" fullWidth>
-                          <j-input type="email" [(ngModel)]="floatEmail" fullWidth />
-                        </j-float-label>
+                      @case ('label') {
+                        <j-label
+                          label="Email address"
+                          variant="in-field"
+                          description="We use this for account notices."
+                        >
+                          <j-input type="email" value="avery@example.com" width="full" />
+                        </j-label>
                       }
                       @case ('form-field') {
                         <j-form-field
@@ -2108,19 +2061,13 @@ const CARD_FEATURE_EXAMPLES = [
                       }
                       @case ('icon-field') {
                         <j-icon-field prefixIcon="search" suffixIcon="filter" fullWidth>
-                          <j-input placeholder="Search projects" fullWidth />
+                          <j-input placeholder="Search projects" width="full" />
                         </j-icon-field>
                       }
                       @case ('input-group') {
                         <j-input-group prefixAddon="$" suffixAddon=".00">
                           <j-input placeholder="Amount" />
                         </j-input-group>
-                      }
-                      @case ('input-icon') {
-                        <div class="j-preview-row">
-                          <j-input-icon icon="search" />
-                          <j-input-icon icon="calendar" position="right" />
-                        </div>
                       }
                       @case ('panel') {
                         <j-panel header="Project health" toggleable>
@@ -2152,22 +2099,15 @@ const CARD_FEATURE_EXAMPLES = [
                       }
                       @case ('section-footer') {
                         <j-section-footer>
-                          <j-button label="Cancel" variant="ghost" />
+                          <j-button label="Cancel" variant="soft" />
                           <j-button label="Save changes" />
                         </j-section-footer>
-                      }
-                      @case ('stack') {
-                        <j-stack direction="horizontal" align="center" gap="var(--j-spacing-3)">
-                          <j-badge value="New" />
-                          <span>Composable spacing primitive</span>
-                          <j-button label="Open" size="sm" />
-                        </j-stack>
                       }
                       @case ('toolbar') {
                         <j-toolbar>
                           <j-button label="New" />
-                          <j-button label="Export" variant="outline" />
-                          <j-button label="Archive" variant="ghost" />
+                          <j-button label="Export" variant="outlined" />
+                          <j-button label="Archive" variant="soft" />
                         </j-toolbar>
                       }
                       @case ('toggle-button') {
@@ -2183,7 +2123,7 @@ const CARD_FEATURE_EXAMPLES = [
                         } @else if (example.key === 'button') {
                           <j-button label="Saving" loading loadingLabel="Saving record" />
                         } @else if (example.key === 'card') {
-                          <j-card title="Account summary"
+                          <j-card header="Account summary"
                             ><j-loader type="spinner" inline label="Loading account summary"
                           /></j-card>
                         } @else {
@@ -2210,7 +2150,7 @@ const CARD_FEATURE_EXAMPLES = [
                           @if (example.key === 'characters') {
                             <app-text-expand-basic-demo />
                           } @else if (example.key === 'responsive') {
-                            <j-card title="Release summary">
+                            <j-card header="Release summary">
                               <j-text-expand
                                 [text]="productDescription"
                                 mode="lines"
@@ -2243,14 +2183,6 @@ const CARD_FEATURE_EXAMPLES = [
                           }
                         </div>
                       }
-                      @case ('empty-page') {
-                        <j-empty-page
-                          title="No results"
-                          description="Try changing the filters."
-                          icon="search"
-                          ><j-button label="Clear filters"
-                        /></j-empty-page>
-                      }
                       @case ('error-page') {
                         <j-error-page
                           code="500"
@@ -2264,31 +2196,8 @@ const CARD_FEATURE_EXAMPLES = [
                           title="Maintenance in progress"
                           description="The application will be back soon."
                           detail="Estimated recovery: 20 minutes"
-                          ><j-button label="View system status" variant="outline"
+                          ><j-button label="View system status" variant="outlined"
                         /></j-maintenance-page>
-                      }
-                      @case ('status-page') {
-                        <div class="j-preview-stack">
-                          <j-status-page
-                            variant="empty"
-                            marker="?"
-                            title="No matching records"
-                            description="Adjust the current filters and try again."
-                          />
-                          <j-status-page
-                            variant="error"
-                            marker="404"
-                            title="Page not found"
-                            description="The requested page is unavailable."
-                          />
-                          <j-status-page
-                            variant="maintenance"
-                            marker="Maintenance"
-                            title="Service maintenance"
-                            description="This area is temporarily unavailable."
-                            detail="Estimated recovery: 20 minutes"
-                          />
-                        </div>
                       }
                       @case ('meter-group') {
                         <j-meter-group [value]="meterSegments" />
@@ -2312,9 +2221,9 @@ const CARD_FEATURE_EXAMPLES = [
                               ><span>Settings</span>
                             </nav>
                             <j-card
-                              title="Dashboard"
-                              subtitle="Application shell content"
-                              bordered
+                              header="Dashboard"
+                              subheader="Application shell content"
+                              variant="outlined"
                             />
                             <small jShellFooter>JRNG UI workspace</small>
                           </j-app-shell>
@@ -2343,8 +2252,8 @@ const CARD_FEATURE_EXAMPLES = [
                             [modal]="false"
                           >
                             <div class="j-preview-stack">
-                              <j-button label="Duplicate" variant="outline" />
-                              <j-button label="Archive" variant="ghost" />
+                              <j-button label="Duplicate" variant="outlined" />
+                              <j-button label="Archive" variant="soft" />
                             </div>
                           </j-bottom-sheet>
                         </div>
@@ -2378,33 +2287,6 @@ const CARD_FEATURE_EXAMPLES = [
                       @case ('chips') {
                         <j-chips label="Skills" placeholder="Add a skill" [(ngModel)]="tags" />
                       }
-                      @case ('column') {
-                        <div class="j-preview-stack">
-                          <p class="j-preview-note">
-                            <strong>Table Column</strong> is declarative table metadata. For
-                            responsive page layout, use <code>j-col</code> from
-                            <code>jrng-ui/grid</code>.
-                          </p>
-                          <j-table [value]="orders" [paginator]="false">
-                            <j-column field="order" header="Order" [sortable]="true" />
-                            <j-column field="customer" header="Customer" />
-                            <j-column field="status" header="Status" />
-                          </j-table>
-                        </div>
-                      }
-                      @case ('combobox') {
-                        <div class="j-overlay-form-preview">
-                          <j-combobox
-                            label="Searchable customer"
-                            [options]="customerSuggestions"
-                            placeholder="Choose or type a customer"
-                            [(ngModel)]="selectedCustomer"
-                          />
-                          <p class="j-preview-note">
-                            Select an option or enter a permitted custom value.
-                          </p>
-                        </div>
-                      }
                       @case ('command-palette') {
                         <div class="j-preview-row">
                           <j-button
@@ -2430,23 +2312,6 @@ const CARD_FEATURE_EXAMPLES = [
                         </div>
                         <j-context-menu [target]="contextTarget" [model]="menubarItems" />
                       }
-                      @case ('dashboard-layout') {
-                        <div class="j-layout-preview-frame">
-                          <j-dashboard-layout styleClass="j-doc-compact-dashboard">
-                            <section class="j-dashboard-preview-heading">
-                              <span>Operations overview</span><strong>Weekly performance</strong>
-                            </section>
-                            <div class="j-dashboard-preview-metrics">
-                              <j-stat-card label="Revenue" value="$42.8k" />
-                              <j-stat-card label="Orders" value="1,284" />
-                            </div>
-                            <section class="j-dashboard-preview-activity">
-                              <strong>Recent activity</strong>
-                              <span>12 orders are ready for review</span>
-                            </section>
-                          </j-dashboard-layout>
-                        </div>
-                      }
                       @case ('data-view') {
                         <j-data-view
                           [value]="dataViewItems"
@@ -2454,14 +2319,6 @@ const CARD_FEATURE_EXAMPLES = [
                           [rows]="3"
                           [paginator]="false"
                         />
-                      }
-                      @case ('date-range-picker') {
-                        <div class="j-overlay-form-preview">
-                          <j-date-range-picker label="Campaign window" [(ngModel)]="dateRange" />
-                        </div>
-                      }
-                      @case ('dropzone') {
-                        <j-dropzone accept=".csv,.xlsx" multiple title="Import records" />
                       }
                       @case ('dynamic-dialog') {
                         <div class="j-preview-row">
@@ -2499,11 +2356,25 @@ const CARD_FEATURE_EXAMPLES = [
                       }
                       @case ('grid-layout') {
                         <j-grid-layout [columns]="3" minItemWidth="10rem">
-                          <j-card title="Design" bordered /><j-card title="Build" bordered /><j-card
-                            title="Ship"
-                            bordered
-                          />
+                          <j-card header="Design" variant="outlined" /><j-card
+                            header="Build"
+                            variant="outlined"
+                          /><j-card header="Ship" variant="outlined" />
                         </j-grid-layout>
+                      }
+                      @case ('highlight') {
+                        <j-highlight
+                          text="Search matching text without injecting HTML."
+                          [term]="['matching', 'HTML']"
+                        />
+                      }
+                      @case ('html-preview') {
+                        <j-html-preview
+                          mode="iframe"
+                          device="mobile"
+                          [height]="240"
+                          [html]="previewHtml"
+                        />
                       }
                       @case ('grid') {
                         <div class="j-doc-grid-demo">
@@ -2572,11 +2443,6 @@ const CARD_FEATURE_EXAMPLES = [
                           </j-grid>
                         </div>
                       }
-                      @case ('ifta-label') {
-                        <j-ifta-label label="Email address" fullWidth>
-                          <j-input value="avery@example.com" />
-                        </j-ifta-label>
-                      }
                       @case ('image') {
                         <j-image
                           [src]="previewImage"
@@ -2584,19 +2450,6 @@ const CARD_FEATURE_EXAMPLES = [
                           width="18rem"
                           preview
                         />
-                      }
-                      @case ('image-preview') {
-                        <div class="j-preview-row">
-                          <j-button
-                            label="Open image preview"
-                            (onClick)="imagePreviewOpen = true"
-                          />
-                          <j-image-preview
-                            [src]="previewImage"
-                            alt="Abstract product preview"
-                            [(visible)]="imagePreviewOpen"
-                          />
-                        </div>
                       }
                       @case ('kanban') {
                         <j-kanban
@@ -2637,62 +2490,13 @@ const CARD_FEATURE_EXAMPLES = [
                       @case ('org-chart') {
                         <j-org-chart [value]="organization" />
                       }
-                      @case ('overlay-panel') {
-                        <div class="j-preview-row">
-                          <button
-                            #overlayTrigger
-                            class="j-doc-preview-button"
-                            type="button"
-                            (click)="previewOverlay.toggle(overlayTrigger)"
-                          >
-                            Toggle details
-                          </button>
-                          <j-overlay-panel #previewOverlay>
-                            <strong>Project details</strong>
-                            <p>Owned by the design systems team.</p>
-                          </j-overlay-panel>
-                        </div>
-                      }
-                      @case ('pick-list') {
-                        <j-pick-list [source]="transferSource" [target]="transferTarget" filter>
-                          <ng-template #jPickListAdd><j-icon name="plus" /></ng-template>
-                          <ng-template #jPickListAddAll>
-                            <span><j-icon name="plus" /> Add all</span>
-                          </ng-template>
-                          <ng-template #jPickListMoveUp><j-icon name="chevron-up" /></ng-template>
-                          <ng-template #jPickListMoveDown>
-                            <j-icon name="chevron-down" />
-                          </ng-template>
-                          <ng-template #jPickListRemove><j-icon name="minus" /></ng-template>
-                          <ng-template #jPickListClear>
-                            <span><j-icon name="close" /> Clear</span>
-                          </ng-template>
-                        </j-pick-list>
-                      }
-                      @case ('sidebar-layout') {
-                        <div class="j-layout-preview-frame">
-                          <j-sidebar-layout styleClass="j-doc-compact-sidebar-layout">
-                            <nav jSidebar class="j-preview-mini-nav">
-                              <span class="is-active">Inbox</span><span>Archive</span>
-                            </nav>
-                            <j-card title="Inbox" subtitle="12 unread messages" bordered />
-                          </j-sidebar-layout>
-                        </div>
-                      }
                       @case ('sidebar-nav') {
                         <j-sidebar-nav [model]="menuItems" activeKey="Open" />
                       }
-                      @case ('sort-icon') {
-                        <div class="j-preview-row">
-                          <span>Name <j-sort-icon [order]="1" /></span>
-                          <span>Created <j-sort-icon [order]="-1" /></span>
-                          <span>Status <j-sort-icon [order]="0" /></span>
-                        </div>
-                      }
                       @case ('splitter') {
                         <j-splitter styleClass="j-doc-splitter">
-                          <section>Navigation panel</section>
-                          <section>Content panel</section>
+                          <j-splitter-panel [size]="35">Navigation panel</j-splitter-panel>
+                          <j-splitter-panel [size]="65">Content panel</j-splitter-panel>
                         </j-splitter>
                       }
                       @case ('stepper') {
@@ -2707,15 +2511,6 @@ const CARD_FEATURE_EXAMPLES = [
                           <j-tab header="Overview">Overview content</j-tab>
                           <j-tab header="Activity">Activity content</j-tab>
                         </j-tabs>
-                      }
-                      @case ('table-empty-state') {
-                        <j-table-empty-state
-                          title="No orders"
-                          message="Try adjusting your filters."
-                        />
-                      }
-                      @case ('table-skeleton') {
-                        <j-table-skeleton [rows]="4" [columns]="4" />
                       }
                       @case ('tiered-menu') {
                         <j-tiered-menu [model]="menuItems" />
@@ -2749,8 +2544,15 @@ const CARD_FEATURE_EXAMPLES = [
                       }
                       @case ('video-player') {
                         <j-video-player
-                          src="https://www.youtube.com/watch?v=M7lc1UVf-VE"
+                          src="/assets/demo-video.mp4"
                           caption="YouTube embed example"
+                        />
+                      }
+                      @case ('validation-message') {
+                        <j-validation-message
+                          message="Enter a valid value."
+                          displayMode="always"
+                          severity="danger"
                         />
                       }
                       @case ('virtual-scroller') {
@@ -2852,7 +2654,7 @@ const CARD_FEATURE_EXAMPLES = [
                                   <div class="j-generated-overlay">
                                     <strong>{{ doc().name }}</strong>
                                     <p>{{ doc().description }}</p>
-                                    <button type="button">Action</button>
+                                    <j-button label="Action" />
                                   </div>
                                 } @else if (
                                   doc().category.includes('Media') ||
@@ -2958,23 +2760,7 @@ const CARD_FEATURE_EXAMPLES = [
         } @else {
           <section class="j-doc-opening-section" id="component-api-overview">
             <h2>{{ doc().name }} API</h2>
-            <p>Public inputs, outputs, styling hooks, accessibility, and usage guidance.</p>
-          </section>
-
-          <section class="j-doc-section-block" id="component-usage">
-            <h3>Usage</h3>
-            @if (doc().usage.length) {
-              <ul>
-                @for (item of doc().usage; track item) {
-                  <li>{{ item }}</li>
-                }
-              </ul>
-            } @else {
-              <div class="j-doc-empty-detail">
-                <j-icon name="info" />
-                <p>No additional usage guidance is required for {{ doc().name }}.</p>
-              </div>
-            }
+            <p>Public inputs, outputs, styling hooks, accessibility, and integration contracts.</p>
           </section>
 
           <section class="j-doc-grid-sections" id="component-variants">
@@ -3109,8 +2895,8 @@ const CARD_FEATURE_EXAMPLES = [
 
             <section class="j-doc-grid-sections">
               <div class="j-doc-section-block">
-                <h3>Common real-world example</h3>
-                <p>{{ guide.realWorldExample }}</p>
+                <h3>Composed example</h3>
+                <p>{{ guide.composedExample }}</p>
               </div>
               <div class="j-doc-section-block">
                 <h3>Troubleshooting</h3>
@@ -3365,15 +3151,23 @@ const CARD_FEATURE_EXAMPLES = [
         }
       </aside>
     </div>
+    <j-tour-guide />
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ComponentDetailViewComponent {
+  readonly previewWidths = [
+    { label: 'Full', width: null },
+    { label: '320', width: 320 },
+    { label: '375', width: 375 },
+    { label: '768', width: 768 },
+  ] as const;
+  readonly previewWidth = signal<number | null>(null);
   private readonly documentRef = inject(DOCUMENT);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
-  private readonly toast = inject(JrToastService);
+  private readonly toast = inject(JToastService);
   private readonly confirmation = inject(JConfirmationService);
-  private readonly dialogService = inject(JrDialogService);
+  private readonly dialogService = inject(JDialogService);
   private readonly tour = inject(JTourService);
 
   readonly doc = input.required<ComponentDoc>();
@@ -3393,13 +3187,16 @@ export class ComponentDetailViewComponent {
   readonly featureExamples = computed<readonly DetailFeatureExample[]>(() => {
     const doc = this.doc();
     if (doc.slug === 'table') {
-      return TABLE_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+      return TABLE_FEATURE_EXAMPLES.map((example, index) => ({
+        ...example,
+        index,
+      }));
     }
     if (doc.slug === 'text-expand') {
       return TEXT_EXPAND_FEATURE_EXAMPLES.map((example, index) =>
         example.key === 'characters'
           ? { ...example, index, ...demoSources['text-expand-basic-demo'] }
-          : { ...example, index },
+          : { ...example, index, responsivePreview: example.key === 'responsive' },
       );
     }
     if (doc.slug === 'button') {
@@ -3436,23 +3233,9 @@ export class ComponentDetailViewComponent {
       const examples: DetailFeatureExample[] = [
         {
           name: 'Basic',
-          details: doc.whenToUse,
+          details: doc.description,
           key: 'basic',
           index: 0,
-          html: doc.code.basic,
-        },
-        {
-          name: 'Real-world placement',
-          details: doc.usage[0] ?? `Place ${doc.name} in a focused application workflow.`,
-          key: 'real-world',
-          index: 1,
-          html: doc.code.basic,
-        },
-        {
-          name: 'Accessibility',
-          details: doc.accessibility[0] ?? 'Provide a clear accessible name and test keyboard use.',
-          key: 'accessibility',
-          index: 2,
           html: doc.code.basic,
         },
       ];
@@ -3464,7 +3247,7 @@ export class ComponentDetailViewComponent {
           name: `${stateInput.name.charAt(0).toUpperCase()}${stateInput.name.slice(1)} state`,
           details: `Use the public ${stateInput.name} input to communicate this state consistently.`,
           key: stateInput.name,
-          index: 3,
+          index: 1,
           html: this.addExampleBooleanInput(doc.code.basic, stateInput.name),
         });
       }
@@ -3473,17 +3256,17 @@ export class ComponentDetailViewComponent {
 
     return keys.map((key, index) => ({
       name: key.charAt(0).toUpperCase() + key.slice(1),
-      details: doc.variants[index] ?? doc.whenToUse,
+      details: doc.variants[index] ?? doc.description,
       key,
       index,
       html: variantExampleHtml(doc, key),
+      responsivePreview: key === 'responsive',
     }));
   });
   readonly contentsItems = computed<readonly DetailContentsItem[]>(() => {
     if (this.detailViewTab() === 'features') {
       return [
         { id: 'component-overview', label: 'Overview', level: 0 },
-        { id: 'component-usage-guidance', label: 'When to Use', level: 0 },
         { id: 'component-import', label: 'Import', level: 0 },
         ...this.featureExamples().map((example) => ({
           id: `component-preview-${example.key}`,
@@ -3560,12 +3343,42 @@ export class ComponentDetailViewComponent {
     return template.replace(/^(\s*<j-[a-z0-9-]+)/, `$1 ${inputName}`);
   }
   readonly tableVariants: readonly JTableVariant[] = [
-    'default',
+    'standard',
+    'gridlines',
     'striped',
-    'bordered',
     'minimal',
-    'card',
   ];
+  readonly activityItems = [
+    {
+      id: 1,
+      title: 'Record updated',
+      description: 'Field values changed.',
+      timestamp: '2026-07-18T09:30:00Z',
+      actor: 'Actor',
+      severity: 'info',
+      details: { field: 'Name' },
+    },
+  ] as const;
+  readonly approvalSteps = [
+    { id: 1, label: 'Step 1', status: 'approved', actor: 'Actor' },
+    { id: 2, label: 'Step 2', status: 'pending' },
+  ] as const;
+  readonly auditEntries = [
+    {
+      id: 1,
+      actor: 'Actor',
+      action: 'updated',
+      entity: 'Record',
+      timestamp: '2026-07-18T09:30:00Z',
+      before: { name: 'Item A' },
+      after: { name: 'Item B' },
+      severity: 'info',
+    },
+  ] as const;
+  readonly diffBefore = { name: 'Item A', status: 'Pending', amount: 100 };
+  readonly diffAfter = { name: 'Item A', status: 'Approved', amount: 125 };
+  readonly previewHtml =
+    '<!doctype html><html><body><main><h1>Preview</h1><p>Sanitized local HTML.</p></main></body></html>';
   readonly tableDensities = ['compact', 'comfortable', 'spacious'] as const;
   readonly productDescription =
     'A durable task light with adjustable brightness, a compact base, and a warm reading mode for desks and bedside tables. The metal arm rotates smoothly and the controls remain easy to reach.';
@@ -3641,9 +3454,9 @@ export class ComponentDetailViewComponent {
   }
   readonly accordionVariants: readonly JAccordionVariant[] = ['default', 'separated', 'minimal'];
   readonly buttonVariants: readonly JButtonVariant[] = [
-    'filled',
-    'outline',
-    'ghost',
+    'solid',
+    'outlined',
+    'text',
     'soft',
     'link',
   ];
@@ -3676,10 +3489,10 @@ export class ComponentDetailViewComponent {
   }
 
   buttonExampleVariant(key: string): JButtonVariant {
-    if (key === 'outline') return 'outline';
+    if (key === 'outline') return 'outlined';
     if (key === 'text') return 'text';
     if (key === 'link') return 'link';
-    return 'filled';
+    return 'solid';
   }
 
   buttonExampleIcon(key: string): string {
@@ -3706,7 +3519,7 @@ export class ComponentDetailViewComponent {
     return types.includes(key as JLoaderVariant) ? (key as JLoaderVariant) : 'spinner';
   }
   readonly inputVariants: readonly JInputVariant[] = ['outlined', 'filled'];
-  readonly paginatorVariants: readonly JPaginatorVariant[] = ['default', 'simple'];
+  readonly paginatorVariants: readonly JPaginatorVariant[] = ['standard', 'simple'];
   readonly progressBarVariants: readonly JProgressBarVariant[] = [
     'default',
     'segmented',
@@ -3714,7 +3527,7 @@ export class ComponentDetailViewComponent {
   ];
   readonly breadcrumbVariants: readonly JBreadcrumbVariant[] = ['default', 'contained', 'steps'];
   readonly emptyStateVariants: readonly JEmptyStateVariant[] = ['default', 'inline', 'panel'];
-  readonly pageHeaderVariants: readonly JPageHeaderVariant[] = ['default', 'stacked', 'centered'];
+  readonly pageHeaderVariants: readonly JPageHeaderVariant[] = ['standard', 'stacked', 'centered'];
   readonly stepperVariants: readonly JStepperVariant[] = ['default', 'rail', 'progress'];
   readonly tabsVariants: readonly JTabsVariant[] = ['default', 'pills', 'segmented'];
   readonly timelineVariants: readonly JTimelineVariant[] = ['default', 'activity', 'alternating'];
@@ -3732,7 +3545,6 @@ export class ComponentDetailViewComponent {
     'date-range-picker',
     'drawer',
     'menubar',
-    'overlay-panel',
     'popover',
     'select',
     'tiered-menu',
@@ -3777,7 +3589,10 @@ export class ComponentDetailViewComponent {
   editorValue = '<p>Build accessible Angular interfaces with stable components.</p>';
   meetingTime = '14:30';
   selectedCustomer = 'acme';
-  tags: string[] = ['Angular', 'Accessibility'];
+  tags = [
+    { label: 'Angular', severity: 'primary' as const },
+    { label: 'Accessibility', severity: 'success' as const },
+  ];
   maskedPhone = '(555) 123-4567';
   employeeId = 'JR-2048';
   galleryAnimation: 'fade' | 'zoom' | 'slide' | 'none' = 'fade';
@@ -4023,7 +3838,7 @@ export class ComponentDetailViewComponent {
     {
       field: 'actions',
       header: 'Actions',
-      type: 'action',
+      type: 'actions',
       actions: [
         { key: 'view', label: 'View' },
         { key: 'delete', label: 'Delete', severity: 'danger' },
@@ -4097,7 +3912,7 @@ export class ComponentDetailViewComponent {
     {
       field: 'actions',
       header: 'Actions',
-      type: 'action',
+      type: 'actions',
       minWidth: '8rem',
       actions: [
         { key: 'view', label: 'View client' },
@@ -4168,7 +3983,7 @@ export class ComponentDetailViewComponent {
     pagination: true,
     sortable: true,
     multiSort: true,
-    filterRow: true,
+    filterDisplay: 'row',
     columnFilter: true,
     globalSearch: true,
     columnManager: true,
@@ -4179,7 +3994,6 @@ export class ComponentDetailViewComponent {
     reorderableColumns: true,
     resizableColumns: true,
     maximizable: true,
-    size: 'medium',
     export: { rows: 'selected', visibleColumnsOnly: true },
   };
 

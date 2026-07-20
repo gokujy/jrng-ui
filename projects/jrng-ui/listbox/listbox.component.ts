@@ -5,6 +5,7 @@ import {
   ChangeDetectorRef,
   Component,
   ContentChild,
+  DestroyRef,
   effect,
   forwardRef,
   inject,
@@ -14,6 +15,12 @@ import {
   TemplateRef,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  JAsyncDataController,
+  JAsyncDataSource,
+  JAsyncDataState,
+  JAsyncOptionsQuery,
+} from 'jrng-ui/async-data';
 import { jAriaDescribedBy } from 'jrng-ui/core';
 import { jCreateId } from 'jrng-ui/core';
 import {
@@ -22,7 +29,7 @@ import {
   jNormalizeSelectionOptions,
   jSameSelectionValue,
 } from 'jrng-ui/core';
-import { JSize } from 'jrng-ui/core';
+import { JComponentSize } from 'jrng-ui/core';
 
 export type JListboxOption = JSelectionOptionSource;
 
@@ -69,6 +76,15 @@ export type JListboxOption = JSelectionOptionSource;
         (keydown)="handleKeydown($event)"
         (blur)="onTouched()"
       >
+        @if (asyncState().loading) {
+          <span class="j-listbox__empty" role="status">Loading options</span>
+        }
+        @if (asyncState().error) {
+          <span class="j-listbox__empty" role="alert"
+            >Options could not be loaded
+            <button type="button" (click)="retryAsync()">Retry</button></span
+          >
+        }
         @for (option of visibleOptions; track option.value; let i = $index) {
           <button
             class="j-listbox__option"
@@ -240,6 +256,7 @@ export type JListboxOption = JSelectionOptionSource;
 })
 export class JListboxComponent implements ControlValueAccessor {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
+  private readonly destroyRef = inject(DestroyRef);
 
   @ContentChild('jListboxOption', { read: TemplateRef }) optionTemplate?: TemplateRef<{
     readonly $implicit: JSelectionOptionSource;
@@ -253,6 +270,9 @@ export class JListboxComponent implements ControlValueAccessor {
   readonly id = input(jCreateId('j-listbox'));
   readonly label = input('');
   readonly options = input<readonly JListboxOption[]>([]);
+  readonly dataSource = input<JAsyncDataSource<JListboxOption, JAsyncOptionsQuery> | null>(null);
+  readonly debounce = input(250);
+  readonly asyncPageSize = input(50);
   readonly optionLabel = input('label');
   readonly optionValue = input('value');
   readonly optionDisabled = input('disabled');
@@ -261,7 +281,7 @@ export class JListboxComponent implements ControlValueAccessor {
   readonly filterPlaceholder = input('Search');
   readonly emptyMessage = input('No options found');
   readonly styleClass = input('');
-  readonly size = input<JSize>('md');
+  readonly size = input<JComponentSize>('md');
   readonly invalid = input(false, { transform: booleanAttribute });
   readonly required = input(false, { transform: booleanAttribute });
   readonly multiple = input(false, { transform: booleanAttribute });
@@ -273,24 +293,50 @@ export class JListboxComponent implements ControlValueAccessor {
     JNormalizedSelectionOption | readonly JNormalizedSelectionOption[] | null
   >();
   readonly filterChange = output<string>();
+  readonly asyncError = output<unknown>();
 
   readonly hintId = jCreateId('j-listbox-hint');
   readonly errorId = jCreateId('j-listbox-error');
   value: unknown = null;
   readonly isDisabled = signal(false);
+  readonly asyncState = signal<JAsyncDataState<JListboxOption>>({
+    loading: false,
+    items: [],
+    error: null,
+  });
   filterText = '';
   activeIndex = 0;
 
   onTouched: () => void = () => undefined;
   private onChange: (value: unknown) => void = () => undefined;
+  private asyncController?: JAsyncDataController<JListboxOption, JAsyncOptionsQuery>;
+  private searchTimer?: ReturnType<typeof setTimeout>;
 
   constructor() {
     effect(() => this.isDisabled.set(this.disabled()));
+    effect(() => {
+      const source = this.dataSource();
+      this.asyncController?.destroy();
+      this.asyncController = source
+        ? new JAsyncDataController(source, {
+            onStateChange: (state) => {
+              this.asyncState.set(state);
+              if (state.error) this.asyncError.emit(state.error);
+              this.changeDetectorRef.markForCheck();
+            },
+          })
+        : undefined;
+      if (source) void this.loadAsync('');
+    });
+    this.destroyRef.onDestroy(() => {
+      if (this.searchTimer) clearTimeout(this.searchTimer);
+      this.asyncController?.destroy();
+    });
   }
 
   get normalizedOptions(): readonly JNormalizedSelectionOption[] {
     return jNormalizeSelectionOptions(
-      this.options(),
+      this.dataSource() ? this.asyncState().items : this.options(),
       this.optionLabel(),
       this.optionValue(),
       this.optionDisabled(),
@@ -362,6 +408,27 @@ export class JListboxComponent implements ControlValueAccessor {
     const target = event.target as HTMLInputElement;
     this.filterText = target.value;
     this.filterChange.emit(this.filterText);
+    if (this.dataSource()) {
+      if (this.searchTimer) clearTimeout(this.searchTimer);
+      this.searchTimer = setTimeout(() => void this.loadAsync(this.filterText), this.debounce());
+    }
+  }
+
+  retryAsync(): void {
+    this.asyncController?.invalidate();
+    void this.loadAsync(this.filterText);
+  }
+  private loadAsync(search: string): Promise<unknown> {
+    const selectedValues = Array.isArray(this.value)
+      ? this.value
+      : this.value == null
+        ? []
+        : [this.value];
+    return (
+      this.asyncController
+        ?.load({ search, page: 0, pageSize: this.asyncPageSize(), selectedValues })
+        .catch(() => undefined) ?? Promise.resolve()
+    );
   }
 
   selectOption(option: JNormalizedSelectionOption): void {

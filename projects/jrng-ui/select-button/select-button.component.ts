@@ -21,7 +21,7 @@ import {
   jNormalizeSelectionOptions,
   jSameSelectionValue,
 } from 'jrng-ui/core';
-import { JSize } from 'jrng-ui/core';
+import { JComponentSize } from 'jrng-ui/core';
 
 @Component({
   selector: 'j-select-button',
@@ -145,7 +145,7 @@ export class JSelectButtonComponent implements ControlValueAccessor {
   readonly optionValue = input('value');
   readonly optionDisabled = input('disabled');
   readonly styleClass = input('');
-  readonly size = input<JSize>('md');
+  readonly size = input<JComponentSize>('md');
   readonly multiple = input(false, { transform: booleanAttribute });
   readonly readonly = input(false, { transform: booleanAttribute });
   readonly invalid = input(false, { transform: booleanAttribute });

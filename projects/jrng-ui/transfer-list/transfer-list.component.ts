@@ -2,30 +2,41 @@ import {
   booleanAttribute,
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
+  ElementRef,
+  PLATFORM_ID,
+  afterNextRender,
   computed,
   input,
   model,
   signal,
+  inject,
 } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import {
   JNormalizedSelectionOption,
   JSelectionOptionSource,
   jNormalizeSelectionOptions,
   jSameSelectionValue,
 } from 'jrng-ui/core';
+import { JButtonComponent } from 'jrng-ui/button';
+import { JInputComponent } from 'jrng-ui/input';
+
+export type JTransferListResponsiveMode = 'auto' | 'stack' | 'none';
 
 @Component({
   selector: 'j-transfer-list',
-  imports: [],
+  imports: [JButtonComponent, JInputComponent],
   template: `
-    <section class="j-transfer-list" data-jc-name="transfer-list" data-jc-section="root">
+    <section [class]="rootClasses()" data-jc-name="transfer-list" data-jc-section="root">
       <div class="j-transfer-list__pane" data-jc-section="source">
         <header>{{ sourceHeader() }}</header>
         @if (filter()) {
-          <input
+          <j-input
             [placeholder]="filterPlaceholder()"
             [value]="sourceFilter()"
-            (input)="updateSourceFilter($event)"
+            width="full"
+            (valueChange)="sourceFilter.set($event)"
           />
         }
         <div role="listbox" aria-multiselectable="true" [attr.aria-label]="sourceAriaLabel()">
@@ -43,40 +54,35 @@ import {
         </div>
       </div>
       <div class="j-transfer-list__actions" data-jc-section="actions">
-        <button
-          type="button"
-          (click)="moveSelectedToTarget()"
+        <j-button
+          label="Move selected"
+          icon="chevron-right"
+          actionDisplay="icon"
+          ariaLabel="Move selected to target"
+          title="Move selected to target"
+          (onClick)="moveSelectedToTarget()"
           [disabled]="!sourceSelected().length"
-        >
-          Move selected
-        </button>
-        <button type="button" (click)="moveAllToTarget()" [disabled]="!source().length">
-          Move all
-        </button>
-        <button
-          type="button"
-          (click)="moveSelectedToSource()"
+        />
+        <j-button label="Move all" icon="chevron-right" actionDisplay="icon" ariaLabel="Move all to target" title="Move all to target" (onClick)="moveAllToTarget()" [disabled]="!source().length" />
+        <j-button
+          label="Remove selected"
+          icon="chevron-left"
+          actionDisplay="icon"
+          ariaLabel="Move selected to source"
+          title="Move selected to source"
+          (onClick)="moveSelectedToSource()"
           [disabled]="!targetSelected().length"
-        >
-          Remove selected
-        </button>
-        <button type="button" (click)="moveAllToSource()" [disabled]="!target().length">
-          Remove all
-        </button>
-        <button type="button" (click)="reorderTarget(-1)" [disabled]="!targetSelected().length">
-          Up
-        </button>
-        <button type="button" (click)="reorderTarget(1)" [disabled]="!targetSelected().length">
-          Down
-        </button>
+        />
+        <j-button label="Remove all" icon="chevron-left" actionDisplay="icon" ariaLabel="Move all to source" title="Move all to source" (onClick)="moveAllToSource()" [disabled]="!target().length" />
       </div>
       <div class="j-transfer-list__pane" data-jc-section="target">
         <header>{{ targetHeader() }}</header>
         @if (filter()) {
-          <input
+          <j-input
             [placeholder]="filterPlaceholder()"
             [value]="targetFilter()"
-            (input)="updateTargetFilter($event)"
+            width="full"
+            (valueChange)="targetFilter.set($event)"
           />
         }
         <div role="listbox" aria-multiselectable="true" [attr.aria-label]="targetAriaLabel()">
@@ -91,6 +97,10 @@ import {
               {{ item.label }}
             </button>
           }
+        </div>
+        <div class="j-transfer-list__reorder" aria-label="Target ordering">
+          <j-button variant="text" actionDisplay="icon" icon="chevron-up" ariaLabel="Move selected target items up" title="Move selected target items up" (onClick)="reorderTarget(-1)" [disabled]="!targetSelected().length" />
+          <j-button variant="text" actionDisplay="icon" icon="chevron-down" ariaLabel="Move selected target items down" title="Move selected target items down" (onClick)="reorderTarget(1)" [disabled]="!targetSelected().length" />
         </div>
       </div>
     </section>
@@ -146,6 +156,10 @@ import {
         display: grid;
         gap: var(--j-spacing-xs);
       }
+      .j-transfer-list__reorder { display: flex; gap: var(--j-spacing-xs); justify-content: flex-end; }
+      .j-transfer-list--stacked { grid-template-columns: minmax(0, 1fr); }
+      .j-transfer-list--stacked .j-transfer-list__actions { display: flex; flex-wrap: wrap; justify-content: center; }
+      .j-transfer-list--stacked .j-transfer-list__pane { width: 100%; }
       .j-transfer-list__actions button {
         border: 1px solid var(--j-color-border);
         border-radius: var(--j-radius-sm);
@@ -161,6 +175,9 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JTransferListComponent {
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   readonly source = model<readonly JSelectionOptionSource[]>([]);
   readonly target = model<readonly JSelectionOptionSource[]>([]);
   readonly optionLabel = input('label');
@@ -172,6 +189,9 @@ export class JTransferListComponent {
   readonly targetAriaLabel = input('Selected items');
   readonly filterPlaceholder = input('Search');
   readonly filter = input(false, { transform: booleanAttribute });
+  readonly responsiveMode = input<JTransferListResponsiveMode>('auto');
+  readonly breakpoint = input('768px');
+  readonly stacked = signal(false);
 
   readonly sourceFilter = signal('');
   readonly targetFilter = signal('');
@@ -200,6 +220,25 @@ export class JTransferListComponent {
   readonly visibleTarget = computed<readonly JNormalizedSelectionOption[]>(() =>
     this.filterOptions(this.normalizedTarget(), this.targetFilter()),
   );
+
+  readonly rootClasses = computed(() => [
+    'j-transfer-list',
+    this.responsiveMode() === 'stack' || (this.responsiveMode() === 'auto' && this.stacked())
+      ? 'j-transfer-list--stacked'
+      : '',
+  ].filter(Boolean).join(' '));
+
+  constructor() {
+    if (!this.isBrowser || typeof ResizeObserver === 'undefined') return;
+    afterNextRender(() => {
+      const observer = new ResizeObserver(([entry]) => {
+        const threshold = Number.parseFloat(this.breakpoint()) || 768;
+        this.stacked.set((entry?.contentRect.width ?? this.host.nativeElement.clientWidth) <= threshold);
+      });
+      observer.observe(this.host.nativeElement);
+      this.destroyRef.onDestroy(() => observer.disconnect());
+    });
+  }
 
   updateSourceFilter(event: Event): void {
     this.sourceFilter.set(this.inputValue(event));

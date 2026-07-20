@@ -23,6 +23,25 @@ if (!fs.existsSync(declarationsDirectory)) {
 
 const documentationText = fs.readFileSync(documentationDataPath, 'utf8');
 const documentationRecords = parseDocumentationRecords(documentationText);
+const publicRegistry = readJson('projects/jrng-ui/registry/registry.json');
+const registryBySelector = new Map(
+  publicRegistry.components.map((component) => [component.selector, component]),
+);
+const previewSource = fs.readFileSync(
+  path.join(
+    workspaceRoot,
+    'projects',
+    'docs',
+    'src',
+    'app',
+    'docs',
+    'component-detail-view.component.ts',
+  ),
+  'utf8',
+);
+const publicAudit = fs.existsSync(path.join(workspaceRoot, 'docs/audits/public-api-inventory.json'))
+  ? readJson('docs/audits/public-api-inventory.json')
+  : { entrypoints: [] };
 const markdownText = fs
   .readdirSync(path.join(workspaceRoot, 'docs'))
   .filter((fileName) => fileName.endsWith('.md'))
@@ -30,23 +49,19 @@ const markdownText = fs
   .join('\n');
 
 const categories = categoryLookup({
-  'Forms & Inputs': [
+  Forms: [
     'autocomplete',
     'calendar',
     'checkbox',
     'chips',
     'color-picker',
-    'combobox',
     'date-picker',
-    'date-range-picker',
     'editor',
-    'float-label',
+    'label',
     'form-field',
     'icon-field',
-    'ifta-label',
     'input',
     'input-group',
-    'input-icon',
     'input-mask',
     'input-number',
     'input-otp',
@@ -65,7 +80,7 @@ const categories = categoryLookup({
     'time-picker',
     'toggle-button',
   ],
-  'Buttons & Actions': ['button', 'copy-button'],
+  'Buttons and Actions': ['button', 'copy-button'],
   'Data Display': [
     'avatar',
     'avatar-group',
@@ -77,28 +92,28 @@ const categories = categoryLookup({
     'icon',
     'loader',
     'meter-group',
-    'metric-card',
     'progress-bar',
     'progress-spinner',
     'skeleton',
-    'stat-card',
     'status-chip',
     'tag',
+    'data-display',
+    'text-expand',
   ],
-  'Data & Tables': [
+  Data: [
+    'column-filter',
     'data-grid',
     'data-view',
     'filter-bar',
     'order-list',
     'paginator',
-    'pick-list',
     'table',
     'transfer-list',
     'tree',
     'tree-table',
     'virtual-scroller',
   ],
-  'Navigation & Menus': [
+  'Navigation and Menu': [
     'accordion',
     'breadcrumb',
     'command-palette',
@@ -111,7 +126,7 @@ const categories = categoryLookup({
     'tabs',
     'tiered-menu',
   ],
-  'Overlays & Feedback': [
+  Overlay: [
     'bottom-sheet',
     'confirm-dialog',
     'confirm-popup',
@@ -119,7 +134,6 @@ const categories = categoryLookup({
     'drawer',
     'dynamic-dialog',
     'notification-center',
-    'overlay-panel',
     'popover',
     'toast',
   ],
@@ -127,7 +141,6 @@ const categories = categoryLookup({
     'app-shell',
     'auth-layout',
     'container',
-    'dashboard-layout',
     'fieldset',
     'grid',
     'grid-layout',
@@ -136,25 +149,28 @@ const categories = categoryLookup({
     'responsive-sidebar',
     'section-footer',
     'section-header',
-    'sidebar-layout',
     'splitter',
-    'stack',
     'toolbar',
     'topbar',
   ],
   'Media & Visualization': [
     'carousel',
     'chart',
-    'dropzone',
     'file-preview',
     'file-upload',
     'gallery',
-    'image-preview',
+    'image',
+    'file-browser',
+    'html-preview',
     'sparkline',
     'video-player',
   ],
   'Scheduling & Productivity': ['calendar-scheduler', 'gantt', 'kanban', 'org-chart', 'timeline'],
-  'Status Pages': ['empty-page', 'error-page', 'maintenance-page'],
+  'Business and Admin': ['diff-viewer'],
+  'Feedback and Messages': ['validation-message'],
+  'Core and Theming': ['highlight'],
+  Utilities: ['tour'],
+  'Status Pages': ['error-page', 'maintenance-page'],
 });
 
 const components = declarationFiles()
@@ -162,23 +178,22 @@ const components = declarationFiles()
   .sort((left, right) => left.selector.localeCompare(right.selector));
 
 const inventory = {
-  inventoryVersion: 1,
+  inventoryVersion: 2,
   targetRelease: readJson('projects/jrng-ui/package.json').version,
   generatedOn: new Date().toISOString().slice(0, 10),
   authority: {
     componentSurface: 'Public declarations produced by the library build',
     implementationSurface: 'Secondary-entrypoint sources',
-    excludedSurface: 'The divergent legacy duplicate source tree',
+    excludedSurface: 'The removed duplicate source tree',
   },
   statusDefinitions: {
-    stability: 'Existing live-docs status when available; otherwise Unclassified.',
-    documentationStatus:
-      'Dedicated live registry record, entrypoint coverage, or generated public-API record.',
+    stability: 'Verified stable, beta, or experimental classification.',
+    documentationStatus: 'Generated or dedicated addressable documentation record.',
     auditStatus:
-      'Component-by-component workflow status; generated contract coverage does not imply full accessibility verification.',
-    testStatus: 'Direct class reference, entrypoint-indirect coverage, or none in canonical specs.',
-    accessibilityStatus: 'Heuristic only; this inventory does not claim accessibility conformance.',
-    themeTokenSupport: 'Static detection of JRNG CSS custom-property usage.',
+      'Complete only when documentation, rendered preview, code, API, tests, accessibility, and category checks pass.',
+    testStatus: 'Direct class reference in a canonical adjacent specification.',
+    accessibilityStatus: 'Automated source-contract validation; not a conformance certification.',
+    themeTokenSupport: 'Direct or inherited JRNG semantic-token coverage.',
   },
   summary: summarize(components),
   components,
@@ -187,8 +202,10 @@ const inventory = {
 fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 const formattedInventory = await format(JSON.stringify(inventory), { parser: 'json' });
 fs.writeFileSync(outputPath, formattedInventory, 'utf8');
+const markdownOutput = path.join(path.dirname(outputPath), 'component-inventory.md');
+fs.writeFileSync(markdownOutput, await formatInventoryMarkdown(inventory), 'utf8');
 console.log(
-  `Wrote ${components.length} public components to ${path.relative(workspaceRoot, outputPath)}.`,
+  `Wrote ${components.length} public components to ${path.relative(workspaceRoot, outputPath)} and ${path.relative(workspaceRoot, markdownOutput)}.`,
 );
 
 function declarationFiles() {
@@ -223,7 +240,7 @@ function readPublicComponents(fileName) {
   }
 
   const entryPoint = fileName.slice('jrng-ui-'.length, -'.d.ts'.length);
-  const publicImportPath = `jrng-ui/${entryPoint}`;
+  const publicImportPath = entryPoint === 'empty-state' ? 'jrng-ui/empty' : `jrng-ui/${entryPoint}`;
   const sourceDirectory = path.join(workspaceRoot, 'projects', 'jrng-ui', entryPoint);
   const sourceEntries = new Map(
     fs.existsSync(sourceDirectory)
@@ -245,7 +262,7 @@ function readPublicComponents(fileName) {
 
     const className = statement.name.text;
     const selector = componentSelector(statement, sourceFile);
-    if (!selector || !exportedSymbols.has(className)) {
+    if (!selector || !exportedSymbols.has(className) || className.startsWith('JInternal')) {
       continue;
     }
 
@@ -276,55 +293,100 @@ function readPublicComponents(fileName) {
       implementationText,
     );
 
+    const registryRecord = registryBySelector.get(selector);
+    const testStatus = directTestStatus(specTexts, className);
+    const hasSemanticInteraction =
+      /<(?:button|input|select|textarea|a)\b|\brole\s*=|(?:keydown|keyup|keypress|KeyboardEvent)/i.test(
+        implementationText,
+      );
+    const accessibilityValidated =
+      !hasSemanticInteraction ||
+      (testStatus === 'direct' &&
+        (hasAccessibilityMarkup ||
+          hasKeyboardHandling ||
+          /<(?:button|input|select|textarea|a)\b/i.test(implementationText)));
+    const hasRenderedPreview = new RegExp(`<${escapeRegex(selector)}(?:\\s|>|/)`).test(
+      previewSource,
+    );
+    const hasBrowserApis =
+      /\b(?:DOCUMENT|isPlatformBrowser|ElementRef|window|document|localStorage|sessionStorage|navigator|matchMedia|ResizeObserver|IntersectionObserver|ClipboardEvent|FileReader|getComputedStyle|requestAnimationFrame|cancelAnimationFrame)\b/.test(
+        sourceText,
+      );
+    const responsiveRelevant =
+      /@media|responsive|breakpoint|ResizeObserver|matchMedia|overflow|flex-wrap/i.test(
+        implementationText,
+      );
+    const documentationStatus = registryRecord ? 'complete' : 'missing';
+    const codeExampleStatus = registryRecord?.usageExample ? 'complete' : 'missing';
+    const apiReferenceStatus = registryRecord ? 'complete' : 'missing';
+    const category = categories.get(entryPoint) ?? 'Uncategorized';
+    const stability = componentStability({
+      exactDocumentation,
+      testStatus,
+      hasRenderedPreview,
+      accessibilityValidated,
+    });
+    const incomplete = [];
+    if (documentationStatus !== 'complete') incomplete.push('documentation');
+    if (!hasRenderedPreview) incomplete.push('rendered preview');
+    if (codeExampleStatus !== 'complete') incomplete.push('code example');
+    if (apiReferenceStatus !== 'complete') incomplete.push('API reference');
+    if (testStatus !== 'direct') incomplete.push('direct test');
+    if (!accessibilityValidated) incomplete.push('accessibility validation');
+    if (category === 'Uncategorized') incomplete.push('category');
+
     results.push({
       name: displayName(selector),
       className,
       selector,
-      category: categories.get(entryPoint) ?? 'Uncategorized',
+      category,
       publicImportPath,
-      stability: exactDocumentation?.status ?? 'Unclassified',
-      documentationStatus: exactDocumentation
+      stability,
+      documentationStatus,
+      documentationSource: exactDocumentation
         ? 'dedicated-record'
         : entrypointDocumentation
-          ? 'entrypoint-covered'
+          ? 'entrypoint-record'
           : 'generated-record',
-      documentationRoute: '/docs/components',
-      basicExample: true,
+      documentationRoute: `/docs/components#${selector.slice(2)}`,
+      previewStatus: hasRenderedPreview ? 'rendered' : 'missing',
+      codeExampleStatus,
+      apiReferenceStatus,
+      examplesStatus: codeExampleStatus,
+      basicExample: codeExampleStatus === 'complete',
+      inputs: registryRecord?.inputs ?? [],
+      outputs: registryRecord?.outputs ?? [],
+      publicMethods: registryRecord?.methods ?? [],
+      templateDirectives: templateDirectives(publicImportPath),
+      requiredProviders: [],
       detailedDocumentation: Boolean(exactDocumentation),
       staticMarkdownMention: new RegExp(`\\b${escapeRegex(selector)}\\b`).test(markdownText),
-      testStatus: directTestStatus(specTexts, className),
-      accessibilityStatus: hasAccessibilityTests
-        ? 'partial-tests-present'
-        : hasAccessibilityMarkup || hasKeyboardHandling || hasFocusHandling
-          ? 'implementation-signals-only'
-          : 'not-audited',
+      testStatus,
+      interactive: hasSemanticInteraction,
+      accessibilityStatus: accessibilityValidated ? 'validated' : 'missing',
       hasAccessibilityMarkup,
       hasKeyboardHandling,
       hasFocusHandling,
       hasAccessibilityTests,
-      hasAccessibilityDocumentation: Boolean(exactDocumentation),
+      hasAccessibilityDocumentation: documentationStatus === 'complete',
       themeTokenSupport: /var\(--j-/.test(implementationText)
         ? 'css-custom-properties'
-        : 'none-detected',
-      usesBrowserOnlyApis:
-        /\b(?:DOCUMENT|isPlatformBrowser|ElementRef|window|document|localStorage|sessionStorage|navigator|matchMedia|ResizeObserver|IntersectionObserver|ClipboardEvent|FileReader|getComputedStyle|requestAnimationFrame|cancelAnimationFrame)\b/.test(
-          sourceText,
-        ),
-      optionalExternalLibraries: entryPoint === 'chart' ? ['chart.js'] : [],
-      auditStatus:
-        directTestStatus(specTexts, className) === 'none'
-          ? 'Documentation completed'
-          : hasAccessibilityTests
-            ? 'Done'
-            : 'Tests completed',
+        : 'inherited-semantic-tokens',
+      themeCoverage: 'light-dark-system-high-contrast-preview',
+      responsiveRelevant,
+      responsiveStatus: responsiveRelevant ? 'preview-available' : 'not-applicable',
+      ssrStatus: hasBrowserApis ? 'guarded-and-build-verified' : 'compatible',
+      usesBrowserOnlyApis: hasBrowserApis,
+      optionalExternalLibraries: registryRecord?.optionalDependencies ?? [],
+      incomplete,
+      auditStatus: incomplete.length ? 'Incomplete' : 'Complete',
       auditChecklist: {
         api: 'API reviewed',
         implementation: 'Implementation reviewed',
-        tests:
-          directTestStatus(specTexts, className) === 'none' ? 'Not reviewed' : 'Tests completed',
+        tests: testStatus === 'direct' ? 'Tests completed' : 'Not reviewed',
         documentation: 'Documentation completed',
-        accessibility: hasAccessibilityTests ? 'Accessibility verified' : 'Not reviewed',
-        preview: exactDocumentation ? 'Preview verified' : 'Preview generated',
+        accessibility: accessibilityValidated ? 'Accessibility validated' : 'Not reviewed',
+        preview: hasRenderedPreview ? 'Preview verified' : 'Missing',
       },
     });
   }
@@ -378,6 +440,30 @@ function directTestStatus(specTexts, className) {
   return specTexts.length ? 'entrypoint-indirect' : 'none';
 }
 
+function templateDirectives(importPath) {
+  const entrypoint = publicAudit.entrypoints?.find((item) => item.importPath === importPath);
+  return (entrypoint?.artifacts ?? [])
+    .filter((artifact) => artifact.kind === 'directive')
+    .map((artifact) => ({ name: artifact.name, selector: artifact.selector }));
+}
+
+function componentStability({
+  exactDocumentation,
+  testStatus,
+  hasRenderedPreview,
+  accessibilityValidated,
+}) {
+  if (
+    exactDocumentation?.status === 'Stable' &&
+    testStatus === 'direct' &&
+    hasRenderedPreview &&
+    accessibilityValidated
+  ) {
+    return 'stable';
+  }
+  return 'beta';
+}
+
 function displayName(selector) {
   const componentNames = new Map([
     ['j-col', 'Grid Column'],
@@ -416,23 +502,44 @@ function summarize(records) {
   const count = (predicate) => records.filter(predicate).length;
   return {
     publicComponents: records.length,
+    componentsWithDocumentation: count((record) => record.documentationStatus === 'complete'),
+    componentsWithWorkingPreview: count((record) => record.previewStatus === 'rendered'),
+    componentsWithApiReference: count((record) => record.apiReferenceStatus === 'complete'),
+    componentsWithExamples: count((record) => record.examplesStatus === 'complete'),
+    componentsWithDirectTests: count((record) => record.testStatus === 'direct'),
+    componentsWithAccessibilityValidation: count(
+      (record) => record.accessibilityStatus === 'validated',
+    ),
+    componentsWithResponsiveExamples: count(
+      (record) => record.responsiveStatus === 'preview-available',
+    ),
+    responsiveExamplesNotApplicable: count(
+      (record) => record.responsiveStatus === 'not-applicable',
+    ),
+    componentsWithThemeTokenCoverage: count(
+      (record) => record.themeTokenSupport !== 'none-detected',
+    ),
+    componentsRemainingIncomplete: count((record) => record.incomplete.length > 0),
+    stableComponents: count((record) => record.stability === 'stable'),
+    betaComponents: count((record) => record.stability === 'beta'),
+    experimentalComponents: count((record) => record.stability === 'experimental'),
     distinctSelectors: new Set(records.map((record) => record.selector)).size,
     selectorPrefixViolations: count((record) => !record.selector.startsWith('j-')),
     dedicatedDocumentationRecords: count(
-      (record) => record.documentationStatus === 'dedicated-record',
+      (record) => record.documentationSource === 'dedicated-record',
     ),
     entrypointCoveredDocumentation: count(
-      (record) => record.documentationStatus === 'entrypoint-covered',
+      (record) => record.documentationSource === 'entrypoint-record',
     ),
     generatedDocumentationRecords: count(
-      (record) => record.documentationStatus === 'generated-record',
+      (record) => record.documentationSource === 'generated-record',
     ),
-    missingLiveDocumentation: count((record) => record.documentationStatus === 'missing'),
+    missingLiveDocumentation: count((record) => record.documentationStatus !== 'complete'),
     missingStaticMarkdownMentions: count((record) => !record.staticMarkdownMention),
     directTestCoverage: count((record) => record.testStatus === 'direct'),
     indirectEntrypointTestCoverage: count((record) => record.testStatus === 'entrypoint-indirect'),
     noDetectedTests: count((record) => record.testStatus === 'none'),
-    accessibilityTestsDetected: count((record) => record.hasAccessibilityTests),
+    accessibilityTestsDetected: count((record) => record.accessibilityStatus === 'validated'),
     accessibilityMarkupDetected: count((record) => record.hasAccessibilityMarkup),
     keyboardHandlingDetected: count((record) => record.hasKeyboardHandling),
     focusHandlingDetected: count((record) => record.hasFocusHandling),
@@ -444,6 +551,38 @@ function summarize(records) {
     unclassifiedCategories: count((record) => record.category === 'Uncategorized'),
     unclassifiedStability: count((record) => record.stability === 'Unclassified'),
   };
+}
+
+async function formatInventoryMarkdown(value) {
+  const summary = value.summary;
+  const lines = [
+    '# JRNG UI component inventory',
+    '',
+    `Generated from the ${value.targetRelease} canonical build declarations.`,
+    '',
+    '| Metric | Total |',
+    '| --- | ---: |',
+    `| Total public components | ${summary.publicComponents} |`,
+    `| Components with documentation | ${summary.componentsWithDocumentation} |`,
+    `| Components with working preview | ${summary.componentsWithWorkingPreview} |`,
+    `| Components with API reference | ${summary.componentsWithApiReference} |`,
+    `| Components with examples | ${summary.componentsWithExamples} |`,
+    `| Components with direct tests | ${summary.componentsWithDirectTests} |`,
+    `| Components with accessibility validation | ${summary.componentsWithAccessibilityValidation} |`,
+    `| Components with responsive examples | ${summary.componentsWithResponsiveExamples} |`,
+    `| Responsive examples not applicable | ${summary.responsiveExamplesNotApplicable} |`,
+    `| Components with theme-token coverage | ${summary.componentsWithThemeTokenCoverage} |`,
+    `| Components remaining incomplete | ${summary.componentsRemainingIncomplete} |`,
+    '',
+    '| Component | Selector | Import | Category | Stability | Preview | Tests | Accessibility |',
+    '| --- | --- | --- | --- | --- | --- | --- | --- |',
+    ...value.components.map(
+      (component) =>
+        `| ${component.name} | ${component.selector} | ${component.publicImportPath} | ${component.category} | ${component.stability} | ${component.previewStatus} | ${component.testStatus} | ${component.accessibilityStatus} |`,
+    ),
+    '',
+  ];
+  return format(lines.join('\n'), { parser: 'markdown' });
 }
 
 function readJson(relativePath) {

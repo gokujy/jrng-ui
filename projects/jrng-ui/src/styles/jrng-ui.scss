@@ -6,12 +6,16 @@
 @layer j-theme, j-base, j-components, j-utilities;
 
 :root[data-j-density='compact'] {
+  --j-density-gap: var(--j-density-compact-gap);
+  --j-density-padding: var(--j-density-compact-padding);
   --j-input-height-sm: 1.875rem;
   --j-input-height-md: 2.25rem;
   --j-input-height-lg: 2.75rem;
 }
 
 :root[data-j-density='spacious'] {
+  --j-density-gap: var(--j-density-spacious-gap);
+  --j-density-padding: var(--j-density-spacious-padding);
   --j-input-height-sm: 2.5rem;
   --j-input-height-md: 3rem;
   --j-input-height-lg: 3.5rem;

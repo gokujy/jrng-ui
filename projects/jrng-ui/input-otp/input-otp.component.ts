@@ -17,7 +17,7 @@ import {
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { jCreateId } from 'jrng-ui/core';
 import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
-import { JSize } from 'jrng-ui/core';
+import { JComponentSize } from 'jrng-ui/core';
 import { JInputVariant } from 'jrng-ui/input';
 
 @Component({
@@ -173,7 +173,7 @@ export class JInputOtpComponent implements ControlValueAccessor {
   readonly error = input('');
   readonly styleClass = input('');
   readonly ariaLabel = input('One-time code');
-  readonly size = input<JSize>('md');
+  readonly size = input<JComponentSize>('md');
   readonly variant = input<JInputVariant>('outlined');
   readonly pt = input<JPassThrough | null>(null);
   readonly numericOnly = input(false, { transform: booleanAttribute });

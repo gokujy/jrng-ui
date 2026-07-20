@@ -5,11 +5,11 @@ import {
   JButtonSeverity,
   JButtonSize,
   JButtonVariant,
-  JrButtonComponent,
+  JButtonComponent,
 } from './button.component';
 
 @Component({
-  imports: [JrButtonComponent],
+  imports: [JButtonComponent],
   template: `
     <j-button
       [severity]="severity"
@@ -31,7 +31,7 @@ class ButtonHostComponent {
   presses = 0;
 }
 
-describe('JrButtonComponent', () => {
+describe('JButtonComponent', () => {
   let fixture: ComponentFixture<ButtonHostComponent>;
   let host: ButtonHostComponent;
 
@@ -97,33 +97,18 @@ describe('JrButtonComponent', () => {
     expect(button().classList).toContain('j-ripple');
   });
 
-  it('renders every visual variant and additive severity', () => {
-    const variants: JButtonVariant[] = [
-      'filled',
-      'outline',
-      'outlined',
-      'ghost',
-      'soft',
-      'link',
-      'text',
-    ];
+  it('renders every visual variant', () => {
+    const variants: JButtonVariant[] = ['solid', 'outlined', 'soft', 'link', 'text'];
     for (const variant of variants) {
-      const direct = TestBed.createComponent(JrButtonComponent);
+      const direct = TestBed.createComponent(JButtonComponent);
       direct.componentRef.setInput('variant', variant);
       direct.detectChanges();
-      const expected = variant === 'outlined' ? 'outline' : variant === 'text' ? 'link' : variant;
-      expect(direct.nativeElement.querySelector('button').classList).toContain(
-        `j-button--${expected}`,
-      );
+      expect(direct.nativeElement.querySelector('button').classList).toContain(`j-button--${variant}`);
     }
-
-    host.severity = 'help';
-    detectHostChanges();
-    expect(button().classList).toContain('j-button--help');
   });
 
   it('uses button as the safe native type and forwards submit or reset', () => {
-    const direct = TestBed.createComponent(JrButtonComponent);
+    const direct = TestBed.createComponent(JButtonComponent);
     direct.detectChanges();
     expect(direct.nativeElement.querySelector('button').type).toBe('button');
     direct.componentRef.setInput('type', 'submit');
@@ -132,16 +117,16 @@ describe('JrButtonComponent', () => {
   });
 
   it('renders pill, full-width, icon-only, and badge presentation', () => {
-    const direct = TestBed.createComponent(JrButtonComponent);
-    direct.componentRef.setInput('pill', true);
-    direct.componentRef.setInput('fullWidth', true);
-    direct.componentRef.setInput('iconOnly', true);
+    const direct = TestBed.createComponent(JButtonComponent);
+    direct.componentRef.setInput('shape', 'pill');
+    direct.componentRef.setInput('width', 'full');
+    direct.componentRef.setInput('actionDisplay', 'icon');
     direct.componentRef.setInput('icon', 'S');
     direct.componentRef.setInput('ariaLabel', 'Save record');
     direct.componentRef.setInput('badge', 4);
     direct.detectChanges();
     const native = direct.nativeElement.querySelector('button') as HTMLButtonElement;
-    expect(native.classList).toContain('j-button--rounded');
+    expect(native.classList).toContain('j-button--shape-pill');
     expect(native.classList).toContain('j-button--full');
     expect(native.classList).toContain('j-button--icon-only');
     expect(native.getAttribute('aria-label')).toBe('Save record');
@@ -149,7 +134,7 @@ describe('JrButtonComponent', () => {
   });
 
   it('provides loading text and suppresses click output while busy', () => {
-    const direct = TestBed.createComponent(JrButtonComponent);
+    const direct = TestBed.createComponent(JButtonComponent);
     let clicks = 0;
     direct.componentInstance.onClick.subscribe(() => clicks++);
     direct.componentRef.setInput('label', 'Save');
@@ -160,5 +145,12 @@ describe('JrButtonComponent', () => {
     native.click();
     expect(clicks).toBe(0);
     expect(native.textContent).toContain('Saving record');
+  });
+
+  it('forwards expanded state for disclosure actions', () => {
+    const direct = TestBed.createComponent(JButtonComponent);
+    direct.componentRef.setInput('ariaExpanded', true);
+    direct.detectChanges();
+    expect(direct.nativeElement.querySelector('button').getAttribute('aria-expanded')).toBe('true');
   });
 });

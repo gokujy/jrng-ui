@@ -21,13 +21,14 @@ import { JFocusTrapDirective } from 'jrng-ui/core';
 import { jCreateId } from 'jrng-ui/core';
 import { JAppendTo, JOverlayHandle, JOverlayService, JOverlayStackService } from 'jrng-ui/core';
 import { JZIndexManagerService } from 'jrng-ui/core';
+import { JButtonComponent } from 'jrng-ui/button';
 
 export type JDrawerPosition = 'left' | 'right' | 'top' | 'bottom';
 export type JDrawerCloseReason = 'close-button' | 'backdrop' | 'escape' | 'gesture' | 'api';
 
 @Component({
   selector: 'j-drawer',
-  imports: [JFocusTrapDirective],
+  imports: [JFocusTrapDirective, JButtonComponent],
   template: `
     @if (visible()) {
       <div
@@ -78,14 +79,15 @@ export type JDrawerCloseReason = 'close-button' | 'backdrop' | 'escape' | 'gestu
               }
               <ng-content select="[jDrawerHeader]"></ng-content>
               @if (closable()) {
-                <button
-                  class="j-drawer__close"
-                  type="button"
-                  aria-label="Close drawer"
-                  (click)="close('close-button')"
-                >
-                  x
-                </button>
+                <j-button
+                  styleClass="j-drawer__close"
+                  variant="text"
+                  actionDisplay="icon"
+                  icon="close"
+                  ariaLabel="Close drawer"
+                  title="Close drawer"
+                  (onClick)="close('close-button')"
+                />
               }
             </header>
           }

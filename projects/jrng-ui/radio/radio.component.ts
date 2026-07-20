@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { jCreateId } from 'jrng-ui/core';
-import { JSize } from 'jrng-ui/core';
+import { JComponentSize } from 'jrng-ui/core';
 
 @Component({
   selector: 'j-radio',
@@ -130,7 +130,7 @@ export class JRadioComponent implements ControlValueAccessor {
   readonly label = input('');
   readonly value = input<unknown>('');
   readonly styleClass = input('');
-  readonly size = input<JSize>('md');
+  readonly size = input<JComponentSize>('md');
   readonly required = input(false, { transform: booleanAttribute });
   readonly invalid = input(false, { transform: booleanAttribute });
   readonly readonly = input(false, { transform: booleanAttribute });

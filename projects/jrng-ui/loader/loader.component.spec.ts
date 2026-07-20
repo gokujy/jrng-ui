@@ -16,7 +16,7 @@ describe('JLoaderComponent', () => {
     'typing',
   ];
 
-  it('preserves the dots compatibility default and renders every loader type', () => {
+  it('renders the dots default and every loader type', () => {
     const fixture = TestBed.createComponent(JLoaderComponent);
     fixture.detectChanges();
     expect(fixture.debugElement.query(By.css('.j-loader--dots'))).not.toBeNull();
@@ -74,10 +74,4 @@ describe('JLoaderComponent', () => {
     expect(root.getAttribute('aria-valuenow')).toBe('0');
   });
 
-  it('retains the deprecated variant input as a compatibility alias', () => {
-    const fixture = TestBed.createComponent(JLoaderComponent);
-    fixture.componentRef.setInput('variant', 'pulse');
-    fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('.j-loader--pulse')).not.toBeNull();
-  });
 });

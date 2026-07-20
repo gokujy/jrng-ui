@@ -59,7 +59,10 @@ import { JBadgeComponent } from 'jrng-ui/badge';
 ```
 
 ```html
-<j-badge value="12" severity="danger" /> <j-badge severity="success">Paid</j-badge>
+<j-badge [value]="148" [max]="99" severity="danger" ariaLabel="148 notifications" />
+<j-badge value="Paid" severity="success" variant="soft" icon="check" />
+<j-badge dot severity="warning" ariaLabel="Service degraded" />
+<j-badge value="Archived" variant="outlined" muted />
 ```
 
 ## Tag
@@ -101,7 +104,10 @@ import { JDividerComponent } from 'jrng-ui/divider';
 ```
 
 ```html
-<j-divider /> <j-divider layout="vertical" />
+<j-divider />
+<j-divider lineStyle="dashed" strength="strong" />
+<j-divider text="Account settings" icon="settings" position="start" inset />
+<j-divider layout="vertical" spacing="compact" />
 ```
 
 ## Loader
@@ -154,15 +160,15 @@ import { JSkeletonComponent } from 'jrng-ui/skeleton';
 ## Empty State
 
 ```ts
-import { JEmptyStateComponent } from 'jrng-ui/empty-state';
+import { JEmptyComponent } from 'jrng-ui/empty';
 ```
 
 ```html
-<j-empty-state title="No orders found" description="Try changing filters." icon="empty">
+<j-empty title="No orders found" description="Try changing filters." icon="empty">
   <j-button jEmptyStateAction label="Create order" />
-</j-empty-state>
+</j-empty>
 
-<j-empty-state title="No tasks" description="Create a task to get started." compact />
+<j-empty title="No tasks" description="Create a task to get started." compact />
 ```
 
 ## Icon

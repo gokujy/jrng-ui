@@ -1,5 +1,6 @@
 import { reflectComponentType } from '@angular/core';
 import { JPasswordComponent } from './password.component';
+import { jEvaluatePassword } from './password.component';
 
 describe('JPasswordComponent public contract', () => {
   const metadata = reflectComponentType(JPasswordComponent);
@@ -15,5 +16,15 @@ describe('JPasswordComponent public contract', () => {
     expect(new Set(inputs).size).toBe(inputs.length);
     expect(new Set(outputs).size).toBe(outputs.length);
     expect(metadata?.ngContentSelectors).toBeDefined();
+  });
+});
+
+describe('password strength guidance', () => {
+  it('evaluates configurable rules without claiming server security', () => {
+    expect(
+      jEvaluatePassword('Ab1!', [
+        { id: 'upper', label: 'Upper', test: (value) => /[A-Z]/.test(value) },
+      ]),
+    ).toEqual([{ id: 'upper', label: 'Upper', passed: true }]);
   });
 });

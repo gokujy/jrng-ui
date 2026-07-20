@@ -58,12 +58,15 @@ describe('JAvatarComponent', () => {
   it('opens image preview with mouse, Enter, and Space when zoom is enabled', () => {
     const fixture = TestBed.createComponent(JAvatarComponent);
     fixture.componentRef.setInput('image', 'profile.png');
-    fixture.componentRef.setInput('canZoom', true);
+    fixture.componentRef.setInput('previewable', true);
     fixture.detectChanges();
     const root = fixture.nativeElement.querySelector('[data-jc-name="avatar"]') as HTMLElement;
     root.click();
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('[role="dialog"]')).not.toBeNull();
+    const previewSurface = fixture.nativeElement.querySelector('.j-image-viewer__surface');
+    expect(previewSurface.style.width).toBe('400px');
+    expect(previewSurface.style.height).toBe('400px');
 
     fixture.componentInstance.previewVisible.set(false);
     root.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
@@ -79,7 +82,7 @@ describe('JAvatarComponent', () => {
   it('closes on Escape and returns focus to the avatar', () => {
     const fixture = TestBed.createComponent(JAvatarComponent);
     fixture.componentRef.setInput('image', 'profile.png');
-    fixture.componentRef.setInput('canZoom', true);
+    fixture.componentRef.setInput('previewable', true);
     fixture.detectChanges();
     const root = fixture.nativeElement.querySelector('[data-jc-name="avatar"]') as HTMLElement;
     root.focus();

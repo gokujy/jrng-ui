@@ -24,7 +24,7 @@ import {
       [loadingVariant]="loadingVariant"
       [skeletonRows]="skeletonRows"
       [globalFilter]="globalFilter"
-      [error]="error"
+      [errorState]="error"
       [emptyActionLabel]="actionLabel"
       [variant]="variant"
       [density]="density"
@@ -46,7 +46,7 @@ class TableStateHostComponent {
   error: unknown = null;
   actionLabel = '';
   emptyEvent: JTableEmptyActionEvent | null = null;
-  variant: JTableVariant = 'default';
+  variant: JTableVariant = 'standard';
   density: 'compact' | 'comfortable' | 'spacious' = 'comfortable';
   paginator = false;
 }
@@ -134,12 +134,12 @@ describe('JTableComponent integrated states', () => {
   });
 
   it('applies visual variant and density classes independently', () => {
-    host.variant = 'card';
+    host.variant = 'gridlines';
     host.density = 'compact';
     refresh();
     const table = fixture.debugElement.query(By.css('.j-table'));
 
-    expect(table.classes['j-table--card']).toBe(true);
+    expect(table.classes['j-table--gridlines']).toBe(true);
     expect(table.classes['j-table--density-compact']).toBe(true);
   });
 

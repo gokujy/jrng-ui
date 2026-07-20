@@ -1,4 +1,4 @@
-export type DocsStatus = 'Stable';
+export type DocsStatus = 'Stable' | 'Beta' | 'Experimental';
 
 export interface DocsApiRow {
   readonly name: string;
@@ -57,7 +57,6 @@ export interface ComponentDoc {
   readonly limitations?: readonly string[];
   readonly relatedComponents?: readonly string[];
   readonly testingNotes?: readonly string[];
-  readonly deprecated?: string | null;
 }
 
 export interface ComponentGroup {

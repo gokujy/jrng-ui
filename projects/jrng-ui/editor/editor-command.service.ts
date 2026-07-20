@@ -2,7 +2,7 @@ import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 
 /**
- * Compatibility adapter for the browser's legacy editing-command API.
+ * Isolated browser editing-command adapter pending the Selection/Range engine.
  * Keeping commands behind this boundary allows a future Selection/Range
  * implementation without changing JEditorComponent's public API.
  */

@@ -6,13 +6,19 @@ import {
   booleanAttribute,
   contentChild,
   input,
+  output,
 } from '@angular/core';
+import { JButtonComponent } from 'jrng-ui/button';
+import { JEmptyComponent } from 'jrng-ui/empty';
+import { JIconComponent } from 'jrng-ui/icon';
+import { JSkeletonComponent } from 'jrng-ui/skeleton';
 
 export type JTimelineAlign = 'vertical' | 'horizontal';
 export type JTimelineSeverity = 'success' | 'warning' | 'danger' | 'info' | 'neutral';
 export type JTimelineVariant = 'default' | 'activity' | 'alternating';
 
 export interface JTimelineItem {
+  readonly id?: string | number;
   readonly title?: string;
   readonly content?: string;
   readonly opposite?: string;
@@ -30,64 +36,95 @@ export interface JTimelineItemContext {
 
 @Component({
   selector: 'j-timeline',
-  imports: [NgTemplateOutlet],
+  imports: [
+    JButtonComponent,
+    JEmptyComponent,
+    JIconComponent,
+    JSkeletonComponent,
+    NgTemplateOutlet,
+  ],
   template: `
-    <ol
-      class="j-timeline"
-      [class]="styleClass()"
-      [class.j-timeline--horizontal]="layout() === 'horizontal'"
-      [class.j-timeline--compact]="compact()"
-      [class.j-timeline--activity]="variant() === 'activity'"
-      [class.j-timeline--alternating]="variant() === 'alternating'"
-      [attr.data-j-variant]="variant()"
-      data-jc-name="timeline"
-      data-jc-section="root"
-    >
-      @for (item of value(); track item.title || item.content || $index; let index = $index) {
-        <li
-          class="j-timeline__item"
-          data-jc-section="item"
-          [attr.data-j-active]="item.severity ? 'true' : null"
-        >
-          <div class="j-timeline__opposite" data-jc-section="opposite">
-            @if (oppositeTemplate(); as template) {
-              <ng-container
-                [ngTemplateOutlet]="template"
-                [ngTemplateOutletContext]="itemContext(item, index)"
-              />
-            } @else {
-              {{ item.opposite }}
-            }
-          </div>
-          <div class="j-timeline__axis" aria-hidden="true">
-            <span
-              class="j-timeline__marker"
-              [class]="'j-timeline__marker j-timeline__marker--' + (item.severity || 'neutral')"
-              [style.--j-timeline-marker-color]="item.color || null"
-            >
-              @if (item.icon) {
-                {{ item.icon }}
+    @if (loading()) {
+      <div class="j-timeline__state" role="status" [attr.aria-label]="loadingLabel()">
+        <j-skeleton variant="text" [rows]="loadingRows()" />
+      </div>
+    } @else if (error()) {
+      <j-empty variant="error" [title]="errorTitle()" [description]="errorDescription()" />
+    } @else if (!value().length) {
+      <j-empty variant="inline" [title]="emptyTitle()" [description]="emptyDescription()" />
+    } @else {
+      <ol
+        class="j-timeline"
+        [class]="styleClass()"
+        [class.j-timeline--horizontal]="layout() === 'horizontal'"
+        [class.j-timeline--compact]="compact()"
+        [class.j-timeline--activity]="variant() === 'activity'"
+        [class.j-timeline--alternating]="variant() === 'alternating'"
+        [attr.data-j-variant]="variant()"
+        data-jc-name="timeline"
+        data-jc-section="root"
+        [attr.aria-label]="ariaLabel()"
+      >
+        @for (item of value(); track item.title || item.content || $index; let index = $index) {
+          <li
+            class="j-timeline__item"
+            data-jc-section="item"
+            [attr.data-j-active]="item.severity ? 'true' : null"
+            [attr.tabindex]="collapsible() ? 0 : null"
+            [attr.aria-expanded]="collapsible() ? isExpanded(item, index) : null"
+            (keydown)="handleItemKeydown($event, item, index)"
+          >
+            <div class="j-timeline__opposite" data-jc-section="opposite">
+              @if (oppositeTemplate(); as template) {
+                <ng-container
+                  [ngTemplateOutlet]="template"
+                  [ngTemplateOutletContext]="itemContext(item, index)"
+                />
+              } @else {
+                {{ item.opposite }}
               }
-            </span>
-          </div>
-          <article class="j-timeline__content" data-jc-section="content">
-            @if (contentTemplate(); as template) {
-              <ng-container
-                [ngTemplateOutlet]="template"
-                [ngTemplateOutletContext]="itemContext(item, index)"
-              />
-            } @else {
-              @if (item.title) {
-                <strong>{{ item.title }}</strong>
+            </div>
+            <div class="j-timeline__axis" aria-hidden="true">
+              <span
+                class="j-timeline__marker"
+                [class]="'j-timeline__marker j-timeline__marker--' + (item.severity || 'neutral')"
+                [style.--j-timeline-marker-color]="item.color || null"
+              >
+                @if (item.icon) {
+                  <j-icon [name]="item.icon" aria-hidden="true" />
+                }
+              </span>
+            </div>
+            <article class="j-timeline__content" data-jc-section="content">
+              @if (contentTemplate(); as template) {
+                <ng-container
+                  [ngTemplateOutlet]="template"
+                  [ngTemplateOutletContext]="itemContext(item, index)"
+                />
+              } @else {
+                @if (item.title) {
+                  <strong>{{ item.title }}</strong>
+                }
+                @if (collapsible()) {
+                  <j-button
+                    actionDisplay="icon"
+                    size="sm"
+                    variant="text"
+                    [icon]="isExpanded(item, index) ? 'chevron-up' : 'chevron-down'"
+                    [ariaLabel]="isExpanded(item, index) ? 'Collapse details' : 'Expand details'"
+                    [ariaExpanded]="isExpanded(item, index)"
+                    (onClick)="toggleItem(item, index, $event)"
+                  />
+                }
+                @if (item.content && isExpanded(item, index)) {
+                  <p>{{ item.content }}</p>
+                }
               }
-              @if (item.content) {
-                <p>{{ item.content }}</p>
-              }
-            }
-          </article>
-        </li>
-      }
-    </ol>
+            </article>
+          </li>
+        }
+      </ol>
+    }
   `,
   styles: [
     `
@@ -97,6 +134,10 @@ export interface JTimelineItemContext {
         list-style: none;
         margin: 0;
         padding: 0;
+      }
+
+      .j-timeline__state {
+        min-height: 8rem;
       }
 
       .j-timeline__item {
@@ -281,6 +322,24 @@ export class JTimelineComponent {
   readonly compact = input(false, { transform: booleanAttribute });
   readonly variant = input<JTimelineVariant>('default');
   readonly styleClass = input('');
+  readonly ariaLabel = input('Timeline');
+  readonly collapsible = input(false, { transform: booleanAttribute });
+  readonly loading = input(false, { transform: booleanAttribute });
+  readonly loadingRows = input(4);
+  readonly loadingLabel = input('Loading timeline');
+  readonly error = input<unknown>(null);
+  readonly errorTitle = input('Unable to load timeline');
+  readonly errorDescription = input('Try again later.');
+  readonly emptyTitle = input('No timeline events');
+  readonly emptyDescription = input('Events will appear here when available.');
+
+  readonly itemToggle = output<{
+    readonly item: JTimelineItem;
+    readonly index: number;
+    readonly expanded: boolean;
+  }>();
+
+  private readonly collapsedItems = new Set<string>();
 
   readonly contentTemplate = contentChild<unknown, TemplateRef<JTimelineItemContext>>(
     'jTimelineContent',
@@ -293,5 +352,29 @@ export class JTimelineComponent {
 
   itemContext(item: JTimelineItem, index: number): JTimelineItemContext {
     return { $implicit: item, item, index };
+  }
+
+  isExpanded(item: JTimelineItem, index: number): boolean {
+    return !this.collapsible() || !this.collapsedItems.has(this.itemKey(item, index));
+  }
+
+  toggleItem(item: JTimelineItem, index: number, event?: Event): void {
+    event?.stopPropagation();
+    if (!this.collapsible()) return;
+    const key = this.itemKey(item, index);
+    const expanded = this.collapsedItems.has(key);
+    if (expanded) this.collapsedItems.delete(key);
+    else this.collapsedItems.add(key);
+    this.itemToggle.emit({ item, index, expanded });
+  }
+
+  handleItemKeydown(event: KeyboardEvent, item: JTimelineItem, index: number): void {
+    if (!this.collapsible() || (event.key !== 'Enter' && event.key !== ' ')) return;
+    event.preventDefault();
+    this.toggleItem(item, index);
+  }
+
+  private itemKey(item: JTimelineItem, index: number): string {
+    return String(item.id ?? item.title ?? index);
   }
 }

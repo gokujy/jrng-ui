@@ -10,7 +10,12 @@ const app = path.join(temporaryRoot, 'consumer');
 
 try {
   run('npm', ['run', 'build:lib'], root);
-  const pack = run('npm', ['pack', path.join(root, 'dist', 'jrng-ui'), '--pack-destination', temporaryRoot], root, true);
+  const pack = run(
+    'npm',
+    ['pack', path.join(root, 'dist', 'jrng-ui'), '--pack-destination', temporaryRoot],
+    root,
+    true,
+  );
   const packageName = pack.stdout.trim().split(/\r?\n/).at(-1);
   if (!packageName) throw new Error('npm pack did not return a package filename.');
   const tarball = path.join(temporaryRoot, packageName);
@@ -72,7 +77,7 @@ export const appConfig: ApplicationConfig = {
   run('npx', ['ng', 'build', '--configuration', 'production'], app);
   ensureOptionalPeersAbsent(app);
 
-  run('npm', ['install', 'chart.js@^4.5.1', 'driver.js@^1.6.0'], app);
+  run('npm', ['install', 'chart.js@^4.5.1'], app);
   fs.writeFileSync(
     path.join(app, 'src', 'app', 'app.ts'),
     `import { Component, inject } from '@angular/core';
@@ -92,13 +97,15 @@ export class App {
 `,
   );
   run('npx', ['ng', 'build', '--configuration', 'production'], app);
-  console.log('Clean Angular consumer verified with SSR, direct entrypoints, styles, and optional peers.');
+  console.log(
+    'Clean Angular consumer verified with SSR, direct entrypoints, styles, and optional peers.',
+  );
 } finally {
   fs.rmSync(temporaryRoot, { recursive: true, force: true });
 }
 
 function ensureOptionalPeersAbsent(directory) {
-  for (const dependency of ['chart.js', 'driver.js']) {
+  for (const dependency of ['chart.js']) {
     if (fs.existsSync(path.join(directory, 'node_modules', dependency))) {
       throw new Error(`${dependency} was installed before the optional integration check.`);
     }
@@ -118,7 +125,13 @@ function run(command, args, cwd, capture = false) {
   const result = spawnSync(executable, cliArgs, {
     cwd,
     encoding: 'utf8',
-    env: { ...process.env, INIT_CWD: cwd, PWD: cwd, npm_config_local_prefix: cwd, NG_CLI_ANALYTICS: 'false' },
+    env: {
+      ...process.env,
+      INIT_CWD: cwd,
+      PWD: cwd,
+      npm_config_local_prefix: cwd,
+      NG_CLI_ANALYTICS: 'false',
+    },
     stdio: capture ? 'pipe' : 'inherit',
   });
   if (result.error) throw result.error;

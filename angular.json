@@ -29,6 +29,7 @@
           "builder": "@angular/build:unit-test",
           "options": {
             "tsConfig": "projects/jrng-ui/tsconfig.spec.json",
+            "runnerConfig": "projects/jrng-ui/vitest.config.ts",
             "coverageThresholds": {
               "statements": 40,
               "branches": 30,
@@ -62,7 +63,7 @@
                 "input": "projects/docs/public"
               }
             ],
-            "styles": ["node_modules/driver.js/dist/driver.css", "projects/docs/src/styles.scss"]
+            "styles": ["projects/docs/src/styles.scss"]
           },
           "configurations": {
             "production": {

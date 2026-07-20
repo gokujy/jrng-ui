@@ -7,10 +7,21 @@ import {
 } from '@angular/core';
 import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
 
-export type JEmptyStateVariant = 'default' | 'inline' | 'panel';
+export type JEmptyStateVariant =
+  | 'default'
+  | 'inline'
+  | 'panel'
+  | 'section'
+  | 'card'
+  | 'page'
+  | 'search'
+  | 'filtered'
+  | 'error'
+  | 'permission'
+  | 'offline';
 
 @Component({
-  selector: 'j-empty-state',
+  selector: 'j-empty',
   imports: [],
   template: `
     <section
@@ -135,6 +146,37 @@ export type JEmptyStateVariant = 'default' | 'inline' | 'panel';
         background: var(--j-color-surface-subtle, #eef2f7);
         border: 1px dashed var(--j-color-border, #dbe2ea);
         border-radius: var(--j-radius-xl, 1rem);
+      }
+
+      .j-empty-state--section,
+      .j-empty-state--card,
+      .j-empty-state--page,
+      .j-empty-state--search,
+      .j-empty-state--filtered,
+      .j-empty-state--error,
+      .j-empty-state--permission,
+      .j-empty-state--offline {
+        background: var(--j-color-surface-subtle, #eef2f7);
+        border: 1px dashed var(--j-color-border, #dbe2ea);
+        border-radius: var(--j-radius-xl, 1rem);
+      }
+
+      .j-empty-state--card {
+        background: var(--j-color-card, #fff);
+        border-style: solid;
+        box-shadow: var(--j-shadow-sm);
+      }
+      .j-empty-state--page {
+        border: 0;
+        min-height: min(70vh, 40rem);
+        justify-content: center;
+      }
+      .j-empty-state--error .j-empty-state__icon {
+        color: var(--j-color-danger, #dc2626);
+      }
+      .j-empty-state--permission .j-empty-state__icon,
+      .j-empty-state--offline .j-empty-state__icon {
+        color: var(--j-color-warning, #b45309);
       }
 
       @media (max-width: 640px) {

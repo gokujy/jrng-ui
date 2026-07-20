@@ -21,14 +21,16 @@ import { jAriaDescribedBy } from 'jrng-ui/core';
 import { JAppendTo, JClickOutsideDirective, JOverlayHandle, JOverlayService } from 'jrng-ui/core';
 import { JRNG_LOCALE } from 'jrng-ui/core';
 import { JPassThrough } from 'jrng-ui/core';
-import { JSize } from 'jrng-ui/core';
+import { JComponentSize } from 'jrng-ui/core';
 import { jCreateId } from 'jrng-ui/core';
+import { JButtonComponent } from 'jrng-ui/button';
+import { JIconComponent } from 'jrng-ui/icon';
 
 export type JTimePickerHourFormat = 12 | 24;
 
 @Component({
   selector: 'j-time-picker',
-  imports: [JClickOutsideDirective],
+  imports: [JButtonComponent, JClickOutsideDirective, JIconComponent],
   template: `
     <div
       [class]="rootClasses"
@@ -54,39 +56,48 @@ export type JTimePickerHourFormat = 12 | 24;
           class="j-time-picker__control"
           type="button"
           [disabled]="isDisabled() || readonly()"
-        [attr.aria-labelledby]="label() ? labelId : null"
-        [attr.aria-describedby]="describedBy"
-        [attr.aria-invalid]="hasError ? 'true' : null"
-        [attr.aria-expanded]="isOpen"
-        [attr.aria-controls]="isOpen ? panelId : null"
-        (click)="toggle()"
-        (keydown)="handleTriggerKeydown($event)"
+          [attr.aria-labelledby]="label() ? labelId : null"
+          [attr.aria-describedby]="describedBy"
+          [attr.aria-invalid]="hasError ? 'true' : null"
+          [attr.aria-expanded]="isOpen"
+          [attr.aria-controls]="isOpen ? panelId : null"
+          (click)="toggle()"
+          (keydown)="handleTriggerKeydown($event)"
         >
           <span class="j-time-picker__value" [class.is-placeholder]="!value">
             {{ displayValue || placeholder() }}
           </span>
-          <span class="j-time-picker__icon" aria-hidden="true">time</span>
+          <j-icon class="j-time-picker__icon" name="clock" aria-hidden="true" />
         </button>
         @if (canClear) {
-          <button
-            type="button"
-            class="j-time-picker__clear"
-            [attr.aria-label]="locale.clear"
-            (click)="clearValue($event)"
-          >
-            x
-          </button>
+          <j-button
+            styleClass="j-time-picker__clear"
+            actionDisplay="icon"
+            icon="close"
+            size="sm"
+            variant="text"
+            [ariaLabel]="locale.clear"
+            [title]="locale.clear"
+            (onClick)="clearValue($event)"
+          />
         }
       </div>
 
       @if (isOpen) {
-        <div #panel class="j-time-picker__panel" [id]="panelId" role="dialog" data-jc-section="panel">
+        <div
+          #panel
+          class="j-time-picker__panel"
+          [id]="panelId"
+          role="dialog"
+          data-jc-section="panel"
+        >
           <div class="j-time-picker__columns">
             <label class="j-time-picker__column">
               <span class="j-time-picker__column-label">{{ locale.hour }}</span>
               <select
                 class="j-time-picker__select"
                 [value]="displayHour"
+                [disabled]="isDisabled() || readonly()"
                 (change)="handleHourChange($event)"
               >
                 @for (hour of hourOptions; track hour) {
@@ -100,6 +111,7 @@ export type JTimePickerHourFormat = 12 | 24;
               <select
                 class="j-time-picker__select"
                 [value]="minute"
+                [disabled]="isDisabled() || readonly()"
                 (change)="handleMinuteChange($event)"
               >
                 @for (option of minuteOptions; track option) {
@@ -114,6 +126,7 @@ export type JTimePickerHourFormat = 12 | 24;
                 <select
                   class="j-time-picker__select"
                   [value]="second"
+                  [disabled]="isDisabled() || readonly()"
                   (change)="handleSecondChange($event)"
                 >
                   @for (option of secondOptions; track option) {
@@ -129,6 +142,7 @@ export type JTimePickerHourFormat = 12 | 24;
                 <select
                   class="j-time-picker__select"
                   [value]="period"
+                  [disabled]="isDisabled() || readonly()"
                   (change)="handlePeriodChange($event)"
                 >
                   <option value="AM">AM</option>
@@ -139,20 +153,26 @@ export type JTimePickerHourFormat = 12 | 24;
           </div>
 
           <div class="j-time-picker__bar">
-            <button type="button" class="j-time-picker__bar-button" (click)="selectNow()">
-              {{ locale.now }}
-            </button>
-            <button
-              type="button"
-              class="j-time-picker__bar-button"
-              [disabled]="!value"
-              (click)="clearValue()"
-            >
-              {{ locale.clear }}
-            </button>
-            <button type="button" class="j-time-picker__done" (click)="close()">
-              {{ locale.accept }}
-            </button>
+            <j-button
+              [label]="locale.now"
+              size="sm"
+              variant="text"
+              [disabled]="isDisabled() || readonly()"
+              (onClick)="selectNow()"
+            />
+            <j-button
+              [label]="locale.clear"
+              size="sm"
+              variant="text"
+              [disabled]="!value || isDisabled() || readonly()"
+              (onClick)="clearValue()"
+            />
+            <j-button
+              [label]="locale.accept"
+              size="sm"
+              [disabled]="isDisabled() || readonly()"
+              (onClick)="close()"
+            />
           </div>
         </div>
       }
@@ -213,7 +233,7 @@ export type JTimePickerHourFormat = 12 | 24;
         padding-inline-end: 4rem;
       }
 
-      .j-time-picker__clear {
+      :host ::ng-deep .j-time-picker__clear {
         background: transparent;
         border: 0;
         cursor: pointer;
@@ -264,6 +284,8 @@ export type JTimePickerHourFormat = 12 | 24;
         box-shadow: var(--j-shadow-lg, 0 18px 45px rgb(15 23 42 / 0.14));
         color: var(--j-color-popover-foreground);
         margin-top: var(--j-spacing-2);
+        max-height: min(20rem, calc(100dvh - 2rem));
+        overflow: auto;
         padding: var(--j-spacing-3);
         position: absolute;
         width: min(24rem, calc(100vw - 2rem));
@@ -298,6 +320,7 @@ export type JTimePickerHourFormat = 12 | 24;
         color: inherit;
         font: inherit;
         min-height: 2.5rem;
+        max-height: 10rem;
         outline: none;
         padding: 0 var(--j-spacing-2);
       }
@@ -399,7 +422,7 @@ export class JTimePickerComponent implements ControlValueAccessor {
   readonly error = input('');
   readonly styleClass = input('');
   readonly variant = input<'outlined' | 'filled'>('outlined');
-  readonly size = input<JSize>('md');
+  readonly size = input<JComponentSize>('md');
   readonly hourFormat = input<JTimePickerHourFormat>(24);
   readonly appendTo = input<JAppendTo | undefined>(undefined);
   readonly pt = input<JPassThrough | null>(null);
@@ -408,16 +431,11 @@ export class JTimePickerComponent implements ControlValueAccessor {
   readonly required = input(false, { transform: booleanAttribute });
   readonly showSeconds = input(false, { transform: booleanAttribute });
   readonly showClear = input(true, { transform: booleanAttribute });
-  /** @deprecated JTimePicker is inherently time-only; this compatibility input is ignored. */
-  readonly timeOnly = input(true, { transform: booleanAttribute });
-
   readonly valueInput = input<string | null | undefined>(undefined);
   readonly minuteStep = input<number | string | undefined>(undefined);
-  readonly stepMinute = input<number | string | undefined>(undefined);
   readonly disabled = input(false, { transform: booleanAttribute });
 
   readonly valueChange = output<string | null>();
-  readonly select = output<string | null>();
   readonly clear = output<void>();
   readonly opened = output<void>();
   readonly closed = output<void>();
@@ -443,12 +461,6 @@ export class JTimePickerComponent implements ControlValueAccessor {
     });
     effect(() => {
       const value = this.minuteStep();
-      if (value !== undefined) {
-        this.setMinuteStep(value);
-      }
-    });
-    effect(() => {
-      const value = this.stepMinute();
       if (value !== undefined) {
         this.setMinuteStep(value);
       }
@@ -591,6 +603,7 @@ export class JTimePickerComponent implements ControlValueAccessor {
   }
 
   handleHourChange(event: Event): void {
+    if (this.isDisabled() || this.readonly()) return;
     const nextHour = Number((event.target as HTMLSelectElement).value);
     if (this.hourFormat() === 12) {
       this.hour = this.toTwentyFourHour(nextHour, this.period);
@@ -601,22 +614,26 @@ export class JTimePickerComponent implements ControlValueAccessor {
   }
 
   handleMinuteChange(event: Event): void {
+    if (this.isDisabled() || this.readonly()) return;
     this.minute = Number((event.target as HTMLSelectElement).value);
     this.commit();
   }
 
   handleSecondChange(event: Event): void {
+    if (this.isDisabled() || this.readonly()) return;
     this.second = Number((event.target as HTMLSelectElement).value);
     this.commit();
   }
 
   handlePeriodChange(event: Event): void {
+    if (this.isDisabled() || this.readonly()) return;
     this.period = (event.target as HTMLSelectElement).value === 'PM' ? 'PM' : 'AM';
     this.hour = this.toTwentyFourHour(this.displayHour, this.period);
     this.commit();
   }
 
   selectNow(): void {
+    if (this.isDisabled() || this.readonly()) return;
     this.setPartsFromDate(new Date());
     this.commit();
   }
@@ -638,10 +655,10 @@ export class JTimePickerComponent implements ControlValueAccessor {
   }
 
   private commit(): void {
+    if (this.isDisabled() || this.readonly()) return;
     this.value = `${this.pad(this.hour)}:${this.pad(this.minute)}${this.showSeconds() ? `:${this.pad(this.second)}` : ''}`;
     this.onChange(this.value || null);
     this.valueChange.emit(this.value || null);
-    this.select.emit(this.value || null);
     this.changeDetectorRef.markForCheck();
   }
 

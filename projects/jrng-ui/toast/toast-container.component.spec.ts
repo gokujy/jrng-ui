@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { JrToastContainerComponent } from './toast-container.component';
-import { JrToastService } from './toast.service';
+import { JToastContainerComponent } from './toast-container.component';
+import { JToastService } from './toast.service';
 
-describe('JrToastContainerComponent', () => {
-  let fixture: ComponentFixture<JrToastContainerComponent>;
-  let service: JrToastService;
+describe('JToastContainerComponent', () => {
+  let fixture: ComponentFixture<JToastContainerComponent>;
+  let service: JToastService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [JrToastContainerComponent],
+      imports: [JToastContainerComponent],
     }).compileComponents();
 
-    service = TestBed.inject(JrToastService);
+    service = TestBed.inject(JToastService);
     service.clear();
-    fixture = TestBed.createComponent(JrToastContainerComponent);
+    fixture = TestBed.createComponent(JToastContainerComponent);
     fixture.detectChanges();
   });
 

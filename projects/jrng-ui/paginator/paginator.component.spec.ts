@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { JPaginatorChange, JPaginatorComponent, JPaginatorPageChange } from './paginator.component';
+import { JPaginatorComponent, JPaginatorPageChange } from './paginator.component';
 
 describe('JPaginatorComponent variants', () => {
   let fixture: ComponentFixture<JPaginatorComponent>;
@@ -29,12 +29,6 @@ describe('JPaginatorComponent variants', () => {
     component.setPage(2);
     expect(change).toEqual({ first: 10, rows: 10, page: 2, pageCount: 10 });
     expect(component.currentPage).toBe(2);
-  });
-
-  it('retains the page and pageSize compatibility accessors', () => {
-    fixture.detectChanges();
-    const snapshot: JPaginatorChange = { page: component.page, pageSize: component.pageSize };
-    expect(snapshot).toEqual({ page: 1, pageSize: 10 });
   });
 
   it('shows a concise page hierarchy only for the simple variant', () => {

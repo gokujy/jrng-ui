@@ -117,7 +117,7 @@ export const componentGroups: readonly ComponentGroup[] = [
   {
     name: 'Business',
     icon: 'briefcase-business',
-    slugs: ['card', 'stat-card', 'status-chip', 'page-header', 'empty-state'],
+    slugs: ['card', 'status-chip', 'page-header', 'empty-state'],
   },
   {
     name: 'Feedback',
@@ -149,9 +149,12 @@ const variantComponentDocs: readonly ComponentDoc[] = [
     description: 'A keyboard-accessible disclosure group for related sections of content.',
     whenToUse: 'Use Accordion when several related sections should share limited vertical space.',
     code: {
-      importCode: `import { JAccordionComponent, JAccordionPanelComponent } from 'jrng-ui/accordion';`,
-      basic: `<j-accordion [activeIndex]="0">
-  <j-accordion-panel header="Account">Account content</j-accordion-panel>
+      importCode: `import { JAccordionComponent, JAccordionPanelComponent, JAccordionHeaderComponent, JAccordionContentComponent } from 'jrng-ui/accordion';`,
+      basic: `<j-accordion value="account">
+  <j-accordion-panel value="account">
+    <j-accordion-header>Account</j-accordion-header>
+    <j-accordion-content>Account content</j-accordion-content>
+  </j-accordion-panel>
 </j-accordion>`,
       variants: `<j-accordion variant="default">...</j-accordion>
 <j-accordion variant="separated">...</j-accordion>
@@ -196,7 +199,7 @@ const variantComponentDocs: readonly ComponentDoc[] = [
     code: {
       importCode: `import { JPaginatorComponent } from 'jrng-ui/paginator';`,
       basic: `<j-paginator [totalRecords]="96" [rows]="10" (pageChange)="loadPage($event)" />`,
-      variants: `<j-paginator variant="default" [totalRecords]="96" [rows]="10" />
+      variants: `<j-paginator variant="standard" [totalRecords]="96" [rows]="10" />
 <j-paginator variant="simple" [totalRecords]="96" [rows]="10" />`,
       states: `<j-paginator [first]="20" [totalRecords]="96" [rowsPerPageOptions]="[10, 20, 50]" showCurrentPageReport />`,
     },
@@ -656,52 +659,51 @@ teams = [
       basic: `<j-button label="Save changes"></j-button>`,
       variants: `<j-button label="Primary"></j-button>
 <j-button label="Secondary" severity="secondary"></j-button>
-<j-button label="Outline" variant="outline"></j-button>
-<j-button label="Ghost" variant="ghost"></j-button>`,
+<j-button label="Outline" variant="outlined"></j-button>
+<j-button label="Ghost" variant="soft"></j-button>`,
       sizes: `<j-button label="Small" size="sm"></j-button>
 <j-button label="Medium" size="md"></j-button>
 <j-button label="Large" size="lg"></j-button>`,
       states: `<j-button label="Disabled" disabled></j-button>
 <j-button label="Saving" loading></j-button>
-<j-button label="Full width" fullWidth></j-button>`,
+<j-button label="Full width" width="full"></j-button>`,
     },
     usage: [
       'Use one primary action per focused area and secondary buttons for supporting actions.',
     ],
-    variants: ['filled', 'outline', 'ghost', 'soft', 'link'],
-    sizes: ['sm, md, lg, xl'],
+    variants: ['solid', 'outlined', 'soft', 'text', 'link'],
+    sizes: ['xs, sm, md, lg, xl'],
     states: ['default', 'disabled', 'loading', 'full width', 'icon only'],
     inputs: [
       prop('label', 'string', "''", 'Text label.'),
       prop(
         'severity',
-        'primary | secondary | neutral | success | warning | danger | info | help | contrast',
+        'primary | secondary | success | info | warning | danger | contrast | neutral',
         "'primary'",
         'Action intent.',
       ),
-      prop(
-        'variant',
-        'filled | outline | outlined | ghost | soft | link | text',
-        "'filled'",
-        'Visual treatment.',
-      ),
+      prop('variant', 'solid | outlined | soft | text | link', "'solid'", 'Visual treatment.'),
       prop(
         'type',
         'button | submit | reset',
         "'button'",
         'Native button type; button is the safe default.',
       ),
-      prop('size', 'sm | md | lg | xl', "'md'", 'Physical control size.'),
+      prop('size', 'xs | sm | md | lg | xl', "'md'", 'Physical control size.'),
       prop('icon', 'string', "''", 'Icon name or short icon content.'),
       prop('iconPosition', 'left | right', "'left'", 'Icon placement relative to the label.'),
       prop('ariaLabel', 'string', "''", 'Accessible name, required for icon-only usage.'),
       prop('disabled', 'boolean', 'false', 'Disables native activation and onClick.'),
       prop('loading', 'boolean', 'false', 'Shows a spinner and blocks clicks.'),
       prop('loadingLabel', 'string', "'Loading'", 'Screen-reader loading status.'),
-      prop('rounded / pill', 'boolean', 'false', 'Applies fully rounded corners.'),
-      prop('outlined / text / raised', 'boolean', 'false', 'Compatibility presentation shortcuts.'),
-      prop('fullWidth', 'boolean', 'false', 'Fills the available inline width.'),
-      prop('iconOnly', 'boolean', 'false', 'Optimizes dimensions for icon-only buttons.'),
+      prop('shape', 'square | rounded | pill | circle', "'rounded'", 'Button geometry.'),
+      prop('width', 'auto | full', "'auto'", 'Inline width behavior.'),
+      prop(
+        'actionDisplay',
+        'icon | icon-label | label',
+        "'icon-label'",
+        'Icon and label presentation.',
+      ),
       prop('badge', 'string | number | null', 'null', 'Compact count or value after the label.'),
       prop('badgeAriaLabel', 'string', "''", 'Accessible context for the badge value.'),
       prop(
@@ -720,7 +722,7 @@ teams = [
       'Tab moves focus to the native button.',
       'Enter and Space activate it unless disabled or loading.',
     ],
-    responsive: ['Use fullWidth in narrow forms and keep toolbar groups able to wrap.'],
+    responsive: ['Use width="full" in narrow forms and keep toolbar groups able to wrap.'],
     templates: [
       'Default content is used when label is empty.',
       'jButtonPrefix and jButtonSuffix add focused projected content.',
@@ -754,25 +756,25 @@ teams = [
       'Use Icon Button for repeated utility actions such as search, filter, settings, edit, or close.',
     code: {
       importCode: `import { JButtonComponent } from 'jrng-ui/button';`,
-      basic: `<j-button iconOnly ariaLabel="Search">
+      basic: `<j-button actionDisplay="icon" ariaLabel="Search">
   <j-icon name="search"></j-icon>
 </j-button>`,
-      variants: `<j-button iconOnly variant="ghost" ariaLabel="Settings">
+      variants: `<j-button actionDisplay="icon" variant="soft" ariaLabel="Settings">
   <j-icon name="settings"></j-icon>
 </j-button>`,
-      states: `<j-button iconOnly ariaLabel="Loading" loading></j-button>
-<j-button iconOnly ariaLabel="Disabled" disabled>
+      states: `<j-button actionDisplay="icon" ariaLabel="Loading" loading></j-button>
+<j-button actionDisplay="icon" ariaLabel="Disabled" disabled>
   <j-icon name="settings"></j-icon>
 </j-button>`,
     },
     usage: ['Use in toolbars, compact tables, cards, and overlay headers.'],
-    variants: ['filled icon button', 'ghost icon button', 'outline icon button'],
-    sizes: ['sm, md, lg, xl'],
+    variants: ['solid icon button', 'soft icon button', 'outlined icon button'],
+    sizes: ['xs, sm, md, lg, xl'],
     states: ['default', 'hover/focus', 'disabled', 'loading'],
     inputs: [
-      prop('iconOnly', 'boolean', 'false', 'Applies icon-only sizing.'),
+      prop('actionDisplay', 'icon | icon-label | label', "'icon'", 'Uses icon-only presentation.'),
       prop('ariaLabel', 'string', "''", 'Required accessible label when no text label is visible.'),
-      prop('variant', 'JButtonVariant', "'filled'", 'Visual treatment.'),
+      prop('variant', 'JButtonVariant', "'solid'", 'Visual treatment.'),
     ],
     outputs: [event('onClick', 'MouseEvent', 'Emits when activated.')],
     cssVariables: buttonCssVariables,
@@ -790,21 +792,20 @@ teams = [
     importPath: 'jrng-ui/card',
     status: 'Stable',
     description: 'A surface that groups related content, actions, or metrics.',
-    whenToUse:
-      'Use Card to contain a coherent piece of information, not as a general page wrapper.',
+    whenToUse: 'Groups one coherent content region and its related actions.',
     code: {
       importCode: `import { JCardComponent } from 'jrng-ui/card';`,
-      basic: `<j-card title="Order summary" subtitle="Current month">
+      basic: `<j-card header="Order summary" subheader="Current month">
   <p>42 orders created.</p>
 </j-card>`,
-      variants: `<j-card title="Elevated" elevated></j-card>
-<j-card title="Bordered" bordered></j-card>
-<j-card title="Soft" variant="soft"></j-card>`,
-      states: `<j-card title="Loading" skeleton></j-card>
-<j-card title="Interactive" interactive></j-card>
+      variants: `<j-card header="Elevated" variant="elevated"></j-card>
+<j-card header="Bordered" variant="outlined"></j-card>
+<j-card header="Soft" variant="minimal"></j-card>`,
+      states: `<j-card header="Loading" skeleton></j-card>
+<j-card header="Interactive" interactive></j-card>
 
 <!-- KPI composition -->
-<j-card title="Monthly revenue" subtitle="Compared with last month">
+<j-card header="Monthly revenue" subheader="Compared with last month">
   <strong class="metric-value">$84,250</strong>
   <j-badge value="+12.4%" severity="success" />
   <j-progress-bar [value]="72" label="72% of target" />
@@ -814,14 +815,19 @@ teams = [
       'Use cards for repeated items, dashboard widgets, forms, profiles, products, pricing, and short content groups.',
       'Compose KPI cards from Card slots, typography, Badge, Progress Bar, and chart components instead of using metric-specific Card inputs.',
     ],
-    variants: ['default', 'elevated', 'bordered', 'soft'],
-    sizes: ['Use compact for denser lists and default for standard content.'],
+    variants: ['elevated', 'outlined', 'filled', 'minimal'],
+    sizes: ['Density controls internal spacing independently from surface presentation.'],
     states: ['default', 'interactive', 'loading skeleton', 'empty content', 'error content'],
     inputs: [
-      prop('title / header', 'string', "''", 'Main heading.'),
-      prop('subtitle / subheader', 'string', "''", 'Secondary text.'),
-      prop('variant', 'default | elevated | bordered | soft', "'default'", 'Surface style.'),
-      prop('compact', 'boolean', 'false', 'Reduces spacing.'),
+      prop('header', 'string', "''", 'Main heading.'),
+      prop('subheader', 'string', "''", 'Secondary text.'),
+      prop(
+        'variant',
+        'elevated | outlined | filled | minimal',
+        "'elevated'",
+        'Surface presentation.',
+      ),
+      prop('density', 'compact | comfortable | spacious', "'comfortable'", 'Internal spacing.'),
     ],
     outputs: noOutputs,
     accessibility: ['Use semantic headings inside cards when the card starts a section.'],
@@ -899,33 +905,26 @@ teams = [
     bestPractices: ['Avoid long tag text. Wrap tags to multiple lines in narrow containers.'],
   },
   {
-    slug: 'pick-list',
-    name: 'Pick List',
+    slug: 'transfer-list',
+    name: 'Transfer List',
     category: 'Data & Tables',
     icon: 'list-check',
-    selector: 'j-pick-list',
-    importPath: 'jrng-ui/pick-list',
+    selector: 'j-transfer-list',
+    importPath: 'jrng-ui/transfer-list',
     status: 'Stable',
-    description: 'A compact two-panel chooser for adding, removing, and ordering selected options.',
-    whenToUse:
-      'Use Pick List when users assemble a small ordered selection from an available collection.',
+    description:
+      'A responsive source-to-target chooser with independent selection and target ordering.',
+    whenToUse: 'Configure source and target collections for explicit item transfer workflows.',
     code: {
-      importCode: `import { JPickListComponent } from 'jrng-ui/pick-list';`,
-      basic: `<j-pick-list
+      importCode: `import { JTransferListComponent } from 'jrng-ui/transfer-list';`,
+      basic: `<j-transfer-list
   [(source)]="availableFields"
   [(target)]="selectedFields"
   sourceHeader="Available fields"
   targetHeader="Report columns"
   filter
 />`,
-      variants: `<j-pick-list [(source)]="availableFields" [(target)]="selectedFields">
-  <ng-template #jPickListAdd><j-icon name="plus" /></ng-template>
-  <ng-template #jPickListAddAll><span><j-icon name="plus" /> Add all</span></ng-template>
-  <ng-template #jPickListMoveUp><j-icon name="chevron-up" /></ng-template>
-  <ng-template #jPickListMoveDown><j-icon name="chevron-down" /></ng-template>
-  <ng-template #jPickListRemove><j-icon name="minus" /></ng-template>
-  <ng-template #jPickListClear><span><j-icon name="close" /> Clear</span></ng-template>
-</j-pick-list>`,
+      variants: `<j-transfer-list [(source)]="availableFields" [(target)]="selectedFields" responsiveMode="auto" breakpoint="768px" />`,
       angular: `availableFields = [
   { label: 'Customer', value: 'customer' },
   { label: 'Status', value: 'status' },
@@ -940,10 +939,10 @@ selectedFields = [
     },
     usage: [
       'Use two-way source and target bindings when the parent must retain the changed collections.',
-      'Project an action template when an icon or richer content is useful; omit it to retain the readable default label.',
+      'Target ordering remains associated with the target panel in horizontal and stacked layouts.',
     ],
-    variants: ['default text actions', 'custom labels', 'projected icon or rich action content'],
-    sizes: ['The two panels stack below 720px and remain touch friendly.'],
+    variants: ['automatic responsive stacking', 'forced stacked layout', 'horizontal layout'],
+    sizes: ['The default 768px breakpoint can be configured.'],
     states: ['available', 'selected', 'disabled option', 'filtered', 'empty'],
     inputs: [
       prop(
@@ -1070,7 +1069,7 @@ selectedFields = [
     ],
     commonMistakes: [
       'Do not use Grid for tabular records; use j-table or j-data-grid.',
-      'Do not confuse j-col with j-column: j-col is layout, while j-column declares table metadata.',
+      'Use j-col only for responsive page layout; Table columns use JTableColumn configuration.',
     ],
   },
   {
@@ -1161,9 +1160,7 @@ selectedFields = [
     outputs: noOutputs,
     accessibility: ['Responsive ordering does not change screen-reader or keyboard order.'],
     bestPractices: ['Keep DOM order meaningful and let columns wrap on small screens.'],
-    commonMistakes: [
-      'j-col is not a table column definition; j-column remains part of jrng-ui/table.',
-    ],
+    commonMistakes: ['j-col is not a Table column definition; use the Table columns input.'],
   },
   {
     slug: 'table',
@@ -1180,15 +1177,15 @@ selectedFields = [
       importCode: `import { JTableCellTemplateDirective, JTableComponent, JTableColumn, JTableEmptyTemplateDirective, JTableHeaderTemplateDirective, JTableLoadingTemplateDirective } from 'jrng-ui/table';`,
       basic: `<j-table [value]="orders" [columns]="columns" caption="Recent orders" />`,
       variants: `<j-table [value]="orders" [columns]="columns" variant="striped"></j-table>
-<j-table [value]="orders" [columns]="columns" variant="bordered"></j-table>
+<j-table [value]="orders" [columns]="columns" variant="gridlines"></j-table>
 <j-table [value]="orders" [columns]="columns" variant="minimal"></j-table>
-<j-table [value]="orders" [columns]="columns" variant="card"></j-table>`,
+<j-table [value]="orders" [columns]="columns" variant="standard"></j-table>`,
       sizes: `<j-table [value]="orders" [columns]="columns" density="compact"></j-table>
 <j-table [value]="orders" [columns]="columns" density="spacious"></j-table>`,
       states: `<j-table [value]="[]" [columns]="columns" emptyTitle="No orders yet" emptyActionLabel="Create order"></j-table>
 <j-table [value]="orders" [columns]="columns" loading loadingVariant="skeleton" [skeletonRows]="4"></j-table>
 <j-table [value]="orders" [columns]="columns" loading loadingVariant="overlay"></j-table>
-<j-table [value]="[]" [columns]="columns" [error]="loadError" emptyActionLabel="Retry"></j-table>`,
+<j-table [value]="[]" [columns]="columns" [errorState]="loadError" emptyActionLabel="Retry"></j-table>`,
       angular: `interface OrderRow {
   id: number;
   order: string;
@@ -1214,14 +1211,14 @@ columns: JTableColumn<OrderRow>[] = [
   }},
   { field: 'total', header: 'Total', align: 'end', filterable: true,
     filter: { type: 'number', operator: 'between' } },
-  { field: 'actions', header: 'Actions', type: 'action', actions }
+  { field: 'actions', header: 'Actions', type: 'actions', actions }
 ];
 
 tableConfig: JTableConfig = {
   pagination: true,
   sortable: true,
   multiSort: true,
-  filterRow: true,
+  filterDisplay: 'row',
   columnFilter: true,
   globalSearch: true,
   reorderableRows: true,
@@ -1233,7 +1230,6 @@ tableConfig: JTableConfig = {
   exportable: true,
   stateful: true,
   columnManager: true,
-  size: 'medium',
   export: { rows: 'selected', visibleColumnsOnly: true }
 };
 
@@ -1241,11 +1237,10 @@ loadError = new Error('Orders could not be loaded.');`,
     },
     usage: ['Use for orders, users, files, tasks, invoices, and audit logs.'],
     variants: [
-      'default - preserves the established table presentation',
+      'standard - uses the default table presentation',
       'striped - alternates row grouping for long scanning tasks',
-      'bordered - emphasizes both row and column relationships',
+      'gridlines - emphasizes both row and column relationships',
       'minimal - reduces chrome inside cards and detail pages',
-      'card - groups each row as an independent responsive surface',
       'basic table',
       'pagination',
       'sorting',
@@ -1284,8 +1279,8 @@ loadError = new Error('Orders could not be loaded.');`,
       prop('config', 'JTableConfig', 'null', 'Object API for enterprise table behavior.'),
       prop(
         'variant',
-        'default | striped | bordered | minimal | card',
-        "'default'",
+        'standard | gridlines | striped | minimal',
+        "'standard'",
         'Selects a complete table presentation concept without changing its data or events.',
       ),
       prop('paginator', 'boolean', 'false', 'Shows pagination controls.'),
@@ -1334,7 +1329,7 @@ loadError = new Error('Orders could not be loaded.');`,
         'Optional action for the active empty or error state.',
       ),
       prop('selectionMode', 'single | multiple | checkbox | none', "'none'", 'Selection behavior.'),
-      prop('filterRow', 'boolean', 'true', 'Shows column filter controls for filterable columns.'),
+      prop('filterDisplay', 'toolbar | row | menu | none', "'none'", 'Filter control placement.'),
       prop(
         'filterModel',
         'JTableFilterModel',
@@ -1361,12 +1356,6 @@ loadError = new Error('Orders could not be loaded.');`,
         'CSV export mode, filename, and visible-column behavior.',
       ),
       prop(
-        'size',
-        'small | medium | large',
-        "'medium'",
-        'Physical table size retained for compatibility.',
-      ),
-      prop(
         'density',
         'compact | comfortable | spacious',
         "'comfortable'",
@@ -1374,52 +1363,31 @@ loadError = new Error('Orders could not be loaded.');`,
       ),
     ],
     outputs: [
-      event('sortChange / onSortChange', 'JTableSort', 'Emits when sorting changes.'),
-      event('pageChange / onPageChange', 'JTablePageChange', 'Emits when page changes.'),
+      event('sortChange', 'JTableSort', 'Emits when sorting changes.'),
+      event('pageChange', 'JTablePageChange', 'Emits when page changes.'),
+      event('filterChange', 'JTableFilterChange', 'Emits when global or column filters change.'),
       event(
-        'filterChange / onFilterChange',
-        'JTableFilterChange',
-        'Emits when global or column filters change.',
-      ),
-      event('filterModelChange', 'JTableFilterModel', 'Emits the normalized typed filter model.'),
-      event(
-        'export / onExport',
+        'export',
         'JTableExportEvent',
         'Emits before CSV download; call preventDefault for server export.',
       ),
-      event('rowClick / onRowClick', 'JTableRowClickEvent', 'Emits when a row is clicked.'),
+      event('rowClick', 'JTableRowClickEvent', 'Emits when a row is clicked.'),
+      event('rowDoubleClick', 'JTableRowClickEvent', 'Emits when a row is double-clicked.'),
+      event('selectionChange', 'JTableSelection', 'Emits selection model changes.'),
+      event('rowReorder', 'JTableReorderEvent', 'Emits after row drag reorder.'),
+      event('rowLock', 'JTableRowLockEvent', 'Emits when a row is locked.'),
+      event('rowUnlock', 'JTableRowLockEvent', 'Emits when a row is unlocked.'),
+      event('columnReorder', 'JTableColumnReorderEvent', 'Emits after column drag reorder.'),
+      event('columnResize', 'JTableColumnResizeEvent', 'Emits after column resize.'),
       event(
-        'rowDoubleClick / onRowDoubleClick',
-        'JTableRowClickEvent',
-        'Emits when a row is double-clicked.',
-      ),
-      event(
-        'selectionChange / onSelectionChange',
-        'JTableSelection',
-        'Emits selection model changes.',
-      ),
-      event('rowReorder / onRowReorder', 'JTableReorderEvent', 'Emits after row drag reorder.'),
-      event('rowLock / onRowLock', 'JTableRowLockEvent', 'Emits when a row is locked.'),
-      event('rowUnlock / onRowUnlock', 'JTableRowLockEvent', 'Emits when a row is unlocked.'),
-      event(
-        'columnReorder / onColumnReorder',
-        'JTableColumnReorderEvent',
-        'Emits after column drag reorder.',
-      ),
-      event(
-        'columnResize / onColumnResize',
-        'JTableColumnResizeEvent',
-        'Emits after column resize.',
-      ),
-      event(
-        'columnVisibilityChange / onColumnVisibilityChange',
+        'columnVisibilityChange',
         'JTableColumnVisibilityChangeEvent',
         'Emits when a column is shown or hidden.',
       ),
-      event('stateSave / onStateSave', 'JTableState', 'Emits after state is saved.'),
-      event('stateRestore / onStateRestore', 'JTableState', 'Emits after state is restored.'),
-      event('maximize / onMaximize', 'void', 'Emits when expanded table mode opens.'),
-      event('minimize / onMinimize', 'void', 'Emits when expanded table mode closes.'),
+      event('stateSave', 'JTableState', 'Emits after state is saved.'),
+      event('stateRestore', 'JTableState', 'Emits after state is restored.'),
+      event('maximize', 'void', 'Emits when expanded table mode opens.'),
+      event('minimize', 'void', 'Emits when expanded table mode closes.'),
       event(
         'emptyAction',
         'JTableEmptyActionEvent',
@@ -1605,7 +1573,7 @@ expandedKeys = new Set(['workspace']);`,
       'Use Action Menu when each table row exposes a small set of commands such as view, edit, duplicate, or delete.',
     code: {
       importCode: `import { JActionMenuComponent, JTableAction } from 'jrng-ui/table';`,
-      basic: `<j-action-menu popup [actions]="actions" [row]="row" (actionClick)="runAction($event)"></j-action-menu>`,
+      basic: `<j-action-menu popup [actions]="actions" [row]="row" (action)="runAction($event)"></j-action-menu>`,
       angular: `actions: JTableAction[] = [
   { key: 'view', label: 'View', icon: 'View' },
   { key: 'edit', label: 'Edit', icon: 'Edit' },
@@ -1638,7 +1606,7 @@ row = {
       prop('popup', 'boolean', 'false', 'Renders an overflow trigger with popup menu.'),
       prop('ariaLabel', 'string', "'Row actions'", 'Accessible label.'),
     ],
-    outputs: [event('actionClick', 'JTableActionEvent', 'Emits when an action is activated.')],
+    outputs: [event('action', 'JTableActionEvent', 'Emits when an action is activated.')],
     cssVariables: surfaceCssVariables,
     accessibility: ['The action group exposes a row actions label and uses native buttons.'],
     bestPractices: [
@@ -1664,7 +1632,7 @@ row = {
   type="select"
   operator="equals"
   [options]="statusOptions"
-  (filterModelChange)="filter($event)" />`,
+  (filterChange)="filter($event)" />`,
     },
     usage: ['Use in table headers, advanced filter panels, or any configured filtering surface.'],
     variants: [
@@ -1697,12 +1665,7 @@ row = {
       prop('options', 'readonly JTableFilterOption[]', '[]', 'Options for select filters.'),
     ],
     outputs: [
-      event('filterChange', 'JColumnFilterChange', 'Legacy field and string value event.'),
-      event(
-        'filterModelChange',
-        'JColumnFilterModelChange',
-        'Emits field, operator, and typed value.',
-      ),
+      event('filterChange', 'JColumnFilterChange', 'Emits field, operator, and typed value.'),
     ],
     cssVariables: formCssVariables,
     accessibility: ['The visible label is screen-reader only so table headers stay compact.'],
@@ -1787,73 +1750,6 @@ row = {
     ],
   },
   {
-    slug: 'metric-card',
-    name: 'Metric Card',
-    category: 'Business',
-    icon: 'chart-no-axes-column',
-    selector: 'j-metric-card',
-    importPath: 'jrng-ui/metric-card',
-    status: 'Stable',
-    description:
-      'A compact KPI card for dashboard metrics with optional trend, icon, footer, and loading state.',
-    whenToUse:
-      'Use Metric Card for business dashboards, operational counters, and executive summaries.',
-    code: {
-      importCode: `import { JMetricCardComponent } from 'jrng-ui/metric-card';`,
-      basic: `<j-metric-card title="Revenue" value="$42.8k" trend="up" trendLabel="+12%" footer="Month to date"></j-metric-card>`,
-      variants: `<j-metric-card title="Churn" value="1.8%" trend="down" trendLabel="-0.4%"></j-metric-card>
-<j-metric-card title="Loading" loading></j-metric-card>`,
-    },
-    usage: ['Use for revenue, counts, conversion, queue volume, SLA, and activity metrics.'],
-    variants: ['up, down, and neutral trend', 'icon slot through icon input', 'loading skeleton'],
-    sizes: ['Metric cards size from content and grid layout.'],
-    states: ['default', 'positive trend', 'negative trend', 'neutral trend', 'loading'],
-    inputs: [
-      prop('title', 'string', "''", 'Metric label.'),
-      prop('value', 'string | number', "''", 'Primary metric value.'),
-      prop('trend', 'up | down | neutral', "'neutral'", 'Trend intent.'),
-      prop('trendLabel', 'string', "''", 'Visible trend text.'),
-      prop('footer', 'string', "''", 'Secondary context.'),
-      prop('loading', 'boolean', 'false', 'Shows loading placeholder.'),
-    ],
-    outputs: noOutputs,
-    accessibility: ['Do not rely on trend color alone; include trendLabel text.'],
-    bestPractices: ['Keep values short and put date ranges or caveats in footer text.'],
-  },
-  {
-    slug: 'stat-card',
-    name: 'Stat Card',
-    category: 'Business',
-    icon: 'activity',
-    selector: 'j-stat-card',
-    importPath: 'jrng-ui/stat-card',
-    status: 'Stable',
-    description:
-      'A general statistic card for counts, status summaries, and operational snapshots.',
-    whenToUse:
-      'Use Stat Card when a metric needs a quieter, more neutral surface than Metric Card.',
-    code: {
-      importCode: `import { JStatCardComponent } from 'jrng-ui/stat-card';`,
-      basic: `<j-stat-card title="Open orders" value="128" trend="up" trendLabel="+18 today"></j-stat-card>`,
-      states: `<j-stat-card title="Loading" loading></j-stat-card>`,
-    },
-    usage: ['Use for counters, queue sizes, open tasks, exceptions, and concise health summaries.'],
-    variants: ['icon', 'trend', 'footer', 'loading'],
-    sizes: ['Designed for responsive dashboard grids.'],
-    states: ['default', 'up/down/neutral trend', 'loading'],
-    inputs: [
-      prop('title', 'string', "''", 'Stat label.'),
-      prop('value', 'string | number', "''", 'Primary value.'),
-      prop('trend', 'up | down | neutral', "'neutral'", 'Trend style.'),
-      prop('trendLabel', 'string', "''", 'Trend text.'),
-      prop('icon', 'string', "''", 'Optional visual marker.'),
-      prop('loading', 'boolean', 'false', 'Shows loading placeholder.'),
-    ],
-    outputs: noOutputs,
-    accessibility: ['Use explicit titles and trend text so the value has context.'],
-    bestPractices: ['Use the same number format across a group of related cards.'],
-  },
-  {
     slug: 'status-chip',
     name: 'Status Chip',
     category: 'Business',
@@ -1915,16 +1811,16 @@ row = {
     code: {
       importCode: `import { JPageHeaderComponent } from 'jrng-ui/page-header';`,
       basic: `<j-page-header title="Orders" subtitle="Review fulfillment and exceptions" showBack (back)="goBack()">
-  <j-button jPageSecondaryActions label="Export" variant="outline"></j-button>
+  <j-button jPageSecondaryActions label="Export" variant="outlined"></j-button>
   <j-button jPagePrimaryAction label="Create order"></j-button>
 </j-page-header>`,
-      variants: `<j-page-header variant="default" title="Orders">...</j-page-header>
+      variants: `<j-page-header variant="standard" title="Orders">...</j-page-header>
 <j-page-header variant="stacked" title="Orders">...</j-page-header>
 <j-page-header variant="centered" title="Welcome">...</j-page-header>`,
     },
     usage: ['Use to standardize title, context, and actions across business app pages.'],
     variants: [
-      'default for ordinary admin pages',
+      'standard for ordinary application pages',
       'stacked when actions need a full row',
       'centered for onboarding and focused landing views',
     ],
@@ -1933,10 +1829,9 @@ row = {
     inputs: [
       prop('title', 'string', "''", 'Page title.'),
       prop('subtitle', 'string', "''", 'Supporting text.'),
-      prop('description', 'string', "''", 'Legacy supporting text alias.'),
       prop('breadcrumbs', 'readonly JPageHeaderBreadcrumb[]', '[]', 'Breadcrumb path.'),
       prop('showBack', 'boolean', 'false', 'Shows a back button.'),
-      prop('variant', 'default | stacked | centered', "'default'", 'Presentation concept.'),
+      prop('variant', 'standard | stacked | centered | hero', "'standard'", 'Header presentation.'),
       prop('styleClass', 'string', "''", 'Custom class.'),
     ],
     outputs: [event('back', 'void', 'Emits when the back button is activated.')],
@@ -1949,20 +1844,20 @@ row = {
     category: 'Business',
     icon: 'inbox',
     selector: 'j-empty-state',
-    importPath: 'jrng-ui/empty-state',
+    importPath: 'jrng-ui/empty',
     status: 'Stable',
     description:
       'A reusable empty result or empty page state with title, description, icon, and action slot.',
     whenToUse:
       'Use Empty State when a page, table, search, or filtered view has no content to show.',
     code: {
-      importCode: `import { JEmptyStateComponent } from 'jrng-ui/empty-state';`,
-      basic: `<j-empty-state title="No orders found" description="Try changing filters or create a new order.">
+      importCode: `import { JEmptyComponent } from 'jrng-ui/empty';`,
+      basic: `<j-empty title="No orders found" description="Try changing filters or create a new order.">
   <j-button jEmptyStateAction label="Create order"></j-button>
-</j-empty-state>`,
-      variants: `<j-empty-state variant="default" title="No orders" />
-<j-empty-state variant="inline" title="No matching rows" />
-<j-empty-state variant="panel" title="Start your first project" />`,
+</j-empty>`,
+      variants: `<j-empty variant="default" title="No orders" />
+<j-empty variant="inline" title="No matching rows" />
+<j-empty variant="page" title="Start your first project" />`,
     },
     usage: ['Use for search misses, first-run states, empty tables, and missing records.'],
     variants: [
@@ -1999,7 +1894,7 @@ row = {
     whenToUse:
       'Use Toast after background actions such as saving, deleting, uploading, or exporting.',
     code: {
-      importCode: `import { JrToastContainerComponent, JrToastService } from 'jrng-ui/toast';`,
+      importCode: `import { JToastContainerComponent, JToastService } from 'jrng-ui/toast';`,
       basic: `<j-toast position="top-right"></j-toast>`,
       variants: `toast.success('Order saved');
 toast.error('Could not save order');
@@ -2247,14 +2142,14 @@ items = [
       importCode: `import { JMenuComponent, JMenuItem } from 'jrng-ui/menu';`,
       basic: `<j-menu [model]="items" ariaLabel="Project actions"></j-menu>`,
       angular: `items: JMenuItem[] = [
-  { label: 'Edit', icon: 'Edit' },
-  { label: 'Archive', badge: 'New' },
+  { id: 'edit', label: 'Edit', icon: 'edit', shortcut: 'Ctrl+E', tooltip: 'Edit project' },
+  { id: 'archive', label: 'Archive', icon: 'archive', badge: 'New', badgeSeverity: 'info' },
   { separator: true },
-  { label: 'Delete', disabled: true }
+  { id: 'delete', label: 'Delete', icon: 'trash', destructive: true, permission: () => canDelete }
 ];`,
     },
     usage: ['Use inline for navigation or popup mode for contextual commands.'],
-    variants: ['inline', 'popup', 'nested submenu', 'separator', 'badge'],
+    variants: ['inline', 'popup', 'nested submenu', 'separator', 'badge', 'shortcut', 'destructive'],
     sizes: ['Menu items use standard compact action sizing.'],
     states: ['focused', 'disabled', 'open submenu', 'popup visible'],
     inputs: [
@@ -2565,23 +2460,21 @@ confirmDelete(): void {
     name: 'Tour Guide',
     category: 'Utilities',
     icon: 'route',
-    selector: 'JTourService, [jTourStep]',
+    selector: 'j-tour-guide, [jTourStep]',
     importPath: 'jrng-ui/tour',
     status: 'Stable',
     description:
-      'Optional guided onboarding tours powered internally by Driver.js and exposed through JRNG UI service and directive APIs.',
+      'Native guided onboarding tours built from JRNG overlay, focus, button and positioning foundations.',
     whenToUse:
       'Use Tour Guide for short product onboarding, feature introductions, and release walkthroughs where a few highlighted UI elements help users get started.',
     code: {
-      importCode: `import { JTourService, JTourStepDirective, JTourConfig } from 'jrng-ui/tour';`,
-      basic: `npm install driver.js`,
-      variants: `<button
-  type="button"
+      importCode: `import { JTourGuideComponent, JTourService, JTourStepDirective, JTourConfig } from 'jrng-ui/tour';`,
+      basic: `<j-tour-guide />`,
+      variants: `<j-button
   jTourStep="create-button"
   tourTitle="Create"
-  tourDescription="Click here to create a new record.">
-  Create
-</button>`,
+  tourDescription="Click here to create a new record."
+  label="Create" />`,
       states: `this.jTour.start({
   id: 'dashboard-intro-v1',
   steps: [
@@ -2597,20 +2490,21 @@ confirmDelete(): void {
   onSkip: (event) => this.saveSkippedTour(event.tourId)
 });`,
       angular: `import { Component, inject } from '@angular/core';
-import { JTourService, JTourStepDirective } from 'jrng-ui/tour';
+import { JButtonComponent } from 'jrng-ui/button';
+import { JTourGuideComponent, JTourService, JTourStepDirective } from 'jrng-ui/tour';
 
 @Component({
   standalone: true,
-  imports: [JTourStepDirective],
+  imports: [JButtonComponent, JTourGuideComponent, JTourStepDirective],
   template: \`
-    <button
+    <j-button
       id="createBtn"
       type="button"
       jTourStep="create-button"
       tourTitle="Create"
-      tourDescription="Click here to create a new record.">
-      Create
-    </button>
+      tourDescription="Click here to create a new record."
+      label="Create" />
+    <j-tour-guide />
   \`
 })
 export class DashboardComponent {
@@ -2625,7 +2519,7 @@ export class DashboardComponent {
 }`,
     },
     usage: [
-      'Install driver.js only in apps that use tours.',
+      'Render one j-tour-guide host for each isolated demo or application shell.',
       'Use the service for tour control and callbacks.',
       'Use jTourStep when template metadata is easier to maintain than CSS selectors.',
     ],
@@ -2640,6 +2534,7 @@ export class DashboardComponent {
     sizes: ['not size-based'],
     states: ['inactive', 'active', 'highlighted step', 'completed', 'skipped', 'destroyed'],
     inputs: [
+      prop('dir', 'ltr | rtl', "'ltr'", 'Controls tour placement and navigation direction.'),
       prop('JTourConfig.id', 'string', 'undefined', 'Application-defined tour identifier.'),
       prop(
         'JTourConfig.steps',
@@ -2742,10 +2637,10 @@ export class DashboardComponent {
     bestPractices: [
       'Keep completed/skipped persistence in the application, not the component library.',
       'Prefer stable element IDs or jTourStep IDs over brittle selectors.',
-      'JRNG UI uses Driver.js internally while keeping app code on JRNG APIs.',
+      'Use showOnce with a stable tour id when completion should be persisted.',
     ],
     commonMistakes: [
-      'Do not add driver.js unless the app uses tours.',
+      'Do not render multiple guide hosts for the same service instance.',
       'Do not call start before the target elements are rendered.',
     ],
   },
@@ -2990,9 +2885,9 @@ const detailedSlugs = new Set(
 );
 
 const generatedBasicExamples: Readonly<Record<string, string>> = {
-  accordion: `<j-accordion [multiple]="true" [activeIndex]="[0]">
-  <j-accordion-panel header="Account details">Update profile and contact information.</j-accordion-panel>
-  <j-accordion-panel header="Notifications">Choose which updates you receive.</j-accordion-panel>
+  accordion: `<j-accordion [multiple]="true" [value]="['account']">
+  <j-accordion-panel value="account"><j-accordion-header>Account details</j-accordion-header><j-accordion-content>Update profile and contact information.</j-accordion-content></j-accordion-panel>
+  <j-accordion-panel value="notifications"><j-accordion-header>Notifications</j-accordion-header><j-accordion-content>Choose which updates you receive.</j-accordion-content></j-accordion-panel>
 </j-accordion>`,
   'accordion-panel': `<j-accordion [activeIndex]="0">
   <j-accordion-panel header="Project summary">This panel is expanded by default.</j-accordion-panel>
@@ -3010,30 +2905,35 @@ const generatedBasicExamples: Readonly<Record<string, string>> = {
   [presets]="datePresets"
   [(ngModel)]="dateRange">
 </j-date-picker>`,
-  divider: `<j-divider></j-divider>`,
+  divider: `<j-divider text="Account settings" icon="settings" position="start" lineStyle="dashed"></j-divider>`,
   icon: `<j-icon name="search" ariaLabel="Search" size="24"></j-icon>`,
   'input-mask': `<j-input-mask label="Phone" mask="(999) 999-9999" placeholder="(555) 123-4567"></j-input-mask>`,
   'input-number': `<j-input-number label="Quantity" [min]="1" [max]="100" [(ngModel)]="quantity"></j-input-number>`,
   'input-otp': `<j-input-otp label="Verification code" [length]="6" numericOnly [(ngModel)]="code"></j-input-otp>`,
   listbox: `<j-listbox label="Team" [options]="teams" [(ngModel)]="selectedTeam"></j-listbox>`,
-  multiselect: `<j-multiselect label="Skills" [options]="skills" [(ngModel)]="selectedSkills"></j-multiselect>`,
+  multiselect: `<j-multiselect
+  label="Release statuses"
+  [options]="statuses"
+  displayMode="chips"
+  chipSeverityField="severity"
+  [maxSelectedLabels]="2"
+  [(ngModel)]="selectedStatuses">
+</j-multiselect>`,
   paginator: `<j-paginator [first]="20" [rows]="10" [totalRecords]="96" [rowsPerPageOptions]="[10, 20, 50]" showCurrentPageReport></j-paginator>`,
-  password: `<j-password label="Password" placeholder="Enter a secure password" feedback toggleMask></j-password>`,
+  password: `<j-password label="Password" placeholder="Enter a secure password" feedback toggleVisibility></j-password>`,
   'progress-spinner': `<j-progress-spinner label="Loading orders" [size]="48"></j-progress-spinner>`,
-  'status-page': `<j-status-page
-  variant="empty"
-  marker="?"
-  title="No matching records"
-  description="Adjust the filters and try again">
-</j-status-page>`,
-  rating: `<j-rating label="Product rating" [(ngModel)]="rating"></j-rating>`,
+  rating: `<j-rating
+  label="Product rating"
+  [step]="0.5"
+  ariaLabel="Product rating"
+  [(ngModel)]="rating">
+</j-rating>`,
   slider: `<j-slider label="Completion" [min]="0" [max]="100" [step]="5" tooltip [(ngModel)]="completion"></j-slider>`,
   'avatar-group': `<j-avatar-group [items]="teamMembers" [max]="3" ariaLabel="Project team"></j-avatar-group>`,
   calendar: `<j-calendar [value]="selectedDate"></j-calendar>`,
   carousel: `<j-carousel [value]="featuredItems" [visibleItems]="2"></j-carousel>`,
   chart: `<j-chart type="bar" [data]="ordersChartData" ariaLabel="Monthly orders"></j-chart>`,
   chips: `<j-chips label="Tags" placeholder="Type a tag and press Enter" [(ngModel)]="tags"></j-chips>`,
-  combobox: `<j-combobox label="Customer" [options]="customers" placeholder="Choose or type a customer"></j-combobox>`,
   'data-grid': `<j-data-grid
   title="Orders"
   description="Sortable, filterable operational data with pagination."
@@ -3044,34 +2944,34 @@ const generatedBasicExamples: Readonly<Record<string, string>> = {
   hover>
 </j-data-grid>`,
   'data-view': `<j-data-view [value]="products" layout="grid" [rows]="6"></j-data-view>`,
-  'date-range-picker': `<j-date-range-picker label="Campaign window" [(ngModel)]="dateRange"></j-date-range-picker>`,
   editor: `<j-editor label="Description" placeholder="Write a short product summary" [(ngModel)]="description"></j-editor>`,
   'file-preview': `<j-file-preview fileName="statement.pdf" [fileSize]="245760"></j-file-preview>`,
-  fieldset: `<j-fieldset legend="Billing address" toggleable>
+  fieldset: `<j-fieldset legend="Billing address" icon="map-pin" badge="Required" variant="elevated" toggleable>
   <j-input label="Street"></j-input>
   <j-input label="City"></j-input>
 </j-fieldset>`,
   gallery: `<j-gallery [value]="galleryItems" animation="fade"></j-gallery>`,
   image: `<j-image src="/assets/product-preview.png" alt="Product preview" preview></j-image>`,
-  'image-preview': `<j-image-preview [src]="previewSrc" alt="Product preview" [visible]="previewOpen"></j-image-preview>`,
   knob: `<j-knob label="Completion" [(ngModel)]="completion"></j-knob>`,
   loader: `<j-loader label="Loading report" [size]="32"></j-loader>`,
   'meter-group': `<j-meter-group [value]="segments"></j-meter-group>`,
   'order-list': `<j-order-list header="Priorities" [value]="tasks" filter></j-order-list>`,
   'org-chart': `<j-org-chart [value]="organization"></j-org-chart>`,
-  panel: `<j-panel header="Project health" toggleable>
+  panel: `<j-panel header="Project health" subtitle="Deployment readiness" icon="activity" badge="Healthy" badgeSeverity="success" variant="elevated" toggleable>
   The latest build passed and documentation coverage is improving.
 </j-panel>`,
   'select-button': `<j-select-button label="View mode" [options]="viewModes" [(ngModel)]="viewMode"></j-select-button>`,
-  stack: `<j-stack direction="horizontal" align="center" gap="var(--j-spacing-3)">
-  <j-badge value="New"></j-badge>
-  <span>Reusable spacing layout</span>
-</j-stack>`,
-  'time-picker': `<j-time-picker label="Meeting time" [(ngModel)]="meetingTime"></j-time-picker>`,
+  'time-picker': `<j-time-picker
+  label="Meeting time"
+  [hourFormat]="12"
+  [minuteStep]="15"
+  showSeconds
+  [(ngModel)]="meetingTime">
+</j-time-picker>`,
   'toggle-button': `<j-toggle-button onLabel="Published" offLabel="Draft" [(ngModel)]="published"></j-toggle-button>`,
   toolbar: `<j-toolbar>
   <j-button label="New"></j-button>
-  <j-button label="Export" variant="outline"></j-button>
+  <j-button label="Export" variant="outlined"></j-button>
 </j-toolbar>`,
   topbar: `<j-topbar [model]="navigationItems" activeKey="Projects"></j-topbar>`,
   'transfer-list': `<j-transfer-list
@@ -3081,7 +2981,7 @@ const generatedBasicExamples: Readonly<Record<string, string>> = {
   targetHeader="Assigned tasks"
   filter>
 </j-transfer-list>`,
-  'video-player': `<j-video-player src="https://www.youtube.com/watch?v=M7lc1UVf-VE" caption="YouTube embed example"></j-video-player>`,
+  'video-player': `<j-video-player src="/assets/demo-video.mp4" caption="Local video example"></j-video-player>`,
   tree: `<j-tree [value]="nodes" filter ariaLabel="Workspace folders"></j-tree>`,
   'virtual-scroller': `<j-virtual-scroller [items]="records" [itemSize]="40" height="14rem"></j-virtual-scroller>`,
 };
@@ -3098,10 +2998,6 @@ const generatedFallbackExamples: Readonly<Record<string, string>> = {
   <j-button label="Archive"></j-button>
 </j-bottom-sheet>`,
   'calendar-scheduler': `<j-calendar-scheduler [events]="events"></j-calendar-scheduler>`,
-  column: `<j-table [value]="orders">
-  <j-column field="order" header="Order"></j-column>
-  <j-column field="status" header="Status"></j-column>
-</j-table>`,
   'command-palette': `<j-command-palette [items]="commands" placeholder="Search commands"></j-command-palette>`,
   'confirm-popup': `<j-confirm-popup></j-confirm-popup>`,
   container: `<j-container>
@@ -3109,68 +3005,45 @@ const generatedFallbackExamples: Readonly<Record<string, string>> = {
   <p>Use Container to constrain page content.</p>
 </j-container>`,
   'context-menu': `<j-context-menu [model]="menuItems"></j-context-menu>`,
-  'dashboard-layout': `<j-dashboard-layout>
-  <j-card title="Revenue">Dashboard content</j-card>
-</j-dashboard-layout>`,
-  dropzone: `<j-dropzone accept=".csv,.xlsx" multiple></j-dropzone>`,
   'dynamic-dialog': `<j-dynamic-dialog></j-dynamic-dialog>`,
-  'empty-page': `<j-empty-page title="No results" description="Try changing the filters."></j-empty-page>`,
   'error-page': `<j-error-page title="Something went wrong" statusCode="500"></j-error-page>`,
   'file-preview': `<j-file-preview fileName="report.pdf" [fileSize]="245760" description="Uploaded recently"></j-file-preview>`,
-  'float-label': `<j-float-label label="Email">
-  <j-input type="email"></j-input>
-</j-float-label>`,
   'form-field': `<j-form-field label="Email" hint="Use a work email address.">
   <j-input type="email"></j-input>
 </j-form-field>`,
   gantt: `<j-gantt [tasks]="tasks"></j-gantt>`,
   'grid-layout': `<j-grid-layout>
-  <j-card title="Open tasks">12</j-card>
-  <j-card title="Completed">48</j-card>
+  <j-card header="Open tasks">12</j-card>
+  <j-card header="Completed">48</j-card>
 </j-grid-layout>`,
-  'icon-field': `<j-icon-field icon="search">
+  'icon-field': `<j-icon-field prefixIcon="search" clearable filterable ariaLabel="Order search">
   <j-input placeholder="Search"></j-input>
 </j-icon-field>`,
-  'ifta-label': `<j-ifta-label label="Email">
-  <j-input type="email"></j-input>
-</j-ifta-label>`,
-  'input-group': `<j-input-group>
-  <j-input placeholder="Search orders"></j-input>
-  <j-button label="Search"></j-button>
+  'input-group': `<j-input-group prefixAddon="https://" suffixAddon=".com" ariaLabel="Website address">
+  <j-input placeholder="company"></j-input>
+  <j-button label="Open"></j-button>
 </j-input-group>`,
-  'input-icon': `<j-input-icon name="search"></j-input-icon>`,
   kanban: `<j-kanban [columns]="columns"></j-kanban>`,
   'maintenance-page': `<j-maintenance-page title="Maintenance" description="The application will be back soon."></j-maintenance-page>`,
   'mega-menu': `<j-mega-menu [model]="menuItems"></j-mega-menu>`,
   menubar: `<j-menubar [model]="menuItems"></j-menubar>`,
   'notification-center': `<j-notification-center [items]="notifications"></j-notification-center>`,
-  'overlay-panel': `<j-overlay-panel [visible]="true">
-  <p>Overlay content</p>
-</j-overlay-panel>`,
-  'pick-list': `<j-pick-list [source]="availableItems" [target]="selectedItems"></j-pick-list>`,
   'radio-group': `<j-radio-group label="Plan" [options]="plans" [(ngModel)]="plan"></j-radio-group>`,
   'section-footer': `<j-section-footer>
-  <j-button label="Cancel" variant="ghost"></j-button>
+  <j-button label="Cancel" variant="soft"></j-button>
   <j-button label="Save"></j-button>
 </j-section-footer>`,
   'section-header': `<j-section-header title="Projects" subtitle="Track active work."></j-section-header>`,
-  'sidebar-layout': `<j-sidebar-layout>
-  <nav jSidebar>Navigation</nav>
-  <main>Main content</main>
-</j-sidebar-layout>`,
   'sidebar-nav': `<j-sidebar-nav [items]="navigationItems"></j-sidebar-nav>`,
-  'sort-icon': `<j-sort-icon field="name" [sortField]="sortField" [sortOrder]="sortOrder"></j-sort-icon>`,
   sparkline: `<j-sparkline [value]="[12, 18, 16, 24, 30]"></j-sparkline>`,
   splitter: `<j-splitter>
-  <section>Left panel</section>
-  <section>Right panel</section>
+  <j-splitter-panel [size]="35">Navigation panel</j-splitter-panel>
+  <j-splitter-panel [size]="65">Content panel</j-splitter-panel>
 </j-splitter>`,
   stepper: `<j-stepper [steps]="steps" [activeIndex]="1"></j-stepper>`,
   tab: `<j-tabs>
   <j-tab header="Overview">Overview content</j-tab>
 </j-tabs>`,
-  'table-empty-state': `<j-table-empty-state message="No orders found"></j-table-empty-state>`,
-  'table-skeleton': `<j-table-skeleton [rows]="4"></j-table-skeleton>`,
   'tiered-menu': `<j-tiered-menu [model]="menuItems"></j-tiered-menu>`,
   'tree-table': `<j-tree-table [value]="nodes" [columns]="columns"></j-tree-table>`,
   'video-player': `<j-video-player src="/assets/demo-video.mp4" title="Product walkthrough"></j-video-player>`,
@@ -3184,7 +3057,7 @@ const createGeneratedBasicExample = (
     return mapped;
   }
 
-  if (record.category === 'Forms & Inputs') {
+  if (record.category === 'Forms') {
     return `<${record.selector} label="${record.name}" placeholder="Enter ${record.name.toLowerCase()}"></${record.selector}>`;
   }
   if (record.category === 'Layout') {
@@ -3192,24 +3065,19 @@ const createGeneratedBasicExample = (
   <section>Content</section>
 </${record.selector}>`;
   }
-  if (record.category === 'Data & Tables') {
+  if (record.category === 'Data') {
     return `<${record.selector} [value]="items"></${record.selector}>`;
   }
-  if (record.category === 'Navigation & Menus') {
+  if (record.category === 'Navigation and Menu') {
     return `<${record.selector} [model]="items"></${record.selector}>`;
   }
-  if (record.category === 'Overlays & Feedback') {
-    return `<${record.selector} [visible]="visible">
-  <p>${record.name} content</p>
-</${record.selector}>`;
+  if (record.category === 'Overlay' || record.category === 'Feedback and Messages') {
+    return `<${record.selector} />`;
   }
-  return `<${record.selector}>
-  ${record.name} content
-</${record.selector}>`;
+  return `<${record.selector} />`;
 };
 
 const generatedDisplayNames: Readonly<Record<string, string>> = {
-  column: 'Table Column',
   combobox: 'Searchable Select',
 };
 
@@ -3222,15 +3090,18 @@ const generatedInputDocs: Readonly<Record<string, readonly DocsApiRow[]>> = {
     prop('size', 'sm | md | lg', "'md'", 'Avatar dimensions.'),
     prop('shape', 'circle | square', "'circle'", 'Avatar silhouette.'),
     prop('status', 'online | offline | away | busy | none', "'none'", 'Presence indicator.'),
-    prop('canZoom', 'boolean', 'false', 'Makes a valid image pointer and keyboard zoomable.'),
-    prop('zoomAriaLabel', 'string', "'View profile image'", 'Accessible zoom action name.'),
-    prop('zoomOverlay', 'boolean', 'true', 'Opens the built-in image preview after imageZoom.'),
+    prop('previewable', 'boolean', 'false', 'Opens a valid image in the accessible image preview.'),
+    prop(
+      'previewAriaLabel',
+      'string',
+      "'Preview profile image'",
+      'Accessible preview action name.',
+    ),
     prop('styleClass', 'string', "''", 'Additional avatar classes.'),
     prop('pt', 'JPassThrough | null', 'null', 'Pass-through styling hooks.'),
   ],
   loader: [
     prop('type', 'JLoaderVariant', "'dots'", 'Loading animation type.'),
-    prop('variant', 'JLoaderVariant | string', "''", 'Deprecated compatibility alias for type.'),
     prop('size', 'sm | md | lg | number', "'md'", 'Named or pixel size.'),
     prop('label', 'string', "'Loading'", 'Readable loading status.'),
     prop('inline', 'boolean', 'false', 'Shows the label beside the visual.'),
@@ -3384,7 +3255,7 @@ const createExampleValues = (doc: ComponentDoc): string => {
   }
 
   if (!existing && !additions.length) {
-    return `// ${doc.name} uses static values in this example; no backing fields are required.`;
+    return '';
   }
   return [existing, ...additions].filter(Boolean).join('\n\n');
 };
@@ -3445,20 +3316,14 @@ const mergedComponentDocs: readonly ComponentDoc[] = [
       icon: 'box',
       selector: record.selector,
       importPath: record.importPath,
-      status: 'Stable',
+      status: record.stability,
       description: record.description,
-      whenToUse: `Use ${record.name} when its ${record.category.toLowerCase()} behavior matches the application workflow.`,
-      whenNotToUse: [
-        `Avoid ${record.name} when a simpler native element or an existing focused JRNG UI component communicates the workflow more clearly.`,
-      ],
+      whenToUse: record.description,
       code: {
         importCode: `import { ${record.className} } from '${record.importPath}';`,
         basic: createGeneratedBasicExample(record),
       },
-      usage: [
-        `Import ${record.className} from the public ${record.importPath} entry point.`,
-        `Common placements include ${record.category.toLowerCase()} screens, focused workflows, and responsive application layouts.`,
-      ],
+      usage: [`Import ${record.className} from the public ${record.importPath} entry point.`],
       variants: [],
       sizes: [],
       states: [],
@@ -3492,12 +3357,7 @@ const mergedComponentDocs: readonly ComponentDoc[] = [
       templates: [
         'Default content can be projected where the component template exposes an Angular content slot.',
       ],
-      keyboard:
-        record.accessibilityStatus === 'implementation-signals-only'
-          ? [
-              'Use Tab to reach interactive controls and activate native buttons with Enter or Space.',
-            ]
-          : ['The component follows the keyboard behavior of its rendered native controls.'],
+      keyboard: ['The component follows the keyboard behavior of its rendered native controls.'],
       responsive: [
         'Place the component in a flexible container and verify long labels at narrow widths.',
       ],
@@ -3508,7 +3368,6 @@ const mergedComponentDocs: readonly ComponentDoc[] = [
       testingNotes: [
         'Test visible behavior, public events, keyboard use, disabled states, and accessible naming in the consuming workflow.',
       ],
-      deprecated: record.deprecation,
     })),
 ];
 
@@ -3531,6 +3390,14 @@ export const componentDocs: readonly ComponentDoc[] = mergedComponentDocs
     const documentedOutputs = new Set(doc.outputs.map((row) => row.event));
     return {
       ...doc,
+      status: registryRecord?.stability ?? doc.status,
+      description: registryRecord?.description ?? doc.description,
+      whenToUse: registryRecord?.description ?? doc.description,
+      usage: registryRecord
+        ? [
+            `Import ${registryRecord.className} from the public ${registryRecord.importPath} entry point.`,
+          ]
+        : doc.usage,
       inputs: [
         ...doc.inputs,
         ...(registryRecord?.inputs ?? [])
@@ -3566,9 +3433,7 @@ export const componentDocs: readonly ComponentDoc[] = mergedComponentDocs
             ),
           ),
       ],
-      whenNotToUse: doc.whenNotToUse ?? [
-        `Avoid ${doc.name} when a simpler native element communicates the same task without losing consistency or accessibility.`,
-      ],
+      whenNotToUse: [],
       publicMethods: [
         ...(doc.publicMethods ?? []),
         ...(registryRecord?.methods ?? []).filter(
@@ -3591,7 +3456,6 @@ export const componentDocs: readonly ComponentDoc[] = mergedComponentDocs
       testingNotes: doc.testingNotes ?? [
         'Test visible behavior, public events, keyboard use, state changes, and accessible naming.',
       ],
-      deprecated: doc.deprecated ?? registryRecord?.deprecation ?? null,
       code: {
         ...doc.code,
         angular: createExampleValues(doc),

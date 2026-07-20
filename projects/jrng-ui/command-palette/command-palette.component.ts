@@ -13,7 +13,7 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { JrDialogComponent } from 'jrng-ui/dialog';
+import { JDialogComponent } from 'jrng-ui/dialog';
 
 export interface JCommandPaletteItem {
   readonly id?: string;
@@ -28,7 +28,7 @@ export interface JCommandPaletteItem {
 
 @Component({
   selector: 'j-command-palette',
-  imports: [FormsModule, JrDialogComponent],
+  imports: [FormsModule, JDialogComponent],
   template: `
     <j-dialog
       [visible]="visible()"

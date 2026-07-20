@@ -1,5 +1,7 @@
 :host {
   display: block;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .j-table {
@@ -7,6 +9,7 @@
   border: 1px solid var(--j-table-border-color, #dbe2ea);
   border-radius: var(--j-radius-md, 0.5rem);
   color: var(--j-table-color, #111827);
+  max-width: 100%;
   overflow: hidden;
 }
 
@@ -82,16 +85,12 @@
 }
 
 .j-table__scroll {
-  overflow-x: auto;
+  overflow: auto;
   position: relative;
 }
 
 .j-table__scroll--overlay-loading {
   min-height: var(--j-table-loading-min-height, 10rem);
-}
-
-.j-table--scrollable .j-table__scroll {
-  overflow: auto;
 }
 
 table {
@@ -129,7 +128,7 @@ th {
   z-index: 2;
 }
 
-.j-table--sticky.j-table--operations .j-table__filter-row th {
+.j-table--sticky .j-table__filter-row th {
   top: var(--j-table-header-height, 2.5rem);
 }
 
@@ -138,52 +137,13 @@ tbody tr:last-child td {
 }
 
 .j-table--gridlines th,
-.j-table--gridlines td,
-.j-table--bordered th,
-.j-table--bordered td,
-.j-table--operations th,
-.j-table--operations td {
+.j-table--gridlines td {
   border-inline-end: 1px solid var(--j-table-border-color, var(--j-color-border, #dbe2ea));
 }
 
 .j-table--gridlines th:last-child,
-.j-table--gridlines td:last-child,
-.j-table--bordered th:last-child,
-.j-table--bordered td:last-child,
-.j-table--operations th:last-child,
-.j-table--operations td:last-child {
+.j-table--gridlines td:last-child {
   border-inline-end: 0;
-}
-
-.j-table--operations {
-  --j-table-header-bg: var(--j-table-operations-header-bg, var(--j-color-muted, #f8fafc));
-  --j-table-row-hover-bg: var(
-    --j-table-operations-row-hover-bg,
-    color-mix(in srgb, var(--j-color-primary, #4f46e5) 7%, var(--j-table-bg, #ffffff))
-  );
-}
-
-.j-table--operations thead > tr:first-child th {
-  color: var(--j-table-operations-header-color, var(--j-color-foreground, #111827));
-  font-size: var(--j-font-size-xs, 0.75rem);
-  letter-spacing: 0.025em;
-  padding-block: var(--j-spacing-sm, 0.5rem);
-  white-space: nowrap;
-}
-
-.j-table--operations .j-table__filter-row th {
-  background: var(--j-table-filter-bg, var(--j-color-card, #ffffff));
-  padding: var(--j-spacing-xs, 0.25rem) var(--j-spacing-sm, 0.5rem);
-}
-
-.j-table--operations .j-table__filter-cell j-column-filter {
-  display: block;
-  min-width: 8rem;
-}
-
-.j-table--operations tbody td {
-  padding-block: var(--j-spacing-sm, 0.5rem);
-  white-space: nowrap;
 }
 
 .j-table--minimal {
@@ -205,42 +165,78 @@ tbody tr:last-child td {
   border-bottom: 1px solid var(--j-table-border-color, var(--j-color-border, #dbe2ea));
 }
 
-.j-table--card {
-  background: transparent;
-  border-color: transparent;
-  overflow: visible;
-}
-
-.j-table--card table {
-  border-collapse: separate;
-  border-spacing: 0 var(--j-spacing-sm, 0.5rem);
-}
-
-.j-table--card thead th {
-  background: transparent;
-  border-bottom: 0;
-}
-
-.j-table--card tbody td {
-  background: var(--j-color-card, #ffffff);
-  border-bottom: 1px solid var(--j-table-border-color, var(--j-color-border, #dbe2ea));
-  border-top: 1px solid var(--j-table-border-color, var(--j-color-border, #dbe2ea));
-}
-
-.j-table--card tbody td:first-child {
-  border-inline-start: 1px solid var(--j-table-border-color, var(--j-color-border, #dbe2ea));
-  border-end-start-radius: var(--j-radius-md, 0.5rem);
-  border-start-start-radius: var(--j-radius-md, 0.5rem);
-}
-
-.j-table--card tbody td:last-child {
-  border-inline-end: 1px solid var(--j-table-border-color, var(--j-color-border, #dbe2ea));
-  border-end-end-radius: var(--j-radius-md, 0.5rem);
-  border-start-end-radius: var(--j-radius-md, 0.5rem);
-}
-
 .j-table--striped tbody tr:nth-child(even) td {
   background: var(--j-color-surface-muted, #f8fafc);
+}
+
+.j-table__advanced-filters,
+.j-table__filter-menu {
+  position: relative;
+}
+
+.j-table__advanced-filter-panel,
+.j-table__filter-menu-popup {
+  background: var(--j-color-popover);
+  border: 1px solid var(--j-color-border);
+  border-radius: var(--j-radius-md);
+  box-shadow: var(--j-shadow-md);
+  display: grid;
+  gap: var(--j-spacing-2);
+  padding: var(--j-spacing-3);
+  z-index: var(--j-z-index-popover);
+}
+
+.j-table__advanced-filter-panel {
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  margin-top: var(--j-spacing-2);
+  min-width: min(42rem, calc(100vw - 2rem));
+}
+
+.j-table__filter-menu {
+  display: inline-block;
+  margin-inline-start: var(--j-spacing-1);
+}
+
+.j-table__filter-menu > summary {
+  align-items: center;
+  border-radius: var(--j-radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  height: 1.75rem;
+  justify-content: center;
+  list-style: none;
+  width: 1.75rem;
+}
+
+.j-table__filter-menu[data-j-active='true'] > summary {
+  background: var(--j-color-primary-soft);
+  color: var(--j-color-primary);
+}
+
+.j-table__filter-menu-popup {
+  inset-inline-end: 0;
+  min-width: 15rem;
+  position: absolute;
+  top: calc(100% + var(--j-spacing-1));
+}
+
+.j-table__filter-chips {
+  align-items: center;
+  border-bottom: 1px solid var(--j-color-border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--j-spacing-1);
+  padding: var(--j-spacing-2) var(--j-spacing-3);
+}
+
+.j-table__filter-chips button {
+  background: var(--j-color-primary-soft);
+  border: 0;
+  border-radius: var(--j-radius-full);
+  color: var(--j-color-primary);
+  font: inherit;
+  min-height: 1.75rem;
+  padding: 0 var(--j-spacing-2);
 }
 
 .j-table--hover tbody tr:not(:has(.j-table__state)):hover td {
@@ -274,16 +270,6 @@ tbody tr.is-frozen td {
     var(--j-table-header-height, 3rem) + var(--j-frozen-index, 0) * var(--j-table-row-height, 3rem)
   );
   z-index: 2;
-}
-
-.j-table--small th,
-.j-table--small td {
-  padding: var(--j-spacing-sm, 0.5rem) var(--j-spacing-md, 0.75rem);
-}
-
-.j-table--large th,
-.j-table--large td {
-  padding: var(--j-spacing-lg, 1rem) var(--j-spacing-xl, 1.25rem);
 }
 
 .j-table--density-compact th,
@@ -436,6 +422,26 @@ tbody tr.is-frozen td {
 
 .j-table__expanded-row td {
   background: var(--j-color-muted, #f8fafc);
+}
+
+.j-table__group-row th,
+.j-table__group-footer td {
+  background: var(--j-color-muted);
+  color: var(--j-color-muted-foreground);
+  font-weight: var(--j-font-weight-semibold);
+  padding: var(--j-spacing-2) var(--j-spacing-3);
+  text-align: start;
+}
+
+.j-table__virtual-spacer td {
+  border: 0;
+  padding: 0;
+}
+
+.j-table__group-row th {
+  align-items: center;
+  display: flex;
+  gap: var(--j-spacing-2);
 }
 
 .j-table__state {

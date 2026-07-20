@@ -3,10 +3,10 @@
   data-jc-name="card"
   data-jc-section="root"
   data-jc-extend="header body footer actions"
-  [attr.data-j-active]="isInteractive() ? 'true' : null"
+  [attr.data-j-active]="interactive() ? 'true' : null"
   [attr.data-j-loading]="skeleton() ? 'true' : null"
-  [attr.role]="isInteractive() ? 'button' : null"
-  [attr.tabindex]="isInteractive() ? '0' : null"
+  [attr.role]="interactive() ? 'button' : null"
+  [attr.tabindex]="interactive() ? '0' : null"
 >
   @if (skeleton()) {
     <div class="j-card__skeleton" data-jc-section="skeleton" aria-hidden="true">
@@ -15,13 +15,13 @@
       <span></span>
     </div>
   } @else {
-    @if (resolvedHeader() || resolvedSubheader()) {
+    @if (header() || subheader()) {
       <header class="j-card__header" data-jc-section="header">
-        @if (resolvedHeader()) {
-          <h3 class="j-card__title" data-jc-section="title">{{ resolvedHeader() }}</h3>
+        @if (header()) {
+          <h3 class="j-card__title" data-jc-section="title">{{ header() }}</h3>
         }
-        @if (resolvedSubheader()) {
-          <p class="j-card__subtitle" data-jc-section="subtitle">{{ resolvedSubheader() }}</p>
+        @if (subheader()) {
+          <p class="j-card__subtitle" data-jc-section="subtitle">{{ subheader() }}</p>
         }
       </header>
     }

@@ -71,10 +71,9 @@ Only versions exercised by the project build and test workflow are listed.
 
 | JRNG UI version | Supported Angular versions |
 | --------------- | -------------------------- |
-| 0.0.9 (current) | Angular 21.2.x             |
-| 0.0.8           | Angular 21.2.x             |
+| 0.1.0 (current) | Angular 21.2.x             |
 
-Required runtime peers are Angular common, core, forms, and platform-browser. Router, Chart.js, and Driver.js are optional peers for features that use them.
+Required runtime peers are Angular common, core, forms, and platform-browser. Router and Chart.js are optional peers for features that use them; Tour Guide is native JRNG UI.
 
 ## Theme setup
 
@@ -99,7 +98,6 @@ Dark mode can be applied with the `j-dark` class or managed with `JThemeService`
 - [Get Started](https://jrngui.dev/docs)
 - [View Components](https://jrngui.dev/docs/components)
 - [Live Examples](https://jrngui.dev/examples)
-- [Admin Starter](https://jrngui.dev/admin-starter)
 - [GitHub](https://github.com/gokujy/jrng-ui)
 - [npm](https://www.npmjs.com/package/jrng-ui)
 - [Support](SUPPORT.md)

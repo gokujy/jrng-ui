@@ -33,7 +33,7 @@ readonly breadcrumbs: JPageHeaderBreadcrumb[] = [
 ```
 
 ```html
-<j-page-header title="Tasks" description="Track project work." [breadcrumbs]="breadcrumbs">
+<j-page-header title="Tasks" subtitle="Track project work." [breadcrumbs]="breadcrumbs">
   <div jPageActions>
     <j-button label="New task" />
   </div>
@@ -73,7 +73,7 @@ readonly breadcrumbs: JPageHeaderBreadcrumb[] = [
 
 ## Layout Primitives
 
-Use `j-container`, `j-stack`, and `j-grid-layout` to compose pages without generic global utility classes.
+Use `j-container`, `j-grid`, and `j-grid-layout` with JRNG flex utilities to compose pages.
 
 Use `j-grid`, `j-row`, and `j-col` when the layout needs explicit responsive spans,
 offsets, ordering, alignment, or gutters. This is a presentation grid, not a data table.
@@ -100,26 +100,28 @@ items whose minimum width determines wrapping:
 
 ```html
 <j-container size="xl">
-  <j-stack gap="var(--j-spacing-5)">
-    <j-page-header title="Customers" description="Manage customer records." />
+  <div class="j-flex j-flex-column j-gap-5">
+    <j-page-header title="Customers" subtitle="Manage customer records." />
     <j-grid-layout [columns]="3" minItemWidth="18rem">
       <j-card title="Customer activity" />
       <j-card title="Invoices" />
       <j-card title="Orders" />
     </j-grid-layout>
-  </j-stack>
+  </div>
 </j-container>
 ```
 
-## Sidebar Layouts
+## Sidebar compositions
 
 ```html
-<j-sidebar-layout>
-  <aside jSidebar>Filters</aside>
-  <section>Results</section>
-</j-sidebar-layout>
+<j-grid>
+  <j-row>
+    <j-col size="12" lg="3"><j-panel header="Filters">Filter content</j-panel></j-col>
+    <j-col size="12" lg="9">Results</j-col>
+  </j-row>
+</j-grid>
 
-<j-responsive-sidebar [(open)]="filtersOpen" title="Filters"> Filter content </j-responsive-sidebar>
+<j-drawer [(visible)]="filtersOpen" title="Filters">Filter content</j-drawer>
 ```
 
 ## Splitter
@@ -140,9 +142,14 @@ items whose minimum width determines wrapping:
   <j-button label="Go back" />
 </j-error-page>
 
-<j-empty-page icon="empty" title="No projects" description="Create a project to get started.">
+<j-empty
+  variant="page"
+  icon="empty"
+  title="No projects"
+  description="Create a project to get started."
+>
   <j-button label="New project" />
-</j-empty-page>
+</j-empty>
 
 <j-maintenance-page detail="Try again later.">
   <j-button label="Refresh" />
