@@ -1,0 +1,2 @@
+import { TestBed,fakeAsync,tick } from '@angular/core/testing';import { JNavigationProgressService } from './navigation-progress.service';
+describe('JNavigationProgressService',()=>{it('tracks concurrent operations and waits for all to finish',fakeAsync(()=>{const s=TestBed.inject(JNavigationProgressService);s.delay.set(0);s.minimumVisible.set(0);const a=s.start('a'),b=s.start('b');tick();expect(s.visible()).toBe(true);s.complete(a);tick();expect(s.active()).toBe(true);s.complete(b);tick();expect(s.active()).toBe(false);expect(s.visible()).toBe(false);}));});
