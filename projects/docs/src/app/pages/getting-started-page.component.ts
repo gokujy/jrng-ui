@@ -176,10 +176,10 @@ import { JInputComponent } from 'jrng-ui/input';
   template: \`
     <form [formGroup]="form" (ngSubmit)="save()">
       <j-input
-        label="Display name"
+        label="Visible name"
         formControlName="displayName"
         [invalid]="form.controls.displayName.touched && form.controls.displayName.invalid"
-        error="A display name is required."
+        error="A visible name is required."
       />
       <j-button label="Save profile" type="submit" [disabled]="form.invalid" />
     </form>

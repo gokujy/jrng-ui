@@ -96,7 +96,11 @@ const query = jSerializeTableQuery({
   multiSortMeta: [{ field: 'createdAt', order: -1 }],
   filterModel,
   permanentFilters: [
-    { field: 'tenantId', operator: 'and', constraints: [{ matchMode: 'equals', value: tenantId }] },
+    {
+      field: 'workspaceId',
+      operator: 'and',
+      constraints: [{ matchMode: 'equals', value: activeWorkspaceId }],
+    },
   ],
   timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
 });

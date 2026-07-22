@@ -31,7 +31,6 @@ import { JGridAlignment, JGridGap, JGridJustification, jGridGapToken } from './g
       :host(.j-row--nowrap) {
         flex-wrap: nowrap;
       }
-
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,

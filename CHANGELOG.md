@@ -20,6 +20,7 @@
 - Made responsive preview controls opt-in and synchronized component/example routing, history, scroll position, heading focus, navigation selection, and mobile navigation state.
 - Updated Table/Data Grid scrolling, final saved state, filtering axes, Transfer List responsiveness, Float Label state detection, Password visibility, Chips severity, Gallery transitions, Grid gaps, Avatar preview, and File Preview actions.
 - Standardized Table toolbar, filter, row expansion, row locking, and action-menu controls on JRNG Button and Tooltip primitives.
+- Standardized Dialog, Dynamic Dialog, Drawer, Bottom Sheet, Confirm Dialog, and image-viewer headings on one internal overlay-header action pattern with JRNG Button and Tooltip close actions.
 
 ### Fixed
 
@@ -28,6 +29,7 @@
 - Time Picker now blocks every mutation path while disabled and uses a constrained viewport-aware panel with a JRNG clock icon.
 - Overlay lifecycle, focus restoration, cleanup, responsive containment, and reduced-motion behavior were tightened across interactive components.
 - Documentation preview sources use deterministic local data and JRNG action controls.
+- Confirm Dialog and Confirm Popup actions now use JRNG Button; shared overlay titles preserve ARIA relationships, close focus, drag regions, and long-title truncation.
 
 ### Removed
 

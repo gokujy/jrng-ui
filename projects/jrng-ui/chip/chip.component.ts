@@ -18,7 +18,14 @@ export interface JChipItem<T = unknown> {
   selector: 'j-chip',
   imports: [JButtonComponent, JIconComponent],
   template: `
-    <span [class]="chipClasses" [attr.data-j-severity]="severity()" [attr.aria-disabled]="disabled()" data-jc-name="chip" data-jc-section="root" data-jc-extend="remove">
+    <span
+      [class]="chipClasses"
+      [attr.data-j-severity]="severity()"
+      [attr.aria-disabled]="disabled()"
+      data-jc-name="chip"
+      data-jc-section="root"
+      data-jc-extend="remove"
+    >
       @if (icon()) {
         <j-icon [name]="icon()" aria-hidden="true" />
       }
@@ -67,19 +74,58 @@ export interface JChipItem<T = unknown> {
         min-height: 2rem;
       }
 
-      .j-chip--primary { --j-chip-accent: var(--j-color-primary); --j-chip-soft: var(--j-color-primary-soft); --j-chip-foreground: var(--j-color-primary-foreground); }
-      .j-chip--secondary { --j-chip-accent: var(--j-color-secondary); --j-chip-soft: var(--j-color-secondary-soft); --j-chip-foreground: var(--j-color-secondary-foreground); }
-      .j-chip--success { --j-chip-accent: var(--j-color-success); --j-chip-soft: var(--j-color-success-soft); --j-chip-foreground: var(--j-color-success-foreground); }
-      .j-chip--info { --j-chip-accent: var(--j-color-info); --j-chip-soft: var(--j-color-info-soft); --j-chip-foreground: var(--j-color-info-foreground); }
-      .j-chip--warning { --j-chip-accent: var(--j-color-warning); --j-chip-soft: var(--j-color-warning-soft); --j-chip-foreground: var(--j-color-warning-foreground); }
-      .j-chip--danger { --j-chip-accent: var(--j-color-danger); --j-chip-soft: var(--j-color-danger-soft); --j-chip-foreground: var(--j-color-danger-foreground); }
-      .j-chip--contrast { --j-chip-accent: var(--j-color-contrast); --j-chip-soft: var(--j-color-contrast-soft); --j-chip-foreground: var(--j-color-contrast-foreground); }
+      .j-chip--primary {
+        --j-chip-accent: var(--j-color-primary);
+        --j-chip-soft: var(--j-color-primary-soft);
+        --j-chip-foreground: var(--j-color-primary-foreground);
+      }
+      .j-chip--secondary {
+        --j-chip-accent: var(--j-color-secondary);
+        --j-chip-soft: var(--j-color-secondary-soft);
+        --j-chip-foreground: var(--j-color-secondary-foreground);
+      }
+      .j-chip--success {
+        --j-chip-accent: var(--j-color-success);
+        --j-chip-soft: var(--j-color-success-soft);
+        --j-chip-foreground: var(--j-color-success-foreground);
+      }
+      .j-chip--info {
+        --j-chip-accent: var(--j-color-info);
+        --j-chip-soft: var(--j-color-info-soft);
+        --j-chip-foreground: var(--j-color-info-foreground);
+      }
+      .j-chip--warning {
+        --j-chip-accent: var(--j-color-warning);
+        --j-chip-soft: var(--j-color-warning-soft);
+        --j-chip-foreground: var(--j-color-warning-foreground);
+      }
+      .j-chip--danger {
+        --j-chip-accent: var(--j-color-danger);
+        --j-chip-soft: var(--j-color-danger-soft);
+        --j-chip-foreground: var(--j-color-danger-foreground);
+      }
+      .j-chip--contrast {
+        --j-chip-accent: var(--j-color-contrast);
+        --j-chip-soft: var(--j-color-contrast-soft);
+        --j-chip-foreground: var(--j-color-contrast-foreground);
+      }
 
-      .j-chip--soft { color: var(--j-chip-accent); }
-      .j-chip--solid { background: var(--j-chip-accent); color: var(--j-chip-foreground); }
-      .j-chip--outlined { background: transparent; border-color: var(--j-chip-accent); color: var(--j-chip-accent); }
+      .j-chip--soft {
+        color: var(--j-chip-accent);
+      }
+      .j-chip--solid {
+        background: var(--j-chip-accent);
+        color: var(--j-chip-foreground);
+      }
+      .j-chip--outlined {
+        background: transparent;
+        border-color: var(--j-chip-accent);
+        color: var(--j-chip-accent);
+      }
 
-      .j-chip.is-disabled { opacity: var(--j-disabled-opacity); }
+      .j-chip.is-disabled {
+        opacity: var(--j-disabled-opacity);
+      }
 
       .j-chip__remove {
         background: transparent;
@@ -107,7 +153,14 @@ export class JChipComponent {
   readonly remove = output<void>();
 
   get chipClasses(): string {
-    return ['j-chip', `j-chip--${this.size()}`, `j-chip--${this.severity()}`, `j-chip--${this.variant()}`, this.disabled() ? 'is-disabled' : '', this.styleClass()]
+    return [
+      'j-chip',
+      `j-chip--${this.size()}`,
+      `j-chip--${this.severity()}`,
+      `j-chip--${this.variant()}`,
+      this.disabled() ? 'is-disabled' : '',
+      this.styleClass(),
+    ]
       .filter(Boolean)
       .join(' ');
   }

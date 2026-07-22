@@ -68,7 +68,7 @@ provideJrngLocale({
   choose: 'Choose',
   upload: 'Upload',
   remove: 'Remove',
-  emptyMessage: 'No records found.',
+  emptyMessage: 'Nothing to show.',
   noResultsFound: 'No results found.',
   selectAll: 'Select all',
   unselectAll: 'Unselect all',

@@ -30,11 +30,7 @@ import { JIconComponent, JIconName } from 'jrng-ui/icon';
       (click)="copy()"
     >
       @if (icon()) {
-        <j-icon
-          data-jc-section="icon"
-          [name]="displayIcon()"
-          aria-hidden="true"
-        />
+        <j-icon data-jc-section="icon" [name]="displayIcon()" aria-hidden="true" />
       } @else if (copiedState()) {
         <span data-jc-section="icon" aria-hidden="true">&#10003;</span>
       } @else if (failedState()) {
@@ -46,7 +42,8 @@ import { JIconComponent, JIconName } from 'jrng-ui/icon';
         data-jc-section="label"
         aria-live="polite"
         [class.j-copy-button__label--hidden]="iconOnly()"
-      >{{ statusLabel() }}</span>
+        >{{ statusLabel() }}</span
+      >
     </button>
   `,
   styles: [

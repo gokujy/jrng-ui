@@ -6,7 +6,7 @@ export const demoSources = {
     scss: '.profile {\n  align-items: center;\n  display: flex;\n  gap: var(--j-spacing-md);\n}\n.profile div {\n  display: grid;\n  gap: var(--j-spacing-xs);\n}\n.profile span {\n  color: var(--j-color-muted-foreground);\n}\n',
   },
   'button-basic-demo': {
-    html: '<div class="demo-row">\n  <j-button label="Save changes" icon="save" (onClick)="save()" />\n  @if (saved) {\n    <span role="status">Changes saved.</span>\n  }\n</div>\n',
+    html: '<div class="demo-row">\n  <j-button label="Apply updates" icon="save" (onClick)="save()" />\n  @if (saved) {\n    <span role="status">Changes saved.</span>\n  }\n</div>\n',
     ts: "import { Component } from '@angular/core';\nimport { JButtonComponent } from 'jrng-ui/button';\n\n@Component({\n  selector: 'app-button-basic-demo',\n  imports: [JButtonComponent],\n  templateUrl: './button-basic-demo.component.html',\n  styleUrl: './button-basic-demo.component.scss',\n})\nexport class ButtonBasicDemoComponent {\n  saved = false;\n  save(): void {\n    this.saved = true;\n  }\n}\n",
     scss: '.demo-row {\n  align-items: center;\n  display: flex;\n  flex-wrap: wrap;\n  gap: var(--j-spacing-md);\n}\n',
   },

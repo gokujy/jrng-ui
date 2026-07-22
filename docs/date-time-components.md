@@ -19,7 +19,7 @@ Root imports are also supported from `jrng-ui`.
 
 ```html
 <j-date-picker
-  label="Invoice date"
+  label="Scheduled on"
   placeholder="Select date"
   [formControl]="invoiceDate"
   [minDate]="minDate"

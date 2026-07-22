@@ -15,13 +15,14 @@ import {
   JBodyScrollLockService,
   JFocusTrapDirective,
   jCreateId,
-  jFocusInitial,
   jRememberFocus,
 } from 'jrng-ui/core';
+import { JButtonComponent } from 'jrng-ui/button';
+import { JInternalOverlayHeaderComponent } from 'jrng-ui/overlay-header';
 
 @Component({
   selector: 'j-confirm-dialog',
-  imports: [JFocusTrapDirective],
+  imports: [JFocusTrapDirective, JButtonComponent, JInternalOverlayHeaderComponent],
   template: `
     @if (dialogConfirmation(); as confirmation) {
       <div
@@ -44,35 +45,37 @@ import {
           tabindex="-1"
           (mousedown)="$event.stopPropagation()"
         >
-          <header class="j-confirm-dialog__header">
+          <j-overlay-header
+            [title]="confirmation.title || confirmation.header || 'Confirm'"
+            [titleId]="titleId"
+            [closable]="false"
+            [dense]="true"
+          >
             @if (confirmation.icon) {
-              <span class="j-confirm-dialog__icon">{{ confirmation.icon }}</span>
+              <span jOverlayHeader class="j-confirm-dialog__icon">{{ confirmation.icon }}</span>
             } @else {
-              <span class="j-confirm-dialog__icon" aria-hidden="true">{{
+              <span jOverlayHeader class="j-confirm-dialog__icon" aria-hidden="true">{{
                 severityIcon(confirmation.severity)
               }}</span>
             }
-            <h2 [id]="titleId">{{ confirmation.title || confirmation.header || 'Confirm' }}</h2>
-          </header>
+          </j-overlay-header>
           <p class="j-confirm-dialog__message" [id]="messageId">{{ confirmation.message }}</p>
           <footer class="j-confirm-dialog__footer">
-            <button
-              class="j-confirm-dialog__button j-confirm-dialog__button--reject"
-              type="button"
+            <j-button
               #cancelButton
-              (click)="reject()"
-            >
-              {{ confirmation.cancelText || confirmation.rejectLabel || 'Cancel' }}
-            </button>
-            <button
-              class="j-confirm-dialog__button j-confirm-dialog__button--accept"
-              type="button"
+              styleClass="j-confirm-dialog__button j-confirm-dialog__button--reject"
+              variant="outlined"
+              [severity]="confirmation.rejectButtonSeverity || 'secondary'"
+              [label]="confirmation.cancelText || confirmation.rejectLabel || 'Cancel'"
+              (onClick)="reject()"
+            />
+            <j-button
               #acceptButton
-              data-j-initial-focus
-              (click)="accept()"
-            >
-              {{ confirmation.confirmText || confirmation.acceptLabel || 'OK' }}
-            </button>
+              styleClass="j-confirm-dialog__button j-confirm-dialog__button--accept"
+              [severity]="confirmation.acceptButtonSeverity || confirmation.severity || 'primary'"
+              [label]="confirmation.confirmText || confirmation.acceptLabel || 'OK'"
+              (onClick)="accept()"
+            />
           </footer>
         </section>
       </div>
@@ -200,7 +203,7 @@ export class JConfirmDialogComponent {
   private scrollLocked = false;
 
   @ViewChild('dialogPanel') private dialogPanel?: ElementRef<HTMLElement>;
-  @ViewChild('acceptButton') private acceptButton?: ElementRef<HTMLButtonElement>;
+  @ViewChild('acceptButton') private acceptButton?: JButtonComponent;
 
   readonly titleId = jCreateId('j-confirm-title');
   readonly messageId = jCreateId('j-confirm-message');
@@ -272,9 +275,8 @@ export class JConfirmDialogComponent {
     }
     queueMicrotask(() => {
       const panel = this.dialogPanel?.nativeElement;
-      if (panel && !jFocusInitial(panel, '[data-j-initial-focus]')) {
-        (this.acceptButton?.nativeElement ?? panel).focus();
-      }
+      if (this.acceptButton) this.acceptButton.focus();
+      else panel?.focus();
     });
   }
 

@@ -10,7 +10,13 @@ import type { JTourService } from 'jrng-ui/tour';
 
 @Component({
   selector: 'ssr-root',
-  imports: [ReactiveFormsModule, JEditorComponent, JInputComponent, JMenuComponent, JSelectComponent],
+  imports: [
+    ReactiveFormsModule,
+    JEditorComponent,
+    JInputComponent,
+    JMenuComponent,
+    JSelectComponent,
+  ],
   template: `
     <main class="j-app">
       <h1>JRNG UI SSR smoke test</h1>
@@ -35,6 +41,6 @@ export class SsrAppComponent {
   readonly storageFallback = this.storage.get('ssr-smoke') ?? 'storage unavailable on server';
 
   // Type-only references ensure optional entrypoint declarations resolve without loading peers.
-  private declare readonly chartType: typeof JChartComponent;
-  private declare readonly tourType: typeof JTourService;
+  declare private readonly chartType: typeof JChartComponent;
+  declare private readonly tourType: typeof JTourService;
 }

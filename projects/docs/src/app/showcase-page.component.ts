@@ -1275,7 +1275,7 @@ import { JSelectComponent } from 'jrng-ui/select';`,
       selector: 'j-input',
       importPath: 'jrng-ui/input',
       overview: [
-        'Input is used for short text values such as user names, email addresses, search text, product names, and invoice references.',
+        'Input is used for short text values such as account names, contact emails, search text, item names, and tracking identifiers.',
         'It supports labels, hints, errors, clearable behavior, validation states, and Angular Reactive Forms.',
       ],
       importCode: `import { JInputComponent } from 'jrng-ui/input';`,
@@ -1486,7 +1486,7 @@ readonly products = [
       ],
       importCode: `import { JToastContainerComponent, ToastService } from 'jrng-ui/toast';`,
       basicUsage: `<j-toast position="top-right"></j-toast>`,
-      variants: `toast.success('Saved successfully');
+      variants: `toast.success('Update complete');
 toast.error('Could not save');
 toast.info('Export started');
 toast.warning('Review required');`,
@@ -1555,12 +1555,7 @@ toast.clear();`,
         api('rows', 'number', '10', 'Rows per page.'),
         api('totalRecords', 'number', '0', 'Total row count for paginated or lazy data.'),
         api('sort', 'JTableSort', 'null', 'Current sort state.'),
-        api(
-          'emptyMessage',
-          'string',
-          "'No records found'",
-          'Message shown when there are no rows.',
-        ),
+        api('emptyMessage', 'string', "'Nothing to show'", 'Message shown when there are no rows.'),
       ],
       outputs: [
         out('pageChange', 'JTablePageChange', 'Emits when the page changes.'),

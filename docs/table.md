@@ -374,7 +374,7 @@ In `auto` mode, an active filter with zero rows selects `no-results`, an untouch
     <section>
       <h3>{{ title }}</h3>
       <p>Current state: {{ state }}</p>
-      <button type="button" (click)="action()">Clear filters</button>
+      <button type="button" (click)="action()">Start over</button>
     </section>
   </ng-template>
 </j-table>

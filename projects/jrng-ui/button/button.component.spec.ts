@@ -1,12 +1,7 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import {
-  JButtonSeverity,
-  JButtonSize,
-  JButtonVariant,
-  JButtonComponent,
-} from './button.component';
+import { JButtonSeverity, JButtonSize, JButtonVariant, JButtonComponent } from './button.component';
 
 @Component({
   imports: [JButtonComponent],
@@ -103,7 +98,9 @@ describe('JButtonComponent', () => {
       const direct = TestBed.createComponent(JButtonComponent);
       direct.componentRef.setInput('variant', variant);
       direct.detectChanges();
-      expect(direct.nativeElement.querySelector('button').classList).toContain(`j-button--${variant}`);
+      expect(direct.nativeElement.querySelector('button').classList).toContain(
+        `j-button--${variant}`,
+      );
     }
   });
 

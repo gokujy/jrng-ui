@@ -16,12 +16,7 @@ import {
   output,
 } from '@angular/core';
 import { JClickOutsideDirective } from 'jrng-ui/core';
-import {
-  JAppendTo,
-  JOverlayHandle,
-  JOverlayService,
-  JOverlayStackService,
-} from 'jrng-ui/core';
+import { JAppendTo, JOverlayHandle, JOverlayService, JOverlayStackService } from 'jrng-ui/core';
 import { JZIndexManagerService } from 'jrng-ui/core';
 
 export type JPopoverPosition = 'top' | 'right' | 'bottom' | 'left';

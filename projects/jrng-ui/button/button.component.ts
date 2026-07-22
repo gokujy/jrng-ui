@@ -3,8 +3,10 @@ import {
   ChangeDetectionStrategy,
   computed,
   Component,
+  ElementRef,
   input,
   output,
+  viewChild,
 } from '@angular/core';
 import { JRippleDirective } from 'jrng-ui/core';
 import { JIconComponent } from 'jrng-ui/icon';
@@ -33,6 +35,7 @@ export type JButtonSize = JComponentSize;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JButtonComponent {
+  private readonly buttonElement = viewChild.required<ElementRef<HTMLButtonElement>>('button');
   readonly label = input('');
   readonly type = input<JButtonType>('button');
   readonly severity = input<JButtonSeverity>('primary');
@@ -88,5 +91,10 @@ export class JButtonComponent {
     }
 
     this.onClick.emit(event);
+  }
+
+  /** Moves focus to the underlying native button. */
+  focus(options?: FocusOptions): void {
+    this.buttonElement().nativeElement.focus(options);
   }
 }

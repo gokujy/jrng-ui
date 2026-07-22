@@ -24,7 +24,7 @@ import { jCreateId } from 'jrng-ui/core';
 import { JOverlayStackService } from 'jrng-ui/core';
 import { JAppendTo, JOverlayHandle, JOverlayService } from 'jrng-ui/core';
 import { JZIndexManagerService } from 'jrng-ui/core';
-import { JButtonComponent } from 'jrng-ui/button';
+import { JInternalOverlayHeaderComponent } from 'jrng-ui/overlay-header';
 
 export type JDialogCloseReason = 'close-button' | 'backdrop' | 'escape' | 'api';
 export type JDialogSize = 'sm' | 'md' | 'lg' | 'xl' | 'full';
@@ -41,7 +41,7 @@ export type JDialogPosition =
 
 @Component({
   selector: 'j-dialog',
-  imports: [JFocusTrapDirective, JButtonComponent],
+  imports: [JFocusTrapDirective, JInternalOverlayHeaderComponent],
   templateUrl: './dialog.component.html',
   styleUrl: './dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -260,7 +260,12 @@ export class JDialogComponent implements OnDestroy {
   }
 
   startDrag(event: PointerEvent): void {
-    if (!this.draggable() || !this.panel?.nativeElement) {
+    const target = event.target as HTMLElement | null;
+    if (
+      !this.draggable() ||
+      !this.panel?.nativeElement ||
+      target?.closest('button, a, input, select, textarea, [role="button"]')
+    ) {
       return;
     }
     const rect = this.panel.nativeElement.getBoundingClientRect();

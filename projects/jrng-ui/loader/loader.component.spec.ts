@@ -73,5 +73,4 @@ describe('JLoaderComponent', () => {
     fixture.detectChanges();
     expect(root.getAttribute('aria-valuenow')).toBe('0');
   });
-
 });

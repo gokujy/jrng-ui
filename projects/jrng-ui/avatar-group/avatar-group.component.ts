@@ -77,7 +77,11 @@ export type JAvatarGroupMode = 'stacked' | 'spaced';
           position="bottom"
           styleClass="j-avatar-group__popover"
         >
-          <div class="j-avatar-group__overflow-list" role="list" [attr.aria-label]="overflowLabel()">
+          <div
+            class="j-avatar-group__overflow-list"
+            role="list"
+            [attr.aria-label]="overflowLabel()"
+          >
             @for (
               item of overflowItems();
               track item.image || item.ariaLabel || item.label || $index
@@ -90,9 +94,14 @@ export type JAvatarGroupMode = 'stacked' | 'spaced';
                   [previewable]="preview"
                   size="sm"
                 />
-                <span><strong>{{ item.label || item.ariaLabel || 'Avatar' }}</strong>
-                  @if (item.employeeId) { <small>{{ item.employeeId }}</small> }
-                  @if (item.bio) { <small>{{ item.bio }}</small> }
+                <span
+                  ><strong>{{ item.label || item.ariaLabel || 'Avatar' }}</strong>
+                  @if (item.employeeId) {
+                    <small>{{ item.employeeId }}</small>
+                  }
+                  @if (item.bio) {
+                    <small>{{ item.bio }}</small>
+                  }
                 </span>
               </span>
             }
@@ -139,9 +148,17 @@ export type JAvatarGroupMode = 'stacked' | 'spaced';
         min-width: 10rem;
         padding: var(--j-spacing-3);
       }
-      .j-avatar-group__overflow-user { align-items: center; display: flex; gap: var(--j-spacing-2); }
-      .j-avatar-group__overflow-user > span { display: grid; }
-      .j-avatar-group__overflow-user small { color: var(--j-color-muted-foreground); }
+      .j-avatar-group__overflow-user {
+        align-items: center;
+        display: flex;
+        gap: var(--j-spacing-2);
+      }
+      .j-avatar-group__overflow-user > span {
+        display: grid;
+      }
+      .j-avatar-group__overflow-user small {
+        color: var(--j-color-muted-foreground);
+      }
 
       .j-avatar-group__item--sm {
         font-size: var(--j-font-size-xs, 0.75rem);

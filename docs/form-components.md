@@ -20,8 +20,8 @@ form = new FormGroup({
 <j-input
   formControlName="email"
   label="Email"
-  placeholder="user@example.com"
-  hint="Use a valid email address."
+  placeholder="name@sample.test"
+  hint="Use the required contact format."
   required
   fullWidth
 />
@@ -80,7 +80,7 @@ Form controls support common inputs where applicable:
 `j-password` supports show/hide, clearable mode, and an optional strength meter. Feedback text uses jrng-ui locale labels.
 
 ```html
-<j-password label="Password" placeholder="Enter password" feedback clearable width="full" />
+<j-password label="Password" placeholder="Secure entry" feedback clearable width="full" />
 ```
 
 ## Number Input

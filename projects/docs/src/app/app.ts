@@ -164,7 +164,7 @@ export class App {
       });
   }
 
-  /** Switches between the JRNG UI light and dark color schemes. */
+  /** Switches between the JRNG UI light and dark theme modes. */
   toggleDark(): void {
     this.theme.setMode(this.isDark() ? 'light' : 'dark');
   }

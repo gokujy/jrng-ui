@@ -45,7 +45,6 @@ export interface JToastOptions {
   readonly cancelAction?: JToastAction;
 }
 
-
 @Injectable({ providedIn: 'root' })
 export class JToastService {
   private readonly destroyRef = inject(DestroyRef);

@@ -3,7 +3,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
-  ElementRef,
   PLATFORM_ID,
   Renderer2,
   afterRenderEffect,
@@ -16,11 +15,12 @@ import {
 } from '@angular/core';
 import { JButtonComponent } from 'jrng-ui/button';
 import { JFocusTrapDirective } from 'jrng-ui/core';
+import { JInternalOverlayHeaderComponent } from 'jrng-ui/overlay-header';
 
 /** @internal Fullscreen implementation shared by j-image, Avatar and Gallery. */
 @Component({
   selector: 'j-internal-image-viewer',
-  imports: [JButtonComponent, JFocusTrapDirective],
+  imports: [JButtonComponent, JFocusTrapDirective, JInternalOverlayHeaderComponent],
   template: `
     @if (visible()) {
       <div
@@ -42,9 +42,12 @@ import { JFocusTrapDirective } from 'jrng-ui/core';
           [style.width]="width() || null"
           [style.height]="height() || null"
         >
-          <header class="j-image-viewer__header">
-            <span class="j-image-viewer__title">{{ alt() || 'Image preview' }}</span>
-            <div class="j-image-viewer__actions">
+          <j-overlay-header
+            [title]="alt() || 'Image preview'"
+            closeLabel="Close preview"
+            (close)="close()"
+          >
+            <div jOverlayActions class="j-image-viewer__actions">
               <j-button
                 variant="text"
                 actionDisplay="icon"
@@ -69,17 +72,8 @@ import { JFocusTrapDirective } from 'jrng-ui/core';
                 title="Reset image"
                 (onClick)="reset()"
               />
-              <span #closeButton
-                ><j-button
-                  variant="text"
-                  actionDisplay="icon"
-                  icon="close"
-                  ariaLabel="Close preview"
-                  title="Close preview"
-                  (onClick)="close()"
-              /></span>
             </div>
-          </header>
+          </j-overlay-header>
           <div class="j-image-viewer__viewport">
             <img [src]="src()" [alt]="alt()" [style.transform]="transform()" />
           </div>
@@ -173,7 +167,7 @@ export class JInternalImageViewerComponent {
   private readonly renderer = inject(Renderer2);
   private readonly destroyRef = inject(DestroyRef);
   private readonly browser = isPlatformBrowser(inject(PLATFORM_ID));
-  private readonly closeButton = viewChild<ElementRef<HTMLElement>>('closeButton');
+  private readonly overlayHeader = viewChild(JInternalOverlayHeaderComponent);
   private previousFocus: HTMLElement | null = null;
   private wasVisible = false;
 
@@ -203,9 +197,7 @@ export class JInternalImageViewerComponent {
     afterRenderEffect(() => {
       if (this.visible() && !this.wasVisible) {
         this.previousFocus = this.documentRef.activeElement as HTMLElement | null;
-        queueMicrotask(() =>
-          this.closeButton()?.nativeElement.querySelector<HTMLElement>('button')?.focus(),
-        );
+        queueMicrotask(() => this.overlayHeader()?.focusClose());
       } else if (!this.visible() && this.wasVisible) {
         queueMicrotask(() => this.previousFocus?.focus());
         this.previousFocus = null;

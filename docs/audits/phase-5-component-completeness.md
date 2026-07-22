@@ -12,27 +12,27 @@ The verdict is limited because 95 components remain beta pending independently a
 
 ## Completeness
 
-| Metric | Complete | Not applicable | Missing |
-| --- | ---: | ---: | ---: |
-| Public inventory | 141 | 0 | 0 |
-| Component index | 141 | 0 | 0 |
-| Documentation | 141 | 0 | 0 |
-| Rendered previews | 141 | 0 | 0 |
-| Code examples | 141 | 0 | 0 |
-| API references | 141 | 0 | 0 |
-| Direct tests | 141 | 0 | 0 |
-| Accessibility validation | 141 | 0 | 0 |
-| Responsive examples | 86 | 55 | 0 |
-| Theme coverage | 141 | 0 | 0 |
+| Metric                   | Complete | Not applicable | Missing |
+| ------------------------ | -------: | -------------: | ------: |
+| Public inventory         |      141 |              0 |       0 |
+| Component index          |      141 |              0 |       0 |
+| Documentation            |      141 |              0 |       0 |
+| Rendered previews        |      141 |              0 |       0 |
+| Code examples            |      141 |              0 |       0 |
+| API references           |      141 |              0 |       0 |
+| Direct tests             |      141 |              0 |       0 |
+| Accessibility validation |      141 |              0 |       0 |
+| Responsive examples      |       86 |             55 |       0 |
+| Theme coverage           |      141 |              0 |       0 |
 
 ## Stability
 
-| Stability | Components |
-| --- | ---: |
-| Stable | 42 |
-| Beta | 95 |
-| Experimental | 0 |
-| Deprecated | 4 |
+| Stability    | Components |
+| ------------ | ---------: |
+| Stable       |         42 |
+| Beta         |         95 |
+| Experimental |          0 |
+| Deprecated   |          4 |
 
 ## Verification
 

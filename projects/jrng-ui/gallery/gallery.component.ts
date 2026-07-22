@@ -181,7 +181,15 @@ export type JGallerySlideDirection = 'left' | 'right' | 'up' | 'down';
         inset: 0;
         position: absolute;
       }
-      .j-gallery__loader, .j-gallery__error { align-self: center; background: color-mix(in srgb, var(--j-color-card) 88%, transparent); border-radius: var(--j-radius-md); justify-self: center; padding: var(--j-spacing-2) var(--j-spacing-3); position: absolute; }
+      .j-gallery__loader,
+      .j-gallery__error {
+        align-self: center;
+        background: color-mix(in srgb, var(--j-color-card) 88%, transparent);
+        border-radius: var(--j-radius-md);
+        justify-self: center;
+        padding: var(--j-spacing-2) var(--j-spacing-3);
+        position: absolute;
+      }
 
       @keyframes j-gallery-fade {
         from {
@@ -419,8 +427,14 @@ export class JGalleryComponent {
       if (!src || this.loadedSources().has(src) || this.preloadRequests.has(src)) continue;
       const image = this.documentRef.createElement('img');
       this.preloadRequests.set(src, image);
-      image.onload = () => { this.preloadRequests.delete(src); this.markLoaded(src); };
-      image.onerror = () => { this.preloadRequests.delete(src); this.markFailed(src); };
+      image.onload = () => {
+        this.preloadRequests.delete(src);
+        this.markLoaded(src);
+      };
+      image.onerror = () => {
+        this.preloadRequests.delete(src);
+        this.markFailed(src);
+      };
       image.src = src;
     }
   }

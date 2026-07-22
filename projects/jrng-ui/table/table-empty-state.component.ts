@@ -46,7 +46,6 @@ import { JTableEmptyState } from './table.types';
       .j-table-empty-state p {
         margin: 0;
       }
-
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,

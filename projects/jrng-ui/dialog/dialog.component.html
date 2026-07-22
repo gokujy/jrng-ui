@@ -35,33 +35,20 @@
         (pointercancel)="endDrag(); endResize()"
       >
         @if (!headless() && (header() || closable())) {
-          <header
-            class="j-dialog__header"
-            data-jc-section="header"
-            [class.is-draggable]="draggable()"
+          <j-overlay-header
+            [title]="header()"
+            [titleId]="titleId"
+            [closable]="closable()"
+            [draggable]="draggable()"
+            closeLabel="Close dialog"
+            closeStyleClass="j-dialog__close"
+            (close)="close('close-button')"
             (pointerdown)="startDrag($event)"
           >
-            <div class="j-dialog__heading" data-jc-section="heading">
-              @if (header()) {
-                <h2 class="j-dialog__title" data-jc-section="title" [id]="titleId">
-                  {{ header() }}
-                </h2>
-              }
-              <ng-content select="[jDialogHeader], [jrDialogHeader]"></ng-content>
-            </div>
-            @if (closable()) {
-              <j-button
-                styleClass="j-dialog__close"
-                data-jc-section="close"
-                variant="text"
-                actionDisplay="icon"
-                icon="close"
-                ariaLabel="Close dialog"
-                title="Close dialog"
-                (onClick)="close('close-button')"
-              />
-            }
-          </header>
+            <span jOverlayHeader
+              ><ng-content select="[jDialogHeader], [jrDialogHeader]"></ng-content
+            ></span>
+          </j-overlay-header>
         }
         <div class="j-dialog__body" data-jc-section="body" [class.is-headless]="headless()">
           <ng-content></ng-content>

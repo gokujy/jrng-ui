@@ -5,4 +5,3 @@ Primitive tokens define palettes and scales; semantic tokens define foregrounds,
 Light, dark, system, and high-contrast modes share the same semantic contract. Runtime switching changes tokens without recreating components. Logical properties support RTL. Reduced-motion media queries shorten or remove non-essential transitions.
 
 Old token aliases and component hard-coded colors are not part of the 0.1.0 API.
-

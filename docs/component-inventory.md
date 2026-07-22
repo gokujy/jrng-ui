@@ -5,22 +5,22 @@ Generated from the 0.1.0 canonical build declarations.
 | Metric                                   | Total |
 | ---------------------------------------- | ----: |
 | Total public components                  |   122 |
-| Components with documentation            |   119 |
-| Components with working preview          |   120 |
-| Components with API reference            |   119 |
-| Components with examples                 |   119 |
+| Components with documentation            |   122 |
+| Components with working preview          |   122 |
+| Components with API reference            |   122 |
+| Components with examples                 |   122 |
 | Components with direct tests             |   122 |
 | Components with accessibility validation |   122 |
 | Components with responsive examples      |    80 |
 | Responsive examples not applicable       |    42 |
 | Components with theme-token coverage     |   122 |
-| Components remaining incomplete          |     3 |
+| Components remaining incomplete          |     0 |
 
 | Component           | Selector              | Import                      | Category                  | Stability | Preview  | Tests  | Accessibility |
 | ------------------- | --------------------- | --------------------------- | ------------------------- | --------- | -------- | ------ | ------------- |
 | Accordion           | j-accordion           | jrng-ui/accordion           | Navigation and Menu       | stable    | rendered | direct | validated     |
-| Accordion Content   | j-accordion-content   | jrng-ui/accordion           | Navigation and Menu       | beta      | missing  | direct | validated     |
-| Accordion Header    | j-accordion-header    | jrng-ui/accordion           | Navigation and Menu       | beta      | missing  | direct | validated     |
+| Accordion Content   | j-accordion-content   | jrng-ui/accordion           | Navigation and Menu       | beta      | rendered | direct | validated     |
+| Accordion Header    | j-accordion-header    | jrng-ui/accordion           | Navigation and Menu       | beta      | rendered | direct | validated     |
 | Accordion Panel     | j-accordion-panel     | jrng-ui/accordion           | Navigation and Menu       | beta      | rendered | direct | validated     |
 | Action Menu         | j-action-menu         | jrng-ui/table               | Data                      | stable    | rendered | direct | validated     |
 | App Shell           | j-app-shell           | jrng-ui/app-shell           | Layout                    | beta      | rendered | direct | validated     |

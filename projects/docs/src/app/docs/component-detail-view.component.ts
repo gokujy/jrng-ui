@@ -13,6 +13,8 @@ import {
 import { FormsModule } from '@angular/forms';
 import {
   JAccordionComponent,
+  JAccordionContentComponent,
+  JAccordionHeaderComponent,
   JAccordionPanelComponent,
   JAccordionVariant,
 } from 'jrng-ui/accordion';
@@ -378,7 +380,7 @@ const TEXT_EXPAND_FEATURE_EXAMPLES = [
   },
   {
     key: 'comment',
-    name: 'User comment',
+    name: 'Reviewer note',
     details: 'Collapse long discussion content in activity feeds.',
     html: `<j-text-expand [text]="comment" [collapsedLength]="80" />`,
   },
@@ -407,7 +409,7 @@ const BUTTON_FEATURE_EXAMPLES = [
     key: 'basic',
     name: 'Basic buttons',
     details: 'Use a clear verb for the primary action.',
-    html: `<j-button label="Save changes" (onClick)="save()" />`,
+    html: `<j-button label="Apply updates" (onClick)="save()" />`,
   },
   {
     key: 'severity',
@@ -431,7 +433,7 @@ const BUTTON_FEATURE_EXAMPLES = [
     key: 'link',
     name: 'Link-style buttons',
     details: 'Use link treatment for action semantics presented inline.',
-    html: `<j-button label="View details" variant="link" />`,
+    html: `<j-button label="Open summary" variant="link" />`,
   },
   {
     key: 'raised',
@@ -628,7 +630,7 @@ const LOADER_FEATURE_EXAMPLES = [
     'Card loading',
     `<j-card header="Account summary"><j-loader type="spinner" inline label="Loading account summary" /></j-card>`,
   ],
-  ['page', 'Page loading', `<j-loader type="spinner" label="Loading page" />`],
+  ['page', 'Full-page wait', `<j-loader type="spinner" label="Preparing content" />`],
   ['overlay', 'Overlay loading', `<j-loader type="spinner" overlay label="Loading workspace" />`],
   [
     'fullscreen',
@@ -745,6 +747,8 @@ const CARD_FEATURE_EXAMPLES = [
     TextExpandBasicDemoComponent,
     CardMetricDemoComponent,
     JAccordionComponent,
+    JAccordionContentComponent,
+    JAccordionHeaderComponent,
     JAccordionPanelComponent,
     JAutocompleteComponent,
     JAvatarGroupComponent,
@@ -949,23 +953,33 @@ const CARD_FEATURE_EXAMPLES = [
                   @defer {
                     @switch (doc().slug) {
                       @case ('accordion') {
-                        <j-accordion [variant]="accordionVariants[example.index]" [activeIndex]="0">
-                          <j-accordion-panel header="Account details"
-                            >Update profile and contact information.</j-accordion-panel
-                          >
-                          <j-accordion-panel header="Disabled section" disabled
-                            >Unavailable content.</j-accordion-panel
-                          >
+                        <j-accordion [variant]="accordionVariants[example.index]" value="account">
+                          <j-accordion-panel value="account">
+                            <j-accordion-header>Account details</j-accordion-header>
+                            <j-accordion-content
+                              >Update profile and contact information.</j-accordion-content
+                            >
+                          </j-accordion-panel>
+                          <j-accordion-panel value="disabled" disabled>
+                            <j-accordion-header>Disabled section</j-accordion-header>
+                            <j-accordion-content>Unavailable content.</j-accordion-content>
+                          </j-accordion-panel>
                         </j-accordion>
                       }
                       @case ('accordion-panel') {
-                        <j-accordion [activeIndex]="0">
-                          <j-accordion-panel header="Project summary"
-                            >This panel is expanded by default.</j-accordion-panel
-                          >
-                          <j-accordion-panel header="Team members"
-                            >Panel content can contain any Angular template.</j-accordion-panel
-                          >
+                        <j-accordion value="summary">
+                          <j-accordion-panel value="summary">
+                            <j-accordion-header>Project summary</j-accordion-header>
+                            <j-accordion-content
+                              >This panel is expanded by default.</j-accordion-content
+                            >
+                          </j-accordion-panel>
+                          <j-accordion-panel value="team">
+                            <j-accordion-header>Team members</j-accordion-header>
+                            <j-accordion-content
+                              >Panel content can contain any Angular template.</j-accordion-content
+                            >
+                          </j-accordion-panel>
                         </j-accordion>
                       }
                       @case ('autocomplete') {
@@ -1124,7 +1138,7 @@ const CARD_FEATURE_EXAMPLES = [
                           <j-chip
                             label="Removable filter"
                             removable
-                            removeAriaLabel="Remove filter"
+                            removeAriaLabel="Clear criterion"
                           />
                         </div>
                       }
@@ -1171,7 +1185,7 @@ const CARD_FEATURE_EXAMPLES = [
                       @case ('input-mask') {
                         <div class="j-preview-grid">
                           <j-input-mask
-                            label="Phone number"
+                            label="Call-back line"
                             mask="(999) 999-9999"
                             placeholder="(555) 123-4567"
                             [(ngModel)]="maskedPhone"
@@ -1531,7 +1545,7 @@ const CARD_FEATURE_EXAMPLES = [
                           <j-tag label="Design" />
                           <j-tag label="Published" severity="success" rounded />
                           <j-tag label="Blocked" severity="danger" />
-                          <j-tag label="Filter" removable removeLabel="Remove Filter" />
+                          <j-tag label="Filter" removable removeLabel="Clear criterion" />
                         </div>
                       }
                       @case ('table') {
@@ -1594,7 +1608,7 @@ const CARD_FEATURE_EXAMPLES = [
                                 [columns]="clientColumns"
                                 emptyTitle="No clients yet"
                                 emptyDescription="New client records will appear here."
-                                emptyActionLabel="Create client"
+                                emptyActionLabel="Add account"
                               />
                             }
                             @case ('no-results') {
@@ -1973,7 +1987,7 @@ const CARD_FEATURE_EXAMPLES = [
                       @case ('file-upload') {
                         <div class="j-preview-stack">
                           <j-file-upload
-                            title="Upload documents"
+                            title="Add files"
                             description="Drag files here or choose from your device."
                             multiple
                           />
@@ -1987,7 +2001,7 @@ const CARD_FEATURE_EXAMPLES = [
                       }
                       @case ('file-browser') {
                         <j-file-browser
-                          title="Client documents"
+                          title="Shared files"
                           [items]="fileBrowserItems"
                           [breadcrumbs]="fileBrowserBreadcrumbs"
                           [selection]="fileBrowserSelection"
@@ -2044,7 +2058,7 @@ const CARD_FEATURE_EXAMPLES = [
                       }
                       @case ('label') {
                         <j-label
-                          label="Email address"
+                          label="Reply-to inbox"
                           variant="in-field"
                           description="We use this for account notices."
                         >
@@ -2100,7 +2114,7 @@ const CARD_FEATURE_EXAMPLES = [
                       @case ('section-footer') {
                         <j-section-footer>
                           <j-button label="Cancel" variant="soft" />
-                          <j-button label="Save changes" />
+                          <j-button label="Apply updates" />
                         </j-section-footer>
                       }
                       @case ('toolbar') {
@@ -2233,7 +2247,7 @@ const CARD_FEATURE_EXAMPLES = [
                         <div class="j-layout-preview-frame">
                           <j-auth-layout variant="centered" styleClass="j-doc-compact-auth">
                             <div class="j-preview-stack">
-                              <strong>Welcome back</strong>
+                              <strong>Access your workspace</strong>
                               <j-input label="Email" type="email" placeholder="name@example.com" />
                               <j-button label="Sign in" />
                             </div>
@@ -2527,7 +2541,7 @@ const CARD_FEATURE_EXAMPLES = [
                         <j-transfer-list
                           [source]="transferSource"
                           [target]="transferTarget"
-                          sourceHeader="Available fields"
+                          sourceHeader="Fields to add"
                           targetHeader="Visible fields"
                           filter
                         />
@@ -3470,10 +3484,10 @@ export class ComponentDetailViewComponent {
 
   buttonExampleLabel(key: string): string {
     const labels: Record<string, string> = {
-      basic: 'Save changes',
+      basic: 'Apply updates',
       outline: 'Export',
       text: 'Learn more',
-      link: 'View details',
+      link: 'Open summary',
       raised: 'Create project',
       pill: 'Follow',
       'icon-before': 'Save',
@@ -3538,11 +3552,9 @@ export class ComponentDetailViewComponent {
     'action-menu',
     'autocomplete',
     'color-picker',
-    'combobox',
     'confirm-popup',
     'context-menu',
     'date-picker',
-    'date-range-picker',
     'drawer',
     'menubar',
     'popover',
@@ -3550,7 +3562,7 @@ export class ComponentDetailViewComponent {
     'tiered-menu',
     'time-picker',
   ]);
-  readonly statusPreviewSlugs = new Set(['empty-page', 'error-page', 'maintenance-page']);
+  readonly statusPreviewSlugs = new Set(['empty', 'error-page', 'maintenance-page']);
 
   bottomSheetVisible = false;
   commandPaletteOpen = false;
@@ -3792,7 +3804,7 @@ export class ComponentDetailViewComponent {
   readonly transferSource = [
     { label: 'Customer', value: 'customer' },
     { label: 'Status', value: 'status' },
-    { label: 'Created date', value: 'created' },
+    { label: 'Date added', value: 'created' },
   ] as const;
   readonly transferTarget = [{ label: 'Order number', value: 'order' }] as const;
   readonly organization = {
@@ -3872,14 +3884,14 @@ export class ComponentDetailViewComponent {
     },
     {
       field: 'tradingName',
-      header: 'Trading name',
+      header: 'Public name',
       filterable: true,
       minWidth: '12rem',
       filter: { operators: ['contains', 'equals', 'notEquals'] },
     },
     {
       field: 'parentClient',
-      header: 'Parent client',
+      header: 'Parent account',
       filterable: true,
       minWidth: '11rem',
       filter: { operators: ['contains', 'equals', 'isEmpty', 'isNotEmpty'] },

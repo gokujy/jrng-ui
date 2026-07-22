@@ -62,7 +62,7 @@ Custom templates:
 
 `j-multiselect` supports checkbox-style options, select all, unselect all, custom item templates, CVA, and filtering.
 
-## Autocomplete And Combobox
+## Autocomplete And Searchable Select
 
 ```html
 <j-autocomplete

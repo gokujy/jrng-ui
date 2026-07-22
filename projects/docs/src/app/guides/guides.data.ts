@@ -120,7 +120,7 @@ import { JInputComponent } from 'jrng-ui/input';
 
 @Component({ selector: 'app-profile', imports: [ReactiveFormsModule, JButtonComponent, JInputComponent], template: \`
 <form [formGroup]="form" (ngSubmit)="save()">
-  <j-input label="Display name" formControlName="name" required [invalid]="submitted() && form.controls.name.invalid" error="Display name is required." />
+  <j-input label="Visible name" formControlName="name" required [invalid]="submitted() && form.controls.name.invalid" error="Visible name is required." />
   <j-button label="Save" type="submit" [loading]="saving()" />
 </form>\` })
 export class ProfileComponent { readonly submitted = signal(false); readonly saving = signal(false); readonly form = new FormGroup({ name: new FormControl('', { nonNullable: true, validators: Validators.required }) }); save(): void { this.submitted.set(true); if (this.form.invalid) return; } }`,

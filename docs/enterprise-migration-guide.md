@@ -98,7 +98,7 @@ Keep credentials, endpoints, and provider SDKs in the application. Map remote fi
 
 **After:** `<j-avatar-group [avatars]="avatars" [maxVisible]="5" /> <j-page-header title="Details" />`
 
-Map generic display data and project actions. Test broken images, accessible names, overflow popover, responsive action stacking, back behavior, sticky mode, and loading state.
+Map neutral presentation records and application actions. Test broken images, accessible names, overflow popover, responsive action stacking, back behavior, sticky mode, and loading state.
 
 ## Audit, diff, approval, and activity
 
@@ -107,17 +107,21 @@ Map generic display data and project actions. Test broken images, accessible nam
 **After**
 
 ```html
-<j-audit-log [items]="history" />
 <j-diff-viewer [before]="before" [after]="after" mode="object" />
-<j-approval-flow [steps]="steps" />
-<j-activity-feed [items]="activity" />
+<j-timeline [items]="history" variant="activity" />
+<j-stepper [steps]="approvalSteps" />
+<j-timeline [items]="activity" variant="activity" />
 ```
 
-Breaking difference: JRNG knows no action taxonomy, permissions, workflow transitions, or domain statuses. Adapt application DTOs to generic models and retain action handlers outside JRNG. Test masking, timestamps, expansion labels, all approval states, lazy errors, responsive layouts, and custom templates.
+The removed Audit Log, Approval Flow, and Activity Feed entry points have no
+compatibility aliases. Compose Timeline, Stepper, Diff Viewer, and List
+primitives instead. JRNG knows no action taxonomy, permissions, workflow
+transitions, or domain statuses. Adapt application DTOs to generic models and
+retain action handlers outside JRNG.
 
 ## Application-side exclusions
 
-JRNG must not own authentication, authorization, permission directives, tenant logic, plan-specific feature flags, API URLs, request services, token handling, encryption, Firebase, Google Drive, S3 configuration, business status definitions, domain workflows, project-specific validators, or project-specific transformations. Use generic visual models and adapter interfaces at the library boundary.
+JRNG must not own authentication, authorization, permission directives, organization/workspace isolation, plan-specific feature flags, API URLs, request services, token handling, encryption, cloud-provider configuration, business status definitions, domain workflows, project-specific validators, or project-specific transformations. Use generic visual models and adapter interfaces at the library boundary.
 
 ## Angular 21 migration path
 

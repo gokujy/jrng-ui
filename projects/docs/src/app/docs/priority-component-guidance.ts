@@ -60,7 +60,7 @@ const formGuidance = {
 
 export const priorityComponentGuidance: Readonly<Record<string, PriorityComponentGuidance>> = {
   button: guidance(
-    `<j-button label="Save changes" icon="check" [loading]="saving" (onClick)="save()" />`,
+    `<j-button label="Apply updates" icon="check" [loading]="saving" (onClick)="save()" />`,
     'Submit a business form while preventing repeated activation during an asynchronous save.',
     {
       templates: ['Default label content and documented icon input.'],
@@ -162,7 +162,7 @@ export const priorityComponentGuidance: Readonly<Record<string, PriorityComponen
     },
   ),
   'file-upload': guidance(
-    `<j-file-upload title="Upload documents" accept=".pdf,.png" multiple />`,
+    `<j-file-upload title="Add files" accept=".pdf,.png" multiple />`,
     'Collect approved document types and show progress or validation feedback.',
     {
       validationStates: [

@@ -64,7 +64,7 @@ Use labels, hints, and errors whenever possible:
 <j-input
   label="Email"
   hint="Use your work address"
-  error="Email is required"
+  error="Provide a contact email"
   [formControl]="email"
 />
 ```
@@ -117,7 +117,7 @@ Use explicit labels when visible text is not enough:
 ```html
 <j-button icon="+" ariaLabel="Create record" />
 <j-copy-button text="REC-2026-001" ariaLabel="Copy record number" />
-<j-avatar-group [items]="users" ariaLabel="Assigned users" />
+<j-avatar-group [items]="users" ariaLabel="Team members" />
 ```
 
 For images:

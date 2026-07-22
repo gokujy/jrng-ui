@@ -10,24 +10,9 @@
       "entryPoint": "jrng-ui/accordion",
       "category": "Navigation and Menu",
       "description": "Angular Accordion component for reusable admin, dashboard, and business application interfaces.",
-      "inputs": [
-        "activeIndex",
-        "disabled",
-        "header",
-        "multiple",
-        "value",
-        "variant"
-      ],
-      "outputs": [
-        "toggleRequest",
-        "activeIndexChange",
-        "valueChange"
-      ],
-      "methods": [
-        "ngAfterContentInit()",
-        "requestToggle()",
-        "togglePanel()"
-      ],
+      "inputs": ["activeIndex", "disabled", "header", "multiple", "value", "variant"],
+      "outputs": ["toggleRequest", "activeIndexChange", "valueChange"],
+      "methods": ["ngAfterContentInit()", "requestToggle()", "togglePanel()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-accordion></j-accordion>",
       "importExample": "import { JAccordionComponent } from 'jrng-ui/accordion';",
@@ -38,18 +23,63 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
+    },
+    {
+      "name": "Accordion Content",
+      "selector": "j-accordion-content",
+      "importPath": "jrng-ui/accordion",
+      "entryPoint": "jrng-ui/accordion",
+      "category": "Navigation and Menu",
+      "description": "Angular Accordion Content component for reusable admin, dashboard, and business application interfaces.",
+      "inputs": ["activeIndex", "disabled", "header", "multiple", "value", "variant"],
+      "outputs": ["toggleRequest", "activeIndexChange", "valueChange"],
+      "methods": ["ngAfterContentInit()", "requestToggle()", "togglePanel()"],
+      "formCompatibility": "Not a form control",
+      "usageExample": "<j-accordion-content></j-accordion-content>",
+      "importExample": "import { JAccordionContentComponent } from 'jrng-ui/accordion';",
+      "documentationUrl": "https://jrngui.dev/docs/components#accordion-content",
+      "status": "Basic",
+      "stability": "beta",
+      "sinceVersion": null,
+      "angularCompatibility": ">=21.2.0 <22.0.0",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": ["@angular/common", "@angular/core"],
+      "optionalDependencies": [],
+      "styles": ["jrng-ui/styles"],
+      "assets": [],
+      "themeRequirements": ["JRNG semantic tokens"]
+    },
+    {
+      "name": "Accordion Header",
+      "selector": "j-accordion-header",
+      "importPath": "jrng-ui/accordion",
+      "entryPoint": "jrng-ui/accordion",
+      "category": "Navigation and Menu",
+      "description": "Angular Accordion Header component for reusable admin, dashboard, and business application interfaces.",
+      "inputs": ["activeIndex", "disabled", "header", "multiple", "value", "variant"],
+      "outputs": ["toggleRequest", "activeIndexChange", "valueChange"],
+      "methods": ["ngAfterContentInit()", "requestToggle()", "togglePanel()"],
+      "formCompatibility": "Not a form control",
+      "usageExample": "<j-accordion-header></j-accordion-header>",
+      "importExample": "import { JAccordionHeaderComponent } from 'jrng-ui/accordion';",
+      "documentationUrl": "https://jrngui.dev/docs/components#accordion-header",
+      "status": "Basic",
+      "stability": "beta",
+      "sinceVersion": null,
+      "angularCompatibility": ">=21.2.0 <22.0.0",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": ["@angular/common", "@angular/core"],
+      "optionalDependencies": [],
+      "styles": ["jrng-ui/styles"],
+      "assets": [],
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Accordion Panel",
@@ -58,24 +88,9 @@
       "entryPoint": "jrng-ui/accordion",
       "category": "Navigation and Menu",
       "description": "Angular Accordion Panel component for reusable admin, dashboard, and business application interfaces.",
-      "inputs": [
-        "activeIndex",
-        "disabled",
-        "header",
-        "multiple",
-        "value",
-        "variant"
-      ],
-      "outputs": [
-        "toggleRequest",
-        "activeIndexChange",
-        "valueChange"
-      ],
-      "methods": [
-        "ngAfterContentInit()",
-        "requestToggle()",
-        "togglePanel()"
-      ],
+      "inputs": ["activeIndex", "disabled", "header", "multiple", "value", "variant"],
+      "outputs": ["toggleRequest", "activeIndexChange", "valueChange"],
+      "methods": ["ngAfterContentInit()", "requestToggle()", "togglePanel()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-accordion-panel></j-accordion-panel>",
       "importExample": "import { JAccordionPanelComponent } from 'jrng-ui/accordion';",
@@ -86,18 +101,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Action Menu",
@@ -106,23 +114,9 @@
       "entryPoint": "jrng-ui/table",
       "category": "Data",
       "description": "Angular Action Menu component for reusable admin, dashboard, and business application interfaces.",
-      "inputs": [
-        "actions",
-        "ariaLabel",
-        "popup",
-        "rowIndex",
-        "triggerIcon",
-        "triggerLabel"
-      ],
-      "outputs": [
-        "action"
-      ],
-      "methods": [
-        "activate()",
-        "handleMenuKeydown()",
-        "handleTriggerKeydown()",
-        "toggle()"
-      ],
+      "inputs": ["actions", "ariaLabel", "popup", "rowIndex", "triggerIcon", "triggerLabel"],
+      "outputs": ["action"],
+      "methods": ["activate()", "handleMenuKeydown()", "handleTriggerKeydown()", "toggle()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-action-menu></j-action-menu>",
       "importExample": "import { JActionMenuComponent } from 'jrng-ui/table';",
@@ -133,18 +127,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "App Shell",
@@ -153,19 +140,9 @@
       "entryPoint": "jrng-ui/app-shell",
       "category": "Layout",
       "description": "Angular App Shell component for reusable admin, dashboard, and business application interfaces.",
-      "inputs": [
-        "footer",
-        "sidebarCollapsed",
-        "sidebarOpen",
-        "styleClass"
-      ],
-      "outputs": [
-        "sidebarCollapsedChange",
-        "sidebarOpenChange"
-      ],
-      "methods": [
-        "toggleSidebar()"
-      ],
+      "inputs": ["footer", "sidebarCollapsed", "sidebarOpen", "styleClass"],
+      "outputs": ["sidebarCollapsedChange", "sidebarOpenChange"],
+      "methods": ["toggleSidebar()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-app-shell></j-app-shell>",
       "importExample": "import { JAppShellComponent } from 'jrng-ui/app-shell';",
@@ -176,18 +153,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Auth Layout",
@@ -196,10 +166,7 @@
       "entryPoint": "jrng-ui/auth-layout",
       "category": "Layout",
       "description": "Angular Auth Layout component for reusable admin, dashboard, and business application interfaces.",
-      "inputs": [
-        "styleClass",
-        "variant"
-      ],
+      "inputs": ["styleClass", "variant"],
       "outputs": [],
       "methods": [],
       "formCompatibility": "Not a form control",
@@ -212,18 +179,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Autocomplete",
@@ -294,18 +254,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Avatar",
@@ -329,9 +282,7 @@
         "status",
         "styleClass"
       ],
-      "outputs": [
-        "open"
-      ],
+      "outputs": ["open"],
       "methods": [
         "handleImageError()",
         "handlePreviewClosed()",
@@ -348,18 +299,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Avatar Group",
@@ -376,14 +320,13 @@
         "mode",
         "overflowTooltip",
         "overlap",
+        "preview",
         "pt",
         "size",
         "styleClass"
       ],
       "outputs": [],
-      "methods": [
-        "initials()"
-      ],
+      "methods": ["initials()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-avatar-group></j-avatar-group>",
       "importExample": "import { JAvatarGroupComponent } from 'jrng-ui/avatar-group';",
@@ -394,18 +337,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Badge",
@@ -442,18 +378,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Bottom Sheet",
@@ -474,11 +403,7 @@
         "styleClass",
         "visible"
       ],
-      "outputs": [
-        "closed",
-        "opened",
-        "visibleChange"
-      ],
+      "outputs": ["closed", "opened", "visibleChange"],
       "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-bottom-sheet></j-bottom-sheet>",
@@ -490,14 +415,9 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
       "themeRequirements": []
     },
@@ -508,17 +428,9 @@
       "entryPoint": "jrng-ui/breadcrumb",
       "category": "Navigation and Menu",
       "description": "Angular Breadcrumb component for reusable admin, dashboard, and business application interfaces.",
-      "inputs": [
-        "home",
-        "model",
-        "variant"
-      ],
-      "outputs": [
-        "itemClick"
-      ],
-      "methods": [
-        "handleClick()"
-      ],
+      "inputs": ["home", "model", "variant"],
+      "outputs": ["itemClick"],
+      "methods": ["handleClick()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-breadcrumb></j-breadcrumb>",
       "importExample": "import { JBreadcrumbComponent } from 'jrng-ui/breadcrumb';",
@@ -529,18 +441,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Button",
@@ -576,12 +481,8 @@
         "variant",
         "width"
       ],
-      "outputs": [
-        "onClick"
-      ],
-      "methods": [
-        "handleClick()"
-      ],
+      "outputs": ["onClick"],
+      "methods": ["focus()", "handleClick()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-button></j-button>",
       "importExample": "import { JButtonComponent } from 'jrng-ui/button';",
@@ -592,18 +493,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Calendar",
@@ -612,17 +506,8 @@
       "entryPoint": "jrng-ui/calendar",
       "category": "Forms",
       "description": "Angular Calendar component for reusable admin, dashboard, and business application interfaces.",
-      "inputs": [
-        "activeDate",
-        "disabledDates",
-        "maxDate",
-        "minDate",
-        "value"
-      ],
-      "outputs": [
-        "dateSelect",
-        "monthChange"
-      ],
+      "inputs": ["activeDate", "disabledDates", "maxDate", "minDate", "value"],
+      "outputs": ["dateSelect", "monthChange"],
       "methods": [
         "cellClasses()",
         "cloneDate()",
@@ -642,18 +527,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Calendar Scheduler",
@@ -662,28 +540,9 @@
       "entryPoint": "jrng-ui/calendar-scheduler",
       "category": "Scheduling & Productivity",
       "description": "Angular Calendar Scheduler component for reusable admin, dashboard, and business application interfaces.",
-      "inputs": [
-        "activeDate",
-        "ariaLabel",
-        "events",
-        "styleClass",
-        "view"
-      ],
-      "outputs": [
-        "dateClick",
-        "eventClick",
-        "viewChange",
-        "activeDateChange",
-        "viewChange"
-      ],
-      "methods": [
-        "handleEventClick()",
-        "if()",
-        "next()",
-        "previous()",
-        "setView()",
-        "today()"
-      ],
+      "inputs": ["activeDate", "ariaLabel", "events", "styleClass", "view"],
+      "outputs": ["dateClick", "eventClick", "viewChange", "activeDateChange", "viewChange"],
+      "methods": ["handleEventClick()", "if()", "next()", "previous()", "setView()", "today()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-calendar-scheduler></j-calendar-scheduler>",
       "importExample": "import { JCalendarSchedulerComponent } from 'jrng-ui/calendar-scheduler';",
@@ -694,18 +553,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Card",
@@ -737,18 +589,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Carousel",
@@ -767,15 +612,8 @@
         "value",
         "visibleItems"
       ],
-      "outputs": [
-        "activeIndexChange"
-      ],
-      "methods": [
-        "itemContext()",
-        "next()",
-        "previous()",
-        "transform()"
-      ],
+      "outputs": ["activeIndexChange"],
+      "methods": ["itemContext()", "next()", "previous()", "transform()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-carousel></j-carousel>",
       "importExample": "import { JCarouselComponent } from 'jrng-ui/carousel';",
@@ -786,18 +624,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Chart",
@@ -833,13 +664,7 @@
         "legendClick",
         "print"
       ],
-      "methods": [
-        "destroy()",
-        "download()",
-        "exportImage()",
-        "refresh()",
-        "resize()"
-      ],
+      "methods": ["destroy()", "download()", "exportImage()", "refresh()", "resize()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-chart></j-chart>",
       "importExample": "import { JChartComponent } from 'jrng-ui/chart';",
@@ -850,20 +675,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
-      "optionalDependencies": [
-        "chart.js"
-      ],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
+      "optionalDependencies": ["chart.js"],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Checkbox",
@@ -888,15 +704,8 @@
         "styleClass",
         "value"
       ],
-      "outputs": [
-        "valueChange"
-      ],
-      "methods": [
-        "handleBlur()",
-        "handleChange()",
-        "setDisabledState()",
-        "writeValue()"
-      ],
+      "outputs": ["valueChange"],
+      "methods": ["handleBlur()", "handleChange()", "setDisabledState()", "writeValue()"],
       "formCompatibility": "ControlValueAccessor",
       "usageExample": "<j-checkbox></j-checkbox>",
       "importExample": "import { JCheckboxComponent } from 'jrng-ui/checkbox';",
@@ -907,18 +716,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Chip",
@@ -938,9 +740,7 @@
         "styleClass",
         "variant"
       ],
-      "outputs": [
-        "remove"
-      ],
+      "outputs": ["remove"],
       "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-chip></j-chip>",
@@ -952,18 +752,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Chips",
@@ -990,11 +783,7 @@
         "styleClass",
         "variant"
       ],
-      "outputs": [
-        "add",
-        "remove",
-        "valueChange"
-      ],
+      "outputs": ["add", "remove", "valueChange"],
       "methods": [
         "handleBlur()",
         "handleInput()",
@@ -1013,18 +802,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Grid Column",
@@ -1066,18 +848,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Color Picker",
@@ -1099,9 +874,7 @@
         "showInput",
         "styleClass"
       ],
-      "outputs": [
-        "valueChange"
-      ],
+      "outputs": ["valueChange"],
       "methods": [
         "clearValue()",
         "close()",
@@ -1122,18 +895,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Column Filter",
@@ -1158,11 +924,7 @@
         "type",
         "value"
       ],
-      "outputs": [
-        "apply",
-        "clear",
-        "filterChange"
-      ],
+      "outputs": ["apply", "clear", "filterChange"],
       "methods": [
         "applyFilter()",
         "clearFilter()",
@@ -1184,18 +946,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Command Palette",
@@ -1204,24 +959,9 @@
       "entryPoint": "jrng-ui/command-palette",
       "category": "Navigation and Menu",
       "description": "Angular Command Palette component for reusable admin, dashboard, and business application interfaces.",
-      "inputs": [
-        "commands",
-        "emptyMessage",
-        "heading",
-        "placeholder",
-        "shortcut",
-        "visible"
-      ],
-      "outputs": [
-        "command",
-        "visibleChange"
-      ],
-      "methods": [
-        "handleClosed()",
-        "handleSearchKeydown()",
-        "itemClasses()",
-        "run()"
-      ],
+      "inputs": ["commands", "emptyMessage", "heading", "placeholder", "shortcut", "visible"],
+      "outputs": ["command", "visibleChange"],
+      "methods": ["handleClosed()", "handleSearchKeydown()", "itemClasses()", "run()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-command-palette></j-command-palette>",
       "importExample": "import { JCommandPaletteComponent } from 'jrng-ui/command-palette';",
@@ -1232,18 +972,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Confirm Dialog",
@@ -1254,12 +987,7 @@
       "description": "Angular Confirm Dialog component for reusable admin, dashboard, and business application interfaces.",
       "inputs": [],
       "outputs": [],
-      "methods": [
-        "accept()",
-        "handleOverlayMouseDown()",
-        "reject()",
-        "severityIcon()"
-      ],
+      "methods": ["accept()", "handleOverlayMouseDown()", "reject()", "severityIcon()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-confirm-dialog></j-confirm-dialog>",
       "importExample": "import { JConfirmDialogComponent } from 'jrng-ui/confirm-dialog';",
@@ -1270,18 +998,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Confirm Popup",
@@ -1292,12 +1013,7 @@
       "description": "Angular Confirm Popup component for reusable admin, dashboard, and business application interfaces.",
       "inputs": [],
       "outputs": [],
-      "methods": [
-        "accept()",
-        "focusPanel()",
-        "handleKeydown()",
-        "reject()"
-      ],
+      "methods": ["accept()", "focusPanel()", "handleKeydown()", "reject()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-confirm-popup></j-confirm-popup>",
       "importExample": "import { JConfirmPopupComponent } from 'jrng-ui/confirm-popup';",
@@ -1308,18 +1024,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Container",
@@ -1328,14 +1037,9 @@
       "entryPoint": "jrng-ui/container",
       "category": "Layout",
       "description": "Angular Container component for reusable admin, dashboard, and business application interfaces.",
-      "inputs": [
-        "size",
-        "styleClass"
-      ],
+      "inputs": ["size", "styleClass"],
       "outputs": [],
-      "methods": [
-        "classes()"
-      ],
+      "methods": ["classes()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-container></j-container>",
       "importExample": "import { JContainerComponent } from 'jrng-ui/container';",
@@ -1346,18 +1050,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Context Menu",
@@ -1366,16 +1063,9 @@
       "entryPoint": "jrng-ui/context-menu",
       "category": "Navigation and Menu",
       "description": "Angular Context Menu component for reusable admin, dashboard, and business application interfaces.",
-      "inputs": [
-        "ariaLabel",
-        "model",
-        "target"
-      ],
+      "inputs": ["ariaLabel", "model", "target"],
       "outputs": [],
-      "methods": [
-        "hide()",
-        "show()"
-      ],
+      "methods": ["hide()", "show()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-context-menu></j-context-menu>",
       "importExample": "import { JContextMenuComponent } from 'jrng-ui/context-menu';",
@@ -1386,14 +1076,9 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
       "themeRequirements": []
     },
@@ -1416,10 +1101,7 @@
         "styleClass",
         "text"
       ],
-      "outputs": [
-        "copied",
-        "copyFailed"
-      ],
+      "outputs": ["copied", "copyFailed"],
       "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-copy-button></j-copy-button>",
@@ -1431,18 +1113,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Data Display",
@@ -1484,9 +1159,7 @@
         "value"
       ],
       "outputs": [],
-      "methods": [
-        "templateContext()"
-      ],
+      "methods": ["templateContext()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-data-display></j-data-display>",
       "importExample": "import { JDataDisplayComponent } from 'jrng-ui/data-display';",
@@ -1497,18 +1170,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Data Grid",
@@ -1625,18 +1291,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Data View",
@@ -1656,11 +1315,7 @@
         "sortField",
         "value"
       ],
-      "outputs": [
-        "layoutChange",
-        "pageChange",
-        "sortChange"
-      ],
+      "outputs": ["layoutChange", "pageChange", "sortChange"],
       "methods": [
         "changeSort()",
         "handlePageChange()",
@@ -1678,18 +1333,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Date Picker",
@@ -1732,13 +1380,7 @@
         "variant",
         "view"
       ],
-      "outputs": [
-        "clear",
-        "closed",
-        "opened",
-        "select",
-        "valueChange"
-      ],
+      "outputs": ["clear", "closed", "opened", "select", "valueChange"],
       "methods": [
         "applyPreset()",
         "changeHours()",
@@ -1782,18 +1424,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Dialog",
@@ -1823,15 +1458,7 @@
         "visible",
         "width"
       ],
-      "outputs": [
-        "closed",
-        "hide",
-        "jrClose",
-        "openChange",
-        "opened",
-        "show",
-        "visibleChange"
-      ],
+      "outputs": ["closed", "hide", "jrClose", "openChange", "opened", "show", "visibleChange"],
       "methods": [
         "close()",
         "endDrag()",
@@ -1854,18 +1481,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Diff Viewer",
@@ -1886,13 +1506,8 @@
         "layout",
         "mask"
       ],
-      "outputs": [
-        "copied"
-      ],
-      "methods": [
-        "copy()",
-        "format()"
-      ],
+      "outputs": ["copied"],
+      "methods": ["copy()", "format()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-diff-viewer></j-diff-viewer>",
       "importExample": "import { JDiffViewerComponent } from 'jrng-ui/diff-viewer';",
@@ -1903,18 +1518,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Divider",
@@ -1947,18 +1555,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Drawer",
@@ -1972,6 +1573,7 @@
         "closable",
         "closeOnEscape",
         "contained",
+        "denseHeader",
         "dismissableMask",
         "header",
         "height",
@@ -1982,15 +1584,11 @@
         "showHandle",
         "snapPoints",
         "styleClass",
+        "subtitle",
         "visible",
         "width"
       ],
-      "outputs": [
-        "closed",
-        "openChange",
-        "opened",
-        "visibleChange"
-      ],
+      "outputs": ["closed", "openChange", "opened", "visibleChange"],
       "methods": [
         "cancelGesture()",
         "close()",
@@ -2011,18 +1609,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Dynamic Dialog",
@@ -2044,18 +1635,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Editor",
@@ -2084,11 +1668,7 @@
         "toolbar",
         "toolbarLabel"
       ],
-      "outputs": [
-        "autosave",
-        "dirtyChange",
-        "valueChange"
-      ],
+      "outputs": ["autosave", "dirtyChange", "valueChange"],
       "methods": [
         "canInteract()",
         "clearFormatting()",
@@ -2117,18 +1697,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Empty",
@@ -2160,18 +1733,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Error Page",
@@ -2180,12 +1746,7 @@
       "entryPoint": "jrng-ui/error-page",
       "category": "Status Pages",
       "description": "Angular Error Page component for reusable admin, dashboard, and business application interfaces.",
-      "inputs": [
-        "code",
-        "description",
-        "styleClass",
-        "title"
-      ],
+      "inputs": ["code", "description", "styleClass", "title"],
       "outputs": [],
       "methods": [],
       "formCompatibility": "Not a form control",
@@ -2198,14 +1759,9 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
       "themeRequirements": []
     },
@@ -2229,12 +1785,8 @@
         "toggleable",
         "variant"
       ],
-      "outputs": [
-        "collapsedChange"
-      ],
-      "methods": [
-        "toggle()"
-      ],
+      "outputs": ["collapsedChange"],
+      "methods": ["toggle()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-fieldset></j-fieldset>",
       "importExample": "import { JFieldsetComponent } from 'jrng-ui/fieldset';",
@@ -2245,18 +1797,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "File Browser",
@@ -2325,18 +1870,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "File Preview",
@@ -2365,11 +1903,7 @@
         "typeLabel",
         "url"
       ],
-      "outputs": [
-        "download",
-        "preview",
-        "remove"
-      ],
+      "outputs": ["download", "preview", "remove"],
       "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-file-preview></j-file-preview>",
@@ -2381,18 +1915,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "File Upload",
@@ -2464,18 +1991,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Filter Bar",
@@ -2501,12 +2021,7 @@
         "statusLabel",
         "statuses"
       ],
-      "outputs": [
-        "apply",
-        "export",
-        "filterChange",
-        "reset"
-      ],
+      "outputs": ["apply", "export", "filterChange", "reset"],
       "methods": [
         "applyFilters()",
         "resetFilters()",
@@ -2526,18 +2041,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Form Field",
@@ -2579,10 +2087,7 @@
         "warning"
       ],
       "outputs": [],
-      "methods": [
-        "ngAfterContentInit()",
-        "ngDoCheck()"
-      ],
+      "methods": ["ngAfterContentInit()", "ngDoCheck()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-form-field></j-form-field>",
       "importExample": "import { JFormFieldComponent } from 'jrng-ui/form-field';",
@@ -2593,18 +2098,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Gallery",
@@ -2625,12 +2123,12 @@
         "value",
         "variant"
       ],
-      "outputs": [
-        "activeIndexChange",
-        "previewVisibleChange"
-      ],
+      "outputs": ["activeIndexChange", "previewVisibleChange"],
       "methods": [
         "galleryClasses()",
+        "isLoaded()",
+        "markFailed()",
+        "markLoaded()",
         "next()",
         "previous()",
         "select()"
@@ -2645,18 +2143,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Gantt",
@@ -2665,22 +2156,9 @@
       "entryPoint": "jrng-ui/gantt",
       "category": "Scheduling & Productivity",
       "description": "Angular Gantt component for reusable admin, dashboard, and business application interfaces.",
-      "inputs": [
-        "emptyMessage",
-        "end",
-        "labelHeader",
-        "scale",
-        "start",
-        "styleClass",
-        "tasks"
-      ],
+      "inputs": ["emptyMessage", "end", "labelHeader", "scale", "start", "styleClass", "tasks"],
       "outputs": [],
-      "methods": [
-        "dependencyLabel()",
-        "if()",
-        "progress()",
-        "taskContext()"
-      ],
+      "methods": ["dependencyLabel()", "if()", "progress()", "taskContext()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-gantt></j-gantt>",
       "importExample": "import { JGanttComponent } from 'jrng-ui/gantt';",
@@ -2691,18 +2169,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Grid",
@@ -2734,18 +2205,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Grid Layout",
@@ -2754,12 +2218,7 @@
       "entryPoint": "jrng-ui/grid-layout",
       "category": "Layout",
       "description": "Angular Grid Layout component for reusable admin, dashboard, and business application interfaces.",
-      "inputs": [
-        "columns",
-        "gap",
-        "minItemWidth",
-        "styleClass"
-      ],
+      "inputs": ["columns", "gap", "minItemWidth", "styleClass"],
       "outputs": [],
       "methods": [],
       "formCompatibility": "Not a form control",
@@ -2772,18 +2231,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Highlight",
@@ -2792,17 +2244,9 @@
       "entryPoint": "jrng-ui/highlight",
       "category": "Core and Theming",
       "description": "Angular Highlight component for reusable admin, dashboard, and business application interfaces.",
-      "inputs": [
-        "caseSensitive",
-        "diacriticInsensitive",
-        "markClass",
-        "term",
-        "text"
-      ],
+      "inputs": ["caseSensitive", "diacriticInsensitive", "markClass", "term", "text"],
       "outputs": [],
-      "methods": [
-        "for()"
-      ],
+      "methods": ["for()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-highlight></j-highlight>",
       "importExample": "import { JHighlightComponent } from 'jrng-ui/highlight';",
@@ -2813,18 +2257,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Html Preview",
@@ -2848,17 +2285,8 @@
         "width",
         "zoom"
       ],
-      "outputs": [
-        "exported",
-        "openWindow",
-        "print",
-        "refreshed"
-      ],
-      "methods": [
-        "copy()",
-        "export()",
-        "refresh()"
-      ],
+      "outputs": ["exported", "openWindow", "print", "refreshed"],
+      "methods": ["copy()", "export()", "refresh()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-html-preview></j-html-preview>",
       "importExample": "import { JHtmlPreviewComponent } from 'jrng-ui/html-preview';",
@@ -2869,18 +2297,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Icon",
@@ -2889,14 +2310,7 @@
       "entryPoint": "jrng-ui/icon",
       "category": "Data Display",
       "description": "Angular Icon component for reusable admin, dashboard, and business application interfaces.",
-      "inputs": [
-        "ariaLabel",
-        "name",
-        "pt",
-        "size",
-        "strokeWidth",
-        "styleClass"
-      ],
+      "inputs": ["ariaLabel", "name", "pt", "size", "strokeWidth", "styleClass"],
       "outputs": [],
       "methods": [],
       "formCompatibility": "Not a form control",
@@ -2909,14 +2323,9 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
       "themeRequirements": []
     },
@@ -2942,10 +2351,7 @@
         "styleClass",
         "suffixIcon"
       ],
-      "outputs": [
-        "clear",
-        "filter"
-      ],
+      "outputs": ["clear", "filter"],
       "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-icon-field></j-icon-field>",
@@ -2957,18 +2363,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Image",
@@ -2988,10 +2387,7 @@
         "width"
       ],
       "outputs": [],
-      "methods": [
-        "openPreview()",
-        "useFallback()"
-      ],
+      "methods": ["openPreview()", "useFallback()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-image></j-image>",
       "importExample": "import { JImageComponent } from 'jrng-ui/image';",
@@ -3002,18 +2398,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Input",
@@ -3045,10 +2434,7 @@
         "variant",
         "width"
       ],
-      "outputs": [
-        "clear",
-        "valueChange"
-      ],
+      "outputs": ["clear", "valueChange"],
       "methods": [
         "clearValue()",
         "handleBlur()",
@@ -3066,18 +2452,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Input Group",
@@ -3114,18 +2493,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Input Mask",
@@ -3156,10 +2528,7 @@
         "unmask",
         "variant"
       ],
-      "outputs": [
-        "clear",
-        "valueChange"
-      ],
+      "outputs": ["clear", "valueChange"],
       "methods": [
         "clearValue()",
         "handleBlur()",
@@ -3177,18 +2546,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Input Number",
@@ -3227,10 +2589,7 @@
         "suffix",
         "variant"
       ],
-      "outputs": [
-        "clear",
-        "valueChange"
-      ],
+      "outputs": ["clear", "valueChange"],
       "methods": [
         "clearValue()",
         "handleBlur()",
@@ -3250,18 +2609,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Input OTP",
@@ -3289,9 +2641,7 @@
         "styleClass",
         "variant"
       ],
-      "outputs": [
-        "valueChange"
-      ],
+      "outputs": ["valueChange"],
       "methods": [
         "ariaLabelFor()",
         "handleBlur()",
@@ -3311,18 +2661,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Kanban",
@@ -3331,17 +2674,8 @@
       "entryPoint": "jrng-ui/kanban",
       "category": "Scheduling & Productivity",
       "description": "Angular Kanban component for reusable admin, dashboard, and business application interfaces.",
-      "inputs": [
-        "addCardLabel",
-        "emptyMessage",
-        "styleClass",
-        "value"
-      ],
-      "outputs": [
-        "addCard",
-        "removeCard",
-        "reorder"
-      ],
+      "inputs": ["addCardLabel", "emptyMessage", "styleClass", "value"],
+      "outputs": ["addCard", "removeCard", "reorder"],
       "methods": [
         "cardContext()",
         "columnContext()",
@@ -3361,18 +2695,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Knob",
@@ -3392,14 +2719,8 @@
         "step",
         "styleClass"
       ],
-      "outputs": [
-        "valueChange"
-      ],
-      "methods": [
-        "handleKeydown()",
-        "setDisabledState()",
-        "writeValue()"
-      ],
+      "outputs": ["valueChange"],
+      "methods": ["handleKeydown()", "setDisabledState()", "writeValue()"],
       "formCompatibility": "ControlValueAccessor",
       "usageExample": "<j-knob></j-knob>",
       "importExample": "import { JKnobComponent } from 'jrng-ui/knob';",
@@ -3410,18 +2731,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Label",
@@ -3460,18 +2774,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Listbox",
@@ -3502,11 +2809,7 @@
         "size",
         "styleClass"
       ],
-      "outputs": [
-        "asyncError",
-        "filterChange",
-        "valueChange"
-      ],
+      "outputs": ["asyncError", "filterChange", "valueChange"],
       "methods": [
         "handleFilterInput()",
         "handleKeydown()",
@@ -3528,18 +2831,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Loader",
@@ -3573,18 +2869,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Maintenance Page",
@@ -3593,13 +2882,7 @@
       "entryPoint": "jrng-ui/maintenance-page",
       "category": "Status Pages",
       "description": "Angular Maintenance Page component for reusable admin, dashboard, and business application interfaces.",
-      "inputs": [
-        "badge",
-        "description",
-        "detail",
-        "styleClass",
-        "title"
-      ],
+      "inputs": ["badge", "description", "detail", "styleClass", "title"],
       "outputs": [],
       "methods": [],
       "formCompatibility": "Not a form control",
@@ -3612,14 +2895,9 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
       "themeRequirements": []
     },
@@ -3630,15 +2908,9 @@
       "entryPoint": "jrng-ui/mega-menu",
       "category": "Navigation and Menu",
       "description": "Angular Mega Menu component for reusable admin, dashboard, and business application interfaces.",
-      "inputs": [
-        "ariaLabel",
-        "columns",
-        "model"
-      ],
+      "inputs": ["ariaLabel", "columns", "model"],
       "outputs": [],
-      "methods": [
-        "templateContext()"
-      ],
+      "methods": ["templateContext()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-mega-menu></j-mega-menu>",
       "importExample": "import { JMegaMenuComponent } from 'jrng-ui/mega-menu';",
@@ -3649,18 +2921,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Menu",
@@ -3679,9 +2944,7 @@
         "target",
         "visible"
       ],
-      "outputs": [
-        "visibleChange"
-      ],
+      "outputs": ["visibleChange"],
       "methods": [
         "activate()",
         "children()",
@@ -3708,18 +2971,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Menubar",
@@ -3728,17 +2984,9 @@
       "entryPoint": "jrng-ui/menubar",
       "category": "Navigation and Menu",
       "description": "Angular Menubar component for reusable admin, dashboard, and business application interfaces.",
-      "inputs": [
-        "ariaLabel",
-        "menuLabel",
-        "mobileCollapse",
-        "model"
-      ],
+      "inputs": ["ariaLabel", "menuLabel", "mobileCollapse", "model"],
       "outputs": [],
-      "methods": [
-        "activate()",
-        "templateContext()"
-      ],
+      "methods": ["activate()", "templateContext()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-menubar></j-menubar>",
       "importExample": "import { JMenubarComponent } from 'jrng-ui/menubar';",
@@ -3749,18 +2997,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Meter Group",
@@ -3769,11 +3010,7 @@
       "entryPoint": "jrng-ui/meter-group",
       "category": "Data Display",
       "description": "Angular Meter Group component for reusable admin, dashboard, and business application interfaces.",
-      "inputs": [
-        "max",
-        "styleClass",
-        "value"
-      ],
+      "inputs": ["max", "styleClass", "value"],
       "outputs": [],
       "methods": [],
       "formCompatibility": "Not a form control",
@@ -3786,18 +3023,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Multiselect",
@@ -3890,18 +3120,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Notification Center",
@@ -3926,13 +3149,7 @@
         "target",
         "visible"
       ],
-      "outputs": [
-        "delete",
-        "loadMore",
-        "markAllReadChange",
-        "markReadChange",
-        "visibleChange"
-      ],
+      "outputs": ["delete", "loadMore", "markAllReadChange", "markReadChange", "visibleChange"],
       "methods": [
         "clearAll()",
         "isRead()",
@@ -3951,18 +3168,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Order List",
@@ -3983,10 +3193,7 @@
         "optionValue",
         "value"
       ],
-      "outputs": [
-        "reorder",
-        "valueChange"
-      ],
+      "outputs": ["reorder", "valueChange"],
       "methods": [
         "handleFilter()",
         "isSelected()",
@@ -4006,18 +3213,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Org Chart",
@@ -4026,19 +3226,9 @@
       "entryPoint": "jrng-ui/org-chart",
       "category": "Scheduling & Productivity",
       "description": "Angular Org Chart component for reusable admin, dashboard, and business application interfaces.",
-      "inputs": [
-        "collapsible",
-        "orientation",
-        "styleClass",
-        "value"
-      ],
+      "inputs": ["collapsible", "orientation", "styleClass", "value"],
       "outputs": [],
-      "methods": [
-        "isExpanded()",
-        "nodeContext()",
-        "nodeKeyFor()",
-        "toggle()"
-      ],
+      "methods": ["isExpanded()", "nodeContext()", "nodeKeyFor()", "toggle()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-org-chart></j-org-chart>",
       "importExample": "import { JOrgChartComponent } from 'jrng-ui/org-chart';",
@@ -4049,18 +3239,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Page Header",
@@ -4081,9 +3264,7 @@
         "title",
         "variant"
       ],
-      "outputs": [
-        "back"
-      ],
+      "outputs": ["back"],
       "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-page-header></j-page-header>",
@@ -4095,18 +3276,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Paginator",
@@ -4125,13 +3299,8 @@
         "totalRecords",
         "variant"
       ],
-      "outputs": [
-        "pageChange"
-      ],
-      "methods": [
-        "setPage()",
-        "setRows()"
-      ],
+      "outputs": ["pageChange"],
+      "methods": ["setPage()", "setRows()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-paginator></j-paginator>",
       "importExample": "import { JPaginatorComponent } from 'jrng-ui/paginator';",
@@ -4142,18 +3311,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Panel",
@@ -4178,12 +3340,8 @@
         "toggleable",
         "variant"
       ],
-      "outputs": [
-        "collapsedChange"
-      ],
-      "methods": [
-        "toggle()"
-      ],
+      "outputs": ["collapsedChange"],
+      "methods": ["toggle()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-panel></j-panel>",
       "importExample": "import { JPanelComponent } from 'jrng-ui/panel';",
@@ -4194,18 +3352,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Password",
@@ -4245,10 +3396,7 @@
         "variant",
         "width"
       ],
-      "outputs": [
-        "clear",
-        "valueChange"
-      ],
+      "outputs": ["clear", "valueChange"],
       "methods": [
         "clearValue()",
         "handleBlur()",
@@ -4267,18 +3415,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Popover",
@@ -4297,18 +3438,8 @@
         "target",
         "visible"
       ],
-      "outputs": [
-        "closed",
-        "opened",
-        "targetChange",
-        "visibleChange"
-      ],
-      "methods": [
-        "handleOutside()",
-        "hide()",
-        "show()",
-        "toggle()"
-      ],
+      "outputs": ["closed", "opened", "targetChange", "visibleChange"],
+      "methods": ["handleOutside()", "hide()", "show()", "toggle()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-popover></j-popover>",
       "importExample": "import { JPopoverComponent } from 'jrng-ui/popover';",
@@ -4319,18 +3450,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Progress Bar",
@@ -4339,15 +3463,7 @@
       "entryPoint": "jrng-ui/progress-bar",
       "category": "Data Display",
       "description": "Angular Progress Bar component for reusable admin, dashboard, and business application interfaces.",
-      "inputs": [
-        "indeterminate",
-        "label",
-        "pt",
-        "severity",
-        "styleClass",
-        "value",
-        "variant"
-      ],
+      "inputs": ["indeterminate", "label", "pt", "severity", "styleClass", "value", "variant"],
       "outputs": [],
       "methods": [],
       "formCompatibility": "Not a form control",
@@ -4360,18 +3476,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Progress Spinner",
@@ -4380,13 +3489,7 @@
       "entryPoint": "jrng-ui/progress-spinner",
       "category": "Data Display",
       "description": "Angular Progress Spinner component for reusable admin, dashboard, and business application interfaces.",
-      "inputs": [
-        "label",
-        "pt",
-        "size",
-        "strokeWidth",
-        "styleClass"
-      ],
+      "inputs": ["label", "pt", "size", "strokeWidth", "styleClass"],
       "outputs": [],
       "methods": [],
       "formCompatibility": "Not a form control",
@@ -4399,18 +3502,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Radio",
@@ -4431,15 +3527,8 @@
         "styleClass",
         "value"
       ],
-      "outputs": [
-        "valueChange"
-      ],
-      "methods": [
-        "handleBlur()",
-        "handleChange()",
-        "setDisabledState()",
-        "writeValue()"
-      ],
+      "outputs": ["valueChange"],
+      "methods": ["handleBlur()", "handleChange()", "setDisabledState()", "writeValue()"],
       "formCompatibility": "ControlValueAccessor",
       "usageExample": "<j-radio></j-radio>",
       "importExample": "import { JRadioComponent } from 'jrng-ui/radio';",
@@ -4450,18 +3539,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Radio Group",
@@ -4486,10 +3568,7 @@
         "size",
         "styleClass"
       ],
-      "outputs": [
-        "selectionChange",
-        "valueChange"
-      ],
+      "outputs": ["selectionChange", "valueChange"],
       "methods": [
         "handleKeydown()",
         "isSelected()",
@@ -4507,18 +3586,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Rating",
@@ -4540,9 +3612,7 @@
         "step",
         "styleClass"
       ],
-      "outputs": [
-        "valueChange"
-      ],
+      "outputs": ["valueChange"],
       "methods": [
         "clearPreview()",
         "fillPercent()",
@@ -4564,18 +3634,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Responsive Sidebar",
@@ -4584,14 +3647,8 @@
       "entryPoint": "jrng-ui/responsive-sidebar",
       "category": "Layout",
       "description": "Angular Responsive Sidebar component for reusable admin, dashboard, and business application interfaces.",
-      "inputs": [
-        "open",
-        "styleClass",
-        "title"
-      ],
-      "outputs": [
-        "openChange"
-      ],
+      "inputs": ["open", "styleClass", "title"],
+      "outputs": ["openChange"],
       "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-responsive-sidebar></j-responsive-sidebar>",
@@ -4603,18 +3660,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Grid Row",
@@ -4623,15 +3673,7 @@
       "entryPoint": "jrng-ui/grid",
       "category": "Layout",
       "description": "Angular Grid Row component for reusable admin, dashboard, and business application interfaces.",
-      "inputs": [
-        "align",
-        "columnGap",
-        "gap",
-        "justify",
-        "rowGap",
-        "styleClass",
-        "wrap"
-      ],
+      "inputs": ["align", "columnGap", "gap", "justify", "rowGap", "styleClass", "wrap"],
       "outputs": [],
       "methods": [],
       "formCompatibility": "Not a form control",
@@ -4644,18 +3686,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Section Footer",
@@ -4664,9 +3699,7 @@
       "entryPoint": "jrng-ui/section-footer",
       "category": "Layout",
       "description": "Angular Section Footer component for reusable admin, dashboard, and business application interfaces.",
-      "inputs": [
-        "styleClass"
-      ],
+      "inputs": ["styleClass"],
       "outputs": [],
       "methods": [],
       "formCompatibility": "Not a form control",
@@ -4679,18 +3712,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Section Header",
@@ -4699,14 +3725,7 @@
       "entryPoint": "jrng-ui/section-header",
       "category": "Layout",
       "description": "Angular Section Header component for reusable admin, dashboard, and business application interfaces.",
-      "inputs": [
-        "description",
-        "loading",
-        "sticky",
-        "styleClass",
-        "title",
-        "variant"
-      ],
+      "inputs": ["description", "loading", "sticky", "styleClass", "title", "variant"],
       "outputs": [],
       "methods": [],
       "formCompatibility": "Not a form control",
@@ -4719,18 +3738,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Select",
@@ -4816,18 +3828,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Select Button",
@@ -4850,15 +3855,8 @@
         "size",
         "styleClass"
       ],
-      "outputs": [
-        "valueChange"
-      ],
-      "methods": [
-        "isSelected()",
-        "setDisabledState()",
-        "toggleOption()",
-        "writeValue()"
-      ],
+      "outputs": ["valueChange"],
+      "methods": ["isSelected()", "setDisabledState()", "toggleOption()", "writeValue()"],
       "formCompatibility": "ControlValueAccessor",
       "usageExample": "<j-select-button></j-select-button>",
       "importExample": "import { JSelectButtonComponent } from 'jrng-ui/select-button';",
@@ -4869,18 +3867,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Sidebar Nav",
@@ -4898,14 +3889,8 @@
         "expandLabel",
         "model"
       ],
-      "outputs": [
-        "collapsedChange"
-      ],
-      "methods": [
-        "handleClick()",
-        "isActive()",
-        "toggle()"
-      ],
+      "outputs": ["collapsedChange"],
+      "methods": ["handleClick()", "isActive()", "toggle()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-sidebar-nav></j-sidebar-nav>",
       "importExample": "import { JSidebarNavComponent } from 'jrng-ui/sidebar-nav';",
@@ -4916,18 +3901,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Skeleton",
@@ -4959,18 +3937,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Slider",
@@ -4998,15 +3969,8 @@
         "tooltip",
         "vertical"
       ],
-      "outputs": [
-        "valueChange"
-      ],
-      "methods": [
-        "handleLowerInput()",
-        "handleUpperInput()",
-        "setDisabledState()",
-        "writeValue()"
-      ],
+      "outputs": ["valueChange"],
+      "methods": ["handleLowerInput()", "handleUpperInput()", "setDisabledState()", "writeValue()"],
       "formCompatibility": "ControlValueAccessor",
       "usageExample": "<j-slider></j-slider>",
       "importExample": "import { JSliderComponent } from 'jrng-ui/slider';",
@@ -5017,18 +3981,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Sparkline",
@@ -5037,14 +3994,7 @@
       "entryPoint": "jrng-ui/sparkline",
       "category": "Media & Visualization",
       "description": "Angular Sparkline component for reusable admin, dashboard, and business application interfaces.",
-      "inputs": [
-        "ariaLabel",
-        "height",
-        "styleClass",
-        "type",
-        "value",
-        "width"
-      ],
+      "inputs": ["ariaLabel", "height", "styleClass", "type", "value", "width"],
       "outputs": [],
       "methods": [],
       "formCompatibility": "Not a form control",
@@ -5057,18 +4007,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Splitter",
@@ -5089,9 +4032,7 @@
         "storageKey",
         "styleClass"
       ],
-      "outputs": [
-        "resize"
-      ],
+      "outputs": ["resize"],
       "methods": [
         "ngAfterContentInit()",
         "resetSizes()",
@@ -5109,16 +4050,54 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": []
+      "themeRequirements": ["JRNG semantic tokens"]
+    },
+    {
+      "name": "Splitter Panel",
+      "selector": "j-splitter-panel",
+      "importPath": "jrng-ui/splitter",
+      "entryPoint": "jrng-ui/splitter",
+      "category": "Layout",
+      "description": "Angular Splitter Panel component for reusable admin, dashboard, and business application interfaces.",
+      "inputs": [
+        "disabled",
+        "gutterSize",
+        "maxSize",
+        "minSize",
+        "orientation",
+        "readOnly",
+        "size",
+        "snapPoints",
+        "storageKey",
+        "styleClass"
+      ],
+      "outputs": ["resize"],
+      "methods": [
+        "ngAfterContentInit()",
+        "resetSizes()",
+        "resizeAt()",
+        "resizeWithKeyboard()",
+        "startResize()"
+      ],
+      "formCompatibility": "Not a form control",
+      "usageExample": "<j-splitter-panel></j-splitter-panel>",
+      "importExample": "import { JSplitterPanelComponent } from 'jrng-ui/splitter';",
+      "documentationUrl": "https://jrngui.dev/docs/components#splitter-panel",
+      "status": "Basic",
+      "stability": "beta",
+      "sinceVersion": null,
+      "angularCompatibility": ">=21.2.0 <22.0.0",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": ["@angular/common", "@angular/core"],
+      "optionalDependencies": [],
+      "styles": ["jrng-ui/styles"],
+      "assets": [],
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Status Chip",
@@ -5127,15 +4106,7 @@
       "entryPoint": "jrng-ui/status-chip",
       "category": "Data Display",
       "description": "Angular Status Chip component for reusable admin, dashboard, and business application interfaces.",
-      "inputs": [
-        "colorMap",
-        "label",
-        "pt",
-        "severity",
-        "size",
-        "status",
-        "styleClass"
-      ],
+      "inputs": ["colorMap", "label", "pt", "severity", "size", "status", "styleClass"],
       "outputs": [],
       "methods": [],
       "formCompatibility": "Not a form control",
@@ -5148,18 +4119,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Stepper",
@@ -5168,22 +4132,9 @@
       "entryPoint": "jrng-ui/stepper",
       "category": "Navigation and Menu",
       "description": "Angular Stepper component for reusable admin, dashboard, and business application interfaces.",
-      "inputs": [
-        "activeIndex",
-        "ariaLabel",
-        "items",
-        "linear",
-        "orientation",
-        "variant"
-      ],
-      "outputs": [
-        "activeIndexChange"
-      ],
-      "methods": [
-        "activate()",
-        "isCompleted()",
-        "isDisabled()"
-      ],
+      "inputs": ["activeIndex", "ariaLabel", "items", "linear", "orientation", "variant"],
+      "outputs": ["activeIndexChange"],
+      "methods": ["activate()", "isCompleted()", "isDisabled()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-stepper></j-stepper>",
       "importExample": "import { JStepperComponent } from 'jrng-ui/stepper';",
@@ -5194,18 +4145,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Switch",
@@ -5227,15 +4171,8 @@
         "styleClass",
         "trueValue"
       ],
-      "outputs": [
-        "valueChange"
-      ],
-      "methods": [
-        "handleBlur()",
-        "handleChange()",
-        "setDisabledState()",
-        "writeValue()"
-      ],
+      "outputs": ["valueChange"],
+      "methods": ["handleBlur()", "handleChange()", "setDisabledState()", "writeValue()"],
       "formCompatibility": "ControlValueAccessor",
       "usageExample": "<j-switch></j-switch>",
       "importExample": "import { JSwitchComponent } from 'jrng-ui/switch';",
@@ -5246,18 +4183,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Tab",
@@ -5277,10 +4207,7 @@
         "selectedIndex",
         "variant"
       ],
-      "outputs": [
-        "selectedIndexChange",
-        "tabClose"
-      ],
+      "outputs": ["selectedIndexChange", "tabClose"],
       "methods": [
         "closeTab()",
         "handleCloseKeydown()",
@@ -5298,18 +4225,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Table",
@@ -5514,18 +4434,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Tabs",
@@ -5545,10 +4458,7 @@
         "selectedIndex",
         "variant"
       ],
-      "outputs": [
-        "selectedIndexChange",
-        "tabClose"
-      ],
+      "outputs": ["selectedIndexChange", "tabClose"],
       "methods": [
         "closeTab()",
         "handleCloseKeydown()",
@@ -5566,18 +4476,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Tag",
@@ -5596,9 +4499,7 @@
         "size",
         "styleClass"
       ],
-      "outputs": [
-        "remove"
-      ],
+      "outputs": ["remove"],
       "methods": [],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-tag></j-tag>",
@@ -5610,18 +4511,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Text Expand",
@@ -5643,14 +4537,8 @@
         "showMoreLabel",
         "text"
       ],
-      "outputs": [
-        "toggle",
-        "expandedChange"
-      ],
-      "methods": [
-        "recalculate()",
-        "toggleExpanded()"
-      ],
+      "outputs": ["toggle", "expandedChange"],
+      "methods": ["recalculate()", "toggleExpanded()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-text-expand></j-text-expand>",
       "importExample": "import { JTextExpandComponent } from 'jrng-ui/text-expand';",
@@ -5661,18 +4549,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Textarea",
@@ -5705,10 +4586,7 @@
         "styleClass",
         "variant"
       ],
-      "outputs": [
-        "clear",
-        "valueChange"
-      ],
+      "outputs": ["clear", "valueChange"],
       "methods": [
         "clearValue()",
         "handleBlur()",
@@ -5726,18 +4604,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Tiered Menu",
@@ -5755,12 +4626,8 @@
         "submenuOpenDelay",
         "visible"
       ],
-      "outputs": [
-        "visibleChange"
-      ],
-      "methods": [
-        "setVisible()"
-      ],
+      "outputs": ["visibleChange"],
+      "methods": ["setVisible()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-tiered-menu></j-tiered-menu>",
       "importExample": "import { JTieredMenuComponent } from 'jrng-ui/tiered-menu';",
@@ -5771,14 +4638,9 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
       "themeRequirements": []
     },
@@ -5809,12 +4671,7 @@
         "valueInput",
         "variant"
       ],
-      "outputs": [
-        "clear",
-        "closed",
-        "opened",
-        "valueChange"
-      ],
+      "outputs": ["clear", "closed", "opened", "valueChange"],
       "methods": [
         "clearValue()",
         "close()",
@@ -5842,18 +4699,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Timeline",
@@ -5880,12 +4730,7 @@
         "variant"
       ],
       "outputs": [],
-      "methods": [
-        "handleItemKeydown()",
-        "isExpanded()",
-        "itemContext()",
-        "toggleItem()"
-      ],
+      "methods": ["handleItemKeydown()", "isExpanded()", "itemContext()", "toggleItem()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-timeline></j-timeline>",
       "importExample": "import { JTimelineComponent } from 'jrng-ui/timeline';",
@@ -5896,18 +4741,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Toast",
@@ -5916,16 +4754,9 @@
       "entryPoint": "jrng-ui/toast",
       "category": "Overlay",
       "description": "Angular Toast component for reusable admin, dashboard, and business application interfaces.",
-      "inputs": [
-        "position"
-      ],
+      "inputs": ["position"],
       "outputs": [],
-      "methods": [
-        "endSwipe()",
-        "startSwipe()",
-        "templateContext()",
-        "visibleToasts()"
-      ],
+      "methods": ["endSwipe()", "startSwipe()", "templateContext()", "visibleToasts()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-toast></j-toast>",
       "importExample": "import { JToastContainerComponent } from 'jrng-ui/toast';",
@@ -5936,18 +4767,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Toggle Button",
@@ -5969,14 +4793,8 @@
         "styleClass",
         "trueValue"
       ],
-      "outputs": [
-        "valueChange"
-      ],
-      "methods": [
-        "setDisabledState()",
-        "toggle()",
-        "writeValue()"
-      ],
+      "outputs": ["valueChange"],
+      "methods": ["setDisabledState()", "toggle()", "writeValue()"],
       "formCompatibility": "ControlValueAccessor",
       "usageExample": "<j-toggle-button></j-toggle-button>",
       "importExample": "import { JToggleButtonComponent } from 'jrng-ui/toggle-button';",
@@ -5987,18 +4805,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Toolbar",
@@ -6020,18 +4831,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Topbar",
@@ -6040,16 +4844,9 @@
       "entryPoint": "jrng-ui/topbar",
       "category": "Layout",
       "description": "Angular Topbar component for reusable admin, dashboard, and business application interfaces.",
-      "inputs": [
-        "activeKey",
-        "ariaLabel",
-        "model",
-        "showNavigation"
-      ],
+      "inputs": ["activeKey", "ariaLabel", "model", "showNavigation"],
       "outputs": [],
-      "methods": [
-        "isActive()"
-      ],
+      "methods": ["isActive()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-topbar></j-topbar>",
       "importExample": "import { JTopbarComponent } from 'jrng-ui/topbar';",
@@ -6060,18 +4857,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Tour Guide",
@@ -6080,9 +4870,7 @@
       "entryPoint": "jrng-ui/tour",
       "category": "Utilities",
       "description": "Angular Tour Guide component for reusable admin, dashboard, and business application interfaces.",
-      "inputs": [
-        "dir"
-      ],
+      "inputs": ["dir"],
       "outputs": [],
       "methods": [],
       "formCompatibility": "Not a form control",
@@ -6095,18 +4883,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Transfer List",
@@ -6130,10 +4911,7 @@
         "targetAriaLabel",
         "targetHeader"
       ],
-      "outputs": [
-        "sourceChange",
-        "targetChange"
-      ],
+      "outputs": ["sourceChange", "targetChange"],
       "methods": [
         "isSourceSelected()",
         "isTargetSelected()",
@@ -6157,18 +4935,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Tree",
@@ -6188,12 +4959,7 @@
         "styleClass",
         "value"
       ],
-      "outputs": [
-        "lazyLoad",
-        "nodeCollapse",
-        "nodeExpand",
-        "selectionChange"
-      ],
+      "outputs": ["lazyLoad", "nodeCollapse", "nodeExpand", "selectionChange"],
       "methods": [
         "filteredChildren()",
         "handleKeydown()",
@@ -6219,18 +4985,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Tree Table",
@@ -6295,18 +5054,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Validation Message",
@@ -6328,9 +5080,7 @@
         "submitted"
       ],
       "outputs": [],
-      "methods": [
-        "templateContext()"
-      ],
+      "methods": ["templateContext()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-validation-message></j-validation-message>",
       "importExample": "import { JValidationMessageComponent } from 'jrng-ui/validation-message';",
@@ -6341,18 +5091,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Video Player",
@@ -6372,15 +5115,8 @@
         "src",
         "styleClass"
       ],
-      "outputs": [
-        "ended",
-        "paused",
-        "played"
-      ],
-      "methods": [
-        "pause()",
-        "play()"
-      ],
+      "outputs": ["ended", "paused", "played"],
+      "methods": ["pause()", "play()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-video-player></j-video-player>",
       "importExample": "import { JVideoPlayerComponent } from 'jrng-ui/video-player';",
@@ -6391,18 +5127,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     },
     {
       "name": "Virtual Scroller",
@@ -6411,23 +5140,9 @@
       "entryPoint": "jrng-ui/virtual-scroller",
       "category": "Data",
       "description": "Angular Virtual Scroller component for reusable admin, dashboard, and business application interfaces.",
-      "inputs": [
-        "height",
-        "itemSize",
-        "items",
-        "lazy",
-        "loading",
-        "viewportItems"
-      ],
-      "outputs": [
-        "lazyLoad"
-      ],
-      "methods": [
-        "handleScroll()",
-        "itemContext()",
-        "scrollToIndex()",
-        "trackItem()"
-      ],
+      "inputs": ["height", "itemSize", "items", "lazy", "loading", "viewportItems"],
+      "outputs": ["lazyLoad"],
+      "methods": ["handleScroll()", "itemContext()", "scrollToIndex()", "trackItem()"],
       "formCompatibility": "Not a form control",
       "usageExample": "<j-virtual-scroller></j-virtual-scroller>",
       "importExample": "import { JVirtualScrollerComponent } from 'jrng-ui/virtual-scroller';",
@@ -6438,18 +5153,11 @@
       "angularCompatibility": ">=21.2.0 <22.0.0",
       "files": [],
       "dependencies": [],
-      "peerDependencies": [
-        "@angular/common",
-        "@angular/core"
-      ],
+      "peerDependencies": ["@angular/common", "@angular/core"],
       "optionalDependencies": [],
-      "styles": [
-        "jrng-ui/styles"
-      ],
+      "styles": ["jrng-ui/styles"],
       "assets": [],
-      "themeRequirements": [
-        "JRNG semantic tokens"
-      ]
+      "themeRequirements": ["JRNG semantic tokens"]
     }
   ]
 }

@@ -10,10 +10,11 @@ import { JFocusTrapDirective } from 'jrng-ui/core';
 import { JRNG_LOCALE } from 'jrng-ui/core';
 import { JPopoverComponent } from 'jrng-ui/popover';
 import { JConfirmationService } from 'jrng-ui/confirm-dialog';
+import { JButtonComponent } from 'jrng-ui/button';
 
 @Component({
   selector: 'j-confirm-popup',
-  imports: [JPopoverComponent, JFocusTrapDirective],
+  imports: [JPopoverComponent, JFocusTrapDirective, JButtonComponent],
   template: `
     @if (popupConfirmation(); as confirmation) {
       <j-popover
@@ -48,16 +49,19 @@ import { JConfirmationService } from 'jrng-ui/confirm-dialog';
             </p>
           }
           <footer class="j-confirm-popup__footer" data-jc-section="footer">
-            <button class="j-confirm-popup__button" type="button" (click)="reject()">
-              {{ confirmation.rejectLabel || locale.cancel }}
-            </button>
-            <button
-              class="j-confirm-popup__button j-confirm-popup__button--accept"
-              type="button"
-              (click)="accept()"
-            >
-              {{ confirmation.acceptLabel || locale.accept }}
-            </button>
+            <j-button
+              size="sm"
+              variant="outlined"
+              [severity]="confirmation.rejectButtonSeverity || 'secondary'"
+              [label]="confirmation.rejectLabel || locale.cancel"
+              (onClick)="reject()"
+            />
+            <j-button
+              size="sm"
+              [severity]="confirmation.acceptButtonSeverity || confirmation.severity || 'primary'"
+              [label]="confirmation.acceptLabel || locale.accept"
+              (onClick)="accept()"
+            />
           </footer>
         </section>
       </j-popover>

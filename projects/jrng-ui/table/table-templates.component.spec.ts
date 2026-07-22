@@ -38,7 +38,9 @@ interface OrderRow {
         <strong class="custom-cell">{{ row.customer }}: {{ value }}</strong>
       </ng-template>
       <ng-template [jTableFilter]="columns[2]" let-apply="apply">
-        <j-button class="custom-filter" variant="text" (onClick)="apply('Ready')">Ready only</j-button>
+        <j-button class="custom-filter" variant="text" (onClick)="apply('Ready')"
+          >Ready only</j-button
+        >
       </ng-template>
       <ng-template [jTableActions]="columns[3]" let-row>
         <j-button class="custom-action" variant="text">Open {{ row.id }}</j-button>

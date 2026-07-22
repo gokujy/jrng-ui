@@ -121,7 +121,7 @@ The visible value is produced by `Intl.NumberFormat`; the form value remains an 
 
 ```html
 <j-input-mask
-  label="Reference code"
+  label="Tracking code"
   mask="AAA-9999"
   [formControl]="referenceCode"
   hint="Mask enforcement is pending"

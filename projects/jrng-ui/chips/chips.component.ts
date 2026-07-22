@@ -195,7 +195,8 @@ export class JChipsComponent implements ControlValueAccessor {
   readonly severity = input<JSeverity>('neutral');
   readonly variant = input<JChipVariant>('soft');
 
-  readonly itemTemplate = contentChild<TemplateRef<{ $implicit: JChipItem; index: number }>>('item');
+  readonly itemTemplate =
+    contentChild<TemplateRef<{ $implicit: JChipItem; index: number }>>('item');
 
   readonly valueChange = output<readonly JChipItem[]>();
   readonly add = output<JChipItem>();

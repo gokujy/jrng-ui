@@ -81,7 +81,7 @@ Data Display renders detail rows consistently in cards, tables, summaries, and a
 ### Code
 
 ```html
-<j-data-display label="Invoice amount" type="currency" [value]="invoice.total" currency="INR" />
+<j-data-display label="Order total" type="currency" [value]="order.total" currency="INR" />
 <j-data-display label="Status" type="status" [value]="invoice.status" [statusMap]="statusMap" />
 <j-data-display label="Owner" type="email" [value]="invoice.ownerEmail" [copy]="true" />
 ```

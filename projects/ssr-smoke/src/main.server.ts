@@ -4,8 +4,12 @@ import { provideJrngUI } from 'jrng-ui/core';
 import { SsrAppComponent } from './app.component';
 
 const bootstrap = (context: BootstrapContext) =>
-  bootstrapApplication(SsrAppComponent, {
-    providers: [provideServerRendering(), provideJrngUI({ appendTo: 'body' })],
-  }, context);
+  bootstrapApplication(
+    SsrAppComponent,
+    {
+      providers: [provideServerRendering(), provideJrngUI({ appendTo: 'body' })],
+    },
+    context,
+  );
 
 export default bootstrap;

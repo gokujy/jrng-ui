@@ -84,7 +84,7 @@ import { JAvatarComponent } from 'jrng-ui/avatar';
 
 ```html
 <j-avatar label="User One" initials="UO" />
-<j-avatar image="/assets/user.jpg" ariaLabel="User profile" size="lg" status="online" />
+<j-avatar image="/assets/user.jpg" ariaLabel="Account avatar" size="lg" status="online" />
 ```
 
 ## Avatar Group

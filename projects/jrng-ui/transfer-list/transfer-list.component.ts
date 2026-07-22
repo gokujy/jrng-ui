@@ -63,7 +63,15 @@ export type JTransferListResponsiveMode = 'auto' | 'stack' | 'none';
           (onClick)="moveSelectedToTarget()"
           [disabled]="!sourceSelected().length"
         />
-        <j-button label="Move all" icon="chevron-right" actionDisplay="icon" ariaLabel="Move all to target" title="Move all to target" (onClick)="moveAllToTarget()" [disabled]="!source().length" />
+        <j-button
+          label="Move all"
+          icon="chevron-right"
+          actionDisplay="icon"
+          ariaLabel="Move all to target"
+          title="Move all to target"
+          (onClick)="moveAllToTarget()"
+          [disabled]="!source().length"
+        />
         <j-button
           label="Remove selected"
           icon="chevron-left"
@@ -73,7 +81,15 @@ export type JTransferListResponsiveMode = 'auto' | 'stack' | 'none';
           (onClick)="moveSelectedToSource()"
           [disabled]="!targetSelected().length"
         />
-        <j-button label="Remove all" icon="chevron-left" actionDisplay="icon" ariaLabel="Move all to source" title="Move all to source" (onClick)="moveAllToSource()" [disabled]="!target().length" />
+        <j-button
+          label="Remove all"
+          icon="chevron-left"
+          actionDisplay="icon"
+          ariaLabel="Move all to source"
+          title="Move all to source"
+          (onClick)="moveAllToSource()"
+          [disabled]="!target().length"
+        />
       </div>
       <div class="j-transfer-list__pane" data-jc-section="target">
         <header>{{ targetHeader() }}</header>
@@ -99,8 +115,24 @@ export type JTransferListResponsiveMode = 'auto' | 'stack' | 'none';
           }
         </div>
         <div class="j-transfer-list__reorder" aria-label="Target ordering">
-          <j-button variant="text" actionDisplay="icon" icon="chevron-up" ariaLabel="Move selected target items up" title="Move selected target items up" (onClick)="reorderTarget(-1)" [disabled]="!targetSelected().length" />
-          <j-button variant="text" actionDisplay="icon" icon="chevron-down" ariaLabel="Move selected target items down" title="Move selected target items down" (onClick)="reorderTarget(1)" [disabled]="!targetSelected().length" />
+          <j-button
+            variant="text"
+            actionDisplay="icon"
+            icon="chevron-up"
+            ariaLabel="Move selected target items up"
+            title="Move selected target items up"
+            (onClick)="reorderTarget(-1)"
+            [disabled]="!targetSelected().length"
+          />
+          <j-button
+            variant="text"
+            actionDisplay="icon"
+            icon="chevron-down"
+            ariaLabel="Move selected target items down"
+            title="Move selected target items down"
+            (onClick)="reorderTarget(1)"
+            [disabled]="!targetSelected().length"
+          />
         </div>
       </div>
     </section>
@@ -156,10 +188,22 @@ export type JTransferListResponsiveMode = 'auto' | 'stack' | 'none';
         display: grid;
         gap: var(--j-spacing-xs);
       }
-      .j-transfer-list__reorder { display: flex; gap: var(--j-spacing-xs); justify-content: flex-end; }
-      .j-transfer-list--stacked { grid-template-columns: minmax(0, 1fr); }
-      .j-transfer-list--stacked .j-transfer-list__actions { display: flex; flex-wrap: wrap; justify-content: center; }
-      .j-transfer-list--stacked .j-transfer-list__pane { width: 100%; }
+      .j-transfer-list__reorder {
+        display: flex;
+        gap: var(--j-spacing-xs);
+        justify-content: flex-end;
+      }
+      .j-transfer-list--stacked {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .j-transfer-list--stacked .j-transfer-list__actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .j-transfer-list--stacked .j-transfer-list__pane {
+        width: 100%;
+      }
       .j-transfer-list__actions button {
         border: 1px solid var(--j-color-border);
         border-radius: var(--j-radius-sm);
@@ -221,19 +265,25 @@ export class JTransferListComponent {
     this.filterOptions(this.normalizedTarget(), this.targetFilter()),
   );
 
-  readonly rootClasses = computed(() => [
-    'j-transfer-list',
-    this.responsiveMode() === 'stack' || (this.responsiveMode() === 'auto' && this.stacked())
-      ? 'j-transfer-list--stacked'
-      : '',
-  ].filter(Boolean).join(' '));
+  readonly rootClasses = computed(() =>
+    [
+      'j-transfer-list',
+      this.responsiveMode() === 'stack' || (this.responsiveMode() === 'auto' && this.stacked())
+        ? 'j-transfer-list--stacked'
+        : '',
+    ]
+      .filter(Boolean)
+      .join(' '),
+  );
 
   constructor() {
     if (!this.isBrowser || typeof ResizeObserver === 'undefined') return;
     afterNextRender(() => {
       const observer = new ResizeObserver(([entry]) => {
         const threshold = Number.parseFloat(this.breakpoint()) || 768;
-        this.stacked.set((entry?.contentRect.width ?? this.host.nativeElement.clientWidth) <= threshold);
+        this.stacked.set(
+          (entry?.contentRect.width ?? this.host.nativeElement.clientWidth) <= threshold,
+        );
       });
       observer.observe(this.host.nativeElement);
       this.destroyRef.onDestroy(() => observer.disconnect());

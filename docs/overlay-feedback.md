@@ -30,15 +30,14 @@ provideJrngUI({ appendTo: 'body', zIndex: { modal: 2000, popover: 2100 } });
 ```
 
 ```html
-<j-select appendTo="#workspace-overlays" />
-<j-popover [appendTo]="overlayElement" />
+<j-select appendTo="#workspace-overlays" /> <j-popover [appendTo]="overlayElement" />
 ```
 
 ## j-dialog
 
 ```html
 <j-dialog
-  header="Edit invoice"
+  header="Update payment"
   [(visible)]="dialogVisible"
   size="lg"
   position="center"
@@ -102,7 +101,7 @@ Use the service:
 
 ```ts
 toast.success('Customer saved', 'Saved');
-toast.error('Upload failed', 'Error', { life: 8000 });
+toast.error('File could not be uploaded', 'Error', { life: 8000 });
 toast.show({
   severity: 'info',
   summary: 'Report ready',

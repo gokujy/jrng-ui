@@ -656,7 +656,7 @@ teams = [
     whenToUse: 'Use Button when the user intentionally performs an action.',
     code: {
       importCode: `import { JButtonComponent } from 'jrng-ui/button';`,
-      basic: `<j-button label="Save changes"></j-button>`,
+      basic: `<j-button label="Apply updates"></j-button>`,
       variants: `<j-button label="Primary"></j-button>
 <j-button label="Secondary" severity="secondary"></j-button>
 <j-button label="Outline" variant="outlined"></j-button>
@@ -795,7 +795,7 @@ teams = [
     whenToUse: 'Groups one coherent content region and its related actions.',
     code: {
       importCode: `import { JCardComponent } from 'jrng-ui/card';`,
-      basic: `<j-card header="Order summary" subheader="Current month">
+      basic: `<j-card header="Order summary" subheader="This month">
   <p>42 orders created.</p>
 </j-card>`,
       variants: `<j-card header="Elevated" variant="elevated"></j-card>
@@ -920,7 +920,7 @@ teams = [
       basic: `<j-transfer-list
   [(source)]="availableFields"
   [(target)]="selectedFields"
-  sourceHeader="Available fields"
+  sourceHeader="Fields to add"
   targetHeader="Report columns"
   filter
 />`,
@@ -928,8 +928,8 @@ teams = [
       angular: `availableFields = [
   { label: 'Customer', value: 'customer' },
   { label: 'Status', value: 'status' },
-  { label: 'Created date', value: 'createdAt' },
-  { label: 'Internal notes', value: 'notes', disabled: true }
+  { label: 'Date added', value: 'createdAt' },
+  { label: 'Private notes', value: 'notes', disabled: true }
 ];
 
 selectedFields = [
@@ -2149,7 +2149,15 @@ items = [
 ];`,
     },
     usage: ['Use inline for navigation or popup mode for contextual commands.'],
-    variants: ['inline', 'popup', 'nested submenu', 'separator', 'badge', 'shortcut', 'destructive'],
+    variants: [
+      'inline',
+      'popup',
+      'nested submenu',
+      'separator',
+      'badge',
+      'shortcut',
+      'destructive',
+    ],
     sizes: ['Menu items use standard compact action sizing.'],
     states: ['focused', 'disabled', 'open submenu', 'popup visible'],
     inputs: [
@@ -2665,7 +2673,7 @@ export class DashboardComponent {
   { title: 'Created', content: 'Order was created.', opposite: '09:00', severity: 'info' },
   { title: 'Updated', content: 'Customer address changed.', opposite: '09:30', icon: 'U' },
   { title: 'Approved', content: 'Manager approved it.', opposite: '10:15', severity: 'success' },
-  { title: 'File uploaded', content: 'statement.pdf was attached.', opposite: '10:40', color: '#7c3aed' }
+  { title: 'Attachment ready', content: 'sample-report.pdf is available.', opposite: '10:40', color: '#7c3aed' }
 ];`,
     },
     usage: ['Use for audit trails, fulfillment progress, approvals, and release history.'],
@@ -2703,7 +2711,7 @@ export class DashboardComponent {
     code: {
       importCode: `import { JFileBrowserComponent, JFileBrowserItem } from 'jrng-ui/file-browser';`,
       basic: `<j-file-browser
-  title="Client documents"
+  title="Shared files"
   [items]="files"
   [breadcrumbs]="path"
   [selection]="selectedIds"
@@ -2730,7 +2738,9 @@ path = [
 
 selectedIds: string[] = ['file-2'];`,
     },
-    usage: ['Connect events to Google Drive, S3, REST, IndexedDB, or any application data source.'],
+    usage: [
+      'Connect events to a cloud provider, object store, browser database, or any application data source.',
+    ],
     variants: [
       'default full explorer',
       'compact admin list',
@@ -2765,7 +2775,7 @@ selectedIds: string[] = ['file-2'];`,
       'Arrow keys move between items, Enter opens, Space selects, selection changes are announced, and breadcrumbs expose the current page.',
     ],
     bestPractices: [
-      'Keep storage APIs and permissions in the consuming application; provide only display data and handle emitted intentions.',
+      'Keep storage APIs and permissions in the consuming application; render only supplied metadata and handle emitted intentions.',
     ],
   },
   {
@@ -3008,7 +3018,7 @@ const generatedFallbackExamples: Readonly<Record<string, string>> = {
   'dynamic-dialog': `<j-dynamic-dialog></j-dynamic-dialog>`,
   'error-page': `<j-error-page title="Something went wrong" statusCode="500"></j-error-page>`,
   'file-preview': `<j-file-preview fileName="report.pdf" [fileSize]="245760" description="Uploaded recently"></j-file-preview>`,
-  'form-field': `<j-form-field label="Email" hint="Use a work email address.">
+  'form-field': `<j-form-field label="Email" hint="Use a monitored inbox.">
   <j-input type="email"></j-input>
 </j-form-field>`,
   gantt: `<j-gantt [tasks]="tasks"></j-gantt>`,
@@ -3077,9 +3087,7 @@ const createGeneratedBasicExample = (
   return `<${record.selector} />`;
 };
 
-const generatedDisplayNames: Readonly<Record<string, string>> = {
-  combobox: 'Searchable Select',
-};
+const generatedDisplayNames: Readonly<Record<string, string>> = {};
 
 const generatedInputDocs: Readonly<Record<string, readonly DocsApiRow[]>> = {
   avatar: [
@@ -3143,7 +3151,7 @@ const exampleValueOverrides: Readonly<Record<string, string>> = {
   availableItems: `[
   { label: 'Customer', value: 'customer' },
   { label: 'Status', value: 'status' },
-  { label: 'Created date', value: 'createdAt' }
+  { label: 'Date added', value: 'createdAt' }
 ]`,
   availableTasks: `[
   { label: 'Review proposal', value: 'review' },

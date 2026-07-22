@@ -79,7 +79,7 @@ A side-by-side object comparison masks sensitive values without mutating source 
 />
 ```
 
-## Approval workflow
+## Review sequence
 
 ### Preview
 

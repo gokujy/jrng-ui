@@ -364,7 +364,7 @@ describe('JTableComponent', () => {
     expect(csv).toContain('REC-3,Record Gamma,300');
   });
 
-  it('applies enterprise table config', () => {
+  it('applies comprehensive table settings', () => {
     const table = fixture.debugElement.query(By.directive(JTableComponent))
       .componentInstance as JTableComponent;
     const config: JTableConfig = {

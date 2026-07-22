@@ -5,4 +5,3 @@ JRNG form controls implement the Angular ControlValueAccessor contract with a si
 Values and collections are copied before mutation. Readonly permits focus and selection while preventing edits; disabled removes activation and is controlled by both the input and Forms API. Controls expose typed `valueChange` only for intentional user changes and integrate with Form Field and Validation Message through IDs, described-by relationships, invalid state, and projected messages.
 
 Focus work is browser-guarded. No CVA requires Zone.js or mutates caller-owned arrays or objects.
-

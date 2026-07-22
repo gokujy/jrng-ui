@@ -21,14 +21,14 @@ import { JFocusTrapDirective } from 'jrng-ui/core';
 import { jCreateId } from 'jrng-ui/core';
 import { JAppendTo, JOverlayHandle, JOverlayService, JOverlayStackService } from 'jrng-ui/core';
 import { JZIndexManagerService } from 'jrng-ui/core';
-import { JButtonComponent } from 'jrng-ui/button';
+import { JInternalOverlayHeaderComponent } from 'jrng-ui/overlay-header';
 
 export type JDrawerPosition = 'left' | 'right' | 'top' | 'bottom';
 export type JDrawerCloseReason = 'close-button' | 'backdrop' | 'escape' | 'gesture' | 'api';
 
 @Component({
   selector: 'j-drawer',
-  imports: [JFocusTrapDirective, JButtonComponent],
+  imports: [JFocusTrapDirective, JInternalOverlayHeaderComponent],
   template: `
     @if (visible()) {
       <div
@@ -73,23 +73,19 @@ export type JDrawerCloseReason = 'close-button' | 'backdrop' | 'escape' | 'gestu
             ></button>
           }
           @if (header() || closable()) {
-            <header class="j-drawer__header" data-jc-section="header">
-              @if (header()) {
-                <h2 class="j-drawer__title" [id]="titleId">{{ header() }}</h2>
-              }
-              <ng-content select="[jDrawerHeader]"></ng-content>
-              @if (closable()) {
-                <j-button
-                  styleClass="j-drawer__close"
-                  variant="text"
-                  actionDisplay="icon"
-                  icon="close"
-                  ariaLabel="Close drawer"
-                  title="Close drawer"
-                  (onClick)="close('close-button')"
-                />
-              }
-            </header>
+            <j-overlay-header
+              [title]="header()"
+              [titleId]="titleId"
+              [subtitle]="subtitle()"
+              [closable]="closable()"
+              [dense]="denseHeader()"
+              closeLabel="Close drawer"
+              closeStyleClass="j-drawer__close"
+              (close)="close('close-button')"
+            >
+              <span jOverlayHeader><ng-content select="[jDrawerHeader]"></ng-content></span>
+              <span jOverlayActions><ng-content select="[jDrawerActions]"></ng-content></span>
+            </j-overlay-header>
           }
           <div class="j-drawer__body" data-jc-section="body"><ng-content></ng-content></div>
           <footer class="j-drawer__footer" data-jc-section="footer">
@@ -251,6 +247,8 @@ export class JDrawerComponent {
 
   readonly visible = model(false);
   readonly header = input('');
+  readonly subtitle = input('');
+  readonly denseHeader = input(false, { transform: booleanAttribute });
   readonly position = input<JDrawerPosition>('right');
   readonly width = input('');
   readonly height = input('');
