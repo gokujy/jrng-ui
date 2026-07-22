@@ -19,7 +19,7 @@
 - Normalized public classes to `J...`, selectors to `j-...`, action events, property responsibilities, and narrow variant families.
 - Consolidated duplicate component responsibilities and internal implementations across cards, loading, transfers, overlays, tables, selects, forms, images, and file interactions.
 - Made responsive preview controls opt-in and synchronized component/example routing, history, scroll position, heading focus, navigation selection, and mobile navigation state.
-- Updated Table/Data Grid scrolling, final saved state, filtering axes, Transfer List responsiveness, Float Label state detection, Password visibility, Chips severity, Gallery transitions, Grid gaps, Avatar preview, and File Preview actions.
+- Updated Table/Data Grid scrolling, final saved state, filtering axes, Transfer List responsiveness, unified Label state detection, Password visibility, Chips severity, Gallery transitions, Grid gaps, Avatar preview, and File Preview actions.
 - Standardized Table toolbar, filter, row expansion, row locking, and action-menu controls on JRNG Button and Tooltip primitives.
 - Standardized Dialog, Dynamic Dialog, Drawer, Bottom Sheet, Confirm Dialog, and image-viewer headings on one internal overlay-header action pattern with JRNG Button and Tooltip close actions.
 
@@ -69,11 +69,11 @@ This is an intentional breaking reset of the pre-stable API. Removed declaration
 ### Fixes
 
 - Preserved and sanitized Editor values written before view initialization, including `ngModel`, Reactive Forms, resets, disabled updates, text mode, and HTML mode.
-- Implemented locale-aware Input Number formatting/parsing, OTP placeholders and navigation, Combobox variants, File Upload custom-mode state, validation limits, and Table frozen rows.
+- Implemented locale-aware Input Number formatting/parsing, OTP placeholders and navigation, Select search/filter variants, File Upload custom-mode state, validation limits, and Table frozen rows.
 
 ### Accessibility
 
-- Removed nested interactive controls from Select, Date Range Picker, Time Picker, and Tabs; clear and close actions now have separate semantic buttons and focus targets.
+- Removed nested interactive controls from Select, Date Picker range mode, Time Picker, and Tabs; clear and close actions now have separate semantic buttons and focus targets.
 - Added OTP position labels, localized upload controls, accessible validation announcements, visible focus, RTL navigation, and reduced-motion configuration behavior.
 
 ### SSR
@@ -121,6 +121,15 @@ This is an intentional breaking reset of the pre-stable API. Removed declaration
 ### Migration notes
 
 - Existing form models remain numeric for Input Number and string/HTML for Editor. See `docs/migration-0.0.9.md` for upload-mode and sanitization details.
+
+### Breaking changes
+
+- **Activity Feed**, **Approval Flow**, **Audit Log**, and **Navigation Progress** were removed without compatibility aliases. Compose the same application-specific experiences from Timeline or list content, Stepper, Table or Diff Viewer, and operation-scoped Progress Bar or Progress Spinner primitives as appropriate.
+- **Date Range Picker** was removed. Import Date Picker from `jrng-ui/date-picker` and set `selectionMode="range"`.
+- **Float Label** was removed. Import the unified `j-label` component from `jrng-ui/label` and use `variant="floating"`.
+- **Input Icon** was removed. Compose inputs with Icon Field from `jrng-ui/icon-field`.
+- **Searchable Select** and **JCombobox** were removed. Use Select from `jrng-ui/select` with `searchable`, `filter`, async data, or virtual scrolling as needed.
+- **Dashboard Layout**, **Sidebar Layout**, and **Stack** were removed without replacement public components. Build layouts with normal CSS Grid or Flexbox and existing Card, Panel, Drawer, Sidebar, and other layout primitives.
 
 ## 0.0.8
 

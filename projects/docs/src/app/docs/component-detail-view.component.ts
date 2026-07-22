@@ -381,7 +381,7 @@ const TEXT_EXPAND_FEATURE_EXAMPLES = [
   {
     key: 'comment',
     name: 'Reviewer note',
-    details: 'Collapse long discussion content in activity feeds.',
+    details: 'Collapse long discussion content in event streams.',
     html: `<j-text-expand [text]="comment" [collapsedLength]="80" />`,
   },
   {
@@ -2058,11 +2058,11 @@ const CARD_FEATURE_EXAMPLES = [
                       }
                       @case ('label') {
                         <j-label
-                          label="Reply-to inbox"
-                          variant="in-field"
+                          label="Email address"
+                          variant="floating"
                           description="We use this for account notices."
                         >
-                          <j-input type="email" value="avery@example.com" width="full" />
+                          <j-input type="email" [(ngModel)]="labeledEmail" width="full" />
                         </j-label>
                       }
                       @case ('form-field') {
@@ -2074,8 +2074,18 @@ const CARD_FEATURE_EXAMPLES = [
                         </j-form-field>
                       }
                       @case ('icon-field') {
-                        <j-icon-field prefixIcon="search" suffixIcon="filter" fullWidth>
-                          <j-input placeholder="Search projects" width="full" />
+                        <j-icon-field
+                          prefixIcon="search"
+                          clearable
+                          fullWidth
+                          ariaLabel="Project search"
+                          (clear)="iconFieldSearch = ''"
+                        >
+                          <j-input
+                            placeholder="Search projects"
+                            [(ngModel)]="iconFieldSearch"
+                            width="full"
+                          />
                         </j-icon-field>
                       }
                       @case ('input-group') {
@@ -3588,7 +3598,8 @@ export class ComponentDetailViewComponent {
       end: new Date(2026, 6, 31),
     },
   ];
-  floatEmail = 'avery@example.com';
+  labeledEmail = 'avery@example.com';
+  iconFieldSearch = '';
   quantity = 3;
   budget = 2500;
   otp = '';
