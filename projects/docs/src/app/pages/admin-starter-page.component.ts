@@ -25,12 +25,13 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
       </ul>
     </section>
     <section class="docs-section">
-      <h2>Run from this workspace</h2>
-      <pre class="docs-code"><code>npm run build:lib
-npx ng serve admin-starter</code></pre>
+      <h2>Use the standalone template</h2>
+      <pre class="docs-code"><code>cd admin-starter
+npm install
+npm start</code></pre>
       <p>
-        Source: <code>projects/admin-starter</code>. The folder is designed to move into a dedicated
-        public repository later.
+        The Admin Starter is maintained as a separate project under the JRNG templates collection.
+        Install JRNG UI from npm, then customize the mock services and routes for your application.
       </p>
     </section>
   </div>`,

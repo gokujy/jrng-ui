@@ -13,6 +13,7 @@
 
 ### Changed
 
+- Moved the Admin Starter out of the library workspace into the standalone JRNG templates collection, with independent Angular build, test, lint, and dependency configuration.
 - Merged Date Range Picker into Date Picker range mode, Combobox into Select searchable/async modes, Float/Ifta Label into `j-label`, Image Preview into `j-image`, and Empty Page into `j-empty` page variants.
 - Replaced the Driver.js adapter with a native, SSR-safe JRNG Tour Guide supporting placement, progress, async targets, lifecycle hooks, persistence, keyboard control, focus restoration and cleanup.
 - Normalized public classes to `J...`, selectors to `j-...`, action events, property responsibilities, and narrow variant families.
