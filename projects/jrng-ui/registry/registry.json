@@ -243,6 +243,39 @@
       ]
     },
     {
+      "name": "Activity Feed",
+      "selector": "j-activity-feed",
+      "importPath": "jrng-ui/activity-feed",
+      "entryPoint": "jrng-ui/activity-feed",
+      "category": "Uncategorized",
+      "description": "Angular Activity Feed component for reusable admin, dashboard, and business application interfaces.",
+      "inputs": [],
+      "outputs": [],
+      "methods": [],
+      "formCompatibility": "Not a form control",
+      "usageExample": "<j-activity-feed></j-activity-feed>",
+      "importExample": "import { JActivityFeedComponent } from 'jrng-ui/activity-feed';",
+      "documentationUrl": "https://jrngui.dev/docs/components#activity-feed",
+      "status": "Basic",
+      "stability": "beta",
+      "sinceVersion": null,
+      "angularCompatibility": ">=21.2.0 <22.0.0",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ]
+    },
+    {
       "name": "App Shell",
       "selector": "j-app-shell",
       "importPath": "jrng-ui/app-shell",
@@ -266,6 +299,83 @@
       "usageExample": "<j-app-shell></j-app-shell>",
       "importExample": "import { JAppShellComponent } from 'jrng-ui/app-shell';",
       "documentationUrl": "https://jrngui.dev/docs/components#app-shell",
+      "status": "Basic",
+      "stability": "beta",
+      "sinceVersion": null,
+      "angularCompatibility": ">=21.2.0 <22.0.0",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ]
+    },
+    {
+      "name": "Approval Flow",
+      "selector": "j-approval-flow",
+      "importPath": "jrng-ui/approval-flow",
+      "entryPoint": "jrng-ui/approval-flow",
+      "category": "Uncategorized",
+      "description": "Angular Approval Flow component for reusable admin, dashboard, and business application interfaces.",
+      "inputs": [],
+      "outputs": [],
+      "methods": [],
+      "formCompatibility": "Not a form control",
+      "usageExample": "<j-approval-flow></j-approval-flow>",
+      "importExample": "import { JApprovalFlowComponent } from 'jrng-ui/approval-flow';",
+      "documentationUrl": "https://jrngui.dev/docs/components#approval-flow",
+      "status": "Basic",
+      "stability": "beta",
+      "sinceVersion": null,
+      "angularCompatibility": ">=21.2.0 <22.0.0",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ]
+    },
+    {
+      "name": "Audit Log",
+      "selector": "j-audit-log",
+      "importPath": "jrng-ui/audit-log",
+      "entryPoint": "jrng-ui/audit-log",
+      "category": "Uncategorized",
+      "description": "Angular Audit Log component for reusable admin, dashboard, and business application interfaces.",
+      "inputs": [
+        "emptyMessage",
+        "error",
+        "items",
+        "layout",
+        "lazy",
+        "loading",
+        "pageSize",
+        "searchLabel"
+      ],
+      "outputs": [
+        "loadMore"
+      ],
+      "methods": [],
+      "formCompatibility": "Not a form control",
+      "usageExample": "<j-audit-log></j-audit-log>",
+      "importExample": "import { JAuditLogComponent } from 'jrng-ui/audit-log';",
+      "documentationUrl": "https://jrngui.dev/docs/components#audit-log",
       "status": "Basic",
       "stability": "beta",
       "sinceVersion": null,
@@ -3988,6 +4098,39 @@
       "importExample": "import { JMultiselectComponent } from 'jrng-ui/multiselect';",
       "documentationUrl": "https://jrngui.dev/docs/components#multiselect",
       "status": "Complete",
+      "stability": "beta",
+      "sinceVersion": null,
+      "angularCompatibility": ">=21.2.0 <22.0.0",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ]
+    },
+    {
+      "name": "Navigation Progress",
+      "selector": "j-navigation-progress",
+      "importPath": "jrng-ui/navigation-progress",
+      "entryPoint": "jrng-ui/navigation-progress",
+      "category": "Uncategorized",
+      "description": "Angular Navigation Progress component for reusable admin, dashboard, and business application interfaces.",
+      "inputs": [],
+      "outputs": [],
+      "methods": [],
+      "formCompatibility": "Not a form control",
+      "usageExample": "<j-navigation-progress></j-navigation-progress>",
+      "importExample": "import { JNavigationProgressComponent } from 'jrng-ui/navigation-progress';",
+      "documentationUrl": "https://jrngui.dev/docs/components#navigation-progress",
+      "status": "Basic",
       "stability": "beta",
       "sinceVersion": null,
       "angularCompatibility": ">=21.2.0 <22.0.0",

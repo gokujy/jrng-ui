@@ -4,17 +4,17 @@ Generated from the 0.1.0 canonical build declarations.
 
 | Metric                                   | Total |
 | ---------------------------------------- | ----: |
-| Total public components                  |   122 |
-| Components with documentation            |   122 |
+| Total public components                  |   126 |
+| Components with documentation            |   126 |
 | Components with working preview          |   122 |
-| Components with API reference            |   122 |
-| Components with examples                 |   122 |
-| Components with direct tests             |   122 |
-| Components with accessibility validation |   122 |
-| Components with responsive examples      |    80 |
-| Responsive examples not applicable       |    42 |
-| Components with theme-token coverage     |   122 |
-| Components remaining incomplete          |     0 |
+| Components with API reference            |   126 |
+| Components with examples                 |   126 |
+| Components with direct tests             |   126 |
+| Components with accessibility validation |   126 |
+| Components with responsive examples      |    83 |
+| Responsive examples not applicable       |    43 |
+| Components with theme-token coverage     |   126 |
+| Components remaining incomplete          |     4 |
 
 | Component           | Selector              | Import                      | Category                  | Stability | Preview  | Tests  | Accessibility |
 | ------------------- | --------------------- | --------------------------- | ------------------------- | --------- | -------- | ------ | ------------- |
@@ -23,7 +23,10 @@ Generated from the 0.1.0 canonical build declarations.
 | Accordion Header    | j-accordion-header    | jrng-ui/accordion           | Navigation and Menu       | beta      | rendered | direct | validated     |
 | Accordion Panel     | j-accordion-panel     | jrng-ui/accordion           | Navigation and Menu       | beta      | rendered | direct | validated     |
 | Action Menu         | j-action-menu         | jrng-ui/table               | Data                      | stable    | rendered | direct | validated     |
+| Activity Feed       | j-activity-feed       | jrng-ui/activity-feed       | Uncategorized             | beta      | missing  | direct | validated     |
 | App Shell           | j-app-shell           | jrng-ui/app-shell           | Layout                    | beta      | rendered | direct | validated     |
+| Approval Flow       | j-approval-flow       | jrng-ui/approval-flow       | Uncategorized             | beta      | missing  | direct | validated     |
+| Audit Log           | j-audit-log           | jrng-ui/audit-log           | Uncategorized             | beta      | missing  | direct | validated     |
 | Auth Layout         | j-auth-layout         | jrng-ui/auth-layout         | Layout                    | beta      | rendered | direct | validated     |
 | Autocomplete        | j-autocomplete        | jrng-ui/autocomplete        | Forms                     | beta      | rendered | direct | validated     |
 | Avatar              | j-avatar              | jrng-ui/avatar              | Data Display              | beta      | rendered | direct | validated     |
@@ -92,6 +95,7 @@ Generated from the 0.1.0 canonical build declarations.
 | Menubar             | j-menubar             | jrng-ui/menubar             | Navigation and Menu       | beta      | rendered | direct | validated     |
 | Meter Group         | j-meter-group         | jrng-ui/meter-group         | Data Display              | beta      | rendered | direct | validated     |
 | Multiselect         | j-multiselect         | jrng-ui/multiselect         | Forms                     | beta      | rendered | direct | validated     |
+| Navigation Progress | j-navigation-progress | jrng-ui/navigation-progress | Uncategorized             | beta      | missing  | direct | validated     |
 | Notification Center | j-notification-center | jrng-ui/notification-center | Overlay                   | beta      | rendered | direct | validated     |
 | Order List          | j-order-list          | jrng-ui/order-list          | Data                      | beta      | rendered | direct | validated     |
 | Org Chart           | j-org-chart           | jrng-ui/org-chart           | Scheduling & Productivity | beta      | rendered | direct | validated     |
