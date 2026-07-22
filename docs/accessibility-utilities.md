@@ -46,7 +46,7 @@ Use `.j-hidden-focusable` for visually hidden content that should become visible
 - `PageDown`
 - `Tab`
 
-Lowercase aliases are kept for compatibility with existing code.
+Public utility names follow the final `J...` naming convention.
 
 ## Focus Helpers
 

@@ -1,10 +1,6 @@
 export * from './table.component';
 export * from './table.types';
-export * from './column.component';
+export * from './table-data';
 export * from './table-template.directive';
-export * from './sort-icon.component';
 export * from './column-filter.component';
 export * from './action-menu.component';
-export * from './table-skeleton.component';
-export * from './table-empty-state.component';
-export { JTableComponent as TableComponent } from './table.component';

@@ -40,6 +40,46 @@ describe('App', () => {
     expect(sidebar?.textContent).toContain('Charts');
   });
 
+  it('nests the searchable component catalog under Components', async () => {
+    const router = TestBed.inject(Router);
+    const fixture = TestBed.createComponent(App);
+    await router.navigateByUrl('/docs/components#table');
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const compiled = fixture.nativeElement as HTMLElement;
+    const catalog = compiled.querySelector('#docs-component-catalog');
+
+    expect(catalog).not.toBeNull();
+    expect(catalog?.querySelector('input[type="search"]')).not.toBeNull();
+    expect(catalog?.textContent).toContain('Data & Tables');
+    expect(catalog?.querySelector('a.is-active')?.textContent?.trim()).toBe('Table');
+    expect(compiled.querySelector('.j-components-sidebar')).toBeNull();
+  });
+
+  it('allows component categories to be collapsed', async () => {
+    const router = TestBed.inject(Router);
+    const fixture = TestBed.createComponent(App);
+    await router.navigateByUrl('/docs/components#table');
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const compiled = fixture.nativeElement as HTMLElement;
+    const categoryButton = compiled.querySelector<HTMLButtonElement>(
+      '.docs-component-catalog__group h3 button',
+    );
+    const controlledId = categoryButton?.getAttribute('aria-controls');
+
+    expect(categoryButton?.getAttribute('aria-expanded')).toBe('true');
+    expect(controlledId && compiled.querySelector(`#${controlledId}`)).not.toBeNull();
+
+    categoryButton?.click();
+    fixture.detectChanges();
+
+    expect(categoryButton?.getAttribute('aria-expanded')).toBe('false');
+    expect(controlledId && compiled.querySelector<HTMLElement>(`#${controlledId}`)?.hidden).toBe(
+      true,
+    );
+  });
+
   it('should keep the homepage in the full-width layout', async () => {
     const router = TestBed.inject(Router);
     const fixture = TestBed.createComponent(App);
@@ -58,9 +98,21 @@ describe('App', () => {
     expect(app.navOpen()).toBe(false);
     app.toggleNavigation();
     expect(app.navOpen()).toBe(true);
-    const before = app.mode();
-    app.cycleMode();
-    expect(app.mode()).not.toBe(before);
+    const before = app.isDark();
+    app.toggleDark();
+    expect(app.isDark()).toBe(!before);
+  });
+
+  it('opens the theme configurator and applies a color preset', () => {
+    const fixture = TestBed.createComponent(App);
+    const app = fixture.componentInstance;
+    expect(app.configOpen()).toBe(false);
+    app.toggleConfig();
+    expect(app.configOpen()).toBe(true);
+    app.selectPreset('emerald');
+    expect(app.activePreset()).toBe('emerald');
+    app.closeConfig();
+    expect(app.configOpen()).toBe(false);
   });
 
   it('updates canonical and social metadata for documentation routes', async () => {

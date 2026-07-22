@@ -1,0 +1,215 @@
+.j-file-browser {
+  background: var(--j-file-browser-bg, var(--j-color-card));
+  border: 1px solid var(--j-file-browser-border-color, var(--j-color-border));
+  border-radius: var(--j-radius-lg);
+  color: var(--j-color-card-foreground);
+  overflow: hidden;
+}
+.j-file-browser__header {
+  align-items: center;
+  display: flex;
+  gap: var(--j-spacing-4);
+  justify-content: space-between;
+  padding: var(--j-spacing-4);
+}
+.j-file-browser__header h2,
+.j-file-browser__header p,
+.j-file-browser__state p {
+  margin: 0;
+}
+.j-file-browser__header p,
+.j-file-browser__name small,
+.j-file-browser__size,
+.j-file-browser__date,
+.j-file-browser__state p {
+  color: var(--j-color-muted-foreground);
+  font-size: var(--j-font-size-sm);
+}
+.j-file-browser__toolbar {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--j-spacing-2);
+}
+.j-file-browser button,
+.j-file-browser select {
+  background: var(--j-color-card);
+  border: 1px solid var(--j-color-border);
+  border-radius: var(--j-radius-md);
+  color: inherit;
+  font: inherit;
+  min-height: 2.5rem;
+  padding-inline: var(--j-spacing-3);
+}
+.j-file-browser button:not(:disabled) {
+  cursor: pointer;
+}
+.j-file-browser button:focus-visible,
+.j-file-browser select:focus-visible,
+.j-file-browser [data-j-file-item]:focus-visible {
+  box-shadow: var(--j-focus-ring);
+  outline: none;
+}
+.j-file-browser button:disabled,
+.j-file-browser.is-disabled {
+  opacity: var(--j-disabled-opacity);
+}
+.j-file-browser__select {
+  display: grid;
+}
+.j-file-browser__select span {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  width: 1px;
+}
+.j-file-browser__breadcrumbs {
+  border-block: 1px solid var(--j-color-border);
+  padding: var(--j-spacing-2) var(--j-spacing-4);
+}
+.j-file-browser__breadcrumbs ol {
+  align-items: center;
+  display: flex;
+  gap: var(--j-spacing-1);
+  list-style: none;
+  margin: 0;
+  overflow-x: auto;
+  padding: 0;
+}
+.j-file-browser__breadcrumbs li:not(:last-child)::after {
+  color: var(--j-color-muted-foreground);
+  content: '/';
+  margin-inline-start: var(--j-spacing-1);
+}
+.j-file-browser__breadcrumbs button {
+  border-color: transparent;
+  min-height: 2rem;
+  padding-inline: var(--j-spacing-2);
+}
+.j-file-browser__items {
+  display: grid;
+  padding: var(--j-spacing-2);
+}
+.j-file-browser__items article {
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: var(--j-radius-md);
+  cursor: pointer;
+  display: grid;
+  gap: var(--j-spacing-3);
+  grid-template-columns: auto 2.75rem minmax(12rem, 1fr) minmax(5rem, 0.35fr) minmax(8rem, 0.4fr);
+  min-height: 3.5rem;
+  padding: var(--j-spacing-2) var(--j-spacing-3);
+}
+.j-file-browser__items article:hover {
+  background: var(--j-color-muted);
+}
+.j-file-browser__items article.is-selected {
+  background: var(--j-file-browser-selected-bg, var(--j-color-primary-subtle));
+  border-color: var(--j-color-primary);
+}
+.j-file-browser__items article.is-disabled {
+  cursor: not-allowed;
+  opacity: var(--j-disabled-opacity);
+}
+.j-file-browser__visual {
+  align-items: center;
+  background: var(--j-color-muted);
+  border-radius: var(--j-radius-md);
+  display: flex;
+  height: 2.75rem;
+  justify-content: center;
+  overflow: hidden;
+}
+.j-file-browser__visual img {
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+.j-file-browser__name {
+  display: grid;
+  min-width: 0;
+}
+.j-file-browser__name strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.j-file-browser--grid .j-file-browser__items,
+.j-file-browser--gallery .j-file-browser__items {
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: var(--j-spacing-3);
+  padding: var(--j-spacing-4);
+}
+.j-file-browser--grid .j-file-browser__items article,
+.j-file-browser--gallery .j-file-browser__items article {
+  align-content: start;
+  grid-template-columns: auto 1fr;
+  min-height: 10rem;
+}
+.j-file-browser--grid .j-file-browser__visual,
+.j-file-browser--gallery .j-file-browser__visual {
+  grid-column: 1 / -1;
+  height: 5rem;
+}
+.j-file-browser--grid .j-file-browser__size,
+.j-file-browser--grid .j-file-browser__date,
+.j-file-browser--gallery .j-file-browser__size,
+.j-file-browser--gallery .j-file-browser__date {
+  display: none;
+}
+.j-file-browser--compact .j-file-browser__items article {
+  min-height: 2.75rem;
+  padding-block: var(--j-spacing-1);
+}
+.j-file-browser--picker .j-file-browser__toolbar {
+  display: none;
+}
+.j-file-browser__state {
+  align-items: center;
+  display: grid;
+  gap: var(--j-spacing-2);
+  justify-items: center;
+  min-height: 14rem;
+  padding: var(--j-spacing-6);
+  text-align: center;
+}
+.j-file-browser__spinner {
+  animation: j-file-browser-spin 0.8s linear infinite;
+  border: 2px solid var(--j-color-border);
+  border-top-color: var(--j-color-primary);
+  border-radius: 50%;
+  height: 1.5rem;
+  width: 1.5rem;
+}
+@keyframes j-file-browser-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (max-width: 700px) {
+  .j-file-browser__header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .j-file-browser__items article {
+    grid-template-columns: auto 2.75rem minmax(0, 1fr);
+  }
+  .j-file-browser__size,
+  .j-file-browser__date {
+    display: none;
+  }
+  .j-file-browser__toolbar > button {
+    flex: 1 1 auto;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .j-file-browser__spinner {
+    animation: none;
+  }
+}
+:host-context([dir='rtl']) .j-file-browser__breadcrumbs li:not(:last-child)::after {
+  content: '\\';
+}

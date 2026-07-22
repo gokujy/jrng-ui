@@ -3,19 +3,23 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  EventEmitter,
+  contentChild,
+  effect,
   forwardRef,
   inject,
-  Input,
+  input,
   numberAttribute,
-  Output,
+  output,
+  TemplateRef,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { jCreateId } from 'jrng-ui/core';
+import { NgTemplateOutlet } from '@angular/common';
+import { jCreateId, JSeverity } from 'jrng-ui/core';
+import { JChipComponent, JChipItem, JChipVariant } from 'jrng-ui/chip';
 
 @Component({
   selector: 'j-chips',
-  imports: [],
+  imports: [JChipComponent, NgTemplateOutlet],
   template: `
     <div
       [class]="rootClasses"
@@ -29,48 +33,55 @@ import { jCreateId } from 'jrng-ui/core';
       (keydown.enter)="input.focus()"
       (keydown.space)="input.focus(); $event.preventDefault()"
     >
-      @if (label) {
-        <label class="j-chips__label" data-jc-section="label" [for]="id">
-          <span>{{ label }}</span>
-          @if (required) {
+      @if (label()) {
+        <label class="j-chips__label" data-jc-section="label" [for]="id()">
+          <span>{{ label() }}</span>
+          @if (required()) {
             <span class="j-chips__required" aria-hidden="true">*</span>
           }
         </label>
       }
       <div class="j-chips" data-jc-section="control">
         @for (item of value; track item; let i = $index) {
-          <span class="j-chips__chip" data-jc-section="chip">
-            {{ item }}
-            <button
-              data-jc-section="remove"
-              type="button"
-              [disabled]="isDisabled || readonly"
-              (click)="removeAt(i); $event.stopPropagation()"
-            >
-              x
-            </button>
-          </span>
+          @if (itemTemplate(); as template) {
+            <ng-container
+              [ngTemplateOutlet]="template"
+              [ngTemplateOutletContext]="{ $implicit: item, index: i }"
+            />
+          } @else {
+            <j-chip
+              data-jc-section="chip"
+              [label]="item.label"
+              [icon]="item.icon || ''"
+              [severity]="item.severity || severity()"
+              [variant]="variant()"
+              [disabled]="item.disabled || isDisabled || readonly()"
+              [removable]="item.removable !== false && !item.disabled"
+              [removeAriaLabel]="'Remove ' + item.label"
+              (remove)="removeAt(i)"
+            />
+          }
         }
         <input
           #input
           class="j-chips__input"
           data-jc-section="input"
-          [id]="id"
+          [id]="id()"
           type="text"
-          [placeholder]="value.length ? '' : placeholder"
+          [placeholder]="value.length ? '' : placeholder()"
           [disabled]="isDisabled"
-          [readOnly]="readonly"
+          [readOnly]="readonly()"
           [value]="draft"
           (input)="handleInput($event)"
           (keydown)="handleKeydown($event)"
           (blur)="handleBlur()"
         />
       </div>
-      @if (hasError && error) {
-        <p class="j-chips__message j-chips__message--error">{{ error }}</p>
+      @if (hasError && error()) {
+        <p class="j-chips__message j-chips__message--error">{{ error() }}</p>
       }
-      @if (hint && !hasError) {
-        <p class="j-chips__message">{{ hint }}</p>
+      @if (hint() && !hasError) {
+        <p class="j-chips__message">{{ hint() }}</p>
       }
     </div>
   `,
@@ -167,39 +178,46 @@ import { jCreateId } from 'jrng-ui/core';
 export class JChipsComponent implements ControlValueAccessor {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
-  @Input() id = jCreateId('j-chips');
-  @Input() label = '';
-  @Input() placeholder = '';
-  @Input() hint = '';
-  @Input() error = '';
-  @Input() styleClass = '';
-  @Input() separator = ',';
-  @Input() separators: readonly string[] = [];
-  @Input({ transform: numberAttribute }) max = 0;
-  @Input({ transform: booleanAttribute }) invalid = false;
-  @Input({ transform: booleanAttribute }) required = false;
-  @Input({ transform: booleanAttribute }) readonly = false;
-  @Input({ transform: booleanAttribute }) allowDuplicate = false;
+  readonly id = input(jCreateId('j-chips'));
+  readonly label = input('');
+  readonly placeholder = input('');
+  readonly hint = input('');
+  readonly error = input('');
+  readonly styleClass = input('');
+  readonly separator = input(',');
+  readonly separators = input<readonly string[]>([]);
+  readonly max = input(0, { transform: numberAttribute });
+  readonly invalid = input(false, { transform: booleanAttribute });
+  readonly required = input(false, { transform: booleanAttribute });
+  readonly readonly = input(false, { transform: booleanAttribute });
+  readonly allowDuplicate = input(false, { transform: booleanAttribute });
+  readonly disabled = input(false, { transform: booleanAttribute });
+  readonly severity = input<JSeverity>('neutral');
+  readonly variant = input<JChipVariant>('soft');
 
-  @Output() valueChange = new EventEmitter<readonly string[]>();
-  @Output() add = new EventEmitter<string>();
-  @Output() remove = new EventEmitter<string>();
+  readonly itemTemplate =
+    contentChild<TemplateRef<{ $implicit: JChipItem; index: number }>>('item');
 
-  value: readonly string[] = [];
+  readonly valueChange = output<readonly JChipItem[]>();
+  readonly add = output<JChipItem>();
+  readonly remove = output<JChipItem>();
+
+  value: readonly JChipItem[] = [];
   draft = '';
   isDisabled = false;
 
-  private onChange: (value: readonly string[]) => void = () => undefined;
+  private onChange: (value: readonly JChipItem[]) => void = () => undefined;
   private onTouched: () => void = () => undefined;
 
-  @Input({ transform: booleanAttribute })
-  set disabled(value: boolean) {
-    this.isDisabled = value;
-    this.changeDetectorRef.markForCheck();
+  constructor() {
+    effect(() => {
+      this.isDisabled = this.disabled();
+      this.changeDetectorRef.markForCheck();
+    });
   }
 
   get hasError(): boolean {
-    return this.invalid || this.error.trim().length > 0;
+    return this.invalid() || this.error().trim().length > 0;
   }
 
   get rootClasses(): string {
@@ -207,18 +225,18 @@ export class JChipsComponent implements ControlValueAccessor {
       'j-chips-field',
       this.hasError ? 'is-invalid' : '',
       this.isDisabled ? 'is-disabled' : '',
-      this.styleClass,
+      this.styleClass(),
     ]
       .filter(Boolean)
       .join(' ');
   }
 
-  writeValue(value: readonly string[] | null | undefined): void {
-    this.value = Array.isArray(value) ? value : [];
+  writeValue(value: readonly JChipItem[] | null | undefined): void {
+    this.value = Array.isArray(value) ? value.map((item) => ({ ...item })) : [];
     this.changeDetectorRef.markForCheck();
   }
 
-  registerOnChange(fn: (value: readonly string[]) => void): void {
+  registerOnChange(fn: (value: readonly JChipItem[]) => void): void {
     this.onChange = fn;
   }
 
@@ -277,23 +295,24 @@ export class JChipsComponent implements ControlValueAccessor {
     const next = rawValue.trim();
     if (
       !next ||
-      (this.max > 0 && this.value.length >= this.max) ||
-      (!this.allowDuplicate && this.value.includes(next))
+      (this.max() > 0 && this.value.length >= this.max()) ||
+      (!this.allowDuplicate() && this.value.some((item) => item.label === next))
     ) {
       return;
     }
-    this.commit([...this.value, next]);
-    this.add.emit(next);
+    const item: JChipItem = { label: next, severity: this.severity() };
+    this.commit([...this.value, item]);
+    this.add.emit(item);
   }
 
-  private commit(value: readonly string[]): void {
-    this.value = value;
+  private commit(value: readonly JChipItem[]): void {
+    this.value = value.map((item) => ({ ...item }));
     this.onChange(this.value);
     this.valueChange.emit(this.value);
     this.changeDetectorRef.markForCheck();
   }
 
   private get separatorList(): readonly string[] {
-    return this.separators.length ? this.separators : [this.separator].filter(Boolean);
+    return this.separators().length ? this.separators() : [this.separator()].filter(Boolean);
   }
 }

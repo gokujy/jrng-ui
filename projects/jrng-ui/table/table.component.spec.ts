@@ -16,24 +16,48 @@ import {
       caption="Records"
       [columns]="columns"
       [value]="rows"
-      [selectable]="selectable"
+      [selectionMode]="selectionMode"
+      [selection]="selection"
+      [rowSelectable]="rowSelectable"
+      [dataMode]="dataMode"
+      [groupRowsBy]="groupRowsBy"
+      [collapsibleRowGroups]="collapsibleRowGroups"
+      [virtualScroll]="virtualScroll"
+      [virtualItemSize]="44"
+      [virtualOverscan]="2"
+      scrollHeight="88px"
       [paginator]="paginator"
+      [frozenRows]="frozenRows"
+      [lockedRowKeys]="lockedRowKeys"
+      [variant]="variant"
+      [filterDisplay]="filterDisplay"
       [rows]="2"
       (rowSelect)="selected = $event"
+      (selectionChange)="selection = $event"
       (sortChange)="sortField = $event.field"
       (pageChange)="page = $event.page"
     />
   `,
 })
 class TableHostComponent {
-  selectable = true;
   paginator = false;
+  frozenRows = false;
+  lockedRowKeys: readonly string[] = [];
   selected: JTableRow | null = null;
+  selectionMode: 'single' | 'checkbox' = 'single';
+  selection: JTableRow | readonly JTableRow[] | null = null;
+  rowSelectable: ((row: JTableRow) => boolean) | null = null;
+  dataMode: 'client' | 'lazy' = 'client';
+  groupRowsBy = '';
+  collapsibleRowGroups = false;
+  virtualScroll = false;
   sortField = '';
   page = 1;
+  variant: 'standard' | 'gridlines' = 'standard';
+  filterDisplay: 'none' | 'row' = 'none';
   columns: readonly JTableColumn[] = [
     { field: 'code', header: 'Code', sortable: true },
-    { field: 'name', header: 'Name' },
+    { field: 'name', header: 'Name', filterable: true },
     { field: 'amount', header: 'Amount', sortable: true, align: 'end' },
   ];
   rows: readonly JTableRow[] = [
@@ -72,6 +96,24 @@ describe('JTableComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Records');
     expect(bodyRows().length).toBe(3);
     expect(fixture.nativeElement.textContent).toContain('REC-3');
+  });
+
+  it('uses the standard presentation without implicit filters', () => {
+    expect(fixture.debugElement.query(By.css('.j-table--standard'))).toBeTruthy();
+    expect(fixture.debugElement.query(By.css('.j-table__filter-row'))).toBeNull();
+    expect(fixture.debugElement.query(By.css('j-column-filter'))).toBeNull();
+  });
+
+  it('renders a dedicated accessible filter row when configured', () => {
+    host.variant = 'gridlines';
+    host.filterDisplay = 'row';
+    detectHostChanges();
+
+    expect(fixture.debugElement.query(By.css('.j-table--gridlines'))).toBeTruthy();
+    const filterRow = fixture.debugElement.query(By.css('.j-table__filter-row'));
+    expect(filterRow).toBeTruthy();
+    expect(filterRow.query(By.css('[aria-label="Filter Name"]'))).toBeTruthy();
+    expect(fixture.debugElement.query(By.css('thead tr:first-child j-column-filter'))).toBeNull();
   });
 
   it('sorts sortable columns and emits sortChange', () => {
@@ -122,13 +164,158 @@ describe('JTableComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('REC-2');
   });
 
+  it('keeps keyed frozen rows visible outside pagination while preserving selection and sorting', () => {
+    host.paginator = true;
+    host.frozenRows = true;
+    host.lockedRowKeys = ['3'];
+    detectHostChanges();
+
+    expect(bodyRows()).toHaveLength(3);
+    const frozen = bodyRows().find((row) => row.dataset['jFrozen'] === 'true');
+    expect(frozen?.textContent).toContain('REC-2');
+    frozen?.click();
+    fixture.detectChanges();
+    expect(host.selected?.['code']).toBe('REC-2');
+
+    const amountSort = fixture.debugElement.queryAll(By.css('.j-table__sort'))[2]
+      ?.nativeElement as HTMLButtonElement;
+    amountSort.click();
+    detectHostChanges();
+    expect(bodyRows().find((row) => row.dataset['jFrozen'] === 'true')?.textContent).toContain(
+      'REC-2',
+    );
+  });
+
+  it('tracks none, partial, and all eligible checkbox states', () => {
+    host.selectionMode = 'checkbox';
+    host.rowSelectable = (row) => row['id'] !== 2;
+    detectHostChanges();
+    const table = fixture.debugElement.query(By.directive(JTableComponent))
+      .componentInstance as JTableComponent;
+    const selectAll = fixture.nativeElement.querySelector(
+      'thead [data-jc-section="selection-control"]',
+    ) as HTMLInputElement;
+
+    expect(selectAll.checked).toBe(false);
+    expect(selectAll.indeterminate).toBe(false);
+    expect(table.eligibleVisibleRows).toHaveLength(2);
+    expect(
+      (
+        fixture.nativeElement.querySelectorAll(
+          'tbody [data-jc-section="selection-control"]',
+        )[1] as HTMLInputElement
+      ).disabled,
+    ).toBe(true);
+
+    table.toggleSelection(host.rows[0]);
+    fixture.detectChanges();
+    expect(selectAll.checked).toBe(false);
+    expect(selectAll.indeterminate).toBe(true);
+
+    selectAll.checked = true;
+    selectAll.dispatchEvent(new Event('change'));
+    fixture.detectChanges();
+    expect(selectAll.checked).toBe(true);
+    expect(selectAll.indeterminate).toBe(false);
+    expect(host.selection).toEqual([host.rows[0], host.rows[2]]);
+
+    selectAll.checked = false;
+    selectAll.dispatchEvent(new Event('change'));
+    fixture.detectChanges();
+    expect(host.selection).toEqual([]);
+  });
+
+  it('selects only the filtered current page and reconciles controlled selection after refresh', () => {
+    host.selectionMode = 'checkbox';
+    host.paginator = true;
+    detectHostChanges();
+    const table = fixture.debugElement.query(By.directive(JTableComponent))
+      .componentInstance as JTableComponent;
+
+    table.globalFilter = 'record';
+    table.filters = { code: 'REC-1' };
+    const event = { target: { checked: true } } as unknown as Event;
+    table.toggleAllPageRows(event);
+    expect(host.selection).toEqual([host.rows[1]]);
+
+    host.rows = [
+      { id: 2, code: 'REC-1', name: 'Record Alpha refreshed', amount: 125 },
+      { id: 4, code: 'REC-4', name: 'Record Delta', amount: 400 },
+    ];
+    host.selection = [host.rows[0]];
+    detectHostChanges();
+
+    expect(table.allPageRowsSelected()).toBe(true);
+    expect(table.somePageRowsSelected()).toBe(false);
+  });
+
+  it('uses the currently supplied lazy page as the select-all eligibility scope', () => {
+    host.selectionMode = 'checkbox';
+    detectHostChanges();
+    const table = fixture.debugElement.query(By.directive(JTableComponent))
+      .componentInstance as JTableComponent;
+    host.dataMode = 'lazy';
+    detectHostChanges();
+
+    table.toggleAllPageRows({ target: { checked: true } } as unknown as Event);
+    expect((host.selection as readonly JTableRow[]).length).toBe(3);
+    expect(table.allPageRowsSelected()).toBe(true);
+  });
+
+  it('renders accessible row groups and supports programmatic collapse', () => {
+    host.rows = [
+      { id: 1, code: 'A-1', name: 'Alpha', amount: 10, team: 'North' },
+      { id: 2, code: 'A-2', name: 'Beta', amount: 20, team: 'North' },
+      { id: 3, code: 'B-1', name: 'Gamma', amount: 30, team: 'South' },
+    ];
+    host.groupRowsBy = 'team';
+    host.collapsibleRowGroups = true;
+    detectHostChanges();
+
+    const table = fixture.debugElement.query(By.directive(JTableComponent))
+      .componentInstance as JTableComponent;
+    expect(fixture.nativeElement.querySelectorAll('[data-jc-section="group-header"]')).toHaveLength(
+      2,
+    );
+
+    table.toggleRowGroup(host.rows[0]);
+    fixture.detectChanges();
+    expect(bodyRows().some((row) => row.textContent?.includes('A-1'))).toBe(false);
+    expect(bodyRows().some((row) => row.textContent?.includes('B-1'))).toBe(true);
+  });
+
+  it('windows large row sets and preserves scroll height with spacer rows', () => {
+    host.rows = Array.from({ length: 100 }, (_, index) => ({
+      id: index + 1,
+      code: `REC-${index + 1}`,
+      name: `Record ${index + 1}`,
+      amount: index,
+    }));
+    host.virtualScroll = true;
+    detectHostChanges();
+    const table = fixture.debugElement.query(By.directive(JTableComponent))
+      .componentInstance as JTableComponent;
+
+    table.handleVirtualScroll({
+      currentTarget: { scrollTop: 440, clientHeight: 88 },
+    } as unknown as Event);
+    fixture.detectChanges();
+
+    expect(table.virtualStart).toBe(8);
+    expect(table.visibleRows).toHaveLength(6);
+    expect(table.visibleRows[0]?.['id']).toBe(9);
+    const spacers = fixture.nativeElement.querySelectorAll('.j-table__virtual-spacer td');
+    expect(spacers).toHaveLength(2);
+    expect((spacers[0] as HTMLElement).style.height).toBe('352px');
+  });
+
   it('filters rows with the global filter and emits filterChange', () => {
     const table = fixture.debugElement.query(By.directive(JTableComponent))
       .componentInstance as JTableComponent;
     const emitted: unknown[] = [];
     table.filterChange.subscribe((event) => emitted.push(event));
 
-    table.handleGlobalFilter('alpha');
+    table.handleGlobalFilter({ target: { value: 'alpha' } } as unknown as Event);
     expect(table.visibleRows.length).toBe(1);
     expect(table.visibleRows[0]?.['code']).toBe('REC-1');
     expect(emitted.length).toBe(1);
@@ -145,6 +332,28 @@ describe('JTableComponent', () => {
     expect(table.multiSortMeta.map((sort) => sort.field)).toEqual(['code', 'amount']);
   });
 
+  it('uses a typed column comparator for custom sorting', () => {
+    const table = fixture.debugElement.query(By.directive(JTableComponent))
+      .componentInstance as JTableComponent;
+    host.columns = [
+      {
+        field: 'name',
+        header: 'Name length',
+        sortable: true,
+        sortComparator: (left, right) => String(right['name']).localeCompare(String(left['name'])),
+      },
+    ];
+    detectHostChanges();
+
+    table.toggleSort(host.columns[0]);
+
+    expect(table.sortedRows.map((row) => row['name'])).toEqual([
+      'Record Gamma',
+      'Record Beta',
+      'Record Alpha',
+    ]);
+  });
+
   it('exports visible table data as CSV', () => {
     const table = fixture.debugElement.query(By.directive(JTableComponent))
       .componentInstance as JTableComponent;
@@ -155,7 +364,7 @@ describe('JTableComponent', () => {
     expect(csv).toContain('REC-3,Record Gamma,300');
   });
 
-  it('applies enterprise table config', () => {
+  it('applies comprehensive table settings', () => {
     const table = fixture.debugElement.query(By.directive(JTableComponent))
       .componentInstance as JTableComponent;
     const config: JTableConfig = {
@@ -170,7 +379,6 @@ describe('JTableComponent', () => {
       reorderableColumns: true,
       resizableColumns: true,
       maximizable: true,
-      size: 'small',
     };
 
     table.config = config;
@@ -191,22 +399,18 @@ describe('JTableComponent', () => {
     expect(table.showTableState).toBe(true);
     expect(table.lockableRows).toBe(true);
     expect(table.maximizable).toBe(true);
-    expect(table.size).toBe('small');
   });
 
-  it('emits row lock aliases', () => {
+  it('emits rowLock once', () => {
     const table = fixture.debugElement.query(By.directive(JTableComponent))
       .componentInstance as JTableComponent;
     const locks: unknown[] = [];
-    const onLocks: unknown[] = [];
     table.lockableRows = true;
     table.rowLock.subscribe((event) => locks.push(event));
-    table.onRowLock.subscribe((event) => onLocks.push(event));
 
     table.toggleRowLock(host.rows[0] as JTableRow, 0);
 
     expect(locks.length).toBe(1);
-    expect(onLocks.length).toBe(1);
     expect(table.isRowLocked(host.rows[0] as JTableRow, 0)).toBe(true);
   });
 
@@ -231,7 +435,7 @@ describe('JTableComponent', () => {
       .componentInstance as JTableComponent;
     const errors: string[] = [];
     table.stateKey = 'j-table-corrupt-test';
-    table.stateRestoreError.subscribe((event) => errors.push(event.reason));
+    table.error.subscribe((event) => errors.push(event.reason));
     localStorage.setItem(table.stateKey, '{not-json');
 
     expect(() => table.restoreState()).not.toThrow();

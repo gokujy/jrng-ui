@@ -4,25 +4,32 @@ import {
   ElementRef,
   HostBinding,
   HostListener,
-  Input,
+  input,
   inject,
+  computed,
 } from '@angular/core';
 import { jPrefersReducedMotion } from './accessibility-preferences';
+import { JRNG_CONFIG } from './config';
 
 @Directive({
   selector: '[jRipple]',
 })
 export class JRippleDirective {
   private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly config = inject(JRNG_CONFIG);
 
   @HostBinding('class.j-ripple') readonly rippleClass = true;
 
-  @Input({ alias: 'jRipple', transform: booleanAttribute }) enabled = true;
-  @Input({ transform: booleanAttribute }) rippleDisabled = false;
+  readonly enabled = input<boolean | undefined, unknown>(undefined, {
+    alias: 'jRipple',
+    transform: (value) => (value == null ? undefined : booleanAttribute(value)),
+  });
+  readonly rippleDisabled = input(false, { transform: booleanAttribute });
+  readonly isEnabled = computed(() => this.enabled() ?? this.config.ripple);
 
   @HostListener('pointerdown', ['$event'])
   handlePointerDown(event: PointerEvent): void {
-    if (!this.enabled || this.rippleDisabled || this.prefersReducedMotion()) {
+    if (!this.isEnabled() || this.rippleDisabled() || this.prefersReducedMotion()) {
       return;
     }
 

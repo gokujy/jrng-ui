@@ -62,7 +62,7 @@ Custom templates:
 
 `j-multiselect` supports checkbox-style options, select all, unselect all, custom item templates, CVA, and filtering.
 
-## Autocomplete And Combobox
+## Autocomplete And Searchable Select
 
 ```html
 <j-autocomplete
@@ -78,12 +78,13 @@ Custom templates:
   (completeMethod)="searchProducts($event)"
 />
 
-<j-combobox
+<j-select
   formControlName="customer"
   label="Customer"
   [options]="customers"
   optionLabel="name"
   optionValue="id"
+  searchable
 />
 ```
 
@@ -134,7 +135,7 @@ Custom templates:
   (targetChange)="selectedProducts = $event"
 />
 
-<j-pick-list
+<j-transfer-list
   [source]="availableUsers"
   [target]="teamUsers"
   optionLabel="name"
@@ -147,13 +148,7 @@ Custom templates:
 ```html
 <j-chip label="Active" removable (remove)="removeStatus()" />
 
-<j-chips
-  formControlName="tags"
-  label="Tags"
-  separator=","
-  [separators]="[',', ';']"
-  [max]="5"
-/>
+<j-chips formControlName="tags" label="Tags" separator="," [separators]="[',', ';']" [max]="5" />
 ```
 
 `j-chips` supports add/remove, separator parsing, optional duplicate prevention, max items, disabled state from Angular forms, and CVA.

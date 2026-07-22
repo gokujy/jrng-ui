@@ -5,9 +5,9 @@ import {
   computed,
   input,
 } from '@angular/core';
-import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
+import { JDensity, JPassThrough, JSurfaceVariant, jMergePartClasses } from 'jrng-ui/core';
 
-export type JrCardVariant = 'default' | 'elevated' | 'bordered' | 'soft';
+export type JCardVariant = JSurfaceVariant;
 
 @Component({
   selector: 'j-card',
@@ -16,47 +16,24 @@ export type JrCardVariant = 'default' | 'elevated' | 'bordered' | 'soft';
   styleUrl: './card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class JrCardComponent {
+export class JCardComponent {
   readonly header = input('');
   readonly subheader = input('');
-  readonly title = input('');
-  readonly subtitle = input('');
   readonly footer = input('');
-  readonly variant = input<JrCardVariant>('default');
+  readonly variant = input<JCardVariant>('elevated');
+  readonly density = input<JDensity>('comfortable');
   readonly styleClass = input('');
   readonly pt = input<JPassThrough | null>(null);
-  readonly clickable = input(false, { transform: booleanAttribute });
-  readonly elevated = input(false, { transform: booleanAttribute });
-  readonly bordered = input(false, { transform: booleanAttribute });
   readonly interactive = input(false, { transform: booleanAttribute });
-  readonly compact = input(false, { transform: booleanAttribute });
   readonly skeleton = input(false, { transform: booleanAttribute });
-
-  readonly resolvedHeader = computed(() => this.header() || this.title());
-
-  readonly resolvedSubheader = computed(() => this.subheader() || this.subtitle());
-
-  readonly isInteractive = computed(() => this.interactive() || this.clickable());
-
-  readonly resolvedVariant = computed<JrCardVariant>(() => {
-    if (this.elevated()) {
-      return 'elevated';
-    }
-
-    if (this.bordered()) {
-      return 'bordered';
-    }
-
-    return this.variant();
-  });
 
   readonly cardClasses = computed(() =>
     jMergePartClasses(
       [
         'j-card',
-        `j-card--${this.resolvedVariant()}`,
-        this.isInteractive() ? 'j-card--interactive' : '',
-        this.compact() ? 'j-card--compact' : '',
+        `j-card--${this.variant()}`,
+        `j-card--density-${this.density()}`,
+        this.interactive() ? 'j-card--interactive' : '',
         this.skeleton() ? 'is-loading' : '',
       ],
       this.styleClass(),

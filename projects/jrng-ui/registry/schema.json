@@ -24,8 +24,7 @@
           "usageExample",
           "documentationUrl",
           "status",
-          "sinceVersion",
-          "deprecation"
+          "sinceVersion"
         ],
         "properties": {
           "name": { "type": "string" },
@@ -47,9 +46,8 @@
           "inputs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
           "outputs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
           "formCompatibility": { "enum": ["ControlValueAccessor", "Not a form control"] },
-          "status": { "enum": ["Complete", "Basic", "Planned", "Experimental", "Deprecated"] },
+          "status": { "enum": ["Complete", "Basic", "Planned", "Experimental"] },
           "sinceVersion": { "type": ["string", "null"] },
-          "deprecation": { "type": ["object", "null"] },
           "stability": { "type": "string" },
           "angularCompatibility": { "type": "string" }
         },

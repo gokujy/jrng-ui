@@ -1,28 +1,27 @@
 import { Injectable, signal } from '@angular/core';
+import { JDialogSize } from './dialog.component';
 
-export type JrDialogSize = 'sm' | 'md' | 'lg' | 'xl';
-
-export interface JrDialogRequest {
+export interface JDialogRequest {
   readonly id: string;
   readonly title: string;
   readonly message: string;
-  readonly size: JrDialogSize;
+  readonly size: JDialogSize;
 }
 
-export interface JrDialogOpenOptions {
+export interface JDialogOpenOptions {
   readonly title?: string;
   readonly message?: string;
-  readonly size?: JrDialogSize;
+  readonly size?: JDialogSize;
 }
 
 @Injectable({ providedIn: 'root' })
-export class JrDialogService {
-  private readonly activeDialog = signal<JrDialogRequest | null>(null);
+export class JDialogService {
+  private readonly activeDialog = signal<JDialogRequest | null>(null);
 
   readonly dialog = this.activeDialog.asReadonly();
 
-  open(options: JrDialogOpenOptions): JrDialogRequest {
-    const request: JrDialogRequest = {
+  open(options: JDialogOpenOptions): JDialogRequest {
+    const request: JDialogRequest = {
       id: `j-dialog-${Date.now()}-${Math.random().toString(36).slice(2)}`,
       title: options.title ?? '',
       message: options.message ?? '',

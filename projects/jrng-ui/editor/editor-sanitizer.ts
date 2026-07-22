@@ -17,6 +17,12 @@ const ALLOWED_ELEMENTS = new Set([
   'PRE',
   'S',
   'STRONG',
+  'TABLE',
+  'TBODY',
+  'TD',
+  'TH',
+  'THEAD',
+  'TR',
   'U',
   'UL',
 ]);
@@ -26,6 +32,14 @@ const ELEMENT_ATTRIBUTES: Readonly<Record<string, ReadonlySet<string>>> = {
   A: new Set(['href', 'target', 'rel']),
   IMG: new Set(['src', 'alt', 'width', 'height']),
 };
+
+export interface JEditorSanitizerAdapter {
+  sanitize(html: string, documentRef: Document): string;
+}
+
+export interface JEditorImageAdapter {
+  selectAndUpload(): Promise<{ readonly url: string; readonly alt?: string } | null>;
+}
 
 export function jSanitizeEditorHtml(html: string, documentRef: Document): string {
   const template = documentRef.createElement('template');
@@ -47,21 +61,20 @@ export function jIsSafeEditorUrl(value: string, documentRef: Document): boolean 
 }
 
 function sanitizeChildren(parent: ParentNode, documentRef: Document): void {
-  const ElementCtor = documentRef.defaultView?.Element;
-  if (!ElementCtor) return;
   for (const child of [...parent.childNodes]) {
-    if (!(child instanceof ElementCtor)) continue;
-    if (DROP_CONTENT.has(child.tagName)) {
+    if (child.nodeType !== 1) continue;
+    const element = child as Element;
+    if (DROP_CONTENT.has(element.tagName)) {
       child.remove();
       continue;
     }
-    if (!ALLOWED_ELEMENTS.has(child.tagName)) {
-      sanitizeChildren(child, documentRef);
-      child.replaceWith(...child.childNodes);
+    if (!ALLOWED_ELEMENTS.has(element.tagName)) {
+      sanitizeChildren(element, documentRef);
+      element.replaceWith(...element.childNodes);
       continue;
     }
-    sanitizeAttributes(child, documentRef);
-    sanitizeChildren(child, documentRef);
+    sanitizeAttributes(element, documentRef);
+    sanitizeChildren(element, documentRef);
   }
 }
 

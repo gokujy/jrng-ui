@@ -1,0 +1,135 @@
+<section [class]="classes()" [attr.aria-label]="ariaLabel()" data-jc-name="file-browser">
+  <header class="j-file-browser__header">
+    <div>
+      <h2>{{ title() }}</h2>
+      @if (showSelection() && selectionMode() !== 'none') {
+        <p aria-live="polite">{{ selectedItems().length }} {{ selectedLabel() }}</p>
+      }
+    </div>
+    @if (showToolbar()) {
+      <div class="j-file-browser__toolbar" aria-label="File browser actions">
+        @if (showCreateFolder()) {
+          <button type="button" [disabled]="disabled()" (click)="createFolder.emit()">
+            {{ createFolderLabel() }}
+          </button>
+        }
+        @if (showUpload()) {
+          <button type="button" [disabled]="disabled()" (click)="upload.emit()">
+            {{ uploadLabel() }}
+          </button>
+        }
+        @for (itemAction of actions(); track itemAction.id) {
+          <button
+            type="button"
+            [disabled]="!actionAvailable(itemAction)"
+            (click)="emitAction(itemAction, $event)"
+          >
+            {{ itemAction.label }}
+          </button>
+        }
+        <label class="j-file-browser__select"
+          ><span>Sort files</span>
+          <select
+            [value]="sortField()"
+            (change)="
+              sortChange.emit({ field: $any($event.target).value, direction: sortDirection() })
+            "
+          >
+            <option value="name">Name</option>
+            <option value="size">Size</option>
+            <option value="modifiedAt">Modified</option>
+            <option value="type">Type</option>
+          </select>
+        </label>
+        <button
+          type="button"
+          [attr.aria-label]="viewMode() === 'list' ? 'Use grid view' : 'Use list view'"
+          (click)="viewModeChange.emit(viewMode() === 'list' ? 'grid' : 'list')"
+        >
+          {{ viewMode() === 'list' ? 'Grid' : 'List' }}
+        </button>
+        @if (showRefresh()) {
+          <button type="button" [disabled]="disabled() || loading()" (click)="refresh.emit()">
+            {{ refreshLabel() }}
+          </button>
+        }
+      </div>
+    }
+  </header>
+
+  @if (breadcrumbs().length) {
+    <nav class="j-file-browser__breadcrumbs" aria-label="Folder path">
+      <ol>
+        @for (crumb of breadcrumbs(); track crumb.id; let last = $last) {
+          <li>
+            <button
+              type="button"
+              [disabled]="crumb.disabled || last"
+              [attr.aria-current]="last ? 'page' : null"
+              (click)="breadcrumbSelect.emit(crumb)"
+            >
+              {{ crumb.label }}
+            </button>
+          </li>
+        }
+      </ol>
+    </nav>
+  }
+
+  @if (loading()) {
+    <div class="j-file-browser__state" role="status">
+      <span class="j-file-browser__spinner" aria-hidden="true"></span>{{ loadingLabel() }}
+    </div>
+  } @else if (!resolvedItems().length) {
+    <div class="j-file-browser__state">
+      <j-icon name="folder" size="2rem" /><strong>{{ emptyTitle() }}</strong>
+      <p>{{ emptyDescription() }}</p>
+    </div>
+  } @else {
+    <div class="j-file-browser__items" [attr.role]="viewMode() === 'list' ? 'grid' : 'list'">
+      @for (item of resolvedItems(); track item.id; let index = $index) {
+        <article
+          data-j-file-item
+          role="row"
+          tabindex="0"
+          [class.is-selected]="isSelected(item)"
+          [class.is-disabled]="item.disabled"
+          [attr.aria-selected]="selectionMode() === 'none' ? null : isSelected(item)"
+          [attr.aria-disabled]="item.disabled || null"
+          (click)="openItem(item, index, $event)"
+          (keydown)="handleItemKeydown($event, item, index)"
+        >
+          @if (selectionMode() !== 'none') {
+            <input
+              type="checkbox"
+              [attr.aria-label]="'Select ' + item.name"
+              [checked]="isSelected(item)"
+              [disabled]="disabled() || item.disabled"
+              (click)="$event.stopPropagation()"
+              (change)="toggleSelection(item, $event)"
+            />
+          }
+          <div class="j-file-browser__visual" aria-hidden="true">
+            @if (item.thumbnailUrl && variant() === 'gallery') {
+              <img [src]="item.thumbnailUrl" alt="" />
+            } @else {
+              <j-icon [name]="item.resolvedIcon" size="1.5rem" />
+            }
+          </div>
+          <div class="j-file-browser__name">
+            <strong [title]="item.name">{{ item.name }}</strong
+            ><small>{{ item.description || item.typeLabel }}</small>
+          </div>
+          <span class="j-file-browser__size">{{
+            item.kind === 'file' ? formatSize(item.size) : ''
+          }}</span>
+          <time
+            class="j-file-browser__date"
+            [attr.datetime]="item.modifiedAt ? $any(item.modifiedAt) : null"
+            >{{ formatDate(item.modifiedAt) }}</time
+          >
+        </article>
+      }
+    </div>
+  }
+</section>

@@ -4,11 +4,12 @@ import {
   Component,
   DestroyRef,
   ElementRef,
-  Input,
   PLATFORM_ID,
   Renderer2,
   ViewChild,
+  effect,
   inject,
+  input,
 } from '@angular/core';
 import { JMenuComponent, JMenuItem } from 'jrng-ui/menu';
 
@@ -18,8 +19,8 @@ import { JMenuComponent, JMenuItem } from 'jrng-ui/menu';
   template: `
     <j-menu
       #menu
-      [model]="model"
-      [ariaLabel]="ariaLabel"
+      [model]="model()"
+      [ariaLabel]="ariaLabel()"
       popup
       [(visible)]="visible"
       data-jc-name="context-menu"
@@ -37,32 +38,33 @@ export class JContextMenuComponent {
 
   @ViewChild('menu') private menu?: JMenuComponent;
 
-  @Input() model: readonly JMenuItem[] = [];
-  @Input() ariaLabel = 'Context menu';
+  readonly model = input<readonly JMenuItem[]>([]);
+  readonly ariaLabel = input('Context menu');
+  readonly target = input<HTMLElement | ElementRef<HTMLElement> | null | undefined>(null);
   visible = false;
-
-  @Input()
-  set target(value: HTMLElement | ElementRef<HTMLElement> | null | undefined) {
-    this.removeTargetListener?.();
-    this.removeTargetListener = null;
-
-    if (!this.isBrowser || !value) {
-      return;
-    }
-
-    const element = value instanceof ElementRef ? value.nativeElement : value;
-    this.removeTargetListener = this.renderer.listen(
-      element,
-      'contextmenu',
-      (event: MouseEvent) => {
-        event.preventDefault();
-        this.show(event);
-      },
-    );
-  }
 
   constructor() {
     this.destroyRef.onDestroy(() => this.removeTargetListener?.());
+
+    effect(() => {
+      const value = this.target();
+      this.removeTargetListener?.();
+      this.removeTargetListener = null;
+
+      if (!this.isBrowser || !value) {
+        return;
+      }
+
+      const element = value instanceof ElementRef ? value.nativeElement : value;
+      this.removeTargetListener = this.renderer.listen(
+        element,
+        'contextmenu',
+        (event: MouseEvent) => {
+          event.preventDefault();
+          this.show(event);
+        },
+      );
+    });
 
     if (!this.isBrowser) {
       return;
@@ -74,7 +76,8 @@ export class JContextMenuComponent {
       (event: KeyboardEvent) => {
         if (event.key === 'ContextMenu' || (event.shiftKey && event.key === 'F10')) {
           const target = this.documentRef.activeElement;
-          if (target instanceof HTMLElement) {
+          const HTMLElementCtor = this.documentRef.defaultView?.HTMLElement;
+          if (HTMLElementCtor && target instanceof HTMLElementCtor) {
             event.preventDefault();
             this.show(target);
           }
@@ -86,7 +89,8 @@ export class JContextMenuComponent {
   }
 
   show(eventOrTarget: MouseEvent | HTMLElement): void {
-    if (eventOrTarget instanceof MouseEvent) {
+    const MouseEventCtor = this.documentRef.defaultView?.MouseEvent;
+    if (MouseEventCtor && eventOrTarget instanceof MouseEventCtor) {
       eventOrTarget.preventDefault();
     }
     this.visible = true;

@@ -15,7 +15,7 @@ describe('PublicItemIndexPageComponent', () => {
       component
         .filteredItems()
         .every((item) =>
-          [item.name, item.identifier, item.description, ...item.useCases]
+          [item.name, item.identifier, item.description, ...item.searchTerms]
             .join(' ')
             .toLowerCase()
             .includes('clipboard'),

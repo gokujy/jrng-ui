@@ -8,7 +8,6 @@ JRNG UI date and time components are standalone Angular controls with original s
 import { ReactiveFormsModule } from '@angular/forms';
 import { JCalendarComponent } from 'jrng-ui/calendar';
 import { JDatePickerComponent } from 'jrng-ui/date-picker';
-import { JDateRangePickerComponent } from 'jrng-ui/date-range-picker';
 import { JTimePickerComponent } from 'jrng-ui/time-picker';
 ```
 
@@ -20,7 +19,7 @@ Root imports are also supported from `jrng-ui`.
 
 ```html
 <j-date-picker
-  label="Invoice date"
+  label="Scheduled on"
   placeholder="Select date"
   [formControl]="invoiceDate"
   [minDate]="minDate"
@@ -60,20 +59,18 @@ Events:
 />
 ```
 
-## j-date-range-picker
+## Date ranges
 
-`j-date-range-picker` supports start/end selection, hover range preview, min/max dates, clearing, presets, and CVA integration. It accepts tuple writes or object writes and emits an object value.
+Use `j-date-picker` with `selectionMode="range"` for start/end selection, hover range preview, min/max dates, clearing, presets, and CVA integration.
 
 ```ts
-type DateRange = {
-  start: string | Date | null;
-  end: string | Date | null;
-};
+type DateRange = readonly [Date | null, Date | null];
 ```
 
 ```html
-<j-date-range-picker
+<j-date-picker
   label="Order period"
+  selectionMode="range"
   [formControl]="orderPeriod"
   [minDate]="minDate"
   [maxDate]="maxDate"
@@ -89,10 +86,10 @@ Built-in presets:
 - This month
 - Last month
 
-Date object mode:
+Date and time range mode:
 
 ```html
-<j-date-range-picker dataType="date" [formControl]="projectWindow" />
+<j-date-picker selectionMode="range" showTime [formControl]="projectWindow" />
 ```
 
 ## j-time-picker
@@ -100,26 +97,16 @@ Date object mode:
 `j-time-picker` emits stable string values in `HH:mm` or `HH:mm:ss` format. It supports 12-hour or 24-hour display, minute steps, optional seconds, clearing, and CVA integration.
 
 ```html
-<j-time-picker
-  label="Start time"
-  [minuteStep]="15"
-  [hourFormat]="24"
-  [formControl]="startTime"
-/>
+<j-time-picker label="Start time" [minuteStep]="15" [hourFormat]="24" [formControl]="startTime" />
 ```
 
 12-hour display with seconds:
 
 ```html
-<j-time-picker
-  label="Task reminder"
-  [hourFormat]="12"
-  showSeconds
-  [formControl]="reminderTime"
-/>
+<j-time-picker label="Task reminder" [hourFormat]="12" showSeconds [formControl]="reminderTime" />
 ```
 
-The legacy `stepMinute` input is still accepted as an alias for `minuteStep`.
+Minute intervals are configured with `minuteStep`.
 
 ## j-calendar
 

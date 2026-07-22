@@ -2,14 +2,12 @@ export interface JCancelableCallback {
   cancel(): void;
 }
 
-export interface JDebouncedFunction<TArgs extends readonly unknown[]>
-  extends JCancelableCallback {
+export interface JDebouncedFunction<TArgs extends readonly unknown[]> extends JCancelableCallback {
   (...args: TArgs): void;
   flush(): void;
 }
 
-export interface JThrottledFunction<TArgs extends readonly unknown[]>
-  extends JCancelableCallback {
+export interface JThrottledFunction<TArgs extends readonly unknown[]> extends JCancelableCallback {
   (...args: TArgs): void;
 }
 

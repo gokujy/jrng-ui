@@ -1,15 +1,5 @@
-import {
-  Directive,
-  OnChanges,
-  OnDestroy,
-  inject,
-  input,
-  output,
-} from '@angular/core';
-import {
-  JKeyboardShortcutCleanup,
-  JKeyboardShortcutsService,
-} from './keyboard-shortcuts.service';
+import { Directive, OnChanges, OnDestroy, inject, input, output } from '@angular/core';
+import { JKeyboardShortcutCleanup, JKeyboardShortcutsService } from './keyboard-shortcuts.service';
 
 @Directive({
   selector: '[jHotkey]',
@@ -39,14 +29,10 @@ export class JHotkeyDirective implements OnChanges, OnDestroy {
       return;
     }
 
-    this.cleanup = this.shortcuts.register(
-      shortcut,
-      (event) => this.jHotkeyPressed.emit(event),
-      {
-        allowInEditable: this.jHotkeyAllowInEditable(),
-        preventDefault: true,
-      },
-    );
+    this.cleanup = this.shortcuts.register(shortcut, (event) => this.jHotkeyPressed.emit(event), {
+      allowInEditable: this.jHotkeyAllowInEditable(),
+      preventDefault: true,
+    });
   }
 
   private unregister(): void {

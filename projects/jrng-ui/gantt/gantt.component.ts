@@ -46,7 +46,7 @@ interface JGanttTaskView {
         <div class="j-gantt__grid" [style.--j-gantt-slots]="timelineSlots().length">
           <div class="j-gantt__corner">{{ labelHeader() }}</div>
           <div class="j-gantt__timeline">
-            @for (slot of timelineSlots(); track slot.label) {
+            @for (slot of timelineSlots(); track slot.date.getTime()) {
               <span>{{ slot.label }}</span>
             }
           </div>

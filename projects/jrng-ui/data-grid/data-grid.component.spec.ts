@@ -25,7 +25,7 @@ interface ProductRow {
       [selection]="selection"
       (globalFilterChange)="globalFilter = $event"
       (selectionChange)="selection = $event"
-      (stateRestoreError)="restoreError = $event"
+      (stateError)="restoreError = $event"
     />
   `,
 })
@@ -59,7 +59,8 @@ describe('JDataGridComponent', () => {
   });
 
   function table(): JTableComponent {
-    return fixture.debugElement.query(By.directive(JTableComponent)).componentInstance as JTableComponent;
+    return fixture.debugElement.query(By.directive(JTableComponent))
+      .componentInstance as JTableComponent;
   }
 
   it('renders typed rows through the table wrapper', () => {
@@ -97,7 +98,7 @@ describe('JDataGridComponent', () => {
       error: new SyntaxError('Invalid JSON'),
     };
 
-    table().stateRestoreError.emit(error);
+    table().error.emit(error);
 
     expect(host.restoreError).toBe(error);
   });

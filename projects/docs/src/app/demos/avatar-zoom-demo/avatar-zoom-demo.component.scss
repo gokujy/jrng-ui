@@ -1,0 +1,12 @@
+.profile {
+  align-items: center;
+  display: flex;
+  gap: var(--j-spacing-md);
+}
+.profile div {
+  display: grid;
+  gap: var(--j-spacing-xs);
+}
+.profile span {
+  color: var(--j-color-muted-foreground);
+}

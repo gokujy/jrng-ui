@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, booleanAttribute } from '@angular/core';
+import { ChangeDetectionStrategy, Component, booleanAttribute, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { JMenuItem } from 'jrng-ui/menu';
 
@@ -10,9 +10,9 @@ import { JMenuItem } from 'jrng-ui/menu';
       <div class="j-topbar__brand" data-jc-section="brand">
         <ng-content select="[jTopbarBrand]"></ng-content>
       </div>
-      @if (showNavigation) {
-        <nav class="j-topbar__nav" data-jc-section="nav" [attr.aria-label]="ariaLabel">
-          @for (item of model; track item.label || item.url || item.routerLink || $index) {
+      @if (showNavigation()) {
+        <nav class="j-topbar__nav" data-jc-section="nav" [attr.aria-label]="ariaLabel()">
+          @for (item of model(); track item.label || item.url || item.routerLink || $index) {
             <a
               class="j-topbar__link"
               [href]="item.url || null"
@@ -116,17 +116,17 @@ import { JMenuItem } from 'jrng-ui/menu';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JTopbarComponent {
-  @Input() model: readonly JMenuItem[] = [];
-  @Input() ariaLabel = 'Top navigation';
-  @Input() activeKey = '';
-  @Input({ transform: booleanAttribute }) showNavigation = true;
+  readonly model = input<readonly JMenuItem[]>([]);
+  readonly ariaLabel = input('Top navigation');
+  readonly activeKey = input('');
+  readonly showNavigation = input(true, { transform: booleanAttribute });
 
   isActive(item: JMenuItem): boolean {
     return (
-      !!this.activeKey &&
-      (item.label === this.activeKey ||
-        item.url === this.activeKey ||
-        item.routerLink === this.activeKey)
+      !!this.activeKey() &&
+      (item.label === this.activeKey() ||
+        item.url === this.activeKey() ||
+        item.routerLink === this.activeKey())
     );
   }
 }

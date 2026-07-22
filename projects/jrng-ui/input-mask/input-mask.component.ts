@@ -3,31 +3,33 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  effect,
   forwardRef,
   inject,
-  Input,
+  input,
   output,
+  signal,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { jAriaDescribedBy } from 'jrng-ui/core';
 import { jCreateId } from 'jrng-ui/core';
 import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
-import { JSize } from 'jrng-ui/core';
+import { JComponentSize } from 'jrng-ui/core';
 import { JInputVariant } from 'jrng-ui/input';
 
 @Component({
   selector: 'j-input-mask',
   imports: [],
   template: `
-    @if (label) {
+    @if (label()) {
       <label
         class="j-input-mask__label"
         data-jc-name="input-mask"
         data-jc-section="label"
-        [for]="id"
+        [for]="id()"
       >
-        <span>{{ label }}</span>
-        @if (required) {
+        <span>{{ label() }}</span>
+        @if (required()) {
           <span class="j-input-mask__required" aria-hidden="true">*</span>
         }
       </label>
@@ -36,39 +38,39 @@ import { JInputVariant } from 'jrng-ui/input';
       [class]="inputClasses"
       data-jc-name="input-mask"
       data-jc-section="root"
-      [attr.data-j-disabled]="isDisabled ? 'true' : null"
+      [attr.data-j-disabled]="isDisabled() ? 'true' : null"
       [attr.data-j-invalid]="hasError ? 'true' : null"
       [attr.data-j-active]="value ? 'true' : null"
-      [id]="id"
-      [name]="name || null"
+      [id]="id()"
+      [name]="name() || null"
       type="text"
-      [placeholder]="placeholder || mask"
-      [disabled]="isDisabled"
-      [readOnly]="readonly"
-      [required]="required"
+      [placeholder]="placeholder() || mask()"
+      [disabled]="isDisabled()"
+      [readOnly]="readonly()"
+      [required]="required()"
       [value]="value"
       [attr.aria-invalid]="hasError ? 'true' : null"
       [attr.aria-describedby]="describedBy"
       (input)="handleInput($event)"
       (blur)="handleBlur()"
     />
-    @if (clearable && value) {
+    @if (clearable() && value) {
       <button
         class="j-input-mask__clear"
         data-jc-section="clear"
         type="button"
         aria-label="Clear"
-        [disabled]="isDisabled || readonly"
+        [disabled]="isDisabled() || readonly()"
         (click)="clearValue()"
       >
         x
       </button>
     }
-    @if (hasError && error) {
-      <p class="j-input-mask__message j-input-mask__message--error" [id]="errorId">{{ error }}</p>
+    @if (hasError && error()) {
+      <p class="j-input-mask__message j-input-mask__message--error" [id]="errorId">{{ error() }}</p>
     }
-    @if (hint && !hasError) {
-      <p class="j-input-mask__message" [id]="hintId">{{ hint }}</p>
+    @if (hint() && !hasError) {
+      <p class="j-input-mask__message" [id]="hintId">{{ hint() }}</p>
     }
   `,
   styles: [
@@ -151,25 +153,26 @@ import { JInputVariant } from 'jrng-ui/input';
 export class JInputMaskComponent implements ControlValueAccessor {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
-  @Input() id = jCreateId('j-input-mask');
-  @Input() name = '';
-  @Input() label = '';
-  @Input() placeholder = '';
-  @Input() mask = '';
-  @Input() hint = '';
-  @Input() error = '';
-  @Input() styleClass = '';
-  @Input() pt: JPassThrough | null = null;
-  @Input({ alias: 'aria-describedby' }) ariaDescribedby = '';
-  @Input() size: JSize = 'md';
-  @Input() variant: JInputVariant = 'outlined';
-  @Input({ transform: booleanAttribute }) readonly = false;
-  @Input({ transform: booleanAttribute }) invalid = false;
-  @Input({ transform: booleanAttribute }) required = false;
-  @Input({ transform: booleanAttribute }) clearable = false;
-  @Input({ transform: booleanAttribute }) fluid = false;
-  @Input({ transform: booleanAttribute }) fullWidth = false;
-  @Input({ transform: booleanAttribute }) unmask = false;
+  readonly id = input(jCreateId('j-input-mask'));
+  readonly name = input('');
+  readonly label = input('');
+  readonly placeholder = input('');
+  readonly mask = input('');
+  readonly hint = input('');
+  readonly error = input('');
+  readonly styleClass = input('');
+  readonly pt = input<JPassThrough | null>(null);
+  readonly ariaDescribedby = input('', { alias: 'aria-describedby' });
+  readonly size = input<JComponentSize>('md');
+  readonly variant = input<JInputVariant>('outlined');
+  readonly readonly = input(false, { transform: booleanAttribute });
+  readonly invalid = input(false, { transform: booleanAttribute });
+  readonly required = input(false, { transform: booleanAttribute });
+  readonly clearable = input(false, { transform: booleanAttribute });
+  readonly fluid = input(false, { transform: booleanAttribute });
+  readonly fullWidth = input(false, { transform: booleanAttribute });
+  readonly unmask = input(false, { transform: booleanAttribute });
+  readonly disabled = input(false, { transform: booleanAttribute });
 
   readonly valueChange = output<string>();
   readonly clear = output<void>();
@@ -177,30 +180,24 @@ export class JInputMaskComponent implements ControlValueAccessor {
   readonly hintId = jCreateId('j-input-mask-hint');
   readonly errorId = jCreateId('j-input-mask-error');
   value = '';
-  isDisabled = false;
+  readonly isDisabled = signal(false);
 
   private onChange: (value: string) => void = () => undefined;
   private onTouched: () => void = () => undefined;
 
-  @Input({ transform: booleanAttribute })
-  set disabled(value: boolean) {
-    this.isDisabled = value;
-    this.changeDetectorRef.markForCheck();
-  }
-
-  get disabled(): boolean {
-    return this.isDisabled;
+  constructor() {
+    effect(() => this.isDisabled.set(this.disabled()));
   }
 
   get hasError(): boolean {
-    return this.invalid || this.error.trim().length > 0;
+    return this.invalid() || this.error().trim().length > 0;
   }
 
   get describedBy(): string | null {
     return jAriaDescribedBy(
-      this.ariaDescribedby,
+      this.ariaDescribedby(),
       this.hasError ? this.errorId : null,
-      this.hint ? this.hintId : null,
+      this.hint() ? this.hintId : null,
     );
   }
 
@@ -208,14 +205,14 @@ export class JInputMaskComponent implements ControlValueAccessor {
     return jMergePartClasses(
       [
         'j-input-mask',
-        `j-input-mask--${this.size}`,
-        `j-input-mask--${this.variant}`,
+        `j-input-mask--${this.size()}`,
+        `j-input-mask--${this.variant()}`,
         this.hasError ? 'is-invalid' : '',
-        this.isDisabled ? 'is-disabled' : '',
-        this.fluid || this.fullWidth ? 'j-input-mask--fluid' : '',
+        this.isDisabled() ? 'is-disabled' : '',
+        this.fluid() || this.fullWidth() ? 'j-input-mask--fluid' : '',
       ],
-      this.styleClass,
-      this.pt,
+      this.styleClass(),
+      this.pt(),
     );
   }
 
@@ -233,7 +230,7 @@ export class JInputMaskComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled = isDisabled;
+    this.isDisabled.set(isDisabled);
     this.changeDetectorRef.markForCheck();
   }
 
@@ -241,7 +238,7 @@ export class JInputMaskComponent implements ControlValueAccessor {
     const target = event.target as HTMLInputElement;
     this.value = this.applyMask(target.value);
     target.value = this.value;
-    const emittedValue = this.unmask ? this.rawValue(this.value) : this.value;
+    const emittedValue = this.unmask() ? this.rawValue(this.value) : this.value;
     this.onChange(emittedValue);
     this.valueChange.emit(emittedValue);
   }
@@ -251,7 +248,7 @@ export class JInputMaskComponent implements ControlValueAccessor {
   }
 
   clearValue(): void {
-    if (this.isDisabled || this.readonly || !this.value) {
+    if (this.isDisabled() || this.readonly() || !this.value) {
       return;
     }
 
@@ -263,7 +260,8 @@ export class JInputMaskComponent implements ControlValueAccessor {
   }
 
   private applyMask(value: string): string {
-    if (!this.mask) return value;
+    const mask = this.mask();
+    if (!mask) return value;
     const source = [...value];
     let sourceIndex = 0;
     let result = '';
@@ -273,7 +271,7 @@ export class JInputMaskComponent implements ControlValueAccessor {
       '*': (character) => /[a-z0-9]/i.test(character),
     };
 
-    for (const maskCharacter of this.mask) {
+    for (const maskCharacter of mask) {
       const acceptsCharacter = accepts[maskCharacter];
       if (!acceptsCharacter) {
         if (sourceIndex < source.length || result) result += maskCharacter;

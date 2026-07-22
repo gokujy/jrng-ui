@@ -3,99 +3,79 @@ import {
   ChangeDetectionStrategy,
   computed,
   Component,
+  ElementRef,
   input,
   output,
+  viewChild,
 } from '@angular/core';
 import { JRippleDirective } from 'jrng-ui/core';
+import { JIconComponent } from 'jrng-ui/icon';
+import { JTooltipDirective } from 'jrng-ui/tooltip';
 import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
-import { JSeverity } from 'jrng-ui/core';
+import {
+  JActionDisplay,
+  JActionVariant,
+  JComponentSize,
+  JComponentWidth,
+  JSeverity,
+  JShape,
+} from 'jrng-ui/core';
 
 export type JButtonType = 'button' | 'submit' | 'reset';
 export type JButtonIconPosition = 'left' | 'right';
-export type JButtonVariant = 'filled' | 'outline' | 'outlined' | 'ghost' | 'soft' | 'link' | 'text';
+export type JButtonVariant = JActionVariant;
 export type JButtonSeverity = JSeverity;
-export type JButtonSize = 'sm' | 'md' | 'lg' | 'xl';
-export type JrButtonVariant = JButtonVariant | JButtonSeverity;
-export type JrButtonSize = JButtonSize;
-export type JrButtonType = 'button' | 'submit' | 'reset';
+export type JButtonSize = JComponentSize;
 
 @Component({
   selector: 'j-button',
-  imports: [JRippleDirective],
+  imports: [JRippleDirective, JIconComponent, JTooltipDirective],
   templateUrl: './button.component.html',
   styleUrl: './button.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class JrButtonComponent {
+export class JButtonComponent {
+  private readonly buttonElement = viewChild.required<ElementRef<HTMLButtonElement>>('button');
   readonly label = input('');
   readonly type = input<JButtonType>('button');
   readonly severity = input<JButtonSeverity>('primary');
-  readonly variant = input<JButtonVariant | JrButtonVariant>('filled');
+  readonly variant = input<JButtonVariant>('solid');
   readonly size = input<JButtonSize>('md');
   readonly icon = input('');
   readonly iconPosition = input<JButtonIconPosition>('left');
   readonly styleClass = input('');
   readonly ariaLabel = input('');
+  readonly ariaExpanded = input<boolean | null>(null);
+  readonly ariaPressed = input<boolean | null>(null);
+  readonly ariaChecked = input<boolean | null>(null);
+  readonly ariaRole = input('');
+  readonly ariaHasPopup = input<'menu' | 'dialog' | 'listbox' | 'tree' | 'grid' | 'true' | ''>('');
+  readonly title = input('');
   readonly pt = input<JPassThrough | null>(null);
   readonly disabled = input(false, { transform: booleanAttribute });
   readonly loading = input(false, { transform: booleanAttribute });
-  readonly rounded = input(false, { transform: booleanAttribute });
-  readonly outlined = input(false, { transform: booleanAttribute });
-  readonly text = input(false, { transform: booleanAttribute });
-  readonly raised = input(false, { transform: booleanAttribute });
-  readonly fullWidth = input(false, { transform: booleanAttribute });
-  readonly iconOnly = input(false, { transform: booleanAttribute });
+  readonly shape = input<JShape>('rounded');
+  readonly width = input<JComponentWidth>('auto');
+  readonly actionDisplay = input<JActionDisplay>('icon-label');
+  readonly ripple = input(true, { transform: booleanAttribute });
+  readonly badge = input<string | number | null>(null);
+  readonly badgeAriaLabel = input('');
+  readonly loadingLabel = input('Loading');
 
   readonly onClick = output<MouseEvent>();
 
   readonly isBlocked = computed(() => this.disabled() || this.loading());
 
-  readonly resolvedSeverity = computed<JButtonSeverity>(() => {
-    const legacySeverity = this.variant();
-    if (
-      legacySeverity === 'primary' ||
-      legacySeverity === 'secondary' ||
-      legacySeverity === 'success' ||
-      legacySeverity === 'warning' ||
-      legacySeverity === 'danger' ||
-      legacySeverity === 'info' ||
-      legacySeverity === 'neutral'
-    ) {
-      return legacySeverity;
-    }
-
-    return this.severity();
-  });
-
-  readonly resolvedVariant = computed<JButtonVariant>(() => {
-    const variant = this.variant();
-
-    if (this.text() || variant === 'text') {
-      return 'link';
-    }
-
-    if (variant === 'ghost' || variant === 'soft' || variant === 'link') {
-      return variant;
-    }
-
-    if (this.outlined() || variant === 'outlined' || variant === 'outline') {
-      return 'outline';
-    }
-
-    return 'filled';
-  });
-
   readonly buttonClasses = computed(() =>
     jMergePartClasses(
       [
         'j-button',
-        `j-button--${this.resolvedSeverity()}`,
-        `j-button--${this.resolvedVariant()}`,
+        `j-button--${this.severity()}`,
+        `j-button--${this.variant()}`,
         `j-button--${this.size()}`,
-        this.rounded() ? 'j-button--rounded' : '',
-        this.raised() ? 'j-button--raised' : '',
-        this.fullWidth() ? 'j-button--full' : '',
-        this.iconOnly() ? 'j-button--icon-only' : '',
+        `j-button--shape-${this.shape()}`,
+        this.width() === 'full' ? 'j-button--full' : '',
+        this.actionDisplay() === 'icon' ? 'j-button--icon-only' : '',
         this.loading() ? 'is-loading' : '',
       ],
       this.styleClass(),
@@ -111,5 +91,10 @@ export class JrButtonComponent {
     }
 
     this.onClick.emit(event);
+  }
+
+  /** Moves focus to the underlying native button. */
+  focus(options?: FocusOptions): void {
+    this.buttonElement().nativeElement.focus(options);
   }
 }

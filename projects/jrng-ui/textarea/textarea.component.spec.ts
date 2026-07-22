@@ -50,8 +50,8 @@ describe('JTextareaComponent', () => {
   it('renders the character count when showCount and maxLength are set', () => {
     const fixture = TestBed.createComponent(JTextareaComponent);
     const component = fixture.componentInstance;
-    component.showCount = true;
-    component.maxLength = 100;
+    fixture.componentRef.setInput('showCount', true);
+    fixture.componentRef.setInput('maxLength', 100);
     component.writeValue('abcde');
     fixture.detectChanges();
 
@@ -61,7 +61,7 @@ describe('JTextareaComponent', () => {
 
   it('renders the label when provided', () => {
     const fixture = TestBed.createComponent(JTextareaComponent);
-    fixture.componentInstance.label = 'Comments';
+    fixture.componentRef.setInput('label', 'Comments');
     fixture.detectChanges();
 
     const label = fixture.nativeElement.querySelector('.j-textarea__label') as HTMLElement;

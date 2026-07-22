@@ -71,7 +71,7 @@ function verifyMetadata(packageJson) {
     }
   }
 
-  for (const optionalPeer of ['@angular/router', 'chart.js', 'driver.js']) {
+  for (const optionalPeer of ['@angular/router', 'chart.js']) {
     if (!packageJson.peerDependencies?.[optionalPeer]) {
       fail(`Optional peer dependency is missing: ${optionalPeer}.`);
     }
@@ -200,8 +200,13 @@ function verifyForbiddenContent(files) {
 }
 
 function verifySizeBudgets(report) {
-  const maximumPackedBytes = 450_000;
-  const maximumUnpackedBytes = 2_250_000;
+  // Phase 3 adds seven independently tree-shakable enterprise-pattern
+  // entrypoints and expands editor/chart/core declarations. Consumers still
+  // pay only for imported entrypoints. Keep a narrow margin over the measured
+  // 448,829-byte / 3,189,438-byte / 306-file package.
+  const maximumPackedBytes = 460_000;
+  const maximumUnpackedBytes = 3_300_000;
+  const maximumFileCount = 315;
   const maximumFileBytes = 256_000;
 
   if (report.size > maximumPackedBytes) {
@@ -209,6 +214,9 @@ function verifySizeBudgets(report) {
   }
   if (report.unpackedSize > maximumUnpackedBytes) {
     fail(`Unpacked size ${report.unpackedSize} exceeds ${maximumUnpackedBytes} bytes.`);
+  }
+  if (report.entryCount > maximumFileCount) {
+    fail(`File count ${report.entryCount} exceeds ${maximumFileCount}.`);
   }
   for (const file of report.files) {
     if (file.size > maximumFileBytes) {
@@ -285,6 +293,12 @@ function finish(report) {
     console.log(
       `Package verified: ${report.entryCount} files, ${report.size} bytes packed, ${report.unpackedSize} bytes unpacked.`,
     );
+    if (process.argv.includes('--report')) {
+      console.log('Largest package files:');
+      for (const file of [...report.files].sort((a, b) => b.size - a.size).slice(0, 10)) {
+        console.log(`- ${file.path}: ${file.size} bytes`);
+      }
+    }
   }
 }
 

@@ -29,7 +29,7 @@ Component-specific keyboard behavior:
 - `j-select`: ArrowUp/ArrowDown move active option, Enter selects, Escape closes, Tab closes.
 - `j-dialog`: Escape closes when `closeOnEscape` is enabled; modal content uses focus trap.
 - `j-drawer`: Escape closes when `closeOnEscape` is enabled.
-- `j-image-preview`: Escape closes preview.
+- `j-image` preview: Escape closes the internal viewer.
 - `j-menu`: ArrowUp/ArrowDown navigate and Enter/Space activate items.
 - `j-rating`, `j-radio-group`, and `j-slider`: keyboard interaction is implemented for common form use.
 
@@ -54,9 +54,9 @@ Form components that own values implement ControlValueAccessor and support React
 - `j-slider`
 - `j-date-picker`
 - `j-time-picker`
-- `j-date-range-picker`
+- `j-date-picker` range mode
 - `j-color-picker`
-- `j-editor` placeholder textarea API
+- `j-editor` labelled multiline rich-text textbox and keyboard-focusable toolbar
 
 Use labels, hints, and errors whenever possible:
 
@@ -64,7 +64,7 @@ Use labels, hints, and errors whenever possible:
 <j-input
   label="Email"
   hint="Use your work address"
-  error="Email is required"
+  error="Provide a contact email"
   [formControl]="email"
 />
 ```
@@ -96,9 +96,7 @@ Current responsive coverage:
 Use full-screen dialog mode for complex mobile workflows:
 
 ```html
-<j-dialog size="full" [(visible)]="open" header="Edit record">
-  ...
-</j-dialog>
+<j-dialog size="full" [(visible)]="open" header="Edit record"> ... </j-dialog>
 ```
 
 ## RTL Support
@@ -119,7 +117,7 @@ Use explicit labels when visible text is not enough:
 ```html
 <j-button icon="+" ariaLabel="Create record" />
 <j-copy-button text="REC-2026-001" ariaLabel="Copy record number" />
-<j-avatar-group [items]="users" ariaLabel="Assigned users" />
+<j-avatar-group [items]="users" ariaLabel="Team members" />
 ```
 
 For images:

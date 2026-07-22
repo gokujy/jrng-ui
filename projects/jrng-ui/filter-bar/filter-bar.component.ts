@@ -7,6 +7,8 @@ import {
   output,
   signal,
 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { JDatePickerComponent, JDatePickerValue } from 'jrng-ui/date-picker';
 
 export interface JFilterBarValue {
   readonly search: string;
@@ -18,7 +20,7 @@ export interface JFilterBarValue {
 
 @Component({
   selector: 'j-filter-bar',
-  imports: [],
+  imports: [FormsModule, JDatePickerComponent],
   template: `
     <section
       class="j-filter-bar"
@@ -50,14 +52,24 @@ export interface JFilterBarValue {
       }
 
       @if (showDateRange()) {
-        <label class="j-filter-bar__field">
-          <span>{{ startDateLabel() }}</span>
-          <input type="date" [value]="startDate()" (input)="updateStartDate($event)" />
-        </label>
-        <label class="j-filter-bar__field">
-          <span>{{ endDateLabel() }}</span>
-          <input type="date" [value]="endDate()" (input)="updateEndDate($event)" />
-        </label>
+        <j-date-picker
+          [label]="startDateLabel()"
+          [ngModel]="startDateValue()"
+          (ngModelChange)="updateStartDate($event)"
+          [maxDate]="endDateValue()"
+          dateFormat="yyyy-MM-dd"
+          [showIcon]="true"
+          [showButtonBar]="true"
+        />
+        <j-date-picker
+          [label]="endDateLabel()"
+          [ngModel]="endDateValue()"
+          (ngModelChange)="updateEndDate($event)"
+          [minDate]="startDateValue()"
+          dateFormat="yyyy-MM-dd"
+          [showIcon]="true"
+          [showButtonBar]="true"
+        />
       }
 
       <div class="j-filter-bar__custom">
@@ -118,6 +130,10 @@ export interface JFilterBarValue {
       .j-filter-bar__field {
         display: grid;
         gap: var(--j-spacing-1, 0.25rem);
+      }
+
+      .j-filter-bar j-date-picker {
+        min-width: 0;
       }
 
       .j-filter-bar__search span,
@@ -244,13 +260,16 @@ export class JFilterBarComponent {
     this.emitChange();
   }
 
-  updateStartDate(event: Event): void {
-    this.startDate.set((event.target as HTMLInputElement).value);
+  readonly startDateValue = computed(() => this.parseDate(this.startDate()));
+  readonly endDateValue = computed(() => this.parseDate(this.endDate()));
+
+  updateStartDate(value: JDatePickerValue): void {
+    this.startDate.set(this.toDateString(value));
     this.emitChange();
   }
 
-  updateEndDate(event: Event): void {
-    this.endDate.set((event.target as HTMLInputElement).value);
+  updateEndDate(value: JDatePickerValue): void {
+    this.endDate.set(this.toDateString(value));
     this.emitChange();
   }
 
@@ -275,5 +294,22 @@ export class JFilterBarComponent {
 
   private emitChange(): void {
     this.filterChange.emit(this.value());
+  }
+
+  private parseDate(value: string): Date | null {
+    if (!value) return null;
+    const [year, month, day] = value.split('-').map(Number);
+    return year && month && day ? new Date(year, month - 1, day) : null;
+  }
+
+  private toDateString(value: JDatePickerValue): string {
+    if (!value) return '';
+    const date =
+      value instanceof Date ? value : typeof value === 'string' ? this.parseDate(value) : null;
+    if (!date || Number.isNaN(date.getTime())) return '';
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 }

@@ -7,10 +7,22 @@ import {
   output,
 } from '@angular/core';
 import { JIconComponent } from 'jrng-ui/icon';
+import { JButtonComponent } from 'jrng-ui/button';
+import { JActionDisplay, JSeverity } from 'jrng-ui/core';
+import { formatFileSize, resolveFileType } from './file-type';
+
+export interface JFilePreviewAction {
+  readonly visible?: boolean;
+  readonly icon?: string;
+  readonly label?: string;
+  readonly severity?: JSeverity;
+  readonly disabled?: boolean;
+  readonly loading?: boolean;
+}
 
 @Component({
   selector: 'j-file-preview',
-  imports: [JIconComponent],
+  imports: [JIconComponent, JButtonComponent],
   template: `
     <article
       class="j-file-preview"
@@ -35,14 +47,47 @@ import { JIconComponent } from 'jrng-ui/icon';
         }
       </div>
       <div class="j-file-preview__actions">
-        @if (url()) {
-          <a [href]="url()" target="_blank" rel="noreferrer" (click)="preview.emit()">{{
-            previewLabel()
-          }}</a>
+        @if (previewVisible()) {
+          <j-button
+            variant="text"
+            [actionDisplay]="actionDisplay()"
+            [icon]="previewAction().icon || 'eye'"
+            [label]="previewAction().label || previewLabel()"
+            [ariaLabel]="previewAction().label || previewLabel()"
+            [title]="previewAction().label || previewLabel()"
+            [severity]="previewAction().severity || 'neutral'"
+            [disabled]="previewAction().disabled || false"
+            [loading]="previewAction().loading || false"
+            (onClick)="preview.emit()"
+          />
         }
-        <button type="button" (click)="download.emit()">{{ downloadLabel() }}</button>
-        @if (removable()) {
-          <button type="button" (click)="remove.emit()">{{ removeLabel() }}</button>
+        @if (downloadAction().visible !== false) {
+          <j-button
+            variant="text"
+            [actionDisplay]="actionDisplay()"
+            [icon]="downloadAction().icon || 'download'"
+            [label]="downloadAction().label || downloadLabel()"
+            [ariaLabel]="downloadAction().label || downloadLabel()"
+            [title]="downloadAction().label || downloadLabel()"
+            [severity]="downloadAction().severity || 'neutral'"
+            [disabled]="downloadAction().disabled || false"
+            [loading]="downloadAction().loading || false"
+            (onClick)="download.emit()"
+          />
+        }
+        @if (removable() && removeAction().visible !== false) {
+          <j-button
+            variant="text"
+            severity="danger"
+            [actionDisplay]="actionDisplay()"
+            [icon]="removeAction().icon || 'trash'"
+            [label]="removeAction().label || removeLabel()"
+            [ariaLabel]="removeAction().label || removeLabel()"
+            [title]="removeAction().label || removeLabel()"
+            [disabled]="removeAction().disabled || false"
+            [loading]="removeAction().loading || false"
+            (onClick)="remove.emit()"
+          />
         }
       </div>
     </article>
@@ -121,6 +166,7 @@ export class JFilePreviewComponent {
   readonly file = input<File | null>(null);
   readonly fileName = input('');
   readonly fileSize = input(0);
+  readonly mimeType = input('');
   readonly description = input('');
   readonly url = input('');
   readonly previewLabel = input('Preview');
@@ -130,36 +176,31 @@ export class JFilePreviewComponent {
   readonly typeLabel = input('');
   readonly showTypeLabel = input(false, { transform: booleanAttribute });
   readonly removable = input(true, { transform: booleanAttribute });
+  readonly actionDisplay = input<JActionDisplay>('icon');
+  readonly previewAction = input<JFilePreviewAction>({});
+  readonly downloadAction = input<JFilePreviewAction>({});
+  readonly removeAction = input<JFilePreviewAction>({ severity: 'danger' });
   readonly styleClass = input('');
 
   readonly remove = output<void>();
   readonly preview = output<void>();
   readonly download = output<void>();
 
+  readonly previewVisible = computed(
+    () => this.previewAction().visible ?? Boolean(this.url() || this.file()),
+  );
+
   readonly name = computed(() => this.file()?.name || this.fileName());
-  readonly extension = computed(
-    () => this.name().split('.').pop()?.slice(0, 4).toUpperCase() || 'FILE',
+  readonly extension = computed(() => this.presentation().extension.toUpperCase() || 'FILE');
+  readonly presentation = computed(() =>
+    resolveFileType({ fileName: this.name(), mimeType: this.file()?.type || this.mimeType() }),
   );
   readonly resolvedIcon = computed(() => {
     if (this.icon()) return this.icon();
-    const extension = this.extension().toLocaleLowerCase();
-    if (['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'].includes(extension)) return 'image';
-    if (['mp4', 'webm', 'mov'].includes(extension)) return 'video';
-    if (['zip', 'rar', '7z'].includes(extension)) return 'archive';
-    if (['txt', 'md', 'doc', 'docx', 'pdf'].includes(extension)) return 'file-text';
-    return 'file';
+    return this.presentation().icon;
   });
   readonly sizeLabel = computed(() => {
     const size = this.file()?.size || this.fileSize();
-    if (!size) {
-      return '';
-    }
-    if (size < 1024) {
-      return `${size} B`;
-    }
-    if (size < 1024 * 1024) {
-      return `${(size / 1024).toFixed(1)} KB`;
-    }
-    return `${(size / 1024 / 1024).toFixed(1)} MB`;
+    return size ? formatFileSize(size) : '';
   });
 }

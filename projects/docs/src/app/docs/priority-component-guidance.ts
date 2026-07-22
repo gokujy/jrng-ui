@@ -8,7 +8,7 @@ export interface PriorityComponentGuidance {
   readonly keyboardBehaviour: readonly string[];
   readonly responsiveBehaviour: string;
   readonly darkMode: string;
-  readonly realWorldExample: string;
+  readonly composedExample: string;
   readonly troubleshooting: readonly string[];
 }
 
@@ -20,7 +20,7 @@ const standardResponsive =
 
 function guidance(
   advancedExample: string,
-  realWorldExample: string,
+  composedExample: string,
   overrides: Partial<PriorityComponentGuidance> = {},
 ): PriorityComponentGuidance {
   return {
@@ -36,7 +36,7 @@ function guidance(
     ],
     responsiveBehaviour: standardResponsive,
     darkMode: standardDarkMode,
-    realWorldExample,
+    composedExample,
     troubleshooting: [
       'Confirm the component is imported from its public secondary entrypoint.',
       'Confirm JRNG UI global styles are loaded once.',
@@ -60,7 +60,7 @@ const formGuidance = {
 
 export const priorityComponentGuidance: Readonly<Record<string, PriorityComponentGuidance>> = {
   button: guidance(
-    `<j-button label="Save changes" icon="check" [loading]="saving" (onClick)="save()" />`,
+    `<j-button label="Apply updates" icon="check" [loading]="saving" (onClick)="save()" />`,
     'Submit a business form while preventing repeated activation during an asynchronous save.',
     {
       templates: ['Default label content and documented icon input.'],
@@ -162,7 +162,7 @@ export const priorityComponentGuidance: Readonly<Record<string, PriorityComponen
     },
   ),
   'file-upload': guidance(
-    `<j-file-upload title="Upload documents" accept=".pdf,.png" multiple />`,
+    `<j-file-upload title="Add files" accept=".pdf,.png" multiple />`,
     'Collect approved document types and show progress or validation feedback.',
     {
       validationStates: [
@@ -263,17 +263,8 @@ export const priorityComponentGuidance: Readonly<Record<string, PriorityComponen
       ],
     },
   ),
-  'metric-card': guidance(
-    `<j-metric-card label="Active users" value="1,284" trend="+8.4%" />`,
-    'Summarize a key dashboard measure with supporting trend context.',
-    {
-      templates: ['Optional icon, trend, and supporting content.'],
-      responsiveBehaviour:
-        'Place cards in a responsive grid that stacks without truncating labels or values.',
-    },
-  ),
   'page-header': guidance(
-    `<j-page-header title="Users" description="Manage access and profiles" [breadcrumbs]="breadcrumbs"><j-button label="Create user" /></j-page-header>`,
+    `<j-page-header title="Users" subtitle="Manage access and profiles" [breadcrumbs]="breadcrumbs"><j-button label="Create user" /></j-page-header>`,
     'Orient users and expose the primary action for an admin page.',
     {
       templates: ['Breadcrumbs, title content, metadata, and trailing actions.'],

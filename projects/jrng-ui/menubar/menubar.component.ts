@@ -3,9 +3,9 @@ import {
   ChangeDetectionStrategy,
   Component,
   ContentChild,
-  Input,
   TemplateRef,
   booleanAttribute,
+  input,
   output,
 } from '@angular/core';
 import { JMenuItem, JMenuItemTemplateContext } from 'jrng-ui/menu';
@@ -20,20 +20,20 @@ import { JIconComponent } from 'jrng-ui/icon';
       [class.is-collapsed]="collapsed"
       data-jc-name="menubar"
       data-jc-section="root"
-      [attr.aria-label]="ariaLabel"
+      [attr.aria-label]="ariaLabel()"
     >
-      @if (mobileCollapse) {
+      @if (mobileCollapse()) {
         <button
           class="j-menubar__toggle"
           type="button"
           [attr.aria-expanded]="!collapsed"
           (click)="collapsed = !collapsed"
         >
-          {{ menuLabel }}
+          {{ menuLabel() }}
         </button>
       }
       <ul class="j-menubar__list" role="menubar">
-        @for (item of model; track item.label || item.icon || $index) {
+        @for (item of model(); track item.label || item.icon || $index) {
           <li
             class="j-menubar__item"
             role="none"
@@ -169,10 +169,10 @@ import { JIconComponent } from 'jrng-ui/icon';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JMenubarComponent {
-  @Input() model: readonly JMenuItem[] = [];
-  @Input() ariaLabel = 'Menubar';
-  @Input() menuLabel = 'Menu';
-  @Input({ transform: booleanAttribute }) mobileCollapse = true;
+  readonly model = input<readonly JMenuItem[]>([]);
+  readonly ariaLabel = input('Menubar');
+  readonly menuLabel = input('Menu');
+  readonly mobileCollapse = input(true, { transform: booleanAttribute });
   readonly itemClick = output<{ item: JMenuItem; originalEvent: Event }>();
   @ContentChild('jMenubarItem', { read: TemplateRef })
   itemTemplate?: TemplateRef<JMenuItemTemplateContext>;

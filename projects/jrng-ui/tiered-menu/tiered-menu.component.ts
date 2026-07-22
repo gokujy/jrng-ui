@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, model } from '@angular/core';
 import { JMenuComponent, JMenuItem } from 'jrng-ui/menu';
 
 @Component({
@@ -6,14 +6,14 @@ import { JMenuComponent, JMenuItem } from 'jrng-ui/menu';
   imports: [JMenuComponent],
   template: `
     <j-menu
-      [model]="model"
-      [ariaLabel]="ariaLabel"
-      [popup]="popup"
-      [visible]="visible"
+      [model]="model()"
+      [ariaLabel]="ariaLabel()"
+      [popup]="popup()"
+      [visible]="visible()"
       (visibleChange)="setVisible($event)"
-      [submenuOpenDelay]="submenuOpenDelay"
-      [submenuCloseDelay]="submenuCloseDelay"
-      [styleClass]="'j-tiered-menu ' + styleClass"
+      [submenuOpenDelay]="submenuOpenDelay()"
+      [submenuCloseDelay]="submenuCloseDelay()"
+      [styleClass]="'j-tiered-menu ' + styleClass()"
       data-jc-name="tiered-menu"
       data-jc-section="root"
     />
@@ -21,17 +21,15 @@ import { JMenuComponent, JMenuItem } from 'jrng-ui/menu';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JTieredMenuComponent {
-  @Input() model: readonly JMenuItem[] = [];
-  @Input() ariaLabel = 'Tiered menu';
-  @Input() styleClass = '';
-  @Input() popup = false;
-  @Input() visible = false;
-  @Input() submenuOpenDelay = 120;
-  @Input() submenuCloseDelay = 180;
-  readonly visibleChange = output<boolean>();
+  readonly model = input<readonly JMenuItem[]>([]);
+  readonly ariaLabel = input('Tiered menu');
+  readonly styleClass = input('');
+  readonly popup = input(false);
+  readonly visible = model(false);
+  readonly submenuOpenDelay = input(120);
+  readonly submenuCloseDelay = input(180);
 
   setVisible(value: boolean): void {
-    this.visible = value;
-    this.visibleChange.emit(value);
+    this.visible.set(value);
   }
 }

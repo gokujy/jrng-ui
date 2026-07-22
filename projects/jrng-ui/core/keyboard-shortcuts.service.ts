@@ -119,13 +119,15 @@ export function jMatchesKeyboardShortcut(
 }
 
 export function jIsEditableShortcutTarget(target: EventTarget | null): boolean {
-  if (!(target instanceof HTMLElement)) {
+  const candidate = target as (HTMLElement & { ownerDocument?: Document }) | null;
+  const HTMLElementCtor = candidate?.ownerDocument?.defaultView?.HTMLElement;
+  if (!candidate || !HTMLElementCtor || !(candidate instanceof HTMLElementCtor)) {
     return false;
   }
 
-  const tagName = target.tagName.toLowerCase();
+  const tagName = candidate.tagName.toLowerCase();
   return (
-    target.isContentEditable ||
+    candidate.isContentEditable ||
     tagName === 'input' ||
     tagName === 'textarea' ||
     tagName === 'select'

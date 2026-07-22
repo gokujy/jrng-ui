@@ -2,9 +2,11 @@ import {
   booleanAttribute,
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
-  Input,
-  Output,
+  computed,
+  input,
+  model,
+  output,
+  signal,
 } from '@angular/core';
 import {
   JNormalizedSelectionOption,
@@ -24,15 +26,15 @@ export interface JOrderListReorderEvent {
   imports: [],
   template: `
     <section class="j-order-list" data-jc-name="order-list" data-jc-section="root">
-      @if (header) {
-        <header class="j-order-list__header" data-jc-section="header">{{ header }}</header>
+      @if (header()) {
+        <header class="j-order-list__header" data-jc-section="header">{{ header() }}</header>
       }
-      @if (filter) {
+      @if (filter()) {
         <input
           class="j-order-list__filter"
           data-jc-section="filter"
-          [placeholder]="filterPlaceholder"
-          [value]="filterText"
+          [placeholder]="filterPlaceholder()"
+          [value]="filterText()"
           (input)="handleFilter($event)"
         />
       }
@@ -41,9 +43,9 @@ export interface JOrderListReorderEvent {
           class="j-order-list__items"
           role="listbox"
           aria-multiselectable="true"
-          [attr.aria-label]="ariaLabel"
+          [attr.aria-label]="ariaLabel()"
         >
-          @for (option of visibleOptions; track option.value; let i = $index) {
+          @for (option of visibleOptions(); track option.value; let i = $index) {
             <button
               class="j-order-list__item"
               data-jc-section="option"
@@ -58,19 +60,21 @@ export interface JOrderListReorderEvent {
               {{ option.label }}
             </button>
           }
-          @if (!visibleOptions.length) {
-            <div class="j-order-list__empty" data-jc-section="empty">{{ emptyMessage }}</div>
+          @if (!visibleOptions().length) {
+            <div class="j-order-list__empty" data-jc-section="empty">{{ emptyMessage() }}</div>
           }
         </div>
         <div class="j-order-list__actions" data-jc-section="actions">
-          <button type="button" (click)="moveTop()" [disabled]="!selectedIndexes.length">
+          <button type="button" (click)="moveTop()" [disabled]="!selectedIndexes().length">
             Top
           </button>
-          <button type="button" (click)="moveUp()" [disabled]="!selectedIndexes.length">Up</button>
-          <button type="button" (click)="moveDown()" [disabled]="!selectedIndexes.length">
+          <button type="button" (click)="moveUp()" [disabled]="!selectedIndexes().length">
+            Up
+          </button>
+          <button type="button" (click)="moveDown()" [disabled]="!selectedIndexes().length">
             Down
           </button>
-          <button type="button" (click)="moveBottom()" [disabled]="!selectedIndexes.length">
+          <button type="button" (click)="moveBottom()" [disabled]="!selectedIndexes().length">
             Bottom
           </button>
         </div>
@@ -146,67 +150,69 @@ export interface JOrderListReorderEvent {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JOrderListComponent {
-  @Input() value: readonly JSelectionOptionSource[] = [];
-  @Input() optionLabel = 'label';
-  @Input() optionValue = 'value';
-  @Input() optionDisabled = 'disabled';
-  @Input() header = '';
-  @Input() ariaLabel = 'Order list';
-  @Input() filterPlaceholder = 'Search';
-  @Input() emptyMessage = 'No items found';
-  @Input({ transform: booleanAttribute }) filter = false;
-  @Input({ transform: booleanAttribute }) multiple = true;
+  readonly value = model<readonly JSelectionOptionSource[]>([]);
+  readonly optionLabel = input('label');
+  readonly optionValue = input('value');
+  readonly optionDisabled = input('disabled');
+  readonly header = input('');
+  readonly ariaLabel = input('Order list');
+  readonly filterPlaceholder = input('Search');
+  readonly emptyMessage = input('No items found');
+  readonly filter = input(false, { transform: booleanAttribute });
+  readonly multiple = input(true, { transform: booleanAttribute });
 
-  @Output() valueChange = new EventEmitter<readonly JSelectionOptionSource[]>();
-  @Output() reorder = new EventEmitter<JOrderListReorderEvent>();
+  readonly reorder = output<JOrderListReorderEvent>();
 
-  filterText = '';
-  selected: readonly unknown[] = [];
+  readonly filterText = signal('');
+  readonly selected = signal<readonly unknown[]>([]);
 
-  get normalizedOptions(): readonly JNormalizedSelectionOption[] {
-    return jNormalizeSelectionOptions(
-      this.value,
-      this.optionLabel,
-      this.optionValue,
-      this.optionDisabled,
-    );
-  }
+  readonly normalizedOptions = computed<readonly JNormalizedSelectionOption[]>(() =>
+    jNormalizeSelectionOptions(
+      this.value(),
+      this.optionLabel(),
+      this.optionValue(),
+      this.optionDisabled(),
+    ),
+  );
 
-  get visibleOptions(): readonly JNormalizedSelectionOption[] {
-    const query = this.filterText.trim().toLowerCase();
+  readonly visibleOptions = computed<readonly JNormalizedSelectionOption[]>(() => {
+    const query = this.filterText().trim().toLowerCase();
+    const normalized = this.normalizedOptions();
     return query
-      ? this.normalizedOptions.filter((item) => item.label.toLowerCase().includes(query))
-      : this.normalizedOptions;
-  }
+      ? normalized.filter((item) => item.label.toLowerCase().includes(query))
+      : normalized;
+  });
 
-  get selectedIndexes(): readonly number[] {
-    return this.normalizedOptions
+  readonly selectedIndexes = computed<readonly number[]>(() =>
+    this.normalizedOptions()
       .map((option, index) => (this.isSelected(option) ? index : -1))
-      .filter((index) => index >= 0);
-  }
+      .filter((index) => index >= 0),
+  );
 
   handleFilter(event: Event): void {
-    this.filterText = (event.target as HTMLInputElement).value;
+    this.filterText.set((event.target as HTMLInputElement).value);
   }
 
   toggleSelected(option: JNormalizedSelectionOption): void {
     if (option.disabled) return;
-    this.selected = this.isSelected(option)
-      ? this.selected.filter((value) => !jSameSelectionValue(value, option.value))
-      : this.multiple
-        ? [...this.selected, option.value]
-        : [option.value];
+    this.selected.set(
+      this.isSelected(option)
+        ? this.selected().filter((value) => !jSameSelectionValue(value, option.value))
+        : this.multiple()
+          ? [...this.selected(), option.value]
+          : [option.value],
+    );
   }
 
   isSelected(option: JNormalizedSelectionOption): boolean {
-    return this.selected.some((value) => jSameSelectionValue(value, option.value));
+    return this.selected().some((value) => jSameSelectionValue(value, option.value));
   }
 
   moveTop(): void {
     this.moveSelectedTo(0);
   }
   moveBottom(): void {
-    this.moveSelectedTo(this.value.length - 1);
+    this.moveSelectedTo(this.value().length - 1);
   }
   moveUp(): void {
     this.shiftSelected(-1);
@@ -216,8 +222,10 @@ export class JOrderListComponent {
   }
 
   private shiftSelected(direction: 1 | -1): void {
-    const indexes = [...this.selectedIndexes].sort((a, b) => (direction > 0 ? b - a : a - b));
-    const next = [...this.value];
+    const indexes = [...this.selectedIndexes()].sort((a, b) => (direction > 0 ? b - a : a - b));
+    const next = [...this.value()];
+    let from = -1;
+    let to = -1;
     for (const index of indexes) {
       const target = index + direction;
       if (target < 0 || target >= next.length) continue;
@@ -225,18 +233,27 @@ export class JOrderListComponent {
         next[target] as JSelectionOptionSource,
         next[index] as JSelectionOptionSource,
       ];
-      this.reorder.emit({ value: next, from: index, to: target });
+      if (from < 0) {
+        from = index;
+        to = target;
+      }
+    }
+    // Emit reorder once, after all swaps, so listeners receive the final array
+    // instead of one event per swap referencing a still-mutating array.
+    if (from >= 0) {
+      this.reorder.emit({ value: next, from, to });
     }
     this.commit(next);
   }
 
   private moveSelectedTo(targetIndex: number): void {
-    const selectedIndexes = this.selectedIndexes;
+    const selectedIndexes = this.selectedIndexes();
     if (!selectedIndexes.length) return;
+    const value = this.value();
     const selectedItems = selectedIndexes
-      .map((index) => this.value[index])
+      .map((index) => value[index])
       .filter((item): item is JSelectionOptionSource => item != null);
-    const remaining = this.value.filter((_, index) => !selectedIndexes.includes(index));
+    const remaining = value.filter((_, index) => !selectedIndexes.includes(index));
     const insertAt = Math.max(0, Math.min(targetIndex, remaining.length));
     const next = [...remaining.slice(0, insertAt), ...selectedItems, ...remaining.slice(insertAt)];
     this.reorder.emit({ value: next, from: selectedIndexes[0] ?? 0, to: insertAt });
@@ -244,7 +261,6 @@ export class JOrderListComponent {
   }
 
   private commit(value: readonly JSelectionOptionSource[]): void {
-    this.value = value;
-    this.valueChange.emit(this.value);
+    this.value.set(value);
   }
 }

@@ -1,59 +1,63 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   DestroyRef,
   ElementRef,
-  EventEmitter,
-  Input,
-  Output,
   PLATFORM_ID,
   booleanAttribute,
+  computed,
   inject,
+  input,
+  output,
 } from '@angular/core';
 import { JTableAction, JTableActionEvent, JTableRow } from './table.types';
+import { JButtonComponent } from 'jrng-ui/button';
 
 @Component({
   selector: 'j-action-menu',
-  imports: [],
+  imports: [JButtonComponent],
   template: `
-    <div class="j-action-menu" [class.is-popup]="popup" [attr.aria-label]="ariaLabel">
-      @if (popup) {
-        <button
-          type="button"
-          class="j-action-menu__trigger"
-          [attr.aria-label]="triggerLabel"
-          aria-haspopup="menu"
-          [attr.aria-expanded]="open"
-          (click)="toggle($event)"
+    <div class="j-action-menu" [class.is-popup]="popup()" [attr.aria-label]="ariaLabel()">
+      @if (popup()) {
+        <j-button
+          styleClass="j-action-menu__trigger"
+          actionDisplay="icon"
+          variant="text"
+          size="sm"
+          [icon]="triggerIcon()"
+          [ariaLabel]="triggerLabel()"
+          [title]="triggerLabel()"
+          [ariaExpanded]="open"
+          ariaHasPopup="menu"
+          (onClick)="toggle($event)"
           (keydown)="handleTriggerKeydown($event)"
-        >
-          {{ triggerIcon }}
-        </button>
+        />
       }
 
-      @if (!popup || open) {
+      @if (!popup() || open) {
         <div
           class="j-action-menu__items"
-          [attr.role]="popup ? 'menu' : 'group'"
-          [attr.tabindex]="popup ? 0 : null"
-          [attr.aria-label]="ariaLabel"
+          [attr.role]="popup() ? 'menu' : 'group'"
+          [attr.tabindex]="popup() ? 0 : null"
+          [attr.aria-label]="ariaLabel()"
           (keydown)="handleMenuKeydown($event)"
         >
-          @for (action of normalizedActions; track action.key || action.label || $index) {
-            <button
-              type="button"
-              class="j-action-menu__item"
-              [class]="'j-action-menu__item j-action-menu__item--' + (action.severity || 'neutral')"
-              [attr.role]="popup ? 'menuitem' : null"
-              [disabled]="action.disabled"
-              (click)="activate(action, $event)"
-            >
-              @if (action.icon) {
-                <span class="j-action-menu__icon" aria-hidden="true">{{ action.icon }}</span>
-              }
-              <span>{{ action.label }}</span>
-            </button>
+          @for (action of normalizedActions(); track action.key || action.label || $index) {
+            <j-button
+              [styleClass]="
+                'j-action-menu__item j-action-menu__item--' + (action.severity || 'neutral')
+              "
+              [label]="action.label"
+              [icon]="action.icon || ''"
+              [severity]="action.severity || 'neutral'"
+              variant="text"
+              size="sm"
+              [disabled]="action.disabled || false"
+              [ariaRole]="popup() ? 'menuitem' : ''"
+              (onClick)="activate(action, $event)"
+            />
           }
         </div>
       }
@@ -135,6 +139,15 @@ import { JTableAction, JTableActionEvent, JTableRow } from './table.types';
       .j-action-menu__item--danger {
         color: var(--j-color-danger, #dc2626);
       }
+
+      :host ::ng-deep .j-action-menu__trigger {
+        min-width: 2rem;
+      }
+
+      :host ::ng-deep .j-action-menu.is-popup .j-action-menu__item {
+        justify-content: flex-start;
+        width: 100%;
+      }
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -142,17 +155,18 @@ import { JTableAction, JTableActionEvent, JTableRow } from './table.types';
 export class JActionMenuComponent {
   private readonly documentRef = inject(DOCUMENT);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
   private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
-  @Input() actions: readonly JTableAction[] = [];
-  @Input({ required: true }) row: JTableRow = {};
-  @Input() rowIndex = 0;
-  @Input() ariaLabel = 'Row actions';
-  @Input() triggerLabel = 'Open row actions';
-  @Input() triggerIcon = '...';
-  @Input({ transform: booleanAttribute }) popup = false;
-  @Output() actionClick = new EventEmitter<JTableActionEvent>();
+  readonly actions = input<readonly JTableAction[]>([]);
+  readonly row = input.required<JTableRow>();
+  readonly rowIndex = input(0);
+  readonly ariaLabel = input('Row actions');
+  readonly triggerLabel = input('Open row actions');
+  readonly triggerIcon = input('...');
+  readonly popup = input(false, { transform: booleanAttribute });
+  readonly action = output<JTableActionEvent>();
 
   open = false;
 
@@ -164,15 +178,19 @@ export class JActionMenuComponent {
     const listener = (event: MouseEvent) => {
       if (this.open && !this.elementRef.nativeElement.contains(event.target as Node | null)) {
         this.open = false;
+        // Native document listener runs outside zoneless change detection;
+        // refresh so the menu visually closes.
+        this.changeDetectorRef.markForCheck();
       }
     };
     this.documentRef.addEventListener('mousedown', listener);
     this.destroyRef.onDestroy(() => this.documentRef.removeEventListener('mousedown', listener));
   }
 
-  get normalizedActions(): readonly JTableAction[] {
-    return this.actions.length ? this.actions : [{ key: 'action', label: 'Actions' }];
-  }
+  readonly normalizedActions = computed<readonly JTableAction[]>(() => {
+    const actions = this.actions();
+    return actions.length ? actions : [{ key: 'action', label: 'Actions' }];
+  });
 
   activate(action: JTableAction, originalEvent: MouseEvent): void {
     if (action.disabled) {
@@ -181,12 +199,12 @@ export class JActionMenuComponent {
 
     const event: JTableActionEvent = {
       action,
-      row: this.row,
-      index: this.rowIndex,
+      row: this.row(),
+      index: this.rowIndex(),
       originalEvent,
     };
     action.command?.(event);
-    this.actionClick.emit(event);
+    this.action.emit(event);
     this.open = false;
   }
 
@@ -207,7 +225,7 @@ export class JActionMenuComponent {
   }
 
   handleMenuKeydown(event: KeyboardEvent): void {
-    if (!this.popup) {
+    if (!this.popup()) {
       return;
     }
     if (event.key === 'Escape') {

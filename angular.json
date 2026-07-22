@@ -29,7 +29,13 @@
           "builder": "@angular/build:unit-test",
           "options": {
             "tsConfig": "projects/jrng-ui/tsconfig.spec.json",
-            "exclude": ["src/lib/**"]
+            "runnerConfig": "projects/jrng-ui/vitest.config.ts",
+            "coverageThresholds": {
+              "statements": 40,
+              "branches": 30,
+              "functions": 35,
+              "lines": 40
+            }
           }
         }
       }
@@ -57,7 +63,7 @@
                 "input": "projects/docs/public"
               }
             ],
-            "styles": ["node_modules/driver.js/dist/driver.css", "projects/docs/src/styles.scss"]
+            "styles": ["projects/docs/src/styles.scss"]
           },
           "configurations": {
             "production": {
@@ -103,43 +109,27 @@
         }
       }
     },
-    "admin-starter": {
+    "ssr-smoke": {
       "projectType": "application",
-      "root": "projects/admin-starter",
-      "sourceRoot": "projects/admin-starter/src",
-      "prefix": "admin",
+      "root": "projects/ssr-smoke",
+      "sourceRoot": "projects/ssr-smoke/src",
+      "prefix": "ssr",
       "architect": {
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "browser": "projects/admin-starter/src/main.ts",
-            "tsConfig": "projects/admin-starter/tsconfig.app.json",
-            "inlineStyleLanguage": "scss",
-            "styles": ["projects/admin-starter/src/styles.scss"]
+            "browser": "projects/ssr-smoke/src/main.ts",
+            "server": "projects/ssr-smoke/src/main.server.ts",
+            "outputMode": "static",
+            "index": "projects/ssr-smoke/src/index.html",
+            "tsConfig": "projects/ssr-smoke/tsconfig.app.json",
+            "styles": ["dist/jrng-ui/theme/jrng-ui.css"]
           },
           "configurations": {
-            "production": {
-              "budgets": [
-                { "type": "initial", "maximumWarning": "800kB", "maximumError": "1.5MB" },
-                { "type": "anyComponentStyle", "maximumWarning": "12kB", "maximumError": "18kB" }
-              ],
-              "outputHashing": "all"
-            },
-            "development": { "optimization": false, "extractLicenses": false, "sourceMap": true }
+            "production": { "outputHashing": "all" },
+            "development": { "optimization": false, "sourceMap": true }
           },
           "defaultConfiguration": "production"
-        },
-        "serve": {
-          "builder": "@angular/build:dev-server",
-          "configurations": {
-            "production": { "buildTarget": "admin-starter:build:production" },
-            "development": { "buildTarget": "admin-starter:build:development" }
-          },
-          "defaultConfiguration": "development"
-        },
-        "test": {
-          "builder": "@angular/build:unit-test",
-          "options": { "tsConfig": "projects/admin-starter/tsconfig.spec.json" }
         }
       }
     }

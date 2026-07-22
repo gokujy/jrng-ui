@@ -63,8 +63,13 @@
   padding: 0 var(--j-spacing-xl);
 }
 
-.j-button--rounded {
+.j-button--shape-pill,
+.j-button--shape-circle {
   border-radius: var(--j-radius-full);
+}
+
+.j-button--shape-square {
+  border-radius: 0;
 }
 
 .j-button--full {
@@ -75,10 +80,6 @@
   aspect-ratio: 1;
   min-width: auto;
   padding-inline: 0;
-}
-
-.j-button--raised {
-  box-shadow: var(--j-shadow-sm);
 }
 
 .j-button--primary {
@@ -130,34 +131,30 @@
   --j-button-soft: var(--j-color-surface-subtle);
 }
 
-.j-button--filled {
+.j-button--contrast {
+  --j-button-color: var(--j-color-foreground, #111827);
+  --j-button-color-hover: var(--j-color-text, #0f172a);
+  --j-button-color-text: var(--j-color-background, #ffffff);
+  --j-button-soft: var(--j-color-surface-subtle, #eef2f7);
+}
+
+.j-button--solid {
   background: var(--j-button-color);
   color: var(--j-button-color-text);
 }
 
-.j-button--filled:not(:disabled):hover {
+.j-button--solid:not(:disabled):hover {
   background: var(--j-button-color-hover);
 }
 
-.j-button--outline,
 .j-button--outlined {
   background: transparent;
   border-color: var(--j-button-color);
   color: var(--j-button-color);
 }
 
-.j-button--outline:not(:disabled):hover,
 .j-button--outlined:not(:disabled):hover,
 .j-button--text:not(:disabled):hover {
-  background: var(--j-button-soft);
-}
-
-.j-button--ghost {
-  background: transparent;
-  color: var(--j-button-color);
-}
-
-.j-button--ghost:not(:disabled):hover {
   background: var(--j-button-soft);
 }
 
@@ -204,8 +201,35 @@
   width: 1em;
 }
 
+.j-button__badge {
+  align-items: center;
+  background: var(--j-button-badge-bg, var(--j-color-card, #ffffff));
+  border-radius: var(--j-radius-full);
+  color: var(--j-button-badge-color, var(--j-button-color));
+  display: inline-flex;
+  font-size: var(--j-font-size-xs);
+  font-weight: var(--j-font-weight-bold);
+  justify-content: center;
+  line-height: 1;
+  min-height: 1.25rem;
+  min-width: 1.25rem;
+  padding-inline: var(--j-spacing-xs);
+}
+
 @keyframes j-button-spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .j-button,
+  .j-button__spinner {
+    animation: none;
+    transition: none;
+  }
+
+  .j-button:not(:disabled):hover {
+    transform: none;
   }
 }

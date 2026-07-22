@@ -1,5 +1,8 @@
 <button
-  [jRipple]="!isBlocked()"
+  #button
+  [jRipple]="ripple() && !isBlocked()"
+  [jTooltip]="title()"
+  [tooltipDisabled]="!title()"
   [class]="buttonClasses()"
   data-jc-name="button"
   data-jc-section="root"
@@ -11,28 +14,45 @@
   [attr.aria-disabled]="isBlocked()"
   [attr.aria-busy]="loading()"
   [attr.aria-label]="ariaLabel() || null"
+  [attr.aria-expanded]="ariaExpanded()"
+  [attr.aria-pressed]="ariaPressed()"
+  [attr.aria-checked]="ariaChecked()"
+  [attr.role]="ariaRole() || null"
+  [attr.aria-haspopup]="ariaHasPopup() || null"
   (click)="handleClick($event)"
 >
   @if (loading()) {
     <span class="j-button__spinner" data-jc-section="loader" aria-hidden="true"></span>
+    <span class="j-hidden-accessible">{{ loadingLabel() }}</span>
   }
-  @if (icon() && iconPosition() === 'left') {
-    <span class="j-button__icon" data-jc-section="icon" aria-hidden="true">{{ icon() }}</span>
+  @if (icon() && actionDisplay() !== 'label' && iconPosition() === 'left') {
+    <j-icon class="j-button__icon" data-jc-section="icon" [name]="icon()" aria-hidden="true" />
   }
   <span class="j-button__icon" data-jc-section="prefix" aria-hidden="true"
     ><ng-content select="[jButtonPrefix]"></ng-content
   ></span>
-  <span class="j-button__label" data-jc-section="label">
-    @if (label()) {
-      {{ label() }}
-    } @else {
-      <ng-content></ng-content>
-    }
-  </span>
+  @if (actionDisplay() !== 'icon') {
+    <span class="j-button__label" data-jc-section="label">
+      @if (label()) {
+        {{ label() }}
+      } @else {
+        <ng-content></ng-content>
+      }
+    </span>
+  }
   <span class="j-button__icon" data-jc-section="suffix" aria-hidden="true"
     ><ng-content select="[jButtonSuffix]"></ng-content
   ></span>
-  @if (icon() && iconPosition() === 'right') {
-    <span class="j-button__icon" data-jc-section="icon" aria-hidden="true">{{ icon() }}</span>
+  @if (icon() && actionDisplay() !== 'label' && iconPosition() === 'right') {
+    <j-icon class="j-button__icon" data-jc-section="icon" [name]="icon()" aria-hidden="true" />
+  }
+  @if (badge() !== null && badge() !== '') {
+    <span
+      class="j-button__badge"
+      data-jc-section="badge"
+      [attr.aria-label]="badgeAriaLabel() || null"
+    >
+      {{ badge() }}
+    </span>
   }
 </button>

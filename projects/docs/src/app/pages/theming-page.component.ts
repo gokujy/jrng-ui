@@ -76,15 +76,15 @@ import { JThemePresetName, JThemeService, jThemePresets } from 'jrng-ui/theming'
         <h2>Live components</h2>
         <div class="docs-demo">
           <j-button label="Primary" />
-          <j-button label="Raised" raised="true" />
-          <j-button label="Outlined" outlined="true" />
+          <j-button label="Raised" variant="solid" />
+          <j-button label="Outlined" variant="outlined" />
           <j-input label="Search" placeholder="Type to search" />
           <j-select label="Status" [options]="statuses" />
           <j-checkbox label="Remember me" />
           <j-switch label="Auto-sync" />
           <j-badge value="12" />
           <j-tag label="Themed" />
-          <j-card title="Surface" subtitle="Reacts to tokens" bordered="true">
+          <j-card header="Surface" subheader="Reacts to tokens" variant="outlined">
             <p>Cards, controls, and overlays share the active preset and mode.</p>
           </j-card>
         </div>

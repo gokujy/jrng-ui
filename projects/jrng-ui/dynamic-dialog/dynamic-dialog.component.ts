@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { JrDialogComponent } from 'jrng-ui/dialog';
-import { JrDialogService } from 'jrng-ui/dialog';
+import { JDialogComponent } from 'jrng-ui/dialog';
+import { JDialogService } from 'jrng-ui/dialog';
 
 @Component({
   selector: 'j-dynamic-dialog',
-  imports: [JrDialogComponent],
+  imports: [JDialogComponent],
   template: `
     @if (dialogService.dialog(); as dialog) {
       <j-dialog
@@ -30,5 +30,5 @@ import { JrDialogService } from 'jrng-ui/dialog';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JDynamicDialogComponent {
-  readonly dialogService = inject(JrDialogService);
+  readonly dialogService = inject(JDialogService);
 }

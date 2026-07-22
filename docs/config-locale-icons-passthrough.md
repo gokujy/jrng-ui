@@ -19,7 +19,6 @@ export const appConfig: ApplicationConfig = {
       ripple: true,
       locale: 'en',
       appendTo: 'body',
-      unstyled: false,
       animation: 'enabled',
       density: 'comfortable',
       zIndex: {
@@ -49,7 +48,6 @@ Supported options:
 - `locale`: `string`
 - `zIndex`: overlay stacking values
 - `appendTo`: `self | body | string`
-- `unstyled`: `boolean`
 - `animation`: `enabled | disabled`
 - `density`: `comfortable | compact | spacious`
 
@@ -70,7 +68,7 @@ provideJrngLocale({
   choose: 'Choose',
   upload: 'Upload',
   remove: 'Remove',
-  emptyMessage: 'No records found.',
+  emptyMessage: 'Nothing to show.',
   noResultsFound: 'No results found.',
   selectAll: 'Select all',
   unselectAll: 'Unselect all',

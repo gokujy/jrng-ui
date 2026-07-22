@@ -44,4 +44,67 @@ describe('JAvatarComponent', () => {
     expect(root.className).toContain('j-avatar--lg');
     expect(root.className).toContain('j-avatar--square');
   });
+
+  it('is non-interactive when zoom is disabled by default', () => {
+    const fixture = TestBed.createComponent(JAvatarComponent);
+    fixture.componentRef.setInput('image', 'profile.png');
+    fixture.detectChanges();
+    const root = fixture.nativeElement.querySelector('[data-jc-name="avatar"]');
+    expect(root.getAttribute('role')).toBeNull();
+    expect(root.getAttribute('tabindex')).toBeNull();
+    expect(root.classList).not.toContain('j-avatar--zoomable');
+  });
+
+  it('opens image preview with mouse, Enter, and Space when zoom is enabled', () => {
+    const fixture = TestBed.createComponent(JAvatarComponent);
+    fixture.componentRef.setInput('image', 'profile.png');
+    fixture.componentRef.setInput('previewable', true);
+    fixture.detectChanges();
+    const root = fixture.nativeElement.querySelector('[data-jc-name="avatar"]') as HTMLElement;
+    root.click();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('[role="dialog"]')).not.toBeNull();
+    const previewSurface = fixture.nativeElement.querySelector('.j-image-viewer__surface');
+    expect(previewSurface.style.width).toBe('400px');
+    expect(previewSurface.style.height).toBe('400px');
+
+    fixture.componentInstance.previewVisible.set(false);
+    root.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    fixture.detectChanges();
+    expect(fixture.componentInstance.previewVisible()).toBe(true);
+
+    fixture.componentInstance.previewVisible.set(false);
+    root.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }));
+    fixture.detectChanges();
+    expect(fixture.componentInstance.previewVisible()).toBe(true);
+  });
+
+  it('closes on Escape and returns focus to the avatar', () => {
+    const fixture = TestBed.createComponent(JAvatarComponent);
+    fixture.componentRef.setInput('image', 'profile.png');
+    fixture.componentRef.setInput('previewable', true);
+    fixture.detectChanges();
+    const root = fixture.nativeElement.querySelector('[data-jc-name="avatar"]') as HTMLElement;
+    root.focus();
+    root.click();
+    fixture.detectChanges();
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    fixture.detectChanges();
+    expect(fixture.componentInstance.previewVisible()).toBe(false);
+    expect(document.activeElement).toBe(root);
+  });
+
+  it('shows fallback initials after an image failure and resets for a new image', () => {
+    const fixture = TestBed.createComponent(JAvatarComponent);
+    fixture.componentRef.setInput('label', 'Alex Morgan');
+    fixture.componentRef.setInput('image', 'broken.png');
+    fixture.detectChanges();
+    fixture.nativeElement.querySelector('img.j-avatar__image').dispatchEvent(new Event('error'));
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.j-avatar__label').textContent.trim()).toBe('AM');
+
+    fixture.componentRef.setInput('image', 'replacement.png');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('img.j-avatar__image')).not.toBeNull();
+  });
 });

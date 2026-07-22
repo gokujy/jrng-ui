@@ -1,4 +1,5 @@
 import { readFile, readdir, writeFile } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const workspace = resolve(import.meta.dirname, '..');
@@ -26,13 +27,28 @@ const completeSlugs = new Set([
   'tooltip',
   'filter-bar',
   'status-chip',
-  'metric-card',
   'page-header',
   'tour-guide',
+  'text-expand',
+  'avatar',
+  'loader',
+  'card',
+  'diff-viewer',
+  'highlight',
+  'html-preview',
+  'label',
+  'empty',
 ]);
 
 const components = [];
 for (const component of inventory.components) {
+  const componentDirectory = resolve(
+    libraryRoot,
+    component.publicImportPath.replace('jrng-ui/', '') === 'empty'
+      ? 'empty-state'
+      : component.publicImportPath.replace('jrng-ui/', ''),
+  );
+  if (!existsSync(componentDirectory)) continue;
   const slug = component.selector.slice(2);
   const source = await componentSource(component);
   const inputs = exportedMembers(
@@ -45,6 +61,13 @@ for (const component of inventory.components) {
     /(?:readonly\s+)?([A-Za-z_$][\w$]*)\s*=\s*output(?:<[^;\n]+?>)?\s*\(/g,
     /@Output(?:\([^)]*\))?[^;\n]*?\b([A-Za-z_$][\w$]*)\s*(?::|=|;)/g,
   );
+  const methods = exportedMethods(source);
+  for (const modelName of exportedMembers(
+    source,
+    /(?:readonly\s+)?([A-Za-z_$][\w$]*)\s*=\s*model(?:<[^;\n]+?>)?\s*\(/g,
+  )) {
+    outputs.push(`${modelName}Change`);
+  }
   components.push({
     name: component.name,
     selector: component.selector,
@@ -54,6 +77,7 @@ for (const component of inventory.components) {
     description: `Angular ${component.name} component for reusable admin, dashboard, and business application interfaces.`,
     inputs,
     outputs,
+    methods,
     formCompatibility: /ControlValueAccessor|NG_VALUE_ACCESSOR/.test(source)
       ? 'ControlValueAccessor'
       : 'Not a form control',
@@ -63,7 +87,6 @@ for (const component of inventory.components) {
     status: completeSlugs.has(slug) ? 'Complete' : 'Basic',
     stability: component.stability === 'Unclassified' ? 'Stable' : component.stability,
     sinceVersion: null,
-    deprecation: null,
     angularCompatibility: packageJson.peerDependencies['@angular/core'],
     files: [],
     dependencies: [],
@@ -87,7 +110,8 @@ await writeFile(
 console.log(`Generated public registry with ${components.length} components.`);
 
 async function componentSource(component) {
-  const directory = resolve(libraryRoot, component.publicImportPath.replace('jrng-ui/', ''));
+  const slug = component.publicImportPath.replace('jrng-ui/', '');
+  const directory = resolve(libraryRoot, slug === 'empty' ? 'empty-state' : slug);
   const files = await readdir(directory, { recursive: true });
   const sources = [];
   for (const file of files.filter(
@@ -108,6 +132,23 @@ function exportedMembers(source, ...patterns) {
   for (const pattern of patterns) {
     for (const match of source.matchAll(pattern))
       if (match[1] && !match[1].startsWith('_')) names.add(match[1]);
+  }
+  return [...names].sort();
+}
+
+function exportedMethods(source) {
+  const names = new Set();
+  const pattern =
+    /^\s{2}(?!private\b|protected\b|static\b)(?:readonly\s+)?([A-Za-z_$][\w$]*)\s*\([^)]*\)\s*(?::\s*[^\{]+)?\{/gm;
+  const excluded = new Set([
+    'constructor',
+    'ngOnInit',
+    'ngOnChanges',
+    'ngAfterViewInit',
+    'ngOnDestroy',
+  ]);
+  for (const match of source.matchAll(pattern)) {
+    if (match[1] && !excluded.has(match[1])) names.add(`${match[1]}()`);
   }
   return [...names].sort();
 }

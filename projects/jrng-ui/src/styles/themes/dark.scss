@@ -3,6 +3,7 @@
   .j-theme-dark,
   [data-j-theme='dark'] {
     color-scheme: dark;
+    --j-highlight-background: #854d0e;
 
     --j-color-background: #0b1120;
     --j-color-foreground: var(--j-color-slate-50);
@@ -39,6 +40,12 @@
     --j-color-info: #38bdf8;
     --j-color-info-soft: #075985;
     --j-color-info-foreground: #082f49;
+    --j-color-neutral: var(--j-color-slate-300);
+    --j-color-neutral-soft: var(--j-color-slate-800);
+    --j-color-neutral-foreground: var(--j-color-slate-950);
+    --j-color-contrast: var(--j-color-white);
+    --j-color-contrast-soft: var(--j-color-slate-700);
+    --j-color-contrast-foreground: var(--j-color-slate-950);
 
     --j-color-surface: var(--j-color-card);
     --j-color-surface-elevated: var(--j-color-popover);

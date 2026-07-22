@@ -6,6 +6,7 @@ import {
   Component,
   ContentChild,
   DestroyRef,
+  effect,
   ElementRef,
   PLATFORM_ID,
   TemplateRef,
@@ -13,22 +14,31 @@ import {
   forwardRef,
   inject,
   input,
-  Input,
   output,
+  signal,
+  untracked,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { jAriaDescribedBy } from 'jrng-ui/core';
 import { JClickOutsideDirective } from 'jrng-ui/core';
-import { JOverlayHandle, JOverlayService } from 'jrng-ui/core';
+import { JAppendTo, JOverlayHandle, JOverlayService } from 'jrng-ui/core';
 import { JRNG_LOCALE } from 'jrng-ui/core';
 import { JPassThrough } from 'jrng-ui/core';
-import { JSize } from 'jrng-ui/core';
+import { JComponentSize } from 'jrng-ui/core';
 import { jCreateId } from 'jrng-ui/core';
+import { JIconComponent } from 'jrng-ui/icon';
 
 export type JDatePickerDataType = 'date' | 'string';
 export type JDatePickerSelectionMode = 'single' | 'multiple' | 'range';
 export type JDatePickerView = 'date' | 'month' | 'year';
 export type JDatePickerValue = Date | string | null | readonly (Date | string | null)[];
+
+export interface JDatePickerPreset {
+  readonly label: string;
+  readonly start: Date | string;
+  readonly end: Date | string;
+  readonly disabled?: boolean;
+}
 
 interface JCalendarDay {
   readonly date: Date;
@@ -55,7 +65,7 @@ export interface JDatePickerDayContext {
 
 @Component({
   selector: 'j-date-picker',
-  imports: [NgTemplateOutlet, JClickOutsideDirective],
+  imports: [NgTemplateOutlet, JClickOutsideDirective, JIconComponent],
   template: `
     <div
       [class]="rootClasses"
@@ -63,7 +73,7 @@ export interface JDatePickerDayContext {
       (jClickOutside)="close()"
       data-jc-name="date-picker"
       data-jc-section="root"
-      [attr.data-j-disabled]="isDisabled ? 'true' : null"
+      [attr.data-j-disabled]="isDisabled() ? 'true' : null"
       [attr.data-j-invalid]="hasError ? 'true' : null"
       [attr.data-j-open]="isOpen ? 'true' : null"
     >
@@ -77,53 +87,53 @@ export interface JDatePickerDayContext {
       }
 
       @if (!inline()) {
-      <div class="j-date-picker__control" data-jc-section="control">
-        <input
-          #input
-          class="j-date-picker__input"
-          type="text"
-          inputmode="numeric"
-          autocomplete="off"
-          role="combobox"
-          [id]="id()"
-          [placeholder]="placeholder()"
-          [disabled]="isDisabled"
-          [readOnly]="readonly()"
-          [required]="required()"
-          [value]="inputValue"
-          [attr.aria-expanded]="isOpen"
-          [attr.aria-controls]="isOpen ? panelId : null"
-          [attr.aria-invalid]="hasError ? 'true' : null"
-          [attr.aria-describedby]="describedBy"
-          (input)="handleTextInput($event)"
-          (focus)="open()"
-          (blur)="handleBlur()"
-          (keydown)="handleInputKeydown($event)"
-        />
+        <div class="j-date-picker__control" data-jc-section="control">
+          <input
+            #input
+            class="j-date-picker__input"
+            type="text"
+            inputmode="numeric"
+            autocomplete="off"
+            role="combobox"
+            [id]="id()"
+            [placeholder]="placeholder()"
+            [disabled]="isDisabled()"
+            [readOnly]="readonly()"
+            [required]="required()"
+            [value]="inputValue"
+            [attr.aria-expanded]="isOpen"
+            [attr.aria-controls]="isOpen ? panelId : null"
+            [attr.aria-invalid]="hasError ? 'true' : null"
+            [attr.aria-describedby]="describedBy"
+            (input)="handleTextInput($event)"
+            (focus)="handleFocus()"
+            (blur)="handleBlur()"
+            (keydown)="handleInputKeydown($event)"
+          />
 
-        @if (canClear) {
-          <button
-            class="j-date-picker__clear"
-            type="button"
-            [attr.aria-label]="locale.clear"
-            (click)="clearValue($event)"
-          >
-            <span aria-hidden="true">x</span>
-          </button>
-        }
+          @if (canClear) {
+            <button
+              class="j-date-picker__clear"
+              type="button"
+              [attr.aria-label]="locale.clear"
+              (click)="clearValue($event)"
+            >
+              <j-icon name="close" size="1rem" aria-hidden="true" />
+            </button>
+          }
 
-        @if (showIcon()) {
-          <button
-            class="j-date-picker__trigger"
-            type="button"
-            [disabled]="isDisabled || readonly()"
-            [attr.aria-label]="locale.choose"
-            (click)="toggle()"
-          >
-            <span aria-hidden="true">cal</span>
-          </button>
-        }
-      </div>
+          @if (showIcon()) {
+            <button
+              class="j-date-picker__trigger"
+              type="button"
+              [disabled]="isDisabled() || readonly()"
+              [attr.aria-label]="locale.choose"
+              (click)="toggle()"
+            >
+              <j-icon name="calendar" size="1.125rem" aria-hidden="true" />
+            </button>
+          }
+        </div>
       }
 
       @if (isOpen || inline()) {
@@ -135,6 +145,20 @@ export interface JDatePickerDayContext {
           aria-modal="false"
           data-jc-section="panel"
         >
+          @if (selectionMode() === 'range' && presets().length) {
+            <div class="j-date-picker__presets" aria-label="Date range presets">
+              @for (preset of presets(); track preset.label) {
+                <button
+                  type="button"
+                  class="j-date-picker__preset"
+                  [disabled]="preset.disabled || !isPresetAvailable(preset)"
+                  (click)="applyPreset(preset)"
+                >
+                  {{ preset.label }}
+                </button>
+              }
+            </div>
+          }
           <div class="j-date-picker__panel-header">
             <button
               type="button"
@@ -142,7 +166,7 @@ export interface JDatePickerDayContext {
               aria-label="Previous month"
               (click)="previous()"
             >
-              <span aria-hidden="true">&lt;</span>
+              <j-icon name="chevron-left" aria-hidden="true" />
             </button>
             <button type="button" class="j-date-picker__heading" (click)="showMonthView()">
               {{ monthNames[viewDate.getMonth()] }}
@@ -156,7 +180,7 @@ export interface JDatePickerDayContext {
               aria-label="Next month"
               (click)="next()"
             >
-              <span aria-hidden="true">&gt;</span>
+              <j-icon name="chevron-right" aria-hidden="true" />
             </button>
           </div>
 
@@ -169,34 +193,40 @@ export interface JDatePickerDayContext {
                 [attr.aria-label]="monthNames[viewDate.getMonth()] + ' ' + viewDate.getFullYear()"
                 (keydown)="handleGridKeydown($event)"
               >
-                @for (dayName of dayNames; track dayName) {
-                  <span class="j-date-picker__weekday" role="columnheader">{{ dayName }}</span>
-                }
-                @for (day of calendarDays; track day.date.getTime()) {
-                  <button
-                    type="button"
-                    role="gridcell"
-                    [class]="dayClasses(day)"
-                    [disabled]="day.disabled"
-                    [attr.tabindex]="day.focused ? '0' : '-1'"
-                    [attr.aria-selected]="day.selected"
-                    [attr.aria-current]="day.today ? 'date' : null"
-                    [attr.data-j-selected]="day.selected ? 'true' : null"
-                    [attr.data-j-focused]="day.focused ? 'true' : null"
-                    [attr.data-j-disabled]="day.disabled ? 'true' : null"
-                    (mouseenter)="focusedDate = cloneDate(day.date)"
-                    (focus)="focusedDate = cloneDate(day.date)"
-                    (click)="selectDate(day.date)"
-                  >
-                    @if (dayTemplate) {
-                      <ng-container
-                        [ngTemplateOutlet]="dayTemplate"
-                        [ngTemplateOutletContext]="dayContext(day)"
-                      />
-                    } @else {
-                      {{ day.label }}
+                <div class="j-date-picker__row" role="row">
+                  @for (dayName of dayNames; track dayName) {
+                    <span class="j-date-picker__weekday" role="columnheader">{{ dayName }}</span>
+                  }
+                </div>
+                @for (week of calendarWeeks; track $index) {
+                  <div class="j-date-picker__row" role="row">
+                    @for (day of week; track day.date.getTime()) {
+                      <button
+                        type="button"
+                        role="gridcell"
+                        [class]="dayClasses(day)"
+                        [disabled]="day.disabled"
+                        [attr.tabindex]="day.focused ? '0' : '-1'"
+                        [attr.aria-selected]="day.selected"
+                        [attr.aria-current]="day.today ? 'date' : null"
+                        [attr.data-j-selected]="day.selected ? 'true' : null"
+                        [attr.data-j-focused]="day.focused ? 'true' : null"
+                        [attr.data-j-disabled]="day.disabled ? 'true' : null"
+                        (mouseenter)="focusedDate = cloneDate(day.date)"
+                        (focus)="focusedDate = cloneDate(day.date)"
+                        (click)="selectDate(day.date)"
+                      >
+                        @if (dayTemplate) {
+                          <ng-container
+                            [ngTemplateOutlet]="dayTemplate"
+                            [ngTemplateOutletContext]="dayContext(day)"
+                          />
+                        } @else {
+                          {{ day.label }}
+                        }
+                      </button>
                     }
-                  </button>
+                  </div>
                 }
               </div>
             }
@@ -225,7 +255,7 @@ export interface JDatePickerDayContext {
                   (click)="shiftYearPage(-12)"
                   aria-label="Previous years"
                 >
-                  &lt;
+                  <j-icon name="chevron-left" aria-hidden="true" />
                 </button>
                 <span>{{ yearOptions[0] }} - {{ yearOptions[yearOptions.length - 1] }}</span>
                 <button
@@ -234,7 +264,7 @@ export interface JDatePickerDayContext {
                   (click)="shiftYearPage(12)"
                   aria-label="Next years"
                 >
-                  &gt;
+                  <j-icon name="chevron-right" aria-hidden="true" />
                 </button>
               </div>
               <div class="j-date-picker__year-grid" role="grid" aria-label="Choose year">
@@ -305,7 +335,9 @@ export interface JDatePickerDayContext {
                   >
                     +
                   </button>
-                  <span class="j-date-picker__time-value" aria-live="polite">{{ secondsText }}</span>
+                  <span class="j-date-picker__time-value" aria-live="polite">{{
+                    secondsText
+                  }}</span>
                   <button
                     type="button"
                     class="j-date-picker__time-btn"
@@ -457,6 +489,22 @@ export interface JDatePickerDayContext {
         min-width: 2rem;
       }
 
+      .j-date-picker__trigger {
+        border-inline-start: 1px solid var(--j-input-border-color, var(--j-color-border));
+        border-radius: 0;
+        border-end-end-radius: var(--j-input-radius, var(--j-radius-md));
+        border-start-end-radius: var(--j-input-radius, var(--j-radius-md));
+        min-height: inherit;
+        min-width: 2.5rem;
+      }
+
+      .j-date-picker__trigger j-icon,
+      .j-date-picker__clear j-icon,
+      .j-date-picker__nav j-icon {
+        height: 1rem;
+        width: 1rem;
+      }
+
       .j-date-picker__trigger:hover,
       .j-date-picker__clear:hover {
         color: var(--j-color-foreground);
@@ -475,6 +523,42 @@ export interface JDatePickerDayContext {
         z-index: var(--j-z-index-overlay, 1000);
       }
 
+      .j-date-picker__presets {
+        border-bottom: 1px solid var(--j-color-border);
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--j-spacing-1);
+        margin: calc(var(--j-spacing-1) * -1) 0 var(--j-spacing-3);
+        padding-bottom: var(--j-spacing-3);
+      }
+
+      .j-date-picker__preset {
+        background: var(--j-color-muted);
+        border: 1px solid transparent;
+        border-radius: var(--j-radius-full);
+        color: var(--j-color-muted-foreground);
+        cursor: pointer;
+        font: inherit;
+        font-size: var(--j-font-size-xs);
+        min-height: 2rem;
+        padding: 0 var(--j-spacing-3);
+      }
+
+      .j-date-picker__preset:hover:not(:disabled) {
+        border-color: var(--j-color-primary);
+        color: var(--j-color-primary);
+      }
+
+      .j-date-picker__preset:focus-visible {
+        box-shadow: var(--j-focus-ring);
+        outline: none;
+      }
+
+      .j-date-picker__preset:disabled {
+        cursor: not-allowed;
+        opacity: var(--j-disabled-opacity);
+      }
+
       .j-date-picker__panel-header,
       .j-date-picker__year-tools,
       .j-date-picker__bar {
@@ -484,7 +568,9 @@ export interface JDatePickerDayContext {
       }
 
       .j-date-picker__panel-header {
+        border-bottom: 1px solid var(--j-color-border);
         margin-bottom: var(--j-spacing-3);
+        padding-bottom: var(--j-spacing-3);
       }
 
       .j-date-picker__heading {
@@ -512,6 +598,11 @@ export interface JDatePickerDayContext {
         grid-template-columns: repeat(7, minmax(0, 1fr));
       }
 
+      /* Rows exist for ARIA grid semantics only; keep cells in the CSS grid. */
+      .j-date-picker__row {
+        display: contents;
+      }
+
       .j-date-picker__weekday {
         color: var(--j-color-muted-foreground);
         font-size: var(--j-font-size-xs);
@@ -525,6 +616,10 @@ export interface JDatePickerDayContext {
         background: transparent;
         color: inherit;
         min-width: 0;
+        transition:
+          background-color 120ms ease,
+          color 120ms ease,
+          box-shadow 120ms ease;
       }
 
       .j-date-picker__day.is-outside {
@@ -681,6 +776,13 @@ export interface JDatePickerDayContext {
           width: min(100%, calc(100vw - 2rem));
         }
       }
+
+      @media (prefers-reduced-motion: reduce) {
+        .j-date-picker__control,
+        .j-date-picker__day {
+          transition: none;
+        }
+      }
     `,
   ],
   providers: [
@@ -713,12 +815,14 @@ export class JDatePickerComponent implements ControlValueAccessor {
   readonly error = input('');
   readonly hint = input('');
   readonly dateFormat = input('yyyy-MM-dd');
+  readonly rangeSeparator = input(' - ');
+  readonly multipleSeparator = input(', ');
   readonly dataType = input<JDatePickerDataType>('date');
   readonly selectionMode = input<JDatePickerSelectionMode>('single');
   readonly view = input<JDatePickerView>('date');
-  readonly appendTo = input<'self' | 'body' | string>('self');
+  readonly appendTo = input<JAppendTo | undefined>(undefined);
   readonly styleClass = input('');
-  readonly size = input<JSize>('md');
+  readonly size = input<JComponentSize>('md');
   readonly variant = input<'outlined' | 'filled'>('outlined');
   readonly pt = input<JPassThrough | null>(null);
   readonly readonly = input(false, { transform: booleanAttribute });
@@ -728,6 +832,7 @@ export class JDatePickerComponent implements ControlValueAccessor {
   readonly showButtonBar = input(true, { transform: booleanAttribute });
   readonly showClear = input(true, { transform: booleanAttribute });
   readonly disabledDates = input<readonly (Date | string)[]>([]);
+  readonly presets = input<readonly JDatePickerPreset[]>([]);
   readonly showTime = input(false, { transform: booleanAttribute });
   readonly showSeconds = input(false, { transform: booleanAttribute });
   readonly hourFormat = input<'12' | '24'>('24');
@@ -742,7 +847,6 @@ export class JDatePickerComponent implements ControlValueAccessor {
   readonly hintId = jCreateId('j-date-picker-hint');
   readonly errorId = jCreateId('j-date-picker-error');
   readonly panelId = jCreateId('j-date-picker-panel');
-  readonly todayDate = startOfDay(new Date());
 
   inputValue = '';
   selectedValue: Date | string | null = null;
@@ -751,17 +855,30 @@ export class JDatePickerComponent implements ControlValueAccessor {
   timeHours = 0;
   timeMinutes = 0;
   timeSeconds = 0;
-  isDisabled = false;
+  readonly isDisabled = signal(false);
   isOpen = false;
   currentView: JDatePickerView = 'date';
   viewDate = startOfMonth(new Date());
   focusedDate = startOfDay(new Date());
   yearPageStart = new Date().getFullYear() - 5;
 
-  private minDateInternal: Date | string | null = null;
-  private maxDateInternal: Date | string | null = null;
   private onChange: (value: JDatePickerValue) => void = () => undefined;
   private onTouched: () => void = () => undefined;
+
+  constructor() {
+    effect(() => {
+      const disabled = this.disabled();
+      this.isDisabled.set(disabled);
+      this.changeDetectorRef.markForCheck();
+    });
+
+    effect(() => {
+      const value = this.value();
+      if (value !== undefined) {
+        untracked(() => this.writeValue(value));
+      }
+    });
+  }
 
   get hasError(): boolean {
     return this.invalid() || this.error().trim().length > 0;
@@ -772,7 +889,7 @@ export class JDatePickerComponent implements ControlValueAccessor {
   }
 
   get canClear(): boolean {
-    return this.showClear() && this.hasSelection && !this.isDisabled && !this.readonly();
+    return this.showClear() && this.hasSelection && !this.isDisabled() && !this.readonly();
   }
 
   get hasSelection(): boolean {
@@ -785,7 +902,7 @@ export class JDatePickerComponent implements ControlValueAccessor {
       `j-date-picker--${this.size()}`,
       `j-date-picker--${this.variant()}`,
       this.hasError ? 'is-invalid' : '',
-      this.isDisabled ? 'is-disabled' : '',
+      this.isDisabled() ? 'is-disabled' : '',
       this.isOpen ? 'is-open' : '',
       this.styleClass(),
       this.pt()?.['root']?.['class'] ?? '',
@@ -795,11 +912,11 @@ export class JDatePickerComponent implements ControlValueAccessor {
   }
 
   get minDateValue(): Date | null {
-    return normalizeDate(this.minDateInternal);
+    return normalizeDate(this.minDate());
   }
 
   get maxDateValue(): Date | null {
-    return normalizeDate(this.maxDateInternal);
+    return normalizeDate(this.maxDate());
   }
 
   /** First day of week from the active locale (0 = Sunday, 1 = Monday). */
@@ -923,30 +1040,25 @@ export class JDatePickerComponent implements ControlValueAccessor {
     });
   }
 
+  /** The 42 day cells grouped into six ARIA rows of seven days. */
+  get calendarWeeks(): readonly (readonly JCalendarDay[])[] {
+    const days = this.calendarDays;
+    return Array.from({ length: 6 }, (_, index) => days.slice(index * 7, index * 7 + 7));
+  }
+
+  /** Today, recomputed on read so it never goes stale after midnight. */
+  get todayDate(): Date {
+    return startOfDay(new Date());
+  }
+
   get yearOptions(): readonly number[] {
     return Array.from({ length: 12 }, (_, index) => this.yearPageStart + index);
   }
 
-  @Input()
-  set value(value: JDatePickerValue | undefined) {
-    this.writeValue(value);
-  }
-
-  @Input()
-  set minDate(value: Date | string | null | undefined) {
-    this.minDateInternal = value ?? null;
-  }
-
-  @Input()
-  set maxDate(value: Date | string | null | undefined) {
-    this.maxDateInternal = value ?? null;
-  }
-
-  @Input({ transform: booleanAttribute })
-  set disabled(value: boolean) {
-    this.isDisabled = value;
-    this.changeDetectorRef.markForCheck();
-  }
+  readonly value = input<JDatePickerValue>();
+  readonly minDate = input<Date | string | null>();
+  readonly maxDate = input<Date | string | null>();
+  readonly disabled = input(false, { transform: booleanAttribute });
 
   writeValue(value: JDatePickerValue | undefined): void {
     if (Array.isArray(value)) {
@@ -968,7 +1080,8 @@ export class JDatePickerComponent implements ControlValueAccessor {
     const scalar = (value ?? null) as Date | string | null;
     this.selectedValue = scalar;
     this.selectedDates = [];
-    const raw = scalar instanceof Date ? scalar : typeof scalar === 'string' ? new Date(scalar) : null;
+    const raw =
+      scalar instanceof Date ? scalar : typeof scalar === 'string' ? new Date(scalar) : null;
     if (raw && !Number.isNaN(raw.getTime())) {
       this.timeHours = raw.getHours();
       this.timeMinutes = raw.getMinutes();
@@ -994,7 +1107,7 @@ export class JDatePickerComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled = isDisabled;
+    this.isDisabled.set(isDisabled);
     if (isDisabled) {
       this.close();
     }
@@ -1005,8 +1118,22 @@ export class JDatePickerComponent implements ControlValueAccessor {
     this.isOpen ? this.close(true) : this.open();
   }
 
+  private suppressFocusOpen = false;
+
+  /**
+   * Opens the panel when the input gains focus, unless the focus was
+   * programmatically restored by `close(true)` — otherwise closing would
+   * immediately reopen the panel.
+   */
+  handleFocus(): void {
+    if (this.suppressFocusOpen) {
+      return;
+    }
+    this.open();
+  }
+
   open(): void {
-    if (this.isDisabled || this.readonly() || this.isOpen) {
+    if (this.isDisabled() || this.readonly() || this.isOpen) {
       return;
     }
 
@@ -1034,19 +1161,30 @@ export class JDatePickerComponent implements ControlValueAccessor {
     this.changeDetectorRef.markForCheck();
 
     if (restoreFocus) {
-      queueMicrotask(() => this.inputRef?.nativeElement.focus());
+      queueMicrotask(() => {
+        // `focus()` dispatches the focus event synchronously; guard against the
+        // input's (focus)="handleFocus()" binding reopening the panel.
+        this.suppressFocusOpen = true;
+        this.inputRef?.nativeElement.focus();
+        this.suppressFocusOpen = false;
+      });
     }
   }
 
   private attachOverlay(): void {
-    if (!this.isBrowser || this.inline() || this.appendTo() !== 'body' || !this.panelRef?.nativeElement) {
+    if (
+      !this.isBrowser ||
+      this.inline() ||
+      this.overlay.resolveTarget(this.appendTo()) === null ||
+      !this.panelRef?.nativeElement
+    ) {
       return;
     }
     this.overlayHandle = this.overlay.attach(
       this.hostRef.nativeElement,
       this.panelRef.nativeElement,
       {
-        appendTo: 'body',
+        appendTo: this.appendTo(),
         matchWidth: false,
       },
     );
@@ -1189,6 +1327,27 @@ export class JDatePickerComponent implements ControlValueAccessor {
     this.selectDate(this.todayDate);
   }
 
+  isPresetAvailable(preset: JDatePickerPreset): boolean {
+    const start = normalizeDate(preset.start);
+    const end = normalizeDate(preset.end);
+    return !!start && !!end && !this.isDateDisabled(start) && !this.isDateDisabled(end);
+  }
+
+  applyPreset(preset: JDatePickerPreset): void {
+    if (preset.disabled || !this.isPresetAvailable(preset)) return;
+    const start = normalizeDate(preset.start);
+    const end = normalizeDate(preset.end);
+    if (!start || !end) return;
+    this.selectedDates =
+      start.getTime() <= end.getTime()
+        ? [startOfDay(start), startOfDay(end)]
+        : [startOfDay(end), startOfDay(start)];
+    this.viewDate = startOfMonth(this.selectedDates[0]);
+    this.focusedDate = cloneDate(this.selectedDates[1]);
+    this.commitDates(true);
+    this.close(true);
+  }
+
   selectDate(date: Date): void {
     const day = startOfDay(date);
     if (this.isDateDisabled(day)) {
@@ -1264,14 +1423,16 @@ export class JDatePickerComponent implements ControlValueAccessor {
       if (!rangeStart) {
         return '';
       }
-      return rangeEnd ? `${format(rangeStart)} - ${format(rangeEnd)}` : format(rangeStart);
+      return rangeEnd
+        ? `${format(rangeStart)}${this.rangeSeparator()}${format(rangeEnd)}`
+        : format(rangeStart);
     }
-    return this.selectedDates.map(format).join(', ');
+    return this.selectedDates.map(format).join(this.multipleSeparator());
   }
 
   clearValue(event?: Event): void {
     event?.stopPropagation();
-    if (this.isDisabled || this.readonly()) {
+    if (this.isDisabled() || this.readonly()) {
       return;
     }
     this.selectedDates = [];
@@ -1334,6 +1495,19 @@ export class JDatePickerComponent implements ControlValueAccessor {
     this.focusedDate = startOfDay(date);
     this.viewDate = startOfMonth(this.focusedDate);
     this.changeDetectorRef.markForCheck();
+    this.focusActiveCell();
+  }
+
+  /** Move DOM focus to the roving cell so assistive tech follows navigation. */
+  private focusActiveCell(): void {
+    if (!this.isBrowser) {
+      return;
+    }
+    queueMicrotask(() => {
+      const cell =
+        this.panelRef?.nativeElement.querySelector<HTMLButtonElement>('[data-j-focused="true"]');
+      cell?.focus();
+    });
   }
 
   private commit(date: Date | null, emitSelect: boolean): void {
@@ -1419,7 +1593,11 @@ function addDays(date: Date, amount: number): Date {
 }
 
 function addMonths(date: Date, amount: number): Date {
-  return new Date(date.getFullYear(), date.getMonth() + amount, Math.min(date.getDate(), 28));
+  const year = date.getFullYear();
+  const month = date.getMonth() + amount;
+  // Clamp to the target month's last valid day so days 29-31 aren't lost.
+  const lastDay = new Date(year, month + 1, 0).getDate();
+  return new Date(year, month, Math.min(date.getDate(), lastDay));
 }
 
 function sameDate(left: Date, right: Date): boolean {

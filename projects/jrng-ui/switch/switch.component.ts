@@ -3,15 +3,16 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  EventEmitter,
+  effect,
   forwardRef,
   inject,
-  Input,
-  Output,
+  input,
+  output,
+  signal,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { jCreateId } from 'jrng-ui/core';
-import { JSize } from 'jrng-ui/core';
+import { JComponentSize } from 'jrng-ui/core';
 
 @Component({
   selector: 'j-switch',
@@ -22,21 +23,21 @@ import { JSize } from 'jrng-ui/core';
         class="j-switch__input"
         type="checkbox"
         role="switch"
-        [id]="id"
+        [id]="id()"
         [checked]="checked"
-        [disabled]="isDisabled"
-        [readOnly]="readonly"
+        [disabled]="isDisabled()"
+        [readOnly]="readonly()"
         [attr.aria-checked]="checked"
-        [attr.aria-invalid]="invalid ? 'true' : null"
+        [attr.aria-invalid]="invalid() ? 'true' : null"
         (change)="handleChange($event)"
         (blur)="handleBlur()"
       />
       <span class="j-switch__track" aria-hidden="true">
         <span class="j-switch__thumb"></span>
       </span>
-      @if (label || onLabel || offLabel) {
+      @if (label() || onLabel() || offLabel()) {
         <span class="j-switch__label">
-          {{ label || (checked ? onLabel : offLabel) }}
+          {{ label() || (checked ? onLabel() : offLabel()) }}
         </span>
       }
     </label>
@@ -149,48 +150,47 @@ import { JSize } from 'jrng-ui/core';
 export class JSwitchComponent implements ControlValueAccessor {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
-  @Input() id = jCreateId('j-switch');
-  @Input() label = '';
-  @Input() onLabel = '';
-  @Input() offLabel = '';
-  @Input() trueValue: unknown = true;
-  @Input() falseValue: unknown = false;
-  @Input() styleClass = '';
-  @Input() size: JSize = 'md';
-  @Input({ transform: booleanAttribute }) invalid = false;
-  @Input({ transform: booleanAttribute }) readonly = false;
+  readonly id = input(jCreateId('j-switch'));
+  readonly label = input('');
+  readonly onLabel = input('');
+  readonly offLabel = input('');
+  readonly trueValue = input<unknown>(true);
+  readonly falseValue = input<unknown>(false);
+  readonly styleClass = input('');
+  readonly size = input<JComponentSize>('md');
+  readonly invalid = input(false, { transform: booleanAttribute });
+  readonly readonly = input(false, { transform: booleanAttribute });
+  readonly disabled = input(false, { transform: booleanAttribute });
 
-  @Output() valueChange = new EventEmitter<unknown>();
+  readonly valueChange = output<unknown>();
 
   value: unknown = false;
   checked = false;
-  isDisabled = false;
+  readonly isDisabled = signal(false);
 
   private onChange: (value: unknown) => void = () => undefined;
   private onTouched: () => void = () => undefined;
 
-  @Input({ transform: booleanAttribute })
-  set disabled(value: boolean) {
-    this.isDisabled = value;
-    this.changeDetectorRef.markForCheck();
+  constructor() {
+    effect(() => this.isDisabled.set(this.disabled()));
   }
 
   get rootClasses(): string {
     return [
       'j-switch',
-      `j-switch--${this.size}`,
+      `j-switch--${this.size()}`,
       this.checked ? 'is-checked' : '',
-      this.isDisabled ? 'is-disabled' : '',
-      this.invalid ? 'is-invalid' : '',
-      this.styleClass,
+      this.isDisabled() ? 'is-disabled' : '',
+      this.invalid() ? 'is-invalid' : '',
+      this.styleClass(),
     ]
       .filter(Boolean)
       .join(' ');
   }
 
   writeValue(value: unknown): void {
-    this.value = value ?? this.falseValue;
-    this.checked = Object.is(this.value, this.trueValue);
+    this.value = value ?? this.falseValue();
+    this.checked = Object.is(this.value, this.trueValue());
     this.changeDetectorRef.markForCheck();
   }
 
@@ -203,18 +203,18 @@ export class JSwitchComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled = isDisabled;
+    this.isDisabled.set(isDisabled);
     this.changeDetectorRef.markForCheck();
   }
 
   handleChange(event: Event): void {
-    if (this.readonly) {
+    if (this.readonly()) {
       (event.target as HTMLInputElement).checked = this.checked;
       return;
     }
     const target = event.target as HTMLInputElement;
     this.checked = target.checked;
-    this.value = this.checked ? this.trueValue : this.falseValue;
+    this.value = this.checked ? this.trueValue() : this.falseValue();
     this.onChange(this.value);
     this.valueChange.emit(this.value);
   }

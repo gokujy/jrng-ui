@@ -42,4 +42,41 @@ describe('JTourService', () => {
     expect(service.isActive()).toBe(false);
     expect(service.activeIndex()).toBe(-1);
   });
+
+  it('runs native steps, supports navigation, and cleans up on completion', async () => {
+    TestBed.resetTestingModule();
+    const service = TestBed.inject(JTourService);
+    const first = document.createElement('button');
+    const second = document.createElement('button');
+    first.id = 'tour-first';
+    second.id = 'tour-second';
+    document.body.append(first, second);
+    const events: string[] = [];
+    const subscription = service.events$.subscribe((event) => events.push(event.type));
+
+    await service.start({
+      id: 'native-tour',
+      animate: false,
+      steps: [
+        { element: '#tour-first', title: 'First' },
+        { element: '#tour-second', title: 'Second' },
+      ],
+    });
+    expect(service.isActive()).toBe(true);
+    expect(service.currentStep()?.title).toBe('First');
+
+    await service.next();
+    expect(service.activeIndex()).toBe(1);
+    expect(service.currentStep()?.title).toBe('Second');
+
+    await service.complete();
+    expect(service.isActive()).toBe(false);
+    expect(service.currentStep()).toBeNull();
+    expect(events).toEqual(expect.arrayContaining(['start', 'next', 'complete', 'destroy']));
+
+    subscription.unsubscribe();
+    first.remove();
+    second.remove();
+    localStorage.removeItem('jrng-tour:native-tour');
+  });
 });

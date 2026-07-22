@@ -52,4 +52,34 @@ describe('JBadgeComponent', () => {
     expect(el.classList).not.toContain('j-badge--rounded');
     expect(el.getAttribute('data-j-active')).toBe('true');
   });
+
+  it('caps numeric notification counts and supports dot accessibility', () => {
+    const fixture = TestBed.createComponent(JBadgeComponent);
+    fixture.componentRef.setInput('value', 148);
+    fixture.componentRef.setInput('max', 99);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('99+');
+
+    fixture.componentRef.setInput('dot', true);
+    fixture.componentRef.setInput('ariaLabel', '3 unread notifications');
+    fixture.detectChanges();
+    const el = span(fixture.nativeElement);
+    expect(el.classList).toContain('j-badge--dot');
+    expect(el.getAttribute('aria-label')).toBe('3 unread notifications');
+  });
+
+  it('supports soft, outlined, muted, disabled, and icon compositions', () => {
+    const fixture = TestBed.createComponent(JBadgeComponent);
+    fixture.componentRef.setInput('value', 'Verified');
+    fixture.componentRef.setInput('variant', 'outlined');
+    fixture.componentRef.setInput('icon', 'check');
+    fixture.componentRef.setInput('muted', true);
+    fixture.componentRef.setInput('disabled', true);
+    fixture.detectChanges();
+    const el = span(fixture.nativeElement);
+    expect(el.classList).toContain('j-badge--outlined');
+    expect(el.classList).toContain('is-muted');
+    expect(el.getAttribute('aria-disabled')).toBe('true');
+    expect(el.querySelector('j-icon svg')).toBeTruthy();
+  });
 });

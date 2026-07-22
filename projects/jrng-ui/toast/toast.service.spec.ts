@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
-import { JrToastService } from './toast.service';
+import { JToastService } from './toast.service';
 
-describe('JrToastService', () => {
-  let service: JrToastService;
+describe('JToastService', () => {
+  let service: JToastService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(JrToastService);
+    service = TestBed.inject(JToastService);
     service.clear();
   });
 

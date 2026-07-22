@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { ChartsDocsPageComponent } from './docs/charts-docs-page.component';
-import { ComponentsDocsPageComponent } from './docs/components-docs-page.component';
 import { PublicItemIndexPageComponent } from './docs/public-item-index-page.component';
 import { AdminStarterPageComponent } from './pages/admin-starter-page.component';
 import { CommunityPageComponent } from './pages/community-page.component';
@@ -30,7 +29,10 @@ export const routes: Routes = [
   },
   {
     path: 'docs/components',
-    component: ComponentsDocsPageComponent,
+    loadComponent: () =>
+      import('./docs/components-docs-page.component').then(
+        (module) => module.ComponentsDocsPageComponent,
+      ),
     title: 'Angular Components - JRNG UI',
     data: {
       description:

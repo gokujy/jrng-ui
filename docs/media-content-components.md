@@ -21,29 +21,11 @@ import { JEditorComponent } from 'jrng-ui/editor';
 
 Toolbar actions include bold, italic, underline, strike, headings, ordered list, unordered list, link, image URL insertion, code block, blockquote, and clear formatting. Use `#jEditorToolbar` to provide a custom toolbar template when needed.
 
-## Dropzone
-
-`j-dropzone` is a focused drag and drop primitive for custom upload flows.
-
-```ts
-import { JDropzoneComponent } from 'jrng-ui/dropzone';
-```
-
-```html
-<j-dropzone
-  multiple
-  accept="image/*,.pdf"
-  [maxFileSize]="5000000"
-  (upload)="uploadFiles($event.files)"
-  (remove)="removeFile($event)"
-/>
-```
-
-It supports drag and drop, multiple files, accept rules, max size validation, selected file preview rows, remove actions, and a custom upload event.
+Initial `ngModel` and Reactive Forms values are sanitized before rendering, including values written before view initialization. `writeValue` never emits `valueChange`; user input emits once and blur marks the control touched. Scripts, event handlers, styles, executable embeds, unsupported elements, and unsafe URL protocols are removed. The editor is safe to render on the server; browser editing commands run only after a capability check.
 
 ## File Upload
 
-`j-file-upload` supports basic and advanced modes, queue management, progress, cancel, retry, validation, and custom upload.
+`j-file-upload` owns file selection, drag and drop, queue management, progress, cancel, retry, validation, and upload adapters.
 
 ```ts
 import { JFileUploadComponent } from 'jrng-ui/file-upload';
@@ -66,14 +48,21 @@ Use component methods such as `setProgress(itemId, progress)` and `setError(item
 ## Image And Preview
 
 ```ts
-import { JImageComponent, JImagePreviewComponent } from 'jrng-ui/image';
+import { JImageComponent } from 'jrng-ui/image';
 ```
 
 ```html
-<j-image src="/assets/product.png" alt="Product image" width="320px" height="200px" preview fallback="/assets/fallback.png" />
+<j-image
+  src="/assets/product.png"
+  alt="Product image"
+  width="320px"
+  height="200px"
+  preview
+  fallback="/assets/fallback.png"
+/>
 ```
 
-`j-image` supports preview, fallback source, lazy or eager loading, and object-fit styling. `j-image-preview` can also be used directly with two-way `visible` binding.
+`j-image` supports an optional internal preview viewer, fallback source, lazy or eager loading, and object-fit styling.
 
 ## Gallery
 
@@ -116,7 +105,11 @@ import { JVideoPlayerComponent } from 'jrng-ui/video-player';
 ```
 
 ```html
-<j-video-player src="/assets/project-demo.mp4" poster="/assets/project-poster.jpg" caption="Project demo" />
+<j-video-player
+  src="/assets/project-demo.mp4"
+  poster="/assets/project-poster.jpg"
+  caption="Project demo"
+/>
 ```
 
 `j-video-player` wraps native video with token styling and exposes play, pause, and ended outputs.
@@ -128,7 +121,12 @@ import { JFilePreviewComponent } from 'jrng-ui/file-preview';
 ```
 
 ```html
-<j-file-preview fileName="invoice.pdf" [fileSize]="245000" description="Invoice attachment" url="/files/invoice.pdf" />
+<j-file-preview
+  fileName="invoice.pdf"
+  [fileSize]="245000"
+  description="Invoice attachment"
+  url="/files/invoice.pdf"
+/>
 ```
 
 `j-file-preview` displays file name, extension, size, description, open link, and remove action.

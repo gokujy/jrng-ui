@@ -1,16 +1,17 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { JCheckboxComponent } from './checkbox.component';
 
 describe('JCheckboxComponent', () => {
   let component: JCheckboxComponent;
+  let fixture: ComponentFixture<JCheckboxComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [JCheckboxComponent],
     }).compileComponents();
 
-    const fixture = TestBed.createComponent(JCheckboxComponent);
+    fixture = TestBed.createComponent(JCheckboxComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -38,7 +39,7 @@ describe('JCheckboxComponent', () => {
   });
 
   it('reflects membership when bound to an array value', () => {
-    component.value = 'blue';
+    fixture.componentRef.setInput('value', 'blue');
     component.writeValue(['red', 'blue']);
     expect(component.checked).toBe(true);
 
@@ -47,7 +48,7 @@ describe('JCheckboxComponent', () => {
   });
 
   it('adds and removes its value from the array on change', () => {
-    component.value = 'blue';
+    fixture.componentRef.setInput('value', 'blue');
     component.writeValue(['red']);
 
     let emitted: boolean | readonly unknown[] | undefined;
@@ -63,7 +64,7 @@ describe('JCheckboxComponent', () => {
   });
 
   it('ignores changes and restores the input when readonly', () => {
-    component.readonly = true;
+    fixture.componentRef.setInput('readonly', true);
     component.checked = false;
 
     const target = document.createElement('input');
@@ -77,7 +78,9 @@ describe('JCheckboxComponent', () => {
   });
 
   it('clears indeterminate once a change occurs', () => {
-    component.indeterminate = true;
+    fixture.componentRef.setInput('indeterminate', true);
+    fixture.detectChanges();
+    expect(component.isIndeterminate()).toBe(true);
 
     const target = document.createElement('input');
     target.type = 'checkbox';
@@ -85,6 +88,6 @@ describe('JCheckboxComponent', () => {
 
     component.handleChange({ target } as unknown as Event);
 
-    expect(component.indeterminate).toBe(false);
+    expect(component.isIndeterminate()).toBe(false);
   });
 });

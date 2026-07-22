@@ -11,7 +11,6 @@ module.exports = tseslint.config(
       'coverage/**',
       '.angular/**',
       'node_modules/**',
-      'projects/jrng-ui/src/lib/**',
     ],
   },
   {

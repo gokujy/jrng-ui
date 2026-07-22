@@ -33,6 +33,7 @@ export type JIconName =
   | 'settings'
   | 'chart-no-axes-column'
   | 'copy'
+  | 'database'
   | 'check-check'
   | 'book-open'
   | 'panel-left'
@@ -64,7 +65,10 @@ export type JIconName =
   | 'file-text'
   | 'image'
   | 'video'
-  | 'archive';
+  | 'archive'
+  | 'eye'
+  | 'eye-off'
+  | 'trash';
 
 export type JIconMap = Readonly<Record<string, string>>;
 
@@ -81,6 +85,10 @@ export const JRNG_DEFAULT_ICONS: JIconMap = {
   clock: 'M12 6v6l4 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
   upload: 'M12 16V4m0 0 5 5m-5-5-5 5M4 20h16',
   download: 'M12 4v12m0 0 5-5m-5 5-5-5M4 20h16',
+  eye: 'M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Zm10 3a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z',
+  'eye-off':
+    'm3 3 18 18M10.6 10.6a2 2 0 0 0 2.8 2.8M9.9 5.1A11 11 0 0 1 12 5c6.5 0 10 7 10 7a18 18 0 0 1-2.1 3M6.6 6.6C3.6 8.4 2 12 2 12s3.5 7 10 7c1.5 0 2.8-.4 4-.9',
+  trash: 'M4 7h16M9 7V4h6v3m3 0-1 14H7L6 7m4 4v6m4-6v6',
   plus: 'M12 5v14M5 12h14',
   minus: 'M5 12h14',
   info: 'M12 16v-4M12 8h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
@@ -101,6 +109,8 @@ export const JRNG_DEFAULT_ICONS: JIconMap = {
     'M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7ZM19.43 12.98c.04-.32.07-.65.07-.98s-.02-.66-.07-.98l2.11-1.65-2-3.46-2.49 1a7.4 7.4 0 0 0-1.7-.98L15 3h-6l-.35 2.93c-.6.24-1.16.56-1.7.98l-2.49-1-2 3.46 2.11 1.65c-.05.32-.07.65-.07.98s.02.66.07.98l-2.11 1.65 2 3.46 2.49-1c.53.41 1.1.74 1.7.98L9 21h6l.35-2.93c.6-.24 1.16-.57 1.7-.98l2.49 1 2-3.46-2.11-1.65Z',
   'chart-no-axes-column': 'M5 21V10M12 21V3M19 21v-7',
   copy: 'M8 8h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2ZM4 16H3a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v1',
+  database:
+    'M21 6c0 2.21-4.03 4-9 4S3 8.21 3 6s4.03-4 9-4 9 1.79 9 4ZM3 6v6c0 2.21 4.03 4 9 4s9-1.79 9-4V6M3 12v6c0 2.21 4.03 4 9 4s9-1.79 9-4v-6',
   'check-check': 'M18 6 7 17l-5-5M22 10l-7.5 7.5L13 16',
   'book-open':
     'M12 7v14M3 5a2 2 0 0 1 2-2h4a3 3 0 0 1 3 3v15a3 3 0 0 0-3-3H5a2 2 0 0 0-2 2V5ZM21 5a2 2 0 0 0-2-2h-4a3 3 0 0 0-3 3v15a3 3 0 0 1 3-3h4a2 2 0 0 1 2 2V5Z',

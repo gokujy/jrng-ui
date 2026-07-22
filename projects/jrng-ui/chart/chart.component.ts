@@ -15,6 +15,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { JClipboardService, JDownloadService, JFullscreenService } from 'jrng-ui/core';
 
 export type JChartType =
   'bar' | 'line' | 'pie' | 'doughnut' | 'radar' | 'polarArea' | 'scatter' | 'bubble' | 'mixed';
@@ -51,6 +52,7 @@ type JChartConstructor = new (
   imports: [],
   template: `
     <section
+      #root
       class="j-chart"
       [class]="styleClass()"
       data-jc-name="chart"
@@ -60,12 +62,21 @@ type JChartConstructor = new (
       [style.width.px]="width() || null"
       [style.height.px]="height() || null"
     >
+      @if (showActions()) {
+        <div class="j-chart__actions" role="toolbar" aria-label="Chart actions">
+          <button type="button" (click)="download('png')">PNG</button
+          ><button type="button" (click)="download('jpeg')">JPEG</button
+          ><button type="button" (click)="copyImage()">Copy</button
+          ><button type="button" (click)="print.emit()">Print</button
+          ><button type="button" (click)="toggleFullscreen()">Fullscreen</button>
+        </div>
+      }
       @if (loading()) {
         <div class="j-chart__state" data-jc-section="loading" role="status">Loading...</div>
-      } @else if (!hasData()) {
-        <div class="j-chart__state" data-jc-section="empty">{{ emptyMessage() }}</div>
       } @else if (loadError()) {
         <div class="j-chart__state" data-jc-section="error">{{ loadError() }}</div>
+      } @else if (!hasData()) {
+        <div class="j-chart__state" data-jc-section="empty">{{ emptyMessage() }}</div>
       } @else {
         <canvas
           #canvas
@@ -75,6 +86,12 @@ type JChartConstructor = new (
           [attr.width]="width() || null"
           [attr.height]="height() || null"
         ></canvas>
+        @if (summary()) {
+          <p class="j-chart__summary">{{ summary() }}</p>
+        }
+        @if (showDataTable()) {
+          <ng-content select="[jChartDataTable]" />
+        }
       }
     </section>
   `,
@@ -104,6 +121,17 @@ type JChartConstructor = new (
         min-height: 10rem;
         text-align: center;
       }
+      .j-chart__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--j-spacing-2);
+        justify-content: flex-end;
+        margin-bottom: var(--j-spacing-2);
+      }
+      .j-chart__summary {
+        color: var(--j-color-muted-foreground);
+        font-size: var(--j-font-size-sm);
+      }
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -115,6 +143,10 @@ export class JChartComponent {
   private chartConstructor: JChartConstructor | null = null;
   private renderVersion = 0;
   private destroyed = false;
+  private readonly downloads = inject(JDownloadService);
+  private readonly clipboard = inject(JClipboardService);
+  private readonly fullscreenService = inject(JFullscreenService);
+  private resizeObserver: ResizeObserver | null = null;
 
   readonly type = input<JChartType>('bar');
   readonly data = input<unknown>(null);
@@ -127,9 +159,25 @@ export class JChartComponent {
   readonly emptyMessage = input('No chart data available.');
   readonly ariaLabel = input('Chart');
   readonly styleClass = input('');
+  readonly showActions = input(false, { transform: booleanAttribute });
+  readonly showDataTable = input(false, { transform: booleanAttribute });
+  readonly summary = input('');
+  readonly exportFilename = input('chart');
+  readonly tooltipFormatter = input<((context: unknown) => string | readonly string[]) | null>(
+    null,
+  );
 
   readonly chartClick = output<JChartInteractionEvent>();
   readonly chartHover = output<JChartInteractionEvent>();
+  readonly dataPointClick = output<JChartInteractionEvent>();
+  readonly datasetClick = output<JChartInteractionEvent>();
+  readonly legendClick = output<unknown>();
+  readonly exportImageRequest = output<{
+    readonly type: 'png' | 'jpeg';
+    readonly dataUrl: string;
+  }>();
+  readonly print = output<void>();
+  readonly fullscreenChange = output<boolean>();
 
   readonly canvasRef = viewChild<ElementRef<HTMLCanvasElement>>('canvas');
   readonly loadError = signal('');
@@ -151,6 +199,7 @@ export class JChartComponent {
     this.destroyRef.onDestroy(() => {
       this.destroyed = true;
       this.destroyChart();
+      this.resizeObserver?.disconnect();
     });
 
     effect(() => {
@@ -183,6 +232,40 @@ export class JChartComponent {
     return this.chart?.toBase64Image?.(type, quality) ?? '';
   }
 
+  download(type: 'png' | 'jpeg'): void {
+    if (!this.isBrowser) return;
+    const mime = `image/${type}`;
+    const dataUrl = this.exportImage(mime, type === 'jpeg' ? 0.92 : undefined);
+    this.exportImageRequest.emit({ type, dataUrl });
+    if (!dataUrl) return;
+    const comma = dataUrl.indexOf(',');
+    if (comma < 0) return;
+    const binary = atob(dataUrl.slice(comma + 1));
+    const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0));
+    this.downloads.downloadBlob(
+      new Blob([bytes], { type: mime }),
+      `${this.exportFilename()}.${type === 'jpeg' ? 'jpg' : 'png'}`,
+    );
+  }
+  async copyImage(): Promise<void> {
+    const data = this.exportImage();
+    if (!data || !this.isBrowser) return;
+    const view = this.canvasRef()?.nativeElement.ownerDocument.defaultView;
+    const ClipboardItemCtor = view?.ClipboardItem;
+    if (ClipboardItemCtor && view?.navigator.clipboard?.write) {
+      const blob = await (await view.fetch(data)).blob();
+      await view.navigator.clipboard.write([new ClipboardItemCtor({ [blob.type]: blob })]);
+      return;
+    }
+    await this.clipboard.copyText(data);
+  }
+  async toggleFullscreen(): Promise<void> {
+    const root = this.rootRef()?.nativeElement;
+    if (!root) return;
+    await this.fullscreenService.toggle(root);
+    this.fullscreenChange.emit(this.fullscreenService.active());
+  }
+
   private async renderChart(): Promise<void> {
     const canvas = this.canvasRef()?.nativeElement;
     if (!canvas) {
@@ -202,6 +285,12 @@ export class JChartComponent {
       options: this.mergedOptions(),
       plugins: this.plugins(),
     });
+    const ResizeObserverCtor = canvas.ownerDocument.defaultView?.ResizeObserver;
+    if (ResizeObserverCtor) {
+      this.resizeObserver?.disconnect();
+      this.resizeObserver = new ResizeObserverCtor(() => this.resize());
+      this.resizeObserver.observe(canvas.parentElement ?? canvas);
+    }
   }
 
   private async loadChartConstructor(): Promise<JChartConstructor | null> {
@@ -231,24 +320,42 @@ export class JChartComponent {
 
   private mergedOptions(): JChartRecord {
     const userOptions = this.options() ?? {};
+    const userPlugins = isRecord(userOptions['plugins']) ? userOptions['plugins'] : {};
+    const userLegend = isRecord(userPlugins['legend']) ? userPlugins['legend'] : {};
+    const userTooltip = isRecord(userPlugins['tooltip']) ? userPlugins['tooltip'] : {};
+    // Spread user options FIRST, then apply the built-in plugin defaults and
+    // event handlers so they win. The plugins block is deep-merged (per-plugin)
+    // so user plugin options extend the legend/tooltip defaults instead of
+    // wiping them out, and onClick/onHover are never clobbered.
     return {
       responsive: this.responsive(),
       maintainAspectRatio: this.height() === 0,
+      ...userOptions,
       plugins: {
+        ...userPlugins,
         legend: {
           display: true,
           labels: {
             color: 'var(--j-color-muted-foreground)',
           },
+          ...userLegend,
+          onClick: (...args: unknown[]) => {
+            this.legendClick.emit(args);
+            const handler = userLegend['onClick'];
+            if (typeof handler === 'function') handler(...args);
+          },
         },
         tooltip: {
           enabled: true,
+          ...(this.tooltipFormatter() ? { callbacks: { label: this.tooltipFormatter() } } : {}),
+          ...userTooltip,
         },
-        ...(isRecord(userOptions['plugins']) ? userOptions['plugins'] : {}),
       },
-      ...userOptions,
       onClick: (event: Event, elements: readonly unknown[], chart: unknown) => {
-        this.chartClick.emit({ nativeEvent: event, elements, chart });
+        const payload = { nativeEvent: event, elements, chart };
+        this.chartClick.emit(payload);
+        this.dataPointClick.emit(payload);
+        if (elements.length) this.datasetClick.emit(payload);
       },
       onHover: (event: Event, elements: readonly unknown[], chart: unknown) => {
         this.chartHover.emit({ nativeEvent: event, elements, chart });
@@ -309,9 +416,12 @@ export class JChartComponent {
   }
 
   private destroyChart(): void {
+    this.resizeObserver?.disconnect();
     this.chart?.destroy();
     this.chart = null;
   }
+
+  readonly rootRef = viewChild<ElementRef<HTMLElement>>('root');
 }
 
 function isRecord(value: unknown): value is JChartRecord {

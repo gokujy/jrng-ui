@@ -89,7 +89,7 @@ Custom templates:
   stateKey="customers-grid"
   [(selection)]="selectedCustomers"
   (lazyLoad)="loadCustomers($event)"
-  (stateRestoreError)="clearCorruptedGridState($event)"
+  (stateError)="clearCorruptedGridState($event)"
 >
   <j-button jDataGridActions>Create</j-button>
   <j-button jDataGridBulkActions>Archive selected</j-button>
@@ -111,7 +111,7 @@ columns: readonly JDataGridColumn<CustomerRow>[] = [
 ];
 ```
 
-State persistence is enabled only when a `stateKey` is provided. Restored state is validated before it is applied: invalid JSON, unsupported versions, removed columns, invalid sort directions, and invalid page values are ignored or reported through `stateRestoreError` instead of leaving the grid blank.
+State persistence is enabled only when a `stateKey` is provided. Malformed state is ignored, defaults are restored, and `stateError` emits without interrupting rendering.
 
 ## j-paginator
 

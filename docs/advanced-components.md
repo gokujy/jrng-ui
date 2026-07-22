@@ -13,7 +13,7 @@ import { JFileUploadComponent } from 'jrng-ui/file-upload';
   accept=".pdf,.png,.jpg"
   [multiple]="true"
   [maxFileSize]="5_000_000"
-  chooseLabel="Choose files"
+  chooseLabel="Add files"
   uploadLabel="Upload"
   cancelLabel="Clear"
   [auto]="false"
@@ -25,6 +25,7 @@ import { JFileUploadComponent } from 'jrng-ui/file-upload';
 ```
 
 Supported:
+
 - basic and advanced modes
 - `multiple`
 - `accept`
@@ -53,19 +54,8 @@ import { JImageComponent } from 'jrng-ui/image';
 />
 ```
 
-Standalone preview is also available:
-
-```ts
-import { JImagePreviewComponent } from 'jrng-ui/image-preview';
-```
-
-```html
-<j-image-preview
-  src="/assets/document.png"
-  alt="Document preview"
-  [(visible)]="previewOpen"
-/>
-```
+Image preview is an opt-in `j-image` capability; there is no separate preview
+entry point. The fullscreen viewer remains an internal implementation detail.
 
 ## Avatar Group
 
@@ -80,7 +70,7 @@ users: readonly JAvatarGroupItem[] = [
 ```
 
 ```html
-<j-avatar-group [items]="users" size="md" [max]="3" ariaLabel="Assigned users" />
+<j-avatar-group [items]="users" size="md" [max]="3" ariaLabel="Team members" />
 ```
 
 ## Copy Button
@@ -90,11 +80,7 @@ import { JCopyButtonComponent } from 'jrng-ui/copy-button';
 ```
 
 ```html
-<j-copy-button
-  text="REC-2026-001"
-  ariaLabel="Copy record number"
-  (copied)="showCopied($event)"
-/>
+<j-copy-button text="REC-2026-001" ariaLabel="Copy record number" (copied)="showCopied($event)" />
 ```
 
 ## Status Chip
@@ -116,11 +102,7 @@ import { JColorPickerComponent } from 'jrng-ui/color-picker';
 ```
 
 ```html
-<j-color-picker
-  label="Brand color"
-  [formControl]="brandColor"
-  (valueChange)="color = $event"
-/>
+<j-color-picker label="Brand color" [formControl]="brandColor" (valueChange)="color = $event" />
 ```
 
 The color picker is a lightweight native color input with optional text input and ControlValueAccessor support.
@@ -132,16 +114,12 @@ import { JEditorComponent } from 'jrng-ui/editor';
 ```
 
 ```html
-<j-editor
-  label="Notes"
-  placeholder="Enter private notes"
-  [formControl]="notes"
-/>
+<j-editor label="Notes" placeholder="Enter private notes" [formControl]="notes" />
 ```
 
-`j-editor` is intentionally a placeholder wrapper API for now. It uses a textarea with ControlValueAccessor support and documents the future rich text surface without introducing a heavy editor dependency.
+`j-editor` is a dependency-free contenteditable rich-text control. HTML mode sanitizes initial values, programmatic updates, user edits, and paste through the same allowlist; text mode preserves literal text. It supports Reactive Forms and `ngModel`, independent readonly and disabled states, touched tracking, and an isolated command adapter for bold, italic, underline, lists, links, undo, and redo.
 
-## Pending Items
+## Awaiting Review
 
 - File upload transport implementation for non-custom uploads
 - File type validation beyond browser `accept`

@@ -3,27 +3,52 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  contentChild,
+  effect,
   forwardRef,
   inject,
-  Input,
+  input,
   output,
+  signal,
+  TemplateRef,
 } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { jAriaDescribedBy } from 'jrng-ui/core';
 import { jCreateId } from 'jrng-ui/core';
 import { JRNG_LOCALE } from 'jrng-ui/core';
 import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
-import { JSize } from 'jrng-ui/core';
+import { JComponentSize, JComponentWidth } from 'jrng-ui/core';
 import { JInputVariant } from 'jrng-ui/input';
+import { JButtonComponent } from 'jrng-ui/button';
+
+export type JPasswordStrength = 'weak' | 'medium' | 'strong' | 'very-strong';
+export interface JPasswordRule {
+  readonly id: string;
+  readonly label: string;
+  readonly test: (value: string) => boolean;
+}
+export interface JPasswordRuleResult {
+  readonly id: string;
+  readonly label: string;
+  readonly passed: boolean;
+}
+
+export function jEvaluatePassword(
+  value: string,
+  rules: readonly JPasswordRule[],
+): JPasswordRuleResult[] {
+  return rules.map((rule) => ({ id: rule.id, label: rule.label, passed: rule.test(value) }));
+}
 
 @Component({
   selector: 'j-password',
-  imports: [],
+  imports: [JButtonComponent, NgTemplateOutlet],
   template: `
-    @if (label) {
-      <label class="j-password__label" data-jc-name="password" data-jc-section="label" [for]="id">
-        <span>{{ label }}</span>
-        @if (required) {
+    @if (label()) {
+      <label class="j-password__label" data-jc-name="password" data-jc-section="label" [for]="id()">
+        <span>{{ label() }}</span>
+        @if (required()) {
           <span class="j-password__required" aria-hidden="true">*</span>
         }
       </label>
@@ -33,62 +58,79 @@ import { JInputVariant } from 'jrng-ui/input';
       data-jc-name="password"
       data-jc-section="root"
       data-jc-extend="toggle clear meter"
-      [attr.data-j-disabled]="isDisabled ? 'true' : null"
+      [attr.data-j-disabled]="isDisabled() ? 'true' : null"
       [attr.data-j-invalid]="hasError ? 'true' : null"
       [attr.data-j-active]="value ? 'true' : null"
     >
       <input
         class="j-password__field"
         data-jc-section="input"
-        [id]="id"
-        [name]="name || null"
+        [id]="id()"
+        [name]="name() || null"
         [type]="visible ? 'text' : 'password'"
-        [placeholder]="placeholder"
-        [disabled]="isDisabled"
-        [readOnly]="readonly"
-        [required]="required"
+        [placeholder]="placeholder()"
+        [disabled]="isDisabled()"
+        [readOnly]="readonly()"
+        [required]="required()"
         [value]="value"
         [attr.aria-invalid]="hasError ? 'true' : null"
         [attr.aria-describedby]="describedBy"
         (input)="handleInput($event)"
         (blur)="handleBlur()"
       />
-      @if (clearable && value) {
-        <button
+      @if (clearable() && value) {
+        <j-button
           class="j-password__clear"
           data-jc-section="clear"
-          type="button"
-          [attr.aria-label]="locale.clear"
-          [disabled]="isDisabled || readonly"
-          (click)="clearValue()"
-        >
-          x
-        </button>
+          variant="text"
+          severity="neutral"
+          actionDisplay="icon"
+          icon="close"
+          [ariaLabel]="locale.clear"
+          [disabled]="isDisabled() || readonly()"
+          (onClick)="clearValue()"
+        />
       }
-      @if (toggleMask) {
-        <button
+      @if (toggleVisibility()) {
+        <j-button
           class="j-password__toggle"
           data-jc-section="toggle"
-          type="button"
-          [attr.aria-label]="visible ? locale.hidePassword : locale.showPassword"
-          [disabled]="isDisabled"
-          (click)="visible = !visible"
+          variant="text"
+          severity="neutral"
+          actionDisplay="icon"
+          [icon]="activeIconTemplate ? '' : visible ? hideIcon() : showIcon()"
+          [ariaLabel]="visible ? locale.hidePassword : locale.showPassword"
+          [disabled]="isDisabled()"
+          (onClick)="togglePassword()"
         >
-          {{ visible ? locale.hidePassword : locale.showPassword }}
-        </button>
+          @if (activeIconTemplate; as iconTemplate) {
+            <span jButtonPrefix><ng-container [ngTemplateOutlet]="iconTemplate" /></span>
+          }
+        </j-button>
       }
     </div>
-    @if (feedback && value) {
+    @if (feedback() && value) {
       <div class="j-password__meter" data-jc-section="meter" aria-hidden="true">
         <span [style.width.%]="strength"></span>
       </div>
-      <p class="j-password__message" data-jc-section="feedback">{{ strengthLabel }}</p>
+      <p class="j-password__message" data-jc-section="feedback" aria-live="polite">
+        {{ strengthLabel }}
+      </p>
+      @if (showRules()) {
+        <ul class="j-password__rules" aria-label="Password guidance">
+          @for (rule of ruleResults; track rule.id) {
+            <li [class.is-passed]="rule.passed">
+              <span aria-hidden="true">{{ rule.passed ? '✓' : '○' }}</span> {{ rule.label }}
+            </li>
+          }
+        </ul>
+      }
     }
-    @if (hasError && error) {
-      <p class="j-password__message j-password__message--error" [id]="errorId">{{ error }}</p>
+    @if (hasError && error()) {
+      <p class="j-password__message j-password__message--error" [id]="errorId">{{ error() }}</p>
     }
-    @if (hint && !hasError) {
-      <p class="j-password__message" [id]="hintId">{{ hint }}</p>
+    @if (hint() && !hasError) {
+      <p class="j-password__message" [id]="hintId">{{ hint() }}</p>
     }
   `,
   styles: [
@@ -182,6 +224,17 @@ import { JInputVariant } from 'jrng-ui/input';
         font-size: var(--j-font-size-xs);
         margin: var(--j-spacing-sm) 0 0;
       }
+      .j-password__rules {
+        display: grid;
+        gap: var(--j-spacing-1);
+        font-size: var(--j-font-size-xs);
+        list-style: none;
+        margin: var(--j-spacing-2) 0 0;
+        padding: 0;
+      }
+      .j-password__rules .is-passed {
+        color: var(--j-color-success);
+      }
     `,
   ],
   providers: [
@@ -197,25 +250,38 @@ export class JPasswordComponent implements ControlValueAccessor {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
   readonly locale = inject(JRNG_LOCALE);
 
-  @Input() id = jCreateId('j-password');
-  @Input() name = '';
-  @Input() label = '';
-  @Input() placeholder = '';
-  @Input() hint = '';
-  @Input() error = '';
-  @Input() styleClass = '';
-  @Input() pt: JPassThrough | null = null;
-  @Input({ alias: 'aria-describedby' }) ariaDescribedby = '';
-  @Input() size: JSize = 'md';
-  @Input() variant: JInputVariant = 'outlined';
-  @Input({ transform: booleanAttribute }) readonly = false;
-  @Input({ transform: booleanAttribute }) invalid = false;
-  @Input({ transform: booleanAttribute }) required = false;
-  @Input({ transform: booleanAttribute }) clearable = false;
-  @Input({ transform: booleanAttribute }) toggleMask = true;
-  @Input({ transform: booleanAttribute }) feedback = false;
-  @Input({ transform: booleanAttribute }) fluid = false;
-  @Input({ transform: booleanAttribute }) fullWidth = false;
+  readonly id = input(jCreateId('j-password'));
+  readonly name = input('');
+  readonly label = input('');
+  readonly placeholder = input('');
+  readonly hint = input('');
+  readonly error = input('');
+  readonly styleClass = input('');
+  readonly pt = input<JPassThrough | null>(null);
+  readonly ariaDescribedby = input('', { alias: 'aria-describedby' });
+  readonly size = input<JComponentSize>('md');
+  readonly variant = input<JInputVariant>('outlined');
+  readonly readonly = input(false, { transform: booleanAttribute });
+  readonly invalid = input(false, { transform: booleanAttribute });
+  readonly required = input(false, { transform: booleanAttribute });
+  readonly clearable = input(false, { transform: booleanAttribute });
+  readonly toggleVisibility = input(true, { transform: booleanAttribute });
+  readonly showIcon = input('eye');
+  readonly hideIcon = input('eye-off');
+  readonly feedback = input(false, { transform: booleanAttribute });
+  readonly showRules = input(false, { transform: booleanAttribute });
+  readonly minimumLength = input(8);
+  readonly requireUppercase = input(true, { transform: booleanAttribute });
+  readonly requireLowercase = input(true, { transform: booleanAttribute });
+  readonly requireNumber = input(true, { transform: booleanAttribute });
+  readonly requireSpecial = input(true, { transform: booleanAttribute });
+  readonly customRules = input<readonly JPasswordRule[]>([]);
+  readonly strengthLabels = input<Partial<Record<JPasswordStrength, string>>>({});
+  readonly width = input<JComponentWidth>('auto');
+  readonly disabled = input(false, { transform: booleanAttribute });
+
+  readonly showIconTemplate = contentChild<TemplateRef<void>>('showIcon');
+  readonly hideIconTemplate = contentChild<TemplateRef<void>>('hideIcon');
 
   readonly valueChange = output<string>();
   readonly clear = output<void>();
@@ -224,30 +290,24 @@ export class JPasswordComponent implements ControlValueAccessor {
   readonly errorId = jCreateId('j-password-error');
   value = '';
   visible = false;
-  isDisabled = false;
+  readonly isDisabled = signal(false);
 
   private onChange: (value: string) => void = () => undefined;
   private onTouched: () => void = () => undefined;
 
-  @Input({ transform: booleanAttribute })
-  set disabled(value: boolean) {
-    this.isDisabled = value;
-    this.changeDetectorRef.markForCheck();
-  }
-
-  get disabled(): boolean {
-    return this.isDisabled;
+  constructor() {
+    effect(() => this.isDisabled.set(this.disabled()));
   }
 
   get hasError(): boolean {
-    return this.invalid || this.error.trim().length > 0;
+    return this.invalid() || this.error().trim().length > 0;
   }
 
   get describedBy(): string | null {
     return jAriaDescribedBy(
-      this.ariaDescribedby,
+      this.ariaDescribedby(),
       this.hasError ? this.errorId : null,
-      this.hint ? this.hintId : null,
+      this.hint() ? this.hintId : null,
     );
   }
 
@@ -255,27 +315,69 @@ export class JPasswordComponent implements ControlValueAccessor {
     return jMergePartClasses(
       [
         'j-password',
-        `j-password--${this.size}`,
-        `j-password--${this.variant}`,
+        `j-password--${this.size()}`,
+        `j-password--${this.variant()}`,
         this.hasError ? 'is-invalid' : '',
-        this.isDisabled ? 'is-disabled' : '',
-        this.fluid || this.fullWidth ? 'j-password--fluid' : '',
+        this.isDisabled() ? 'is-disabled' : '',
+        this.width() === 'full' ? 'j-password--fluid' : '',
       ],
-      this.styleClass,
-      this.pt,
+      this.styleClass(),
+      this.pt(),
     );
   }
 
   get strength(): number {
-    let score = Math.min(40, this.value.length * 5);
-    if (/[A-Z]/.test(this.value)) score += 20;
-    if (/[0-9]/.test(this.value)) score += 20;
-    if (/[^A-Za-z0-9]/.test(this.value)) score += 20;
-    return Math.min(score, 100);
+    const results = this.ruleResults;
+    if (!results.length) return 0;
+    return Math.round((results.filter((rule) => rule.passed).length / results.length) * 100);
+  }
+
+  get activeIconTemplate(): TemplateRef<void> | undefined {
+    return this.visible ? this.hideIconTemplate() : this.showIconTemplate();
+  }
+
+  togglePassword(): void {
+    if (!this.isDisabled()) {
+      this.visible = !this.visible;
+      this.changeDetectorRef.markForCheck();
+    }
+  }
+
+  get ruleResults(): JPasswordRuleResult[] {
+    const rules: JPasswordRule[] = [
+      {
+        id: 'length',
+        label: `At least ${this.minimumLength()} characters`,
+        test: (v) => v.length >= this.minimumLength(),
+      },
+    ];
+    if (this.requireUppercase())
+      rules.push({ id: 'uppercase', label: 'One uppercase letter', test: (v) => /[A-Z]/.test(v) });
+    if (this.requireLowercase())
+      rules.push({ id: 'lowercase', label: 'One lowercase letter', test: (v) => /[a-z]/.test(v) });
+    if (this.requireNumber())
+      rules.push({ id: 'number', label: 'One number', test: (v) => /\d/.test(v) });
+    if (this.requireSpecial())
+      rules.push({
+        id: 'special',
+        label: 'One special character',
+        test: (v) => /[^A-Za-z0-9]/.test(v),
+      });
+    return jEvaluatePassword(this.value, [...rules, ...this.customRules()]);
+  }
+
+  get strengthLevel(): JPasswordStrength {
+    if (this.strength >= 100) return 'very-strong';
+    if (this.strength >= 75) return 'strong';
+    if (this.strength >= 45) return 'medium';
+    return 'weak';
   }
 
   get strengthLabel(): string {
-    if (this.strength >= 80) {
+    const custom = this.strengthLabels()[this.strengthLevel];
+    if (custom) return custom;
+    if (this.strengthLevel === 'very-strong') return 'Very strong';
+    if (this.strengthLevel === 'strong') {
       return this.locale.passwordStrong;
     }
 
@@ -300,7 +402,7 @@ export class JPasswordComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled = isDisabled;
+    this.isDisabled.set(isDisabled);
     this.changeDetectorRef.markForCheck();
   }
 
@@ -316,7 +418,7 @@ export class JPasswordComponent implements ControlValueAccessor {
   }
 
   clearValue(): void {
-    if (this.isDisabled || this.readonly || !this.value) {
+    if (this.isDisabled() || this.readonly() || !this.value) {
       return;
     }
 

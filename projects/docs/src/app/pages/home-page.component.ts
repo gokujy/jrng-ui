@@ -5,6 +5,7 @@ import { JButtonComponent } from 'jrng-ui/button';
 import { JCardComponent } from 'jrng-ui/card';
 import { JCheckboxComponent } from 'jrng-ui/checkbox';
 import { JInputComponent } from 'jrng-ui/input';
+import { JIconComponent } from 'jrng-ui/icon';
 import { JSwitchComponent } from 'jrng-ui/switch';
 import { componentDocs } from '../docs/component-docs.data';
 import { DocsAnalyticsService } from '../core/analytics.service';
@@ -35,6 +36,7 @@ interface CategoryPreview {
     RouterLink,
     JButtonComponent,
     JInputComponent,
+    JIconComponent,
     JCheckboxComponent,
     JSwitchComponent,
     JBadgeComponent,
@@ -49,7 +51,7 @@ interface CategoryPreview {
           <div class="docs-home-hero__copy">
             <span class="docs-home-pill">
               <span aria-hidden="true"></span>
-              jrng-ui@0.0.8
+              jrng-ui@0.0.9
             </span>
 
             <h1>
@@ -187,8 +189,8 @@ interface CategoryPreview {
             <h2>A focused Angular design system for operational interfaces.</h2>
             <p>
               JRNG UI is designed for teams building admin panels and business applications.
-              Evaluate its APIs, accessibility, component coverage, maintenance needs, and
-              migration cost against your own requirements.
+              Evaluate its APIs, accessibility, component coverage, maintenance needs, and migration
+              cost against your own requirements.
             </p>
           </div>
         </section>
@@ -236,10 +238,20 @@ interface CategoryPreview {
             </a>
 
             @for (category of categoryPreviews; track category.name; let index = $index) {
-              <a routerLink="/docs/components">
-                <small>{{ index + 1 }}</small>
-                <strong>{{ category.name }}</strong>
-                <span>{{ category.count }} entries</span>
+              <a
+                class="docs-home-manifest__category"
+                routerLink="/docs/components"
+                [attr.aria-label]="category.name + ', ' + category.count + ' components'"
+              >
+                <span class="docs-home-manifest__category-top" aria-hidden="true">
+                  <small>{{ index + 1 }}</small>
+                  <j-icon class="docs-home-manifest__arrow" name="chevron-right" />
+                </span>
+                <strong class="docs-home-manifest__category-name">{{ category.name }}</strong>
+                <span class="docs-home-manifest__count">
+                  <b>{{ category.count }}</b>
+                  components
+                </span>
               </a>
             }
           </div>
@@ -261,12 +273,12 @@ interface CategoryPreview {
               <pre class="docs-code"><code>{{ themeSnippet }}</code></pre>
               <div class="docs-demo">
                 <j-button label="Primary" />
-                <j-button label="Outlined" outlined="true" />
+                <j-button label="Outlined" variant="outlined" />
                 <j-input label="Email" placeholder="name@example.com" />
                 <j-checkbox label="Subscribe" />
                 <j-switch label="Notifications" />
                 <j-badge value="New" />
-                <j-card title="Surface" subtitle="Token-driven" bordered="true">
+                <j-card header="Surface" subheader="Token-driven" variant="outlined">
                   <p>Docs components react to the active theme controls in the header.</p>
                 </j-card>
               </div>
@@ -304,7 +316,7 @@ export class HomePageComponent {
     { label: 'Components', value: `${this.totalComponents}+`, delta: '+registry', tone: 'up' },
     { label: 'Entrypoints', value: '1:1', delta: 'tree-shakeable', tone: 'neutral' },
     { label: 'Theme modes', value: '3', delta: 'light/dark/system', tone: 'up' },
-    { label: 'Status', value: '0.0.8', delta: 'current', tone: 'down' },
+    { label: 'Status', value: '0.0.9', delta: 'current', tone: 'down' },
   ];
 
   readonly features: readonly Feature[] = [

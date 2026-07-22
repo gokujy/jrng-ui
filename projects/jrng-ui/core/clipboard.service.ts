@@ -38,6 +38,10 @@ export class JClipboardService {
     }
   }
 
+  copyStructured(value: unknown, spacing = 2): Promise<JClipboardResult> {
+    return this.copyText(typeof value === 'string' ? value : JSON.stringify(value, null, spacing));
+  }
+
   private copyWithTextArea(text: string): boolean {
     const body = this.documentRef.body;
     const activeElement = this.documentRef.activeElement;
@@ -63,7 +67,8 @@ export class JClipboardService {
       copied = this.documentRef.execCommand('copy');
     } finally {
       body.removeChild(textarea);
-      if (activeElement instanceof HTMLElement) {
+      const HTMLElementCtor = this.documentRef.defaultView?.HTMLElement;
+      if (HTMLElementCtor && activeElement instanceof HTMLElementCtor) {
         activeElement.focus({ preventScroll: true });
       }
     }

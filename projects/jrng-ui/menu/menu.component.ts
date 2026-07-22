@@ -5,28 +5,46 @@ import {
   ChangeDetectorRef,
   Component,
   ContentChild,
+  DestroyRef,
   ElementRef,
-  Input,
   QueryList,
   TemplateRef,
   ViewChildren,
   inject,
+  input,
+  linkedSignal,
   numberAttribute,
   output,
 } from '@angular/core';
 import { JClickOutsideDirective } from 'jrng-ui/core';
 import { jCreateTypeahead } from 'jrng-ui/core';
+import { JSeverity } from 'jrng-ui/core';
+import { JIconComponent, JIconName } from 'jrng-ui/icon';
+import { JBadgeComponent } from 'jrng-ui/badge';
+import { JTooltipDirective } from 'jrng-ui/tooltip';
 
 export interface JMenuItem {
+  readonly id?: string;
   readonly label?: string;
-  readonly icon?: string;
+  readonly icon?: JIconName;
   readonly url?: string;
   readonly routerLink?: string | readonly unknown[];
+  readonly target?: '_self' | '_blank' | '_parent' | '_top' | string;
   readonly command?: (event: { item: JMenuItem; originalEvent: Event }) => void;
   readonly disabled?: boolean;
+  readonly visible?: boolean | (() => boolean);
+  readonly permission?: () => boolean;
   readonly separator?: boolean;
   readonly items?: readonly JMenuItem[];
+  /** Alias accepted when adapting hierarchical data models. */
+  readonly children?: readonly JMenuItem[];
   readonly badge?: string | number;
+  readonly badgeSeverity?: JSeverity;
+  readonly shortcut?: string;
+  readonly tooltip?: string;
+  readonly styleClass?: string;
+  readonly metadata?: Readonly<Record<string, unknown>>;
+  readonly destructive?: boolean;
 }
 
 export interface JMenuItemTemplateContext {
@@ -39,24 +57,30 @@ export interface JMenuItemTemplateContext {
 
 @Component({
   selector: 'j-menu',
-  imports: [JClickOutsideDirective, NgTemplateOutlet],
+  imports: [
+    JClickOutsideDirective,
+    NgTemplateOutlet,
+    JIconComponent,
+    JBadgeComponent,
+    JTooltipDirective,
+  ],
   template: `
     <nav
       [class]="menuClasses"
       data-jc-name="menu"
       data-jc-section="root"
       data-jc-extend="item separator submenu"
-      [attr.data-j-open]="popup && visible ? 'true' : null"
-      [attr.aria-label]="ariaLabel"
+      [attr.data-j-open]="popup() && visibleState() ? 'true' : null"
+      [attr.aria-label]="ariaLabel()"
       [style.left.px]="left"
       [style.top.px]="top"
       jClickOutside
       (jClickOutside)="hide()"
     >
-      @if (!popup || visible) {
+      @if (!popup() || visibleState()) {
         <ng-container
           [ngTemplateOutlet]="menuList"
-          [ngTemplateOutletContext]="{ items: model, level: 0, parentPath: 'root' }"
+          [ngTemplateOutletContext]="{ items: model(), level: 0, parentPath: 'root' }"
         />
       }
     </nav>
@@ -72,7 +96,8 @@ export interface JMenuItemTemplateContext {
       >
         @for (item of items; track item.label || item.icon || $index; let i = $index) {
           @let path = itemKey(item, parentPath, i);
-          @if (item.separator) {
+          @if (!itemVisible(item)) {
+          } @else if (item.separator) {
             <li class="j-menu__separator" data-jc-section="separator" role="separator"></li>
           } @else {
             <li
@@ -81,6 +106,8 @@ export interface JMenuItemTemplateContext {
               role="none"
               [attr.data-j-active]="isPathActive(path) ? 'true' : null"
               [attr.data-j-disabled]="item.disabled ? 'true' : null"
+              [class.j-menu__item--destructive]="item.destructive"
+              [class]="item.styleClass || ''"
               (mouseenter)="scheduleSubmenu(path, item)"
               (mouseleave)="scheduleSubmenuClose(path)"
             >
@@ -91,12 +118,14 @@ export interface JMenuItemTemplateContext {
                 type="button"
                 role="menuitem"
                 [disabled]="item.disabled"
-                [attr.aria-haspopup]="item.items?.length ? 'menu' : null"
-                [attr.aria-expanded]="item.items?.length ? submenuOpen(path) : null"
+                [attr.aria-haspopup]="children(item).length ? 'menu' : null"
+                [attr.aria-expanded]="children(item).length ? submenuOpen(path) : null"
                 [attr.tabindex]="path === activePath ? 0 : -1"
                 [attr.data-j-focused]="path === activePath ? 'true' : null"
                 [attr.data-j-active]="path === activePath ? 'true' : null"
                 [attr.data-j-disabled]="item.disabled ? 'true' : null"
+                [jTooltip]="item.tooltip || ''"
+                [tooltipDisabled]="!item.tooltip"
                 (click)="activate(item, $event, path)"
                 (focus)="setActive(path)"
               >
@@ -107,24 +136,35 @@ export interface JMenuItemTemplateContext {
                   />
                 } @else {
                   @if (item.icon) {
-                    <span class="j-menu__icon" data-jc-section="icon" aria-hidden="true">{{
-                      item.icon
-                    }}</span>
+                    <j-icon
+                      class="j-menu__icon"
+                      data-jc-section="icon"
+                      [name]="item.icon"
+                      aria-hidden="true"
+                    />
                   }
                   <span class="j-menu__label" data-jc-section="label">{{ item.label }}</span>
                   @if (item.badge !== null && item.badge !== undefined) {
-                    <span class="j-menu__badge" data-jc-section="badge">{{ item.badge }}</span>
+                    <j-badge
+                      data-jc-section="badge"
+                      [value]="item.badge"
+                      [severity]="item.badgeSeverity || 'primary'"
+                      size="sm"
+                    />
                   }
-                  @if (item.items?.length) {
+                  @if (item.shortcut) {
+                    <kbd class="j-menu__shortcut">{{ item.shortcut }}</kbd>
+                  }
+                  @if (children(item).length) {
                     <span class="j-menu__chevron" aria-hidden="true">›</span>
                   }
                 }
               </button>
-              @if (item.items?.length && submenuOpen(path)) {
+              @if (children(item).length && submenuOpen(path)) {
                 <ng-container
                   [ngTemplateOutlet]="menuList"
                   [ngTemplateOutletContext]="{
-                    items: item.items,
+                    items: children(item),
                     level: level + 1,
                     parentPath: path,
                   }"
@@ -220,6 +260,15 @@ export interface JMenuItemTemplateContext {
         margin-left: auto;
       }
 
+      .j-menu__shortcut {
+        color: var(--j-color-muted-foreground);
+        font: inherit;
+        font-size: var(--j-font-size-xs);
+      }
+      .j-menu__item--destructive .j-menu__button {
+        color: var(--j-color-danger, #dc2626);
+      }
+
       .j-menu__separator {
         border-top: 1px solid var(--j-color-border);
         margin: var(--j-spacing-1) 0;
@@ -233,22 +282,40 @@ export class JMenuComponent {
   private readonly typeahead = jCreateTypeahead<JMenuItem>();
   private readonly openTimers = new Map<string, ReturnType<typeof setTimeout>>();
   private readonly closeTimers = new Map<string, ReturnType<typeof setTimeout>>();
+  private readonly destroyRef = inject(DestroyRef);
+
+  constructor() {
+    // Clear any pending submenu hover timers so their callbacks don't run
+    // against a destroyed view (leaked timer + work on a dead component).
+    this.destroyRef.onDestroy(() => {
+      for (const timer of this.openTimers.values()) {
+        clearTimeout(timer);
+      }
+      for (const timer of this.closeTimers.values()) {
+        clearTimeout(timer);
+      }
+      this.openTimers.clear();
+      this.closeTimers.clear();
+    });
+  }
 
   @ViewChildren('menuButton') private buttons?: QueryList<ElementRef<HTMLButtonElement>>;
   @ContentChild('jMenuItem', { read: TemplateRef })
   itemTemplate?: TemplateRef<JMenuItemTemplateContext>;
 
-  @Input() model: readonly JMenuItem[] = [];
-  @Input() ariaLabel = 'Menu';
-  @Input() styleClass = '';
-  @Input() target: HTMLElement | null = null;
-  @Input({ transform: booleanAttribute }) popup = false;
-  @Input({ transform: booleanAttribute }) visible = false;
-  @Input({ transform: numberAttribute }) submenuOpenDelay = 120;
-  @Input({ transform: numberAttribute }) submenuCloseDelay = 180;
+  readonly model = input<readonly JMenuItem[]>([]);
+  readonly ariaLabel = input('Menu');
+  readonly styleClass = input('');
+  readonly target = input<HTMLElement | null>(null);
+  readonly popup = input(false, { transform: booleanAttribute });
+  readonly visible = input(false, { transform: booleanAttribute });
+  readonly submenuOpenDelay = input(120, { transform: numberAttribute });
+  readonly submenuCloseDelay = input(180, { transform: numberAttribute });
 
   readonly visibleChange = output<boolean>();
   readonly itemClick = output<{ item: JMenuItem; originalEvent: Event }>();
+
+  protected readonly visibleState = linkedSignal(() => this.visible());
 
   activePath = 'root-0';
   openPaths = new Set<string>();
@@ -256,38 +323,40 @@ export class JMenuComponent {
   top = 0;
 
   get menuClasses(): string {
-    return ['j-menu', this.popup ? 'j-menu--popup' : '', this.styleClass].filter(Boolean).join(' ');
+    return ['j-menu', this.popup() ? 'j-menu--popup' : '', this.styleClass()]
+      .filter(Boolean)
+      .join(' ');
   }
 
   show(eventOrTarget?: MouseEvent | HTMLElement): void {
     this.positionFrom(eventOrTarget);
-    this.visible = true;
+    this.visibleState.set(true);
     this.visibleChange.emit(true);
-    this.activePath = this.firstEnabledPath(this.model) ?? 'root-0';
+    this.activePath = this.firstEnabledPath(this.model()) ?? 'root-0';
     this.changeDetectorRef.markForCheck();
     queueMicrotask(() => this.focusActive());
   }
 
   hide(): void {
-    if (!this.popup || !this.visible) {
+    if (!this.popup() || !this.visibleState()) {
       return;
     }
-    this.visible = false;
+    this.visibleState.set(false);
     this.openPaths.clear();
     this.visibleChange.emit(false);
     this.changeDetectorRef.markForCheck();
   }
 
   toggle(eventOrTarget?: MouseEvent | HTMLElement): void {
-    this.visible ? this.hide() : this.show(eventOrTarget);
+    this.visibleState() ? this.hide() : this.show(eventOrTarget);
   }
 
   activate(item: JMenuItem, event: Event, path: string): void {
-    if (item.disabled) {
+    if (item.disabled || !this.itemVisible(item)) {
       return;
     }
     this.setActive(path);
-    if (item.items?.length) {
+    if (this.children(item).length) {
       this.openPaths.add(path);
       this.changeDetectorRef.markForCheck();
       return;
@@ -295,7 +364,7 @@ export class JMenuComponent {
     const payload = { item, originalEvent: event };
     item.command?.(payload);
     this.itemClick.emit(payload);
-    if (this.popup) {
+    if (this.popup()) {
       this.hide();
     }
   }
@@ -341,7 +410,16 @@ export class JMenuComponent {
   }
 
   itemKey(item: JMenuItem, parentPath: string, index: number): string {
-    return `${parentPath}-${item.label ?? item.icon ?? 'item'}-${index}`;
+    return `${parentPath}-${item.id ?? item.label ?? item.icon ?? 'item'}-${index}`;
+  }
+
+  itemVisible(item: JMenuItem): boolean {
+    const visible = typeof item.visible === 'function' ? item.visible() : item.visible !== false;
+    return visible && (item.permission?.() ?? true);
+  }
+
+  children(item: JMenuItem): readonly JMenuItem[] {
+    return item.items ?? item.children ?? [];
   }
 
   submenuOpen(path: string): boolean {
@@ -357,7 +435,7 @@ export class JMenuComponent {
   }
 
   scheduleSubmenu(path: string, item: JMenuItem): void {
-    if (!item.items?.length || item.disabled) {
+    if (!this.children(item).length || item.disabled) {
       return;
     }
     this.clearTimer(this.closeTimers, path);
@@ -368,7 +446,7 @@ export class JMenuComponent {
         this.openPaths.add(path);
         this.activePath = path;
         this.changeDetectorRef.markForCheck();
-      }, this.submenuOpenDelay),
+      }, this.submenuOpenDelay()),
     );
   }
 
@@ -380,7 +458,7 @@ export class JMenuComponent {
       setTimeout(() => {
         this.openPaths.delete(path);
         this.changeDetectorRef.markForCheck();
-      }, this.submenuCloseDelay),
+      }, this.submenuCloseDelay()),
     );
   }
 
@@ -421,11 +499,11 @@ export class JMenuComponent {
 
   private openActiveSubmenu(): void {
     const active = this.flatEnabledItems().find((entry) => entry.path === this.activePath);
-    if (!active?.item.items?.length) {
+    if (!active || !this.children(active.item).length) {
       return;
     }
     this.openPaths.add(active.path);
-    const firstChild = this.firstEnabledPath(active.item.items, active.path);
+    const firstChild = this.firstEnabledPath(this.children(active.item), active.path);
     this.activePath = firstChild ?? active.path;
     this.changeDetectorRef.markForCheck();
     queueMicrotask(() => this.focusActive());
@@ -476,37 +554,39 @@ export class JMenuComponent {
   }
 
   private flatEnabledItems(
-    items = this.model,
+    items = this.model(),
     parentPath = 'root',
   ): { readonly item: JMenuItem; readonly path: string }[] {
     return items.flatMap((item, index) => {
       const path = this.itemKey(item, parentPath, index);
-      if (item.separator) {
+      if (item.separator || !this.itemVisible(item)) {
         return [];
       }
       const children =
-        item.items?.length && this.openPaths.has(path)
-          ? this.flatEnabledItems(item.items, path)
+        this.children(item).length && this.openPaths.has(path)
+          ? this.flatEnabledItems(this.children(item), path)
           : [];
       return item.disabled ? children : [{ item, path }, ...children];
     });
   }
 
   private firstEnabledPath(items: readonly JMenuItem[], parentPath = 'root'): string | null {
-    const index = items.findIndex((item) => !item.separator && !item.disabled);
+    const index = items.findIndex(
+      (item) => !item.separator && !item.disabled && this.itemVisible(item),
+    );
     return index >= 0 ? this.itemKey(items[index], parentPath, index) : null;
   }
 
   private positionFrom(eventOrTarget?: MouseEvent | HTMLElement): void {
-    if (!this.popup) {
+    if (!this.popup()) {
       return;
     }
-    if (eventOrTarget instanceof MouseEvent) {
+    if (eventOrTarget && 'clientX' in eventOrTarget && 'clientY' in eventOrTarget) {
       this.left = eventOrTarget.clientX;
       this.top = eventOrTarget.clientY;
       return;
     }
-    const target = eventOrTarget ?? this.target;
+    const target = eventOrTarget ?? this.target();
     if (target) {
       const rect = target.getBoundingClientRect();
       this.left = rect.left;

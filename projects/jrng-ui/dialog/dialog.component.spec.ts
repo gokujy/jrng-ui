@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { JrDialogComponent } from './dialog.component';
+import { JDialogComponent } from './dialog.component';
 
 @Component({
-  imports: [JrDialogComponent],
+  imports: [JDialogComponent],
   template: `
     <button id="before-dialog" type="button">Before</button>
     <j-dialog
@@ -27,7 +27,7 @@ class DialogHostComponent {
   lastReason = '';
 }
 
-describe('JrDialogComponent', () => {
+describe('JDialogComponent', () => {
   let fixture: ComponentFixture<DialogHostComponent>;
   let host: DialogHostComponent;
 

@@ -24,10 +24,13 @@ export class JLiveAnnouncerService implements OnDestroy {
 
   clear(delayMs = 0): void {
     if (this.clearTimer) clearTimeout(this.clearTimer);
-    this.clearTimer = setTimeout(() => {
-      if (this.liveElement) this.liveElement.textContent = '';
-      this.clearTimer = null;
-    }, Math.max(0, delayMs));
+    this.clearTimer = setTimeout(
+      () => {
+        if (this.liveElement) this.liveElement.textContent = '';
+        this.clearTimer = null;
+      },
+      Math.max(0, delayMs),
+    );
   }
 
   ngOnDestroy(): void {

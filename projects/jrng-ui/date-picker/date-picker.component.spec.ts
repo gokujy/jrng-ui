@@ -37,6 +37,38 @@ describe('JDatePickerComponent', () => {
       expect(picker.inputValue).toBe('2026-01-15');
       expect(emitted).toBeInstanceOf(Date);
     });
+
+    it('renders the calendar icon as a visible SVG in the trigger', () => {
+      const fixture = createPicker();
+      const trigger = fixture.nativeElement.querySelector(
+        '.j-date-picker__trigger',
+      ) as HTMLButtonElement;
+      const icon = trigger.querySelector('j-icon svg path');
+
+      expect(icon).toBeTruthy();
+      expect(icon?.getAttribute('d')).toContain('M8 2v4');
+    });
+
+    it('applies reusable presets in range selection mode', () => {
+      const fixture = TestBed.createComponent(JDatePickerComponent);
+      fixture.componentRef.setInput('selectionMode', 'range');
+      fixture.componentRef.setInput('presets', [
+        {
+          label: 'Release week',
+          start: new Date(2026, 6, 13),
+          end: new Date(2026, 6, 17),
+        },
+      ]);
+      fixture.detectChanges();
+      const picker = fixture.componentInstance;
+      let emitted: unknown = undefined;
+      picker.valueChange.subscribe((value) => (emitted = value));
+
+      picker.applyPreset(picker.presets()[0]);
+
+      expect(picker.inputValue).toBe('2026-07-13 - 2026-07-17');
+      expect(emitted).toEqual([new Date(2026, 6, 13), new Date(2026, 6, 17)]);
+    });
   });
 
   describe('Spanish locale', () => {

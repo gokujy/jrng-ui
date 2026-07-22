@@ -1,7 +1,7 @@
-@if (label) {
-  <label class="j-input__label" data-jc-name="input" data-jc-section="label" [for]="id">
-    <span>{{ label }}</span>
-    @if (required) {
+@if (label()) {
+  <label class="j-input__label" data-jc-name="input" data-jc-section="label" [for]="id()">
+    <span>{{ label() }}</span>
+    @if (required()) {
       <span class="j-input__required" aria-hidden="true">*</span>
     }
   </label>
@@ -12,12 +12,14 @@
   data-jc-name="input"
   data-jc-section="root"
   data-jc-extend="prefix suffix clear"
-  [attr.data-j-disabled]="isDisabled ? 'true' : null"
+  [attr.data-j-disabled]="isDisabled() ? 'true' : null"
   [attr.data-j-invalid]="hasError ? 'true' : null"
-  [attr.data-j-active]="value ? 'true' : null"
+  [attr.data-j-active]="internalValue() ? 'true' : null"
 >
-  @if (prefixIcon) {
-    <span class="j-input__icon" data-jc-section="prefix" aria-hidden="true">{{ prefixIcon }}</span>
+  @if (prefixIcon()) {
+    <span class="j-input__icon" data-jc-section="prefix" aria-hidden="true">{{
+      prefixIcon()
+    }}</span>
   }
   <span class="j-input__icon" data-jc-section="prefix" aria-hidden="true"
     ><ng-content select="[jInputPrefix]"></ng-content
@@ -26,17 +28,17 @@
   <input
     class="j-input__field"
     data-jc-section="input"
-    [attr.data-j-disabled]="isDisabled ? 'true' : null"
+    [attr.data-j-disabled]="isDisabled() ? 'true' : null"
     [attr.data-j-invalid]="hasError ? 'true' : null"
-    [attr.data-j-active]="value ? 'true' : null"
-    [id]="id"
-    [name]="name || null"
-    [type]="type"
-    [placeholder]="placeholder"
-    [disabled]="isDisabled"
-    [readOnly]="readonly"
-    [required]="required"
-    [value]="value"
+    [attr.data-j-active]="internalValue() ? 'true' : null"
+    [id]="id()"
+    [name]="name() || null"
+    [type]="type()"
+    [placeholder]="placeholder()"
+    [disabled]="isDisabled()"
+    [readOnly]="readonly()"
+    [required]="required()"
+    [value]="internalValue()"
     [attr.aria-invalid]="hasError ? 'true' : null"
     [attr.aria-describedby]="describedBy"
     (input)="handleInput($event)"
@@ -49,7 +51,7 @@
       data-jc-section="clear"
       type="button"
       aria-label="Clear"
-      [disabled]="isDisabled || readonly"
+      [disabled]="isDisabled() || readonly()"
       (click)="clearValue()"
     >
       <span aria-hidden="true">&times;</span>
@@ -59,16 +61,18 @@
   <span class="j-input__icon" data-jc-section="suffix" aria-hidden="true"
     ><ng-content select="[jInputSuffix]"></ng-content
   ></span>
-  @if (suffixIcon) {
-    <span class="j-input__icon" data-jc-section="suffix" aria-hidden="true">{{ suffixIcon }}</span>
+  @if (suffixIcon()) {
+    <span class="j-input__icon" data-jc-section="suffix" aria-hidden="true">{{
+      suffixIcon()
+    }}</span>
   }
 </div>
 
-@if (hasError && error) {
+@if (hasError && error()) {
   <p class="j-input__message j-input__message--error" data-jc-section="message" [id]="errorId">
-    {{ error }}
+    {{ error() }}
   </p>
 }
-@if (hint && !hasError) {
-  <p class="j-input__message" data-jc-section="message" [id]="hintId">{{ hint }}</p>
+@if (hint() && !hasError) {
+  <p class="j-input__message" data-jc-section="message" [id]="hintId">{{ hint() }}</p>
 }

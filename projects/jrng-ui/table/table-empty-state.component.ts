@@ -1,11 +1,25 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { JIconComponent } from 'jrng-ui/icon';
+import { JButtonComponent } from 'jrng-ui/button';
+import { JTableEmptyState } from './table.types';
 
 @Component({
   selector: 'j-table-empty-state',
+  imports: [JButtonComponent, JIconComponent],
   template: `
-    <div class="j-table-empty-state" role="status">
-      <strong>{{ title }}</strong>
-      <p>{{ message }}</p>
+    <div
+      class="j-table-empty-state"
+      [attr.role]="state() === 'error' ? 'alert' : 'status'"
+      [attr.data-j-state]="state()"
+    >
+      @if (icon()) {
+        <j-icon class="j-table-empty-state__icon" [name]="icon()" aria-hidden="true" />
+      }
+      <strong>{{ title() }}</strong>
+      <p>{{ message() }}</p>
+      @if (actionLabel()) {
+        <j-button [label]="actionLabel()" (onClick)="action.emit()" />
+      }
     </div>
   `,
   styles: [
@@ -24,6 +38,11 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
         font-size: var(--j-font-size-sm, 0.875rem);
       }
 
+      .j-table-empty-state__icon {
+        color: var(--j-color-muted-foreground, #64748b);
+        font-size: 1.5rem;
+      }
+
       .j-table-empty-state p {
         margin: 0;
       }
@@ -32,6 +51,10 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JTableEmptyStateComponent {
-  @Input() title = 'No records';
-  @Input() message = 'There is no data to display.';
+  readonly state = input<JTableEmptyState>('no-data');
+  readonly title = input('No records');
+  readonly message = input('There is no data to display.');
+  readonly icon = input('table');
+  readonly actionLabel = input('');
+  readonly action = output<void>();
 }

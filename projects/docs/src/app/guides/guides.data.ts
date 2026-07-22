@@ -24,21 +24,21 @@ export const guides: readonly DocsGuide[] = [
       'Admin dashboards need clear hierarchy, responsive navigation, loading states and dense data without rebuilding common controls.',
     implementation: [
       'Use JAppShellComponent as the responsive page frame.',
-      'Render metrics with JMetricCardComponent and trends with JChartComponent.',
+      'Compose metrics with JCardComponent and render trends with JChartComponent.',
       'Keep typed records in a service and present recent data with JTableComponent.',
     ],
     code: `import { Component, inject } from '@angular/core';
 import { JAppShellComponent } from 'jrng-ui/app-shell';
+import { JCardComponent } from 'jrng-ui/card';
 import { JChartComponent } from 'jrng-ui/chart';
-import { JMetricCardComponent } from 'jrng-ui/metric-card';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [JAppShellComponent, JChartComponent, JMetricCardComponent],
+  imports: [JAppShellComponent, JCardComponent, JChartComponent],
   template: \`<j-app-shell>
     <nav jShellSidebar aria-label="Application">...</nav>
     <header jShellHeader><h1>Operations</h1></header>
-    <section class="metrics"><j-metric-card title="Active users" value="1,284" trendLabel="+8.4%" trend="up" /></section>
+    <section class="metrics"><j-card header="Active users" subheader="1,284"><span>+8.4%</span></j-card></section>
     <j-chart type="line" [data]="activity" ariaLabel="Weekly completed requests" />
   </j-app-shell>\`,
 })
@@ -120,7 +120,7 @@ import { JInputComponent } from 'jrng-ui/input';
 
 @Component({ selector: 'app-profile', imports: [ReactiveFormsModule, JButtonComponent, JInputComponent], template: \`
 <form [formGroup]="form" (ngSubmit)="save()">
-  <j-input label="Display name" formControlName="name" required [invalid]="submitted() && form.controls.name.invalid" error="Display name is required." />
+  <j-input label="Visible name" formControlName="name" required [invalid]="submitted() && form.controls.name.invalid" error="Visible name is required." />
   <j-button label="Save" type="submit" [loading]="saving()" />
 </form>\` })
 export class ProfileComponent { readonly submitted = signal(false); readonly saving = signal(false); readonly form = new FormGroup({ name: new FormControl('', { nonNullable: true, validators: Validators.required }) }); save(): void { this.submitted.set(true); if (this.form.invalid) return; } }`,

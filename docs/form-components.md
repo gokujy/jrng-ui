@@ -20,8 +20,8 @@ form = new FormGroup({
 <j-input
   formControlName="email"
   label="Email"
-  placeholder="user@example.com"
-  hint="Use a valid email address."
+  placeholder="name@sample.test"
+  hint="Use the required contact format."
   required
   fullWidth
 />
@@ -80,13 +80,7 @@ Form controls support common inputs where applicable:
 `j-password` supports show/hide, clearable mode, and an optional strength meter. Feedback text uses jrng-ui locale labels.
 
 ```html
-<j-password
-  label="Password"
-  placeholder="Enter password"
-  feedback
-  clearable
-  fullWidth
-/>
+<j-password label="Password" placeholder="Secure entry" feedback clearable width="full" />
 ```
 
 ## Number Input
@@ -100,7 +94,7 @@ Form controls support common inputs where applicable:
 
 ```html
 <j-input-group prefixAddon="https://" suffixAddon=".com" compact fullWidth>
-  <j-input placeholder="domain" fullWidth />
+  <j-input placeholder="domain" width="full" />
 </j-input-group>
 
 <j-input-group prefixIcon="search" compact>
@@ -116,19 +110,15 @@ Form controls support common inputs where applicable:
   <j-input placeholder="Search customers" />
 </j-icon-field>
 
-<j-input-icon icon="calendar" />
+<j-icon-field suffixIcon="calendar">
+  <j-input placeholder="Choose a date" />
+</j-icon-field>
 ```
 
 ## OTP
 
 ```html
-<j-input-otp
-  formControlName="code"
-  label="One-time code"
-  [length]="6"
-  numericOnly
-  mask
-/>
+<j-input-otp formControlName="code" label="One-time code" [length]="6" numericOnly mask />
 ```
 
 OTP supports auto focus next, paste distribution, backspace previous, CVA integration, and per-cell accessibility labels.
@@ -144,13 +134,13 @@ Presets: `int`, `num`, `alpha`, `alphanum`, `hex`, `email`.
 ## Labels
 
 ```html
-<j-float-label label="Project name" fullWidth>
-  <j-input placeholder=" " fullWidth />
-</j-float-label>
+<j-label for="project-name" label="Project name" variant="floating">
+  <j-input id="project-name" placeholder=" " width="full" />
+</j-label>
 
-<j-ifta-label label="Customer">
-  <input class="j-input__field" placeholder="Customer name" />
-</j-ifta-label>
+<j-label for="customer" label="Customer" variant="in-field">
+  <input id="customer" class="j-input__field" placeholder="Customer name" />
+</j-label>
 ```
 
-`j-float-label` and `j-ifta-label` observe projected native controls for focused and filled state and expose `disabled` and `invalid` styling states.
+`j-label` provides standard, floating, inline, stacked, and in-field variants while preserving native label association and helper/error relationships.

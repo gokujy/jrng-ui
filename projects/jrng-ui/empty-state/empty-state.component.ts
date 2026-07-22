@@ -7,8 +7,21 @@ import {
 } from '@angular/core';
 import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
 
+export type JEmptyStateVariant =
+  | 'default'
+  | 'inline'
+  | 'panel'
+  | 'section'
+  | 'card'
+  | 'page'
+  | 'search'
+  | 'filtered'
+  | 'error'
+  | 'permission'
+  | 'offline';
+
 @Component({
-  selector: 'j-empty-state',
+  selector: 'j-empty',
   imports: [],
   template: `
     <section
@@ -16,6 +29,7 @@ import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
       data-jc-name="empty-state"
       data-jc-section="root"
       data-jc-extend="icon action"
+      [attr.data-j-variant]="variant()"
     >
       @if (imageUrl()) {
         <img
@@ -102,6 +116,79 @@ import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
       .j-empty-state__action:empty {
         display: none;
       }
+
+      .j-empty-state--inline {
+        align-items: center;
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        padding: var(--j-spacing-lg, 1rem);
+        text-align: start;
+      }
+
+      .j-empty-state--inline .j-empty-state__title,
+      .j-empty-state--inline .j-empty-state__description {
+        grid-column: 2;
+      }
+
+      .j-empty-state--inline .j-empty-state__icon,
+      .j-empty-state--inline .j-empty-state__image {
+        grid-column: 1;
+        grid-row: 1 / span 2;
+      }
+
+      .j-empty-state--inline .j-empty-state__action {
+        grid-column: 3;
+        grid-row: 1 / span 2;
+        margin-top: 0;
+      }
+
+      .j-empty-state--panel {
+        background: var(--j-color-surface-subtle, #eef2f7);
+        border: 1px dashed var(--j-color-border, #dbe2ea);
+        border-radius: var(--j-radius-xl, 1rem);
+      }
+
+      .j-empty-state--section,
+      .j-empty-state--card,
+      .j-empty-state--page,
+      .j-empty-state--search,
+      .j-empty-state--filtered,
+      .j-empty-state--error,
+      .j-empty-state--permission,
+      .j-empty-state--offline {
+        background: var(--j-color-surface-subtle, #eef2f7);
+        border: 1px dashed var(--j-color-border, #dbe2ea);
+        border-radius: var(--j-radius-xl, 1rem);
+      }
+
+      .j-empty-state--card {
+        background: var(--j-color-card, #fff);
+        border-style: solid;
+        box-shadow: var(--j-shadow-sm);
+      }
+      .j-empty-state--page {
+        border: 0;
+        min-height: min(70vh, 40rem);
+        justify-content: center;
+      }
+      .j-empty-state--error .j-empty-state__icon {
+        color: var(--j-color-danger, #dc2626);
+      }
+      .j-empty-state--permission .j-empty-state__icon,
+      .j-empty-state--offline .j-empty-state__icon {
+        color: var(--j-color-warning, #b45309);
+      }
+
+      @media (max-width: 640px) {
+        .j-empty-state--inline {
+          grid-template-columns: auto minmax(0, 1fr);
+        }
+
+        .j-empty-state--inline .j-empty-state__action {
+          grid-column: 2;
+          grid-row: auto;
+        }
+      }
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -115,10 +202,15 @@ export class JEmptyStateComponent {
   readonly styleClass = input('');
   readonly pt = input<JPassThrough | null>(null);
   readonly compact = input(false, { transform: booleanAttribute });
+  readonly variant = input<JEmptyStateVariant>('default');
 
   readonly emptyStateClasses = computed(() =>
     jMergePartClasses(
-      ['j-empty-state', this.compact() ? 'j-empty-state--compact' : ''],
+      [
+        'j-empty-state',
+        `j-empty-state--${this.variant()}`,
+        this.compact() ? 'j-empty-state--compact' : '',
+      ],
       this.styleClass(),
       this.pt(),
     ),

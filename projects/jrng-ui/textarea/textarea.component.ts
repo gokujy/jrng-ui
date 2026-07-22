@@ -3,29 +3,31 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  effect,
   ElementRef,
   forwardRef,
   inject,
-  Input,
+  input,
   numberAttribute,
   output,
+  signal,
   ViewChild,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { jAriaDescribedBy } from 'jrng-ui/core';
 import { jCreateId } from 'jrng-ui/core';
 import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
-import { JSize } from 'jrng-ui/core';
+import { JComponentSize } from 'jrng-ui/core';
 import { JInputVariant } from 'jrng-ui/input';
 
 @Component({
   selector: 'j-textarea',
   imports: [],
   template: `
-    @if (label) {
-      <label class="j-textarea__label" data-jc-name="textarea" data-jc-section="label" [for]="id">
-        <span>{{ label }}</span>
-        @if (required) {
+    @if (label()) {
+      <label class="j-textarea__label" data-jc-name="textarea" data-jc-section="label" [for]="id()">
+        <span>{{ label() }}</span>
+        @if (required()) {
           <span class="j-textarea__required" aria-hidden="true">*</span>
         }
       </label>
@@ -35,50 +37,50 @@ import { JInputVariant } from 'jrng-ui/input';
       [class]="textareaClasses"
       data-jc-name="textarea"
       data-jc-section="root"
-      [attr.data-j-disabled]="isDisabled ? 'true' : null"
+      [attr.data-j-disabled]="isDisabled() ? 'true' : null"
       [attr.data-j-invalid]="hasError ? 'true' : null"
       [attr.data-j-active]="value ? 'true' : null"
-      [id]="id"
-      [name]="name || null"
-      [placeholder]="placeholder"
-      [disabled]="isDisabled"
-      [readOnly]="readonly"
-      [required]="required"
-      [rows]="rows"
-      [maxLength]="maxLength || null"
+      [id]="id()"
+      [name]="name() || null"
+      [placeholder]="placeholder()"
+      [disabled]="isDisabled()"
+      [readOnly]="readonly()"
+      [required]="required()"
+      [rows]="rows()"
+      [maxLength]="maxLength() || null"
       [value]="value"
       [attr.aria-invalid]="hasError ? 'true' : null"
       [attr.aria-describedby]="describedBy"
       (input)="handleInput($event)"
       (blur)="handleBlur()"
     ></textarea>
-    @if (clearable && value) {
+    @if (clearable() && value) {
       <button
         class="j-textarea__clear"
         data-jc-section="clear"
         type="button"
         aria-label="Clear"
-        [disabled]="isDisabled || readonly"
+        [disabled]="isDisabled() || readonly()"
         (click)="clearValue()"
       >
         x
       </button>
     }
-    @if ((hint && !hasError) || showCount) {
+    @if ((hint() && !hasError) || showCount()) {
       <div class="j-textarea__meta">
-        @if (hint && !hasError) {
-          <p class="j-textarea__message" [id]="hintId">{{ hint }}</p>
+        @if (hint() && !hasError) {
+          <p class="j-textarea__message" [id]="hintId">{{ hint() }}</p>
         }
-        @if (showCount) {
+        @if (showCount()) {
           <span class="j-textarea__count"
-            >{{ value.length }}{{ maxLength ? '/' + maxLength : '' }}</span
+            >{{ value.length }}{{ maxLength() ? '/' + maxLength() : '' }}</span
           >
         }
       </div>
     }
-    @if (hasError && error) {
+    @if (hasError && error()) {
       <p class="j-textarea__message j-textarea__message--error" [id]="errorId">
-        {{ error }}
+        {{ error() }}
       </p>
     }
   `,
@@ -192,27 +194,28 @@ export class JTextareaComponent implements ControlValueAccessor {
 
   @ViewChild('textarea') private textareaRef?: ElementRef<HTMLTextAreaElement>;
 
-  @Input() id = jCreateId('j-textarea');
-  @Input() name = '';
-  @Input() label = '';
-  @Input() placeholder = '';
-  @Input() hint = '';
-  @Input() error = '';
-  @Input() styleClass = '';
-  @Input() pt: JPassThrough | null = null;
-  @Input({ alias: 'aria-describedby' }) ariaDescribedby = '';
-  @Input() size: JSize = 'md';
-  @Input() variant: JInputVariant = 'outlined';
-  @Input({ transform: booleanAttribute }) readonly = false;
-  @Input({ transform: booleanAttribute }) invalid = false;
-  @Input({ transform: booleanAttribute }) required = false;
-  @Input({ transform: booleanAttribute }) clearable = false;
-  @Input({ transform: booleanAttribute }) autoResize = false;
-  @Input({ transform: booleanAttribute }) showCount = false;
-  @Input({ transform: booleanAttribute }) fluid = false;
-  @Input({ transform: booleanAttribute }) fullWidth = false;
-  @Input({ transform: numberAttribute }) rows = 3;
-  @Input({ transform: numberAttribute }) maxLength = 0;
+  readonly id = input(jCreateId('j-textarea'));
+  readonly name = input('');
+  readonly label = input('');
+  readonly placeholder = input('');
+  readonly hint = input('');
+  readonly error = input('');
+  readonly styleClass = input('');
+  readonly pt = input<JPassThrough | null>(null);
+  readonly ariaDescribedby = input('', { alias: 'aria-describedby' });
+  readonly size = input<JComponentSize>('md');
+  readonly variant = input<JInputVariant>('outlined');
+  readonly readonly = input(false, { transform: booleanAttribute });
+  readonly invalid = input(false, { transform: booleanAttribute });
+  readonly required = input(false, { transform: booleanAttribute });
+  readonly clearable = input(false, { transform: booleanAttribute });
+  readonly autoResize = input(false, { transform: booleanAttribute });
+  readonly showCount = input(false, { transform: booleanAttribute });
+  readonly fluid = input(false, { transform: booleanAttribute });
+  readonly fullWidth = input(false, { transform: booleanAttribute });
+  readonly rows = input(3, { transform: numberAttribute });
+  readonly maxLength = input(0, { transform: numberAttribute });
+  readonly disabled = input(false, { transform: booleanAttribute });
 
   readonly valueChange = output<string>();
   readonly clear = output<void>();
@@ -220,30 +223,24 @@ export class JTextareaComponent implements ControlValueAccessor {
   readonly hintId = jCreateId('j-textarea-hint');
   readonly errorId = jCreateId('j-textarea-error');
   value = '';
-  isDisabled = false;
+  readonly isDisabled = signal(false);
 
   private onChange: (value: string) => void = () => undefined;
   private onTouched: () => void = () => undefined;
 
-  @Input({ transform: booleanAttribute })
-  set disabled(value: boolean) {
-    this.isDisabled = value;
-    this.changeDetectorRef.markForCheck();
-  }
-
-  get disabled(): boolean {
-    return this.isDisabled;
+  constructor() {
+    effect(() => this.isDisabled.set(this.disabled()));
   }
 
   get hasError(): boolean {
-    return this.invalid || this.error.trim().length > 0;
+    return this.invalid() || this.error().trim().length > 0;
   }
 
   get describedBy(): string | null {
     return jAriaDescribedBy(
-      this.ariaDescribedby,
+      this.ariaDescribedby(),
       this.hasError ? this.errorId : null,
-      this.hint ? this.hintId : null,
+      this.hint() ? this.hintId : null,
     );
   }
 
@@ -251,14 +248,14 @@ export class JTextareaComponent implements ControlValueAccessor {
     return jMergePartClasses(
       [
         'j-textarea',
-        `j-textarea--${this.size}`,
-        `j-textarea--${this.variant}`,
+        `j-textarea--${this.size()}`,
+        `j-textarea--${this.variant()}`,
         this.hasError ? 'is-invalid' : '',
-        this.isDisabled ? 'is-disabled' : '',
-        this.fluid || this.fullWidth ? 'j-textarea--fluid' : '',
+        this.isDisabled() ? 'is-disabled' : '',
+        this.fluid() || this.fullWidth() ? 'j-textarea--fluid' : '',
       ],
-      this.styleClass,
-      this.pt,
+      this.styleClass(),
+      this.pt(),
     );
   }
 
@@ -277,7 +274,7 @@ export class JTextareaComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled = isDisabled;
+    this.isDisabled.set(isDisabled);
     this.changeDetectorRef.markForCheck();
   }
 
@@ -294,7 +291,7 @@ export class JTextareaComponent implements ControlValueAccessor {
   }
 
   clearValue(): void {
-    if (this.isDisabled || this.readonly || !this.value) {
+    if (this.isDisabled() || this.readonly() || !this.value) {
       return;
     }
 
@@ -307,7 +304,7 @@ export class JTextareaComponent implements ControlValueAccessor {
   }
 
   private resize(): void {
-    if (!this.autoResize) {
+    if (!this.autoResize()) {
       return;
     }
 

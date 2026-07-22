@@ -7,7 +7,7 @@ import {
   output,
 } from '@angular/core';
 import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
-import { JSeverity, JSize } from 'jrng-ui/core';
+import { JSeverity, JComponentSize } from 'jrng-ui/core';
 
 @Component({
   selector: 'j-tag',
@@ -134,7 +134,7 @@ import { JSeverity, JSize } from 'jrng-ui/core';
 export class JTagComponent {
   readonly label = input('');
   readonly severity = input<JSeverity>('neutral');
-  readonly size = input<JSize>('md');
+  readonly size = input<JComponentSize>('md');
   readonly styleClass = input('');
   readonly removeLabel = input('Remove');
   readonly pt = input<JPassThrough | null>(null);

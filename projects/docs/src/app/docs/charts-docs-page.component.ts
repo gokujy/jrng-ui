@@ -93,7 +93,7 @@ import {
             <div class="j-chart-preview-grid">
               <article class="j-chart-example">
                 <header><h3>Bar chart</h3></header>
-                <p>Best for comparing categories.</p>
+                <p>Compares categorical values.</p>
                 <j-chart
                   type="bar"
                   [data]="barData"
@@ -103,7 +103,7 @@ import {
               </article>
               <article class="j-chart-example">
                 <header><h3>Line chart</h3></header>
-                <p>Best for trends over time.</p>
+                <p>Plots values across an ordered axis.</p>
                 <j-chart
                   type="line"
                   [data]="lineData"
@@ -143,7 +143,7 @@ import {
               </article>
               <article class="j-chart-example">
                 <header><h3>Scatter chart</h3></header>
-                <p>Best for x/y relationships and outliers.</p>
+                <p>Plots paired values and outliers.</p>
                 <j-chart
                   type="scatter"
                   [data]="scatterData"
@@ -180,7 +180,7 @@ import {
         <section class="j-doc-section-card">
           <div class="j-section-heading">
             <span class="j-page-eyebrow">Types</span>
-            <h2>When to use each chart</h2>
+            <h2>Chart selection</h2>
           </div>
           <div class="j-chart-type-list">
             @for (chart of chartTypeDocs; track chart.type) {

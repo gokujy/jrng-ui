@@ -12,11 +12,12 @@ import {
   input,
   numberAttribute,
   output,
+  signal,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { jCreateId } from 'jrng-ui/core';
 import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
-import { JSize } from 'jrng-ui/core';
+import { JComponentSize } from 'jrng-ui/core';
 import { JInputVariant } from 'jrng-ui/input';
 
 @Component({
@@ -45,9 +46,10 @@ import { JInputVariant } from 'jrng-ui/input';
           class="j-input-otp__cell"
           data-jc-section="cell"
           [attr.inputmode]="numericOnly() ? 'numeric' : 'text'"
-          autocomplete="one-time-code"
+          [attr.autocomplete]="item.index === 0 ? 'one-time-code' : 'off'"
           [type]="mask() ? 'password' : 'text'"
           [value]="item.value"
+          [placeholder]="cellPlaceholder()"
           [disabled]="effectiveDisabled()"
           [readOnly]="readonly()"
           [required]="required()"
@@ -171,7 +173,7 @@ export class JInputOtpComponent implements ControlValueAccessor {
   readonly error = input('');
   readonly styleClass = input('');
   readonly ariaLabel = input('One-time code');
-  readonly size = input<JSize>('md');
+  readonly size = input<JComponentSize>('md');
   readonly variant = input<JInputVariant>('outlined');
   readonly pt = input<JPassThrough | null>(null);
   readonly numericOnly = input(false, { transform: booleanAttribute });
@@ -188,8 +190,16 @@ export class JInputOtpComponent implements ControlValueAccessor {
   readonly hintId = jCreateId('j-input-otp-hint');
   readonly errorId = jCreateId('j-input-otp-error');
 
+  /** Last emitted value: the filled characters joined, with no space placeholders. */
   value = '';
   isDisabled = false;
+
+  /**
+   * Fixed-length positional buffer where an empty cell is stored as '' (never a space).
+   * Cell display reads this by index so positions stay correct; the emitted value is
+   * derived by joining it, so empty cells never leak space characters into the value.
+   */
+  private readonly buffer = signal<readonly string[]>([]);
 
   private onChange: (value: string) => void = () => undefined;
   private onTouched: () => void = () => undefined;
@@ -198,9 +208,10 @@ export class JInputOtpComponent implements ControlValueAccessor {
 
   readonly cells = computed(() => {
     const count = Math.max(1, this.length());
+    const buffer = this.buffer();
     return Array.from({ length: count }, (_, index) => ({
       index,
-      value: this.value[index] ?? '',
+      value: buffer[index] ?? '',
     }));
   });
 
@@ -220,9 +231,14 @@ export class JInputOtpComponent implements ControlValueAccessor {
   );
 
   readonly effectiveDisabled = computed(() => this.isDisabled || this.disabled());
+  /** A placeholder is treated as one repeated, non-sensitive character. */
+  readonly cellPlaceholder = computed(() => Array.from(this.placeholder())[0] ?? '');
 
   writeValue(value: string | number | null | undefined): void {
-    this.value = this.normalize(String(value ?? ''));
+    const normalized = this.normalize(String(value ?? ''));
+    // Fill the positional buffer left-to-right; keep `value` as the compact string.
+    this.buffer.set(this.toBuffer(normalized));
+    this.value = normalized;
     this.changeDetectorRef.markForCheck();
   }
 
@@ -240,6 +256,7 @@ export class JInputOtpComponent implements ControlValueAccessor {
   }
 
   handleInput(event: Event, index: number): void {
+    if (this.effectiveDisabled() || this.readonly()) return;
     const target = event.target as HTMLInputElement;
     const next = this.normalize(target.value).slice(-1);
     this.setChar(index, next);
@@ -250,11 +267,40 @@ export class JInputOtpComponent implements ControlValueAccessor {
   }
 
   handleKeydown(event: KeyboardEvent, index: number): void {
-    if (event.key !== 'Backspace') {
+    if (this.effectiveDisabled() || this.readonly()) return;
+    const count = Math.max(1, this.length());
+    const rtl = (event.currentTarget as HTMLInputElement | null)?.ownerDocument.dir === 'rtl';
+    const previousKey = rtl ? 'ArrowRight' : 'ArrowLeft';
+    const nextKey = rtl ? 'ArrowLeft' : 'ArrowRight';
+    if (event.key === previousKey) {
+      event.preventDefault();
+      this.focusCell(index - 1);
       return;
     }
+    if (event.key === nextKey) {
+      event.preventDefault();
+      this.focusCell(index + 1);
+      return;
+    }
+    if (event.key === 'Home') {
+      event.preventDefault();
+      this.focusCell(0);
+      return;
+    }
+    if (event.key === 'End') {
+      event.preventDefault();
+      this.focusCell(count - 1);
+      return;
+    }
+    if (event.key === 'Delete') {
+      event.preventDefault();
+      this.setChar(index, '');
+      return;
+    }
+    if (event.key !== 'Backspace') return;
+    event.preventDefault();
 
-    if (this.value[index]) {
+    if (this.buffer()[index]) {
       this.setChar(index, '');
       return;
     }
@@ -263,6 +309,10 @@ export class JInputOtpComponent implements ControlValueAccessor {
   }
 
   handlePaste(event: ClipboardEvent, index: number): void {
+    if (this.effectiveDisabled() || this.readonly()) {
+      event.preventDefault();
+      return;
+    }
     const text = this.normalize(event.clipboardData?.getData('text') ?? '');
 
     if (!text) {
@@ -270,12 +320,13 @@ export class JInputOtpComponent implements ControlValueAccessor {
     }
 
     event.preventDefault();
-    const chars = this.value.padEnd(this.length()).split('');
-    for (let offset = 0; offset < text.length && index + offset < this.length(); offset += 1) {
-      chars[index + offset] = text[offset] ?? '';
+    const count = Math.max(1, this.length());
+    const buffer = this.currentBuffer();
+    for (let offset = 0; offset < text.length && index + offset < count; offset += 1) {
+      buffer[index + offset] = text[offset] ?? '';
     }
-    this.commit(chars.join('').slice(0, this.length()));
-    this.focusCell(Math.min(index + text.length, this.length() - 1));
+    this.commit(buffer);
+    this.focusCell(Math.min(index + text.length, count - 1));
   }
 
   handleBlur(): void {
@@ -283,20 +334,39 @@ export class JInputOtpComponent implements ControlValueAccessor {
   }
 
   ariaLabelFor(index: number): string {
-    return `${this.ariaLabel()} digit ${index + 1} of ${this.length()}`;
+    return `${this.ariaLabel()} position ${index + 1} of ${Math.max(1, this.length())}`;
   }
 
   private setChar(index: number, char: string): void {
-    const chars = this.value.padEnd(this.length()).split('');
-    chars[index] = char;
-    this.commit(chars.join('').slice(0, this.length()).trimEnd());
+    const buffer = this.currentBuffer();
+    buffer[index] = char;
+    this.commit(buffer);
   }
 
-  private commit(value: string): void {
-    this.value = value;
+  private commit(buffer: readonly string[]): void {
+    this.buffer.set([...buffer]);
+    // Emitted value excludes empty cells, so it never carries space placeholders.
+    this.value = buffer.join('');
     this.onChange(this.value);
     this.valueChange.emit(this.value);
     this.changeDetectorRef.markForCheck();
+  }
+
+  /** A mutable, correctly-sized copy of the positional buffer ('' for empty cells). */
+  private currentBuffer(): string[] {
+    const count = Math.max(1, this.length());
+    const buffer = [...this.buffer()];
+    while (buffer.length < count) {
+      buffer.push('');
+    }
+    return buffer.slice(0, count);
+  }
+
+  /** Map a compact string into a fixed-length positional buffer (empty cells are ''). */
+  private toBuffer(value: string): string[] {
+    const count = Math.max(1, this.length());
+    const chars = value.split('');
+    return Array.from({ length: count }, (_, index) => chars[index] ?? '');
   }
 
   private normalize(value: string): string {

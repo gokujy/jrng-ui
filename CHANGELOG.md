@@ -1,34 +1,126 @@
 # Changelog
 
-## Unreleased
+## 0.1.0
 
 ### Added
 
-- Public project trust files, adoption documentation, compatibility guidance, and release checks.
+- Added the unified `j-label` component, canonical `j-empty` entry point, internal `j-image` viewer, and native `j-tour-guide` renderer/controller.
+- Established the first supported public API baseline with 119 documented components and modular secondary entrypoints.
+- Added fractional Rating steps, Select async pagination/infinite loading, MultiSelect severity chips, and Table row grouping/virtual scrolling/custom sorting.
+- Added final shared size, severity, density, orientation, shape, width, action-display, and component-family variant types.
+- Added generated public inventory, documentation, preview, API, direct-test, accessibility, responsive, theme, SSR, and package status records.
+- Added architecture references for forms, tables, selects, overlays, editor extensions, themes, and documentation navigation.
 
 ### Changed
 
-- Positioned JRNG UI for Angular admin panels, dashboards, and business applications.
+- Moved the Admin Starter out of the library workspace into the standalone JRNG templates collection, with independent Angular build, test, lint, and dependency configuration.
+- Merged Date Range Picker into Date Picker range mode, Combobox into Select searchable/async modes, Float/Ifta Label into `j-label`, Image Preview into `j-image`, and Empty Page into `j-empty` page variants.
+- Replaced the Driver.js adapter with a native, SSR-safe JRNG Tour Guide supporting placement, progress, async targets, lifecycle hooks, persistence, keyboard control, focus restoration and cleanup.
+- Normalized public classes to `J...`, selectors to `j-...`, action events, property responsibilities, and narrow variant families.
+- Consolidated duplicate component responsibilities and internal implementations across cards, loading, transfers, overlays, tables, selects, forms, images, and file interactions.
+- Made responsive preview controls opt-in and synchronized component/example routing, history, scroll position, heading focus, navigation selection, and mobile navigation state.
+- Updated Table/Data Grid scrolling, final saved state, filtering axes, Transfer List responsiveness, Float Label state detection, Password visibility, Chips severity, Gallery transitions, Grid gaps, Avatar preview, and File Preview actions.
+- Standardized Table toolbar, filter, row expansion, row locking, and action-menu controls on JRNG Button and Tooltip primitives.
+- Standardized Dialog, Dynamic Dialog, Drawer, Bottom Sheet, Confirm Dialog, and image-viewer headings on one internal overlay-header action pattern with JRNG Button and Tooltip close actions.
 
 ### Fixed
 
-- Documentation sections with unavailable details now show contextual guidance instead of empty tables.
-
-### Deprecated
-
-- No APIs are currently scheduled for deprecation.
+- Invalid Table state restores defaults and emits a typed non-fatal error without crashing rendering.
+- Table select-all now computes checked and indeterminate state from eligible rows in the current filtered, paged, lazy, or virtual window.
+- Time Picker now blocks every mutation path while disabled and uses a constrained viewport-aware panel with a JRNG clock icon.
+- Overlay lifecycle, focus restoration, cleanup, responsive containment, and reduced-motion behavior were tightened across interactive components.
+- Documentation preview sources use deterministic local data and JRNG action controls.
+- Confirm Dialog and Confirm Popup actions now use JRNG Button; shared overlay titles preserve ARIA relationships, close focus, drag regions, and long-title truncation.
 
 ### Removed
 
-- No public APIs have been removed.
+- Removed Activity Feed, Approval Flow, Audit Log, Navigation Progress, Dashboard Layout, Sidebar Layout, Stack, Status Page, Input Icon, Date Range Picker, Combobox, Float Label, Ifta Label, Image Preview and Empty Page entry points after migrating their supported behavior.
+- Removed the Driver.js dependency, dynamic import and external stylesheet.
+- Removed the duplicated library source tree and duplicate public components: Metric Card, Stat Card, Dropzone, Overlay Panel, Pick List, Column, Sort Icon, Table Empty State, and Table Skeleton.
+- Removed pre-stable aliases, deprecated declarations, old variant values, old Table state handling, and duplicated input/output names.
 
 ### Security
 
-- Package validation rejects internal instruction, temporary, private, and test-output files.
+- Editor and HTML preview sanitization remove executable markup, inline event handlers, and dangerous URLs.
+- Package validation excludes tests, coverage, internal instructions, private audit drafts, caches, archives, and development-only preview sources.
+
+This is an intentional breaking reset of the pre-stable API. Removed declarations have no runtime wrappers or aliases.
+
+## 0.0.9
+
+### Documentation and requested components
+
+- Added the accessible `j-text-expand` component with character and responsive line truncation, two-way expanded state, projected content, custom labels, and reduced-motion support.
+- Expanded Button with help and contrast intent, pill presentation, badges, loading labels, and configurable ripple while retaining the safe native button default.
+- Added optional Avatar image zoom with pointer and keyboard activation, reusable preview overlay behavior, image fallback, Escape close, and focus restoration.
+- Expanded Loader with spinner, dots, pulse, ring, dual-ring, bars, wave, bounce, orbit, typing, inline, overlay, fullscreen, and determinate presentations.
+- Deprecated Metric Card for new work; dashboard metrics are now documented as compositions of Card, Badge, Progress, and chart components.
+- Expanded every component page with keyboard, responsive, template, limitation, related-component, and testing contracts.
+
+### Table family
+
+- Kept `j-table` and `j-tree-table` as separate public components with shared table contracts.
+- Added strongly typed `JTableColumn<T>`, semantic column types, value getters, formatters, focused templates, and visual variants separated from density.
+- Integrated no-data, no-results, error, skeleton, spinner, progress, and overlay states into `j-table`.
+- Added Tree Table expansion, controlled expanded keys, lazy children, keyboard focus, tree-grid ARIA metadata, and propagated checkbox selection.
+- Retained `j-column`, `j-table-empty-state`, and `j-table-skeleton` as deprecated compatibility APIs; no selector was removed.
+- Added Table-family previews, copyable code, accessibility guidance, migration notes, and focused tests.
+
+### Fixes
+
+- Preserved and sanitized Editor values written before view initialization, including `ngModel`, Reactive Forms, resets, disabled updates, text mode, and HTML mode.
+- Implemented locale-aware Input Number formatting/parsing, OTP placeholders and navigation, Combobox variants, File Upload custom-mode state, validation limits, and Table frozen rows.
+
+### Accessibility
+
+- Removed nested interactive controls from Select, Date Range Picker, Time Picker, and Tabs; clear and close actions now have separate semantic buttons and focus targets.
+- Added OTP position labels, localized upload controls, accessible validation announcements, visible focus, RTL navigation, and reduced-motion configuration behavior.
+
+### SSR
+
+- Removed direct runtime browser-constructor checks from keyboard shortcuts, clipboard, menu, context-menu, theme, editor, and overlay paths.
+- Added a representative Angular server-prerender and hydration build covering forms, Editor, Select, Menu, storage fallbacks, and optional entrypoint declarations.
+
+### Forms
+
+- Separated component-disabled and Forms API disabled sources in the updated controls so enabling one source cannot override the other.
+- Prevented `writeValue` model emissions and retained programmatic values while controls are disabled.
+
+### Overlays
+
+- Added the shared `JAppendTo` target contract for local, body, element, and selector targets with global configuration, safe fallback, repositioning, z-index management, listener cleanup, and DOM restoration.
+
+### Testing
+
+- Added lifecycle/security/command Editor tests, locale Input Number tests, upload-mode and validation tests, overlay/config/SSR tests, and frozen-row behavior coverage.
+- Added adjacent specification files for every canonical component, directive, pipe, and service, plus a CI verifier that rejects future public artifacts without tests.
+- Added enforced statement, branch, function, and line coverage thresholds and direct interaction suites for Button, Avatar zoom, Image Preview, Avatar Group, Loader, Text Expand, Table, and Tree Table.
+- Kept the normal full library, docs, and starter commands as required gates without forced process termination or skipped suites.
+
+### Documentation
+
+- Replaced stale Editor placeholder guidance and documented number formatting, upload modes, overlay targets, global configuration, SSR verification, Node requirements, and the 0.0.9 migration.
+- Added generated technical summaries and complete public input, output, and method coverage for every public component page, with focused file-backed previews for the primary additions.
+- Added automated checks for demo file existence, non-empty code tabs, valid public selectors, and documentation/API registry consistency.
+- Added mergeable Hindi and Gujarati locale examples.
+
+### Tooling
+
+- Added a real multi-job GitHub Actions workflow, Node 22.12 contributor default, aligned Angular SSR tooling, package-size reporting, and clean consumer verification.
+
+### Package and release
+
+- Kept an explicit runtime-file allowlist, source-map exclusion, forbidden-content scan, export/declaration verification, file-count limit, and separate packed/unpacked budgets.
+- Release verification now detects missing Git metadata cleanly and includes all tests, builds, package, consumer, and SSR gates without publishing.
+
+### Deprecated
+
+- `JTimePickerComponent.timeOnly` is deprecated because Time Picker is inherently time-only; the compatibility input remains available.
+- `JrngConfig.unstyled` remains a root styling hook but is deprecated as a promise to remove accessibility-critical component styles.
 
 ### Migration notes
 
-- No migration is required for the current documentation and developer-experience changes.
+- Existing form models remain numeric for Input Number and string/HTML for Editor. See `docs/migration-0.0.9.md` for upload-mode and sanitization details.
 
 ## 0.0.8
 

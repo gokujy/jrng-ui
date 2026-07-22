@@ -87,7 +87,7 @@ function verifyComponents() {
     requireArray(component, 'outputs', label);
 
     if (
-      !['Complete', 'Basic', 'Planned', 'Experimental', 'Deprecated'].includes(component.status)
+      !['Complete', 'Basic', 'Planned', 'Experimental'].includes(component.status)
     ) {
       failures.push(`${label}.status is not a supported documentation status.`);
     }
@@ -96,9 +96,6 @@ function verifyComponents() {
     }
     if (component.sinceVersion !== null && typeof component.sinceVersion !== 'string') {
       failures.push(`${label}.sinceVersion must be a string or null.`);
-    }
-    if (component.deprecation !== null && !isObject(component.deprecation)) {
-      failures.push(`${label}.deprecation must be an object or null.`);
     }
 
     if (typeof component.selector === 'string' && !component.selector.startsWith('j-')) {

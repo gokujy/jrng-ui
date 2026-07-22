@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { JrCardComponent, JrCardVariant } from './card.component';
+import { JCardComponent, JCardVariant } from './card.component';
 
 @Component({
-  imports: [JrCardComponent],
+  imports: [JCardComponent],
   template: `
-    <j-card [title]="title" [subtitle]="subtitle" [variant]="variant" [clickable]="clickable">
+    <j-card [header]="title" [subheader]="subtitle" [variant]="variant" [interactive]="clickable">
       <div jCardHeader>Custom header</div>
       <p>Main body</p>
       <div jCardBody>Extra body</div>
@@ -17,11 +17,11 @@ import { JrCardComponent, JrCardVariant } from './card.component';
 class CardHostComponent {
   title = 'Metric';
   subtitle = 'Quarter to date';
-  variant: JrCardVariant = 'default';
+  variant: JCardVariant = 'filled';
   clickable = false;
 }
 
-describe('JrCardComponent', () => {
+describe('JCardComponent', () => {
   let fixture: ComponentFixture<CardHostComponent>;
   let host: CardHostComponent;
 
@@ -54,10 +54,10 @@ describe('JrCardComponent', () => {
   });
 
   it('applies variant class', () => {
-    host.variant = 'soft';
+    host.variant = 'minimal';
     detectHostChanges();
 
-    expect(card().classList).toContain('j-card--soft');
+    expect(card().classList).toContain('j-card--minimal');
   });
 
   it('uses button semantics when clickable', () => {

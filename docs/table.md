@@ -7,9 +7,12 @@
 ```ts
 import {
   JTableComponent,
-  JColumnComponent,
+  JTableColumn,
   JTableCellTemplateDirective,
+  JTableEmptyTemplateDirective,
+  JTableFilterTemplateDirective,
   JTableHeaderTemplateDirective,
+  JTableLoadingTemplateDirective,
 } from 'jrng-ui/table';
 ```
 
@@ -36,14 +39,7 @@ rows = [
 ```
 
 ```html
-<j-table
-  [value]="rows"
-  [columns]="columns"
-  dataKey="id"
-  striped
-  hover
-  responsive
-/>
+<j-table [value]="rows" [columns]="columns" dataKey="id" striped hover responsive />
 ```
 
 ## Pagination
@@ -87,6 +83,8 @@ rows = [
 
 For multi-column sorting, set `sortMode="multiple"` and listen to `sortChange`.
 
+Columns can opt into typed custom ordering with `sortComparator(left, right, column)`.
+
 ```html
 <j-table
   [value]="rows"
@@ -120,7 +118,7 @@ Set `filterable: true` on a column to show the column filter control.
 <j-table
   [value]="pageRows"
   [columns]="columns"
-  [lazy]="true"
+  dataMode="lazy"
   [paginator]="true"
   [first]="first"
   [rows]="25"
@@ -156,6 +154,12 @@ Lazy load events use this shape:
 
 Supported modes are `single`, `multiple`, `checkbox`, and `none`.
 
+Use `rowSelectable` to exclude disabled or permission-restricted rows. Select-all operates on eligible rows in the current filtered page (or the currently supplied lazy/virtual page), and exposes native checked/indeterminate state.
+
+```html
+<j-table selectionMode="checkbox" [rowSelectable]="canSelectOrder" [(selection)]="selectedRows" />
+```
+
 ## Expansion, Editing, and Reorder
 
 ```html
@@ -176,6 +180,34 @@ Supported modes are `single`, `multiple`, `checkbox`, and `none`.
 </j-table>
 ```
 
+## Row grouping
+
+```html
+<j-table [value]="rows" [columns]="columns" groupRowsBy="department" collapsibleRowGroups>
+  <ng-template #jTableGroupHeader let-department> {{ department }} department </ng-template>
+</j-table>
+```
+
+Group headers use `scope="rowgroup"`. Optional `#jTableGroupHeader` and `#jTableGroupFooter` templates receive the group value, current row, and row index.
+
+## Virtual scrolling
+
+Virtual scrolling is opt-in and keeps simple tables unchanged:
+
+```html
+<j-table
+  [value]="largeResultSet"
+  [columns]="columns"
+  virtualScroll
+  [virtualItemSize]="44"
+  [virtualOverscan]="4"
+  scrollHeight="32rem"
+>
+</j-table>
+```
+
+For backend windows, combine `dataMode="virtual"` with the application’s lazy query handling.
+
 ## Row Actions
 
 ```ts
@@ -184,7 +216,7 @@ columns = [
   {
     field: 'actions',
     header: 'Actions',
-    type: 'action',
+    type: 'actions',
     actions: [
       { key: 'view', label: 'View' },
       { key: 'delete', label: 'Delete', severity: 'danger' },
@@ -194,29 +226,12 @@ columns = [
 ```
 
 ```html
-<j-table
-  [value]="rows"
-  [columns]="columns"
-  (actionClick)="handleAction($event)"
-/>
+<j-table [value]="rows" [columns]="columns" (action)="handleAction($event)" />
 ```
 
 ## Custom Templates
 
-Column templates can be declared with `j-column`:
-
-```html
-<j-table [value]="rows">
-  <j-column field="name" header="Name" sortable>
-    <ng-template let-row>
-      <strong>{{ row.name }}</strong>
-      <small>{{ row.code }}</small>
-    </ng-template>
-  </j-column>
-</j-table>
-```
-
-Or by using keyed templates with an input column model:
+Use keyed templates with the typed input column model:
 
 ```html
 <j-table [value]="rows" [columns]="columns">
@@ -224,9 +239,7 @@ Or by using keyed templates with an input column model:
     <span class="j-table-status">{{ value }}</span>
   </ng-template>
 
-  <ng-template jTableHeader="amount" let-column>
-    {{ column.header }} total
-  </ng-template>
+  <ng-template jTableHeader="amount" let-column> {{ column.header }} total </ng-template>
 </j-table>
 ```
 
@@ -256,6 +269,7 @@ Or by using keyed templates with an input column model:
 - Custom cell templates
 - Header templates
 - Selection support
+- Eligible-row select-all with checked and indeterminate states
 - Responsive layout
 - Basic text column filters
 - Global filter toolbar
@@ -263,11 +277,127 @@ Or by using keyed templates with an input column model:
 - State save and restore
 - CSV export
 - Row expansion
+- Row grouping with custom, collapsible headers and footers
 - Cell and row edit events
 - Row and column reorder events
 - Frozen row and column styling hooks
+- Local and backend-window virtual scrolling
 
-## Not Included
+## Typed Column Configuration
 
-- Virtual scroll is handled by `j-virtual-scroller`.
-- Row grouping and advanced filter match-mode menus are not part of the current table API.
+For new implementations, prefer `JTableColumn<T>`. It supports checked fields, semantic types, dimensions, alignment, visibility, freezing, sorting, filtering, resizing, reordering, value getters, and formatters.
+
+```ts
+interface OrderRow {
+  id: number;
+  order: string;
+  status: 'paid' | 'overdue';
+  total: number;
+}
+
+columns: JTableColumn<OrderRow>[] = [
+  { field: 'order', header: 'Order', sortable: true, minWidth: '9rem' },
+  { field: 'status', header: 'Status', type: 'status', filterable: true },
+  {
+    field: 'total', header: 'Total', type: 'number', align: 'end',
+    valueGetter: row => row.total,
+    formatter: value => new Intl.NumberFormat('en', {
+      style: 'currency', currency: 'USD'
+    }).format(Number(value)),
+  },
+];
+```
+
+## Visual Variants and Density
+
+`variant` selects a complete visual presentation. `density` controls spacing independently.
+
+```html
+<j-table [value]="rows" [columns]="columns" variant="striped" density="compact" />
+<j-table [value]="rows" [columns]="columns" variant="gridlines" />
+<j-table [value]="rows" [columns]="columns" variant="minimal" />
+<j-table [value]="rows" [columns]="columns" variant="standard" density="spacious" />
+```
+
+## Integrated Loading
+
+```html
+<j-table loading loadingVariant="skeleton" [skeletonRows]="5" [value]="[]" [columns]="columns" />
+<j-table loading loadingVariant="spinner" [value]="[]" [columns]="columns" />
+<j-table loading loadingVariant="progress" [value]="[]" [columns]="columns" />
+<j-table loading loadingVariant="overlay" [value]="rows" [columns]="columns" />
+```
+
+Skeleton, spinner, and progress replace rows. Overlay retains current rows during refresh. Empty content is not rendered while loading.
+
+```html
+<j-table loading [value]="[]" [columns]="columns">
+  <ng-template jTableLoading let-variant let-rows="rows">
+    <p role="status">Loading {{ rows }} rows with {{ variant }} presentation.</p>
+  </ng-template>
+</j-table>
+```
+
+## Integrated Empty and Error States
+
+```html
+<j-table
+  [value]="[]"
+  [columns]="columns"
+  emptyTitle="No orders yet"
+  emptyDescription="New orders will appear here."
+  emptyActionLabel="Create order"
+  (emptyAction)="createOrder()"
+/>
+
+<j-table
+  [value]="rows"
+  [columns]="columns"
+  globalFilter="no-match"
+  noResultsTitle="No matching orders"
+/>
+
+<j-table
+  [value]="[]"
+  [columns]="columns"
+  [errorState]="loadError"
+  emptyActionLabel="Retry"
+  (emptyAction)="reload()"
+/>
+```
+
+In `auto` mode, an active filter with zero rows selects `no-results`, an untouched empty dataset selects `no-data`, and an `error` value selects `error`. Server-side consumers can set `emptyState` explicitly.
+
+```html
+<j-table [value]="[]" [columns]="columns" emptyState="no-results">
+  <ng-template jTableEmpty let-state let-title="title" let-action="action">
+    <section>
+      <h3>{{ title }}</h3>
+      <p>Current state: {{ state }}</p>
+      <button type="button" (click)="action()">Start over</button>
+    </section>
+  </ng-template>
+</j-table>
+```
+
+## Tree Table
+
+Hierarchical records use the separate `j-tree-table`. This keeps tree-grid keyboard behavior, levels, expansion, lazy children, partial selection, and propagation out of the flat Table API.
+
+```html
+<j-tree-table
+  [value]="nodes"
+  [columns]="treeColumns"
+  [(expandedKeys)]="expandedKeys"
+  selectionMode="checkbox"
+  [propagateSelectionDown]="true"
+  [propagateSelectionUp]="true"
+/>
+
+<j-tree-table
+  [value]="lazyNodes"
+  [columns]="treeColumns"
+  lazy
+  (nodeExpand)="loadChildren($event)"
+/>
+```

@@ -76,25 +76,18 @@ Use `j-form-field` as a lightweight wrapper when a native or custom projected co
 `j-textarea` supports `rows`, `autoResize`, `maxLength`, and `showCount`.
 
 ```html
-<j-textarea
-  label="Notes"
-  [rows]="4"
-  [maxLength]="240"
-  showCount
-  autoResize
-  [formControl]="notes"
-/>
+<j-textarea label="Notes" [rows]="4" [maxLength]="240" showCount autoResize [formControl]="notes" />
 ```
 
 ## j-password
 
-`j-password` supports `toggleMask` and optional `feedback`.
+`j-password` supports an icon-based visibility control and optional strength feedback.
 
 ```html
 <j-password
   label="Password"
   [formControl]="password"
-  toggleMask
+  toggleVisibility
   feedback
   error="Password is required"
 />
@@ -115,13 +108,20 @@ Use `j-form-field` as a lightweight wrapper when a native or custom projected co
 />
 ```
 
+The visible value is produced by `Intl.NumberFormat`; the form value remains an unrounded number. Locale-aware input accepts grouping, decimal, minus, and localized digits for the selected locale. Formatting is applied outside active editing to avoid cursor jumps. `min`/`max` clamp on blur and arrow-key stepping; invalid or partial input never emits `NaN`. If `minFractionDigits` exceeds `maxFractionDigits`, the maximum is raised to the minimum. Invalid locales fall back to the configured global locale, then `en-US`; an invalid currency falls back to decimal formatting.
+
+```html
+<j-input-number locale="en-IN" [minFractionDigits]="2" [maxFractionDigits]="2" />
+<j-input-number locale="de-DE" mode="currency" currency="EUR" />
+```
+
 ## j-input-mask
 
 `j-input-mask` currently provides the stable public API and CVA behavior, but advanced mask parsing is pending. The `mask` value is used as a placeholder fallback until a dependency-free masking engine is added.
 
 ```html
 <j-input-mask
-  label="Reference code"
+  label="Tracking code"
   mask="AAA-9999"
   [formControl]="referenceCode"
   hint="Mask enforcement is pending"
@@ -134,7 +134,7 @@ Use `j-icon-field` to compose icon-prefixed controls. It does not own a value.
 
 ```html
 <j-icon-field prefixIcon="search">
-  <j-input placeholder="Search records" [formControl]="search" fluid />
+  <j-input placeholder="Search records" [formControl]="search" width="full" />
 </j-icon-field>
 ```
 
@@ -143,7 +143,7 @@ Projected prefix/suffix slots are also supported:
 ```html
 <j-icon-field>
   <span jIconFieldPrefix>@</span>
-  <j-input label="Handle" [formControl]="handle" fluid />
+  <j-input label="Handle" [formControl]="handle" width="full" />
   <span jIconFieldSuffix>.com</span>
 </j-icon-field>
 ```

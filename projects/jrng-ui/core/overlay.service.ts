@@ -2,10 +2,11 @@ import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { jComputeConnectedPosition } from './overlay-position';
 import { JZIndexManagerService } from './z-index-manager.service';
+import { JRNG_CONFIG, JAppendTo } from './config';
 
 export interface JOverlayAttachOptions {
   /** Where to render the panel. `'body'` (or an element) portals it to escape clipping. */
-  appendTo?: 'self' | 'body' | HTMLElement;
+  appendTo?: JAppendTo;
   /** Gap between trigger and panel. Default 4. */
   gap?: number;
   /** Constrain panel width to trigger width. Default true. */
@@ -36,6 +37,7 @@ export class JOverlayService {
   private readonly documentRef = inject(DOCUMENT);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   private readonly zIndex = inject(JZIndexManagerService);
+  private readonly config = inject(JRNG_CONFIG);
 
   attach(
     trigger: HTMLElement,
@@ -46,15 +48,7 @@ export class JOverlayService {
       return NOOP_HANDLE;
     }
 
-    const container =
-      options.appendTo instanceof HTMLElement
-        ? options.appendTo
-        : options.appendTo === 'body'
-          ? this.documentRef.body
-          : null;
-    if (container) {
-      container.appendChild(panel);
-    }
+    const portal = this.portal(panel, options.appendTo);
 
     panel.style.position = 'fixed';
     panel.style.zIndex = String(this.zIndex.next(options.baseZIndex ?? 1000));
@@ -89,7 +83,48 @@ export class JOverlayService {
       detach: () => {
         view?.removeEventListener('scroll', reposition, true);
         view?.removeEventListener('resize', reposition);
+        portal.detach();
       },
     };
+  }
+
+  /** Moves an Angular-owned overlay root without applying connected positioning. */
+  portal(panel: HTMLElement, appendTo?: JAppendTo): JOverlayHandle {
+    if (!this.isBrowser) return NOOP_HANDLE;
+    const originalParent = panel.parentNode;
+    const originalNextSibling = panel.nextSibling;
+    const container = this.resolveTarget(appendTo);
+    if (!container || container === originalParent) return NOOP_HANDLE;
+    container.appendChild(panel);
+    return {
+      reposition: () => undefined,
+      detach: () => {
+        if (panel.parentNode !== container) return;
+        if (originalParent?.isConnected) {
+          originalParent.insertBefore(
+            panel,
+            originalNextSibling?.parentNode === originalParent ? originalNextSibling : null,
+          );
+        } else {
+          panel.remove();
+        }
+      },
+    };
+  }
+
+  /** Resolves all public append-target forms without touching browser globals. */
+  resolveTarget(target?: JAppendTo): HTMLElement | null {
+    target ??= this.config.appendTo;
+    if (!this.isBrowser || target === 'self') return null;
+    if (target === 'body') return this.documentRef.body ?? null;
+    if (typeof target === 'string') {
+      try {
+        return this.documentRef.querySelector<HTMLElement>(target);
+      } catch {
+        return null;
+      }
+    }
+    const HTMLElementCtor = this.documentRef.defaultView?.HTMLElement;
+    return HTMLElementCtor && target instanceof HTMLElementCtor ? target : null;
   }
 }

@@ -68,7 +68,7 @@ Docs should prefer simple event names:
 - `pageChange`
 - `sortChange`
 
-Do not document deprecated or unusual event names for new examples.
+Document only final event names and payloads.
 
 ## No External Library Copying
 

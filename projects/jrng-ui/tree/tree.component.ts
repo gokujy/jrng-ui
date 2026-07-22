@@ -14,7 +14,7 @@ import {
 
 export type JTreeSelectionMode = 'single' | 'multiple' | 'checkbox' | 'none';
 
-export interface JTreeNode {
+export interface JTreeNode<T = unknown> {
   readonly key?: string;
   readonly label: string;
   readonly icon?: string;
@@ -24,9 +24,11 @@ export interface JTreeNode {
   readonly selectable?: boolean;
   readonly leaf?: boolean;
   readonly loading?: boolean;
-  readonly data?: unknown;
-  readonly children?: readonly JTreeNode[];
+  readonly data?: T;
+  readonly children?: readonly JTreeNode<T>[];
 }
+
+export type TreeNode<T = unknown> = JTreeNode<T>;
 
 export interface JTreeNodeContext {
   readonly $implicit: JTreeNode;
@@ -82,7 +84,7 @@ interface JTreeFlatEntry {
 
     <ng-template #treeList let-nodes="nodes" let-level="level" let-parentKey="parentKey">
       <ul class="j-tree__list" role="group">
-        @for (node of nodes; track node.key || node.label || $index; let index = $index) {
+        @for (node of nodes; track node; let index = $index) {
           @let key = nodeKey(node, index, level, parentKey);
           <li
             class="j-tree__node"
@@ -355,16 +357,19 @@ export class JTreeComponent {
     if (event.key === 'ArrowRight') {
       event.preventDefault();
       const entry = flat[current];
-      if (entry && this.hasChildren(entry.node)) {
-        this.expandedKeys.set(new Set(this.expandedKeys()).add(entry.key));
+      // Route through toggle() so expanding emits nodeExpand and triggers the
+      // lazy-load path (and respects node.disabled).
+      if (entry && this.hasChildren(entry.node) && !this.expandedKeys().has(entry.key)) {
+        this.toggle(entry.node, entry.key);
       }
     }
 
     if (event.key === 'ArrowLeft') {
       event.preventDefault();
-      const next = new Set(this.expandedKeys());
-      next.delete(this.activeKey());
-      this.expandedKeys.set(next);
+      const entry = flat[current];
+      if (entry && this.expandedKeys().has(entry.key)) {
+        this.toggle(entry.node, entry.key);
+      }
     }
 
     if (event.key === 'Enter' || event.key === ' ') {
@@ -435,8 +440,10 @@ export class JTreeComponent {
   private flatten(nodes: readonly JTreeNode[], level = 1, parentKey = 'root'): JTreeFlatEntry[] {
     return nodes.flatMap((node, index) => {
       const key = this.nodeKey(node, index, level, parentKey);
+      // Descend into the same filtered children the template renders so
+      // arrow-key focus never lands on nodes hidden by an active filter.
       const children = this.isExpandedKey(key)
-        ? this.flatten(node.children ?? [], level + 1, key)
+        ? this.flatten(this.filteredChildren(node), level + 1, key)
         : [];
       return [{ node, key, index, level, parentKey }, ...children];
     });
