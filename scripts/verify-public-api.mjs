@@ -1,4 +1,4 @@
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
@@ -11,6 +11,60 @@ const entryPoints = Object.keys(manifest.exports ?? {})
   .filter((entryPoint) => !entryPoint.includes('*') && !entryPoint.endsWith('.css'))
   .map((entryPoint) => (entryPoint === '.' ? 'jrng-ui' : `jrng-ui/${entryPoint.slice(2)}`))
   .sort();
+
+const removedEntryPoints = [
+  'activity-feed',
+  'approval-flow',
+  'audit-log',
+  'navigation-progress',
+  'date-range-picker',
+  'float-label',
+  'input-icon',
+  'searchable-select',
+  'combobox',
+  'dashboard-layout',
+  'sidebar-layout',
+  'stack',
+];
+
+const staleEntryPoints = removedEntryPoints
+  .map((entryPoint) => `jrng-ui/${entryPoint}`)
+  .filter((entryPoint) => entryPoints.includes(entryPoint));
+if (staleEntryPoints.length) {
+  throw new Error(
+    `Removed public entry points are still exported: ${staleEntryPoints.join(', ')}.`,
+  );
+}
+
+const declarationDirectory = join(packageRoot, 'types');
+const declarationFiles = (await readdir(declarationDirectory)).filter((file) =>
+  file.endsWith('.d.ts'),
+);
+const declarations = (
+  await Promise.all(
+    declarationFiles.map((file) => readFile(join(declarationDirectory, file), 'utf8')),
+  )
+).join('\n');
+const removedSymbols = [
+  'ActivityFeed',
+  'ApprovalFlow',
+  'AuditLog',
+  'NavigationProgress',
+  'DateRangePicker',
+  'FloatLabel',
+  'InputIcon',
+  'SearchableSelect',
+  'Combobox',
+  'DashboardLayout',
+  'SidebarLayout',
+  'Stack',
+];
+const staleSymbols = removedSymbols.filter((symbol) =>
+  new RegExp(`\\bJ?${symbol}(?:[A-Z][A-Za-z0-9_$]*)?\\b`).test(declarations),
+);
+if (staleSymbols.length) {
+  throw new Error(`Removed public declarations are still emitted: ${staleSymbols.join(', ')}.`);
+}
 
 if (!entryPoints.includes('jrng-ui') || entryPoints.length < 100) {
   throw new Error(`Unexpected public export map: found ${entryPoints.length} entry points.`);

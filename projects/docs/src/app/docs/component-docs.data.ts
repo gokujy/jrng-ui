@@ -293,7 +293,7 @@ description = productDescription;
 shortText = 'Ready to publish.';`,
     },
     usage: [
-      'Common placements include product cards, comments, activity feeds, profile summaries, and policy previews.',
+      'Common placements include product cards, comments, event streams, profile summaries, and policy previews.',
     ],
     variants: ['character truncation', 'line truncation', 'projected plain content'],
     sizes: ['Inherits the surrounding typography and available width.'],
@@ -1235,7 +1235,7 @@ tableConfig: JTableConfig = {
 
 loadError = new Error('Orders could not be loaded.');`,
     },
-    usage: ['Use for orders, users, files, tasks, invoices, and audit logs.'],
+    usage: ['Use for orders, users, files, tasks, invoices, and change histories.'],
     variants: [
       'standard - uses the default table presentation',
       'striped - alternates row grouping for long scanning tasks',
@@ -1684,7 +1684,7 @@ row = {
     description:
       'A responsive business filter surface with search, status, date range, reset, apply, export, and advanced filter slots.',
     whenToUse:
-      'Use Filter Bar above tables, audit logs, reports, and list pages that need repeatable search and filtering controls.',
+      'Use Filter Bar above tables, change histories, reports, and list pages that need repeatable search and filtering controls.',
     code: {
       importCode: `import { JFilterBarComponent } from 'jrng-ui/filter-bar';`,
       basic: `<j-filter-bar
@@ -3026,9 +3026,12 @@ const generatedFallbackExamples: Readonly<Record<string, string>> = {
   <j-card header="Open tasks">12</j-card>
   <j-card header="Completed">48</j-card>
 </j-grid-layout>`,
-  'icon-field': `<j-icon-field prefixIcon="search" clearable filterable ariaLabel="Order search">
-  <j-input placeholder="Search"></j-input>
+  'icon-field': `<j-icon-field prefixIcon="search" clearable ariaLabel="Order search" (clear)="search = ''">
+  <j-input placeholder="Search" [(ngModel)]="search"></j-input>
 </j-icon-field>`,
+  label: `<j-label label="Email address" variant="floating">
+  <j-input type="email" [(ngModel)]="email"></j-input>
+</j-label>`,
   'input-group': `<j-input-group prefixAddon="https://" suffixAddon=".com" ariaLabel="Website address">
   <j-input placeholder="company"></j-input>
   <j-button label="Open"></j-button>

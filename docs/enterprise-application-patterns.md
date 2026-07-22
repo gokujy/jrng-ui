@@ -97,18 +97,6 @@ A readonly vertical sequence displays pending, approved, rejected, skipped, and 
 </j-stepper>
 ```
 
-## Activity feed
-
-### Preview
-
-A responsive card feed supports details, generic action links, load-more, lazy state, and custom item templates.
-
-### Code
-
-```html
-<j-timeline [value]="activities" variant="activity" />
-```
-
 ## Notification center
 
 ### Preview
@@ -149,23 +137,6 @@ The strength bar and rule checklist provide client-side guidance and integrate w
 ```
 
 Strength feedback is not a cryptographic assessment and must not replace server-side password policy or compromised-password checks.
-
-## Navigation progress
-
-### Preview
-
-A reduced-motion-aware top bar appears after a delay and remains visible for a minimum duration while one or more operations are active.
-
-### Code
-
-```html
-<j-progress-bar indeterminate label="Loading the next view" />
-```
-
-```ts
-navigationStarted.set(true);
-request.finally(() => navigationStarted.set(false));
-```
 
 ## Chart interaction and export
 

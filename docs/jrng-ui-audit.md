@@ -47,7 +47,7 @@ Theme classes:
 Current public components include:
 
 - Basic: button, card, badge, tag, avatar, avatar group, divider, loader, progress, skeleton, empty state, icon.
-- Forms: input, textarea, password, input number, input mask, select, multiselect, autocomplete, listbox, chips, checkbox, radio, radio group, switch, rating, slider, date picker, time picker, date range picker, color picker, editor.
+- Forms: input, textarea, password, input number, input mask, select, multiselect, autocomplete, listbox, chips, checkbox, radio, radio group, switch, rating, slider, date picker, time picker, color picker, editor.
 - Data: table, paginator.
 - Layout/navigation: tabs, accordion, panel, fieldset, toolbar, stepper, breadcrumb, splitter, menu.
 - Overlays/feedback: dialog, drawer, toast, confirm dialog, tooltip, popover, overlay panel.

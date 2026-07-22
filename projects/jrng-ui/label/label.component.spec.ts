@@ -15,4 +15,25 @@ describe('JLabelComponent', () => {
     expect(fixture.nativeElement.querySelector('label').htmlFor).toBe(input.id);
     expect(input.getAttribute('aria-describedby')).toContain('j-label-message');
   });
+
+  it('floats the label when the projected control has a value', async () => {
+    await TestBed.configureTestingModule({ imports: [JLabelComponent] }).compileComponents();
+    const fixture = TestBed.createComponent(JLabelComponent);
+    fixture.componentRef.setInput('label', 'Email');
+    fixture.componentRef.setInput('variant', 'floating');
+    fixture.nativeElement.querySelector('.j-label__control').innerHTML = '<input>';
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+    input.value = 'avery@example.com';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    fixture.detectChanges();
+
+    expect(
+      (fixture.nativeElement.querySelector('.j-label') as HTMLElement).classList.contains(
+        'is-filled',
+      ),
+    ).toBe(true);
+  });
 });

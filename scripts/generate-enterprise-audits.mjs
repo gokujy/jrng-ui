@@ -480,10 +480,7 @@ function visualManifest() {
     'tabs',
     'menu',
     'editor',
-    'audit-log',
     'diff-viewer',
-    'approval-flow',
-    'activity-feed',
   ];
   const states = [
     'default',

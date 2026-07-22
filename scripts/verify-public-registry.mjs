@@ -13,6 +13,20 @@ const registry = readJson(registryPath);
 const schema = readJson(schemaPath);
 const inventory = readJson(inventoryPath);
 const packageJson = readJson(packagePath);
+const removedSelectors = new Set([
+  'j-activity-feed',
+  'j-approval-flow',
+  'j-audit-log',
+  'j-navigation-progress',
+  'j-date-range-picker',
+  'j-float-label',
+  'j-input-icon',
+  'j-searchable-select',
+  'j-combobox',
+  'j-dashboard-layout',
+  'j-sidebar-layout',
+  'j-stack',
+]);
 
 verifyRegistryEnvelope();
 verifySchemaEnvelope();
@@ -86,9 +100,7 @@ function verifyComponents() {
     requireArray(component, 'inputs', label);
     requireArray(component, 'outputs', label);
 
-    if (
-      !['Complete', 'Basic', 'Planned', 'Experimental'].includes(component.status)
-    ) {
+    if (!['Complete', 'Basic', 'Planned', 'Experimental'].includes(component.status)) {
       failures.push(`${label}.status is not a supported documentation status.`);
     }
     if (!['ControlValueAccessor', 'Not a form control'].includes(component.formCompatibility)) {
@@ -100,6 +112,9 @@ function verifyComponents() {
 
     if (typeof component.selector === 'string' && !component.selector.startsWith('j-')) {
       failures.push(`${label} selector must use the j- prefix.`);
+    }
+    if (removedSelectors.has(component.selector)) {
+      failures.push(`${label} is a removed component and must not appear in the public registry.`);
     }
     if (
       typeof component.entryPoint === 'string' &&

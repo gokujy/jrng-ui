@@ -70,5 +70,5 @@ These appear across most components and are the highest-leverage fixes:
 7. **Templating slots** pass across overlay components.
 
 > Note: this audit covers 6 flagship components. The recurring gaps almost
-> certainly generalize to sibling components (e.g. listbox, combobox, mega-menu).
+> certainly generalize to sibling components (e.g. listbox, select, mega-menu).
 > Extend the audit per component as they are worked (see `ROADMAP.md`).

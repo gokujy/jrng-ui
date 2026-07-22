@@ -220,7 +220,7 @@ export class DeleteComponent { private readonly confirmation = inject(JConfirmat
       'Dense business pages often overflow or hide essential actions when navigation and content do not share responsive rules.',
     implementation: [
       'Use App Shell for primary regions.',
-      'Use Grid Layout and Stack for local composition.',
+      'Use Grid Layout or normal CSS Grid and Flexbox for local composition.',
       'Move navigation into an accessible mobile overlay at narrow widths.',
     ],
     code: `import { Component } from '@angular/core';
@@ -249,7 +249,7 @@ export class BusinessLayoutComponent {}`,
       'Fixed pixel columns for variable content.',
       'Removing visible labels to save space.',
     ],
-    related: related('App Shell', 'Grid Layout', 'Stack', 'Responsive Sidebar'),
+    related: related('App Shell', 'Grid Layout', 'Card', 'Responsive Sidebar'),
   },
   {
     slug: 'ssr',
