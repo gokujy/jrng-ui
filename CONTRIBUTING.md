@@ -57,4 +57,4 @@ Keep pull requests focused. Complete the pull request template, include commands
 
 Do not commit `dist`, coverage, test output, temporary files, private documents, internal prompts, or development instruction files into package assets.
 
-GitHub Actions runs the same required quality, test, build, package-consumer, and SSR gates on pull requests, pushes to `main`, and manual dispatches. Publishing is deliberately excluded from CI.
+Automated GitHub Actions CI is currently disabled. Run the required quality, test, build, package-consumer, and SSR gates locally before opening a pull request. The retained workflow can be re-enabled in the future; publishing remains deliberately excluded from it.

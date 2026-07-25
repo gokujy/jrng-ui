@@ -1,3 +1,6 @@
+# CI is intentionally disabled while it is not in use.
+# Rename this file to `ci.yml` to restore the workflow in the future.
+
 name: CI
 
 on:
