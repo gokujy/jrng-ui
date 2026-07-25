@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { jLocales, provideJrngLocale } from 'jrng-ui/core';
 import { JDatePickerComponent } from './date-picker.component';
 
@@ -68,6 +68,31 @@ describe('JDatePickerComponent', () => {
 
       expect(picker.inputValue).toBe('2026-07-13 - 2026-07-17');
       expect(emitted).toEqual([new Date(2026, 6, 13), new Date(2026, 6, 17)]);
+    });
+
+    it('visually distinguishes selectable, out-of-range, and unavailable dates', () => {
+      const fixture = TestBed.createComponent(JDatePickerComponent);
+      fixture.componentRef.setInput('inline', true);
+      fixture.componentRef.setInput('minDate', new Date(2026, 6, 10));
+      fixture.componentRef.setInput('maxDate', new Date(2026, 6, 28));
+      fixture.componentRef.setInput('disabledDates', [new Date(2026, 6, 14)]);
+      fixture.detectChanges();
+      const picker = fixture.componentInstance;
+      picker.viewDate = new Date(2026, 6, 1);
+      fixture.detectChanges();
+
+      const inRange = picker.calendarDays.find((day) => day.inMonth && day.date.getDate() === 18);
+      const outOfRange = picker.calendarDays.find((day) => day.inMonth && day.date.getDate() === 4);
+      const unavailable = picker.calendarDays.find(
+        (day) => day.inMonth && day.date.getDate() === 14,
+      );
+
+      expect(inRange?.disabled).toBe(false);
+      expect(picker.dayClasses(inRange!)).not.toContain('is-out-of-range');
+      expect(outOfRange?.disabled).toBe(true);
+      expect(picker.dayClasses(outOfRange!)).toContain('is-out-of-range');
+      expect(unavailable?.disabled).toBe(true);
+      expect(picker.dayClasses(unavailable!)).toContain('is-unavailable');
     });
   });
 
@@ -139,6 +164,77 @@ describe('JDatePickerComponent', () => {
       fixture.componentRef.setInput('showSeconds', true);
       fixture.detectChanges();
       expect(fixture.componentInstance.effectiveFormat).toBe('yyyy-MM-dd HH:mm:ss');
+    });
+
+    it('accepts manually entered time values and clamps them to valid ranges', () => {
+      const fixture = TestBed.createComponent(JDatePickerComponent);
+      fixture.componentRef.setInput('showTime', true);
+      fixture.componentRef.setInput('hourFormat', '12');
+      fixture.detectChanges();
+      const picker = fixture.componentInstance;
+      picker.timeHours = 13;
+
+      picker.handleTimeInput('hours', {
+        target: { value: '8' },
+      } as unknown as Event);
+      picker.handleTimeInput('minutes', {
+        target: { value: '72' },
+      } as unknown as Event);
+
+      expect(picker.timeHours).toBe(20);
+      expect(picker.timeMinutes).toBe(59);
+    });
+
+    it('repeats a time step while its icon button is held', () => {
+      vi.useFakeTimers();
+      const fixture = TestBed.createComponent(JDatePickerComponent);
+      fixture.componentRef.setInput('showTime', true);
+      fixture.detectChanges();
+      const picker = fixture.componentInstance;
+      const pointer = { preventDefault: vi.fn() } as unknown as PointerEvent;
+
+      picker.startTimeStep('minutes', 1, pointer);
+      expect(picker.timeMinutes).toBe(1);
+      vi.advanceTimersByTime(540);
+      picker.stopTimeStep();
+
+      expect(picker.timeMinutes).toBeGreaterThan(1);
+      vi.useRealTimers();
+    });
+  });
+
+  describe('month view', () => {
+    beforeEach(() => TestBed.configureTestingModule({}));
+
+    it('uses MM-yyyy by default and commits immediately when a month is selected', () => {
+      const fixture = TestBed.createComponent(JDatePickerComponent);
+      fixture.componentRef.setInput('view', 'month');
+      fixture.detectChanges();
+      const picker = fixture.componentInstance;
+      picker.viewDate = new Date(2028, 0, 1);
+      picker.isOpen = true;
+
+      picker.selectMonth(4);
+
+      expect(picker.inputValue).toBe('05-2028');
+      expect(picker.selectedValue).toEqual(new Date(2028, 4, 1));
+      expect(picker.isOpen).toBe(false);
+    });
+
+    it('supports custom short and full month-name formats', () => {
+      const fixture = TestBed.createComponent(JDatePickerComponent);
+      fixture.componentRef.setInput('view', 'month');
+      fixture.componentRef.setInput('dateFormat', 'MMM yyyy');
+      fixture.detectChanges();
+      const picker = fixture.componentInstance;
+      picker.viewDate = new Date(2028, 0, 1);
+
+      picker.selectMonth(4);
+      expect(picker.inputValue).toBe('May 2028');
+
+      fixture.componentRef.setInput('dateFormat', 'MMMM yyyy');
+      picker.selectMonth(8);
+      expect(picker.inputValue).toBe('September 2028');
     });
   });
 

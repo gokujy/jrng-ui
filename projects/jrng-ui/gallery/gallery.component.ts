@@ -43,12 +43,14 @@ export type JGallerySlideDirection = 'left' | 'right' | 'up' | 'down';
     >
       @if (activeItem(); as item) {
         <button class="j-gallery__stage" type="button" (click)="previewVisible.set(true)">
-          @if (previousItem(); as previous) {
-            <img
-              class="j-gallery__image j-gallery__image--previous"
-              [src]="previous.src"
-              [alt]="previous.alt || ''"
-            />
+          @if (!isLoaded(item.src)) {
+            @if (previousItem(); as previous) {
+              <img
+                class="j-gallery__image j-gallery__image--previous"
+                [src]="previous.src"
+                [alt]="previous.alt || ''"
+              />
+            }
           }
           @for (active of [item]; track active.src) {
             <img
@@ -150,6 +152,8 @@ export type JGallerySlideDirection = 'left' | 'right' | 'up' | 'down';
         animation-duration: var(--j-gallery-animation-duration);
         animation-timing-function: var(--j-gallery-animation-easing);
         opacity: 0;
+        position: relative;
+        z-index: 1;
       }
       .j-gallery__image--active.is-ready {
         opacity: 1;

@@ -79,6 +79,26 @@
   padding: var(--j-spacing-4);
 }
 
+.j-doc-splitter--vertical {
+  height: 18rem;
+}
+
+.j-splitter-demo-panel {
+  align-content: start;
+  background: var(--j-color-card);
+  display: grid;
+  gap: var(--j-spacing-3);
+  height: 100%;
+  min-height: 10rem;
+  padding: var(--j-spacing-4);
+}
+
+.j-divider-row {
+  align-items: stretch;
+  display: flex;
+  min-height: 3rem;
+}
+
 .j-doc-grid-demo {
   background: color-mix(in srgb, var(--j-color-primary) 4%, var(--j-color-background));
   border: 1px dashed var(--j-color-border);
@@ -2641,6 +2661,21 @@ pre {
 
 .j-copy-code code {
   overflow-wrap: anywhere;
+}
+
+.j-data-view-card {
+  background: var(--j-color-card);
+  border: 1px solid var(--j-color-border);
+  border-radius: var(--j-radius-lg);
+  display: grid;
+  gap: var(--j-spacing-2);
+  min-height: 7rem;
+  padding: var(--j-spacing-4);
+}
+
+.j-data-view-card span,
+.j-data-view-card small {
+  color: var(--j-color-muted-foreground);
 }
 
 .j-preview-stack {

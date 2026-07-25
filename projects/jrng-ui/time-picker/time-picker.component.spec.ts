@@ -50,6 +50,17 @@ describe('JTimePickerComponent', () => {
     expect(panel).toBeTruthy();
     expect(getComputedStyle(panel).overflow).toBe('auto');
   });
+
+  it('shows six time options by default and allows a bounded custom count', () => {
+    component.open();
+    fixture.detectChanges();
+    const hourSelect = fixture.nativeElement.querySelector('.j-time-picker__select');
+    expect(hourSelect.getAttribute('size')).toBe('6');
+
+    fixture.componentRef.setInput('visibleOptions', 4);
+    fixture.detectChanges();
+    expect(hourSelect.getAttribute('size')).toBe('4');
+  });
 });
 
 function selectChange(value: string): Event {

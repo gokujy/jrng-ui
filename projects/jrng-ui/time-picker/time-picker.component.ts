@@ -96,6 +96,8 @@ export type JTimePickerHourFormat = 12 | 24;
               <span class="j-time-picker__column-label">{{ locale.hour }}</span>
               <select
                 class="j-time-picker__select"
+                [attr.size]="visibleOptions()"
+                [style.--j-time-picker-visible-options]="visibleOptions()"
                 [value]="displayHour"
                 [disabled]="isDisabled() || readonly()"
                 (change)="handleHourChange($event)"
@@ -110,6 +112,8 @@ export type JTimePickerHourFormat = 12 | 24;
               <span class="j-time-picker__column-label">{{ locale.minute }}</span>
               <select
                 class="j-time-picker__select"
+                [attr.size]="visibleOptions()"
+                [style.--j-time-picker-visible-options]="visibleOptions()"
                 [value]="minute"
                 [disabled]="isDisabled() || readonly()"
                 (change)="handleMinuteChange($event)"
@@ -125,6 +129,8 @@ export type JTimePickerHourFormat = 12 | 24;
                 <span class="j-time-picker__column-label">{{ locale.second }}</span>
                 <select
                   class="j-time-picker__select"
+                  [attr.size]="visibleOptions()"
+                  [style.--j-time-picker-visible-options]="visibleOptions()"
                   [value]="second"
                   [disabled]="isDisabled() || readonly()"
                   (change)="handleSecondChange($event)"
@@ -319,8 +325,8 @@ export type JTimePickerHourFormat = 12 | 24;
         border-radius: var(--j-radius-md);
         color: inherit;
         font: inherit;
-        min-height: 2.5rem;
-        max-height: 10rem;
+        block-size: calc(2rem * var(--j-time-picker-visible-options, 6));
+        max-height: 12rem;
         outline: none;
         padding: 0 var(--j-spacing-2);
       }
@@ -433,6 +439,9 @@ export class JTimePickerComponent implements ControlValueAccessor {
   readonly showClear = input(true, { transform: booleanAttribute });
   readonly valueInput = input<string | null | undefined>(undefined);
   readonly minuteStep = input<number | string | undefined>(undefined);
+  readonly visibleOptions = input(6, {
+    transform: (value: unknown) => Math.max(3, Math.min(12, numberAttribute(value, 6))),
+  });
   readonly disabled = input(false, { transform: booleanAttribute });
 
   readonly valueChange = output<string | null>();

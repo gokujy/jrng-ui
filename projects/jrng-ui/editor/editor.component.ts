@@ -233,7 +233,7 @@ export type JEditorToolbarMode = 'basic' | 'full' | 'custom';
                 [disabled]="isDisabled()"
                 [attr.aria-label]="sourceMode() ? 'Show visual editor' : 'Show HTML'"
                 [attr.title]="sourceMode() ? 'Show visual editor' : 'Show HTML'"
-                (click)="sourceMode.set(!sourceMode())"
+                (click)="toggleSourceMode()"
               >
                 <j-icon [name]="sourceMode() ? 'eye' : 'code-xml'" aria-hidden="true" />
               </button>
@@ -581,12 +581,23 @@ export class JEditorComponent implements ControlValueAccessor, Validator, AfterV
       event.key.toLocaleLowerCase() === 's'
     ) {
       event.preventDefault();
-      this.sourceMode.set(!this.sourceMode());
+      this.toggleSourceMode();
     }
   }
 
   markTouched(): void {
     this.onTouched();
+  }
+
+  toggleSourceMode(): void {
+    const showVisualEditor = this.sourceMode();
+    this.sourceMode.set(!showVisualEditor);
+    if (showVisualEditor) {
+      queueMicrotask(() => {
+        this.syncView();
+        this.focusEditable();
+      });
+    }
   }
 
   execute(command: string, value?: string): void {

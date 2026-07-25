@@ -37,6 +37,8 @@ describe('JGalleryComponent stable transitions', () => {
     expect(fixture.nativeElement.querySelector('.j-gallery__loader')).not.toBeNull();
 
     fixture.componentInstance.markLoaded('/two.jpg');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.j-gallery__image--previous')).toBeNull();
     vi.advanceTimersByTime(199);
     expect(fixture.componentInstance.previousItem()?.src).toBe('/one.jpg');
     vi.advanceTimersByTime(1);

@@ -3,11 +3,13 @@ import {
   Component,
   TemplateRef,
   booleanAttribute,
+  computed,
   contentChild,
   effect,
   input,
   model,
   numberAttribute,
+  signal,
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 
@@ -36,6 +38,11 @@ export interface JCarouselItemContext {
       data-jc-section="root"
       role="group"
       aria-roledescription="carousel"
+      [attr.aria-label]="ariaLabel()"
+      tabindex="0"
+      (keydown)="handleKeydown($event)"
+      (mouseenter)="paused.set(true)"
+      (mouseleave)="paused.set(false)"
     >
       <div class="j-carousel__viewport" [style.--j-carousel-items]="visibleItems()">
         @for (item of value(); track item.image || item.title || $index; let index = $index) {
@@ -43,6 +50,7 @@ export interface JCarouselItemContext {
             class="j-carousel__item"
             [class.is-active]="index === activeIndex()"
             [style.transform]="transform()"
+            [attr.aria-hidden]="index < activeIndex() || index > lastVisibleIndex()"
           >
             @if (itemTemplate(); as template) {
               <ng-container
@@ -85,7 +93,7 @@ export interface JCarouselItemContext {
 
       @if (indicators()) {
         <div class="j-carousel__indicators" data-jc-section="indicators">
-          @for (item of value(); track item.image || item.title || $index; let index = $index) {
+          @for (index of indicatorIndexes(); track index) {
             <button
               type="button"
               [class.is-active]="index === activeIndex()"
@@ -127,6 +135,12 @@ export interface JCarouselItemContext {
         overflow: hidden;
         padding: var(--j-spacing-3);
         transition: transform var(--j-duration-normal) var(--j-ease-standard);
+      }
+
+      .j-carousel:focus-visible {
+        border-radius: var(--j-radius-lg);
+        box-shadow: var(--j-focus-ring);
+        outline: none;
       }
 
       .j-carousel__item img {
@@ -179,6 +193,12 @@ export interface JCarouselItemContext {
       .j-carousel__indicators button.is-active {
         background: var(--j-color-primary);
       }
+
+      @media (prefers-reduced-motion: reduce) {
+        .j-carousel__item {
+          transition: none;
+        }
+      }
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -191,7 +211,21 @@ export class JCarouselComponent {
   readonly controls = input(true, { transform: booleanAttribute });
   readonly indicators = input(true, { transform: booleanAttribute });
   readonly visibleItems = input(1, { transform: numberAttribute });
+  readonly loop = input(true, { transform: booleanAttribute });
+  readonly pauseOnHover = input(true, { transform: booleanAttribute });
+  readonly ariaLabel = input('Featured items');
   readonly styleClass = input('');
+  readonly paused = signal(false);
+  readonly normalizedVisibleItems = computed(() => Math.max(1, Math.floor(this.visibleItems())));
+  readonly maxIndex = computed(() =>
+    Math.max(0, this.value().length - this.normalizedVisibleItems()),
+  );
+  readonly lastVisibleIndex = computed(() =>
+    Math.min(this.value().length - 1, this.activeIndex() + this.normalizedVisibleItems() - 1),
+  );
+  readonly indicatorIndexes = computed(() =>
+    Array.from({ length: this.maxIndex() + 1 }, (_, index) => index),
+  );
   readonly itemTemplate = contentChild<unknown, TemplateRef<JCarouselItemContext>>(
     'jCarouselItem',
     { read: TemplateRef },
@@ -201,15 +235,14 @@ export class JCarouselComponent {
     // Keep activeIndex within bounds when the data array shrinks so it never
     // points past the last slide.
     effect(() => {
-      const length = this.value().length;
-      const maxIndex = length > 0 ? length - 1 : 0;
+      const maxIndex = this.maxIndex();
       if (this.activeIndex() > maxIndex) {
         this.activeIndex.set(maxIndex);
       }
     });
 
     effect((onCleanup) => {
-      if (!this.autoplay() || this.value().length < 2) {
+      if (!this.autoplay() || this.value().length < 2 || (this.pauseOnHover() && this.paused())) {
         return;
       }
       const timer = setInterval(() => this.next(), this.interval());
@@ -218,20 +251,40 @@ export class JCarouselComponent {
   }
 
   transform(): string {
-    return `translateX(-${this.activeIndex() * 100}%)`;
+    return `translateX(calc(-${this.activeIndex()} * (100% + var(--j-spacing-3))))`;
   }
 
   next(): void {
-    const length = this.value().length;
-    if (length) {
-      this.activeIndex.set((this.activeIndex() + 1) % length);
+    const maxIndex = this.maxIndex();
+    if (this.value().length) {
+      this.activeIndex.set(
+        this.activeIndex() >= maxIndex ? (this.loop() ? 0 : maxIndex) : this.activeIndex() + 1,
+      );
     }
   }
 
   previous(): void {
-    const length = this.value().length;
-    if (length) {
-      this.activeIndex.set((this.activeIndex() - 1 + length) % length);
+    const maxIndex = this.maxIndex();
+    if (this.value().length) {
+      this.activeIndex.set(
+        this.activeIndex() <= 0 ? (this.loop() ? maxIndex : 0) : this.activeIndex() - 1,
+      );
+    }
+  }
+
+  handleKeydown(event: KeyboardEvent): void {
+    if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      this.next();
+    } else if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      this.previous();
+    } else if (event.key === 'Home') {
+      event.preventDefault();
+      this.activeIndex.set(0);
+    } else if (event.key === 'End') {
+      event.preventDefault();
+      this.activeIndex.set(this.maxIndex());
     }
   }
 

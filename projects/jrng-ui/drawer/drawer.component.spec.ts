@@ -1,4 +1,5 @@
 import { reflectComponentType } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { JDrawerComponent } from './drawer.component';
 
 describe('JDrawerComponent public contract', () => {
@@ -15,5 +16,16 @@ describe('JDrawerComponent public contract', () => {
     expect(new Set(inputs).size).toBe(inputs.length);
     expect(new Set(outputs).size).toBe(outputs.length);
     expect(metadata?.ngContentSelectors).toBeDefined();
+  });
+});
+
+describe('JDrawerComponent bottom sheet sizing', () => {
+  it('opens at the first configured snap point', () => {
+    const fixture = TestBed.createComponent(JDrawerComponent);
+    fixture.componentRef.setInput('position', 'bottom');
+    fixture.componentRef.setInput('snapPoints', ['36%', '80%']);
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.computedHeight).toBe('36%');
   });
 });

@@ -24,6 +24,7 @@ import { JDrawerComponent } from 'jrng-ui/drawer';
       [dismissableMask]="dismissableMask()"
       [closeOnEscape]="closeOnEscape()"
       [showHandle]="showHandle()"
+      [denseHeader]="denseHeader()"
       [mobileBottomSheet]="true"
       [styleClass]="'j-bottom-sheet ' + styleClass()"
       data-jc-name="bottom-sheet"
@@ -50,6 +51,7 @@ export class JBottomSheetComponent {
   readonly dismissableMask = input(true, { transform: booleanAttribute });
   readonly closeOnEscape = input(true, { transform: booleanAttribute });
   readonly showHandle = input(true, { transform: booleanAttribute });
+  readonly denseHeader = input(true, { transform: booleanAttribute });
 
   readonly opened = output<void>();
   readonly closed = output<void>();

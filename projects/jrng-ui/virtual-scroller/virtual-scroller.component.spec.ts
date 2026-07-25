@@ -44,11 +44,35 @@ describe('JVirtualScrollerComponent', () => {
   });
 
   it('renders loading placeholders when loading is enabled', () => {
+    fixture.componentRef.setInput('items', []);
     fixture.componentRef.setInput('loading', true);
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelectorAll('.j-virtual-scroller__placeholder').length).toBe(
       10,
     );
+  });
+
+  it('preserves rows and shows the loader only within the configured threshold', () => {
+    fixture.componentRef.setInput(
+      'items',
+      Array.from({ length: 30 }, (_, index) => index),
+    );
+    fixture.componentRef.setInput('viewportItems', 5);
+    fixture.componentRef.setInput('loading', true);
+    fixture.componentRef.setInput('loadingThreshold', 2);
+    component.first = 0;
+    fixture.detectChanges();
+
+    expect(
+      fixture.nativeElement.querySelectorAll('.j-virtual-scroller__item').length,
+    ).toBeGreaterThan(0);
+    expect(fixture.nativeElement.querySelector('.j-virtual-scroller__loader')).toBeNull();
+
+    component.first = 23;
+    fixture.componentRef.setInput('loadingThreshold', 3);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.j-virtual-scroller__loader')).toBeTruthy();
   });
 });

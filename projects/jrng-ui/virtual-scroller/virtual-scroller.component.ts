@@ -13,6 +13,7 @@ import {
   numberAttribute,
   output,
 } from '@angular/core';
+import { JLoaderComponent } from 'jrng-ui/loader';
 
 export interface JVirtualScrollerLazyEvent {
   readonly first: number;
@@ -28,7 +29,7 @@ export interface JVirtualScrollerItemContext<T> {
 
 @Component({
   selector: 'j-virtual-scroller',
-  imports: [NgTemplateOutlet],
+  imports: [JLoaderComponent, NgTemplateOutlet],
   template: `
     <div
       #viewport
@@ -43,7 +44,7 @@ export interface JVirtualScrollerItemContext<T> {
           class="j-virtual-scroller__content"
           [style.transform]="'translateY(' + offsetY + 'px)'"
         >
-          @if (loading()) {
+          @if (loading() && !items().length) {
             @for (placeholder of placeholders; track placeholder) {
               <div class="j-virtual-scroller__placeholder" [style.height.px]="itemSize()"></div>
             }
@@ -58,6 +59,11 @@ export interface JVirtualScrollerItemContext<T> {
                 } @else {
                   {{ item }}
                 }
+              </div>
+            }
+            @if (showIncrementalLoader) {
+              <div class="j-virtual-scroller__loader" [style.height.px]="itemSize()" role="status">
+                <j-loader type="spinner" inline size="sm" [label]="loadingLabel()" />
               </div>
             }
           }
@@ -96,6 +102,14 @@ export interface JVirtualScrollerItemContext<T> {
         background: var(--j-color-muted);
         border-bottom: 1px solid var(--j-color-border);
       }
+
+      .j-virtual-scroller__loader {
+        align-items: center;
+        background: var(--j-color-surface);
+        display: flex;
+        justify-content: center;
+        padding: 0 var(--j-spacing-3);
+      }
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -107,6 +121,8 @@ export class JVirtualScrollerComponent<T = unknown> {
   readonly height = input('28rem');
   readonly lazy = input(false, { transform: booleanAttribute });
   readonly loading = input(false, { transform: booleanAttribute });
+  readonly loadingThreshold = input(4, { transform: numberAttribute });
+  readonly loadingLabel = input('Loading more items');
   @ContentChild('jVirtualScrollerItem', { read: TemplateRef }) itemTemplate?: TemplateRef<
     JVirtualScrollerItemContext<T>
   >;
@@ -120,7 +136,10 @@ export class JVirtualScrollerComponent<T = unknown> {
   first = 0;
 
   get totalHeight(): number {
-    return this.items().length * this.itemSize();
+    return (
+      this.items().length * this.itemSize() +
+      (this.loading() && this.items().length ? this.itemSize() : 0)
+    );
   }
 
   get last(): number {
@@ -137,6 +156,13 @@ export class JVirtualScrollerComponent<T = unknown> {
 
   get placeholders(): readonly number[] {
     return Array.from({ length: this.viewportItems() }, (_, index) => index);
+  }
+
+  get showIncrementalLoader(): boolean {
+    if (!this.loading() || !this.items().length) {
+      return false;
+    }
+    return this.items().length - this.last <= Math.max(0, this.loadingThreshold());
   }
 
   handleScroll(event: Event): void {

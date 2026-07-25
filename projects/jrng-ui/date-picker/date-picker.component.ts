@@ -290,18 +290,35 @@ export interface JDatePickerDayContext {
                   type="button"
                   class="j-date-picker__time-btn"
                   aria-label="Increment hour"
-                  (click)="changeHours(1)"
+                  (pointerdown)="startTimeStep('hours', 1, $event)"
+                  (pointerup)="stopTimeStep()"
+                  (pointercancel)="stopTimeStep()"
+                  (pointerleave)="stopTimeStep()"
+                  (click)="handleTimeStepClick('hours', 1, $event)"
                 >
-                  +
+                  <j-icon name="plus" aria-hidden="true" />
                 </button>
-                <span class="j-date-picker__time-value" aria-live="polite">{{ hoursText }}</span>
+                <input
+                  class="j-date-picker__time-value"
+                  type="text"
+                  inputmode="numeric"
+                  maxlength="2"
+                  aria-label="Hour"
+                  [value]="hoursText"
+                  (blur)="handleTimeInput('hours', $event)"
+                  (keydown.enter)="finishTimeInput($event)"
+                />
                 <button
                   type="button"
                   class="j-date-picker__time-btn"
                   aria-label="Decrement hour"
-                  (click)="changeHours(-1)"
+                  (pointerdown)="startTimeStep('hours', -1, $event)"
+                  (pointerup)="stopTimeStep()"
+                  (pointercancel)="stopTimeStep()"
+                  (pointerleave)="stopTimeStep()"
+                  (click)="handleTimeStepClick('hours', -1, $event)"
                 >
-                  &minus;
+                  <j-icon name="minus" aria-hidden="true" />
                 </button>
               </div>
               <span class="j-date-picker__time-sep">:</span>
@@ -310,18 +327,35 @@ export interface JDatePickerDayContext {
                   type="button"
                   class="j-date-picker__time-btn"
                   aria-label="Increment minute"
-                  (click)="changeMinutes(1)"
+                  (pointerdown)="startTimeStep('minutes', 1, $event)"
+                  (pointerup)="stopTimeStep()"
+                  (pointercancel)="stopTimeStep()"
+                  (pointerleave)="stopTimeStep()"
+                  (click)="handleTimeStepClick('minutes', 1, $event)"
                 >
-                  +
+                  <j-icon name="plus" aria-hidden="true" />
                 </button>
-                <span class="j-date-picker__time-value" aria-live="polite">{{ minutesText }}</span>
+                <input
+                  class="j-date-picker__time-value"
+                  type="text"
+                  inputmode="numeric"
+                  maxlength="2"
+                  aria-label="Minute"
+                  [value]="minutesText"
+                  (blur)="handleTimeInput('minutes', $event)"
+                  (keydown.enter)="finishTimeInput($event)"
+                />
                 <button
                   type="button"
                   class="j-date-picker__time-btn"
                   aria-label="Decrement minute"
-                  (click)="changeMinutes(-1)"
+                  (pointerdown)="startTimeStep('minutes', -1, $event)"
+                  (pointerup)="stopTimeStep()"
+                  (pointercancel)="stopTimeStep()"
+                  (pointerleave)="stopTimeStep()"
+                  (click)="handleTimeStepClick('minutes', -1, $event)"
                 >
-                  &minus;
+                  <j-icon name="minus" aria-hidden="true" />
                 </button>
               </div>
               @if (showSeconds()) {
@@ -331,20 +365,35 @@ export interface JDatePickerDayContext {
                     type="button"
                     class="j-date-picker__time-btn"
                     aria-label="Increment second"
-                    (click)="changeSeconds(1)"
+                    (pointerdown)="startTimeStep('seconds', 1, $event)"
+                    (pointerup)="stopTimeStep()"
+                    (pointercancel)="stopTimeStep()"
+                    (pointerleave)="stopTimeStep()"
+                    (click)="handleTimeStepClick('seconds', 1, $event)"
                   >
-                    +
+                    <j-icon name="plus" aria-hidden="true" />
                   </button>
-                  <span class="j-date-picker__time-value" aria-live="polite">{{
-                    secondsText
-                  }}</span>
+                  <input
+                    class="j-date-picker__time-value"
+                    type="text"
+                    inputmode="numeric"
+                    maxlength="2"
+                    aria-label="Second"
+                    [value]="secondsText"
+                    (blur)="handleTimeInput('seconds', $event)"
+                    (keydown.enter)="finishTimeInput($event)"
+                  />
                   <button
                     type="button"
                     class="j-date-picker__time-btn"
                     aria-label="Decrement second"
-                    (click)="changeSeconds(-1)"
+                    (pointerdown)="startTimeStep('seconds', -1, $event)"
+                    (pointerup)="stopTimeStep()"
+                    (pointercancel)="stopTimeStep()"
+                    (pointerleave)="stopTimeStep()"
+                    (click)="handleTimeStepClick('seconds', -1, $event)"
                   >
-                    &minus;
+                    <j-icon name="minus" aria-hidden="true" />
                   </button>
                 </div>
               }
@@ -616,6 +665,7 @@ export interface JDatePickerDayContext {
         background: transparent;
         color: inherit;
         min-width: 0;
+        position: relative;
         transition:
           background-color 120ms ease,
           color 120ms ease,
@@ -624,6 +674,34 @@ export interface JDatePickerDayContext {
 
       .j-date-picker__day.is-outside {
         color: var(--j-color-muted-foreground);
+      }
+
+      .j-date-picker__day:disabled {
+        background: var(--j-color-surface-muted);
+        color: var(--j-color-muted-foreground);
+        cursor: not-allowed;
+        opacity: 0.48;
+        text-decoration: line-through;
+        text-decoration-thickness: 1px;
+      }
+
+      .j-date-picker__day.is-unavailable:disabled {
+        background: color-mix(in srgb, var(--j-color-danger) 12%, var(--j-color-surface));
+        box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--j-color-danger) 42%, transparent);
+        color: var(--j-color-danger);
+        opacity: 1;
+        text-decoration: none;
+      }
+
+      .j-date-picker__day.is-unavailable:disabled::after {
+        background: currentColor;
+        content: '';
+        height: 1px;
+        inset-inline: 22%;
+        pointer-events: none;
+        position: absolute;
+        top: 50%;
+        transform: rotate(-38deg);
       }
 
       .j-date-picker__day.is-today {
@@ -731,10 +809,24 @@ export interface JDatePickerDayContext {
       }
 
       .j-date-picker__time-value {
+        appearance: textfield;
+        background: var(--j-color-surface);
+        border: 1px solid var(--j-color-border);
+        border-radius: var(--j-radius-sm);
+        color: var(--j-color-foreground);
+        font: inherit;
         font-variant-numeric: tabular-nums;
         font-weight: var(--j-font-weight-semibold);
+        height: 2rem;
         min-width: 2.25rem;
+        padding: 0 var(--j-spacing-1);
         text-align: center;
+        width: 2.75rem;
+      }
+
+      .j-date-picker__time-value:focus-visible {
+        box-shadow: var(--j-focus-ring);
+        outline: none;
       }
 
       .j-date-picker__time-sep {
@@ -814,7 +906,7 @@ export class JDatePickerComponent implements ControlValueAccessor {
   readonly placeholder = input('');
   readonly error = input('');
   readonly hint = input('');
-  readonly dateFormat = input('yyyy-MM-dd');
+  readonly dateFormat = input('');
   readonly rangeSeparator = input(' - ');
   readonly multipleSeparator = input(', ');
   readonly dataType = input<JDatePickerDataType>('date');
@@ -864,6 +956,9 @@ export class JDatePickerComponent implements ControlValueAccessor {
 
   private onChange: (value: JDatePickerValue) => void = () => undefined;
   private onTouched: () => void = () => undefined;
+  private timeHoldDelay?: ReturnType<typeof setTimeout>;
+  private timeHoldInterval?: ReturnType<typeof setInterval>;
+  private pointerStepHandled = false;
 
   constructor() {
     effect(() => {
@@ -878,6 +973,8 @@ export class JDatePickerComponent implements ControlValueAccessor {
         untracked(() => this.writeValue(value));
       }
     });
+
+    this.destroyRef.onDestroy(() => this.stopTimeStep());
   }
 
   get hasError(): boolean {
@@ -937,11 +1034,12 @@ export class JDatePickerComponent implements ControlValueAccessor {
 
   /** Display/parse format, extended with a time pattern when `showTime` is on. */
   get effectiveFormat(): string {
+    const date = this.dateFormat().trim() || (this.view() === 'month' ? 'MM-yyyy' : 'yyyy-MM-dd');
     if (!this.showTime()) {
-      return this.dateFormat();
+      return date;
     }
     const time = this.showSeconds() ? 'HH:mm:ss' : 'HH:mm';
-    return `${this.dateFormat()} ${time}`;
+    return `${date} ${time}`;
   }
 
   /** Hours as shown in the spinner (1–12 for 12-hour format, else 0–23). */
@@ -982,6 +1080,89 @@ export class JDatePickerComponent implements ControlValueAccessor {
   changeSeconds(delta: number): void {
     this.timeSeconds = (this.timeSeconds + delta + 60) % 60;
     this.commitTime();
+  }
+
+  handleTimeInput(part: 'hours' | 'minutes' | 'seconds', event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    const raw = Number.parseInt(inputElement.value, 10);
+    if (!Number.isFinite(raw)) {
+      inputElement.value = this.timePartText(part);
+      return;
+    }
+
+    if (part === 'hours') {
+      if (this.hourFormat() === '12') {
+        const displayHour = Math.min(12, Math.max(1, raw));
+        this.timeHours = (displayHour % 12) + (this.meridiem === 'PM' ? 12 : 0);
+      } else {
+        this.timeHours = Math.min(23, Math.max(0, raw));
+      }
+    } else if (part === 'minutes') {
+      this.timeMinutes = Math.min(59, Math.max(0, raw));
+    } else {
+      this.timeSeconds = Math.min(59, Math.max(0, raw));
+    }
+
+    inputElement.value = this.timePartText(part);
+    this.commitTime();
+  }
+
+  finishTimeInput(event: Event): void {
+    event.preventDefault();
+    (event.target as HTMLInputElement).blur();
+  }
+
+  startTimeStep(part: 'hours' | 'minutes' | 'seconds', delta: number, event: PointerEvent): void {
+    event.preventDefault();
+    this.stopTimeStep();
+    this.pointerStepHandled = true;
+    this.applyTimeStep(part, delta);
+    if (!this.isBrowser) {
+      return;
+    }
+    this.timeHoldDelay = setTimeout(() => {
+      this.timeHoldInterval = setInterval(() => this.applyTimeStep(part, delta), 90);
+    }, 360);
+  }
+
+  stopTimeStep(): void {
+    if (this.timeHoldDelay) {
+      clearTimeout(this.timeHoldDelay);
+      this.timeHoldDelay = undefined;
+    }
+    if (this.timeHoldInterval) {
+      clearInterval(this.timeHoldInterval);
+      this.timeHoldInterval = undefined;
+    }
+  }
+
+  handleTimeStepClick(
+    part: 'hours' | 'minutes' | 'seconds',
+    delta: number,
+    event: MouseEvent,
+  ): void {
+    if (this.pointerStepHandled && event.detail > 0) {
+      this.pointerStepHandled = false;
+      return;
+    }
+    this.applyTimeStep(part, delta);
+  }
+
+  private applyTimeStep(part: 'hours' | 'minutes' | 'seconds', delta: number): void {
+    if (part === 'hours') {
+      this.changeHours(delta);
+    } else if (part === 'minutes') {
+      this.changeMinutes(delta);
+    } else {
+      this.changeSeconds(delta);
+    }
+  }
+
+  private timePartText(part: 'hours' | 'minutes' | 'seconds'): string {
+    if (part === 'hours') {
+      return this.hoursText;
+    }
+    return part === 'minutes' ? this.minutesText : this.secondsText;
   }
 
   toggleMeridiem(): void {
@@ -1094,7 +1275,7 @@ export class JDatePickerComponent implements ControlValueAccessor {
       this.yearPageStart = date.getFullYear() - 5;
     }
     const display = this.showTime() && raw && !Number.isNaN(raw.getTime()) ? raw : date;
-    this.inputValue = display ? formatDate(display, this.effectiveFormat) : '';
+    this.inputValue = display ? formatDate(display, this.effectiveFormat, this.monthNames) : '';
     this.changeDetectorRef.markForCheck();
   }
 
@@ -1310,6 +1491,11 @@ export class JDatePickerComponent implements ControlValueAccessor {
   selectMonth(month: number): void {
     this.viewDate = new Date(this.viewDate.getFullYear(), month, 1);
     this.focusedDate = clampToMonth(this.focusedDate, this.viewDate);
+    if (this.view() === 'month') {
+      this.commit(this.viewDate, true);
+      this.close(true);
+      return;
+    }
     this.currentView = 'date';
   }
 
@@ -1397,7 +1583,7 @@ export class JDatePickerComponent implements ControlValueAccessor {
 
   private commitDates(emitSelect: boolean): void {
     const asOutput = (date: Date): Date | string =>
-      this.dataType() === 'string' ? formatDate(date, this.effectiveFormat) : date;
+      this.dataType() === 'string' ? formatDate(date, this.effectiveFormat, this.monthNames) : date;
 
     const value: readonly (Date | string | null)[] =
       this.selectionMode() === 'range'
@@ -1417,7 +1603,7 @@ export class JDatePickerComponent implements ControlValueAccessor {
   }
 
   private formatSelection(): string {
-    const format = (date: Date): string => formatDate(date, this.effectiveFormat);
+    const format = (date: Date): string => formatDate(date, this.effectiveFormat, this.monthNames);
     if (this.selectionMode() === 'range') {
       const [rangeStart, rangeEnd] = this.selectedDates;
       if (!rangeStart) {
@@ -1446,18 +1632,7 @@ export class JDatePickerComponent implements ControlValueAccessor {
   }
 
   isDateDisabled(date: Date): boolean {
-    const normalized = startOfDay(date);
-    const min = this.minDateValue;
-    const max = this.maxDateValue;
-
-    return (
-      (min ? normalized.getTime() < min.getTime() : false) ||
-      (max ? normalized.getTime() > max.getTime() : false) ||
-      this.disabledDates().some((disabledDate) => {
-        const candidate = normalizeDate(disabledDate);
-        return !!candidate && sameDate(candidate, normalized);
-      })
-    );
+    return this.isDateOutsideBounds(date) || this.isExplicitlyDisabledDate(date);
   }
 
   dayClasses(day: JCalendarDay): string {
@@ -1470,9 +1645,29 @@ export class JDatePickerComponent implements ControlValueAccessor {
       day.rangeEnd ? 'is-range-end' : '',
       day.inRange ? 'is-in-range' : '',
       day.focused ? 'is-focused' : '',
+      this.isDateOutsideBounds(day.date) ? 'is-out-of-range' : '',
+      this.isExplicitlyDisabledDate(day.date) ? 'is-unavailable' : '',
     ]
       .filter(Boolean)
       .join(' ');
+  }
+
+  private isDateOutsideBounds(date: Date): boolean {
+    const normalized = startOfDay(date);
+    const min = this.minDateValue;
+    const max = this.maxDateValue;
+    return (
+      (min ? normalized.getTime() < min.getTime() : false) ||
+      (max ? normalized.getTime() > max.getTime() : false)
+    );
+  }
+
+  private isExplicitlyDisabledDate(date: Date): boolean {
+    const normalized = startOfDay(date);
+    return this.disabledDates().some((disabledDate) => {
+      const candidate = normalizeDate(disabledDate);
+      return !!candidate && sameDate(candidate, normalized);
+    });
   }
 
   dayContext(day: JCalendarDay): JDatePickerDayContext {
@@ -1513,11 +1708,11 @@ export class JDatePickerComponent implements ControlValueAccessor {
   private commit(date: Date | null, emitSelect: boolean): void {
     this.selectedValue =
       this.dataType() === 'string' && date
-        ? this.showTime()
-          ? formatDate(date, this.effectiveFormat)
+        ? this.showTime() || this.view() === 'month'
+          ? formatDate(date, this.effectiveFormat, this.monthNames)
           : toInputDate(date)
         : date;
-    this.inputValue = date ? formatDate(date, this.effectiveFormat) : '';
+    this.inputValue = date ? formatDate(date, this.effectiveFormat, this.monthNames) : '';
     this.onChange(this.selectedValue);
     this.valueChange.emit(this.selectedValue);
     if (emitSelect) {
@@ -1557,15 +1752,20 @@ function parseDate(value: string): Date | null {
     : null;
 }
 
-function formatDate(date: Date, format: string): string {
+function formatDate(date: Date, format: string, monthNames: readonly string[] = []): string {
   const pad = (value: number): string => String(value).padStart(2, '0');
-  return format
-    .replace(/yyyy/g, String(date.getFullYear()))
-    .replace(/MM/g, pad(date.getMonth() + 1))
-    .replace(/dd/g, pad(date.getDate()))
-    .replace(/HH/g, pad(date.getHours()))
-    .replace(/mm/g, pad(date.getMinutes()))
-    .replace(/ss/g, pad(date.getSeconds()));
+  const monthName = monthNames[date.getMonth()] ?? pad(date.getMonth() + 1);
+  const replacements: Readonly<Record<string, string>> = {
+    yyyy: String(date.getFullYear()),
+    MMMM: monthName,
+    MMM: monthName.slice(0, 3),
+    MM: pad(date.getMonth() + 1),
+    dd: pad(date.getDate()),
+    HH: pad(date.getHours()),
+    mm: pad(date.getMinutes()),
+    ss: pad(date.getSeconds()),
+  };
+  return format.replace(/yyyy|MMMM|MMM|MM|dd|HH|mm|ss/g, (token) => replacements[token]);
 }
 
 function applyTime(date: Date, hours: number, minutes: number, seconds: number): Date {

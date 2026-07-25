@@ -14,6 +14,7 @@ import {
   output,
   signal,
 } from '@angular/core';
+import { JIconComponent } from 'jrng-ui/icon';
 
 export type JAccordionActiveIndex = number | readonly number[] | null;
 export type JAccordionVariant = 'default' | 'separated' | 'minimal';
@@ -21,8 +22,21 @@ export type JAccordionVariant = 'default' | 'separated' | 'minimal';
 /** Projected header primitive for the compositional accordion API. */
 @Component({
   selector: 'j-accordion-header',
-  template: `<ng-content />`,
+  template: `<span class="j-accordion-header__content"><ng-content /></span>`,
   host: { class: 'j-accordion-header' },
+  styles: [
+    `
+      :host {
+        display: block;
+        min-width: 0;
+      }
+      .j-accordion-header__content {
+        align-items: center;
+        display: flex;
+        gap: var(--j-spacing-2);
+      }
+    `,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JAccordionHeaderComponent {}
@@ -30,15 +44,32 @@ export class JAccordionHeaderComponent {}
 /** Projected content primitive for the compositional accordion API. */
 @Component({
   selector: 'j-accordion-content',
-  template: `<ng-content />`,
+  template: `<div class="j-accordion-content__body"><ng-content /></div>`,
   host: { class: 'j-accordion-content' },
+  styles: [
+    `
+      :host {
+        display: block;
+      }
+      .j-accordion-content__body {
+        display: grid;
+        gap: var(--j-spacing-3);
+      }
+      .j-accordion-content__body > :first-child {
+        margin-block-start: 0;
+      }
+      .j-accordion-content__body > :last-child {
+        margin-block-end: 0;
+      }
+    `,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JAccordionContentComponent {}
 
 @Component({
   selector: 'j-accordion-panel',
-  imports: [],
+  imports: [JIconComponent],
   template: `
     <section
       class="j-accordion-panel"
@@ -65,7 +96,11 @@ export class JAccordionContentComponent {}
             }
             <ng-content select="j-accordion-header"></ng-content>
           </span>
-          <span aria-hidden="true">{{ active ? '−' : '+' }}</span>
+          <j-icon
+            class="j-accordion-panel__indicator"
+            [name]="active ? 'chevron-up' : 'chevron-down'"
+            aria-hidden="true"
+          />
         </button>
       </h3>
       <div class="j-accordion-panel__content" [hidden]="!active">
@@ -118,6 +153,10 @@ export class JAccordionContentComponent {}
       .j-accordion-panel__button:disabled {
         cursor: not-allowed;
         opacity: var(--j-disabled-opacity, 0.55);
+      }
+
+      .j-accordion-panel__indicator {
+        flex: 0 0 auto;
       }
 
       .j-accordion-panel__content {

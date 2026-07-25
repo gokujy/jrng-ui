@@ -1,4 +1,5 @@
 import { reflectComponentType } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { JCarouselComponent } from './carousel.component';
 
 describe('JCarouselComponent public contract', () => {
@@ -15,5 +16,39 @@ describe('JCarouselComponent public contract', () => {
     expect(new Set(inputs).size).toBe(inputs.length);
     expect(new Set(outputs).size).toBe(outputs.length);
     expect(metadata?.ngContentSelectors).toBeDefined();
+  });
+});
+
+describe('JCarouselComponent navigation', () => {
+  it('keeps multi-item navigation within the last complete viewport', () => {
+    const fixture = TestBed.createComponent(JCarouselComponent);
+    fixture.componentRef.setInput(
+      'value',
+      Array.from({ length: 4 }, (_, index) => ({ title: `Item ${index + 1}` })),
+    );
+    fixture.componentRef.setInput('visibleItems', 2);
+    fixture.componentRef.setInput('loop', false);
+    fixture.detectChanges();
+
+    fixture.componentInstance.next();
+    fixture.componentInstance.next();
+    fixture.componentInstance.next();
+
+    expect(fixture.componentInstance.activeIndex()).toBe(2);
+    expect(fixture.componentInstance.indicatorIndexes()).toEqual([0, 1, 2]);
+  });
+
+  it('supports keyboard navigation and exposes a carousel label', () => {
+    const fixture = TestBed.createComponent(JCarouselComponent);
+    fixture.componentRef.setInput('value', [{ title: 'One' }, { title: 'Two' }]);
+    fixture.componentRef.setInput('ariaLabel', 'Product gallery');
+    fixture.detectChanges();
+
+    const root = fixture.nativeElement.querySelector('.j-carousel') as HTMLElement;
+    root.dispatchEvent(new KeyboardEvent('keydown', { key: 'End', bubbles: true }));
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.activeIndex()).toBe(1);
+    expect(root.getAttribute('aria-label')).toBe('Product gallery');
   });
 });

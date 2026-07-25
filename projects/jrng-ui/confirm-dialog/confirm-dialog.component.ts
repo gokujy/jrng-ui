@@ -18,11 +18,10 @@ import {
   jRememberFocus,
 } from 'jrng-ui/core';
 import { JButtonComponent } from 'jrng-ui/button';
-import { JInternalOverlayHeaderComponent } from 'jrng-ui/overlay-header';
 
 @Component({
   selector: 'j-confirm-dialog',
-  imports: [JFocusTrapDirective, JButtonComponent, JInternalOverlayHeaderComponent],
+  imports: [JFocusTrapDirective, JButtonComponent],
   template: `
     @if (dialogConfirmation(); as confirmation) {
       <div
@@ -45,20 +44,18 @@ import { JInternalOverlayHeaderComponent } from 'jrng-ui/overlay-header';
           tabindex="-1"
           (mousedown)="$event.stopPropagation()"
         >
-          <j-overlay-header
-            [title]="confirmation.title || confirmation.header || 'Confirm'"
-            [titleId]="titleId"
-            [closable]="false"
-            [dense]="true"
-          >
+          <header class="j-confirm-dialog__header">
             @if (confirmation.icon) {
-              <span jOverlayHeader class="j-confirm-dialog__icon">{{ confirmation.icon }}</span>
+              <span class="j-confirm-dialog__icon" aria-hidden="true">{{ confirmation.icon }}</span>
             } @else {
-              <span jOverlayHeader class="j-confirm-dialog__icon" aria-hidden="true">{{
+              <span class="j-confirm-dialog__icon" aria-hidden="true">{{
                 severityIcon(confirmation.severity)
               }}</span>
             }
-          </j-overlay-header>
+            <h2 [id]="titleId">
+              {{ confirmation.title || confirmation.header || 'Confirm' }}
+            </h2>
+          </header>
           <p class="j-confirm-dialog__message" [id]="messageId">{{ confirmation.message }}</p>
           <footer class="j-confirm-dialog__footer">
             <j-button
@@ -104,13 +101,15 @@ import { JInternalOverlayHeaderComponent } from 'jrng-ui/overlay-header';
         color: var(--j-confirm-dialog-color, var(--j-color-card-foreground, #111827));
         max-width: 28rem;
         outline: none;
-        padding: var(--j-spacing-lg, 1.5rem);
+        overflow: hidden;
         width: 100%;
       }
       .j-confirm-dialog__header {
         align-items: center;
         display: flex;
-        gap: var(--j-spacing-sm, 0.5rem);
+        gap: var(--j-spacing-md, 0.75rem);
+        padding: var(--j-spacing-lg, 1.5rem) var(--j-spacing-lg, 1.5rem)
+          var(--j-spacing-md, 0.75rem);
       }
       .j-confirm-dialog__icon {
         align-items: center;
@@ -134,17 +133,23 @@ import { JInternalOverlayHeaderComponent } from 'jrng-ui/overlay-header';
       .j-confirm-dialog__message {
         margin: 0;
       }
+      .j-confirm-dialog__header h2 {
+        font-size: var(--j-font-size-lg, 1.125rem);
+        line-height: 1.35;
+      }
       .j-confirm-dialog__message {
         color: var(--j-confirm-dialog-message-color, var(--j-color-muted-foreground, #64748b));
         line-height: var(--j-line-height-normal, 1.5);
-        margin-top: var(--j-spacing-md, 0.75rem);
+        padding: 0 var(--j-spacing-lg, 1.5rem) var(--j-spacing-lg, 1.5rem);
       }
       .j-confirm-dialog__footer {
+        background: var(--j-color-muted, #f8fafc);
+        border-top: 1px solid var(--j-color-border, #e2e8f0);
         display: flex;
         flex-wrap: wrap;
         gap: var(--j-spacing-sm, 0.5rem);
         justify-content: flex-end;
-        margin-top: var(--j-spacing-lg, 1.5rem);
+        padding: var(--j-spacing-md, 0.75rem) var(--j-spacing-lg, 1.5rem);
       }
       .j-confirm-dialog__button {
         border: 1px solid var(--j-color-border);

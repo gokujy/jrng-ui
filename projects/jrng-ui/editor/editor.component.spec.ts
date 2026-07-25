@@ -163,7 +163,7 @@ describe('JEditorComponent', () => {
     expect(execute).toHaveBeenCalledWith(command, undefined);
   });
 
-  it('uses accessible JRNG icon actions and switches to the HTML editor', () => {
+  it('uses accessible JRNG icon actions and preserves content across HTML mode', async () => {
     const fixture = TestBed.createComponent(JEditorComponent);
     fixture.componentRef.setInput('showSourceToggle', true);
     fixture.detectChanges();
@@ -182,8 +182,18 @@ describe('JEditorComponent', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('.j-editor__source')).toBeTruthy();
+    const visual = fixture.nativeElement.querySelector(
+      'button[aria-label="Show visual editor"]',
+    ) as HTMLButtonElement;
+    expect(visual).toBeTruthy();
+
+    visual.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
     expect(
-      fixture.nativeElement.querySelector('button[aria-label="Show visual editor"]'),
-    ).toBeTruthy();
+      (fixture.nativeElement.querySelector('.j-editor__control') as HTMLElement).innerHTML,
+    ).toBe(fixture.componentInstance.value());
   });
 });

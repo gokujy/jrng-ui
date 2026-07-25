@@ -13,6 +13,7 @@ import {
 } from '@angular/core';
 import { JClipboardService } from 'jrng-ui/core';
 import { jSanitizeEditorHtml } from 'jrng-ui/editor';
+import { JButtonComponent } from 'jrng-ui/button';
 
 export type JHtmlPreviewMode = 'iframe' | 'inline';
 export type JHtmlPreviewDevice = 'desktop' | 'tablet' | 'mobile' | 'custom';
@@ -22,19 +23,25 @@ export interface JHtmlPreviewExportAdapter {
 
 @Component({
   selector: 'j-html-preview',
+  imports: [JButtonComponent],
   template: ` <section
     class="j-html-preview"
     data-jc-name="html-preview"
     [attr.data-j-device]="device()"
   >
     <div class="j-html-preview__toolbar" role="toolbar" aria-label="Preview controls">
-      <button type="button" (click)="refresh()">Refresh</button
-      ><button type="button" (click)="source.set(!source())">Source</button>
-      <button type="button" (click)="copy()">Copy HTML</button
-      ><button type="button" (click)="openWindow.emit()">Open</button>
-      <button type="button" (click)="print.emit()">Print</button>
+      <j-button label="Refresh" icon="undo" variant="outlined" (onClick)="refresh()" />
+      <j-button
+        [label]="source() ? 'Preview' : 'Source'"
+        [icon]="source() ? 'eye' : 'code-xml'"
+        variant="outlined"
+        (onClick)="source.set(!source())"
+      />
+      <j-button label="Copy HTML" icon="copy" variant="outlined" (onClick)="copy()" />
+      <j-button label="Open" icon="eye" variant="outlined" (onClick)="openPreview()" />
+      <j-button label="Print" variant="outlined" (onClick)="printPreview()" />
       @if (exportAdapter()) {
-        <button type="button" (click)="exportPreview()">Export</button>
+        <j-button label="Export" icon="download" (onClick)="exportPreview()" />
       }
     </div>
     @if (loading()) {
@@ -78,9 +85,6 @@ export interface JHtmlPreviewExportAdapter {
         flex-wrap: wrap;
         gap: var(--j-spacing-2);
       }
-      button {
-        font: inherit;
-      }
       .j-html-preview__surface {
         background: white;
         border: 1px solid var(--j-color-border);
@@ -102,7 +106,13 @@ export interface JHtmlPreviewExportAdapter {
         color: var(--j-color-muted-foreground);
       }
       .j-html-preview__source {
+        background: var(--j-color-muted);
+        border: 1px solid var(--j-color-border);
+        border-radius: var(--j-radius-md);
+        color: var(--j-color-foreground);
+        margin: 0;
         overflow: auto;
+        padding: var(--j-spacing-4);
         white-space: pre-wrap;
       }
       @media (max-width: 48rem) {
@@ -153,6 +163,28 @@ export class JHtmlPreviewComponent {
   }
   copy(): void {
     void this.clipboard.copyText(this.html());
+  }
+  openPreview(): void {
+    if (!this.browser) return;
+    const blob = new Blob([this.safeHtml()], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const opened = this.documentRef.defaultView?.open(url, '_blank', 'noopener,noreferrer');
+    if (opened) {
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } else {
+      URL.revokeObjectURL(url);
+    }
+    this.openWindow.emit();
+  }
+  printPreview(): void {
+    if (!this.browser) return;
+    const frame = this.surface()?.nativeElement.querySelector('iframe');
+    if (frame?.contentWindow) {
+      frame.contentWindow.print();
+    } else {
+      this.documentRef.defaultView?.print();
+    }
+    this.print.emit();
   }
   async exportPreview(): Promise<void> {
     if (!this.browser) return;

@@ -106,22 +106,41 @@ export type JLabelDensity = 'compact' | 'normal';
         position: relative;
       }
       .j-label--floating .j-label__label {
+        align-self: center;
         background: var(--j-color-surface, #fff);
-        inset-block-start: 50%;
-        inset-inline-start: var(--j-spacing-md, 0.75rem);
+        grid-area: control;
+        justify-self: start;
+        margin-inline-start: var(--j-spacing-md, 0.75rem);
         pointer-events: none;
-        position: absolute;
-        transform: translateY(-50%);
+        position: relative;
         transition:
           transform var(--j-duration-fast, 150ms),
           color var(--j-duration-fast, 150ms);
         z-index: 1;
       }
+      .j-label--floating .j-label__control {
+        grid-area: control;
+        min-width: 0;
+      }
+      .j-label--floating .j-label__description {
+        grid-area: description;
+      }
+      .j-label--floating .j-label__message,
+      .j-label--floating > [jLabelMessage] {
+        grid-area: message;
+      }
+      .j-label--floating {
+        grid-template-areas:
+          'control'
+          'description'
+          'message';
+      }
       .j-label--floating.is-focused .j-label__label,
       .j-label--floating.is-filled .j-label__label {
         color: var(--j-color-primary, #4f46e5);
         padding-inline: var(--j-spacing-xs, 0.25rem);
-        transform: translateY(-2.05rem) scale(0.86);
+        transform: translateY(calc(-50% - 1.25rem)) scale(0.86);
+        transform-origin: left center;
       }
       .j-label--in-field {
         border: 1px solid var(--j-color-border, #cbd5e1);

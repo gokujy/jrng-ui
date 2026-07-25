@@ -57,33 +57,36 @@
   padding: var(--j-spacing-lg);
   pointer-events: auto;
   touch-action: pan-y;
+  animation: j-toast-enter 180ms ease-out;
 }
 
 .j-toast__mark {
+  background: currentColor;
   border-radius: var(--j-radius-full);
-  height: 2rem;
-  margin-top: 0.125rem;
-  width: 0.25rem;
+  box-shadow: 0 0 0 0.3rem color-mix(in srgb, currentColor 14%, transparent);
+  height: 0.625rem;
+  margin: 0.35rem 0.15rem 0;
+  width: 0.625rem;
 }
 
 .j-toast--success .j-toast__mark {
-  background: var(--j-color-success);
+  color: var(--j-color-success);
 }
 
 .j-toast--error .j-toast__mark {
-  background: var(--j-color-danger);
+  color: var(--j-color-danger);
 }
 
 .j-toast--warning .j-toast__mark {
-  background: var(--j-color-warning);
+  color: var(--j-color-warning);
 }
 
 .j-toast--info .j-toast__mark {
-  background: var(--j-color-info);
+  color: var(--j-color-info);
 }
 
 .j-toast--neutral .j-toast__mark {
-  background: var(--j-color-muted-foreground);
+  color: var(--j-color-muted-foreground);
 }
 
 .j-toast__title {
@@ -153,4 +156,29 @@
 .j-toast__action:focus-visible {
   box-shadow: var(--j-focus-ring);
   outline: none;
+}
+
+@keyframes j-toast-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-0.5rem) scale(0.98);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .j-toast {
+    animation: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .j-toast-stack {
+    inset-inline: var(--j-spacing-3);
+    max-width: none;
+    width: auto;
+  }
+
+  .j-toast {
+    padding: var(--j-spacing-4);
+  }
 }

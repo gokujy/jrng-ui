@@ -111,7 +111,7 @@ import { JSparklineComponent } from 'jrng-ui/sparkline';
 import { JSplitterComponent, JSplitterPanelComponent } from 'jrng-ui/splitter';
 import { JResponsiveSidebarComponent } from 'jrng-ui/responsive-sidebar';
 import { JStatusChipComponent } from 'jrng-ui/status-chip';
-import { JStepperComponent, JStepperVariant } from 'jrng-ui/stepper';
+import { JStepperComponent } from 'jrng-ui/stepper';
 import { JSliderComponent } from 'jrng-ui/slider';
 import { JSwitchComponent } from 'jrng-ui/switch';
 import { JTabComponent, JTabsComponent, JTabsVariant } from 'jrng-ui/tabs';
@@ -136,7 +136,7 @@ import { JTextareaComponent } from 'jrng-ui/textarea';
 import { JTextExpandComponent } from 'jrng-ui/text-expand';
 import { JTieredMenuComponent } from 'jrng-ui/tiered-menu';
 import { JTimePickerComponent } from 'jrng-ui/time-picker';
-import { JTimelineComponent, JTimelineItem, JTimelineVariant } from 'jrng-ui/timeline';
+import { JTimelineComponent, JTimelineItem } from 'jrng-ui/timeline';
 import { JTopbarComponent } from 'jrng-ui/topbar';
 import { JTooltipDirective } from 'jrng-ui/tooltip';
 import { JTourGuideComponent, JTourService, JTourStepDirective } from 'jrng-ui/tour';
@@ -666,8 +666,14 @@ const DATE_PICKER_FEATURE_EXAMPLES = [
   {
     key: 'month',
     name: 'Month picker',
-    details: 'Use month view when the day is not relevant.',
-    html: `<j-date-picker label="Billing month" view="month" dateFormat="MMM yyyy" [(ngModel)]="billingMonth" />`,
+    details: 'Select a month directly with the default MM-yyyy display format.',
+    html: `<j-date-picker label="Billing month" view="month" [(ngModel)]="billingMonth" />`,
+  },
+  {
+    key: 'month-custom',
+    name: 'Custom month format',
+    details: 'Customize month output with numeric, short-name, or full-name tokens.',
+    html: `<j-date-picker label="Reporting month" view="month" dateFormat="MMM yyyy" [(ngModel)]="reportingMonth" />`,
   },
   {
     key: 'disabled',
@@ -894,6 +900,387 @@ const RADIO_FEATURE_EXAMPLES = [
     name: 'Disabled option',
     details: 'A disabled option cannot receive selection or emit a value change.',
     html: `<j-radio name="lockedChoice" label="Managed plan" value="managed" disabled [(ngModel)]="lockedPlan" />`,
+  },
+] as const;
+
+const DATA_VIEW_FEATURE_EXAMPLES = [
+  {
+    key: 'basic',
+    name: 'Product catalogue',
+    details: 'Render meaningful item content with layout switching, sorting, and pagination.',
+    html: `<j-data-view
+  [value]="dataViewItems"
+  layout="grid"
+  sortField="name"
+  [sortOptions]="dataViewSortOptions"
+  [rows]="3"
+  [paginator]="false"
+>
+  <ng-template #jDataViewItem let-item>
+    <article class="j-data-view-card">
+      <strong>{{ item.name }}</strong>
+      <span>{{ item.category }}</span>
+      <small>{{ item.owner }}</small>
+    </article>
+  </ng-template>
+</j-data-view>`,
+  },
+] as const;
+
+const TIMELINE_FEATURE_EXAMPLES = [
+  {
+    key: 'default',
+    name: 'Project milestones',
+    details: 'Show dated milestones in a conventional vertical timeline.',
+    html: `<j-timeline [value]="timelineItems" ariaLabel="Project milestones" />`,
+  },
+  {
+    key: 'activity',
+    name: 'Activity feed',
+    details: 'Use a compact activity treatment for audit and collaboration events.',
+    html: `<j-timeline variant="activity" compact [value]="timelineItems" ariaLabel="Recent activity" />`,
+  },
+  {
+    key: 'alternating',
+    name: 'Alternating history',
+    details: 'Alternate cards around the axis for editorial histories and release narratives.',
+    html: `<j-timeline variant="alternating" [value]="timelineItems" ariaLabel="Release history" />`,
+  },
+  {
+    key: 'horizontal',
+    name: 'Horizontal timeline',
+    details: 'Present a scrollable sequence for stages, journeys, and delivery phases.',
+    html: `<j-timeline layout="horizontal" [value]="timelineItems" ariaLabel="Delivery stages" />`,
+  },
+  {
+    key: 'collapsible',
+    name: 'Collapsible details',
+    details: 'Let keyboard and pointer users expand or collapse long event descriptions.',
+    html: `<j-timeline collapsible [value]="timelineItems" ariaLabel="Order updates" />`,
+  },
+] as const;
+
+const VIRTUAL_SCROLLER_FEATURE_EXAMPLES = [
+  {
+    key: 'basic',
+    name: 'Windowed list',
+    details: 'Render only the visible slice of a large collection.',
+    html: `<j-virtual-scroller [items]="virtualItems" [itemSize]="40" [viewportItems]="5" height="12rem" />`,
+  },
+  {
+    key: 'loading',
+    name: 'Incremental loading threshold',
+    details:
+      'Keep loaded rows visible and show a loader when the remaining rows reach the threshold.',
+    html: `<j-virtual-scroller
+  [items]="virtualItems"
+  [itemSize]="40"
+  [viewportItems]="5"
+  [loadingThreshold]="100"
+  loading
+  loadingLabel="Loading more records"
+  height="12rem"
+/>`,
+  },
+] as const;
+
+const ACCORDION_HEADER_FEATURE_EXAMPLES = [
+  {
+    key: 'basic',
+    name: 'Text header',
+    details: 'Use a concise heading that describes the associated region.',
+    html: `<j-accordion value="account">
+  <j-accordion-panel value="account">
+    <j-accordion-header>Account details</j-accordion-header>
+    <j-accordion-content>Update profile and contact information.</j-accordion-content>
+  </j-accordion-panel>
+</j-accordion>`,
+  },
+  {
+    key: 'rich',
+    name: 'Rich header',
+    details: 'Compose status and supporting text inside the projected header.',
+    html: `<j-accordion value="billing">
+  <j-accordion-panel value="billing">
+    <j-accordion-header>
+      <span>Billing settings</span>
+      <j-badge value="Required" severity="warning" />
+    </j-accordion-header>
+    <j-accordion-content>Choose invoice and payment preferences.</j-accordion-content>
+  </j-accordion-panel>
+</j-accordion>`,
+  },
+  {
+    key: 'disabled',
+    name: 'Disabled header',
+    details: 'A disabled panel header remains readable but cannot toggle.',
+    html: `<j-accordion>
+  <j-accordion-panel value="managed" disabled>
+    <j-accordion-header>Managed by administrator</j-accordion-header>
+    <j-accordion-content>This section is unavailable.</j-accordion-content>
+  </j-accordion-panel>
+</j-accordion>`,
+  },
+] as const;
+
+const ACCORDION_CONTENT_FEATURE_EXAMPLES = [
+  {
+    key: 'text',
+    name: 'Text content',
+    details: 'Present readable supporting content with consistent spacing.',
+    html: `<j-accordion value="summary">
+  <j-accordion-panel value="summary">
+    <j-accordion-header>Project summary</j-accordion-header>
+    <j-accordion-content>
+      <p>The release is on schedule and all required checks have passed.</p>
+    </j-accordion-content>
+  </j-accordion-panel>
+</j-accordion>`,
+  },
+  {
+    key: 'form',
+    name: 'Form content',
+    details: 'Accordion content can contain accessible JRNG form controls and actions.',
+    html: `<j-accordion value="profile">
+  <j-accordion-panel value="profile">
+    <j-accordion-header>Profile settings</j-accordion-header>
+    <j-accordion-content>
+      <j-input label="Display name" value="Avery Reed" />
+      <j-button label="Save profile" />
+    </j-accordion-content>
+  </j-accordion-panel>
+</j-accordion>`,
+  },
+] as const;
+
+const DIVIDER_FEATURE_EXAMPLES = [
+  {
+    key: 'horizontal',
+    name: 'Horizontal divider',
+    details: 'Separate stacked content with the default horizontal rule.',
+    html: `<span>Profile details</span>
+<j-divider />
+<span>Notification preferences</span>`,
+  },
+  {
+    key: 'vertical',
+    name: 'Vertical divider',
+    details: 'Separate actions or compact columns within a horizontal layout.',
+    html: `<div class="j-divider-row">
+  <j-button label="Preview" variant="text" />
+  <j-divider layout="vertical" />
+  <j-button label="Publish" variant="text" />
+</div>`,
+  },
+  {
+    key: 'label',
+    name: 'Divider with label',
+    details: 'Place a text label at the start, center, or end of the separator.',
+    html: `<j-divider text="Advanced settings" position="start" />`,
+  },
+  {
+    key: 'styles',
+    name: 'Line styles',
+    details: 'Choose solid, dashed, dotted, or double lines.',
+    html: `<j-divider lineStyle="solid" />
+<j-divider lineStyle="dashed" />
+<j-divider lineStyle="dotted" />
+<j-divider lineStyle="double" />`,
+  },
+  {
+    key: 'strength',
+    name: 'Strength and spacing',
+    details: 'Tune visual emphasis and surrounding whitespace.',
+    html: `<j-divider strength="subtle" spacing="compact" />
+<j-divider strength="strong" spacing="spacious" />`,
+  },
+] as const;
+
+const SPLITTER_FEATURE_EXAMPLES = [
+  {
+    key: 'invoice',
+    name: 'Invoice comparison',
+    details: 'Resize standard invoice rows beside the editable final preview.',
+    html: `<j-splitter styleClass="j-doc-splitter" [snapPoints]="[30, 50, 70]">
+  <j-splitter-panel [size]="40" [minSize]="25">
+    <section class="j-splitter-demo-panel"><strong>Standard invoice rows</strong></section>
+  </j-splitter-panel>
+  <j-splitter-panel [size]="60" [minSize]="30">
+    <section class="j-splitter-demo-panel"><strong>Final invoice preview</strong></section>
+  </j-splitter-panel>
+</j-splitter>`,
+  },
+  {
+    key: 'vertical',
+    name: 'Vertical workspace',
+    details: 'Resize stacked editor and preview regions.',
+    html: `<j-splitter orientation="vertical" styleClass="j-doc-splitter j-doc-splitter--vertical">
+  <j-splitter-panel [size]="45"><section class="j-splitter-demo-panel">Editor</section></j-splitter-panel>
+  <j-splitter-panel [size]="55"><section class="j-splitter-demo-panel">Preview</section></j-splitter-panel>
+</j-splitter>`,
+  },
+  {
+    key: 'readonly',
+    name: 'Read-only sizes',
+    details: 'Keep the panel arrangement visible while preventing resizing.',
+    html: `<j-splitter readOnly styleClass="j-doc-splitter">
+  <j-splitter-panel [size]="35"><section class="j-splitter-demo-panel">Navigation</section></j-splitter-panel>
+  <j-splitter-panel [size]="65"><section class="j-splitter-demo-panel">Content</section></j-splitter-panel>
+</j-splitter>`,
+  },
+] as const;
+
+const SPLITTER_PANEL_FEATURE_EXAMPLES = [
+  {
+    key: 'sizes',
+    name: 'Panel size constraints',
+    details: 'Set initial, minimum, and maximum sizes for each panel.',
+    html: `<j-splitter styleClass="j-doc-splitter">
+  <j-splitter-panel [size]="30" [minSize]="20" [maxSize]="45">
+    <section class="j-splitter-demo-panel">Filters</section>
+  </j-splitter-panel>
+  <j-splitter-panel [size]="70" [minSize]="55" [maxSize]="80">
+    <section class="j-splitter-demo-panel">Results</section>
+  </j-splitter-panel>
+</j-splitter>`,
+  },
+] as const;
+
+const STEPPER_FEATURE_EXAMPLES = [
+  {
+    key: 'default',
+    name: 'Default stepper',
+    details: 'Use card-style steps for short interactive workflows.',
+    html: `<j-stepper [items]="stepperItems" [activeIndex]="1" />`,
+  },
+  {
+    key: 'rail',
+    name: 'Connected rail',
+    details: 'Show progress along a connected wizard path without an active-card outline.',
+    html: `<j-stepper variant="rail" [items]="stepperItems" [activeIndex]="1" />`,
+  },
+  {
+    key: 'progress',
+    name: 'Compact progress',
+    details: 'Use a compact segmented treatment inside forms and panels.',
+    html: `<j-stepper variant="progress" [items]="stepperItems" [activeIndex]="1" />`,
+  },
+  {
+    key: 'vertical',
+    name: 'Vertical steps',
+    details: 'Stack steps for narrow layouts and longer descriptions.',
+    html: `<j-stepper orientation="vertical" variant="rail" [items]="stepperItems" [activeIndex]="1" />`,
+  },
+  {
+    key: 'linear',
+    name: 'Linear workflow',
+    details: 'Prevent users from skipping beyond the next available step.',
+    html: `<j-stepper linear [items]="stepperItems" [activeIndex]="0" />`,
+  },
+  {
+    key: 'disabled',
+    name: 'Disabled stepper',
+    details: 'Disable all navigation while keeping workflow status readable.',
+    html: `<j-stepper disabled [items]="stepperItems" [activeIndex]="1" />`,
+  },
+] as const;
+
+const CAROUSEL_FEATURE_EXAMPLES = [
+  {
+    key: 'basic',
+    name: 'Image carousel',
+    details: 'Navigate a labelled image collection with buttons, indicators, or the arrow keys.',
+    html: `<j-carousel [value]="carouselItems" ariaLabel="Travel highlights" />`,
+  },
+  {
+    key: 'multiple',
+    name: 'Multiple visible items',
+    details: 'Show two cards at a time while moving through the collection one card at a time.',
+    html: `<j-carousel [value]="carouselItems" [visibleItems]="2" ariaLabel="Travel highlights" />`,
+  },
+  {
+    key: 'autoplay',
+    name: 'Autoplay with pause',
+    details: 'Advance automatically and pause while the pointer rests over the carousel.',
+    html: `<j-carousel [value]="carouselItems" autoplay [interval]="3000" pauseOnHover ariaLabel="Travel highlights" />`,
+  },
+  {
+    key: 'bounded',
+    name: 'Bounded navigation',
+    details: 'Stop at the first and last available positions instead of looping.',
+    html: `<j-carousel [value]="carouselItems" [loop]="false" ariaLabel="Travel highlights" />`,
+  },
+  {
+    key: 'minimal',
+    name: 'Minimal controls',
+    details: 'Hide controls or indicators when navigation is provided elsewhere.',
+    html: `<j-carousel [value]="carouselItems" [controls]="false" [indicators]="false" ariaLabel="Travel highlights" />`,
+  },
+] as const;
+
+const GALLERY_FEATURE_EXAMPLES = [
+  {
+    key: 'basic',
+    name: 'Travel gallery',
+    details: 'Browse the supplied gallery images with thumbnails and full-screen preview.',
+    html: `<j-gallery [value]="galleryItems" />`,
+  },
+  {
+    key: 'contained',
+    name: 'Contained gallery',
+    details: 'Place the gallery on a bordered surface for dense application layouts.',
+    html: `<j-gallery [value]="galleryItems" variant="contained" animation="fade" />`,
+  },
+  {
+    key: 'filmstrip',
+    name: 'Filmstrip',
+    details: 'Move thumbnails above the primary image for media-review workflows.',
+    html: `<j-gallery [value]="galleryItems" variant="filmstrip" animation="slide" />`,
+  },
+  {
+    key: 'hero',
+    name: 'Hero gallery',
+    details: 'Use a wide stage for destination and campaign imagery.',
+    html: `<j-gallery [value]="galleryItems" variant="hero" animation="crossfade" />`,
+  },
+  {
+    key: 'reduced',
+    name: 'No animation',
+    details: 'Disable transitions when immediate image changes are preferred.',
+    html: `<j-gallery [value]="galleryItems" animation="none" />`,
+  },
+] as const;
+
+const HTML_PREVIEW_FEATURE_EXAMPLES = [
+  {
+    key: 'iframe',
+    name: 'Isolated preview',
+    details: 'Render sanitized markup inside a script-free iframe with working preview actions.',
+    html: `<j-html-preview mode="iframe" device="desktop" [height]="260" [html]="previewHtml" />`,
+  },
+  {
+    key: 'inline',
+    name: 'Inline preview',
+    details: 'Render trusted, sanitized markup inside the current document theme.',
+    html: `<j-html-preview mode="inline" [height]="240" [html]="previewHtml" />`,
+  },
+  {
+    key: 'mobile',
+    name: 'Mobile viewport',
+    details: 'Constrain the preview to a mobile device width while retaining horizontal safety.',
+    html: `<j-html-preview mode="iframe" device="mobile" [height]="260" [html]="previewHtml" />`,
+  },
+  {
+    key: 'loading',
+    name: 'Loading state',
+    details: 'Communicate asynchronous preview generation without rendering stale markup.',
+    html: `<j-html-preview loading loadingMessage="Generating invoice preview…" />`,
+  },
+  {
+    key: 'error',
+    name: 'Error and empty states',
+    details: 'Provide clear feedback when preview generation fails or produces no content.',
+    html: `<j-html-preview error="The preview could not be generated." />`,
   },
 ] as const;
 
@@ -1265,6 +1652,53 @@ const CARD_FEATURE_EXAMPLES = [
                           </j-accordion-panel>
                         </j-accordion>
                       }
+                      @case ('accordion-header') {
+                        <j-accordion [value]="example.key === 'disabled' ? null : 'section'">
+                          <j-accordion-panel
+                            value="section"
+                            [disabled]="example.key === 'disabled'"
+                          >
+                            <j-accordion-header>
+                              {{
+                                example.key === 'rich'
+                                  ? 'Billing settings'
+                                  : example.key === 'disabled'
+                                    ? 'Managed by administrator'
+                                    : 'Account details'
+                              }}
+                              @if (example.key === 'rich') {
+                                <j-badge value="Required" severity="warning" />
+                              }
+                            </j-accordion-header>
+                            <j-accordion-content>
+                              {{
+                                example.key === 'disabled'
+                                  ? 'This section is unavailable.'
+                                  : 'Update the settings associated with this section.'
+                              }}
+                            </j-accordion-content>
+                          </j-accordion-panel>
+                        </j-accordion>
+                      }
+                      @case ('accordion-content') {
+                        <j-accordion value="section">
+                          <j-accordion-panel value="section">
+                            <j-accordion-header>
+                              {{ example.key === 'form' ? 'Profile settings' : 'Project summary' }}
+                            </j-accordion-header>
+                            <j-accordion-content>
+                              @if (example.key === 'form') {
+                                <j-input label="Display name" value="Avery Reed" />
+                                <j-button label="Save profile" />
+                              } @else {
+                                <p>
+                                  The release is on schedule and all required checks have passed.
+                                </p>
+                              }
+                            </j-accordion-content>
+                          </j-accordion-panel>
+                        </j-accordion>
+                      }
                       @case ('autocomplete') {
                         <div class="j-overlay-form-preview">
                           <j-autocomplete
@@ -1486,8 +1920,15 @@ const CARD_FEATURE_EXAMPLES = [
                               <j-date-picker
                                 label="Billing month"
                                 view="month"
-                                dateFormat="MMM yyyy"
                                 [(ngModel)]="billingMonth"
+                              />
+                            }
+                            @case ('month-custom') {
+                              <j-date-picker
+                                label="Reporting month"
+                                view="month"
+                                dateFormat="MMM yyyy"
+                                [(ngModel)]="reportingMonth"
                               />
                             }
                             @case ('disabled') {
@@ -1508,11 +1949,33 @@ const CARD_FEATURE_EXAMPLES = [
                         </div>
                       }
                       @case ('divider') {
-                        <div class="j-preview-stack">
-                          <span>Profile details</span>
-                          <j-divider />
-                          <span>Notification preferences</span>
-                        </div>
+                        @if (example.key === 'vertical') {
+                          <div class="j-divider-row">
+                            <j-button label="Preview" variant="text" />
+                            <j-divider layout="vertical" />
+                            <j-button label="Publish" variant="text" />
+                          </div>
+                        } @else if (example.key === 'label') {
+                          <j-divider text="Advanced settings" position="start" />
+                        } @else if (example.key === 'styles') {
+                          <div class="j-preview-stack">
+                            <j-divider lineStyle="solid" />
+                            <j-divider lineStyle="dashed" />
+                            <j-divider lineStyle="dotted" />
+                            <j-divider lineStyle="double" />
+                          </div>
+                        } @else if (example.key === 'strength') {
+                          <div class="j-preview-stack">
+                            <j-divider strength="subtle" spacing="compact" />
+                            <j-divider strength="strong" spacing="spacious" />
+                          </div>
+                        } @else {
+                          <div class="j-preview-stack">
+                            <span>Profile details</span>
+                            <j-divider />
+                            <span>Notification preferences</span>
+                          </div>
+                        }
                       }
                       @case ('icon') {
                         <div class="j-preview-row">
@@ -2388,8 +2851,18 @@ const CARD_FEATURE_EXAMPLES = [
                       }
                       @case ('timeline') {
                         <j-timeline
-                          [variant]="timelineVariants[example.index]"
+                          [variant]="
+                            example.key === 'activity'
+                              ? 'activity'
+                              : example.key === 'alternating'
+                                ? 'alternating'
+                                : 'default'
+                          "
+                          [layout]="example.key === 'horizontal' ? 'horizontal' : 'vertical'"
+                          [compact]="example.key === 'activity'"
+                          [collapsible]="example.key === 'collapsible'"
                           [value]="timelineItems"
+                          [ariaLabel]="example.name"
                         />
                       }
                       @case ('file-upload') {
@@ -2763,7 +3236,16 @@ const CARD_FEATURE_EXAMPLES = [
                         />
                       }
                       @case ('carousel') {
-                        <j-carousel [value]="carouselItems" [visibleItems]="2" autoplay />
+                        <j-carousel
+                          [value]="carouselItems"
+                          [visibleItems]="example.key === 'multiple' ? 2 : 1"
+                          [autoplay]="example.key === 'autoplay'"
+                          [interval]="3000"
+                          [loop]="example.key !== 'bounded'"
+                          [controls]="example.key !== 'minimal'"
+                          [indicators]="example.key !== 'minimal'"
+                          ariaLabel="Travel highlights"
+                        />
                       }
                       @case ('chart') {
                         <div class="j-live-chart-preview-grid">
@@ -2809,9 +3291,19 @@ const CARD_FEATURE_EXAMPLES = [
                         <j-data-view
                           [value]="dataViewItems"
                           layout="grid"
+                          sortField="name"
+                          [sortOptions]="dataViewSortOptions"
                           [rows]="3"
                           [paginator]="false"
-                        />
+                        >
+                          <ng-template #jDataViewItem let-item>
+                            <article class="j-data-view-card">
+                              <strong>{{ item.name }}</strong>
+                              <span>{{ item.category }}</span>
+                              <small>{{ item.owner }}</small>
+                            </article>
+                          </ng-template>
+                        </j-data-view>
                       }
                       @case ('dynamic-dialog') {
                         <div class="j-preview-row">
@@ -2870,21 +3362,27 @@ const CARD_FEATURE_EXAMPLES = [
                         }
                       }
                       @case ('gallery') {
-                        <div class="j-preview-stack">
-                          <div class="j-preview-row">
-                            @for (animation of galleryAnimations; track animation) {
-                              <button
-                                type="button"
-                                class="j-doc-preview-button"
-                                [class.is-active]="galleryAnimation === animation"
-                                (click)="galleryAnimation = animation"
-                              >
-                                {{ animation }}
-                              </button>
-                            }
-                          </div>
-                          <j-gallery [value]="galleryItems" [animation]="galleryAnimation" />
-                        </div>
+                        <j-gallery
+                          [value]="galleryItems"
+                          [variant]="
+                            example.key === 'contained'
+                              ? 'contained'
+                              : example.key === 'filmstrip'
+                                ? 'filmstrip'
+                                : example.key === 'hero'
+                                  ? 'hero'
+                                  : 'standard'
+                          "
+                          [animation]="
+                            example.key === 'filmstrip'
+                              ? 'slide'
+                              : example.key === 'hero'
+                                ? 'crossfade'
+                                : example.key === 'reduced'
+                                  ? 'none'
+                                  : 'fade'
+                          "
+                        />
                       }
                       @case ('gantt') {
                         <j-gantt [tasks]="ganttTasks" scale="week" />
@@ -2905,10 +3403,15 @@ const CARD_FEATURE_EXAMPLES = [
                       }
                       @case ('html-preview') {
                         <j-html-preview
-                          mode="iframe"
-                          device="mobile"
-                          [height]="240"
+                          [mode]="example.key === 'inline' ? 'inline' : 'iframe'"
+                          [device]="example.key === 'mobile' ? 'mobile' : 'desktop'"
+                          [height]="260"
                           [html]="previewHtml"
+                          [loading]="example.key === 'loading'"
+                          [error]="
+                            example.key === 'error' ? 'The preview could not be generated.' : ''
+                          "
+                          loadingMessage="Generating invoice preview…"
                         />
                       }
                       @case ('grid') {
@@ -3029,16 +3532,72 @@ const CARD_FEATURE_EXAMPLES = [
                         <j-sidebar-nav [model]="menuItems" activeKey="Open" />
                       }
                       @case ('splitter') {
+                        <j-splitter
+                          [orientation]="example.key === 'vertical' ? 'vertical' : 'horizontal'"
+                          [readOnly]="example.key === 'readonly'"
+                          [snapPoints]="example.key === 'invoice' ? [30, 50, 70] : []"
+                          [styleClass]="
+                            example.key === 'vertical'
+                              ? 'j-doc-splitter j-doc-splitter--vertical'
+                              : 'j-doc-splitter'
+                          "
+                        >
+                          <j-splitter-panel
+                            [size]="example.key === 'invoice' ? 40 : 35"
+                            [minSize]="example.key === 'invoice' ? 25 : 10"
+                          >
+                            <section class="j-splitter-demo-panel">
+                              <strong>{{
+                                example.key === 'invoice'
+                                  ? 'Standard invoice rows'
+                                  : example.key === 'vertical'
+                                    ? 'Editor'
+                                    : 'Navigation'
+                              }}</strong>
+                            </section>
+                          </j-splitter-panel>
+                          <j-splitter-panel
+                            [size]="example.key === 'invoice' ? 60 : 65"
+                            [minSize]="example.key === 'invoice' ? 30 : 10"
+                          >
+                            <section class="j-splitter-demo-panel">
+                              <strong>{{
+                                example.key === 'invoice'
+                                  ? 'Final invoice preview'
+                                  : example.key === 'vertical'
+                                    ? 'Preview'
+                                    : 'Content'
+                              }}</strong>
+                            </section>
+                          </j-splitter-panel>
+                        </j-splitter>
+                      }
+                      @case ('splitter-panel') {
                         <j-splitter styleClass="j-doc-splitter">
-                          <j-splitter-panel [size]="35">Navigation panel</j-splitter-panel>
-                          <j-splitter-panel [size]="65">Content panel</j-splitter-panel>
+                          <j-splitter-panel [size]="30" [minSize]="20" [maxSize]="45">
+                            <section class="j-splitter-demo-panel">Filters</section>
+                          </j-splitter-panel>
+                          <j-splitter-panel [size]="70" [minSize]="55" [maxSize]="80">
+                            <section class="j-splitter-demo-panel">Results</section>
+                          </j-splitter-panel>
                         </j-splitter>
                       }
                       @case ('stepper') {
                         <j-stepper
-                          [variant]="stepperVariants[example.index]"
+                          [variant]="
+                            example.key === 'rail'
+                              ? 'rail'
+                              : example.key === 'progress'
+                                ? 'progress'
+                                : example.key === 'vertical'
+                                  ? 'rail'
+                                  : 'default'
+                          "
+                          [orientation]="example.key === 'vertical' ? 'vertical' : 'horizontal'"
+                          [linear]="example.key === 'linear'"
+                          [disabled]="example.key === 'disabled'"
                           [items]="stepperItems"
-                          [activeIndex]="1"
+                          [activeIndex]="example.key === 'linear' ? 0 : 1"
                         />
                       }
                       @case ('tab') {
@@ -3096,6 +3655,8 @@ const CARD_FEATURE_EXAMPLES = [
                           [itemSize]="40"
                           [viewportItems]="5"
                           [loading]="example.key === 'loading'"
+                          [loadingThreshold]="example.key === 'loading' ? 100 : 4"
+                          loadingLabel="Loading more records"
                           height="12rem"
                         />
                       }
@@ -3774,6 +4335,42 @@ export class ComponentDetailViewComponent {
     if (doc.slug === 'radio') {
       return RADIO_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
     }
+    if (doc.slug === 'data-view') {
+      return DATA_VIEW_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+    }
+    if (doc.slug === 'timeline') {
+      return TIMELINE_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+    }
+    if (doc.slug === 'virtual-scroller') {
+      return VIRTUAL_SCROLLER_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+    }
+    if (doc.slug === 'accordion-header') {
+      return ACCORDION_HEADER_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+    }
+    if (doc.slug === 'accordion-content') {
+      return ACCORDION_CONTENT_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+    }
+    if (doc.slug === 'divider') {
+      return DIVIDER_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+    }
+    if (doc.slug === 'splitter') {
+      return SPLITTER_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+    }
+    if (doc.slug === 'splitter-panel') {
+      return SPLITTER_PANEL_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+    }
+    if (doc.slug === 'stepper') {
+      return STEPPER_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+    }
+    if (doc.slug === 'carousel') {
+      return CAROUSEL_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+    }
+    if (doc.slug === 'gallery') {
+      return GALLERY_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+    }
+    if (doc.slug === 'html-preview') {
+      return HTML_PREVIEW_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+    }
     if (doc.slug === 'loader') {
       return LOADER_FEATURE_EXAMPLES.map((example, index) =>
         example.key === 'basic'
@@ -3930,6 +4527,7 @@ export class ComponentDetailViewComponent {
     this.inlineDate = new Date(2026, 6, 16);
     this.dateTimeValue = new Date(2026, 6, 18, 14, 30);
     this.billingMonth = new Date(2026, 6, 1);
+    this.reportingMonth = new Date(2028, 4, 1);
     this.lockedDate = new Date(2026, 6, 24);
     this.labeledEmail = 'avery@example.com';
     this.iconFieldBasicSearch = '';
@@ -3956,7 +4554,6 @@ export class ComponentDetailViewComponent {
     ];
     this.maskedPhone = '(555) 123-4567';
     this.employeeId = 'JR-2048';
-    this.galleryAnimation = 'fade';
     this.autocompleteSuggestions = [...this.customerSuggestions];
     this.fileBrowserSelection = ['report'];
     this.kanbanPreviewColumns = this.kanbanColumns;
@@ -4152,9 +4749,7 @@ export class ComponentDetailViewComponent {
   readonly breadcrumbVariants: readonly JBreadcrumbVariant[] = ['default', 'contained', 'steps'];
   readonly emptyStateVariants: readonly JEmptyStateVariant[] = ['default', 'inline', 'panel'];
   readonly pageHeaderVariants: readonly JPageHeaderVariant[] = ['standard', 'stacked', 'centered'];
-  readonly stepperVariants: readonly JStepperVariant[] = ['default', 'rail', 'progress'];
   readonly tabsVariants: readonly JTabsVariant[] = ['default', 'pills', 'segmented'];
-  readonly timelineVariants: readonly JTimelineVariant[] = ['default', 'activity', 'alternating'];
   readonly dialogOpen = signal(false);
   readonly drawerOpen = signal(false);
   readonly popoverOpen = signal(false);
@@ -4200,6 +4795,7 @@ export class ComponentDetailViewComponent {
   inlineDate: Date | null = new Date(2026, 6, 16);
   dateTimeValue: Date | null = new Date(2026, 6, 18, 14, 30);
   billingMonth: Date | null = new Date(2026, 6, 1);
+  reportingMonth: Date | null = new Date(2028, 4, 1);
   lockedDate: Date | null = new Date(2026, 6, 24);
   readonly datePresets: readonly JDatePickerPreset[] = [
     {
@@ -4238,8 +4834,6 @@ export class ComponentDetailViewComponent {
   ];
   maskedPhone = '(555) 123-4567';
   employeeId = 'JR-2048';
-  galleryAnimation: 'fade' | 'zoom' | 'slide' | 'none' = 'fade';
-  readonly galleryAnimations = ['fade', 'zoom', 'slide', 'none'] as const;
 
   readonly statuses = ['Draft', 'Published', 'Archived'];
   readonly brandPresets = ['#4f46e5', '#2563eb', '#0891b2', '#16a34a', '#d97706', '#dc2626'];
@@ -4307,22 +4901,22 @@ export class ComponentDetailViewComponent {
   ] as const;
   readonly carouselItems = [
     {
-      title: 'Analytics workspace',
-      description: 'A dashboard layout with navigation, metrics, and a trend chart.',
-      image: '/assets/images/dashboard-workspace.webp',
-      alt: 'Illustrated analytics dashboard workspace',
+      title: 'Alpine dawn',
+      description: 'Early light over a quiet mountain valley.',
+      image: '/assets/gallery/alpine-dawn.png',
+      alt: 'Sunrise over an alpine valley',
     },
     {
-      title: 'Operations table',
-      description: 'A structured order table with selection and status indicators.',
-      image: '/assets/images/table-orders-preview.webp',
-      alt: 'Illustrated order management table',
+      title: 'Coastal light',
+      description: 'A bright shoreline framed by calm blue water.',
+      image: '/assets/gallery/coastal-light.png',
+      alt: 'Sunlit coastline and blue water',
     },
     {
-      title: 'Project team',
-      description: 'Four team members with online presence indicators.',
-      image: '/assets/images/team-avatar-group.webp',
-      alt: 'Illustrated group of four team members',
+      title: 'Desert arches',
+      description: 'Natural sandstone forms in warm evening light.',
+      image: '/assets/gallery/desert-arches.png',
+      alt: 'Sandstone arches in a desert landscape',
     },
   ] as const;
   readonly chartData = {
@@ -4347,7 +4941,16 @@ export class ComponentDetailViewComponent {
     { id: 'search', label: 'Search docs', description: 'Find a component', group: 'Navigate' },
     { id: 'theme', label: 'Toggle theme', description: 'Switch color mode', group: 'Settings' },
   ] as const;
-  readonly dataViewItems = ['Design system', 'Documentation portal', 'Admin workspace'];
+  readonly dataViewItems = [
+    { id: 1, name: 'Design system', category: 'Product', owner: 'Avery Reed' },
+    { id: 2, name: 'Documentation portal', category: 'Content', owner: 'Morgan Lee' },
+    { id: 3, name: 'Admin workspace', category: 'Operations', owner: 'Jordan Patel' },
+  ];
+  readonly dataViewSortOptions = [
+    { field: 'name', label: 'Name' },
+    { field: 'category', label: 'Category' },
+    { field: 'owner', label: 'Owner' },
+  ];
   readonly fileBrowserItems: readonly JFileBrowserItem[] = [
     { id: 'invoices', name: 'Invoices', kind: 'folder', modifiedAt: '2026-07-14' },
     {
@@ -4378,24 +4981,22 @@ export class ComponentDetailViewComponent {
   fileBrowserSelection: readonly string[] = ['report'];
   readonly galleryItems = [
     {
-      src: '/assets/images/product-laptop.webp',
-      alt: 'Illustration of a laptop product',
-      caption: 'Laptop workspace',
+      src: '/assets/gallery/alpine-dawn.png',
+      thumbnail: '/assets/gallery/alpine-dawn.png',
+      alt: 'Sunrise over an alpine valley',
+      caption: 'Alpine dawn',
     },
     {
-      src: '/assets/images/product-headphones.webp',
-      alt: 'Illustration of over-ear headphones',
-      caption: 'Wireless headphones',
+      src: '/assets/gallery/coastal-light.png',
+      thumbnail: '/assets/gallery/coastal-light.png',
+      alt: 'Sunlit coastline and blue water',
+      caption: 'Coastal light',
     },
     {
-      src: '/assets/images/dashboard-workspace.webp',
-      alt: 'Illustrated analytics dashboard workspace',
-      caption: 'Analytics workspace',
-    },
-    {
-      src: '/assets/images/table-orders-preview.webp',
-      alt: 'Illustrated order management table',
-      caption: 'Order management',
+      src: '/assets/gallery/desert-arches.png',
+      thumbnail: '/assets/gallery/desert-arches.png',
+      alt: 'Sandstone arches in a desert landscape',
+      caption: 'Desert arches',
     },
   ] as const;
   readonly ganttTasks = [

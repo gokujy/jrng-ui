@@ -114,6 +114,7 @@ export type JDrawerCloseReason = 'close-button' | 'backdrop' | 'escape' | 'gestu
 
       .j-drawer {
         background: var(--j-color-card);
+        border: 1px solid var(--j-color-border);
         box-shadow: var(--j-dialog-shadow, var(--j-shadow-lg));
         color: var(--j-color-card-foreground);
         display: flex;
@@ -131,6 +132,8 @@ export type JDrawerCloseReason = 'close-button' | 'backdrop' | 'escape' | 'gestu
       }
 
       .j-drawer--right {
+        border-block: 0;
+        border-inline-end: 0;
         margin-inline-start: auto;
       }
 
@@ -141,11 +144,15 @@ export type JDrawerCloseReason = 'close-button' | 'backdrop' | 'escape' | 'gestu
       }
 
       .j-drawer--bottom {
+        border-block-end: 0;
+        border-inline: 0;
         border-radius: var(--j-radius-xl, 1rem) var(--j-radius-xl, 1rem) 0 0;
         margin-block-start: auto;
       }
 
       .j-drawer--top {
+        border-block-start: 0;
+        border-inline: 0;
         border-radius: 0 0 var(--j-radius-xl, 1rem) var(--j-radius-xl, 1rem);
       }
 
@@ -183,10 +190,16 @@ export type JDrawerCloseReason = 'close-button' | 'backdrop' | 'escape' | 'gestu
       .j-drawer__body {
         flex: 1;
         overflow: auto;
+        overscroll-behavior: contain;
       }
 
       .j-drawer__footer {
+        align-items: center;
+        background: var(--j-color-muted);
         border-top: 1px solid var(--j-color-border);
+        display: flex;
+        gap: var(--j-spacing-2);
+        justify-content: flex-end;
       }
 
       .j-drawer__footer:empty {
@@ -292,7 +305,7 @@ export class JDrawerComponent {
   get computedHeight(): string | null {
     return (
       this.height() ||
-      (this.position() === 'bottom' && this.snapPoints()[1] ? this.snapPoints()[1] : null)
+      (this.position() === 'bottom' && this.snapPoints()[0] ? this.snapPoints()[0] : null)
     );
   }
 

@@ -33,8 +33,8 @@ export interface JCommandPaletteItem {
     <j-dialog
       [visible]="visible()"
       (visibleChange)="visible.set($event)"
-      size="lg"
-      position="top"
+      size="md"
+      position="center"
       [header]="heading()"
       [dismissableMask]="true"
       [closeOnEscape]="true"
@@ -46,6 +46,7 @@ export interface JCommandPaletteItem {
         <input
           class="j-command-palette__search"
           type="search"
+          aria-label="Search commands"
           [placeholder]="placeholder()"
           [ngModel]="query()"
           (ngModelChange)="query.set($event)"
@@ -90,6 +91,7 @@ export interface JCommandPaletteItem {
       .j-command-palette {
         display: grid;
         gap: var(--j-spacing-3);
+        min-width: 0;
       }
 
       .j-command-palette__search {
@@ -114,6 +116,7 @@ export interface JCommandPaletteItem {
         gap: var(--j-spacing-3);
         max-height: min(26rem, 60dvh);
         overflow: auto;
+        overscroll-behavior: contain;
       }
 
       .j-command-palette__group h3 {
@@ -136,6 +139,16 @@ export interface JCommandPaletteItem {
         padding: var(--j-spacing-3);
         text-align: left;
         width: 100%;
+      }
+
+      .j-command-palette__item:focus-visible {
+        box-shadow: var(--j-focus-ring);
+        outline: none;
+      }
+
+      .j-command-palette__item:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
       }
 
       .j-command-palette__item.is-active,

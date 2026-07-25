@@ -33,6 +33,7 @@ export type JStepperVariant = 'default' | 'rail' | 'progress';
       data-jc-name="stepper"
       data-jc-section="root"
       [attr.aria-label]="ariaLabel()"
+      [attr.aria-disabled]="disabled() || readOnly()"
     >
       @for (item of items(); track item.label || $index; let index = $index) {
         <button
@@ -196,6 +197,15 @@ export type JStepperVariant = 'default' | 'rail' | 'progress';
         transform: none;
       }
 
+      .j-stepper--rail .j-stepper__step.is-active {
+        background: transparent;
+        box-shadow: none;
+      }
+
+      .j-stepper--rail .j-stepper__step.is-active .j-stepper__marker {
+        box-shadow: 0 0 0 4px color-mix(in srgb, var(--j-color-primary) 14%, transparent);
+      }
+
       .j-stepper--rail .j-stepper__step:not(:last-child)::after {
         background: var(--j-color-border, #dbe2ea);
         content: '';
@@ -296,6 +306,8 @@ export class JStepperComponent {
   readonly orientation = input<'horizontal' | 'vertical'>('horizontal');
   readonly variant = input<JStepperVariant>('default');
   readonly ariaLabel = input('Progress');
+  readonly disabled = input(false, { transform: booleanAttribute });
+  readonly readOnly = input(false, { transform: booleanAttribute });
   readonly activeIndexChange = output<number>();
 
   /** Internal, mutable mirror of the `activeIndex` input (no two-way binding exists). */
@@ -321,6 +333,11 @@ export class JStepperComponent {
   }
 
   isDisabled(item: JStepItem, index: number): boolean {
-    return item.disabled === true || (this.linear() && index > this.activeIndexState() + 1);
+    return (
+      this.disabled() ||
+      this.readOnly() ||
+      item.disabled === true ||
+      (this.linear() && index > this.activeIndexState() + 1)
+    );
   }
 }

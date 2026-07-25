@@ -14,4 +14,24 @@ describe('JHtmlPreviewComponent', () => {
     expect(frame.getAttribute('srcdoc')).not.toContain('script');
     expect(frame.getAttribute('srcdoc')).not.toContain('https://');
   });
+
+  it('uses JRNG buttons and keeps content visible after viewing source', () => {
+    const fixture = TestBed.createComponent(JHtmlPreviewComponent);
+    fixture.componentRef.setInput('html', '<p>Preview content</p>');
+    fixture.detectChanges();
+    const buttons = fixture.nativeElement.querySelectorAll('j-button button');
+    expect(buttons.length).toBeGreaterThanOrEqual(5);
+
+    buttons[1].click();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.j-html-preview__source')?.textContent).toContain(
+      'Preview content',
+    );
+
+    fixture.nativeElement.querySelectorAll('j-button button')[1].click();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('iframe')?.getAttribute('srcdoc')).toContain(
+      'Preview content',
+    );
+  });
 });
