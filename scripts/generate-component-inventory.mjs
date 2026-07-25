@@ -3,6 +3,15 @@ import path from 'node:path';
 import process from 'node:process';
 import { format } from 'prettier';
 import ts from 'typescript';
+import {
+  ACTIVE_COMPONENT_TOTAL,
+  COMPONENT_CATEGORIES,
+  COMPONENT_CATEGORY_BY_SELECTOR,
+  COMPONENT_CATEGORY_ORDER,
+  COMPONENT_ORDER_BY_SELECTOR,
+  REMOVED_COMPONENT_SELECTORS,
+  validateComponentCategories,
+} from './component-categories.mjs';
 
 const workspaceRoot = process.cwd();
 const declarationsDirectory = path.join(workspaceRoot, 'dist', 'jrng-ui', 'types');
@@ -16,6 +25,15 @@ const documentationDataPath = path.join(
   'component-docs.data.ts',
 );
 const outputPath = path.resolve(workspaceRoot, process.argv[2] ?? 'docs/component-inventory.json');
+const generatedCategoriesPath = path.join(
+  workspaceRoot,
+  'projects',
+  'docs',
+  'src',
+  'app',
+  'docs',
+  'generated-component-categories.ts',
+);
 
 if (!fs.existsSync(declarationsDirectory)) {
   throw new Error('Build the jrng-ui library before generating the component inventory.');
@@ -48,134 +66,18 @@ const markdownText = fs
   .map((fileName) => fs.readFileSync(path.join(workspaceRoot, 'docs', fileName), 'utf8'))
   .join('\n');
 
-const categories = categoryLookup({
-  Forms: [
-    'autocomplete',
-    'calendar',
-    'checkbox',
-    'chips',
-    'color-picker',
-    'date-picker',
-    'editor',
-    'label',
-    'form-field',
-    'icon-field',
-    'input',
-    'input-group',
-    'input-mask',
-    'input-number',
-    'input-otp',
-    'knob',
-    'listbox',
-    'multiselect',
-    'password',
-    'radio',
-    'radio-group',
-    'rating',
-    'select',
-    'select-button',
-    'slider',
-    'switch',
-    'textarea',
-    'time-picker',
-    'toggle-button',
-  ],
-  'Buttons and Actions': ['button', 'copy-button'],
-  'Data Display': [
-    'avatar',
-    'avatar-group',
-    'badge',
-    'card',
-    'chip',
-    'divider',
-    'empty-state',
-    'icon',
-    'loader',
-    'meter-group',
-    'progress-bar',
-    'progress-spinner',
-    'skeleton',
-    'status-chip',
-    'tag',
-    'data-display',
-    'text-expand',
-  ],
-  Data: [
-    'column-filter',
-    'data-grid',
-    'data-view',
-    'filter-bar',
-    'order-list',
-    'paginator',
-    'table',
-    'transfer-list',
-    'tree',
-    'tree-table',
-    'virtual-scroller',
-  ],
-  'Navigation and Menu': [
-    'accordion',
-    'breadcrumb',
-    'command-palette',
-    'context-menu',
-    'mega-menu',
-    'menu',
-    'menubar',
-    'sidebar-nav',
-    'stepper',
-    'tabs',
-    'tiered-menu',
-  ],
-  Overlay: [
-    'bottom-sheet',
-    'confirm-dialog',
-    'confirm-popup',
-    'dialog',
-    'drawer',
-    'dynamic-dialog',
-    'notification-center',
-    'popover',
-    'toast',
-  ],
-  Layout: [
-    'app-shell',
-    'auth-layout',
-    'container',
-    'fieldset',
-    'grid',
-    'grid-layout',
-    'page-header',
-    'panel',
-    'responsive-sidebar',
-    'section-footer',
-    'section-header',
-    'splitter',
-    'toolbar',
-    'topbar',
-  ],
-  'Media & Visualization': [
-    'carousel',
-    'chart',
-    'file-preview',
-    'file-upload',
-    'gallery',
-    'image',
-    'file-browser',
-    'html-preview',
-    'sparkline',
-    'video-player',
-  ],
-  'Scheduling & Productivity': ['calendar-scheduler', 'gantt', 'kanban', 'org-chart', 'timeline'],
-  'Business and Admin': ['diff-viewer'],
-  'Feedback and Messages': ['validation-message'],
-  'Core and Theming': ['highlight'],
-  Utilities: ['tour'],
-  'Status Pages': ['error-page', 'maintenance-page'],
-});
-
 const components = declarationFiles()
   .flatMap(readPublicComponents)
-  .sort((left, right) => left.selector.localeCompare(right.selector));
+  .sort(
+    (left, right) =>
+      (COMPONENT_ORDER_BY_SELECTOR.get(left.selector) ?? Number.MAX_SAFE_INTEGER) -
+      (COMPONENT_ORDER_BY_SELECTOR.get(right.selector) ?? Number.MAX_SAFE_INTEGER),
+  );
+
+const categoryFailures = validateComponentCategories(components);
+if (categoryFailures.length) {
+  throw new Error(`Component category validation failed:\n- ${categoryFailures.join('\n- ')}`);
+}
 
 const inventory = {
   inventoryVersion: 2,
@@ -195,6 +97,10 @@ const inventory = {
     accessibilityStatus: 'Automated source-contract validation; not a conformance certification.',
     themeTokenSupport: 'Direct or inherited JRNG semantic-token coverage.',
   },
+  categories: COMPONENT_CATEGORIES.map(({ name, selectors }) => ({
+    name,
+    count: selectors.length,
+  })),
   summary: summarize(components),
   components,
 };
@@ -204,8 +110,31 @@ const formattedInventory = await format(JSON.stringify(inventory), { parser: 'js
 fs.writeFileSync(outputPath, formattedInventory, 'utf8');
 const markdownOutput = path.join(path.dirname(outputPath), 'component-inventory.md');
 fs.writeFileSync(markdownOutput, await formatInventoryMarkdown(inventory), 'utf8');
+fs.writeFileSync(
+  generatedCategoriesPath,
+  await format(
+    `// Generated by scripts/generate-component-inventory.mjs. Do not edit manually.
+export const generatedComponentCategories = ${JSON.stringify(
+      COMPONENT_CATEGORIES.map(({ name, selectors }) => ({
+        name,
+        count: selectors.length,
+        selectors,
+      })),
+      null,
+      2,
+    )} as const;
+
+export const generatedComponentCategoryOrder = generatedComponentCategories.map(
+  ({ name }) => name,
+);
+export const generatedActiveComponentTotal = ${ACTIVE_COMPONENT_TOTAL};
+`,
+    { parser: 'typescript' },
+  ),
+  'utf8',
+);
 console.log(
-  `Wrote ${components.length} public components to ${path.relative(workspaceRoot, outputPath)} and ${path.relative(workspaceRoot, markdownOutput)}.`,
+  `Wrote ${components.length} public components to ${path.relative(workspaceRoot, outputPath)}, ${path.relative(workspaceRoot, markdownOutput)}, and ${path.relative(workspaceRoot, generatedCategoriesPath)}.`,
 );
 
 function declarationFiles() {
@@ -319,7 +248,7 @@ function readPublicComponents(fileName) {
     const documentationStatus = registryRecord ? 'complete' : 'missing';
     const codeExampleStatus = registryRecord?.usageExample ? 'complete' : 'missing';
     const apiReferenceStatus = registryRecord ? 'complete' : 'missing';
-    const category = categories.get(entryPoint) ?? 'Uncategorized';
+    const category = COMPONENT_CATEGORY_BY_SELECTOR.get(selector);
     const stability = componentStability({
       exactDocumentation,
       testStatus,
@@ -333,7 +262,7 @@ function readPublicComponents(fileName) {
     if (apiReferenceStatus !== 'complete') incomplete.push('API reference');
     if (testStatus !== 'direct') incomplete.push('direct test');
     if (!accessibilityValidated) incomplete.push('accessibility validation');
-    if (category === 'Uncategorized') incomplete.push('category');
+    if (!category) incomplete.push('category');
 
     results.push({
       name: displayName(selector),
@@ -488,20 +417,27 @@ function displayName(selector) {
     .join(' ');
 }
 
-function categoryLookup(groups) {
-  const lookup = new Map();
-  for (const [category, entryPoints] of Object.entries(groups)) {
-    for (const entryPoint of entryPoints) {
-      lookup.set(entryPoint, category);
-    }
-  }
-  return lookup;
-}
-
 function summarize(records) {
   const count = (predicate) => records.filter(predicate).length;
+  const categoryCounts = Object.fromEntries(
+    COMPONENT_CATEGORY_ORDER.map((category) => [
+      category,
+      count((record) => record.category === category),
+    ]),
+  );
+  const duplicateEntries = records.length - new Set(records.map((record) => record.selector)).size;
+  const removedComponentsPresent = count((record) =>
+    REMOVED_COMPONENT_SELECTORS.has(record.selector),
+  );
   return {
     publicComponents: records.length,
+    activeComponents: records.length,
+    expectedActiveComponents: ACTIVE_COMPONENT_TOTAL,
+    totalCategories: COMPONENT_CATEGORY_ORDER.length,
+    categoryCounts,
+    uncategorized: count((record) => !record.category),
+    duplicateEntries,
+    removedComponentsPresent,
     componentsWithDocumentation: count((record) => record.documentationStatus === 'complete'),
     componentsWithWorkingPreview: count((record) => record.previewStatus === 'rendered'),
     componentsWithApiReference: count((record) => record.apiReferenceStatus === 'complete'),
@@ -548,7 +484,7 @@ function summarize(records) {
     ),
     browserApiUsageDetected: count((record) => record.usesBrowserOnlyApis),
     optionalLibraryComponents: count((record) => record.optionalExternalLibraries.length > 0),
-    unclassifiedCategories: count((record) => record.category === 'Uncategorized'),
+    unclassifiedCategories: count((record) => !record.category),
     unclassifiedStability: count((record) => record.stability === 'Unclassified'),
   };
 }
@@ -563,6 +499,10 @@ async function formatInventoryMarkdown(value) {
     '| Metric | Total |',
     '| --- | ---: |',
     `| Total public components | ${summary.publicComponents} |`,
+    `| Total categories | ${summary.totalCategories} |`,
+    `| Uncategorized components | ${summary.uncategorized} |`,
+    `| Duplicate entries | ${summary.duplicateEntries} |`,
+    `| Removed components present | ${summary.removedComponentsPresent} |`,
     `| Components with documentation | ${summary.componentsWithDocumentation} |`,
     `| Components with working preview | ${summary.componentsWithWorkingPreview} |`,
     `| Components with API reference | ${summary.componentsWithApiReference} |`,
@@ -573,6 +513,12 @@ async function formatInventoryMarkdown(value) {
     `| Responsive examples not applicable | ${summary.responsiveExamplesNotApplicable} |`,
     `| Components with theme-token coverage | ${summary.componentsWithThemeTokenCoverage} |`,
     `| Components remaining incomplete | ${summary.componentsRemainingIncomplete} |`,
+    '',
+    '| Category | Components |',
+    '| --- | ---: |',
+    ...COMPONENT_CATEGORY_ORDER.map(
+      (category) => `| ${category} | ${summary.categoryCounts[category]} |`,
+    ),
     '',
     '| Component | Selector | Import | Category | Stability | Preview | Tests | Accessibility |',
     '| --- | --- | --- | --- | --- | --- | --- | --- |',

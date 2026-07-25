@@ -1,4 +1,9 @@
 import { componentDocs } from './component-docs.data';
+import {
+  generatedActiveComponentTotal,
+  generatedComponentCategories,
+  generatedComponentCategoryOrder,
+} from './generated-component-categories';
 import { generatedComponentRegistry } from './generated-component-registry';
 
 describe('componentDocs', () => {
@@ -8,6 +13,33 @@ describe('componentDocs', () => {
     for (const component of generatedComponentRegistry) {
       expect(documentedSlugs.has(component.slug)).toBe(true);
     }
+  });
+
+  it('uses the complete category contract in navigation order', () => {
+    expect(componentDocs).toHaveLength(generatedActiveComponentTotal);
+    expect(generatedComponentCategories).toHaveLength(14);
+    expect([...new Set(componentDocs.map((doc) => doc.category))]).toEqual(
+      generatedComponentCategoryOrder,
+    );
+
+    for (const category of generatedComponentCategories) {
+      expect(componentDocs.filter((doc) => doc.category === category.name)).toHaveLength(
+        category.count,
+      );
+    }
+  });
+
+  it('excludes removed, duplicate, and uncategorized component records', () => {
+    const removed = new Set([
+      'j-activity-feed',
+      'j-approval-flow',
+      'j-audit-log',
+      'j-navigation-progress',
+      'j-data-grid',
+    ]);
+    expect(componentDocs.some((doc) => removed.has(doc.selector))).toBe(false);
+    expect(componentDocs.some((doc) => doc.category === 'Uncategorized')).toBe(false);
+    expect(new Set(componentDocs.map((doc) => doc.selector)).size).toBe(componentDocs.length);
   });
 
   it('does not publish duplicate pages for the same selector and entry point', () => {

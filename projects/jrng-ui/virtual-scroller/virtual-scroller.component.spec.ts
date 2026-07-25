@@ -42,4 +42,13 @@ describe('JVirtualScrollerComponent', () => {
     expect(component.scrollToIndex(50)).toBe(48); // max(0, 50 - 2)
     expect(component.first).toBe(48);
   });
+
+  it('renders loading placeholders when loading is enabled', () => {
+    fixture.componentRef.setInput('loading', true);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelectorAll('.j-virtual-scroller__placeholder').length).toBe(
+      10,
+    );
+  });
 });

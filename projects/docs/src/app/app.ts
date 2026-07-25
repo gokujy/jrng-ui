@@ -123,7 +123,7 @@ export class App {
   readonly componentNavGroups = computed(() => {
     const query = this.componentQuery().trim().toLowerCase();
     const navigableDocs = componentDocs;
-    const categories = [...new Set(navigableDocs.map((doc) => doc.category))].sort();
+    const categories = [...new Set(navigableDocs.map((doc) => doc.category))];
 
     return categories
       .map((category) => ({

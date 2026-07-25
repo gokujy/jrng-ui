@@ -25,7 +25,7 @@ Create an Angular Reactive Form using ReactiveFormsModule and JRNG UI ControlVal
 ## Server-side data table
 
 ```text
-Create a server-side Angular data table using j-data-grid from jrng-ui/data-grid. Use typed columns and request state for page, sort and filters. Add j-filter-bar, loading skeletons, an empty state, retryable errors, accessible action labels and responsive column behavior. Keep API calls in an injectable service and cancel stale requests.
+Create a server-side Angular data table using j-table from jrng-ui/table. Use typed columns and request state for page, sort and filters. Add j-filter-bar, loading skeletons, an empty state, retryable errors, accessible action labels and responsive column behavior. Keep API calls in an injectable service and cancel stale requests.
 ```
 
 ## Settings page

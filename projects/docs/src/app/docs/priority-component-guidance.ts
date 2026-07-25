@@ -150,17 +150,6 @@ export const priorityComponentGuidance: Readonly<Record<string, PriorityComponen
         'Use horizontal scrolling or responsive column priorities on narrow screens; preserve row identity and action labels.',
     },
   ),
-  'data-grid': guidance(
-    `<j-data-grid title="Orders" [value]="orders" [columns]="columns" [totalRecords]="total" />`,
-    'Present a complete server-backed order workspace with filters and pagination.',
-    {
-      publicMethods: ['reset()', 'exportCSV()', 'restoreState()'],
-      templates: ['Toolbar actions, cell templates, empty state, and loading state.'],
-      keyboardBehaviour: ['Grid controls follow table keyboard behavior and expose named actions.'],
-      responsiveBehaviour:
-        'Keep essential identity and actions visible; allow lower-priority columns to scroll or collapse.',
-    },
-  ),
   'file-upload': guidance(
     `<j-file-upload title="Add files" accept=".pdf,.png" multiple />`,
     'Collect approved document types and show progress or validation feedback.',

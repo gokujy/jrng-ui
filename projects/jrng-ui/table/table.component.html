@@ -8,14 +8,27 @@
 >
   @if (
     toolbarTemplate ||
+    title() ||
+    description() ||
     showGlobalFilter ||
     showColumnManager ||
     showExport ||
     showTableState ||
+    stateKey ||
     maximizable ||
     resolvedFilterDisplay === 'toolbar'
   ) {
     <div class="j-table__toolbar" data-jc-section="toolbar">
+      @if (title() || description()) {
+        <div class="j-table__heading">
+          @if (title()) {
+            <h2>{{ title() }}</h2>
+          }
+          @if (description()) {
+            <p>{{ description() }}</p>
+          }
+        </div>
+      }
       @if (toolbarTemplate) {
         <ng-container
           [ngTemplateOutlet]="toolbarTemplate"
@@ -28,7 +41,7 @@
           <input
             type="search"
             [value]="globalFilter"
-            placeholder="Search"
+            [placeholder]="searchPlaceholder()"
             (input)="handleGlobalFilter($event)"
           />
         </label>
@@ -73,7 +86,7 @@
                 <label>
                   <input
                     type="checkbox"
-                    [checked]="!hiddenColumnFields.has(column.field) && column.visible !== false"
+                    [checked]="isColumnVisible(column)"
                     (change)="toggleColumnVisibility(column, $event)"
                   />
                   <span>{{ column.header }}</span>
@@ -91,6 +104,7 @@
           icon="download"
           size="sm"
           variant="outlined"
+          [disabled]="loading()"
           (onClick)="exportCSV()"
         />
       }
@@ -104,10 +118,23 @@
           (onClick)="setMaximized(!maximized)"
         />
       }
-      @if (showTableState) {
+      @if (showTableState || stateKey) {
         <j-button label="Save state" size="sm" variant="text" (onClick)="saveState()" />
         <j-button label="Restore" size="sm" variant="text" (onClick)="restoreState()" />
+        <j-button label="Reset state" size="sm" variant="text" (onClick)="resetTableState()" />
       }
+      <div class="j-table__toolbar-actions">
+        <ng-content select="[jTableToolbarActions]" />
+      </div>
+    </div>
+  }
+
+  @if (bulkActions() && selectionCount > 0) {
+    <div class="j-table__bulk-actions" data-jc-section="bulk-actions" role="status">
+      <span>{{ selectionCount }} selected</span>
+      <div class="j-table__bulk-actions-content">
+        <ng-content select="[jTableBulkActions]" />
+      </div>
     </div>
   }
 
@@ -145,6 +172,23 @@
       }
 
       <thead data-jc-section="header">
+        @for (groupRow of columnGroups(); track $index) {
+          <tr class="j-table__column-group-row" data-jc-section="column-group-row">
+            @if (auxiliaryColumnCount > 0) {
+              <th [attr.colspan]="auxiliaryColumnCount" aria-hidden="true"></th>
+            }
+            @for (group of groupRow; track $index) {
+              <th
+                scope="colgroup"
+                [attr.colspan]="group.colspan || 1"
+                [attr.rowspan]="group.rowspan || 1"
+                [class]="'j-table__header--' + (group.align || 'center')"
+              >
+                {{ group.header }}
+              </th>
+            }
+          </tr>
+        }
         <tr data-jc-section="header-row">
           @if (selectionMode === 'checkbox') {
             <th scope="col" class="j-table__select-cell" data-jc-section="selection-header">
@@ -171,6 +215,11 @@
           @if (lockableRows) {
             <th scope="col" class="j-table__lock-cell" data-jc-section="lock-header">Lock</th>
           }
+          @if (reorderableRows) {
+            <th scope="col" class="j-table__reorder-cell">
+              <span class="j-hidden-accessible">Reorder rows</span>
+            </th>
+          }
 
           @for (column of resolvedColumns; track column.field; let columnIndex = $index) {
             <th
@@ -180,11 +229,18 @@
               [style.width]="column.width || null"
               [style.min-width]="column.minWidth || null"
               [style.max-width]="column.maxWidth || null"
+              [style.left]="
+                column.frozen && column.frozenAlign !== 'right' ? frozenColumnOffset(column) : null
+              "
+              [style.right]="
+                column.frozen && column.frozenAlign === 'right' ? frozenColumnOffset(column) : null
+              "
               [attr.aria-sort]="ariaSort(column)"
               [attr.draggable]="reorderableColumns || column.reorderable ? 'true' : null"
               (dragstart)="startColumnDrag(columnIndex)"
               (dragover)="$event.preventDefault()"
               (drop)="dropColumn(columnIndex, $event)"
+              (contextmenu)="handleHeaderContextMenu(column, columnIndex, $event)"
             >
               @if (headerTemplateFor(column); as headerTemplate) {
                 <ng-container
@@ -248,6 +304,9 @@
               }
             </th>
           }
+          @if (editMode() === 'row') {
+            <th scope="col" class="j-table__row-edit-cell">Edit</th>
+          }
         </tr>
         @if (usesDedicatedFilterRow && hasFilterableColumns) {
           <tr class="j-table__filter-row" data-jc-section="filter-row">
@@ -262,6 +321,9 @@
             }
             @if (lockableRows) {
               <th class="j-table__lock-cell" aria-hidden="true"></th>
+            }
+            @if (reorderableRows) {
+              <th class="j-table__reorder-cell" aria-hidden="true"></th>
             }
             @for (column of resolvedColumns; track column.field) {
               <th
@@ -307,6 +369,9 @@
                   }
                 }
               </th>
+            }
+            @if (editMode() === 'row') {
+              <th class="j-table__row-edit-cell" aria-hidden="true"></th>
             }
           </tr>
         }
@@ -411,6 +476,7 @@
                 [class.is-active]="isSelected(row)"
                 [class.is-locked]="isRowLocked(row, rowIndex)"
                 [class.is-frozen]="isFrozenRow(row, rowIndex)"
+                [ngClass]="rowClassFor(row, rowIndex)"
                 [style.--j-frozen-index]="isFrozenRow(row, rowIndex) ? rowIndex : null"
                 [attr.data-j-selected]="isSelected(row) ? 'true' : null"
                 [attr.data-j-locked]="isRowLocked(row, rowIndex) ? 'true' : null"
@@ -418,11 +484,14 @@
                 [attr.data-j-active]="isSelected(row) ? 'true' : null"
                 [attr.tabindex]="selectionMode !== 'none' ? 0 : null"
                 [attr.aria-selected]="selectionMode !== 'none' ? isSelected(row) : null"
-                [attr.draggable]="reorderableRows ? 'true' : null"
+                [attr.draggable]="reorderableRows && canReorderRow(row, rowIndex) ? 'true' : null"
+                [attr.aria-disabled]="
+                  reorderableRows && !canReorderRow(row, rowIndex) ? 'true' : null
+                "
                 (click)="handleRowClick(row, rowIndex, $event)"
                 (contextmenu)="handleContextMenu(row, rowIndex, $event)"
                 (dblclick)="handleRowDoubleClick(row, rowIndex, $event)"
-                (keydown)="handleRowKeydown($event, row)"
+                (keydown)="handleRowKeydown($event, row, rowIndex)"
                 (dragstart)="startRowDrag(rowIndex)"
                 (dragover)="$event.preventDefault()"
                 (drop)="dropRow(rowIndex, $event)"
@@ -480,23 +549,107 @@
                     />
                   </td>
                 }
+                @if (reorderableRows) {
+                  <td class="j-table__reorder-cell">
+                    <span
+                      class="j-table__drag-handle"
+                      [class.is-disabled]="!canReorderRow(row, rowIndex)"
+                      [attr.draggable]="canReorderRow(row, rowIndex) ? 'true' : null"
+                      [attr.aria-label]="'Drag row ' + (rowIndex + 1) + ' to reorder'"
+                      [attr.aria-disabled]="!canReorderRow(row, rowIndex)"
+                      role="button"
+                      tabindex="0"
+                      (click)="$event.stopPropagation()"
+                      (dragstart)="startRowDrag(rowIndex)"
+                    >
+                      &#8942;&#8942;
+                    </span>
+                    <button
+                      type="button"
+                      class="j-table__reorder-button"
+                      aria-label="Move row up"
+                      [disabled]="!canReorderRow(row, rowIndex) || rowIndex === 0"
+                      (click)="$event.stopPropagation(); moveRow(row, -1)"
+                    >
+                      &#8593;
+                    </button>
+                    <button
+                      type="button"
+                      class="j-table__reorder-button"
+                      aria-label="Move row down"
+                      [disabled]="
+                        !canReorderRow(row, rowIndex) || rowIndex === visibleRows.length - 1
+                      "
+                      (click)="$event.stopPropagation(); moveRow(row, 1)"
+                    >
+                      &#8595;
+                    </button>
+                  </td>
+                }
                 @for (column of resolvedColumns; track column.field) {
                   <td
                     data-jc-section="cell"
                     [class]="columnClass(column)"
+                    [ngClass]="cellClassFor(row, column, rowIndex)"
                     [style.width]="column.width || null"
                     [style.min-width]="column.minWidth || null"
                     [style.max-width]="column.maxWidth || null"
+                    [style.left]="
+                      column.frozen && column.frozenAlign !== 'right'
+                        ? frozenColumnOffset(column)
+                        : null
+                    "
+                    [style.right]="
+                      column.frozen && column.frozenAlign === 'right'
+                        ? frozenColumnOffset(column)
+                        : null
+                    "
+                    [style.display]="columnRowSpan(row, column, rowIndex) === 0 ? 'none' : null"
+                    [attr.rowspan]="
+                      columnRowSpan(row, column, rowIndex) > 1
+                        ? columnRowSpan(row, column, rowIndex)
+                        : null
+                    "
                     [attr.data-label]="column.header"
                     (dblclick)="startCellEdit(row, column, rowIndex, $event)"
                   >
-                    @if (isEditingCell(row, column, rowIndex)) {
+                    @if (
+                      isEditingCell(row, column, rowIndex) ||
+                      (isEditingRow(row, rowIndex) && isColumnEditable(row, column))
+                    ) {
                       <input
                         class="j-table__edit-input"
-                        [value]="formattedCellValue(row, column)"
+                        [type]="editInputType(column)"
+                        [value]="editValue(row, column, rowIndex)"
+                        [checked]="
+                          column.type === 'boolean'
+                            ? editValue(row, column, rowIndex) === true
+                            : null
+                        "
+                        [attr.data-j-table-row-edit]="
+                          isEditingRow(row, rowIndex) ? rowId(row, rowIndex) : null
+                        "
+                        [attr.data-j-table-row-edit-field]="column.field"
+                        [attr.aria-invalid]="editError(row, column, rowIndex) ? 'true' : null"
+                        [attr.aria-describedby]="
+                          editError(row, column, rowIndex)
+                            ? editErrorId(row, column, rowIndex)
+                            : null
+                        "
+                        [attr.aria-label]="'Edit ' + column.header"
+                        (input)="updateRowEditValue(column, $event)"
                         (blur)="commitCellEdit(row, column, rowIndex, $event)"
                         (keydown)="handleCellEditKeydown(row, column, rowIndex, $event)"
                       />
+                      @if (editError(row, column, rowIndex); as error) {
+                        <small
+                          class="j-table__edit-error"
+                          [id]="editErrorId(row, column, rowIndex)"
+                          role="alert"
+                        >
+                          {{ error }}
+                        </small>
+                      }
                     } @else {
                       @if (actionTemplateFor(column); as actionTemplate) {
                         <ng-container
@@ -552,6 +705,30 @@
                           }
                         }
                       }
+                    }
+                  </td>
+                }
+                @if (editMode() === 'row') {
+                  <td class="j-table__row-edit-cell">
+                    @if (isEditingRow(row, rowIndex)) {
+                      <j-button
+                        label="Save"
+                        size="sm"
+                        (onClick)="saveRowEdit(row, rowIndex, $event)"
+                      />
+                      <j-button
+                        label="Cancel"
+                        size="sm"
+                        variant="text"
+                        (onClick)="cancelRowEdit(row, rowIndex, $event)"
+                      />
+                    } @else {
+                      <j-button
+                        label="Edit"
+                        size="sm"
+                        variant="text"
+                        (onClick)="startRowEdit(row, rowIndex, $event)"
+                      />
                     }
                   </td>
                 }
@@ -626,7 +803,10 @@
       [rows]="rows"
       [totalRecords]="totalItems"
       [rowsPerPageOptions]="rowsPerPageOptions"
-      [showCurrentPageReport]="true"
+      [pageLinkSize]="pageLinkSize"
+      [showCurrentPageReport]="showCurrentPageReport"
+      [currentPageReportTemplate]="currentPageReportTemplate"
+      [showFirstLastPageButtons]="showFirstLastPageButtons"
       (pageChange)="handlePageChange($event)"
     />
   }

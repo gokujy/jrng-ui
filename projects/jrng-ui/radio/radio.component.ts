@@ -184,12 +184,13 @@ export class JRadioComponent implements ControlValueAccessor {
   }
 
   handleChange(): void {
-    if (this.readonly()) {
+    if (this.readonly() || this.isDisabled()) {
       return;
     }
     this.selectedValue = this.value();
     this.onChange(this.value());
     this.valueChange.emit(this.value());
+    this.changeDetectorRef.markForCheck();
   }
 
   handleBlur(): void {

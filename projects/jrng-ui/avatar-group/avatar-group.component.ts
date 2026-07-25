@@ -144,20 +144,26 @@ export type JAvatarGroupMode = 'stacked' | 'spaced';
       }
       .j-avatar-group__overflow-list {
         display: grid;
-        gap: var(--j-spacing-2);
-        min-width: 10rem;
-        padding: var(--j-spacing-3);
+        gap: var(--j-spacing-1);
+        min-width: 0;
+        padding: 0;
       }
       .j-avatar-group__overflow-user {
         align-items: center;
         display: flex;
         gap: var(--j-spacing-2);
+        min-height: 2rem;
       }
       .j-avatar-group__overflow-user > span {
         display: grid;
       }
       .j-avatar-group__overflow-user small {
         color: var(--j-color-muted-foreground);
+      }
+
+      :host ::ng-deep .j-avatar-group__popover {
+        min-width: max-content;
+        padding: var(--j-spacing-2);
       }
 
       .j-avatar-group__item--sm {

@@ -74,7 +74,6 @@ const requiredComponents = [
   'avatar',
   'avatar-group',
   'table',
-  'data-grid',
   'filter-bar',
   'paginator',
   'dialog',

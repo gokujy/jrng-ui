@@ -1,6 +1,15 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
+import {
+  ACTIVE_COMPONENT_TOTAL,
+  COMPONENT_CATEGORIES,
+  COMPONENT_CATEGORY_BY_SELECTOR,
+  COMPONENT_CATEGORY_ORDER,
+  COMPONENT_CATEGORY_TOTAL,
+  REMOVED_COMPONENT_SELECTORS,
+  validateComponentCategories,
+} from './component-categories.mjs';
 
 const workspaceRoot = process.cwd();
 const registryPath = path.join(workspaceRoot, 'projects/jrng-ui/registry/registry.json');
@@ -14,10 +23,7 @@ const schema = readJson(schemaPath);
 const inventory = readJson(inventoryPath);
 const packageJson = readJson(packagePath);
 const removedSelectors = new Set([
-  'j-activity-feed',
-  'j-approval-flow',
-  'j-audit-log',
-  'j-navigation-progress',
+  ...REMOVED_COMPONENT_SELECTORS,
   'j-date-range-picker',
   'j-float-label',
   'j-input-icon',
@@ -32,6 +38,7 @@ verifyRegistryEnvelope();
 verifySchemaEnvelope();
 verifyComponents();
 verifyInventoryAlignment();
+verifyCategoryContract();
 
 if (failures.length) {
   console.error('Public registry verification failed:');
@@ -132,6 +139,18 @@ function verifyComponents() {
       failures.push(`${label} selector is duplicated.`);
     }
     selectors.add(component.selector);
+
+    const expectedCategory = COMPONENT_CATEGORY_BY_SELECTOR.get(component.selector);
+    if (expectedCategory && component.category !== expectedCategory) {
+      failures.push(`${label}.category must be ${expectedCategory}.`);
+    }
+    const expectedRoute = `https://jrngui.dev/docs/components#${component.selector.slice(2)}`;
+    if (component.documentationUrl !== expectedRoute) {
+      failures.push(`${label}.documentationUrl must be ${expectedRoute}.`);
+    }
+    if (!sourceDeclaresSelector(component)) {
+      failures.push(`${label} does not match selector metadata in its component source.`);
+    }
   }
 }
 
@@ -151,6 +170,82 @@ function verifyInventoryAlignment() {
       failures.push(`registry is missing selector ${selector}.`);
     }
   }
+  for (const selector of registrySelectors) {
+    if (!inventorySelectors.has(selector)) {
+      failures.push(`inventory is missing registry selector ${selector}.`);
+    }
+  }
+}
+
+function verifyCategoryContract() {
+  if (registry.components.length !== ACTIVE_COMPONENT_TOTAL) {
+    failures.push(
+      `registry must contain ${ACTIVE_COMPONENT_TOTAL} active components, found ${registry.components.length}.`,
+    );
+  }
+  if (COMPONENT_CATEGORY_ORDER.length !== COMPONENT_CATEGORY_TOTAL) {
+    failures.push(
+      `category contract must contain ${COMPONENT_CATEGORY_TOTAL} categories, found ${COMPONENT_CATEGORY_ORDER.length}.`,
+    );
+  }
+
+  failures.push(...validateComponentCategories(registry.components));
+
+  const actualCategoryOrder = [
+    ...new Set(registry.components.map((component) => component.category)),
+  ];
+  if (actualCategoryOrder.join('|') !== COMPONENT_CATEGORY_ORDER.join('|')) {
+    failures.push(
+      `registry category order must be ${COMPONENT_CATEGORY_ORDER.join(', ')}; found ${actualCategoryOrder.join(', ')}.`,
+    );
+  }
+  for (const { name, selectors } of COMPONENT_CATEGORIES) {
+    const actual = registry.components.filter((component) => component.category === name).length;
+    if (actual !== selectors.length) {
+      failures.push(`${name} must contain ${selectors.length} components, found ${actual}.`);
+    }
+  }
+  if (inventory.summary?.totalCategories !== COMPONENT_CATEGORY_TOTAL) {
+    failures.push(`inventory summary must report ${COMPONENT_CATEGORY_TOTAL} categories.`);
+  }
+  if (inventory.summary?.uncategorized !== 0) {
+    failures.push('inventory summary must report zero Uncategorized components.');
+  }
+  if (inventory.summary?.duplicateEntries !== 0) {
+    failures.push('inventory summary must report zero duplicate entries.');
+  }
+  if (inventory.summary?.removedComponentsPresent !== 0) {
+    failures.push('inventory summary must report zero removed components.');
+  }
+}
+
+function sourceDeclaresSelector(component) {
+  const slug = component.importPath.replace('jrng-ui/', '');
+  const directory = path.join(
+    workspaceRoot,
+    'projects',
+    'jrng-ui',
+    slug === 'empty' ? 'empty-state' : slug,
+  );
+  if (!fs.existsSync(directory)) {
+    return false;
+  }
+  return sourceFiles(directory).some((filePath) => {
+    const source = fs.readFileSync(filePath, 'utf8');
+    return new RegExp(`selector\\s*:\\s*['"]${escapeRegex(component.selector)}['"]`).test(source);
+  });
+}
+
+function sourceFiles(directory) {
+  return fs.readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const target = path.join(directory, entry.name);
+    if (entry.isDirectory()) {
+      return sourceFiles(target);
+    }
+    return entry.isFile() && entry.name.endsWith('.ts') && !entry.name.endsWith('.spec.ts')
+      ? [target]
+      : [];
+  });
 }
 
 function requireString(component, key, label) {
@@ -171,4 +266,8 @@ function isObject(value) {
 
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+}
+
+function escapeRegex(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

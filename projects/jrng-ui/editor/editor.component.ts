@@ -26,6 +26,7 @@ import {
   Validator,
 } from '@angular/forms';
 import { jCreateId } from 'jrng-ui/core';
+import { JIconComponent } from 'jrng-ui/icon';
 import {
   JEditorImageAdapter,
   JEditorSanitizerAdapter,
@@ -40,7 +41,7 @@ export type JEditorToolbarMode = 'basic' | 'full' | 'custom';
 
 @Component({
   selector: 'j-editor',
-  imports: [NgTemplateOutlet],
+  imports: [NgTemplateOutlet, JIconComponent],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -84,7 +85,7 @@ export type JEditorToolbarMode = 'basic' | 'full' | 'custom';
               (click)="execute('bold')"
               aria-label="Bold"
             >
-              B
+              <j-icon name="bold" aria-hidden="true" />
             </button>
             <button
               type="button"
@@ -93,7 +94,7 @@ export type JEditorToolbarMode = 'basic' | 'full' | 'custom';
               (click)="execute('italic')"
               aria-label="Italic"
             >
-              I
+              <j-icon name="italic" aria-hidden="true" />
             </button>
             <button
               type="button"
@@ -102,7 +103,7 @@ export type JEditorToolbarMode = 'basic' | 'full' | 'custom';
               (click)="execute('underline')"
               aria-label="Underline"
             >
-              U
+              <j-icon name="underline" aria-hidden="true" />
             </button>
             <button
               type="button"
@@ -111,7 +112,7 @@ export type JEditorToolbarMode = 'basic' | 'full' | 'custom';
               (click)="execute('strikeThrough')"
               aria-label="Strike"
             >
-              S
+              <j-icon name="strikethrough" aria-hidden="true" />
             </button>
             <select
               class="j-editor__select j-editor__advanced"
@@ -133,7 +134,7 @@ export type JEditorToolbarMode = 'basic' | 'full' | 'custom';
               (click)="execute('insertOrderedList')"
               aria-label="Ordered list"
             >
-              1.
+              <j-icon name="list-ordered" aria-hidden="true" />
             </button>
             <button
               type="button"
@@ -142,7 +143,7 @@ export type JEditorToolbarMode = 'basic' | 'full' | 'custom';
               (click)="execute('insertUnorderedList')"
               aria-label="Unordered list"
             >
-              -
+              <j-icon name="list" aria-hidden="true" />
             </button>
             <button
               type="button"
@@ -151,7 +152,7 @@ export type JEditorToolbarMode = 'basic' | 'full' | 'custom';
               (click)="createLink()"
               aria-label="Link"
             >
-              Link
+              <j-icon name="link" aria-hidden="true" />
             </button>
             <button
               type="button"
@@ -160,7 +161,7 @@ export type JEditorToolbarMode = 'basic' | 'full' | 'custom';
               (click)="insertImage()"
               aria-label="Image"
             >
-              Image
+              <j-icon name="image" aria-hidden="true" />
             </button>
             <button
               type="button"
@@ -169,7 +170,7 @@ export type JEditorToolbarMode = 'basic' | 'full' | 'custom';
               (click)="insertTable()"
               aria-label="Insert table"
             >
-              Table
+              <j-icon name="table" aria-hidden="true" />
             </button>
             <button
               type="button"
@@ -178,7 +179,7 @@ export type JEditorToolbarMode = 'basic' | 'full' | 'custom';
               (click)="clearFormatting()"
               aria-label="Clear formatting"
             >
-              Clear
+              <j-icon name="eraser" aria-hidden="true" />
             </button>
             <button
               type="button"
@@ -187,7 +188,7 @@ export type JEditorToolbarMode = 'basic' | 'full' | 'custom';
               (click)="execute('justifyLeft')"
               aria-label="Align left"
             >
-              Left
+              <j-icon name="align-left" aria-hidden="true" />
             </button>
             <button
               type="button"
@@ -196,7 +197,7 @@ export type JEditorToolbarMode = 'basic' | 'full' | 'custom';
               (click)="execute('justifyCenter')"
               aria-label="Align center"
             >
-              Center
+              <j-icon name="align-center" aria-hidden="true" />
             </button>
             <button
               type="button"
@@ -205,7 +206,7 @@ export type JEditorToolbarMode = 'basic' | 'full' | 'custom';
               (click)="execute('justifyRight')"
               aria-label="Align right"
             >
-              Right
+              <j-icon name="align-right" aria-hidden="true" />
             </button>
             <button
               type="button"
@@ -214,7 +215,7 @@ export type JEditorToolbarMode = 'basic' | 'full' | 'custom';
               (click)="execute('undo')"
               aria-label="Undo"
             >
-              Undo
+              <j-icon name="undo" aria-hidden="true" />
             </button>
             <button
               type="button"
@@ -223,8 +224,32 @@ export type JEditorToolbarMode = 'basic' | 'full' | 'custom';
               (click)="execute('redo')"
               aria-label="Redo"
             >
-              Redo
+              <j-icon name="redo" aria-hidden="true" />
             </button>
+            @if (showSourceToggle()) {
+              <button
+                type="button"
+                class="j-editor__tool"
+                [disabled]="isDisabled()"
+                [attr.aria-label]="sourceMode() ? 'Show visual editor' : 'Show HTML'"
+                [attr.title]="sourceMode() ? 'Show visual editor' : 'Show HTML'"
+                (click)="sourceMode.set(!sourceMode())"
+              >
+                <j-icon [name]="sourceMode() ? 'eye' : 'code-xml'" aria-hidden="true" />
+              </button>
+            }
+            @if (showFullscreen()) {
+              <button
+                type="button"
+                class="j-editor__tool"
+                [disabled]="isDisabled()"
+                [attr.aria-label]="fullscreen() ? 'Exit fullscreen' : 'Enter fullscreen'"
+                [attr.title]="fullscreen() ? 'Exit fullscreen' : 'Enter fullscreen'"
+                (click)="fullscreen.set(!fullscreen())"
+              >
+                <j-icon name="maximize" aria-hidden="true" />
+              </button>
+            }
           }
         </div>
 
@@ -263,7 +288,7 @@ export type JEditorToolbarMode = 'basic' | 'full' | 'custom';
         }
       </div>
 
-      @if (showWordCount() || showCharacterCount() || showSourceToggle() || showFullscreen()) {
+      @if (showWordCount() || showCharacterCount()) {
         <footer class="j-editor__footer">
           @if (showWordCount()) {
             <span>{{ wordCount() }} words</span>
@@ -275,16 +300,6 @@ export type JEditorToolbarMode = 'basic' | 'full' | 'custom';
                 / {{ maxLength() }}
               }
             </span>
-          }
-          @if (showSourceToggle()) {
-            <button type="button" (click)="sourceMode.set(!sourceMode())" [disabled]="isDisabled()">
-              {{ sourceMode() ? 'Visual mode' : 'Source mode' }}
-            </button>
-          }
-          @if (showFullscreen()) {
-            <button type="button" (click)="fullscreen.set(!fullscreen())" [disabled]="isDisabled()">
-              {{ fullscreen() ? 'Exit fullscreen' : 'Fullscreen' }}
-            </button>
           }
         </footer>
       }

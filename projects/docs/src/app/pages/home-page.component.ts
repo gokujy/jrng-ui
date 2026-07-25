@@ -8,6 +8,7 @@ import { JInputComponent } from 'jrng-ui/input';
 import { JIconComponent } from 'jrng-ui/icon';
 import { JSwitchComponent } from 'jrng-ui/switch';
 import { componentDocs } from '../docs/component-docs.data';
+import { generatedComponentCategories } from '../docs/generated-component-categories';
 import { DocsAnalyticsService } from '../core/analytics.service';
 
 interface Feature {
@@ -303,17 +304,12 @@ export class HomePageComponent {
   readonly githubUrl = 'https://github.com/gokujy/jrng-ui';
   readonly npmUrl = 'https://www.npmjs.com/package/jrng-ui';
   readonly totalComponents = componentDocs.length;
-  readonly categoryPreviews: readonly CategoryPreview[] = Array.from(
-    new Set(componentDocs.map((doc) => doc.category)),
-  )
-    .map((name) => ({
-      name,
-      count: componentDocs.filter((doc) => doc.category === name).length,
-    }))
-    .sort((a, b) => b.count - a.count);
+  readonly categoryPreviews: readonly CategoryPreview[] = generatedComponentCategories.map(
+    ({ name, count }) => ({ name, count }),
+  );
 
   readonly stats: readonly Stat[] = [
-    { label: 'Components', value: `${this.totalComponents}+`, delta: '+registry', tone: 'up' },
+    { label: 'Components', value: `${this.totalComponents}`, delta: 'registry', tone: 'up' },
     { label: 'Entrypoints', value: '1:1', delta: 'tree-shakeable', tone: 'neutral' },
     { label: 'Theme modes', value: '3', delta: 'light/dark/system', tone: 'up' },
     { label: 'Status', value: '0.0.9', delta: 'current', tone: 'down' },

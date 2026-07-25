@@ -1,6 +1,7 @@
 import { JDensity, JTableSortOrder } from 'jrng-ui/core';
 
 export type JTableColumnAlign = 'start' | 'center' | 'end';
+export type JTableColumnResizeMode = 'expand' | 'fit';
 export type JTableColumnType =
   | 'text'
   | 'number'
@@ -43,7 +44,7 @@ export type JTableVariant = 'standard' | 'gridlines' | 'striped' | 'minimal';
 export type JTableLoadingVariant = 'skeleton' | 'spinner' | 'progress' | 'overlay';
 export type JTableEmptyState = 'no-data' | 'no-results' | 'error';
 export type JTableEmptyStateMode = 'auto' | JTableEmptyState;
-export type JTableExportRows = 'all' | 'page' | 'selected';
+export type JTableExportRows = 'all' | 'filtered' | 'page' | 'selected' | 'visible';
 export type JTableRow = Readonly<Record<string, unknown>>;
 export type JTableColumnField<T extends object = JTableRow> = Extract<keyof T, string>;
 export type JTableFilterType =
@@ -258,8 +259,11 @@ export interface JTableColumn<T extends object = JTableRow> {
   readonly hidden?: boolean;
   readonly frozen?: boolean;
   readonly frozenAlign?: 'left' | 'right';
+  readonly responsivePriority?: number;
   readonly templateKey?: string;
   readonly actions?: readonly JTableAction[];
+  cellClass?(row: T, column: JTableColumn<T>, index: number): string;
+  rowSpan?(row: T, index: number, rows: readonly T[]): number;
   valueGetter?(row: T, column: JTableColumn<T>): unknown;
   formatter?(value: unknown, row: T, column: JTableColumn<T>): string | number | null | undefined;
   sortComparator?(left: T, right: T, column: JTableColumn<T>): number;
@@ -360,6 +364,27 @@ export interface JTableRowClickEvent {
   readonly row: JTableRow;
   readonly index: number;
   readonly originalEvent: MouseEvent | KeyboardEvent;
+}
+
+export interface JTableHeaderContextMenuEvent {
+  readonly column: JTableColumn;
+  readonly index: number;
+  readonly originalEvent: MouseEvent;
+}
+
+export interface JTableColumnGroupCell {
+  readonly header: string;
+  readonly colspan?: number;
+  readonly rowspan?: number;
+  readonly align?: JTableColumnAlign;
+}
+
+export type JTableColumnGroupRow = readonly JTableColumnGroupCell[];
+
+export interface JTableSelectAllChangeEvent {
+  readonly selected: boolean;
+  readonly rows: readonly JTableRow[];
+  readonly selection: JTableSelection;
 }
 
 export interface JTableEditEvent {

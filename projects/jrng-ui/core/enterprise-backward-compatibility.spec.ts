@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TestBed } from '@angular/core/testing';
-import { JrButtonComponent } from 'jrng-ui/button';
-import { JrInputComponent } from 'jrng-ui/input';
+import { JButtonComponent } from 'jrng-ui/button';
+import { JInputComponent } from 'jrng-ui/input';
 import { JTextareaComponent } from 'jrng-ui/textarea';
 import { JSelectComponent } from 'jrng-ui/select';
 import { JMultiselectComponent } from 'jrng-ui/multiselect';
@@ -11,12 +11,11 @@ import { JCheckboxComponent } from 'jrng-ui/checkbox';
 import { JRadioComponent } from 'jrng-ui/radio';
 import { JSwitchComponent } from 'jrng-ui/switch';
 import { JTableComponent } from 'jrng-ui/table';
-import { JDataGridComponent } from 'jrng-ui/data-grid';
-import { JrDialogComponent } from 'jrng-ui/dialog';
+import { JDialogComponent } from 'jrng-ui/dialog';
 import { JConfirmDialogComponent } from 'jrng-ui/confirm-dialog';
-import { JrToastContainerComponent } from 'jrng-ui/toast';
+import { JToastContainerComponent } from 'jrng-ui/toast';
 import { JFileUploadComponent } from 'jrng-ui/file-upload';
-import { JrCardComponent } from 'jrng-ui/card';
+import { JCardComponent } from 'jrng-ui/card';
 import { JTabComponent, JTabsComponent } from 'jrng-ui/tabs';
 import { JMenuComponent } from 'jrng-ui/menu';
 import { JPageHeaderComponent } from 'jrng-ui/page-header';
@@ -28,8 +27,8 @@ import { JEditorComponent } from 'jrng-ui/editor';
   imports: [
     FormsModule,
     ReactiveFormsModule,
-    JrButtonComponent,
-    JrInputComponent,
+    JButtonComponent,
+    JInputComponent,
     JTextareaComponent,
     JSelectComponent,
     JMultiselectComponent,
@@ -38,12 +37,11 @@ import { JEditorComponent } from 'jrng-ui/editor';
     JRadioComponent,
     JSwitchComponent,
     JTableComponent,
-    JDataGridComponent,
-    JrDialogComponent,
+    JDialogComponent,
     JConfirmDialogComponent,
-    JrToastContainerComponent,
+    JToastContainerComponent,
     JFileUploadComponent,
-    JrCardComponent,
+    JCardComponent,
     JTabsComponent,
     JTabComponent,
     JMenuComponent,
@@ -67,7 +65,6 @@ import { JEditorComponent } from 'jrng-ui/editor';
       <j-editor />
     </j-card>
     <j-table [value]="rows" />
-    <j-data-grid [value]="rows" />
     <j-tabs><j-tab header="Overview">Content</j-tab></j-tabs>
     <j-menu [model]="[]" />
     <j-file-upload />

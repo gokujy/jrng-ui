@@ -1009,7 +1009,7 @@ import { JSelectComponent } from 'jrng-ui/select';`,
       ],
     },
     {
-      title: 'Forms',
+      title: 'Form',
       description: 'Inputs and form controls for Angular Reactive Forms.',
       items: [
         summary(
@@ -1050,13 +1050,6 @@ import { JSelectComponent } from 'jrng-ui/select';`,
           'Structured rows, columns, pagination, sorting, and empty states.',
           'ready',
           '/components/table',
-        ),
-        summary(
-          'Data Grid',
-          'j-data-grid',
-          'jrng-ui/data-grid',
-          'App-like data management layout.',
-          'basic',
         ),
         summary(
           'Paginator',

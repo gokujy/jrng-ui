@@ -32,15 +32,17 @@ export type JPaginatorVariant = 'standard' | 'simple';
       }
 
       <div class="j-paginator__controls">
-        <button
-          type="button"
-          class="j-paginator__button j-paginator__first"
-          aria-label="First page"
-          [disabled]="currentPage <= 1"
-          (click)="setPage(1)"
-        >
-          «
-        </button>
+        @if (showFirstLastPageButtons()) {
+          <button
+            type="button"
+            class="j-paginator__button j-paginator__first"
+            aria-label="First page"
+            [disabled]="currentPage <= 1"
+            (click)="setPage(1)"
+          >
+            &laquo;
+          </button>
+        }
         <button
           type="button"
           class="j-paginator__button"
@@ -76,15 +78,17 @@ export type JPaginatorVariant = 'standard' | 'simple';
         >
           Next
         </button>
-        <button
-          type="button"
-          class="j-paginator__button j-paginator__last"
-          aria-label="Last page"
-          [disabled]="currentPage >= pageCount"
-          (click)="setPage(pageCount)"
-        >
-          »
-        </button>
+        @if (showFirstLastPageButtons()) {
+          <button
+            type="button"
+            class="j-paginator__button j-paginator__last"
+            aria-label="Last page"
+            [disabled]="currentPage >= pageCount"
+            (click)="setPage(pageCount)"
+          >
+            &raquo;
+          </button>
+        }
       </div>
 
       @if (rowsPerPageOptions().length) {
@@ -205,6 +209,7 @@ export class JPaginatorComponent {
   readonly rowsPerPageOptions = input<readonly number[]>([]);
   readonly pageLinkSize = input(5, { transform: numberAttribute });
   readonly showCurrentPageReport = input(false, { transform: booleanAttribute });
+  readonly showFirstLastPageButtons = input(true, { transform: booleanAttribute });
   readonly currentPageReportTemplate = input('Showing {first} to {last} of {totalRecords}');
   readonly variant = input<JPaginatorVariant>('standard');
 

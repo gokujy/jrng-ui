@@ -6,7 +6,6 @@ JRNG UI date and time components are standalone Angular controls with original s
 
 ```ts
 import { ReactiveFormsModule } from '@angular/forms';
-import { JCalendarComponent } from 'jrng-ui/calendar';
 import { JDatePickerComponent } from 'jrng-ui/date-picker';
 import { JTimePickerComponent } from 'jrng-ui/time-picker';
 ```
@@ -107,20 +106,6 @@ Date and time range mode:
 ```
 
 Minute intervals are configured with `minuteStep`.
-
-## j-calendar
-
-`j-calendar` is a generic standalone calendar surface for custom compositions. It supports month navigation, min/max dates, disabled dates, selected date display, and `dateSelect`.
-
-```html
-<j-calendar
-  [value]="selectedDate"
-  [minDate]="minDate"
-  [maxDate]="maxDate"
-  [disabledDates]="blockedDates"
-  (dateSelect)="selectedDate = $event"
-/>
-```
 
 ## j-calendar-scheduler
 

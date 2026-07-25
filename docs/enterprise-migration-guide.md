@@ -4,21 +4,21 @@ Migrate one feature area at a time. Keep the application stable, compare visuals
 
 ## Replacement map
 
-| Custom pattern       | JRNG replacement                     | Key difference                                       |
-| -------------------- | ------------------------------------ | ---------------------------------------------------- |
-| Form error component | `j-validation-message`               | Registry-driven messages and display modes           |
-| Label/error wrapper  | `j-form-field`                       | Owns accessible label/help/error relationships       |
-| Value renderer       | `j-data-display`                     | Locale-aware generic display types                   |
-| Filter table         | `j-table`                            | Typed filters, query mapping, and saved state        |
-| Grid wrapper         | `j-data-grid`                        | Shares table processing while retaining card/list UI |
-| API select           | Async JRNG Select controls           | Application supplies `JAsyncDataSource`              |
-| Upload wrapper       | `j-file-upload`                      | Application supplies upload/chunk adapters           |
-| Avatar list          | `j-avatar-group`                     | Built-in fallback and overflow behavior              |
-| Title/header         | `j-page-header` / `j-section-header` | Generic actions and responsive slots                 |
-| History list         | `j-timeline` or `j-listbox`          | Compose generic events and actions                   |
-| Object comparison    | `j-diff-viewer`                      | Pure diff model with masking callback                |
-| Workflow status      | `j-stepper` or `j-timeline`          | Application retains workflow business logic          |
-| Activity list        | `j-timeline` or List composition     | Generic items, templates, and lazy loading           |
+| Custom pattern       | JRNG replacement                     | Key difference                                        |
+| -------------------- | ------------------------------------ | ----------------------------------------------------- |
+| Form error component | `j-validation-message`               | Registry-driven messages and display modes            |
+| Label/error wrapper  | `j-form-field`                       | Owns accessible label/help/error relationships        |
+| Value renderer       | `j-data-display`                     | Locale-aware generic display types                    |
+| Filter table         | `j-table`                            | Typed filters, query mapping, and saved state         |
+| Data-management grid | `j-table`                            | One table API for management, card, and tabular views |
+| API select           | Async JRNG Select controls           | Application supplies `JAsyncDataSource`               |
+| Upload wrapper       | `j-file-upload`                      | Application supplies upload/chunk adapters            |
+| Avatar list          | `j-avatar-group`                     | Built-in fallback and overflow behavior               |
+| Title/header         | `j-page-header` / `j-section-header` | Generic actions and responsive slots                  |
+| History list         | `j-timeline` or `j-listbox`          | Compose generic events and actions                    |
+| Object comparison    | `j-diff-viewer`                      | Pure diff model with masking callback                 |
+| Workflow status      | `j-stepper` or `j-timeline`          | Application retains workflow business logic           |
+| Activity list        | `j-timeline` or List composition     | Generic items, templates, and lazy loading            |
 
 ## 0.1 consolidation map
 
@@ -33,9 +33,6 @@ Migrate one feature area at a time. Keep the application stable, compare visuals
 | `jrng-ui/dashboard-layout`, `jrng-ui/sidebar-layout` | Grid, Drawer, Topbar, Panel and navigation composition                         |
 | `jrng-ui/stack`                                      | Grid/flex utilities or layout primitives                                       |
 | `jrng-ui/status-page`                                | Empty, Error Page, Alert or message components                                 |
-| `jrng-ui/activity-feed`, `jrng-ui/audit-log`         | Timeline or List composition                                                   |
-| `jrng-ui/approval-flow`                              | Stepper or Timeline composition                                                |
-| `jrng-ui/navigation-progress`                        | Progress Bar or Progress Spinner scoped to the operation                       |
 
 Tour Guide no longer needs `driver.js`. Remove the package and its CSS import, render `<j-tour-guide />` once, and continue controlling tours through `JTourService`.
 
@@ -74,7 +71,7 @@ Breaking difference: status mappings and locale are explicit. Migrate format-by-
 
 **After:** `<j-table [columns]="columns" dataMode="server" (serverQuery)="loadRows($event)" />`
 
-For cards use `<j-data-grid displayMode="card">`. Backend payload mapping remains application-side. Migrate columns, then filters/sorts, pagination, selection, state, and editing. Test all filter displays, query serialization, mobile layout, state corruption, focus restoration, and export scope.
+For cards use `<j-table responsiveMode="card">`. Replace `jDataGridActions` with `jTableToolbarActions`, `jDataGridBulkActions` with `jTableBulkActions`, `stateError` with Table's `error` output, and Data Grid's `error` input with `errorState`. Table keeps `title`, `description`, `searchPlaceholder`, `bulkActions`, and `globalFilterChange`. Backend payload mapping remains application-side. Migrate columns, then filters/sorts, pagination, selection, state, and editing. Test all filter displays, query serialization, mobile layout, state corruption, focus restoration, and export scope.
 
 ## Async controls
 

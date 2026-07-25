@@ -182,7 +182,7 @@ writeAudit(
 
 writeAudit(
   'internal-architecture-audit.md',
-  `# Shared internal architecture audit\n\nPublic components remain separate. Shared behavior is centralized in core overlay/focus/keyboard utilities, async-data controllers, table query/state primitives, file validators/adapters, semantic tokens, validation registry and browser services.\n\n| Families | Shared primitive | Status |\n| --- | --- | --- |\n| Table / Data Grid | query serialization, filtering, sorting, state models | Shared |\n| Select family | async controller and option contracts | Shared |\n| Dialog / Popover | overlay, focus, z-index, dismissal | Shared core |\n| File Upload | generic validation, queue, progress and adapters | Shared contracts |\n| Cards / progress / menus / calendars | semantic tokens and core keyboard primitives | Shared foundations; public components intentionally separate |\n\nInternal primitives remain private in the Phase 6 v0.1.0 baseline.\n`,
+  `# Shared internal architecture audit\n\nPublic components remain separate where their responsibilities differ. Shared behavior is centralized in core overlay/focus/keyboard utilities, async-data controllers, table query/state primitives, file validators/adapters, semantic tokens, validation registry and browser services.\n\n| Families | Shared primitive | Status |\n| --- | --- | --- |\n| Table | query serialization, filtering, sorting, state, management and bulk actions | Unified |\n| Select family | async controller and option contracts | Shared |\n| Dialog / Popover | overlay, focus, z-index, dismissal | Shared core |\n| File Upload | generic validation, queue, progress and adapters | Shared contracts |\n| Cards / progress / menus / calendars | semantic tokens and core keyboard primitives | Shared foundations; public components intentionally separate |\n\nInternal primitives remain private in the Phase 6 v0.1.0 baseline.\n`,
 );
 
 writeArtifactReference();
@@ -467,7 +467,6 @@ function visualManifest() {
     'avatar',
     'avatar-group',
     'table',
-    'data-grid',
     'filter-bar',
     'paginator',
     'dialog',

@@ -1,6 +1,19 @@
+import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { JRadioComponent } from './radio.component';
+
+@Component({
+  imports: [FormsModule, JRadioComponent],
+  template: `
+    <j-radio name="plan" label="Starter" value="starter" [(ngModel)]="plan" />
+    <j-radio name="plan" label="Pro" value="pro" [(ngModel)]="plan" />
+  `,
+})
+class RadioGroupHost {
+  plan = 'pro';
+}
 
 describe('JRadioComponent', () => {
   beforeEach(async () => {
@@ -74,5 +87,26 @@ describe('JRadioComponent', () => {
     radio.setDisabledState(true);
 
     expect(radio.isDisabled()).toBe(true);
+  });
+
+  it('updates a shared model and visual selection when clicked', async () => {
+    const fixture = TestBed.createComponent(RadioGroupHost);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const inputs = fixture.nativeElement.querySelectorAll(
+      'input[type="radio"]',
+    ) as NodeListOf<HTMLInputElement>;
+    expect(inputs[1].checked).toBe(true);
+
+    inputs[0].click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.plan).toBe('starter');
+    expect(inputs[0].checked).toBe(true);
+    expect(inputs[1].checked).toBe(false);
   });
 });

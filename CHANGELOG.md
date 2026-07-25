@@ -19,7 +19,7 @@
 - Normalized public classes to `J...`, selectors to `j-...`, action events, property responsibilities, and narrow variant families.
 - Consolidated duplicate component responsibilities and internal implementations across cards, loading, transfers, overlays, tables, selects, forms, images, and file interactions.
 - Made responsive preview controls opt-in and synchronized component/example routing, history, scroll position, heading focus, navigation selection, and mobile navigation state.
-- Updated Table/Data Grid scrolling, final saved state, filtering axes, Transfer List responsiveness, unified Label state detection, Password visibility, Chips severity, Gallery transitions, Grid gaps, Avatar preview, and File Preview actions.
+- Updated Table scrolling, final saved state, filtering axes, management toolbar, bulk actions, Transfer List responsiveness, unified Label state detection, Password visibility, Chips severity, Gallery transitions, Grid gaps, Avatar preview, and File Preview actions.
 - Standardized Table toolbar, filter, row expansion, row locking, and action-menu controls on JRNG Button and Tooltip primitives.
 - Standardized Dialog, Dynamic Dialog, Drawer, Bottom Sheet, Confirm Dialog, and image-viewer headings on one internal overlay-header action pattern with JRNG Button and Tooltip close actions.
 
@@ -27,6 +27,7 @@
 
 - Invalid Table state restores defaults and emits a typed non-fatal error without crashing rendering.
 - Table select-all now computes checked and indeterminate state from eligible rows in the current filtered, paged, lazy, or virtual window.
+- Table row actions now use a visible overflow trigger, escape scroll clipping, preserve row selection, and initially hidden columns can be shown and reset; maximize mode now owns the viewport and restores cleanly.
 - Time Picker now blocks every mutation path while disabled and uses a constrained viewport-aware panel with a JRNG clock icon.
 - Overlay lifecycle, focus restoration, cleanup, responsive containment, and reduced-motion behavior were tightened across interactive components.
 - Documentation preview sources use deterministic local data and JRNG action controls.
@@ -37,6 +38,7 @@
 - Removed Activity Feed, Approval Flow, Audit Log, Navigation Progress, Dashboard Layout, Sidebar Layout, Stack, Status Page, Input Icon, Date Range Picker, Combobox, Float Label, Ifta Label, Image Preview and Empty Page entry points after migrating their supported behavior.
 - Removed the Driver.js dependency, dynamic import and external stylesheet.
 - Removed the duplicated library source tree and duplicate public components: Metric Card, Stat Card, Dropzone, Overlay Panel, Pick List, Column, Sort Icon, Table Empty State, and Table Skeleton.
+- Removed the separate Data Grid component and entry point after moving its heading, search, toolbar-action, and bulk-action features into Table. Use Table's `responsiveMode="card"` for card layouts.
 - Removed pre-stable aliases, deprecated declarations, old variant values, old Table state handling, and duplicated input/output names.
 
 ### Security

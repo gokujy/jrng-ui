@@ -28,7 +28,6 @@ import { JBottomSheetComponent } from 'jrng-ui/bottom-sheet';
 import { JBreadcrumbComponent, JBreadcrumbItem, JBreadcrumbVariant } from 'jrng-ui/breadcrumb';
 import { JButtonComponent, JButtonVariant } from 'jrng-ui/button';
 import { JCalendarSchedulerComponent } from 'jrng-ui/calendar-scheduler';
-import { JCalendarComponent } from 'jrng-ui/calendar';
 import { JCardComponent } from 'jrng-ui/card';
 import { JCarouselComponent } from 'jrng-ui/carousel';
 import { JChartComponent } from 'jrng-ui/chart';
@@ -42,7 +41,6 @@ import { JContainerComponent } from 'jrng-ui/container';
 import { JContextMenuComponent } from 'jrng-ui/context-menu';
 import { JCopyButtonComponent } from 'jrng-ui/copy-button';
 import { JColorPickerComponent } from 'jrng-ui/color-picker';
-import { JDataGridComponent } from 'jrng-ui/data-grid';
 import { JDataDisplayComponent } from 'jrng-ui/data-display';
 import { JDataViewComponent } from 'jrng-ui/data-view';
 import { JDatePickerComponent, JDatePickerPreset } from 'jrng-ui/date-picker';
@@ -124,6 +122,7 @@ import {
   JActionMenuComponent,
   JColumnFilterComponent,
   JTableAction,
+  JTableActionEvent,
   JTableColumn,
   JTableComponent,
   JTableConfig,
@@ -164,6 +163,11 @@ import { AvatarZoomDemoComponent } from '../demos/avatar-zoom-demo/avatar-zoom-d
 import { LoaderTypesDemoComponent } from '../demos/loader-types-demo/loader-types-demo.component';
 import { TextExpandBasicDemoComponent } from '../demos/text-expand-basic-demo/text-expand-basic-demo.component';
 import { CardMetricDemoComponent } from '../demos/card-metric-demo/card-metric-demo.component';
+import { TableScenarioHostComponent } from '../demos/table-scenarios/table-scenarios.component';
+import {
+  TABLE_SCENARIO_COMPONENTS,
+  TABLE_SCENARIO_DOCS,
+} from '../demos/table-scenarios/table-scenarios.generated';
 import { demoSources } from '../demos/demo-sources.generated';
 import {
   PriorityComponentGuidance,
@@ -532,7 +536,7 @@ const AVATAR_FEATURE_EXAMPLES = [
   [
     'image',
     'User image',
-    `<j-avatar image="/assets/avatars/avery.svg" label="Avery Reed" size="lg" />`,
+    `<j-avatar image="/assets/images/avatar-user-01.webp" label="Avery Reed" size="lg" />`,
   ],
   ['circle', 'Circle shape', `<j-avatar initials="AR" ariaLabel="Avery Reed" />`],
   [
@@ -562,7 +566,7 @@ const AVATAR_FEATURE_EXAMPLES = [
   [
     'badge',
     'Avatar with badge',
-    `<span class="avatar-badge"><j-avatar image="/assets/avatars/avery.svg" label="Avery Reed" /><j-badge value="4" severity="danger" /></span>`,
+    `<span class="avatar-badge"><j-avatar image="/assets/images/avatar-user-01.webp" label="Avery Reed" /><j-badge value="4" severity="danger" /></span>`,
   ],
   [
     'group',
@@ -577,12 +581,12 @@ const AVATAR_FEATURE_EXAMPLES = [
   [
     'profile',
     'Profile header',
-    `<div class="profile"><j-avatar image="/assets/avatars/avery.svg" label="Avery Reed" size="lg" previewable /><div><strong>Avery Reed</strong><span>Product designer</span></div></div>`,
+    `<div class="profile"><j-avatar image="/assets/images/avatar-user-01.webp" label="Avery Reed" size="lg" previewable /><div><strong>Avery Reed</strong><span>Product designer</span></div></div>`,
   ],
   [
     'comment',
     'Comment author',
-    `<div class="comment"><j-avatar image="/assets/avatars/morgan.svg" label="Morgan Kim" /><div><strong>Morgan Kim</strong><span>Updated the release checklist.</span></div></div>`,
+    `<div class="comment"><j-avatar image="/assets/images/avatar-user-02.webp" label="Morgan Kim" /><div><strong>Morgan Kim</strong><span>Updated the release checklist.</span></div></div>`,
   ],
   [
     'team',
@@ -597,17 +601,17 @@ const AVATAR_FEATURE_EXAMPLES = [
   [
     'clickable',
     'Clickable avatar',
-    `<j-avatar image="/assets/avatars/avery.svg" label="Avery Reed" previewable previewAriaLabel="Preview Avery Reed profile image" />`,
+    `<j-avatar image="/assets/images/avatar-user-01.webp" label="Avery Reed" previewable previewAriaLabel="Preview Avery Reed profile image" />`,
   ],
   [
     'zoom',
     'Zoomable avatar',
-    `<j-avatar image="/assets/avatars/avery.svg" label="Avery Reed" previewable />`,
+    `<j-avatar image="/assets/images/avatar-user-01.webp" label="Avery Reed" previewable />`,
   ],
   [
     'static',
     'Non-zoomable avatar',
-    `<j-avatar image="/assets/avatars/avery.svg" label="Avery Reed" size="lg" />`,
+    `<j-avatar image="/assets/images/avatar-user-01.webp" label="Avery Reed" size="lg" />`,
   ],
 ].map(([key, name, html]) => ({
   key,
@@ -615,6 +619,283 @@ const AVATAR_FEATURE_EXAMPLES = [
   details: `${name} in a realistic people or assignment context.`,
   html,
 }));
+
+const DATE_PICKER_FEATURE_EXAMPLES = [
+  {
+    key: 'basic',
+    name: 'Basic date',
+    details: 'Choose one date with a labelled, clearable input.',
+    html: `<j-date-picker label="Due date" placeholder="Choose a date" [(ngModel)]="dueDate" />`,
+  },
+  {
+    key: 'range',
+    name: 'Date range and presets',
+    details: 'Choose a start and end date or apply a reusable business range.',
+    html: `<j-date-picker label="Reporting period" selectionMode="range" [presets]="datePresets" [(ngModel)]="pickerRange" />`,
+  },
+  {
+    key: 'multiple',
+    name: 'Multiple dates',
+    details: 'Choose several non-contiguous dates in one control.',
+    html: `<j-date-picker label="Available dates" selectionMode="multiple" [(ngModel)]="multipleDates" />`,
+  },
+  {
+    key: 'constraints',
+    name: 'Minimum and maximum dates',
+    details: 'Restrict selection to an allowed booking window.',
+    html: `<j-date-picker label="Booking date" [minDate]="bookingMinDate" [maxDate]="bookingMaxDate" [(ngModel)]="bookingDate" />`,
+  },
+  {
+    key: 'disabled-dates',
+    name: 'Disabled dates',
+    details: 'Keep unavailable dates visible while preventing their selection.',
+    html: `<j-date-picker label="Appointment" [disabledDates]="unavailableDates" [(ngModel)]="appointmentDate" />`,
+  },
+  {
+    key: 'inline',
+    name: 'Inline calendar',
+    details: 'Keep the date grid visible for scheduling-focused layouts.',
+    html: `<j-date-picker label="Schedule" inline [(ngModel)]="inlineDate" />`,
+  },
+  {
+    key: 'time',
+    name: 'Date and time',
+    details: 'Collect a date and a 12-hour time in the same control.',
+    html: `<j-date-picker label="Starts at" showTime hourFormat="12" [(ngModel)]="dateTimeValue" />`,
+  },
+  {
+    key: 'month',
+    name: 'Month picker',
+    details: 'Use month view when the day is not relevant.',
+    html: `<j-date-picker label="Billing month" view="month" dateFormat="MMM yyyy" [(ngModel)]="billingMonth" />`,
+  },
+  {
+    key: 'disabled',
+    name: 'Disabled state',
+    details: 'Disabled date pickers remain readable and cannot be edited.',
+    html: `<j-date-picker label="Locked date" disabled [(ngModel)]="lockedDate" />`,
+  },
+] as const;
+
+const CHECKBOX_FEATURE_EXAMPLES = [
+  {
+    key: 'basic',
+    name: 'Basic checkbox',
+    details: 'Bind one boolean choice with a clear visible label.',
+    html: `<j-checkbox label="Send receipt" [(ngModel)]="receiptEnabled" />`,
+  },
+  {
+    key: 'group',
+    name: 'Checkbox group',
+    details: 'Bind multiple checkbox values to one array.',
+    html: `<j-checkbox name="interests" label="Design" value="design" [(ngModel)]="selectedInterests" />
+<j-checkbox name="interests" label="Engineering" value="engineering" [(ngModel)]="selectedInterests" />
+<j-checkbox name="interests" label="Research" value="research" [(ngModel)]="selectedInterests" />`,
+  },
+  {
+    key: 'indeterminate',
+    name: 'Indeterminate',
+    details: 'Represent a partially selected child collection.',
+    html: `<j-checkbox label="Select all projects" indeterminate />`,
+  },
+  {
+    key: 'sizes',
+    name: 'Sizes',
+    details: 'Match checkbox density to its surrounding controls.',
+    html: `<j-checkbox label="Small" size="sm" />
+<j-checkbox label="Default" />
+<j-checkbox label="Large" size="lg" />`,
+  },
+  {
+    key: 'readonly',
+    name: 'Read-only',
+    details: 'Keep a checked value readable without allowing changes.',
+    html: `<j-checkbox label="Verified by policy" readonly [(ngModel)]="policyVerified" />`,
+  },
+  {
+    key: 'invalid',
+    name: 'Invalid',
+    details: 'Associate validation feedback with the checkbox.',
+    html: `<j-checkbox label="Accept terms" required invalid error="Acceptance is required." />`,
+  },
+  {
+    key: 'disabled',
+    name: 'Disabled',
+    details: 'Disabled checkboxes do not toggle or emit changes.',
+    html: `<j-checkbox label="Managed by administrator" disabled [(ngModel)]="managedSetting" />`,
+  },
+] as const;
+
+const EDITOR_FEATURE_EXAMPLES = [
+  {
+    key: 'basic',
+    name: 'Rich text editor',
+    details: 'Format content with JRNG icon actions, word count, and fullscreen support.',
+    html: `<j-editor
+  label="Description"
+  placeholder="Write a short summary"
+  hint="Use the toolbar to format the document."
+  showWordCount
+  showFullscreen
+  [(ngModel)]="editorValue"
+/>`,
+  },
+  {
+    key: 'html',
+    name: 'View and edit HTML',
+    details: 'Switch between the visual editor and sanitized HTML source using the code action.',
+    html: `<j-editor
+  label="Release notes"
+  showSourceToggle
+  showWordCount
+  [(ngModel)]="editorHtmlValue"
+/>`,
+  },
+] as const;
+
+const ICON_FIELD_FEATURE_EXAMPLES = [
+  {
+    key: 'basic',
+    name: 'Search field',
+    details: 'Combine a search icon, clear action, and an independently bound input.',
+    html: `<j-icon-field
+  prefixIcon="search"
+  clearable
+  fullWidth
+  ariaLabel="Project search"
+  (clear)="iconFieldBasicSearch = ''"
+>
+  <j-input
+    name="projectSearch"
+    placeholder="Search projects"
+    [(ngModel)]="iconFieldBasicSearch"
+    width="full"
+  />
+</j-icon-field>`,
+  },
+  {
+    key: 'disabled',
+    name: 'Disabled field',
+    details: 'The wrapper and projected input are disabled and use separate example state.',
+    html: `<j-icon-field prefixIcon="lock" disabled fullWidth ariaLabel="Locked search">
+  <j-input
+    name="lockedSearch"
+    disabled
+    [(ngModel)]="iconFieldDisabledSearch"
+    width="full"
+  />
+</j-icon-field>`,
+  },
+] as const;
+
+const INPUT_GROUP_FEATURE_EXAMPLES = [
+  {
+    key: 'currency',
+    name: 'Currency amount',
+    details: 'Use text add-ons to communicate the expected currency format.',
+    html: `<j-input-group prefixAddon="$" suffixAddon=".00" ariaLabel="Budget amount">
+  <j-input name="budgetAmount" type="number" [(ngModel)]="groupBudget" />
+</j-input-group>`,
+  },
+  {
+    key: 'website',
+    name: 'Website address',
+    details: 'Keep protocol and domain context visible around an editable value.',
+    html: `<j-input-group prefixAddon="https://" suffixAddon=".example.com" ariaLabel="Workspace URL">
+  <j-input name="workspaceSlug" [(ngModel)]="workspaceSlug" />
+</j-input-group>`,
+  },
+  {
+    key: 'email',
+    name: 'Email address',
+    details: 'Combine an account name with a fixed organization domain.',
+    html: `<j-input-group suffixAddon="@jrng.dev" fullWidth ariaLabel="Work email">
+  <j-input name="emailAlias" [(ngModel)]="emailAlias" width="full" />
+</j-input-group>`,
+  },
+  {
+    key: 'comfortable',
+    name: 'Comfortable spacing',
+    details: 'Use separated controls when a compact joined treatment is not appropriate.',
+    html: `<j-input-group prefixAddon="Qty" [compact]="false" ariaLabel="Order quantity">
+  <j-input name="orderQuantity" type="number" [(ngModel)]="groupQuantity" />
+</j-input-group>`,
+  },
+  {
+    key: 'disabled',
+    name: 'Disabled group',
+    details: 'Disabled groups are inert and keep their value readable.',
+    html: `<j-input-group prefixAddon="$" suffixAddon=".00" disabled ariaLabel="Locked amount">
+  <j-input name="lockedAmount" disabled [ngModel]="1250" />
+</j-input-group>`,
+  },
+] as const;
+
+const COPY_BUTTON_FEATURE_EXAMPLES = [
+  {
+    key: 'basic',
+    name: 'Copy text',
+    details: 'Copy a plain value and announce success to assistive technology.',
+    html: `<j-copy-button text="JRNG-2026" />`,
+  },
+  {
+    key: 'labels',
+    name: 'Custom labels',
+    details: 'Adapt the idle and success messages to the copied content.',
+    html: `<j-copy-button
+  text="https://jrng.dev/components"
+  label="Copy link"
+  copiedLabel="Link copied"
+  ariaLabel="Copy component link"
+/>`,
+  },
+  {
+    key: 'icon',
+    name: 'Icon-only action',
+    details: 'Use a concise action with a required accessible name.',
+    html: `<j-copy-button text="npm install jrng-ui" icon="copy" iconOnly ariaLabel="Copy install command" />`,
+  },
+  {
+    key: 'code',
+    name: 'Inline code',
+    details: 'Place a copy action next to a command or code token.',
+    html: `<div class="j-copy-code">
+  <code>npm install jrng-ui</code>
+  <j-copy-button text="npm install jrng-ui" icon="copy" iconOnly ariaLabel="Copy install command" />
+</div>`,
+  },
+  {
+    key: 'disabled',
+    name: 'Disabled',
+    details: 'Disabled copy actions do not access the clipboard or emit events.',
+    html: `<j-copy-button text="Unavailable token" disabled />`,
+  },
+] as const;
+
+const RADIO_FEATURE_EXAMPLES = [
+  {
+    key: 'basic',
+    name: 'Plan selection',
+    details: 'Select one option from a named group with a shared model.',
+    html: `<j-radio name="planChoice" label="Starter" value="starter" [(ngModel)]="plan" />
+<j-radio name="planChoice" label="Pro" value="pro" [(ngModel)]="plan" />
+<j-radio name="planChoice" label="Enterprise" value="enterprise" [(ngModel)]="plan" />`,
+  },
+  {
+    key: 'sizes',
+    name: 'Sizes',
+    details: 'Match the radio size to compact, default, and spacious forms.',
+    html: `<j-radio name="densityChoice" label="Small" value="small" size="sm" [(ngModel)]="radioSizeChoice" />
+<j-radio name="densityChoice" label="Default" value="default" [(ngModel)]="radioSizeChoice" />
+<j-radio name="densityChoice" label="Large" value="large" size="lg" [(ngModel)]="radioSizeChoice" />`,
+  },
+  {
+    key: 'disabled',
+    name: 'Disabled option',
+    details: 'A disabled option cannot receive selection or emit a value change.',
+    html: `<j-radio name="lockedChoice" label="Managed plan" value="managed" disabled [(ngModel)]="lockedPlan" />`,
+  },
+] as const;
 
 const LOADER_FEATURE_EXAMPLES = [
   ['basic', 'Loader types', `<j-loader type="spinner" label="Loading records" />`],
@@ -671,7 +952,7 @@ const CARD_FEATURE_EXAMPLES = [
   [
     'profile',
     'Profile card',
-    `<j-card header="Avery Reed" subheader="Product designer"><j-avatar image="/assets/avatars/avery.svg" label="Avery Reed" size="lg" /></j-card>`,
+    `<j-card header="Avery Reed" subheader="Product designer"><j-avatar image="/assets/images/avatar-user-01.webp" label="Avery Reed" size="lg" /></j-card>`,
   ],
   [
     'product',
@@ -746,6 +1027,7 @@ const CARD_FEATURE_EXAMPLES = [
     LoaderTypesDemoComponent,
     TextExpandBasicDemoComponent,
     CardMetricDemoComponent,
+    TableScenarioHostComponent,
     JAccordionComponent,
     JAccordionContentComponent,
     JAccordionHeaderComponent,
@@ -763,7 +1045,6 @@ const CARD_FEATURE_EXAMPLES = [
     JContainerComponent,
     JCopyButtonComponent,
     JColorPickerComponent,
-    JDataGridComponent,
     JDataDisplayComponent,
     JDatePickerComponent,
     JDividerComponent,
@@ -837,7 +1118,6 @@ const CARD_FEATURE_EXAMPLES = [
     JAuthLayoutComponent,
     JBottomSheetComponent,
     JCalendarSchedulerComponent,
-    JCalendarComponent,
     JCarouselComponent,
     JChartComponent,
     JChipsComponent,
@@ -949,6 +1229,9 @@ const CARD_FEATURE_EXAMPLES = [
                   [style.max-width.px]="example.responsivePreview ? previewWidth() : null"
                   [class.j-preview-surface--overlay]="overlayPreviewSlugs.has(doc().slug)"
                   [class.j-preview-surface--status]="statusPreviewSlugs.has(doc().slug)"
+                  [class.j-preview-surface--disabled]="example.key === 'disabled'"
+                  [attr.inert]="example.key === 'disabled' ? '' : null"
+                  [attr.aria-disabled]="example.key === 'disabled' ? 'true' : null"
                 >
                   @defer {
                     @switch (doc().slug) {
@@ -1011,7 +1294,7 @@ const CARD_FEATURE_EXAMPLES = [
                               }
                               @case ('image') {
                                 <j-avatar
-                                  image="/assets/avatars/avery.svg"
+                                  image="/assets/images/avatar-user-01.webp"
                                   label="Avery Reed"
                                   size="lg"
                                 />
@@ -1055,7 +1338,7 @@ const CARD_FEATURE_EXAMPLES = [
                               @case ('badge') {
                                 <span class="j-avatar-doc-badge"
                                   ><j-avatar
-                                    image="/assets/avatars/avery.svg"
+                                    image="/assets/images/avatar-user-01.webp"
                                     label="Avery Reed" /><j-badge value="4" severity="danger"
                                 /></span>
                               }
@@ -1076,7 +1359,7 @@ const CARD_FEATURE_EXAMPLES = [
                               @case ('profile') {
                                 <div class="j-profile-avatar-example">
                                   <j-avatar
-                                    image="/assets/avatars/avery.svg"
+                                    image="/assets/images/avatar-user-01.webp"
                                     label="Avery Reed"
                                     size="lg"
                                     previewable
@@ -1088,7 +1371,10 @@ const CARD_FEATURE_EXAMPLES = [
                               }
                               @case ('comment') {
                                 <div class="j-profile-avatar-example">
-                                  <j-avatar image="/assets/avatars/morgan.svg" label="Morgan Kim" />
+                                  <j-avatar
+                                    image="/assets/images/avatar-user-02.webp"
+                                    label="Morgan Kim"
+                                  />
                                   <div>
                                     <strong>Morgan Kim</strong
                                     ><span>Updated the release checklist.</span>
@@ -1111,7 +1397,7 @@ const CARD_FEATURE_EXAMPLES = [
                               }
                               @case ('clickable') {
                                 <j-avatar
-                                  image="/assets/avatars/avery.svg"
+                                  image="/assets/images/avatar-user-01.webp"
                                   label="Avery Reed"
                                   previewable
                                   previewAriaLabel="Preview Avery Reed profile image"
@@ -1119,7 +1405,7 @@ const CARD_FEATURE_EXAMPLES = [
                               }
                               @case ('static') {
                                 <j-avatar
-                                  image="/assets/avatars/avery.svg"
+                                  image="/assets/images/avatar-user-01.webp"
                                   label="Avery Reed"
                                   size="lg"
                                 />
@@ -1154,18 +1440,71 @@ const CARD_FEATURE_EXAMPLES = [
                       }
                       @case ('date-picker') {
                         <div class="j-preview-grid j-overlay-form-preview">
-                          <j-date-picker
-                            label="Due date"
-                            placeholder="Choose a date"
-                            [(ngModel)]="dueDate"
-                          />
-                          <j-date-picker
-                            label="Date range"
-                            selectionMode="range"
-                            placeholder="Choose dates"
-                            [presets]="datePresets"
-                            [(ngModel)]="pickerRange"
-                          />
+                          @switch (example.key) {
+                            @case ('range') {
+                              <j-date-picker
+                                label="Reporting period"
+                                selectionMode="range"
+                                [presets]="datePresets"
+                                [(ngModel)]="pickerRange"
+                              />
+                            }
+                            @case ('multiple') {
+                              <j-date-picker
+                                label="Available dates"
+                                selectionMode="multiple"
+                                [(ngModel)]="multipleDates"
+                              />
+                            }
+                            @case ('constraints') {
+                              <j-date-picker
+                                label="Booking date"
+                                [minDate]="bookingMinDate"
+                                [maxDate]="bookingMaxDate"
+                                [(ngModel)]="bookingDate"
+                              />
+                            }
+                            @case ('disabled-dates') {
+                              <j-date-picker
+                                label="Appointment"
+                                [disabledDates]="unavailableDates"
+                                [(ngModel)]="appointmentDate"
+                              />
+                            }
+                            @case ('inline') {
+                              <j-date-picker label="Schedule" inline [(ngModel)]="inlineDate" />
+                            }
+                            @case ('time') {
+                              <j-date-picker
+                                label="Starts at"
+                                showTime
+                                hourFormat="12"
+                                [(ngModel)]="dateTimeValue"
+                              />
+                            }
+                            @case ('month') {
+                              <j-date-picker
+                                label="Billing month"
+                                view="month"
+                                dateFormat="MMM yyyy"
+                                [(ngModel)]="billingMonth"
+                              />
+                            }
+                            @case ('disabled') {
+                              <j-date-picker
+                                label="Locked date"
+                                disabled
+                                [(ngModel)]="lockedDate"
+                              />
+                            }
+                            @default {
+                              <j-date-picker
+                                label="Due date"
+                                placeholder="Choose a date"
+                                [(ngModel)]="dueDate"
+                              />
+                            }
+                          }
                         </div>
                       }
                       @case ('divider') {
@@ -1322,28 +1661,109 @@ const CARD_FEATURE_EXAMPLES = [
                       }
                       @case ('checkbox') {
                         <div class="j-preview-row">
-                          <j-checkbox label="Send receipt" [(ngModel)]="checked" />
-                          <j-checkbox label="Partial selection" indeterminate />
-                          <j-checkbox label="Disabled" disabled />
-                          <j-checkbox label="Invalid" invalid error="Required" />
+                          @switch (example.key) {
+                            @case ('group') {
+                              <j-checkbox
+                                name="interests"
+                                label="Design"
+                                value="design"
+                                [(ngModel)]="selectedInterests"
+                              />
+                              <j-checkbox
+                                name="interests"
+                                label="Engineering"
+                                value="engineering"
+                                [(ngModel)]="selectedInterests"
+                              />
+                              <j-checkbox
+                                name="interests"
+                                label="Research"
+                                value="research"
+                                [(ngModel)]="selectedInterests"
+                              />
+                            }
+                            @case ('indeterminate') {
+                              <j-checkbox label="Select all projects" indeterminate />
+                            }
+                            @case ('sizes') {
+                              <j-checkbox label="Small" size="sm" />
+                              <j-checkbox label="Default" />
+                              <j-checkbox label="Large" size="lg" />
+                            }
+                            @case ('readonly') {
+                              <j-checkbox
+                                label="Verified by policy"
+                                readonly
+                                [(ngModel)]="policyVerified"
+                              />
+                            }
+                            @case ('invalid') {
+                              <j-checkbox
+                                label="Accept terms"
+                                required
+                                invalid
+                                error="Acceptance is required."
+                              />
+                            }
+                            @case ('disabled') {
+                              <j-checkbox
+                                label="Managed by administrator"
+                                disabled
+                                [(ngModel)]="managedSetting"
+                              />
+                            }
+                            @default {
+                              <j-checkbox label="Send receipt" [(ngModel)]="receiptEnabled" />
+                            }
+                          }
                         </div>
                       }
                       @case ('radio') {
                         <div class="j-preview-row">
-                          <j-radio
-                            name="plan-docs"
-                            label="Starter"
-                            value="starter"
-                            [(ngModel)]="plan"
-                          />
-                          <j-radio name="plan-docs" label="Pro" value="pro" [(ngModel)]="plan" />
-                          <j-radio
-                            name="plan-docs"
-                            label="Enterprise"
-                            value="enterprise"
-                            disabled
-                            [(ngModel)]="plan"
-                          />
+                          @if (example.key === 'sizes') {
+                            <j-radio
+                              name="densityChoice"
+                              label="Small"
+                              value="small"
+                              size="sm"
+                              [(ngModel)]="radioSizeChoice"
+                            />
+                            <j-radio
+                              name="densityChoice"
+                              label="Default"
+                              value="default"
+                              [(ngModel)]="radioSizeChoice"
+                            />
+                            <j-radio
+                              name="densityChoice"
+                              label="Large"
+                              value="large"
+                              size="lg"
+                              [(ngModel)]="radioSizeChoice"
+                            />
+                          } @else if (example.key === 'disabled') {
+                            <j-radio
+                              name="lockedChoice"
+                              label="Managed plan"
+                              value="managed"
+                              disabled
+                              [(ngModel)]="lockedPlan"
+                            />
+                          } @else {
+                            <j-radio
+                              name="planChoice"
+                              label="Starter"
+                              value="starter"
+                              [(ngModel)]="plan"
+                            />
+                            <j-radio name="planChoice" label="Pro" value="pro" [(ngModel)]="plan" />
+                            <j-radio
+                              name="planChoice"
+                              label="Enterprise"
+                              value="enterprise"
+                              [(ngModel)]="plan"
+                            />
+                          }
                         </div>
                       }
                       @case ('switch') {
@@ -1448,7 +1868,7 @@ const CARD_FEATURE_EXAMPLES = [
                             @case ('profile') {
                               <j-card header="Avery Reed" subheader="Product designer"
                                 ><j-avatar
-                                  image="/assets/avatars/avery.svg"
+                                  image="/assets/images/avatar-user-01.webp"
                                   label="Avery Reed"
                                   size="lg"
                               /></j-card>
@@ -1550,145 +1970,132 @@ const CARD_FEATURE_EXAMPLES = [
                       }
                       @case ('table') {
                         <div class="j-table-doc-example">
-                          @switch (example.key) {
-                            @case ('templates') {
-                              <j-table [value]="clientRows" [columns]="clientColumns">
-                                <ng-template jTableHeader="legalName" let-column>
-                                  {{ column.header }} / account
-                                </ng-template>
-                                <ng-template jTableCell="active" let-value="formattedValue">
-                                  <strong>{{ value }}</strong>
-                                </ng-template>
-                              </j-table>
-                            }
-                            @case ('variants') {
-                              @for (variant of tableVariants; track variant) {
-                                <div class="j-table-doc-variant">
-                                  <span class="j-preview-label">{{ variant }}</span>
-                                  <j-table
-                                    [value]="clientRows.slice(0, 2)"
-                                    [columns]="clientColumns"
-                                    [variant]="variant"
-                                  />
-                                </div>
+                          @if (isGeneratedTableScenario(example.key)) {
+                            <app-table-scenario-host [scenario]="example.key" />
+                          } @else {
+                            @switch (example.key) {
+                              @case ('templates') {
+                                <j-table [value]="clientRows" [columns]="clientColumns">
+                                  <ng-template jTableHeader="legalName" let-column>
+                                    {{ column.header }} / account
+                                  </ng-template>
+                                  <ng-template jTableCell="active" let-value="formattedValue">
+                                    <strong>{{ value }}</strong>
+                                  </ng-template>
+                                </j-table>
                               }
-                            }
-                            @case ('density') {
-                              @for (density of tableDensities; track density) {
-                                <div class="j-table-doc-variant">
-                                  <span class="j-preview-label">{{ density }}</span>
-                                  <j-table
-                                    [value]="clientRows.slice(0, 2)"
-                                    [columns]="clientColumns"
-                                    [density]="density"
-                                  />
-                                </div>
+                              @case ('variants') {
+                                @for (variant of tableVariants; track variant) {
+                                  <div class="j-table-doc-variant">
+                                    <span class="j-preview-label">{{ variant }}</span>
+                                    <j-table
+                                      [value]="clientRows.slice(0, 2)"
+                                      [columns]="clientColumns"
+                                      [variant]="variant"
+                                    />
+                                  </div>
+                                }
                               }
-                            }
-                            @case ('skeleton') {
-                              <j-table
-                                [value]="[]"
-                                [columns]="clientColumns"
-                                loading
-                                loadingVariant="skeleton"
-                                [skeletonRows]="4"
-                              />
-                            }
-                            @case ('overlay') {
-                              <j-table
-                                [value]="clientRows.slice(0, 3)"
-                                [columns]="clientColumns"
-                                loading
-                                loadingVariant="overlay"
-                              />
-                            }
-                            @case ('no-data') {
-                              <j-table
-                                [value]="[]"
-                                [columns]="clientColumns"
-                                emptyTitle="No clients yet"
-                                emptyDescription="New client records will appear here."
-                                emptyActionLabel="Add account"
-                              />
-                            }
-                            @case ('no-results') {
-                              <j-table
-                                [value]="clientRows"
-                                [columns]="clientColumns"
-                                globalFilter="no matching client"
-                                noResultsTitle="No matching clients"
-                              />
-                            }
-                            @case ('error') {
-                              <j-table
-                                [value]="[]"
-                                [columns]="clientColumns"
-                                [errorState]="tableLoadError"
-                                emptyActionLabel="Retry"
-                              />
-                            }
-                            @case ('tree-table') {
-                              <j-tree-table [value]="treeNodes" [columns]="treeColumns" />
-                            }
-                            @case ('lazy-tree-table') {
-                              <j-tree-table [value]="lazyTreeNodes" [columns]="treeColumns" lazy />
-                            }
-                            @case ('migration') {
-                              <j-table [value]="[]" [columns]="clientColumns">
-                                <ng-template jTableEmpty let-state>
-                                  <div class="j-preview-note">Integrated state: {{ state }}</div>
-                                </ng-template>
-                              </j-table>
-                            }
-                            @default {
-                              <j-table
-                                [value]="clientRows"
-                                [columns]="clientColumns"
-                                [selectionMode]="
-                                  example.key === 'selection' || example.key === 'accessibility'
-                                    ? 'checkbox'
-                                    : 'none'
-                                "
-                                [paginator]="example.key === 'pagination'"
-                                [rows]="3"
-                                [filterDisplay]="example.key === 'filtering' ? 'row' : 'none'"
-                                [showGlobalFilter]="example.key === 'filtering'"
-                                [sortField]="example.key === 'sorting' ? 'legalName' : ''"
-                                [sortOrder]="example.key === 'sorting' ? 1 : 0"
-                                [caption]="
-                                  example.key === 'accessibility' ? 'Clients awaiting review' : ''
-                                "
-                                hover
-                              />
+                              @case ('density') {
+                                @for (density of tableDensities; track density) {
+                                  <div class="j-table-doc-variant">
+                                    <span class="j-preview-label">{{ density }}</span>
+                                    <j-table
+                                      [value]="clientRows.slice(0, 2)"
+                                      [columns]="clientColumns"
+                                      [density]="density"
+                                    />
+                                  </div>
+                                }
+                              }
+                              @case ('skeleton') {
+                                <j-table
+                                  [value]="[]"
+                                  [columns]="clientColumns"
+                                  loading
+                                  loadingVariant="skeleton"
+                                  [skeletonRows]="4"
+                                />
+                              }
+                              @case ('overlay') {
+                                <j-table
+                                  [value]="clientRows.slice(0, 3)"
+                                  [columns]="clientColumns"
+                                  loading
+                                  loadingVariant="overlay"
+                                />
+                              }
+                              @case ('no-data') {
+                                <j-table
+                                  [value]="[]"
+                                  [columns]="clientColumns"
+                                  emptyTitle="No clients yet"
+                                  emptyDescription="New client records will appear here."
+                                  emptyActionLabel="Add account"
+                                />
+                              }
+                              @case ('no-results') {
+                                <j-table
+                                  [value]="clientRows"
+                                  [columns]="clientColumns"
+                                  globalFilter="no matching client"
+                                  noResultsTitle="No matching clients"
+                                />
+                              }
+                              @case ('error') {
+                                <j-table
+                                  [value]="[]"
+                                  [columns]="clientColumns"
+                                  [errorState]="tableLoadError"
+                                  emptyActionLabel="Retry"
+                                />
+                              }
+                              @case ('tree-table') {
+                                <j-tree-table [value]="treeNodes" [columns]="treeColumns" />
+                              }
+                              @case ('lazy-tree-table') {
+                                <j-tree-table
+                                  [value]="lazyTreeNodes"
+                                  [columns]="treeColumns"
+                                  lazy
+                                />
+                              }
+                              @case ('migration') {
+                                <j-table [value]="[]" [columns]="clientColumns">
+                                  <ng-template jTableEmpty let-state>
+                                    <div class="j-preview-note">Integrated state: {{ state }}</div>
+                                  </ng-template>
+                                </j-table>
+                              }
+                              @default {
+                                <j-table
+                                  [value]="clientRows"
+                                  [columns]="clientColumns"
+                                  [selectionMode]="
+                                    example.key === 'selection' || example.key === 'accessibility'
+                                      ? 'checkbox'
+                                      : 'none'
+                                  "
+                                  [paginator]="example.key === 'pagination'"
+                                  [rows]="3"
+                                  [filterDisplay]="example.key === 'filtering' ? 'row' : 'none'"
+                                  [showGlobalFilter]="example.key === 'filtering'"
+                                  [sortField]="example.key === 'sorting' ? 'legalName' : ''"
+                                  [sortOrder]="example.key === 'sorting' ? 1 : 0"
+                                  [caption]="
+                                    example.key === 'accessibility' ? 'Clients awaiting review' : ''
+                                  "
+                                  hover
+                                />
+                              }
                             }
                           }
+                          @if (tableActionMessage()) {
+                            <p class="j-preview-note" role="status" aria-live="polite">
+                              {{ tableActionMessage() }}
+                            </p>
+                          }
                         </div>
-                      }
-                      @case ('data-grid') {
-                        <j-data-grid
-                          title="Orders"
-                          description="Sortable, filterable operational data with pagination."
-                          [value]="orders"
-                          [columns]="orderColumns"
-                          [rows]="3"
-                          [totalRecords]="orders.length"
-                          [globalFilterFields]="['order', 'customer', 'status']"
-                          [config]="tableConfig"
-                          selectionMode="checkbox"
-                          bulkActions
-                          showColumnManager
-                          showExport
-                          variant="striped"
-                          hover
-                        >
-                          <j-button jDataGridActions label="Create order" size="sm" />
-                          <j-button
-                            jDataGridBulkActions
-                            label="Archive selected"
-                            size="sm"
-                            variant="outlined"
-                          />
-                        </j-data-grid>
                       }
                       @case ('action-menu') {
                         <div class="j-action-menu-preview">
@@ -1700,7 +2107,7 @@ const CARD_FEATURE_EXAMPLES = [
                             <span class="j-preview-label">Compact popup</span>
                             <j-action-menu
                               popup
-                              triggerIcon="More"
+                              triggerIcon="more-vertical"
                               triggerLabel="Open order actions"
                               [actions]="rowActions"
                               [row]="orders[0]"
@@ -1754,7 +2161,8 @@ const CARD_FEATURE_EXAMPLES = [
                           [variant]="emptyStateVariants[example.index]"
                           title="No orders found"
                           description="Try changing filters or create a new order."
-                          icon="0"
+                          imageUrl="/assets/images/empty-state-search.webp"
+                          imageAlt="Document with a magnifying glass"
                         >
                           <j-button jEmptyStateAction label="Create order" />
                         </j-empty>
@@ -2074,24 +2482,90 @@ const CARD_FEATURE_EXAMPLES = [
                         </j-form-field>
                       }
                       @case ('icon-field') {
-                        <j-icon-field
-                          prefixIcon="search"
-                          clearable
-                          fullWidth
-                          ariaLabel="Project search"
-                          (clear)="iconFieldSearch = ''"
-                        >
-                          <j-input
-                            placeholder="Search projects"
-                            [(ngModel)]="iconFieldSearch"
-                            width="full"
-                          />
-                        </j-icon-field>
+                        @if (example.key === 'disabled') {
+                          <j-icon-field
+                            prefixIcon="lock"
+                            disabled
+                            fullWidth
+                            ariaLabel="Locked search"
+                          >
+                            <j-input
+                              name="lockedSearch"
+                              disabled
+                              [(ngModel)]="iconFieldDisabledSearch"
+                              width="full"
+                            />
+                          </j-icon-field>
+                        } @else {
+                          <j-icon-field
+                            prefixIcon="search"
+                            clearable
+                            fullWidth
+                            ariaLabel="Project search"
+                            (clear)="iconFieldBasicSearch = ''"
+                          >
+                            <j-input
+                              name="projectSearch"
+                              placeholder="Search projects"
+                              [(ngModel)]="iconFieldBasicSearch"
+                              width="full"
+                            />
+                          </j-icon-field>
+                        }
                       }
                       @case ('input-group') {
-                        <j-input-group prefixAddon="$" suffixAddon=".00">
-                          <j-input placeholder="Amount" />
-                        </j-input-group>
+                        @switch (example.key) {
+                          @case ('website') {
+                            <j-input-group
+                              prefixAddon="https://"
+                              suffixAddon=".example.com"
+                              ariaLabel="Workspace URL"
+                            >
+                              <j-input name="workspaceSlug" [(ngModel)]="workspaceSlug" />
+                            </j-input-group>
+                          }
+                          @case ('email') {
+                            <j-input-group suffixAddon="@jrng.dev" fullWidth ariaLabel="Work email">
+                              <j-input name="emailAlias" [(ngModel)]="emailAlias" width="full" />
+                            </j-input-group>
+                          }
+                          @case ('comfortable') {
+                            <j-input-group
+                              prefixAddon="Qty"
+                              [compact]="false"
+                              ariaLabel="Order quantity"
+                            >
+                              <j-input
+                                name="orderQuantity"
+                                type="number"
+                                [(ngModel)]="groupQuantity"
+                              />
+                            </j-input-group>
+                          }
+                          @case ('disabled') {
+                            <j-input-group
+                              prefixAddon="$"
+                              suffixAddon=".00"
+                              disabled
+                              ariaLabel="Locked amount"
+                            >
+                              <j-input name="lockedAmount" disabled [ngModel]="1250" />
+                            </j-input-group>
+                          }
+                          @default {
+                            <j-input-group
+                              prefixAddon="$"
+                              suffixAddon=".00"
+                              ariaLabel="Budget amount"
+                            >
+                              <j-input
+                                name="budgetAmount"
+                                type="number"
+                                [(ngModel)]="groupBudget"
+                              />
+                            </j-input-group>
+                          }
+                        }
                       }
                       @case ('panel') {
                         <j-panel header="Project health" toggleable>
@@ -2282,11 +2756,6 @@ const CARD_FEATURE_EXAMPLES = [
                           </j-bottom-sheet>
                         </div>
                       }
-                      @case ('calendar') {
-                        <div class="j-calendar-preview">
-                          <j-calendar [value]="calendarDate" (dateSelect)="calendarDate = $event" />
-                        </div>
-                      }
                       @case ('calendar-scheduler') {
                         <j-calendar-scheduler
                           [events]="schedulerEvents"
@@ -2351,12 +2820,54 @@ const CARD_FEATURE_EXAMPLES = [
                         </div>
                       }
                       @case ('editor') {
-                        <j-editor
-                          label="Description"
-                          placeholder="Write a short summary"
-                          hint="Select text, then use formatting, alignment, list, link, image, undo, or redo controls."
-                          [(ngModel)]="editorValue"
-                        />
+                        @if (example.key === 'html') {
+                          <j-editor
+                            label="Release notes"
+                            showSourceToggle
+                            showWordCount
+                            [(ngModel)]="editorHtmlValue"
+                          />
+                        } @else {
+                          <j-editor
+                            label="Description"
+                            placeholder="Write a short summary"
+                            hint="Use the toolbar to format the document."
+                            showWordCount
+                            showFullscreen
+                            [(ngModel)]="editorValue"
+                          />
+                        }
+                      }
+                      @case ('copy-button') {
+                        @if (example.key === 'labels') {
+                          <j-copy-button
+                            text="https://jrng.dev/components"
+                            label="Copy link"
+                            copiedLabel="Link copied"
+                            ariaLabel="Copy component link"
+                          />
+                        } @else if (example.key === 'icon') {
+                          <j-copy-button
+                            text="npm install jrng-ui"
+                            icon="copy"
+                            iconOnly
+                            ariaLabel="Copy install command"
+                          />
+                        } @else if (example.key === 'code') {
+                          <div class="j-copy-code">
+                            <code>npm install jrng-ui</code>
+                            <j-copy-button
+                              text="npm install jrng-ui"
+                              icon="copy"
+                              iconOnly
+                              ariaLabel="Copy install command"
+                            />
+                          </div>
+                        } @else if (example.key === 'disabled') {
+                          <j-copy-button text="Unavailable token" disabled />
+                        } @else {
+                          <j-copy-button text="JRNG-2026" />
+                        }
                       }
                       @case ('gallery') {
                         <div class="j-preview-stack">
@@ -2470,7 +2981,7 @@ const CARD_FEATURE_EXAMPLES = [
                       @case ('image') {
                         <j-image
                           [src]="previewImage"
-                          alt="Abstract product preview"
+                          alt="Illustration of a laptop product"
                           width="18rem"
                           preview
                         />
@@ -2584,6 +3095,7 @@ const CARD_FEATURE_EXAMPLES = [
                           [items]="virtualItems"
                           [itemSize]="40"
                           [viewportItems]="5"
+                          [loading]="example.key === 'loading'"
                           height="12rem"
                         />
                       }
@@ -2635,7 +3147,7 @@ const CARD_FEATURE_EXAMPLES = [
                               </div>
 
                               <div class="j-generated-preview-card__body">
-                                @if (doc().category.includes('Forms')) {
+                                @if (doc().category === 'Form') {
                                   <div class="j-generated-field">
                                     <span>{{ doc().name }}</span>
                                     <span class="j-generated-input">Enter value</span>
@@ -3201,6 +3713,10 @@ export class ComponentDetailViewComponent {
   priorityGuidance(): PriorityComponentGuidance | null {
     return priorityComponentGuidance[this.doc().slug] ?? null;
   }
+
+  isGeneratedTableScenario(key: string): boolean {
+    return TABLE_SCENARIO_COMPONENTS[key] != null;
+  }
   readonly featureCodeTabs = signal<Readonly<Record<string, DetailCodeTab>>>({});
   readonly codeTabs: readonly { label: string; value: DetailCodeTab; icon?: JIconName }[] = [
     { label: 'HTML', value: 'html' },
@@ -3211,7 +3727,7 @@ export class ComponentDetailViewComponent {
   readonly featureExamples = computed<readonly DetailFeatureExample[]>(() => {
     const doc = this.doc();
     if (doc.slug === 'table') {
-      return TABLE_FEATURE_EXAMPLES.map((example, index) => ({
+      return [...TABLE_FEATURE_EXAMPLES, ...TABLE_SCENARIO_DOCS].map((example, index) => ({
         ...example,
         index,
       }));
@@ -3236,6 +3752,27 @@ export class ComponentDetailViewComponent {
           ? { ...example, index, ...demoSources['avatar-zoom-demo'] }
           : { ...example, index },
       );
+    }
+    if (doc.slug === 'date-picker') {
+      return DATE_PICKER_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+    }
+    if (doc.slug === 'checkbox') {
+      return CHECKBOX_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+    }
+    if (doc.slug === 'editor') {
+      return EDITOR_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+    }
+    if (doc.slug === 'icon-field') {
+      return ICON_FIELD_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+    }
+    if (doc.slug === 'input-group') {
+      return INPUT_GROUP_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+    }
+    if (doc.slug === 'copy-button') {
+      return COPY_BUTTON_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+    }
+    if (doc.slug === 'radio') {
+      return RADIO_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
     }
     if (doc.slug === 'loader') {
       return LOADER_FEATURE_EXAMPLES.map((example, index) =>
@@ -3321,6 +3858,7 @@ export class ComponentDetailViewComponent {
       this.doc();
       this.detailViewTab.set('features');
       this.featureCodeTabs.set({});
+      this.resetExampleState();
     });
     effect(() => {
       this.activeContentsId.set(this.contentsItems()[0]?.id ?? '');
@@ -3361,6 +3899,67 @@ export class ComponentDetailViewComponent {
   scrollToContents(id: string): void {
     this.activeContentsId.set(id);
     this.documentRef.getElementById(id)?.scrollIntoView({ block: 'start' });
+  }
+
+  resetExampleState(): void {
+    this.previewWidth.set(null);
+    this.dialogOpen.set(false);
+    this.drawerOpen.set(false);
+    this.popoverOpen.set(false);
+    this.tableActionMessage.set('');
+    this.bottomSheetVisible = false;
+    this.commandPaletteOpen = false;
+    this.imagePreviewOpen = false;
+    this.notificationOpen = false;
+    this.receiptEnabled = true;
+    this.selectedInterests = ['design'];
+    this.policyVerified = true;
+    this.managedSetting = true;
+    this.enabled = true;
+    this.published = false;
+    this.plan = 'pro';
+    this.radioSizeChoice = 'default';
+    this.lockedPlan = 'managed';
+    this.viewMode = 'list';
+    this.brandColor = '#4f46e5';
+    this.dueDate = new Date(2026, 6, 18);
+    this.pickerRange = [new Date(2026, 6, 12), new Date(2026, 6, 19)];
+    this.multipleDates = [new Date(2026, 6, 8), new Date(2026, 6, 15)];
+    this.bookingDate = new Date(2026, 6, 18);
+    this.appointmentDate = new Date(2026, 6, 20);
+    this.inlineDate = new Date(2026, 6, 16);
+    this.dateTimeValue = new Date(2026, 6, 18, 14, 30);
+    this.billingMonth = new Date(2026, 6, 1);
+    this.lockedDate = new Date(2026, 6, 24);
+    this.labeledEmail = 'avery@example.com';
+    this.iconFieldBasicSearch = '';
+    this.iconFieldDisabledSearch = 'Managed by policy';
+    this.groupBudget = 2500;
+    this.workspaceSlug = 'operations';
+    this.emailAlias = 'avery';
+    this.groupQuantity = 3;
+    this.quantity = 3;
+    this.budget = 2500;
+    this.otp = '';
+    this.selectedTeam = 'engineering';
+    this.selectedSkills = ['angular', 'accessibility'];
+    this.rating = 4;
+    this.completion = 65;
+    this.dateRange = ['2026-07-12', '2026-07-19'];
+    this.editorValue = '<p>Build accessible Angular interfaces with stable components.</p>';
+    this.editorHtmlValue = '<h2>Release 0.0.9</h2><p>Accessibility checks passed.</p>';
+    this.meetingTime = '14:30';
+    this.selectedCustomer = 'acme';
+    this.tags = [
+      { label: 'Angular', severity: 'primary' },
+      { label: 'Accessibility', severity: 'success' },
+    ];
+    this.maskedPhone = '(555) 123-4567';
+    this.employeeId = 'JR-2048';
+    this.galleryAnimation = 'fade';
+    this.autocompleteSuggestions = [...this.customerSuggestions];
+    this.fileBrowserSelection = ['report'];
+    this.kanbanPreviewColumns = this.kanbanColumns;
   }
 
   addExampleBooleanInput(template: string, inputName: string): string {
@@ -3485,9 +4084,10 @@ export class ComponentDetailViewComponent {
     'link',
   ];
   readonly avatarPeople = [
-    { label: 'Avery Reed', image: '/assets/avatars/avery.svg' },
-    { label: 'Morgan Kim', image: '/assets/avatars/morgan.svg' },
-    { label: 'Jordan Lee', image: '/assets/avatars/jordan.svg' },
+    { label: 'Avery Reed', image: '/assets/images/avatar-user-01.webp' },
+    { label: 'Morgan Kim', image: '/assets/images/avatar-user-02.webp' },
+    { label: 'Jordan Lee', image: '/assets/images/avatar-user-03.webp' },
+    { label: 'Sam Rivera', image: '/assets/images/avatar-user-04.webp' },
     { label: 'Sam Rivera' },
     { label: 'Taylor Brooks' },
   ] as const;
@@ -3578,14 +4178,29 @@ export class ComponentDetailViewComponent {
   commandPaletteOpen = false;
   imagePreviewOpen = false;
   notificationOpen = false;
-  checked = true;
+  receiptEnabled = true;
+  selectedInterests: readonly string[] = ['design'];
+  policyVerified = true;
+  managedSetting = true;
   enabled = true;
   published = false;
   plan = 'pro';
+  radioSizeChoice = 'default';
+  lockedPlan = 'managed';
   viewMode = 'list';
   brandColor = '#4f46e5';
   dueDate: Date | null = new Date(2026, 6, 18);
   pickerRange: readonly Date[] = [new Date(2026, 6, 12), new Date(2026, 6, 19)];
+  multipleDates: readonly Date[] = [new Date(2026, 6, 8), new Date(2026, 6, 15)];
+  bookingDate: Date | null = new Date(2026, 6, 18);
+  readonly bookingMinDate = new Date(2026, 6, 10);
+  readonly bookingMaxDate = new Date(2026, 6, 28);
+  appointmentDate: Date | null = new Date(2026, 6, 20);
+  readonly unavailableDates = [new Date(2026, 6, 14), new Date(2026, 6, 21)];
+  inlineDate: Date | null = new Date(2026, 6, 16);
+  dateTimeValue: Date | null = new Date(2026, 6, 18, 14, 30);
+  billingMonth: Date | null = new Date(2026, 6, 1);
+  lockedDate: Date | null = new Date(2026, 6, 24);
   readonly datePresets: readonly JDatePickerPreset[] = [
     {
       label: 'Release week',
@@ -3599,7 +4214,12 @@ export class ComponentDetailViewComponent {
     },
   ];
   labeledEmail = 'avery@example.com';
-  iconFieldSearch = '';
+  iconFieldBasicSearch = '';
+  iconFieldDisabledSearch = 'Managed by policy';
+  groupBudget = 2500;
+  workspaceSlug = 'operations';
+  emailAlias = 'avery';
+  groupQuantity = 3;
   quantity = 3;
   budget = 2500;
   otp = '';
@@ -3607,9 +4227,9 @@ export class ComponentDetailViewComponent {
   selectedSkills: string[] = ['angular', 'accessibility'];
   rating = 4;
   completion = 65;
-  calendarDate = new Date(2026, 6, 12);
   dateRange: readonly string[] = ['2026-07-12', '2026-07-19'];
   editorValue = '<p>Build accessible Angular interfaces with stable components.</p>';
+  editorHtmlValue = '<h2>Release 0.0.9</h2><p>Accessibility checks passed.</p>';
   meetingTime = '14:30';
   selectedCustomer = 'acme';
   tags = [
@@ -3668,7 +4288,7 @@ export class ComponentDetailViewComponent {
     { label: 'Remaining', value: 18, severity: 'warning' },
   ] as const;
   readonly sparklineValues = [12, 18, 16, 24, 30, 28, 36, 42] as const;
-  readonly previewImage = '/assets/gallery/alpine-dawn.png';
+  readonly previewImage = '/assets/images/product-laptop.webp';
   readonly schedulerEvents = [
     {
       id: 'planning',
@@ -3687,22 +4307,22 @@ export class ComponentDetailViewComponent {
   ] as const;
   readonly carouselItems = [
     {
-      title: 'Alpine dawn',
-      description: 'A quiet mountain lake at first light.',
-      image: '/assets/gallery/alpine-dawn.png',
-      alt: 'Mountain lake reflecting a warm sunrise',
+      title: 'Analytics workspace',
+      description: 'A dashboard layout with navigation, metrics, and a trend chart.',
+      image: '/assets/images/dashboard-workspace.webp',
+      alt: 'Illustrated analytics dashboard workspace',
     },
     {
-      title: 'Coastal light',
-      description: 'A lighthouse above a vivid blue coast.',
-      image: '/assets/gallery/coastal-light.png',
-      alt: 'Lighthouse on a rugged blue coastline',
+      title: 'Operations table',
+      description: 'A structured order table with selection and status indicators.',
+      image: '/assets/images/table-orders-preview.webp',
+      alt: 'Illustrated order management table',
     },
     {
-      title: 'Desert arches',
-      description: 'Sunlit sandstone against cobalt shadows.',
-      image: '/assets/gallery/desert-arches.png',
-      alt: 'Sandstone arches in golden desert light',
+      title: 'Project team',
+      description: 'Four team members with online presence indicators.',
+      image: '/assets/images/team-avatar-group.webp',
+      alt: 'Illustrated group of four team members',
     },
   ] as const;
   readonly chartData = {
@@ -3758,19 +4378,24 @@ export class ComponentDetailViewComponent {
   fileBrowserSelection: readonly string[] = ['report'];
   readonly galleryItems = [
     {
-      src: '/assets/gallery/alpine-dawn.png',
-      alt: 'Mountain lake at dawn',
-      caption: 'Alpine dawn',
+      src: '/assets/images/product-laptop.webp',
+      alt: 'Illustration of a laptop product',
+      caption: 'Laptop workspace',
     },
     {
-      src: '/assets/gallery/coastal-light.png',
-      alt: 'Lighthouse on the coast',
-      caption: 'Coastal light',
+      src: '/assets/images/product-headphones.webp',
+      alt: 'Illustration of over-ear headphones',
+      caption: 'Wireless headphones',
     },
     {
-      src: '/assets/gallery/desert-arches.png',
-      alt: 'Desert sandstone arches',
-      caption: 'Desert arches',
+      src: '/assets/images/dashboard-workspace.webp',
+      alt: 'Illustrated analytics dashboard workspace',
+      caption: 'Analytics workspace',
+    },
+    {
+      src: '/assets/images/table-orders-preview.webp',
+      alt: 'Illustrated order management table',
+      caption: 'Order management',
     },
   ] as const;
   readonly ganttTasks = [
@@ -3853,6 +4478,7 @@ export class ComponentDetailViewComponent {
     { field: 'type', header: 'Type' },
   ];
   readonly virtualItems = Array.from({ length: 100 }, (_, index) => `Record ${index + 1}`);
+  readonly tableActionMessage = signal('');
   readonly orderColumns: readonly JTableColumn[] = [
     { field: 'order', header: 'Order', sortable: true },
     { field: 'customer', header: 'Customer', filterable: true, resizable: true },
@@ -3863,8 +4489,13 @@ export class ComponentDetailViewComponent {
       header: 'Actions',
       type: 'actions',
       actions: [
-        { key: 'view', label: 'View' },
-        { key: 'delete', label: 'Delete', severity: 'danger' },
+        { key: 'view', label: 'View', command: (event) => this.handleTableAction(event) },
+        {
+          key: 'delete',
+          label: 'Delete',
+          severity: 'danger',
+          command: (event) => this.handleTableAction(event),
+        },
       ],
     },
   ];
@@ -3938,9 +4569,22 @@ export class ComponentDetailViewComponent {
       type: 'actions',
       minWidth: '8rem',
       actions: [
-        { key: 'view', label: 'View client' },
-        { key: 'edit', label: 'Edit client' },
-        { key: 'archive', label: 'Archive', severity: 'danger' },
+        {
+          key: 'view',
+          label: 'View client',
+          command: (event) => this.handleTableAction(event),
+        },
+        {
+          key: 'edit',
+          label: 'Edit client',
+          command: (event) => this.handleTableAction(event),
+        },
+        {
+          key: 'archive',
+          label: 'Archive',
+          severity: 'danger',
+          command: (event) => this.handleTableAction(event),
+        },
       ],
     },
   ];
@@ -4038,6 +4682,12 @@ export class ComponentDetailViewComponent {
     { key: 'duplicate', label: 'Duplicate' },
     { key: 'delete', label: 'Delete', severity: 'danger' },
   ];
+
+  handleTableAction(event: JTableActionEvent): void {
+    const record =
+      event.row['code'] ?? event.row['order'] ?? event.row['name'] ?? `row ${event.index + 1}`;
+    this.tableActionMessage.set(`${event.action.label}: ${String(record)}`);
+  }
 
   readonly timelineItems: readonly JTimelineItem[] = [
     { title: 'Created', content: 'Order was created.', opposite: '09:00', severity: 'info' },

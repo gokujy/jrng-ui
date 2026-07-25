@@ -49,4 +49,18 @@ describe('JAvatarGroupComponent', () => {
     expect(overflow.nativeElement.textContent.trim()).toBe('+4');
     expect(overflow.attributes['aria-label']).toBe('4 more');
   });
+
+  it('uses compact spacing for the overflow popover', () => {
+    const styles = (
+      JAvatarGroupComponent as unknown as {
+        ɵcmp: { styles: readonly string[] };
+      }
+    ).ɵcmp.styles.join('\n');
+
+    expect(styles).toContain('.j-avatar-group__popover');
+    expect(styles).toContain('min-width: max-content');
+    expect(styles).toContain('padding: var(--j-spacing-2)');
+    expect(styles).toContain('.j-avatar-group__overflow-list');
+    expect(styles).toContain('padding: 0');
+  });
 });

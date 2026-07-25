@@ -17,7 +17,6 @@ const completeSlugs = new Set([
   'dialog',
   'confirm-dialog',
   'table',
-  'data-grid',
   'file-upload',
   'chart',
   'menu',

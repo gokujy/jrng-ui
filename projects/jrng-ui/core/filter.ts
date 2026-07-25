@@ -1,4 +1,4 @@
-/** Match modes for text/number/date filtering, aligned with common data-grid semantics. */
+/** Match modes for text, number, and date filtering in data controls. */
 export type JFilterMatchMode =
   | 'contains'
   | 'notContains'

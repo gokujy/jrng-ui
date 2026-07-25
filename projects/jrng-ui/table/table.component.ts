@@ -7,6 +7,7 @@ import {
   ContentChild,
   ContentChildren,
   DestroyRef,
+  ElementRef,
   HostListener,
   Input,
   OnChanges,
@@ -31,7 +32,9 @@ import {
   JTableCellContext,
   JTableColumn,
   JTableColumnAlign,
+  JTableColumnGroupRow,
   JTableColumnReorderEvent,
+  JTableColumnResizeMode,
   JTableColumnResizeEvent,
   JTableColumnVisibilityChangeEvent,
   JTableConfig,
@@ -52,6 +55,7 @@ import {
   JTableFilterModel,
   JTableFilterType,
   JTableHeaderContext,
+  JTableHeaderContextMenuEvent,
   JTableLazyLoadEvent,
   JTableLoadingContext,
   JTableLoadingVariant,
@@ -62,6 +66,7 @@ import {
   JTableRowLockEvent,
   JTableSkeletonColumn,
   JTableSelection,
+  JTableSelectAllChangeEvent,
   JTableSelectionMode,
   JTableDataMode,
   JTableResponsiveMode,
@@ -108,6 +113,7 @@ export type JTableSortDirection = 'asc' | 'desc';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JTableComponent implements AfterContentInit, OnChanges {
+  private static nextMaximizeId = 0;
   @ContentChild('jTableExpandedRow') expandedRowTemplate?: TemplateRef<{
     $implicit: JTableRow;
     row: JTableRow;
@@ -149,20 +155,26 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   // deliberately accepts every strongly typed JTableColumn<TRow> instance.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   readonly columns = input<readonly JTableColumn<any>[]>([]);
+  readonly columnGroups = input<readonly JTableColumnGroupRow[]>([]);
   readonly totalRecords = input(0);
   @Input({ transform: numberAttribute }) first = 0;
-  @Input() rowsPerPageOptions: readonly number[] = [10, 25, 50];
+  @Input() rowsPerPageOptions: readonly number[] = [5, 10, 25, 50, 100];
+  readonly title = input('');
+  readonly description = input('');
+  readonly searchPlaceholder = input('Search');
   @Input() sortField = '';
   @Input() sortOrder: JTableSortOrder = 0;
-  @Input() sortMode: 'single' | 'multiple' = 'single';
+  @Input() sortMode: 'single' | 'multiple' = 'multiple';
   @Input() multiSortMeta: readonly JTableSort[] = [];
   @Input() filters: Record<string, unknown> = {};
   @Input() filterModel: JTableFilterModel = { items: [], logicOperator: 'and' };
   @Input() globalFilter = '';
   readonly globalFilterFields = input<readonly string[]>([]);
-  @Input() selectionMode: JTableSelectionMode = 'none';
+  @Input() selectionMode: JTableSelectionMode = 'checkbox';
   @Input() selection: JTableSelection = null;
   readonly rowSelectable = input<((row: JTableRow, index: number) => boolean) | null>(null);
+  readonly rowClass = input<((row: JTableRow, index: number) => string) | null>(null);
+  readonly rowReorderable = input<((row: JTableRow, index: number) => boolean) | null>(null);
   readonly rowKey = input('id');
   readonly dataKey = input('');
   readonly scrollHeight = input('');
@@ -206,37 +218,51 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   readonly restoreSelection = input(false, { transform: booleanAttribute });
   readonly groupRowsBy = input('');
   readonly collapsibleRowGroups = input(false, { transform: booleanAttribute });
+  @Input() expandedRowKeys: readonly string[] = [];
 
   readonly loading = input(false, { transform: booleanAttribute });
   readonly loadingVariant = input<JTableLoadingVariant>('skeleton');
   readonly skeletonRows = input(5, { transform: numberAttribute });
   readonly skeletonColumns = input<readonly JTableSkeletonColumn[]>([]);
-  @Input({ transform: booleanAttribute }) paginator = false;
+  @Input({ transform: booleanAttribute }) paginator = true;
   @Input({ transform: booleanAttribute }) hover = true;
-  @Input({ transform: booleanAttribute }) resizableColumns = false;
-  @Input({ transform: booleanAttribute }) reorderableColumns = false;
+  @Input({ transform: booleanAttribute }) resizableColumns = true;
+  @Input() columnResizeMode: JTableColumnResizeMode = 'expand';
+  @Input({ transform: booleanAttribute }) reorderableColumns = true;
   @Input({ transform: booleanAttribute }) reorderableRows = false;
   readonly expandableRows = input(false, { transform: booleanAttribute });
-  readonly stickyHeader = input(false, { transform: booleanAttribute });
-  @Input({ transform: booleanAttribute }) showGlobalFilter = false;
-  @Input({ transform: booleanAttribute }) showColumnManager = false;
-  @Input({ transform: booleanAttribute }) showExport = false;
+  readonly stickyHeader = input(true, { transform: booleanAttribute });
+  readonly bulkActions = input(true, { transform: booleanAttribute });
+  @Input({ transform: booleanAttribute }) showGlobalFilter = true;
+  @Input({ transform: booleanAttribute }) showColumnManager = true;
+  @Input({ transform: booleanAttribute }) showExport = true;
   @Input({ transform: booleanAttribute }) showTableState = false;
   readonly frozenRows = input(false, { transform: booleanAttribute });
   @Input({ transform: booleanAttribute }) lockableRows = false;
-  @Input({ transform: booleanAttribute }) maximizable = false;
+  @Input({ transform: booleanAttribute }) maximizable = true;
+  @Input({ transform: booleanAttribute }) removableSort = true;
+  @Input({ transform: numberAttribute }) pageLinkSize = 5;
+  @Input({ transform: booleanAttribute }) showCurrentPageReport = true;
+  @Input() currentPageReportTemplate = 'Showing {first} to {last} of {totalRecords}';
+  @Input({ transform: booleanAttribute }) showFirstLastPageButtons = true;
 
   readonly lazyLoad = output<JTableLazyLoadEvent>();
   readonly sortChange = output<JTableSort>();
   readonly pageChange = output<JTablePageChange>();
   readonly filterChange = output<JTableFilterChange>();
+  readonly globalFilterChange = output<string>();
   readonly rowClick = output<JTableRowClickEvent>();
   readonly rowDoubleClick = output<JTableRowClickEvent>();
   readonly selectionChange = output<JTableSelection>();
   readonly action = output<JTableActionEvent>();
   readonly rowSelect = output<JTableRow>();
+  readonly rowUnselect = output<JTableRow>();
+  readonly selectAllChange = output<JTableSelectAllChangeEvent>();
   readonly rowExpand = output<JTableRow>();
   readonly rowCollapse = output<JTableRow>();
+  readonly expandedRowKeysChange = output<readonly string[]>();
+  readonly rowEditInit = output<JTableEditEvent>();
+  readonly rowEditCancel = output<JTableEditEvent>();
   readonly rowEditSave = output<JTableEditEvent>();
   readonly cellEditSave = output<JTableEditEvent>();
   readonly editValidationError = output<JTableEditEvent & { readonly error: string }>();
@@ -255,20 +281,28 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   readonly maximize = output<void>();
   readonly minimize = output<void>();
   readonly contextMenu = output<JTableRowClickEvent>();
+  readonly headerContextMenu = output<JTableHeaderContextMenuEvent>();
   readonly emptyAction = output<JTableEmptyActionEvent>();
   readonly rowGroupToggle = output<{ readonly value: unknown; readonly collapsed: boolean }>();
 
-  private pageRows = 10;
+  private pageRows = 25;
   hiddenColumnFields = new Set<string>();
+  private columnVisibilityOverrides = new Map<string, boolean>();
   private expandedRows = new Set<string>();
   private dragRowIndex = -1;
   private dragColumnIndex = -1;
   private editingCellKey = '';
+  private editingRowKey = '';
+  private editingRowDraft: JTableRow | null = null;
+  private editErrors = new Map<string, string>();
   private columnOrder: readonly string[] = [];
   private columnWidths: Record<string, string> = {};
   private internalLockedRowKeys = new Set<string>();
   private collapsedRowGroups = new Set<string>();
   private stopColumnResize: (() => void) | null = null;
+  private maximizedTableAttached = false;
+  private previousBodyOverflow = '';
+  private readonly maximizeOwnerId = `j-table-maximized-${JTableComponent.nextMaximizeId++}`;
   maximized = false;
   virtualStart = 0;
   virtualWindowSize = 20;
@@ -277,15 +311,19 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly destroyRef = inject(DestroyRef);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
+  private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly memoryStorage = jCreateMemoryTableStorage();
 
   constructor() {
-    this.destroyRef.onDestroy(() => this.cleanupColumnResize());
+    this.destroyRef.onDestroy(() => {
+      this.cleanupColumnResize();
+      this.restoreMaximizedTable();
+    });
   }
 
   @Input({ transform: numberAttribute })
   set rows(value: number) {
-    this.pageRows = Math.max(1, Number(value) || 10);
+    this.pageRows = Math.max(1, Number(value) || 25);
   }
 
   get rows(): number {
@@ -295,12 +333,7 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   get resolvedColumns(): readonly JTableColumn[] {
     const source = this.columns() as unknown as readonly JTableColumn[];
     return this.orderColumns(source)
-      .filter(
-        (column) =>
-          column.visible !== false &&
-          column.hidden !== true &&
-          !this.hiddenColumnFields.has(column.field),
-      )
+      .filter((column) => this.isColumnVisible(column))
       .map((column) => ({
         ...column,
         width: this.columnWidths[column.field] ?? column.width,
@@ -567,8 +600,14 @@ export class JTableComponent implements AfterContentInit, OnChanges {
       this.resolvedColumns.length +
         (this.selectionMode === 'checkbox' || this.selectionMode === 'radio' ? 1 : 0) +
         (this.expandableRows() ? 1 : 0) +
-        (this.lockableRows ? 1 : 0) || 1
+        (this.lockableRows ? 1 : 0) +
+        (this.reorderableRows ? 1 : 0) +
+        (this.editMode() === 'row' ? 1 : 0) || 1
     );
+  }
+
+  get auxiliaryColumnCount(): number {
+    return this.colspan - this.resolvedColumns.length;
   }
 
   get normalizedFirst(): number {
@@ -600,6 +639,14 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     return { table: this };
   }
 
+  get selectionCount(): number {
+    if (this.isSelectionArray(this.selection)) {
+      return this.selection.length;
+    }
+
+    return this.selection == null ? 0 : 1;
+  }
+
   ngAfterContentInit(): void {
     this.applyConfig();
     this.syncLockedRows();
@@ -612,6 +659,9 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     }
     if (changes['lockedRowKeys']) {
       this.syncLockedRows();
+    }
+    if (changes['expandedRowKeys']) {
+      this.expandedRows = new Set(this.expandedRowKeys);
     }
     if (
       this.dataMode() === 'lazy' &&
@@ -732,9 +782,48 @@ export class JTableComponent implements AfterContentInit, OnChanges {
       `j-table__cell--${align}`,
       column.frozen ? 'j-table__cell--frozen' : '',
       column.frozenAlign === 'right' ? 'j-table__cell--frozen-right' : '',
+      column.responsivePriority
+        ? `j-table__cell--priority-${Math.max(1, Math.min(5, column.responsivePriority))}`
+        : '',
     ]
       .filter(Boolean)
       .join(' ');
+  }
+
+  rowClassFor(row: JTableRow, index: number): string {
+    return this.rowClass()?.(row, index) ?? '';
+  }
+
+  cellClassFor(row: JTableRow, column: JTableColumn, index: number): string {
+    return column.cellClass?.(row, column, index) ?? '';
+  }
+
+  columnRowSpan(row: JTableRow, column: JTableColumn, index: number): number {
+    return Math.max(0, column.rowSpan?.(row, index, this.visibleRows) ?? 1);
+  }
+
+  frozenColumnOffset(column: JTableColumn): string | null {
+    if (!column.frozen) {
+      return null;
+    }
+    const align = column.frozenAlign === 'right' ? 'right' : 'left';
+    const frozen = this.resolvedColumns.filter(
+      (candidate) =>
+        candidate.frozen && (candidate.frozenAlign === 'right' ? 'right' : 'left') === align,
+    );
+    const index = frozen.findIndex((candidate) => candidate.field === column.field);
+    const preceding = align === 'left' ? frozen.slice(0, index) : frozen.slice(index + 1);
+    if (!preceding.length) {
+      return '0px';
+    }
+    const widths = preceding.map(
+      (candidate) =>
+        this.columnWidths[candidate.field] ??
+        candidate.width ??
+        candidate.minWidth ??
+        'var(--j-table-default-column-width, 10rem)',
+    );
+    return `calc(${widths.join(' + ')})`;
   }
 
   headerColumnClass(column: JTableColumn): string {
@@ -822,6 +911,24 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     this.changeDetectorRef.markForCheck();
   }
 
+  collapseAllGroups(): void {
+    const values = new Map(
+      this.sourceRows.map((row) => [this.groupKey(this.groupValue(row)), this.groupValue(row)]),
+    );
+    this.collapsedRowGroups = new Set(values.keys());
+    values.forEach((value) => this.rowGroupToggle.emit({ value, collapsed: true }));
+    this.changeDetectorRef.markForCheck();
+  }
+
+  expandAllGroups(): void {
+    const values = new Map(
+      this.sourceRows.map((row) => [this.groupKey(this.groupValue(row)), this.groupValue(row)]),
+    );
+    this.collapsedRowGroups.clear();
+    values.forEach((value) => this.rowGroupToggle.emit({ value, collapsed: false }));
+    this.changeDetectorRef.markForCheck();
+  }
+
   private groupKey(value: unknown): string {
     return `${typeof value}:${String(value)}`;
   }
@@ -843,6 +950,7 @@ export class JTableComponent implements AfterContentInit, OnChanges {
 
     this.selection = next;
     this.selectionChange.emit(next);
+    this.selectAllChange.emit({ selected, rows: this.eligibleVisibleRows, selection: next });
   }
 
   handleRowClick(row: JTableRow, index: number, originalEvent: MouseEvent): void {
@@ -860,11 +968,23 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     const event = { row, index, originalEvent };
     this.rowDoubleClick.emit(event);
     if (this.editMode() === 'row') {
-      this.rowEditSave.emit({ row, index, originalEvent });
+      this.startRowEdit(row, index, originalEvent);
     }
   }
 
-  handleRowKeydown(event: KeyboardEvent, row: JTableRow): void {
+  handleRowKeydown(event: KeyboardEvent, row: JTableRow, index: number): void {
+    if (
+      this.reorderableRows &&
+      event.altKey &&
+      (event.key === 'ArrowUp' || event.key === 'ArrowDown')
+    ) {
+      event.preventDefault();
+      this.moveRow(row, event.key === 'ArrowUp' ? -1 : 1);
+      return;
+    }
+    if (this.rowSelectable()?.(row, index) === false) {
+      return;
+    }
     if (this.selectionMode === 'none' || (event.key !== 'Enter' && event.key !== ' ')) {
       return;
     }
@@ -896,8 +1016,35 @@ export class JTableComponent implements AfterContentInit, OnChanges {
       ? current.filter((selected) => !this.rowsEqual(selected, row))
       : [...current, row];
     this.selection = next;
-    this.rowSelect.emit(row);
+    if (exists) {
+      this.rowUnselect.emit(row);
+    } else {
+      this.rowSelect.emit(row);
+    }
     this.selectionChange.emit(next);
+  }
+
+  selectRows(rows: readonly JTableRow[]): void {
+    const eligible = rows.filter((row) => this.isRowSelectable(row));
+    this.selection =
+      this.selectionMode === 'single' || this.selectionMode === 'radio'
+        ? (eligible[0] ?? null)
+        : eligible;
+    this.selectionChange.emit(this.selection);
+    eligible.forEach((row) => this.rowSelect.emit(row));
+    this.changeDetectorRef.markForCheck();
+  }
+
+  clearSelection(): void {
+    const previous = this.isSelectionArray(this.selection)
+      ? this.selection
+      : this.selection
+        ? [this.selection]
+        : [];
+    this.selection = this.selectionMode === 'single' || this.selectionMode === 'radio' ? null : [];
+    previous.forEach((row) => this.rowUnselect.emit(row));
+    this.selectionChange.emit(this.selection);
+    this.changeDetectorRef.markForCheck();
   }
 
   toggleSort(column: JTableColumn): void {
@@ -912,7 +1059,9 @@ export class JTableComponent implements AfterContentInit, OnChanges {
         : this.sortOrder === 1
           ? -1
           : this.sortOrder === -1
-            ? 0
+            ? this.removableSort
+              ? 0
+              : 1
             : 1;
 
     if (this.sortMode === 'multiple') {
@@ -940,6 +1089,51 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     };
     this.emitSort(sort);
     this.emitLazyLoad();
+  }
+
+  sortBy(field: string, order: JTableSortOrder = 1, additive = false): void {
+    const column = (this.columns() as readonly JTableColumn[]).find(
+      (candidate) => candidate.field === field,
+    );
+    if (!column || !this.isColumnSortable(column) || ![-1, 0, 1].includes(order)) {
+      return;
+    }
+    this.virtualStart = 0;
+    if (this.sortMode === 'multiple' || additive) {
+      this.sortMode = 'multiple';
+      this.multiSortMeta = [
+        ...this.multiSortMeta.filter((sort) => sort.field !== field),
+        ...(order === 0
+          ? []
+          : [
+              {
+                field,
+                order,
+                direction: order === 1 ? 'asc' : 'desc',
+              } satisfies JTableSort,
+            ]),
+      ];
+    } else {
+      this.sortField = order === 0 ? '' : field;
+      this.sortOrder = order;
+    }
+    this.emitSort({
+      field,
+      order,
+      direction: order === 1 ? 'asc' : order === -1 ? 'desc' : 'none',
+    });
+    this.emitLazyLoad();
+    this.changeDetectorRef.markForCheck();
+  }
+
+  clearSort(): void {
+    const field = this.sortField;
+    this.sortField = '';
+    this.sortOrder = 0;
+    this.multiSortMeta = [];
+    this.emitSort({ field, order: 0, direction: 'none' });
+    this.emitLazyLoad();
+    this.changeDetectorRef.markForCheck();
   }
 
   sortOrderFor(column: JTableColumn): JTableSortOrder {
@@ -993,6 +1187,13 @@ export class JTableComponent implements AfterContentInit, OnChanges {
       operator: column.filter?.operator ?? 'contains',
       value,
     });
+  }
+
+  filter(field: string, value: unknown, operator: JTableFilterItem['operator'] = 'contains'): void {
+    if (!(this.columns() as readonly JTableColumn[]).some((column) => column.field === field)) {
+      return;
+    }
+    this.handleFilterModelChange({ field, value, operator });
   }
 
   filterValue(field: string): unknown {
@@ -1052,6 +1253,21 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     this.emitLazyLoad();
   }
 
+  goToPage(page: number): void {
+    const pageCount = Math.max(1, Math.ceil(this.totalItems / this.pageRows));
+    const normalizedPage = Math.min(Math.max(1, Math.trunc(page) || 1), pageCount);
+    this.handlePageChange({
+      first: (normalizedPage - 1) * this.pageRows,
+      rows: this.pageRows,
+      page: normalizedPage,
+      pageCount,
+    });
+  }
+
+  resetPagination(): void {
+    this.goToPage(1);
+  }
+
   handleActionClick(event: JTableActionEvent): void {
     this.action.emit(event);
   }
@@ -1061,12 +1277,14 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     this.globalFilter = value;
     this.first = 0;
     this.virtualStart = 0;
+    this.globalFilterChange.emit(value);
     this.emitFilter({ field: '*', value, filters: this.filters });
     this.emitLazyLoad();
   }
 
   toggleColumnVisibility(column: JTableColumn, event: Event): void {
     const checked = (event.target as HTMLInputElement | null)?.checked ?? true;
+    this.columnVisibilityOverrides.set(column.field, checked);
     checked
       ? this.hiddenColumnFields.delete(column.field)
       : this.hiddenColumnFields.add(column.field);
@@ -1081,8 +1299,21 @@ export class JTableComponent implements AfterContentInit, OnChanges {
 
   resetColumns(): void {
     this.hiddenColumnFields.clear();
+    this.columnVisibilityOverrides.clear();
     this.columnOrder = [];
     this.columnWidths = {};
+  }
+
+  isColumnVisible(column: JTableColumn): boolean {
+    const override = this.columnVisibilityOverrides.get(column.field);
+    if (override !== undefined) {
+      return override;
+    }
+    return (
+      column.visible !== false &&
+      column.hidden !== true &&
+      !this.hiddenColumnFields.has(column.field)
+    );
   }
 
   resetFilters(): void {
@@ -1090,6 +1321,7 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     this.filterModel = { items: [], logicOperator: this.filterModel.logicOperator ?? 'and' };
     this.globalFilter = '';
     this.first = 0;
+    this.globalFilterChange.emit('');
     this.emitFilter({ field: '*', value: '', filters: this.filters });
     this.emitLazyLoad();
   }
@@ -1114,10 +1346,33 @@ export class JTableComponent implements AfterContentInit, OnChanges {
       this.expandedRows.add(key);
       this.rowExpand.emit(row);
     }
+    this.emitExpansionChange();
   }
 
   isExpanded(row: JTableRow, index: number): boolean {
     return this.expandedRows.has(this.rowId(row, index));
+  }
+
+  expandAllRows(): void {
+    this.expandedRows = new Set(this.sourceRows.map((row, index) => this.rowId(row, index)));
+    this.emitExpansionChange();
+  }
+
+  collapseAllRows(): void {
+    this.expandedRows.clear();
+    this.emitExpansionChange();
+  }
+
+  setExpandedRows(keys: readonly string[]): void {
+    this.expandedRows = new Set(keys);
+    this.emitExpansionChange();
+  }
+
+  private emitExpansionChange(): void {
+    const keys = [...this.expandedRows];
+    this.expandedRowKeys = keys;
+    this.expandedRowKeysChange.emit(keys);
+    this.changeDetectorRef.markForCheck();
   }
 
   startCellEdit(row: JTableRow, column: JTableColumn, index: number, event: Event): void {
@@ -1132,10 +1387,162 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     }
     event.stopPropagation();
     this.editingCellKey = `${this.rowId(row, index)}:${column.field}`;
+    this.editErrors.delete(this.editingCellKey);
+    this.changeDetectorRef.markForCheck();
   }
 
   isEditingCell(row: JTableRow, column: JTableColumn, index: number): boolean {
     return this.editingCellKey === `${this.rowId(row, index)}:${column.field}`;
+  }
+
+  startRowEdit(row: JTableRow, index: number, originalEvent?: Event): void {
+    if (this.editMode() !== 'row') {
+      return;
+    }
+    this.editingRowKey = this.rowId(row, index);
+    this.editingRowDraft = { ...row };
+    this.clearRowEditErrors(this.editingRowKey);
+    this.rowEditInit.emit({ row, index, originalEvent });
+    this.changeDetectorRef.markForCheck();
+    if (isPlatformBrowser(this.platformId)) {
+      queueMicrotask(() =>
+        this.documentRef
+          .querySelector<HTMLInputElement>(
+            `[data-j-table-row-edit="${this.cssEscape(this.editingRowKey)}"]`,
+          )
+          ?.focus(),
+      );
+    }
+  }
+
+  isEditingRow(row: JTableRow, index: number): boolean {
+    return this.editingRowKey === this.rowId(row, index);
+  }
+
+  editValue(row: JTableRow, column: JTableColumn, index: number): unknown {
+    if (this.isEditingRow(row, index) && this.editingRowDraft) {
+      return this.editingRowDraft[column.field];
+    }
+    return this.cellValue(row, column);
+  }
+
+  updateRowEditValue(column: JTableColumn, event: Event): void {
+    if (!this.editingRowDraft) {
+      return;
+    }
+    this.editingRowDraft = {
+      ...this.editingRowDraft,
+      [column.field]: this.inputValue(column, event),
+    };
+  }
+
+  async saveRowEdit(row: JTableRow, index: number, originalEvent?: Event): Promise<void> {
+    if (!this.isEditingRow(row, index) || !this.editingRowDraft) {
+      return;
+    }
+    let firstInvalidField = '';
+    for (const column of this.resolvedColumns) {
+      if (!this.isColumnEditable(row, column)) {
+        continue;
+      }
+      const value = this.editingRowDraft[column.field];
+      const error =
+        column.validate?.(value, this.editingRowDraft, column) ??
+        (await column.validateAsync?.(value, this.editingRowDraft, column));
+      const key = `${this.editingRowKey}:${column.field}`;
+      if (error) {
+        this.editErrors.set(key, error);
+        firstInvalidField ||= column.field;
+        this.editValidationError.emit({
+          row: this.editingRowDraft,
+          column,
+          field: column.field,
+          value,
+          index,
+          originalEvent,
+          error,
+        });
+      } else {
+        this.editErrors.delete(key);
+      }
+    }
+    if (firstInvalidField) {
+      this.changeDetectorRef.markForCheck();
+      if (isPlatformBrowser(this.platformId)) {
+        queueMicrotask(() =>
+          this.documentRef
+            .querySelector<HTMLInputElement>(
+              `[data-j-table-row-edit-field="${this.cssEscape(firstInvalidField)}"]`,
+            )
+            ?.focus(),
+        );
+      }
+      return;
+    }
+    const editedRow = this.editingRowDraft;
+    this.editingRowKey = '';
+    this.editingRowDraft = null;
+    this.rowEditSave.emit({ row: editedRow, index, originalEvent });
+    this.changeDetectorRef.markForCheck();
+  }
+
+  cancelRowEdit(row: JTableRow, index: number, originalEvent?: Event): void {
+    if (!this.isEditingRow(row, index)) {
+      return;
+    }
+    this.clearRowEditErrors(this.editingRowKey);
+    this.editingRowKey = '';
+    this.editingRowDraft = null;
+    this.rowEditCancel.emit({ row, index, originalEvent });
+    this.changeDetectorRef.markForCheck();
+  }
+
+  private clearRowEditErrors(rowKey: string): void {
+    for (const key of this.editErrors.keys()) {
+      if (key.startsWith(`${rowKey}:`)) {
+        this.editErrors.delete(key);
+      }
+    }
+  }
+
+  isColumnEditable(row: JTableRow, column: JTableColumn): boolean {
+    return (
+      column.editable !== false &&
+      !column.readonly &&
+      column.conditionalEditable?.(row) !== false &&
+      !this.isActionColumn(column)
+    );
+  }
+
+  private inputValue(column: JTableColumn, event: Event): unknown {
+    const input = event.target as HTMLInputElement | null;
+    return column.type === 'boolean'
+      ? (input?.checked ?? false)
+      : column.type === 'number'
+        ? input?.valueAsNumber
+        : input?.value;
+  }
+
+  private cssEscape(value: string): string {
+    return this.documentRef.defaultView?.CSS?.escape(value) ?? value.replaceAll('"', '\\"');
+  }
+
+  editError(row: JTableRow, column: JTableColumn, index: number): string {
+    return this.editErrors.get(`${this.rowId(row, index)}:${column.field}`) ?? '';
+  }
+
+  editErrorId(row: JTableRow, column: JTableColumn, index: number): string {
+    return `j-table-edit-${this.rowId(row, index)}-${column.field}`;
+  }
+
+  editInputType(column: JTableColumn): 'checkbox' | 'date' | 'number' | 'text' {
+    return column.type === 'boolean'
+      ? 'checkbox'
+      : column.type === 'date'
+        ? 'date'
+        : column.type === 'number'
+          ? 'number'
+          : 'text';
   }
 
   async commitCellEdit(
@@ -1144,26 +1551,36 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     index: number,
     event: Event,
   ): Promise<void> {
+    if (this.editMode() !== 'cell') {
+      return;
+    }
     const input = event.target as HTMLInputElement | null;
+    const value = this.inputValue(column, event);
     const editEvent = {
       row,
       column,
       field: column.field,
-      value: input?.value,
+      value,
       index,
       originalEvent: event,
     } satisfies JTableEditEvent;
     const error = column.validate?.(editEvent.value, row, column);
     const asyncError = error ? null : await column.validateAsync?.(editEvent.value, row, column);
     if (error || asyncError) {
+      const message = error ?? asyncError ?? 'Invalid value';
+      this.editErrors.set(this.editingCellKey, message);
       this.editValidationError.emit({
         ...editEvent,
-        error: error ?? asyncError ?? 'Invalid value',
+        error: message,
       });
+      queueMicrotask(() => input?.focus());
+      this.changeDetectorRef.markForCheck();
       return;
     }
+    this.editErrors.delete(this.editingCellKey);
     this.editingCellKey = '';
     this.cellEditSave.emit(editEvent);
+    this.changeDetectorRef.markForCheck();
   }
 
   handleCellEditKeydown(
@@ -1172,11 +1589,24 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     index: number,
     event: KeyboardEvent,
   ): void {
+    if (this.editMode() === 'row') {
+      if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
+        event.preventDefault();
+        void this.saveRowEdit(row, index, event);
+      }
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        this.cancelRowEdit(row, index, event);
+      }
+      return;
+    }
     if (event.key === 'Enter') {
       void this.commitCellEdit(row, column, index, event);
     }
     if (event.key === 'Escape') {
+      this.editErrors.delete(this.editingCellKey);
       this.editingCellKey = '';
+      this.changeDetectorRef.markForCheck();
     }
   }
 
@@ -1184,7 +1614,15 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     this.contextMenu.emit({ row, index, originalEvent });
   }
 
+  handleHeaderContextMenu(column: JTableColumn, index: number, originalEvent: MouseEvent): void {
+    this.headerContextMenu.emit({ column, index, originalEvent });
+  }
+
   startRowDrag(index: number): void {
+    if (!this.canReorderRow(this.visibleRows[index], index)) {
+      this.dragRowIndex = -1;
+      return;
+    }
     this.dragRowIndex = index;
   }
 
@@ -1201,7 +1639,7 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     const dragged = visible[this.dragRowIndex];
     const target = visible[index];
     this.dragRowIndex = -1;
-    if (!dragged || !target) {
+    if (!dragged || !target || !this.canReorderRow(target, index)) {
       return;
     }
     const next = [...this.sourceRows];
@@ -1214,6 +1652,31 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     next.splice(to, 0, moved);
     const reorder = { dragIndex: from, dropIndex: to, value: next };
     this.rowReorder.emit(reorder);
+  }
+
+  canReorderRow(row: JTableRow | undefined, index: number): boolean {
+    return !!row && this.rowReorderable()?.(row, index) !== false;
+  }
+
+  moveRow(row: JTableRow, direction: -1 | 1): void {
+    if (!this.reorderableRows) {
+      return;
+    }
+    const from = this.sourceRows.indexOf(row);
+    const to = from + direction;
+    if (
+      from < 0 ||
+      to < 0 ||
+      to >= this.sourceRows.length ||
+      !this.canReorderRow(row, this.visibleRows.indexOf(row)) ||
+      !this.canReorderRow(this.sourceRows[to], this.visibleRows.indexOf(this.sourceRows[to]))
+    ) {
+      return;
+    }
+    const next = [...this.sourceRows];
+    const [moved] = next.splice(from, 1);
+    next.splice(to, 0, moved);
+    this.rowReorder.emit({ dragIndex: from, dropIndex: to, value: next });
   }
 
   startColumnDrag(index: number): void {
@@ -1285,6 +1748,29 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     } catch (error) {
       this.emitStateError({ key: this.stateKey, reason: 'storage-unavailable', error });
     }
+  }
+
+  resetTableState(): void {
+    this.first = 0;
+    this.sortField = '';
+    this.sortOrder = 0;
+    this.multiSortMeta = [];
+    this.filters = {};
+    this.filterModel = { items: [], logicOperator: 'and' };
+    this.globalFilter = '';
+    this.selection = this.selectionMode === 'single' || this.selectionMode === 'radio' ? null : [];
+    this.hiddenColumnFields.clear();
+    this.columnVisibilityOverrides.clear();
+    this.columnOrder = [];
+    this.columnWidths = {};
+    this.internalLockedRowKeys.clear();
+    this.expandedRows.clear();
+    this.collapsedRowGroups.clear();
+    this.clearState();
+    this.globalFilterChange.emit('');
+    this.selectionChange.emit(this.selection);
+    this.expandedRowKeysChange.emit([]);
+    this.changeDetectorRef.markForCheck();
   }
 
   createServerQuery(): JTableServerQuery | unknown {
@@ -1361,6 +1847,19 @@ export class JTableComponent implements AfterContentInit, OnChanges {
       Array.isArray(state.hiddenColumns)
         ? state.hiddenColumns.filter((field) => fields.has(field))
         : [],
+    );
+    this.columnVisibilityOverrides = new Map(
+      Array.isArray(state.columns)
+        ? state.columns
+            .filter(
+              (column) =>
+                !!column &&
+                typeof column.field === 'string' &&
+                fields.has(column.field) &&
+                typeof column.visible === 'boolean',
+            )
+            .map((column) => [column.field, column.visible] as const)
+        : [...this.hiddenColumnFields].map((field) => [field, false] as const),
     );
     this.columnOrder = Array.isArray(state.columnOrder)
       ? state.columnOrder.filter((field) => fields.has(field))
@@ -1489,10 +1988,46 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     }
     this.maximized = value;
     if (value) {
+      this.attachMaximizedTable();
       this.maximize.emit();
     } else {
+      this.restoreMaximizedTable();
       this.minimize.emit();
     }
+    this.changeDetectorRef.markForCheck();
+  }
+
+  private attachMaximizedTable(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+    const table = this.elementRef.nativeElement.querySelector<HTMLElement>(':scope > .j-table');
+    if (!table || table.parentElement === this.documentRef.body) {
+      return;
+    }
+    const bounds = table.getBoundingClientRect();
+    this.elementRef.nativeElement.style.minHeight = `${bounds.height}px`;
+    this.previousBodyOverflow = this.documentRef.body.style.overflow;
+    this.documentRef.body.style.overflow = 'hidden';
+    table.setAttribute('data-j-maximized-owner', this.maximizeOwnerId);
+    this.documentRef.body.appendChild(table);
+    this.maximizedTableAttached = true;
+  }
+
+  private restoreMaximizedTable(): void {
+    if (!isPlatformBrowser(this.platformId) || !this.maximizedTableAttached) {
+      return;
+    }
+    const table = this.documentRef.body.querySelector<HTMLElement>(
+      `.j-table[data-j-maximized-owner="${this.maximizeOwnerId}"]`,
+    );
+    if (table) {
+      table.removeAttribute('data-j-maximized-owner');
+      this.elementRef.nativeElement.appendChild(table);
+    }
+    this.elementRef.nativeElement.style.removeProperty('min-height');
+    this.documentRef.body.style.overflow = this.previousBodyOverflow;
+    this.maximizedTableAttached = false;
   }
 
   toggleRowLock(row: JTableRow, index: number, event?: Event): void {
@@ -1542,9 +2077,23 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     const header = (event.target as HTMLElement).closest('th');
     const startX = event.clientX;
     const startWidth = header?.getBoundingClientRect().width ?? 120;
+    const columnIndex = this.resolvedColumns.findIndex(
+      (candidate) => candidate.field === column.field,
+    );
+    const nextColumn = this.resolvedColumns[columnIndex + 1];
+    const nextHeader = header?.nextElementSibling as HTMLElement | null;
+    const nextStartWidth = nextHeader?.getBoundingClientRect().width ?? 120;
     const move = (moveEvent: PointerEvent) => {
-      const width = `${Math.max(48, startWidth + moveEvent.clientX - startX)}px`;
-      this.columnWidths = { ...this.columnWidths, [column.field]: width };
+      const delta = moveEvent.clientX - startX;
+      const width = `${Math.max(48, startWidth + delta)}px`;
+      const nextWidths =
+        this.columnResizeMode === 'fit' && nextColumn
+          ? {
+              [column.field]: width,
+              [nextColumn.field]: `${Math.max(48, nextStartWidth - delta)}px`,
+            }
+          : { [column.field]: width };
+      this.columnWidths = { ...this.columnWidths, ...nextWidths };
       // Native pointermove runs outside zoneless change detection; repaint the
       // new width mid-drag.
       this.changeDetectorRef.markForCheck();
@@ -1604,8 +2153,11 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   }
 
   private exportRows(mode: JTableExportRows): readonly JTableRow[] {
-    if (mode === 'page') {
+    if (mode === 'page' || mode === 'visible') {
       return this.visibleRows;
+    }
+    if (mode === 'filtered') {
+      return this.sortedRows;
     }
     if (mode === 'selected') {
       if (this.isSelectionArray(this.selection)) {
@@ -1626,17 +2178,16 @@ export class JTableComponent implements AfterContentInit, OnChanges {
       multiSortMeta: this.multiSortMeta,
       filters: this.filters,
       globalFilter: this.globalFilter,
-      hiddenColumns: [...this.hiddenColumnFields],
+      hiddenColumns: this.columnManagerColumns
+        .filter((column) => !this.isColumnVisible(column))
+        .map((column) => column.field),
       columnOrder: this.columnOrder,
       columnWidths: this.columnWidths,
       lockedRows: [...this.internalLockedRowKeys],
       density: this.density,
       columns: this.columnManagerColumns.map((column, order) => ({
         field: column.field,
-        visible:
-          !this.hiddenColumnFields.has(column.field) &&
-          column.visible !== false &&
-          column.hidden !== true,
+        visible: this.isColumnVisible(column),
         order,
         width: this.columnWidths[column.field] ?? column.width,
         frozen: column.frozen,

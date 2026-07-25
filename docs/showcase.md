@@ -19,7 +19,7 @@ The home page includes a hero, install command, usage examples, feature highligh
 
 ## Documentation Pages
 
-The docs page provides placeholder sections for Getting Started, Installation, Theme Setup, Configuration, Components, Forms, Data, Overlay, Navigation, Layout, Advanced, Accessibility, and API Reference.
+The component navigation uses Form, Button, Data, Panel, Overlay, Menu, Messages, Media, File, Chart, Layout, Misc, Utilities, and Pages in that order.
 
 ## Generic Content
 

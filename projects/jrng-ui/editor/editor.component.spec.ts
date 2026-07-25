@@ -162,4 +162,28 @@ describe('JEditorComponent', () => {
     fixture.componentInstance.execute(command);
     expect(execute).toHaveBeenCalledWith(command, undefined);
   });
+
+  it('uses accessible JRNG icon actions and switches to the HTML editor', () => {
+    const fixture = TestBed.createComponent(JEditorComponent);
+    fixture.componentRef.setInput('showSourceToggle', true);
+    fixture.detectChanges();
+
+    const bold = fixture.nativeElement.querySelector(
+      'button[aria-label="Bold"]',
+    ) as HTMLButtonElement;
+    const source = fixture.nativeElement.querySelector(
+      'button[aria-label="Show HTML"]',
+    ) as HTMLButtonElement;
+
+    expect(bold.querySelector('j-icon')).toBeTruthy();
+    expect(source.querySelector('j-icon')).toBeTruthy();
+
+    source.click();
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.j-editor__source')).toBeTruthy();
+    expect(
+      fixture.nativeElement.querySelector('button[aria-label="Show visual editor"]'),
+    ).toBeTruthy();
+  });
 });

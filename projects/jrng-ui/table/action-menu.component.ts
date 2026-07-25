@@ -11,6 +11,7 @@ import {
   inject,
   input,
   output,
+  viewChild,
 } from '@angular/core';
 import { JTableAction, JTableActionEvent, JTableRow } from './table.types';
 import { JButtonComponent } from 'jrng-ui/button';
@@ -19,7 +20,12 @@ import { JButtonComponent } from 'jrng-ui/button';
   selector: 'j-action-menu',
   imports: [JButtonComponent],
   template: `
-    <div class="j-action-menu" [class.is-popup]="popup()" [attr.aria-label]="ariaLabel()">
+    <div
+      class="j-action-menu"
+      [class.is-popup]="popup()"
+      [attr.aria-label]="ariaLabel()"
+      (focusout)="handleFocusOut()"
+    >
       @if (popup()) {
         <j-button
           styleClass="j-action-menu__trigger"
@@ -38,11 +44,15 @@ import { JButtonComponent } from 'jrng-ui/button';
 
       @if (!popup() || open) {
         <div
+          #menu
           class="j-action-menu__items"
+          [class.j-action-menu__items--popup]="popup()"
+          [id]="popup() ? menuId : ''"
           [attr.role]="popup() ? 'menu' : 'group'"
           [attr.tabindex]="popup() ? 0 : null"
           [attr.aria-label]="ariaLabel()"
           (keydown)="handleMenuKeydown($event)"
+          (focusout)="handleFocusOut()"
         >
           @for (action of normalizedActions(); track action.key || action.label || $index) {
             <j-button
@@ -76,7 +86,7 @@ import { JButtonComponent } from 'jrng-ui/button';
         gap: var(--j-spacing-xs, 0.25rem);
       }
 
-      .j-action-menu.is-popup .j-action-menu__items {
+      .j-action-menu__items--popup {
         align-items: stretch;
         background: var(--j-action-menu-bg, var(--j-color-card, #ffffff));
         border: 1px solid var(--j-action-menu-border-color, var(--j-color-border, #dbe2ea));
@@ -114,7 +124,7 @@ import { JButtonComponent } from 'jrng-ui/button';
         padding: 0 var(--j-spacing-sm, 0.5rem);
       }
 
-      .j-action-menu.is-popup .j-action-menu__item {
+      .j-action-menu__items--popup .j-action-menu__item {
         border-color: transparent;
         justify-content: flex-start;
         width: 100%;
@@ -144,7 +154,7 @@ import { JButtonComponent } from 'jrng-ui/button';
         min-width: 2rem;
       }
 
-      :host ::ng-deep .j-action-menu.is-popup .j-action-menu__item {
+      :host ::ng-deep .j-action-menu__items--popup .j-action-menu__item {
         justify-content: flex-start;
         width: 100%;
       }
@@ -153,20 +163,23 @@ import { JButtonComponent } from 'jrng-ui/button';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JActionMenuComponent {
+  private static nextId = 0;
   private readonly documentRef = inject(DOCUMENT);
   private readonly destroyRef = inject(DestroyRef);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
   private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  private readonly menuElement = viewChild<ElementRef<HTMLElement>>('menu');
 
   readonly actions = input<readonly JTableAction[]>([]);
   readonly row = input.required<JTableRow>();
   readonly rowIndex = input(0);
   readonly ariaLabel = input('Row actions');
   readonly triggerLabel = input('Open row actions');
-  readonly triggerIcon = input('...');
+  readonly triggerIcon = input('more-vertical');
   readonly popup = input(false, { transform: booleanAttribute });
   readonly action = output<JTableActionEvent>();
+  readonly menuId = `j-action-menu-${JActionMenuComponent.nextId++}`;
 
   open = false;
 
@@ -176,15 +189,25 @@ export class JActionMenuComponent {
     }
 
     const listener = (event: MouseEvent) => {
-      if (this.open && !this.elementRef.nativeElement.contains(event.target as Node | null)) {
-        this.open = false;
-        // Native document listener runs outside zoneless change detection;
-        // refresh so the menu visually closes.
-        this.changeDetectorRef.markForCheck();
+      const target = event.target as Node | null;
+      if (
+        this.open &&
+        !this.elementRef.nativeElement.contains(target) &&
+        !this.menuElement()?.nativeElement.contains(target)
+      ) {
+        this.close();
       }
     };
+    const closeOnViewportChange = () => this.close();
     this.documentRef.addEventListener('mousedown', listener);
-    this.destroyRef.onDestroy(() => this.documentRef.removeEventListener('mousedown', listener));
+    this.documentRef.addEventListener('scroll', closeOnViewportChange, true);
+    this.documentRef.defaultView?.addEventListener('resize', closeOnViewportChange);
+    this.destroyRef.onDestroy(() => {
+      this.documentRef.removeEventListener('mousedown', listener);
+      this.documentRef.removeEventListener('scroll', closeOnViewportChange, true);
+      this.documentRef.defaultView?.removeEventListener('resize', closeOnViewportChange);
+      this.menuElement()?.nativeElement.remove();
+    });
   }
 
   readonly normalizedActions = computed<readonly JTableAction[]>(() => {
@@ -193,6 +216,7 @@ export class JActionMenuComponent {
   });
 
   activate(action: JTableAction, originalEvent: MouseEvent): void {
+    originalEvent.stopPropagation();
     if (action.disabled) {
       return;
     }
@@ -205,22 +229,32 @@ export class JActionMenuComponent {
     };
     action.command?.(event);
     this.action.emit(event);
-    this.open = false;
+    this.close();
   }
 
   toggle(event: MouseEvent): void {
     event.stopPropagation();
-    this.open = !this.open;
     if (this.open) {
-      queueMicrotask(() => this.focusFirstAction());
+      this.close();
+      return;
     }
+    this.open = true;
+    this.changeDetectorRef.markForCheck();
+    queueMicrotask(() => {
+      this.attachPopup();
+      this.focusFirstAction();
+    });
   }
 
   handleTriggerKeydown(event: KeyboardEvent): void {
     if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       this.open = true;
-      queueMicrotask(() => this.focusFirstAction());
+      this.changeDetectorRef.markForCheck();
+      queueMicrotask(() => {
+        this.attachPopup();
+        this.focusFirstAction();
+      });
     }
   }
 
@@ -230,7 +264,7 @@ export class JActionMenuComponent {
     }
     if (event.key === 'Escape') {
       event.preventDefault();
-      this.open = false;
+      this.close();
       this.elementRef.nativeElement
         .querySelector<HTMLButtonElement>('.j-action-menu__trigger')
         ?.focus();
@@ -242,8 +276,73 @@ export class JActionMenuComponent {
     }
   }
 
+  handleFocusOut(): void {
+    if (!this.popup() || !this.open) {
+      return;
+    }
+    queueMicrotask(() => {
+      const activeElement = this.documentRef.activeElement;
+      const hostContainsFocus = this.elementRef.nativeElement.contains(activeElement);
+      const menuContainsFocus = this.menuElement()?.nativeElement.contains(activeElement) ?? false;
+      if (!hostContainsFocus && !menuContainsFocus) {
+        this.close();
+      }
+    });
+  }
+
   private focusFirstAction(): void {
     this.actionButtons()[0]?.focus();
+  }
+
+  private attachPopup(): void {
+    if (!this.isBrowser || !this.popup() || !this.open) {
+      return;
+    }
+    const menu = this.menuElement()?.nativeElement;
+    const trigger =
+      this.elementRef.nativeElement.querySelector<HTMLElement>('.j-action-menu__trigger');
+    if (!menu || !trigger) {
+      return;
+    }
+
+    this.documentRef.body.appendChild(menu);
+    menu.style.position = 'fixed';
+    const triggerRect = trigger.getBoundingClientRect();
+    const menuRect = menu.getBoundingClientRect();
+    const view = this.documentRef.defaultView;
+    const viewportWidth = view?.innerWidth ?? this.documentRef.documentElement.clientWidth;
+    const viewportHeight = view?.innerHeight ?? this.documentRef.documentElement.clientHeight;
+    const spacing = 4;
+    const left = Math.max(
+      spacing,
+      Math.min(triggerRect.right - menuRect.width, viewportWidth - menuRect.width - spacing),
+    );
+    const below = triggerRect.bottom + spacing;
+    const top =
+      below + menuRect.height <= viewportHeight - spacing
+        ? below
+        : Math.max(spacing, triggerRect.top - menuRect.height - spacing);
+
+    menu.style.left = `${left}px`;
+    menu.style.right = 'auto';
+    menu.style.top = `${top}px`;
+  }
+
+  private close(): void {
+    if (!this.open) {
+      return;
+    }
+    const menu = this.menuElement()?.nativeElement;
+    const container = this.elementRef.nativeElement.querySelector<HTMLElement>('.j-action-menu');
+    if (menu && container && menu.parentElement !== container) {
+      menu.style.removeProperty('position');
+      menu.style.removeProperty('left');
+      menu.style.removeProperty('right');
+      menu.style.removeProperty('top');
+      container.appendChild(menu);
+    }
+    this.open = false;
+    this.changeDetectorRef.markForCheck();
   }
 
   private moveFocus(direction: 1 | -1): void {
@@ -255,10 +354,9 @@ export class JActionMenuComponent {
   }
 
   private actionButtons(): HTMLButtonElement[] {
+    const root = this.menuElement()?.nativeElement ?? this.elementRef.nativeElement;
     return Array.from(
-      this.elementRef.nativeElement.querySelectorAll<HTMLButtonElement>(
-        '.j-action-menu__item:not(:disabled)',
-      ),
+      root.querySelectorAll<HTMLButtonElement>('.j-action-menu__item:not(:disabled)'),
     );
   }
 }

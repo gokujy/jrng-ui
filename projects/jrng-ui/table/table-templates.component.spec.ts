@@ -110,8 +110,8 @@ describe('JTableComponent typed columns and templates', () => {
   });
 
   it('keeps semantic header and cell markup', () => {
-    expect(fixture.debugElement.queryAll(By.css('th[scope="col"]'))).toHaveLength(4);
-    expect(fixture.debugElement.queryAll(By.css('tbody td'))).toHaveLength(4);
+    expect(fixture.debugElement.queryAll(By.css('th[scope="col"]'))).toHaveLength(5);
+    expect(fixture.debugElement.queryAll(By.css('tbody td'))).toHaveLength(5);
     expect(fixture.debugElement.query(By.css('.j-table--gridlines'))).toBeTruthy();
   });
 });

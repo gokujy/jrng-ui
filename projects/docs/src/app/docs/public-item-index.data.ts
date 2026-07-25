@@ -1,27 +1,12 @@
 import { componentDocs } from './component-docs.data';
 import { generatedComponentRegistry } from './generated-component-registry';
+import { generatedComponentCategoryOrder } from './generated-component-categories';
 import { generatedPublicArtifactRegistry } from './generated-public-artifact-registry';
 
 export const documentationStatuses = ['Complete'] as const;
 export type DocumentationStatus = (typeof documentationStatuses)[number];
 
-export const publicItemCategories = [
-  'Forms',
-  'Buttons and Actions',
-  'Data',
-  'Data Display',
-  'Overlay',
-  'Navigation and Menu',
-  'Layout',
-  'Feedback and Messages',
-  'Media and File',
-  'Charts and Visualization',
-  'Scheduling and Productivity',
-  'Business and Admin',
-  'Status Pages',
-  'Utilities and Directives',
-  'Core and Theming',
-] as const;
+export const publicItemCategories = generatedComponentCategoryOrder;
 
 export type PublicItemCategory = (typeof publicItemCategories)[number];
 
@@ -53,29 +38,13 @@ const generatedBySelector = new Map<string, (typeof generatedComponentRegistry)[
   generatedComponentRegistry.map((record) => [record.selector, record]),
 );
 
-const categoryMap: Readonly<Record<string, PublicItemCategory>> = {
-  Forms: 'Forms',
-  'Buttons and Actions': 'Buttons and Actions',
-  Data: 'Data',
-  'Data Display': 'Data Display',
-  Overlay: 'Overlay',
-  'Navigation and Menu': 'Navigation and Menu',
-  Layout: 'Layout',
-  'Feedback and Messages': 'Feedback and Messages',
-  'Media & Visualization': 'Media and File',
-  'Scheduling & Productivity': 'Scheduling and Productivity',
-  'Business and Admin': 'Business and Admin',
-  'Core and Theming': 'Core and Theming',
-  'Status Pages': 'Status Pages',
-};
-
 const componentRecords: readonly PublicItemIndexRecord[] = componentDocs.map((doc) => {
   const generated = generatedBySelector.get(doc.selector);
   return {
     name: doc.name,
     identifier: doc.selector,
     description: doc.description,
-    category: categoryMap[doc.category] ?? 'Core and Theming',
+    category: doc.category as PublicItemCategory,
     importPath: doc.importPath,
     documentationRoute: `/docs/components#${doc.slug}`,
     documentationStatus: 'Complete',
@@ -109,10 +78,7 @@ const artifactRecords: readonly PublicItemIndexRecord[] = generatedPublicArtifac
     name: artifact.name,
     identifier: artifact.selector ?? artifact.identifier,
     description: artifact.description,
-    category:
-      artifact.kind === 'Directive' || artifact.kind === 'Pipe'
-        ? 'Utilities and Directives'
-        : 'Core and Theming',
+    category: artifact.kind === 'Directive' || artifact.kind === 'Pipe' ? 'Utilities' : 'Misc',
     importPath: artifact.importPath,
     documentationRoute: `/docs/index#${slug(artifact.identifier)}`,
     documentationStatus: 'Complete',

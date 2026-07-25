@@ -10,7 +10,7 @@
   border-radius: var(--j-radius-md, 0.5rem);
   color: var(--j-table-color, #111827);
   max-width: 100%;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .j-table__toolbar {
@@ -21,6 +21,43 @@
   flex-wrap: wrap;
   gap: var(--j-spacing-sm, 0.5rem);
   padding: var(--j-spacing-md, 0.75rem) var(--j-spacing-lg, 1rem);
+}
+
+.j-table__heading {
+  flex: 1 1 14rem;
+  min-width: 0;
+}
+
+.j-table__heading h2,
+.j-table__heading p {
+  margin: 0;
+}
+
+.j-table__heading p {
+  color: var(--j-color-text-muted, #64748b);
+  font-size: var(--j-font-size-sm, 0.875rem);
+  margin-top: var(--j-spacing-xs, 0.25rem);
+}
+
+.j-table__toolbar-actions,
+.j-table__bulk-actions,
+.j-table__bulk-actions-content {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--j-spacing-sm, 0.5rem);
+}
+
+.j-table__bulk-actions {
+  background: var(--j-color-primary-soft, #eef2ff);
+  border-bottom: 1px solid var(--j-table-border-color, var(--j-color-border, #dbe2ea));
+  color: var(--j-color-text, #111827);
+  justify-content: space-between;
+  padding: var(--j-spacing-sm, 0.5rem) var(--j-spacing-lg, 1rem);
+}
+
+.j-table__bulk-actions > span {
+  font-weight: var(--j-font-weight-semibold, 650);
 }
 
 .j-table__search input,
@@ -288,12 +325,24 @@ tbody tr.is-frozen td {
 }
 
 .j-table.is-maximized {
+  background: var(--j-table-bg, #ffffff);
+  border: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
   border-radius: 0;
-  inset: var(--j-table-maximized-inset, 1rem);
-  max-height: calc(100dvh - 2rem);
-  overflow: auto;
+  inset: 0;
+  max-height: 100dvh;
+  max-width: none;
+  overflow: visible;
   position: fixed;
+  width: 100vw;
   z-index: var(--j-z-index-modal, 1000);
+}
+
+.j-table.is-maximized .j-table__scroll {
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .j-table__cell--start {
@@ -418,6 +467,13 @@ tbody tr.is-frozen td {
 
 .j-table__edit-input {
   width: 100%;
+}
+
+.j-table__edit-error {
+  color: var(--j-color-danger, #dc2626);
+  display: block;
+  font-size: var(--j-font-size-xs, 0.75rem);
+  margin-top: var(--j-spacing-xs, 0.25rem);
 }
 
 .j-table__expanded-row td {
@@ -575,6 +631,70 @@ tbody tr.is-frozen td {
 .j-table__paginator {
   border-top: 1px solid var(--j-color-border, #dbe2ea);
   display: block;
+}
+
+.j-table__reorder-cell {
+  white-space: nowrap;
+  width: 6.5rem;
+}
+
+.j-table__drag-handle,
+.j-table__reorder-button {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: var(--j-radius-sm, 0.25rem);
+  color: var(--j-color-text-muted, #64748b);
+  display: inline-flex;
+  justify-content: center;
+  min-height: 2rem;
+  min-width: 2rem;
+}
+
+.j-table__drag-handle {
+  cursor: grab;
+  letter-spacing: -0.35rem;
+  padding-inline-end: 0.35rem;
+}
+
+.j-table__drag-handle.is-disabled,
+.j-table__reorder-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.j-table__drag-handle:focus-visible,
+.j-table__reorder-button:focus-visible {
+  outline: 2px solid var(--j-color-focus, #4f46e5);
+  outline-offset: 2px;
+}
+
+.j-table__row-edit-cell {
+  min-width: 9rem;
+  white-space: nowrap;
+}
+
+.j-table__row-edit-cell j-button + j-button {
+  margin-inline-start: var(--j-spacing-xs, 0.25rem);
+}
+
+@media (max-width: 960px) {
+  .j-table--responsive-scroll .j-table__cell--priority-5,
+  .j-table--responsive-scroll .j-table__cell--priority-4 {
+    display: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .j-table--responsive-scroll .j-table__cell--priority-3 {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .j-table--responsive-scroll .j-table__cell--priority-2 {
+    display: none;
+  }
 }
 
 @media (max-width: 640px) {

@@ -5,6 +5,23 @@ import {
 } from './public-item-index.data';
 
 describe('publicItemIndex', () => {
+  const expectedCategories = [
+    'Form',
+    'Button',
+    'Data',
+    'Panel',
+    'Overlay',
+    'Menu',
+    'Messages',
+    'Media',
+    'File',
+    'Chart',
+    'Layout',
+    'Misc',
+    'Utilities',
+    'Pages',
+  ];
+
   it('contains every documented component plus exported directives, pipes, and services', () => {
     expect(publicItemIndex.length).toBeGreaterThan(126);
     expect(new Set(publicItemIndex.map((item) => `${item.kind}:${item.identifier}`)).size).toBe(
@@ -18,6 +35,7 @@ describe('publicItemIndex', () => {
   });
 
   it('uses supported categories, statuses, public imports, and documentation routes', () => {
+    expect(publicItemCategories).toEqual(expectedCategories);
     for (const item of publicItemIndex) {
       expect(publicItemCategories).toContain(item.category);
       expect(documentationStatuses).toContain(item.documentationStatus);

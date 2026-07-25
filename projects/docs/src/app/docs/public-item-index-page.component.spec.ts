@@ -22,9 +22,7 @@ describe('PublicItemIndexPageComponent', () => {
         ),
     ).toBe(true);
     component.updateQuery({ target: { value: '' } } as unknown as Event);
-    component.updateCategory({ target: { value: 'Core and Theming' } } as unknown as Event);
-    expect(component.filteredItems().every((item) => item.category === 'Core and Theming')).toBe(
-      true,
-    );
+    component.updateCategory({ target: { value: 'Misc' } } as unknown as Event);
+    expect(component.filteredItems().every((item) => item.category === 'Misc')).toBe(true);
   });
 });

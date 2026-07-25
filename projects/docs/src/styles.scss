@@ -2351,8 +2351,8 @@ pre {
 }
 
 .j-full-code {
-  background: color-mix(in srgb, var(--j-color-foreground) 94%, #0f172a);
-  border: 1px solid color-mix(in srgb, var(--j-color-border) 45%, transparent);
+  background: #0f172a;
+  border: 1px solid rgb(148 163 184 / 22%);
   border-radius: var(--j-radius-lg);
   display: grid;
   gap: 0;
@@ -2361,8 +2361,8 @@ pre {
 
 .j-code-header {
   align-items: center;
-  background: color-mix(in srgb, var(--j-color-background) 8%, transparent);
-  border: 1px solid color-mix(in srgb, var(--j-color-background) 14%, transparent);
+  background: rgb(30 41 59 / 96%);
+  border: 1px solid rgb(148 163 184 / 24%);
   border-radius: var(--j-radius-md);
   display: flex;
   justify-content: flex-end;
@@ -2385,7 +2385,7 @@ pre {
   background: transparent;
   border: 0;
   border-bottom: 2px solid transparent;
-  color: color-mix(in srgb, var(--j-color-background) 68%, transparent);
+  color: #cbd5e1;
   cursor: pointer;
   font: inherit;
   font-size: var(--j-font-size-xs);
@@ -2400,8 +2400,8 @@ pre {
 }
 
 .j-code-tabs button.is-active {
-  border-bottom-color: var(--j-color-success);
-  color: color-mix(in srgb, var(--j-color-success) 70%, var(--j-color-card));
+  border-bottom-color: #34d399;
+  color: #6ee7b7;
 }
 
 .j-code-tabs button:focus-visible {
@@ -2435,7 +2435,7 @@ pre {
   background: transparent;
   border: 0;
   border-radius: var(--j-radius-sm);
-  color: color-mix(in srgb, var(--j-color-background) 72%, transparent);
+  color: #cbd5e1;
   min-height: 1.875rem;
   padding: 0;
   width: 1.875rem;
@@ -2450,6 +2450,14 @@ pre {
   gap: var(--j-spacing-3);
   min-width: 0;
   width: 100%;
+}
+
+.j-preview-surface--disabled {
+  cursor: not-allowed;
+}
+
+.j-preview-surface--disabled > * {
+  opacity: var(--j-disabled-opacity, 0.55);
 }
 
 .j-variant-picker {
@@ -2618,6 +2626,21 @@ pre {
   flex-wrap: wrap;
   gap: var(--j-spacing-3);
   justify-content: center;
+}
+
+.j-copy-code {
+  align-items: center;
+  background: var(--j-color-surface-muted);
+  border: 1px solid var(--j-color-border);
+  border-radius: var(--j-radius-md);
+  display: inline-flex;
+  gap: var(--j-spacing-3);
+  max-width: 100%;
+  padding: var(--j-spacing-2) var(--j-spacing-3);
+}
+
+.j-copy-code code {
+  overflow-wrap: anywhere;
 }
 
 .j-preview-stack {

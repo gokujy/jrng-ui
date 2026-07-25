@@ -143,18 +143,19 @@ Cell validators may return synchronously or asynchronously. Radio, checkbox, sin
 />
 ```
 
-## Responsive table and Data Grid
+## Responsive Table
 
 ### Preview
 
-Tables support scroll, stack, card, or none. Data Grid reuses the same table query/filter/state infrastructure while remaining a separate component.
+Table supports scroll, stack, card, or none while using the same query, filter, state, management-toolbar, and bulk-action infrastructure.
 
 ### Code
 
 ```html
 <j-table responsiveMode="card" [columns]="columns" [value]="orders" />
-<j-data-grid
-  displayMode="grid"
+<j-table
+  title="Orders"
+  responsiveMode="card"
   dataMode="server"
   filterDisplay="toolbar"
   [columns]="columns"

@@ -68,7 +68,21 @@ export type JIconName =
   | 'archive'
   | 'eye'
   | 'eye-off'
-  | 'trash';
+  | 'trash'
+  | 'bold'
+  | 'italic'
+  | 'underline'
+  | 'strikethrough'
+  | 'list-ordered'
+  | 'list'
+  | 'link'
+  | 'eraser'
+  | 'align-left'
+  | 'align-center'
+  | 'align-right'
+  | 'undo'
+  | 'redo'
+  | 'maximize';
 
 export type JIconMap = Readonly<Record<string, string>>;
 
@@ -89,6 +103,21 @@ export const JRNG_DEFAULT_ICONS: JIconMap = {
   'eye-off':
     'm3 3 18 18M10.6 10.6a2 2 0 0 0 2.8 2.8M9.9 5.1A11 11 0 0 1 12 5c6.5 0 10 7 10 7a18 18 0 0 1-2.1 3M6.6 6.6C3.6 8.4 2 12 2 12s3.5 7 10 7c1.5 0 2.8-.4 4-.9',
   trash: 'M4 7h16M9 7V4h6v3m3 0-1 14H7L6 7m4 4v6m4-6v6',
+  bold: 'M6 4h7a4 4 0 0 1 0 8H6V4Zm0 8h8a4 4 0 0 1 0 8H6v-8Z',
+  italic: 'M10 4h8M6 20h8M14 4 10 20',
+  underline: 'M6 3v7a6 6 0 0 0 12 0V3M4 21h16',
+  strikethrough:
+    'M4 12h16M8 7a4 3 0 0 1 4-3c2 0 3.5.7 4.5 2M8 17c1 2 2.5 3 4.5 3 2.5 0 4.5-1.3 4.5-3.5 0-2.5-2.2-3.5-5-4.5',
+  'list-ordered': 'M10 6h11M10 12h11M10 18h11M4 5h1v3M4 11h2l-2 3h2M4 17h2l-2 3h2',
+  list: 'M4 6h.01M4 12h.01M4 18h.01M9 6h12M9 12h12M9 18h12',
+  link: 'M10 13a5 5 0 0 0 7.1 0l2-2a5 5 0 0 0-7.1-7.1l-1.1 1.1M14 11a5 5 0 0 0-7.1 0l-2 2A5 5 0 0 0 12 20.1l1.1-1.1',
+  eraser: 'm7 21-4-4L15 5a2 2 0 0 1 3 0l2 2a2 2 0 0 1 0 3L9 21H7Zm5-13 5 5M3 21h18',
+  'align-left': 'M4 6h16M4 10h10M4 14h16M4 18h10',
+  'align-center': 'M4 6h16M7 10h10M4 14h16M7 18h10',
+  'align-right': 'M4 6h16M10 10h10M4 14h16M10 18h10',
+  undo: 'M9 7 4 12l5 5M5 12h8a6 6 0 0 1 6 6',
+  redo: 'm15 7 5 5-5 5M19 12h-8a6 6 0 0 0-6 6',
+  maximize: 'M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5',
   plus: 'M12 5v14M5 12h14',
   minus: 'M5 12h14',
   info: 'M12 16v-4M12 8h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',

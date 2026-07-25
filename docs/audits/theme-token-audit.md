@@ -2,7 +2,7 @@
 
 Verdict: **PASS WITH DOCUMENTED LIMITATIONS**
 
-- Components with detected semantic theme tokens: 112/119.
+- Components with detected semantic theme tokens: 115/121.
 - Light, dark, focus, disabled, state, density and reduced-motion tokens are compiled in the package theme.
 - Runtime theme switching uses CSS custom properties and does not reload components.
 - New CSS favors logical properties; remaining physical left/right declarations are compatibility review candidates, not release blockers.

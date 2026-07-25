@@ -6,6 +6,7 @@ import {
   DocsEventRow,
 } from './docs-types';
 import { generatedComponentRegistry } from './generated-component-registry';
+import { generatedComponentCategories } from './generated-component-categories';
 
 const prop = (
   name: string,
@@ -102,46 +103,36 @@ const surfaceCssVariables = [
   cssVar('--j-shadow-sm', '0 1px 2px rgb(15 23 42 / 0.08)', 'Subtle elevation shadow.'),
 ] as const;
 
-export const componentGroups: readonly ComponentGroup[] = [
-  {
-    name: 'Forms',
-    icon: 'text-cursor-input',
-    slugs: ['input', 'textarea', 'select', 'checkbox', 'radio', 'switch'],
-  },
-  { name: 'Buttons', icon: 'mouse-pointer-click', slugs: ['button', 'icon-button'] },
-  {
-    name: 'Data Display',
-    icon: 'table',
-    slugs: ['card', 'badge', 'tag', 'table', 'action-menu', 'column-filter', 'filter-bar'],
-  },
-  {
-    name: 'Business',
-    icon: 'briefcase-business',
-    slugs: ['card', 'status-chip', 'page-header', 'empty-state'],
-  },
-  {
-    name: 'Feedback',
-    icon: 'message-square',
-    slugs: ['toast', 'progress', 'skeleton', 'copy-button'],
-  },
-  { name: 'Navigation', icon: 'route', slugs: ['tabs', 'breadcrumb', 'menu', 'sidebar'] },
-  {
-    name: 'Overlay',
-    icon: 'panel-top',
-    slugs: ['dialog', 'confirm-dialog', 'drawer', 'tooltip', 'popover'],
-  },
-  {
-    name: 'Utilities',
-    icon: 'wrench',
-    slugs: ['ripple', 'timeline', 'file-upload', 'formatting', 'tour-guide'],
-  },
-];
+const categoryIcons: Readonly<Record<string, string>> = {
+  Form: 'text-cursor-input',
+  Button: 'mouse-pointer-click',
+  Data: 'table',
+  Panel: 'panel-top',
+  Overlay: 'layers',
+  Menu: 'menu',
+  Messages: 'message-square',
+  Media: 'image',
+  File: 'folder',
+  Chart: 'chart-column',
+  Layout: 'layout-grid',
+  Misc: 'shapes',
+  Utilities: 'wrench',
+  Pages: 'file-text',
+};
+
+export const componentGroups: readonly ComponentGroup[] = generatedComponentCategories.map(
+  (category) => ({
+    name: category.name,
+    icon: categoryIcons[category.name] ?? 'box',
+    slugs: category.selectors.map((selector) => selector.slice(2)),
+  }),
+);
 
 const variantComponentDocs: readonly ComponentDoc[] = [
   {
     slug: 'accordion',
     name: 'Accordion',
-    category: 'Navigation',
+    category: 'Panel',
     icon: 'panel-top',
     selector: 'j-accordion',
     importPath: 'jrng-ui/accordion',
@@ -189,7 +180,7 @@ const variantComponentDocs: readonly ComponentDoc[] = [
   {
     slug: 'paginator',
     name: 'Paginator',
-    category: 'Navigation',
+    category: 'Data',
     icon: 'ellipsis',
     selector: 'j-paginator',
     importPath: 'jrng-ui/paginator',
@@ -227,7 +218,7 @@ const variantComponentDocs: readonly ComponentDoc[] = [
   {
     slug: 'stepper',
     name: 'Stepper',
-    category: 'Navigation',
+    category: 'Panel',
     icon: 'route',
     selector: 'j-stepper',
     importPath: 'jrng-ui/stepper',
@@ -265,7 +256,7 @@ const variantComponentDocs: readonly ComponentDoc[] = [
   {
     slug: 'text-expand',
     name: 'Text Expand',
-    category: 'Data Display',
+    category: 'Panel',
     icon: 'text-cursor-input',
     selector: 'j-text-expand',
     importPath: 'jrng-ui/text-expand',
@@ -352,7 +343,7 @@ const detailedComponentDocs: readonly ComponentDoc[] = [
   {
     slug: 'input',
     name: 'Input',
-    category: 'Forms',
+    category: 'Form',
     icon: 'text-cursor-input',
     selector: 'j-input',
     importPath: 'jrng-ui/input',
@@ -424,7 +415,7 @@ email = new FormControl('');
   {
     slug: 'textarea',
     name: 'Textarea',
-    category: 'Forms',
+    category: 'Form',
     icon: 'panel-top',
     selector: 'j-textarea',
     importPath: 'jrng-ui/textarea',
@@ -468,7 +459,7 @@ email = new FormControl('');
   {
     slug: 'select',
     name: 'Select',
-    category: 'Forms',
+    category: 'Form',
     icon: 'list-check',
     selector: 'j-select',
     importPath: 'jrng-ui/select',
@@ -529,7 +520,7 @@ teams = [
   {
     slug: 'checkbox',
     name: 'Checkbox',
-    category: 'Forms',
+    category: 'Form',
     icon: 'square',
     selector: 'j-checkbox',
     importPath: 'jrng-ui/checkbox',
@@ -574,7 +565,7 @@ teams = [
   {
     slug: 'radio',
     name: 'Radio',
-    category: 'Forms',
+    category: 'Form',
     icon: 'circle-dot',
     selector: 'j-radio',
     importPath: 'jrng-ui/radio',
@@ -606,7 +597,7 @@ teams = [
   {
     slug: 'switch',
     name: 'Switch',
-    category: 'Forms',
+    category: 'Form',
     icon: 'toggle-left',
     selector: 'j-switch',
     importPath: 'jrng-ui/switch',
@@ -646,7 +637,7 @@ teams = [
   {
     slug: 'button',
     name: 'Button',
-    category: 'Buttons',
+    category: 'Button',
     icon: 'mouse-pointer-click',
     selector: 'j-button',
     importPath: 'jrng-ui/button',
@@ -745,7 +736,7 @@ teams = [
   {
     slug: 'icon-button',
     name: 'Icon Button',
-    category: 'Buttons',
+    category: 'Button',
     icon: 'settings',
     selector: 'j-button',
     importPath: 'jrng-ui/button',
@@ -786,7 +777,7 @@ teams = [
   {
     slug: 'card',
     name: 'Card',
-    category: 'Data Display',
+    category: 'Panel',
     icon: 'layers',
     selector: 'j-card',
     importPath: 'jrng-ui/card',
@@ -841,7 +832,7 @@ teams = [
   {
     slug: 'badge',
     name: 'Badge',
-    category: 'Data Display',
+    category: 'Misc',
     icon: 'badge',
     selector: 'j-badge',
     importPath: 'jrng-ui/badge',
@@ -873,7 +864,7 @@ teams = [
   {
     slug: 'tag',
     name: 'Tag',
-    category: 'Data Display',
+    category: 'Misc',
     icon: 'tag',
     selector: 'j-tag',
     importPath: 'jrng-ui/tag',
@@ -907,7 +898,7 @@ teams = [
   {
     slug: 'transfer-list',
     name: 'Transfer List',
-    category: 'Data & Tables',
+    category: 'Data',
     icon: 'list-check',
     selector: 'j-transfer-list',
     importPath: 'jrng-ui/transfer-list',
@@ -1068,7 +1059,7 @@ selectedFields = [
       'Prefer natural source order and use responsive ordering sparingly.',
     ],
     commonMistakes: [
-      'Do not use Grid for tabular records; use j-table or j-data-grid.',
+      'Do not use Grid for tabular records; use j-table.',
       'Use j-col only for responsive page layout; Table columns use JTableColumn configuration.',
     ],
   },
@@ -1165,7 +1156,7 @@ selectedFields = [
   {
     slug: 'table',
     name: 'Table',
-    category: 'Data Display',
+    category: 'Data',
     icon: 'table',
     selector: 'j-table',
     importPath: 'jrng-ui/table',
@@ -1175,7 +1166,15 @@ selectedFields = [
     whenToUse: 'Use Table for comparable data where users need to scan across columns.',
     code: {
       importCode: `import { JTableCellTemplateDirective, JTableComponent, JTableColumn, JTableEmptyTemplateDirective, JTableHeaderTemplateDirective, JTableLoadingTemplateDirective } from 'jrng-ui/table';`,
-      basic: `<j-table [value]="orders" [columns]="columns" caption="Recent orders" />`,
+      basic: `<j-table
+  title="Orders"
+  description="Manage recent operational orders."
+  [value]="orders"
+  [columns]="columns"
+  caption="Recent orders">
+  <j-button jTableToolbarActions label="Create order" />
+  <j-button jTableBulkActions label="Archive selected" variant="outlined" />
+</j-table>`,
       variants: `<j-table [value]="orders" [columns]="columns" variant="striped"></j-table>
 <j-table [value]="orders" [columns]="columns" variant="gridlines"></j-table>
 <j-table [value]="orders" [columns]="columns" variant="minimal"></j-table>
@@ -1283,7 +1282,27 @@ loadError = new Error('Orders could not be loaded.');`,
         "'standard'",
         'Selects a complete table presentation concept without changing its data or events.',
       ),
-      prop('paginator', 'boolean', 'false', 'Shows pagination controls.'),
+      prop('title / description', 'string', "''", 'Management heading shown above the data.'),
+      prop('searchPlaceholder', 'string', "'Search'", 'Global-search placeholder.'),
+      prop('paginator', 'boolean', 'true', 'Shows pagination controls.'),
+      prop(
+        'rows / rowsPerPageOptions',
+        'number / readonly number[]',
+        '25 / [5, 10, 25, 50, 100]',
+        'Controls page size and available page sizes.',
+      ),
+      prop(
+        'showCurrentPageReport / showFirstLastPageButtons',
+        'boolean',
+        'true',
+        'Controls accessible paginator reporting and boundary actions.',
+      ),
+      prop(
+        'columnGroups',
+        'readonly JTableColumnGroupRow[]',
+        '[]',
+        'Creates multi-row headers with colspan and rowspan cells.',
+      ),
       prop('loading', 'boolean', 'false', 'Shows loading rows.'),
       prop(
         'loadingVariant',
@@ -1317,7 +1336,7 @@ loadError = new Error('Orders could not be loaded.');`,
         'Filtered no-results content.',
       ),
       prop(
-        'error',
+        'errorState',
         'unknown',
         'null',
         'Activates the loading-failed state and exposes its value to templates.',
@@ -1328,7 +1347,12 @@ loadError = new Error('Orders could not be loaded.');`,
         "''",
         'Optional action for the active empty or error state.',
       ),
-      prop('selectionMode', 'single | multiple | checkbox | none', "'none'", 'Selection behavior.'),
+      prop(
+        'selectionMode',
+        'single | multiple | checkbox | radio | none',
+        "'checkbox'",
+        'Selection behavior.',
+      ),
       prop('filterDisplay', 'toolbar | row | menu | none', "'none'", 'Filter control placement.'),
       prop(
         'filterModel',
@@ -1338,16 +1362,65 @@ loadError = new Error('Orders could not be loaded.');`,
       ),
       prop('lockableRows', 'boolean', 'false', 'Shows row lock/unlock controls.'),
       prop(
-        'maximizable',
+        'reorderableRows',
         'boolean',
         'false',
+        'Enables drag handles and keyboard-accessible row movement.',
+      ),
+      prop(
+        'rowReorderable',
+        '(row, index) => boolean',
+        'null',
+        'Disables reordering for selected rows.',
+      ),
+      prop('rowClass', '(row, index) => string', 'null', 'Applies conditional row classes.'),
+      prop(
+        'expandedRowKeys',
+        'readonly string[]',
+        '[]',
+        'Controls expanded rows by stable data key.',
+      ),
+      prop(
+        'editMode',
+        'none | cell | row',
+        "'none'",
+        'Enables keyboard-aware cell or multi-field row editing.',
+      ),
+      prop(
+        'columnResizeMode',
+        'fit | expand',
+        "'expand'",
+        'Resizes a neighbor or expands the table width.',
+      ),
+      prop(
+        'removableSort',
+        'boolean',
+        'true',
+        'Allows the active sort to return to an unsorted state.',
+      ),
+      prop(
+        'bulkActions',
+        'boolean',
+        'true',
+        'Shows the selected-row count and projected jTableBulkActions.',
+      ),
+      prop(
+        'maximizable',
+        'boolean',
+        'true',
         'Shows maximize/minimize control with Escape support.',
       ),
       prop(
-        'showGlobalFilter / showColumnManager / showExport / showTableState',
+        'showGlobalFilter / showColumnManager / showExport',
+        'boolean',
+        'true',
+        'Default data-management toolbar controls.',
+      ),
+      prop(
+        'showTableState',
         'boolean',
         'false',
-        'Toolbar controls.',
+        'Shows state controls; a stateKey also enables them automatically.',
       ),
       prop(
         'exportConfig',
@@ -1366,6 +1439,7 @@ loadError = new Error('Orders could not be loaded.');`,
       event('sortChange', 'JTableSort', 'Emits when sorting changes.'),
       event('pageChange', 'JTablePageChange', 'Emits when page changes.'),
       event('filterChange', 'JTableFilterChange', 'Emits when global or column filters change.'),
+      event('globalFilterChange', 'string', 'Emits the current global-search value.'),
       event(
         'export',
         'JTableExportEvent',
@@ -1374,11 +1448,42 @@ loadError = new Error('Orders could not be loaded.');`,
       event('rowClick', 'JTableRowClickEvent', 'Emits when a row is clicked.'),
       event('rowDoubleClick', 'JTableRowClickEvent', 'Emits when a row is double-clicked.'),
       event('selectionChange', 'JTableSelection', 'Emits selection model changes.'),
+      event(
+        'rowSelect / rowUnselect',
+        'JTableRow',
+        'Emits explicit selection and deselection changes.',
+      ),
+      event(
+        'selectAllChange',
+        'JTableSelectAllChangeEvent',
+        'Emits checked, unchecked, and visible-row select-all changes.',
+      ),
+      event('rowExpand / rowCollapse', 'JTableRow', 'Emits row expansion changes.'),
+      event(
+        'expandedRowKeysChange',
+        'readonly string[]',
+        'Emits the controlled expansion key set.',
+      ),
+      event(
+        'rowEditInit / rowEditSave / rowEditCancel',
+        'JTableEditEvent',
+        'Emits the complete row-edit lifecycle.',
+      ),
+      event(
+        'cellEditSave / editValidationError',
+        'JTableEditEvent',
+        'Emits valid cell saves and validation feedback.',
+      ),
       event('rowReorder', 'JTableReorderEvent', 'Emits after row drag reorder.'),
       event('rowLock', 'JTableRowLockEvent', 'Emits when a row is locked.'),
       event('rowUnlock', 'JTableRowLockEvent', 'Emits when a row is unlocked.'),
       event('columnReorder', 'JTableColumnReorderEvent', 'Emits after column drag reorder.'),
       event('columnResize', 'JTableColumnResizeEvent', 'Emits after column resize.'),
+      event(
+        'headerContextMenu',
+        'JTableHeaderContextMenuEvent',
+        'Emits a keyboard/menu integration point for a column header.',
+      ),
       event(
         'columnVisibilityChange',
         'JTableColumnVisibilityChangeEvent',
@@ -1448,6 +1553,7 @@ loadError = new Error('Orders could not be loaded.');`,
       'Use pagination or lazy loading for large datasets.',
       'Keep column labels short and align numeric columns to the end.',
       'Use focused template directives only where column configuration does not express the content.',
+      'Use jTableToolbarActions and jTableBulkActions for app-level management actions.',
     ],
     commonMistakes: [
       'Do not use variant for loading, error, selection, pagination, or hierarchy.',
@@ -1458,7 +1564,7 @@ loadError = new Error('Orders could not be loaded.');`,
   {
     slug: 'tree-table',
     name: 'Tree Table',
-    category: 'Data Display',
+    category: 'Data',
     icon: 'table',
     selector: 'j-tree-table',
     importPath: 'jrng-ui/tree-table',
@@ -1563,7 +1669,7 @@ expandedKeys = new Set(['workspace']);`,
   {
     slug: 'action-menu',
     name: 'Action Menu',
-    category: 'Data Display',
+    category: 'Menu',
     icon: 'ellipsis',
     selector: 'j-action-menu',
     importPath: 'jrng-ui/table',
@@ -1616,7 +1722,7 @@ row = {
   {
     slug: 'column-filter',
     name: 'Column Filter',
-    category: 'Data Display',
+    category: 'Data',
     icon: 'filter',
     selector: 'j-column-filter',
     importPath: 'jrng-ui/table',
@@ -1676,7 +1782,7 @@ row = {
   {
     slug: 'filter-bar',
     name: 'Filter Bar',
-    category: 'Data Display',
+    category: 'Data',
     icon: 'list-filter',
     selector: 'j-filter-bar',
     importPath: 'jrng-ui/filter-bar',
@@ -1752,7 +1858,7 @@ row = {
   {
     slug: 'status-chip',
     name: 'Status Chip',
-    category: 'Business',
+    category: 'Misc',
     icon: 'badge-check',
     selector: 'j-status-chip',
     importPath: 'jrng-ui/status-chip',
@@ -1800,7 +1906,7 @@ row = {
   {
     slug: 'page-header',
     name: 'Page Header',
-    category: 'Business',
+    category: 'Layout',
     icon: 'panel-top',
     selector: 'j-page-header',
     importPath: 'jrng-ui/page-header',
@@ -1839,11 +1945,11 @@ row = {
     bestPractices: ['Keep one primary action visible and group secondary actions separately.'],
   },
   {
-    slug: 'empty-state',
-    name: 'Empty State',
-    category: 'Business',
+    slug: 'empty',
+    name: 'Empty',
+    category: 'Misc',
     icon: 'inbox',
-    selector: 'j-empty-state',
+    selector: 'j-empty',
     importPath: 'jrng-ui/empty',
     status: 'Stable',
     description:
@@ -1885,7 +1991,7 @@ row = {
   {
     slug: 'toast',
     name: 'Toast',
-    category: 'Feedback',
+    category: 'Messages',
     icon: 'message-square-more',
     selector: 'j-toast',
     importPath: 'jrng-ui/toast',
@@ -1923,7 +2029,7 @@ toast.info('Export started');`,
   {
     slug: 'progress-bar',
     name: 'Progress Bar',
-    category: 'Feedback',
+    category: 'Misc',
     icon: 'loader-circle',
     selector: 'j-progress-bar',
     importPath: 'jrng-ui/progress-bar',
@@ -1963,7 +2069,7 @@ toast.info('Export started');`,
   {
     slug: 'skeleton',
     name: 'Skeleton',
-    category: 'Feedback',
+    category: 'Misc',
     icon: 'panel-top',
     selector: 'j-skeleton',
     importPath: 'jrng-ui/skeleton',
@@ -2004,7 +2110,7 @@ toast.info('Export started');`,
   {
     slug: 'copy-button',
     name: 'Copy Button',
-    category: 'Feedback',
+    category: 'Button',
     icon: 'copy',
     selector: 'j-copy-button',
     importPath: 'jrng-ui/copy-button',
@@ -2047,7 +2153,7 @@ toast.info('Export started');`,
   {
     slug: 'tabs',
     name: 'Tabs',
-    category: 'Navigation',
+    category: 'Panel',
     icon: 'panel-top',
     selector: 'j-tabs',
     importPath: 'jrng-ui/tabs',
@@ -2089,7 +2195,7 @@ toast.info('Export started');`,
   {
     slug: 'breadcrumb',
     name: 'Breadcrumb',
-    category: 'Navigation',
+    category: 'Menu',
     icon: 'route',
     selector: 'j-breadcrumb',
     importPath: 'jrng-ui/breadcrumb',
@@ -2130,7 +2236,7 @@ items = [
   {
     slug: 'menu',
     name: 'Menu',
-    category: 'Navigation',
+    category: 'Menu',
     icon: 'menu',
     selector: 'j-menu',
     importPath: 'jrng-ui/menu',
@@ -2179,7 +2285,7 @@ items = [
   {
     slug: 'responsive-sidebar',
     name: 'Responsive Sidebar',
-    category: 'Navigation',
+    category: 'Layout',
     icon: 'panel-left-open',
     selector: 'j-responsive-sidebar',
     importPath: 'jrng-ui/responsive-sidebar',
@@ -2468,7 +2574,7 @@ confirmDelete(): void {
     name: 'Tour Guide',
     category: 'Utilities',
     icon: 'route',
-    selector: 'j-tour-guide, [jTourStep]',
+    selector: 'j-tour-guide',
     importPath: 'jrng-ui/tour',
     status: 'Stable',
     description:
@@ -2655,7 +2761,7 @@ export class DashboardComponent {
   {
     slug: 'timeline',
     name: 'Timeline',
-    category: 'Utilities',
+    category: 'Data',
     icon: 'git-branch',
     selector: 'j-timeline',
     importPath: 'jrng-ui/timeline',
@@ -2699,7 +2805,7 @@ export class DashboardComponent {
   {
     slug: 'file-browser',
     name: 'File Browser',
-    category: 'Data Display',
+    category: 'File',
     icon: 'folder',
     selector: 'j-file-browser',
     importPath: 'jrng-ui/file-browser',
@@ -2781,7 +2887,7 @@ selectedIds: string[] = ['file-2'];`,
   {
     slug: 'file-upload',
     name: 'File Upload',
-    category: 'Utilities',
+    category: 'File',
     icon: 'upload',
     selector: 'j-file-upload',
     importPath: 'jrng-ui/file-upload',
@@ -2940,19 +3046,9 @@ const generatedBasicExamples: Readonly<Record<string, string>> = {
 </j-rating>`,
   slider: `<j-slider label="Completion" [min]="0" [max]="100" [step]="5" tooltip [(ngModel)]="completion"></j-slider>`,
   'avatar-group': `<j-avatar-group [items]="teamMembers" [max]="3" ariaLabel="Project team"></j-avatar-group>`,
-  calendar: `<j-calendar [value]="selectedDate"></j-calendar>`,
   carousel: `<j-carousel [value]="featuredItems" [visibleItems]="2"></j-carousel>`,
   chart: `<j-chart type="bar" [data]="ordersChartData" ariaLabel="Monthly orders"></j-chart>`,
   chips: `<j-chips label="Tags" placeholder="Type a tag and press Enter" [(ngModel)]="tags"></j-chips>`,
-  'data-grid': `<j-data-grid
-  title="Orders"
-  description="Sortable, filterable operational data with pagination."
-  [value]="orders"
-  [columns]="orderColumns"
-  [totalRecords]="orders.length"
-  striped
-  hover>
-</j-data-grid>`,
   'data-view': `<j-data-view [value]="products" layout="grid" [rows]="6"></j-data-view>`,
   editor: `<j-editor label="Description" placeholder="Write a short product summary" [(ngModel)]="description"></j-editor>`,
   'file-preview': `<j-file-preview fileName="statement.pdf" [fileSize]="245760"></j-file-preview>`,
@@ -2961,7 +3057,7 @@ const generatedBasicExamples: Readonly<Record<string, string>> = {
   <j-input label="City"></j-input>
 </j-fieldset>`,
   gallery: `<j-gallery [value]="galleryItems" animation="fade"></j-gallery>`,
-  image: `<j-image src="/assets/product-preview.png" alt="Product preview" preview></j-image>`,
+  image: `<j-image src="/assets/images/product-laptop.webp" alt="Illustration of a laptop product" preview></j-image>`,
   knob: `<j-knob label="Completion" [(ngModel)]="completion"></j-knob>`,
   loader: `<j-loader label="Loading report" [size]="32"></j-loader>`,
   'meter-group': `<j-meter-group [value]="segments"></j-meter-group>`,
@@ -3070,7 +3166,7 @@ const createGeneratedBasicExample = (
     return mapped;
   }
 
-  if (record.category === 'Forms') {
+  if (record.category === 'Form') {
     return `<${record.selector} label="${record.name}" placeholder="Enter ${record.name.toLowerCase()}"></${record.selector}>`;
   }
   if (record.category === 'Layout') {
@@ -3081,10 +3177,10 @@ const createGeneratedBasicExample = (
   if (record.category === 'Data') {
     return `<${record.selector} [value]="items"></${record.selector}>`;
   }
-  if (record.category === 'Navigation and Menu') {
+  if (record.category === 'Menu') {
     return `<${record.selector} [model]="items"></${record.selector}>`;
   }
-  if (record.category === 'Overlay' || record.category === 'Feedback and Messages') {
+  if (record.category === 'Overlay' || record.category === 'Messages') {
     return `<${record.selector} />`;
   }
   return `<${record.selector} />`;
@@ -3388,6 +3484,7 @@ const registryRecordFor = (doc: ComponentDoc) =>
   );
 
 export const componentDocs: readonly ComponentDoc[] = mergedComponentDocs
+  .filter((doc) => Boolean(registryRecordFor(doc)))
   .filter(
     (doc, index, docs) =>
       docs.findIndex(
@@ -3401,6 +3498,7 @@ export const componentDocs: readonly ComponentDoc[] = mergedComponentDocs
     const documentedOutputs = new Set(doc.outputs.map((row) => row.event));
     return {
       ...doc,
+      category: registryRecord?.category ?? doc.category,
       status: registryRecord?.stability ?? doc.status,
       description: registryRecord?.description ?? doc.description,
       whenToUse: registryRecord?.description ?? doc.description,
@@ -3473,4 +3571,12 @@ export const componentDocs: readonly ComponentDoc[] = mergedComponentDocs
       },
     };
   })
-  .sort((left, right) => left.name.localeCompare(right.name));
+  .sort((left, right) => {
+    const leftIndex = generatedComponentRegistry.findIndex(
+      (record) => record.selector === left.selector,
+    );
+    const rightIndex = generatedComponentRegistry.findIndex(
+      (record) => record.selector === right.selector,
+    );
+    return leftIndex - rightIndex;
+  });

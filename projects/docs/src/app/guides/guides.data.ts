@@ -73,12 +73,11 @@ export class DashboardComponent { readonly activity = { labels: ['Mon','Tue','We
       'Show loading, empty and retryable error states.',
     ],
     code: `import { Component, signal } from '@angular/core';
-import { JDataGridComponent } from 'jrng-ui/data-grid';
-import { JTableLazyLoadEvent } from 'jrng-ui/table';
+import { JTableComponent, JTableLazyLoadEvent } from 'jrng-ui/table';
 
 @Component({
-  selector: 'app-orders', imports: [JDataGridComponent],
-  template: \`<j-data-grid title="Orders" [value]="rows()" [columns]="columns" [loading]="loading()" [totalRecords]="total()" (lazyLoad)="load($event)" />\`,
+  selector: 'app-orders', imports: [JTableComponent],
+  template: \`<j-table title="Orders" dataMode="server" paginator [value]="rows()" [columns]="columns" [loading]="loading()" [totalRecords]="total()" (lazyLoad)="load($event)" />\`,
 })
 export class OrdersComponent {
   readonly rows = signal<readonly Readonly<Record<string, unknown>>[]>([]); readonly total = signal(0); readonly loading = signal(false);
@@ -86,7 +85,7 @@ export class OrdersComponent {
   load(request: JTableLazyLoadEvent): void { /* cancel the previous request, then query the API with request state */ }
 }`,
     explanation: [
-      'The grid emits one request shape for server operations.',
+      'The table emits one request shape for server operations.',
       'The API remains responsible for total count and current page rows.',
       'Cancel or ignore superseded requests before updating signals.',
     ],
@@ -100,7 +99,7 @@ export class OrdersComponent {
       'Using array index as row identity.',
       'Clearing visible rows during every background refresh.',
     ],
-    related: related('Data Grid', 'Table', 'Filter Bar', 'Paginator'),
+    related: related('Table', 'Filter Bar', 'Paginator'),
   },
   {
     slug: 'reactive-forms',
