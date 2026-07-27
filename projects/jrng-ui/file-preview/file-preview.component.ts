@@ -38,10 +38,13 @@ export interface JFilePreviewAction {
         }
       </div>
       <div class="j-file-preview__body">
-        <strong>{{ name() }}</strong>
-        @if (sizeLabel()) {
-          <small>{{ sizeLabel() }}</small>
-        }
+        <strong [title]="name()">{{ name() }}</strong>
+        <div class="j-file-preview__meta">
+          <span>{{ presentation().label }}</span>
+          @if (sizeLabel()) {
+            <span>{{ sizeLabel() }}</span>
+          }
+        </div>
         @if (description()) {
           <p>{{ description() }}</p>
         }
@@ -101,9 +104,10 @@ export interface JFilePreviewAction {
         border-radius: var(--j-radius-lg);
         color: var(--j-file-preview-color, var(--j-color-card-foreground, #111827));
         display: grid;
-        gap: var(--j-spacing-3);
-        grid-template-columns: 3rem minmax(0, 1fr) auto;
-        padding: var(--j-spacing-3);
+        gap: var(--j-spacing-4);
+        grid-template-columns: 3.25rem minmax(10rem, 1fr) auto;
+        min-width: 0;
+        padding: var(--j-spacing-4);
       }
 
       .j-file-preview__icon {
@@ -112,8 +116,14 @@ export interface JFilePreviewAction {
         border-radius: var(--j-radius-md);
         display: flex;
         font-size: var(--j-font-size-xs);
-        height: 3rem;
+        font-weight: var(--j-font-weight-semibold);
+        height: 3.25rem;
         justify-content: center;
+        line-height: 1.15;
+        overflow: hidden;
+        padding: var(--j-spacing-1);
+        text-align: center;
+        width: 3.25rem;
       }
 
       .j-file-preview__body {
@@ -122,15 +132,39 @@ export interface JFilePreviewAction {
         min-width: 0;
       }
 
-      .j-file-preview__body small,
+      .j-file-preview__body strong {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .j-file-preview__meta {
+        align-items: center;
+        color: var(--j-color-muted-foreground);
+        display: flex;
+        flex-wrap: wrap;
+        font-size: var(--j-font-size-xs);
+        gap: var(--j-spacing-2);
+      }
+
+      .j-file-preview__meta span + span::before {
+        content: '•';
+        margin-inline-end: var(--j-spacing-2);
+      }
+
       .j-file-preview__body p {
         color: var(--j-color-muted-foreground);
         margin: 0;
       }
 
       .j-file-preview__actions {
+        align-items: center;
+        border-inline-start: 1px solid var(--j-color-border);
         display: flex;
-        gap: var(--j-spacing-2);
+        flex-wrap: wrap;
+        gap: var(--j-spacing-1);
+        justify-content: flex-end;
+        padding-inline-start: var(--j-spacing-3);
       }
 
       .j-file-preview__actions a,
@@ -149,13 +183,20 @@ export interface JFilePreviewAction {
         outline: none;
       }
 
-      @media (max-width: 640px) {
+      @media (max-width: 720px) {
         .j-file-preview {
-          grid-template-columns: 3rem minmax(0, 1fr);
+          gap: var(--j-spacing-3);
+          grid-template-columns: 3.25rem minmax(0, 1fr);
+          padding: var(--j-spacing-3);
         }
 
         .j-file-preview__actions {
+          border-block-start: 1px solid var(--j-color-border);
+          border-inline-start: 0;
           grid-column: 1 / -1;
+          justify-content: flex-start;
+          padding-block-start: var(--j-spacing-2);
+          padding-inline-start: 0;
         }
       }
     `,

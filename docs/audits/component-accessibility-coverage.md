@@ -2,14 +2,13 @@
 
 Generated: jrng-ui 0.1.0
 
-Canonical public components: **121**
+Canonical public components: **119**
 
-- validated: 121
+- validated: 119
 
 | Component | Selector | Category | Status |
 | --- | --- | --- | --- |
 | Autocomplete | `j-autocomplete` | Form | validated |
-| Calendar | `j-calendar` | Form | validated |
 | Checkbox | `j-checkbox` | Form | validated |
 | Chips | `j-chips` | Form | validated |
 | Color Picker | `j-color-picker` | Form | validated |
@@ -100,7 +99,6 @@ Canonical public components: **121**
 | Chart | `j-chart` | Chart | validated |
 | Sparkline | `j-sparkline` | Chart | validated |
 | App Shell | `j-app-shell` | Layout | validated |
-| Auth Layout | `j-auth-layout` | Layout | validated |
 | Container | `j-container` | Layout | validated |
 | Grid | `j-grid` | Layout | validated |
 | Grid Column | `j-col` | Layout | validated |

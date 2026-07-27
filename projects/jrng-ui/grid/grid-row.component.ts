@@ -20,12 +20,14 @@ import { JGridAlignment, JGridGap, JGridJustification, jGridGapToken } from './g
       :host {
         align-items: var(--j-row-align, stretch);
         box-sizing: border-box;
+        column-gap: 0;
         display: flex;
         flex-wrap: wrap;
         justify-content: var(--j-row-justify, flex-start);
-        column-gap: var(--j-row-column-gap, var(--j-grid-column-gap));
+        margin-inline: calc(var(--j-row-column-gap, var(--j-grid-column-gap, 0px)) / -2);
         min-width: 0;
         row-gap: var(--j-row-row-gap, var(--j-grid-row-gap));
+        width: calc(100% + var(--j-row-column-gap, var(--j-grid-column-gap, 0px)));
       }
 
       :host(.j-row--nowrap) {

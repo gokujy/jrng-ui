@@ -7,7 +7,6 @@ The final shared vocabularies are JComponentSize, JSeverity, JDensity, JOrientat
 | Component/entrypoint | Current API | Final API | Action |
 | --- | --- | --- | --- |
 | autocomplete | error (1) | danger | Normalize and document |
-| calendar | row (2) | horizontal | Normalize and document |
 | chart | error (1) | danger | Normalize and document |
 | checkbox | error (1) | danger | Normalize and document |
 | chips | error (1) | danger | Normalize and document |
@@ -46,6 +45,7 @@ The final shared vocabularies are JComponentSize, JSeverity, JDensity, JOrientat
 | skeleton | row (1) | horizontal | Normalize and document |
 | slider | error (1) | danger | Normalize and document |
 | splitter | readOnly (1) | readonly | Normalize and document |
+| stepper | readOnly (1) | readonly | Normalize and document |
 | table | column (2) | vertical | Normalize and document |
 | table | error (1) | danger | Normalize and document |
 | table | error (9) | danger | Normalize and document |

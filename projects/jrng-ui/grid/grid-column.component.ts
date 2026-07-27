@@ -47,6 +47,7 @@ type JGridResponsiveOrder = JGridColumnOrder | null;
         max-width: 100%;
         min-width: 0;
         order: var(--j-col-order, 0);
+        padding-inline: calc(var(--j-row-column-gap, var(--j-grid-column-gap, 0px)) / 2);
         width: var(--j-col-width, auto);
       }
 

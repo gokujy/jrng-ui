@@ -25,6 +25,11 @@ describe('JImageComponent', () => {
     fixture.detectChanges();
     expect(fixture.componentInstance.previewVisible()).toBe(true);
     expect(fixture.debugElement.query(By.css('[role="dialog"]'))).not.toBeNull();
+    expect(document.body.style.overflow).toBe('hidden');
+
+    fixture.debugElement.query(By.css('.j-image-viewer__backdrop')).nativeElement.click();
+    fixture.detectChanges();
+    expect(document.body.style.overflow).toBe('');
   });
 
   it('uses the fallback once when the image fails', () => {

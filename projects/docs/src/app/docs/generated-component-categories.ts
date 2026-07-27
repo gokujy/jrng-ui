@@ -139,10 +139,9 @@ export const generatedComponentCategories = [
   },
   {
     name: "Layout",
-    count: 12,
+    count: 11,
     selectors: [
       "j-app-shell",
-      "j-auth-layout",
       "j-container",
       "j-grid",
       "j-col",
@@ -189,4 +188,4 @@ export const generatedComponentCategories = [
 export const generatedComponentCategoryOrder = generatedComponentCategories.map(
   ({ name }) => name,
 );
-export const generatedActiveComponentTotal = 120;
+export const generatedActiveComponentTotal = 119;

@@ -2,15 +2,14 @@
 
 Generated: jrng-ui 0.1.0
 
-Canonical public components: **121**
+Canonical public components: **119**
 
-- preview-available: 79
+- preview-available: 77
 - not-applicable: 42
 
 | Component | Selector | Category | Status |
 | --- | --- | --- | --- |
 | Autocomplete | `j-autocomplete` | Form | preview-available |
-| Calendar | `j-calendar` | Form | not-applicable |
 | Checkbox | `j-checkbox` | Form | not-applicable |
 | Chips | `j-chips` | Form | preview-available |
 | Color Picker | `j-color-picker` | Form | not-applicable |
@@ -101,11 +100,10 @@ Canonical public components: **121**
 | Chart | `j-chart` | Chart | preview-available |
 | Sparkline | `j-sparkline` | Chart | preview-available |
 | App Shell | `j-app-shell` | Layout | preview-available |
-| Auth Layout | `j-auth-layout` | Layout | preview-available |
 | Container | `j-container` | Layout | not-applicable |
 | Grid | `j-grid` | Layout | preview-available |
 | Grid Column | `j-col` | Layout | preview-available |
-| Grid Layout | `j-grid-layout` | Layout | preview-available |
+| Grid Layout | `j-grid-layout` | Layout | not-applicable |
 | Grid Row | `j-row` | Layout | preview-available |
 | Page Header | `j-page-header` | Layout | preview-available |
 | Responsive Sidebar | `j-responsive-sidebar` | Layout | preview-available |

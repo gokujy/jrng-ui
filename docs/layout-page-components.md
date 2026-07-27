@@ -56,21 +56,6 @@ readonly breadcrumbs: JPageHeaderBreadcrumb[] = [
 </j-section-footer>
 ```
 
-## Auth Layout
-
-`j-auth-layout` supports split and centered authentication layouts.
-
-```html
-<j-auth-layout variant="split">
-  <aside jAuthAside>Welcome content</aside>
-  <form>Sign in form</form>
-</j-auth-layout>
-
-<j-auth-layout variant="centered">
-  <form>Create account form</form>
-</j-auth-layout>
-```
-
 ## Layout Primitives
 
 Use `j-container`, `j-grid`, and `j-grid-layout` with JRNG flex utilities to compose pages.

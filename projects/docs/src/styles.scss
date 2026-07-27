@@ -2551,7 +2551,6 @@ pre {
   padding: var(--j-spacing-5);
   place-items: center;
   position: relative;
-  z-index: 1;
 }
 
 .j-preview-viewport-toolbar {
@@ -2853,6 +2852,34 @@ pre {
 .j-live-chart-preview-grid j-chart {
   display: block;
   min-height: 16rem;
+}
+
+.j-live-chart-example {
+  background: var(--j-color-background);
+  border: 1px solid var(--j-color-border);
+  border-radius: var(--j-radius-lg);
+  display: grid;
+  gap: var(--j-spacing-3);
+  min-height: 22rem;
+  padding: var(--j-spacing-4);
+  width: min(100%, 48rem);
+}
+
+.j-live-chart-example j-chart {
+  display: block;
+  min-height: 18rem;
+}
+
+.j-file-preview-demo-grid {
+  display: grid;
+  gap: var(--j-spacing-3);
+  width: min(100%, 48rem);
+}
+
+.j-preview-action-status {
+  color: var(--j-color-success);
+  font-size: var(--j-font-size-sm);
+  margin: var(--j-spacing-2) 0 0;
 }
 
 .j-doc-compact-dashboard {

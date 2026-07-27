@@ -115,7 +115,6 @@ export const COMPONENT_CATEGORIES = [
     name: 'Layout',
     selectors: [
       'j-app-shell',
-      'j-auth-layout',
       'j-container',
       'j-grid',
       'j-col',
@@ -180,12 +179,12 @@ export const COMPONENT_CATEGORY_COUNTS = Object.freeze({
   Media: 5,
   File: 3,
   Chart: 2,
-  Layout: 12,
+  Layout: 11,
   Misc: 13,
   Utilities: 3,
   Pages: 2,
 });
-export const ACTIVE_COMPONENT_TOTAL = 120;
+export const ACTIVE_COMPONENT_TOTAL = 119;
 export const COMPONENT_CATEGORY_TOTAL = 14;
 export const REMOVED_COMPONENT_SELECTORS = new Set([
   'j-activity-feed',

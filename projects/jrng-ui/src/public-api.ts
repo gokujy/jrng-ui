@@ -2,7 +2,6 @@ export * from 'jrng-ui/core';
 export * from 'jrng-ui/accordion';
 export * from 'jrng-ui/app-shell';
 export * from 'jrng-ui/async-data';
-export * from 'jrng-ui/auth-layout';
 export * from 'jrng-ui/autocomplete';
 export * from 'jrng-ui/avatar';
 export * from 'jrng-ui/avatar-group';

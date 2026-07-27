@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
-  "generatedOn": "2026-07-25T16:23:17.296Z",
+  "generatedOn": "2026-07-26T17:12:16.847Z",
   "package": "jrng-ui",
   "version": "0.1.0",
   "authority": "Built declaration files and canonical secondary-entrypoint source; projects/jrng-ui/src/lib is excluded.",
   "totals": {
-    "entrypoints": 129,
-    "artifacts": 685,
-    "component": 122,
-    "type": 382,
+    "entrypoints": 127,
+    "artifacts": 682,
+    "component": 120,
+    "type": 381,
     "class": 114,
     "service": 20,
     "directive": 19,
@@ -3135,41 +3135,6 @@
       ]
     },
     {
-      "importPath": "jrng-ui/auth-layout",
-      "declaration": "types/jrng-ui-auth-layout.d.ts",
-      "artifactCount": 2,
-      "optionalDependencies": [],
-      "artifacts": [
-        {
-          "name": "JAuthLayoutComponent",
-          "originalName": "JAuthLayoutComponent",
-          "kind": "component",
-          "entrypoint": "jrng-ui/auth-layout",
-          "selector": "j-auth-layout",
-          "exportAlias": false,
-          "tested": true,
-          "documented": true,
-          "accessibility": "validated",
-          "themeTokens": "css-custom-properties",
-          "browserApis": [],
-          "optionalDependencies": []
-        },
-        {
-          "name": "JAuthLayoutVariant",
-          "originalName": "JAuthLayoutVariant",
-          "kind": "type",
-          "entrypoint": "jrng-ui/auth-layout",
-          "selector": null,
-          "exportAlias": false,
-          "documented": false,
-          "accessibility": "not-applicable",
-          "themeTokens": "css-custom-properties",
-          "browserApis": [],
-          "optionalDependencies": []
-        }
-      ]
-    },
-    {
       "importPath": "jrng-ui/autocomplete",
       "declaration": "types/jrng-ui-autocomplete.d.ts",
       "artifactCount": 2,
@@ -3519,28 +3484,6 @@
           "tested": true,
           "documented": false,
           "accessibility": "not-applicable",
-          "themeTokens": "css-custom-properties",
-          "browserApis": [],
-          "optionalDependencies": []
-        }
-      ]
-    },
-    {
-      "importPath": "jrng-ui/calendar",
-      "declaration": "types/jrng-ui-calendar.d.ts",
-      "artifactCount": 1,
-      "optionalDependencies": [],
-      "artifacts": [
-        {
-          "name": "JCalendarComponent",
-          "originalName": "JCalendarComponent",
-          "kind": "component",
-          "entrypoint": "jrng-ui/calendar",
-          "selector": "j-calendar",
-          "exportAlias": false,
-          "tested": true,
-          "documented": true,
-          "accessibility": "validated",
           "themeTokens": "css-custom-properties",
           "browserApis": [],
           "optionalDependencies": []
@@ -10044,7 +9987,8 @@
           "themeTokens": "css-custom-properties",
           "browserApis": [
             "document",
-            "clipboard"
+            "clipboard",
+            "createObjectURL"
           ],
           "optionalDependencies": []
         },
@@ -10060,7 +10004,8 @@
           "themeTokens": "css-custom-properties",
           "browserApis": [
             "document",
-            "clipboard"
+            "clipboard",
+            "createObjectURL"
           ],
           "optionalDependencies": []
         },
@@ -10076,7 +10021,8 @@
           "themeTokens": "css-custom-properties",
           "browserApis": [
             "document",
-            "clipboard"
+            "clipboard",
+            "createObjectURL"
           ],
           "optionalDependencies": []
         },
@@ -10092,7 +10038,8 @@
           "themeTokens": "css-custom-properties",
           "browserApis": [
             "document",
-            "clipboard"
+            "clipboard",
+            "createObjectURL"
           ],
           "optionalDependencies": []
         }

@@ -10,9 +10,11 @@ import { JFileBrowserItem } from './file-browser.types';
     [items]="items"
     [breadcrumbs]="breadcrumbs"
     [selection]="selection"
+    [actions]="actions"
     selectionMode="multiple"
     (folderOpen)="opened = $event.item.id"
     (selectionChange)="selection = $event"
+    (action)="actionId = $event.action.id"
   />`,
 })
 class FileBrowserHostComponent {
@@ -22,7 +24,9 @@ class FileBrowserHostComponent {
   ];
   breadcrumbs = [{ id: 'home', label: 'Home' }];
   selection: readonly string[] = [];
+  actions = [{ id: 'download', label: 'Download', selection: 'any' as const }];
   opened = '';
+  actionId = '';
 }
 
 describe('JFileBrowserComponent', () => {
@@ -62,5 +66,22 @@ describe('JFileBrowserComponent', () => {
     fixture.detectChanges();
     expect(fixture.componentInstance.opened).toBe('folder');
     expect(fixture.debugElement.query(By.css('[aria-current="page"]'))).toBeTruthy();
+  });
+
+  it('enables configured actions for the current selection and emits the action', () => {
+    const items = fixture.debugElement.queryAll(By.css('[data-j-file-item]'));
+    const checkbox = items[1]?.query(By.css('input[type="checkbox"]'))
+      .nativeElement as HTMLInputElement;
+    checkbox.click();
+    fixture.detectChanges();
+    const action = fixture.debugElement
+      .queryAll(By.css('.j-file-browser__toolbar button'))
+      .map((item) => item.nativeElement as HTMLButtonElement)
+      .find((button) => button.textContent?.trim() === 'Download');
+    expect(action).toBeDefined();
+    if (!action) return;
+    expect(action.disabled).toBe(false);
+    action.click();
+    expect(fixture.componentInstance.actionId).toBe('download');
   });
 });

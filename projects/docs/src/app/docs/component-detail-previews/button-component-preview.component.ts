@@ -1,0 +1,128 @@
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import {
+  COMPONENT_PREVIEW_IMPORTS,
+  ComponentDetailViewBase,
+  DetailFeatureExample,
+} from '../component-detail-view-base';
+
+@Component({
+  selector: 'app-button-component-preview',
+  imports: [COMPONENT_PREVIEW_IMPORTS],
+  template: `
+    @let example = previewExample();
+    @switch (doc().slug) {
+      @case ('button') {
+        @if (example.key === 'basic') {
+          <app-button-basic-demo />
+        } @else if (example.key === 'group') {
+          <div class="j-preview-row">
+            <j-button label="Save" /><j-button label="Preview" variant="outlined" /><j-button
+              label="Cancel"
+              variant="soft"
+            />
+          </div>
+        } @else if (example.key === 'toolbar') {
+          <j-toolbar
+            ><j-button label="New" icon="plus" /><j-button
+              label="Export"
+              variant="outlined" /><j-button
+              icon="settings"
+              actionDisplay="icon"
+              ariaLabel="Toolbar settings"
+              variant="soft"
+          /></j-toolbar>
+        } @else if (example.key === 'form') {
+          <form class="j-preview-row">
+            <j-button label="Submit" type="submit" /><j-button
+              label="Reset"
+              type="reset"
+              variant="soft"
+            />
+          </form>
+        } @else if (example.key === 'severity') {
+          <div class="j-preview-row">
+            <j-button label="Primary" /><j-button label="Success" severity="success" /><j-button
+              label="Info"
+              severity="info"
+            /><j-button label="Warning" severity="warning" /><j-button
+              label="Danger"
+              severity="danger"
+            /><j-button label="Neutral" severity="neutral" /><j-button
+              label="Contrast"
+              severity="contrast"
+            />
+          </div>
+        } @else if (example.key === 'template') {
+          <j-button><strong>Approve</strong><span jButtonSuffix>⌘ Enter</span></j-button>
+        } @else {
+          <j-button
+            [label]="buttonExampleLabel(example.key)"
+            [variant]="buttonExampleVariant(example.key)"
+            [severity]="example.key === 'destructive' ? 'danger' : 'primary'"
+            [shape]="example.key === 'pill' ? 'pill' : 'rounded'"
+            [icon]="buttonExampleIcon(example.key)"
+            [iconPosition]="example.key === 'icon-after' ? 'right' : 'left'"
+            [actionDisplay]="example.key === 'icon-only' ? 'icon' : 'icon-label'"
+            [ariaLabel]="example.key === 'icon-only' ? 'Open settings' : ''"
+            [loading]="example.key === 'loading'"
+            [disabled]="example.key === 'disabled'"
+            [width]="example.key === 'full-width' ? 'full' : 'auto'"
+            [badge]="example.key === 'badge' ? 4 : null"
+            badgeAriaLabel="4 unread notifications"
+          />
+        }
+      }
+      @case ('icon-button') {
+        <j-button
+          icon="settings"
+          ariaLabel="Settings"
+          actionDisplay="icon"
+          [variant]="buttonVariants[example.index]"
+        />
+      }
+      @case ('copy-button') {
+        <div class="j-preview-row">
+          <j-copy-button text="npm install jrng-ui" />
+          <j-copy-button text="INV-2048" label="Copy ID" copiedLabel="Copied ID" />
+          <j-copy-button text="Disabled" disabled />
+        </div>
+      }
+      @case ('copy-button') {
+        @if (example.key === 'labels') {
+          <j-copy-button
+            text="https://jrng.dev/components"
+            label="Copy link"
+            copiedLabel="Link copied"
+            ariaLabel="Copy component link"
+          />
+        } @else if (example.key === 'icon') {
+          <j-copy-button
+            text="npm install jrng-ui"
+            icon="copy"
+            iconOnly
+            ariaLabel="Copy install command"
+          />
+        } @else if (example.key === 'code') {
+          <div class="j-copy-code">
+            <code>npm install jrng-ui</code>
+            <j-copy-button
+              text="npm install jrng-ui"
+              icon="copy"
+              iconOnly
+              ariaLabel="Copy install command"
+            />
+          </div>
+        } @else if (example.key === 'disabled') {
+          <j-copy-button text="Unavailable token" disabled />
+        } @else {
+          <j-copy-button text="JRNG-2026" />
+        }
+      }
+    }
+  `,
+  host: { style: 'display: contents' },
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class ButtonComponentPreviewComponent extends ComponentDetailViewBase {
+  readonly previewExample = input.required<DetailFeatureExample>();
+}

@@ -3096,10 +3096,6 @@ const generatedFallbackExamples: Readonly<Record<string, string>> = {
   'app-shell': `<j-app-shell>
   <main>Application content</main>
 </j-app-shell>`,
-  'auth-layout': `<j-auth-layout title="Sign in" subtitle="Access your workspace">
-  <j-input label="Email" type="email"></j-input>
-  <j-password label="Password"></j-password>
-</j-auth-layout>`,
   'bottom-sheet': `<j-bottom-sheet header="Actions" [visible]="true">
   <j-button label="Archive"></j-button>
 </j-bottom-sheet>`,

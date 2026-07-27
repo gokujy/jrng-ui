@@ -2,14 +2,13 @@
 
 Generated: jrng-ui 0.1.0
 
-Canonical public components: **121**
+Canonical public components: **119**
 
-- light-dark-system-high-contrast-preview: 121
+- light-dark-system-high-contrast-preview: 119
 
 | Component | Selector | Category | Status |
 | --- | --- | --- | --- |
 | Autocomplete | `j-autocomplete` | Form | light-dark-system-high-contrast-preview |
-| Calendar | `j-calendar` | Form | light-dark-system-high-contrast-preview |
 | Checkbox | `j-checkbox` | Form | light-dark-system-high-contrast-preview |
 | Chips | `j-chips` | Form | light-dark-system-high-contrast-preview |
 | Color Picker | `j-color-picker` | Form | light-dark-system-high-contrast-preview |
@@ -100,7 +99,6 @@ Canonical public components: **121**
 | Chart | `j-chart` | Chart | light-dark-system-high-contrast-preview |
 | Sparkline | `j-sparkline` | Chart | light-dark-system-high-contrast-preview |
 | App Shell | `j-app-shell` | Layout | light-dark-system-high-contrast-preview |
-| Auth Layout | `j-auth-layout` | Layout | light-dark-system-high-contrast-preview |
 | Container | `j-container` | Layout | light-dark-system-high-contrast-preview |
 | Grid | `j-grid` | Layout | light-dark-system-high-contrast-preview |
 | Grid Column | `j-col` | Layout | light-dark-system-high-contrast-preview |

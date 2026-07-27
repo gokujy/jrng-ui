@@ -86,7 +86,7 @@ import { JInternalOverlayHeaderComponent } from 'jrng-ui/overlay-header';
       .j-image-viewer {
         inset: 0;
         position: fixed;
-        z-index: var(--j-z-index-modal, 1100);
+        z-index: var(--j-z-index-fullscreen, 1200);
       }
       .j-image-viewer__backdrop {
         background: rgb(15 23 42 / 78%);
@@ -169,6 +169,7 @@ export class JInternalImageViewerComponent {
   private readonly browser = isPlatformBrowser(inject(PLATFORM_ID));
   private readonly overlayHeader = viewChild(JInternalOverlayHeaderComponent);
   private previousFocus: HTMLElement | null = null;
+  private previousBodyOverflow: string | null = null;
   private wasVisible = false;
 
   readonly src = input('');
@@ -197,13 +198,16 @@ export class JInternalImageViewerComponent {
     afterRenderEffect(() => {
       if (this.visible() && !this.wasVisible) {
         this.previousFocus = this.documentRef.activeElement as HTMLElement | null;
+        this.lockPageScroll();
         queueMicrotask(() => this.overlayHeader()?.focusClose());
       } else if (!this.visible() && this.wasVisible) {
+        this.restorePageScroll();
         queueMicrotask(() => this.previousFocus?.focus());
         this.previousFocus = null;
       }
       this.wasVisible = this.visible();
     });
+    this.destroyRef.onDestroy(() => this.restorePageScroll());
   }
 
   zoomBy(delta: number): void {
@@ -223,5 +227,23 @@ export class JInternalImageViewerComponent {
     this.visible.set(false);
     this.reset();
     this.closed.emit();
+  }
+
+  private lockPageScroll(): void {
+    const body = this.documentRef.body;
+    if (this.previousBodyOverflow !== null) return;
+    this.previousBodyOverflow = body.style.overflow;
+    this.renderer.setStyle(body, 'overflow', 'hidden');
+  }
+
+  private restorePageScroll(): void {
+    if (this.previousBodyOverflow === null) return;
+    const body = this.documentRef.body;
+    if (this.previousBodyOverflow) {
+      this.renderer.setStyle(body, 'overflow', this.previousBodyOverflow);
+    } else {
+      this.renderer.removeStyle(body, 'overflow');
+    }
+    this.previousBodyOverflow = null;
   }
 }

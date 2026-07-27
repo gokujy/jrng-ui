@@ -35,6 +35,7 @@
 
 ### Removed
 
+- Removed the `j-auth-layout` component and `jrng-ui/auth-layout` entry point. Compose authentication screens with `j-container`, `j-grid-layout`, and `j-card`.
 - Removed Activity Feed, Approval Flow, Audit Log, Navigation Progress, Dashboard Layout, Sidebar Layout, Stack, Status Page, Input Icon, Date Range Picker, Combobox, Float Label, Ifta Label, Image Preview and Empty Page entry points after migrating their supported behavior.
 - Removed the Driver.js dependency, dynamic import and external stylesheet.
 - Removed the duplicated library source tree and duplicate public components: Metric Card, Stat Card, Dropzone, Overlay Panel, Pick List, Column, Sort Icon, Table Empty State, and Table Skeleton.

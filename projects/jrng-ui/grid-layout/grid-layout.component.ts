@@ -22,15 +22,20 @@ import { ChangeDetectionStrategy, Component, input, numberAttribute } from '@ang
         display: grid;
         gap: var(--j-grid-gap);
         grid-template-columns: repeat(
-          var(--j-grid-columns),
-          minmax(min(var(--j-grid-min), 100%), 1fr)
+          auto-fit,
+          minmax(
+            min(
+              100%,
+              max(
+                var(--j-grid-min),
+                calc(
+                  (100% - (var(--j-grid-columns) - 1) * var(--j-grid-gap)) / var(--j-grid-columns)
+                )
+              )
+            ),
+            1fr
+          )
         );
-      }
-
-      @media (max-width: 768px) {
-        .j-grid-layout {
-          grid-template-columns: 1fr;
-        }
       }
     `,
   ],
