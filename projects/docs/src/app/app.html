@@ -38,54 +38,6 @@
       </nav>
 
       <div class="docs-header__actions">
-        <button
-          class="docs-icon-button docs-icon-button--square"
-          type="button"
-          (click)="toggleDark()"
-          [attr.aria-label]="isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
-        >
-          @if (isDark()) {
-            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-              <circle cx="12" cy="12" r="4.5" fill="currentColor" />
-              <g stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-                <path
-                  d="M12 2.5v2.5M12 19v2.5M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M2.5 12h2.5M19 12h2.5M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8"
-                />
-              </g>
-            </svg>
-          } @else {
-            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-              <path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" fill="currentColor" />
-            </svg>
-          }
-        </button>
-
-        <button
-          class="docs-icon-button docs-icon-button--square"
-          type="button"
-          (click)="toggleConfig()"
-          [class.is-active]="configOpen()"
-          [attr.aria-expanded]="configOpen()"
-          aria-label="Open theme configurator"
-        >
-          <svg
-            viewBox="0 0 24 24"
-            width="18"
-            height="18"
-            aria-hidden="true"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.8"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <circle cx="12" cy="12" r="3" />
-            <path
-              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"
-            />
-          </svg>
-        </button>
-
         <a
           class="docs-icon-button docs-icon-button--square"
           [href]="githubUrl"
@@ -102,67 +54,9 @@
         </a>
       </div>
     </div>
-
-    @if (configOpen()) {
-      <button
-        class="docs-config-backdrop"
-        type="button"
-        aria-label="Close theme configurator"
-        (click)="closeConfig()"
-      ></button>
-
-      <div class="docs-config" role="dialog" aria-label="Theme configurator">
-        <div class="docs-config__section">
-          <h3>Primary</h3>
-          <div class="docs-config__swatches">
-            @for (name of presetNames; track name) {
-              <button
-                type="button"
-                class="docs-config__swatch"
-                [class.is-active]="activePreset() === name"
-                [style.background]="presetSwatch(name)"
-                [attr.aria-label]="'Primary color ' + name"
-                [attr.aria-pressed]="activePreset() === name"
-                (click)="selectPreset(name)"
-              ></button>
-            }
-          </div>
-        </div>
-
-        <div class="docs-config__section">
-          <h3>Theme Mode</h3>
-          <div class="docs-config__toggle">
-            <button type="button" [class.is-active]="!isDark()" (click)="setColorScheme(false)">
-              Light
-            </button>
-            <button type="button" [class.is-active]="isDark()" (click)="setColorScheme(true)">
-              Dark
-            </button>
-          </div>
-        </div>
-
-        <div class="docs-config__section">
-          <h3>Density</h3>
-          <div class="docs-config__toggle">
-            <button
-              type="button"
-              [class.is-active]="density() === 'comfortable'"
-              (click)="density() === 'compact' && toggleDensity()"
-            >
-              Comfortable
-            </button>
-            <button
-              type="button"
-              [class.is-active]="density() === 'compact'"
-              (click)="density() === 'comfortable' && toggleDensity()"
-            >
-              Compact
-            </button>
-          </div>
-        </div>
-      </div>
-    }
   </header>
+
+  <app-docs-theme-settings />
 
   <div
     class="docs-layout"

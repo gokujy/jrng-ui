@@ -10,12 +10,12 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { JConfirmDialogComponent } from 'jrng-ui/confirm-dialog';
-import { JThemePresetName, JThemeService, jThemePresets } from 'jrng-ui/theming';
 import { JToastContainerComponent } from 'jrng-ui/toast';
 import { filter, map } from 'rxjs';
 import { DocsSeoService } from './core/seo.service';
 import { DocsAnalyticsService } from './core/analytics.service';
 import { componentDocs } from './docs/component-docs.data';
+import { DocsThemeSettingsComponent } from './theme/docs-theme-settings.component';
 
 interface DocsNavItem {
   readonly label: string;
@@ -36,13 +36,13 @@ interface DocsNavGroup {
     RouterOutlet,
     JConfirmDialogComponent,
     JToastContainerComponent,
+    DocsThemeSettingsComponent,
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
-  private readonly theme = inject(JThemeService);
   private readonly documentRef = inject(DOCUMENT);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   private readonly router = inject(Router);
@@ -90,14 +90,6 @@ export class App {
     },
   ];
 
-  readonly isDark = this.theme.isDark;
-
-  /** JRNG UI theme configurator displayed from the top bar. */
-  readonly presetNames = Object.keys(jThemePresets) as JThemePresetName[];
-  readonly activePreset = signal<JThemePresetName>('indigo');
-  readonly configOpen = signal(false);
-
-  readonly density = signal<'comfortable' | 'compact'>('comfortable');
   readonly navOpen = signal(false);
   readonly componentsExpanded = signal(false);
   readonly componentQuery = signal('');
@@ -162,44 +154,6 @@ export class App {
           );
         }
       });
-  }
-
-  /** Switches between the JRNG UI light and dark theme modes. */
-  toggleDark(): void {
-    this.theme.setMode(this.isDark() ? 'light' : 'dark');
-  }
-
-  setColorScheme(dark: boolean): void {
-    this.theme.setMode(dark ? 'dark' : 'light');
-  }
-
-  toggleConfig(): void {
-    this.configOpen.update((open) => !open);
-  }
-
-  closeConfig(): void {
-    this.configOpen.set(false);
-  }
-
-  /** Apply a color preset (the configurator's "Primary" palette). */
-  selectPreset(name: JThemePresetName): void {
-    this.activePreset.set(name);
-    this.theme.setPreset(jThemePresets[name]);
-  }
-
-  /** Swatch color for a preset chip. */
-  presetSwatch(name: JThemePresetName): string {
-    return jThemePresets[name].light?.['--j-color-primary'] ?? 'transparent';
-  }
-
-  toggleDensity(): void {
-    this.density.update((value) => (value === 'comfortable' ? 'compact' : 'comfortable'));
-    if (this.isBrowser) {
-      this.documentRef.documentElement.classList.toggle(
-        'j-density-compact',
-        this.density() === 'compact',
-      );
-    }
   }
 
   toggleNavigation(): void {
