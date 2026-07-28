@@ -64,14 +64,14 @@ No excluded component, renamed equivalent, or speculative shared public primitiv
 ### Barcode
 
 - **Reuse:** semantic tokens, Button/Copy/Download patterns where actions are exposed, core download/browser abstractions, and component accessibility conventions.
-- **Missing internal work:** private QR, Code 128, and EAN-13 encoders; validation; module-to-path SVG renderer; contrast checking; deterministic export text.
+- **Delivered internal work:** original Code 128 B and EAN-13 encoders, validation, module-to-path SVG rendering, contrast checking, and deterministic export text. QR matrix encoding uses the audited dependency below.
 - **Relevant existing components:** Image remains display-oriented and File Preview remains file-oriented; neither owns encoding.
 - **Theming:** foreground/background/caption/invalid/focus tokens while keeping explicit scan colors configurable.
 - **SSR:** pure deterministic SVG output; PNG/canvas work is excluded unless a guarded lightweight path proves safe.
 - **Zoneless:** computed encoding/render state and explicit ready/invalid events without layout observers.
 - **Accessibility:** one named graphic, hidden SVG internals, separate caption, associated invalid description, and clear export action name.
 - **Bundle:** compact encoders and one SVG path, never one Angular view per module; no large barcode suite.
-- **Optional dependencies:** none planned; an external encoder would require documented licence, maintenance, size, and SSR review before adoption.
+- **Dependency review:** `qrcode-generator` 2.0.4 is the sole new mandatory dependency and is used only for QR matrix conformance. It is MIT licensed, was maintained in 2025, has no runtime dependencies, exposes ESM and types, and is SSR-safe. The measured package remains independently entry-point tree-shakable.
 
 ## 5. Component order
 
@@ -93,91 +93,91 @@ All implementation is original JRNG architecture and code. Reference projects ma
 
 #### Architecture
 
-- [ ] Original versionable, JSON-safe Boolean-expression types defined.
-- [ ] Pure immutable add/remove/duplicate/update/normalise/validate operations tested separately.
-- [ ] Stable IDs survive controlled updates; cycles and malformed persisted data cannot crash rendering.
-- [ ] Field types and operator arity drive compatible editors without query execution or SQL generation.
-- [ ] CVA/controlled-value contract, public methods, disabled, and read-only semantics documented.
+- [x] Original versionable, JSON-safe Boolean-expression types defined.
+- [x] Pure immutable add/remove/duplicate/update/normalise/validate operations tested separately.
+- [x] Stable IDs survive controlled updates; cycles and malformed persisted data cannot crash rendering.
+- [x] Field types and operator arity drive compatible editors without query execution or SQL generation.
+- [x] CVA/controlled-value contract, public methods, disabled, and read-only semantics documented.
 
 #### Implementation
 
-- [ ] Root and nested AND/OR groups, conditions, empty/error states, and recovery UI implemented.
-- [ ] Text, number, boolean, date, single, range, list, and no-value operators implemented.
-- [ ] Add/remove/duplicate actions publish immutable state and restore focus.
-- [ ] Field, value-editor, group-header, and empty-state templates implemented.
-- [ ] Responsive stack, logical RTL CSS, theme tokens, keyboard behavior, labels/errors, and announcements implemented.
+- [x] Root and nested AND/OR groups, conditions, empty/error states, and recovery UI implemented.
+- [x] Text, number, boolean, date, single, range, list, and no-value operators implemented.
+- [x] Add/remove/duplicate actions publish immutable state and restore focus.
+- [x] Field, value-editor, group-header, and empty-state templates implemented.
+- [x] Responsive stack, logical RTL CSS, theme tokens, keyboard behavior, labels/errors, and announcements implemented.
 
 #### Testing
 
-- [ ] Model operations, nesting, identity, cycles, serialisation, validation, unknown metadata, field/operator transitions, and large trees pass.
-- [ ] Forms, templates, disabled/read-only, keyboard/focus, RTL/responsive markers, SSR, and cleanup pass.
-- [ ] Focused tests, full relevant suite, lint, library/docs builds, API/registry/package/SSR checks pass.
+- [x] Model operations, nesting, identity, cycles, serialisation, validation, unknown metadata, field/operator transitions, and large trees pass.
+- [x] Forms, templates, disabled/read-only, keyboard/focus, RTL/responsive markers, SSR, and cleanup pass.
+- [x] Focused tests, full relevant suite, lint, library/docs builds, API/registry/package/SSR checks pass.
 
 #### Documentation and packaging
 
-- [ ] Modular entry point and public exports work.
-- [ ] Registry, navigation, generated inventory, and removed-selector guards remain correct.
-- [ ] Independent examples cover basic, nested, customer, audit, types, custom operator/editor, controlled/forms, states, validation, responsive/RTL, accessibility/keyboard, theming, API, testing, FAQ, and changelog.
-- [ ] Preview and displayed source match; no unsafe SQL example exists.
+- [x] Modular entry point and public exports work.
+- [x] Registry, navigation, generated inventory, and removed-selector guards remain correct.
+- [x] Independent examples cover basic, nested, customer, audit, types, custom operator/editor, controlled/forms, states, validation, responsive/RTL, accessibility/keyboard, theming, API, testing, FAQ, and changelog.
+- [x] Preview and displayed source match; no unsafe SQL example exists.
 
 ### Cron Expression Editor
 
 #### Architecture
 
-- [ ] Exact Linux five-field grammar and day-of-month/day-of-week rule documented.
-- [ ] Pure grammar/parser/formatter/validator/description functions tested separately.
-- [ ] Invalid raw input remains visible; normalised CVA value and structured state transitions are predictable.
-- [ ] Preview calculation has strict iteration/time bounds and impossible schedules terminate.
+- [x] Exact Linux five-field grammar and day-of-month/day-of-week rule documented.
+- [x] Pure grammar/parser/formatter/validator/description functions tested separately.
+- [x] Invalid raw input remains visible; normalised CVA value and structured state transitions are predictable.
+- [x] Preview calculation has strict iteration/time bounds and impossible schedules terminate.
 
 #### Implementation
 
-- [ ] Raw input plus minute/hour/day-of-month/month/day-of-week structured controls implemented.
-- [ ] Wildcard, single, range, list, step, and common shortcuts implemented.
-- [ ] Normalisation, validation, human description, bounded next-run preview, copy, CVA, disabled/read-only, and errors implemented.
-- [ ] Responsive/RTL UI preserves cron token order and exposes complete keyboard/ARIA/focus behavior and theme tokens.
+- [x] Raw input plus minute/hour/day-of-month/month/day-of-week structured controls implemented.
+- [x] Wildcard, single, range, list, step, and common shortcuts implemented.
+- [x] Normalisation, validation, human description, bounded next-run preview, copy, CVA, disabled/read-only, and errors implemented.
+- [x] Responsive/RTL UI preserves cron token order and exposes complete keyboard/ARIA/focus behavior and theme tokens.
 
 #### Testing
 
-- [ ] Valid/invalid grammar, bounds, wildcard/list/range/step, whitespace, round trips, dialect semantics, impossible schedules, and termination pass.
-- [ ] CVA/Reactive Forms, disabled/read-only, keyboard, RTL, SSR, invalid recovery, and cleanup pass.
-- [ ] Focused tests, full relevant suite, lint, library/docs builds, API/registry/package/SSR checks pass.
+- [x] Valid/invalid grammar, bounds, wildcard/list/range/step, whitespace, round trips, dialect semantics, impossible schedules, and termination pass.
+- [x] CVA/Reactive Forms, disabled/read-only, keyboard, RTL, SSR, invalid recovery, and cleanup pass.
+- [x] Focused tests, full relevant suite, lint, library/docs builds, API/registry/package/SSR checks pass.
 
 #### Documentation and packaging
 
-- [ ] Selector is exactly `j-cron-expression`; modular entry point and exports work.
-- [ ] Registry/navigation/inventory updates are generated and removed selectors remain guarded.
-- [ ] Independent examples cover basic, recurring minutes, nightly, weekday, monthly, structured/raw, recovery, forms/states, responsive/RTL, accessibility/keyboard, theming, supported/unsupported grammar, API, testing, FAQ, and changelog.
-- [ ] Documentation states that applications execute jobs and makes no Quartz/Spring claim.
+- [x] Selector is exactly `j-cron-expression`; modular entry point and exports work.
+- [x] Registry/navigation/inventory updates are generated and removed selectors remain guarded.
+- [x] Independent examples cover basic, recurring minutes, nightly, weekday, monthly, structured/raw, recovery, forms/states, responsive/RTL, accessibility/keyboard, theming, supported/unsupported grammar, API, testing, FAQ, and changelog.
+- [x] Documentation states that applications execute jobs and makes no Quartz/Spring claim.
 
 ### Barcode
 
 #### Architecture
 
-- [ ] QR Code, Code 128, and EAN-13 encoders have original private APIs and conformance fixtures.
-- [ ] Equal inputs produce stable encoding and stable SVG path/markup.
-- [ ] Validation covers value limits, characters, EAN checksum, dimensions, quiet zone, and contrast.
-- [ ] Browser-only export behavior is guarded; SVG rendering itself is pure and SSR-safe.
+- [x] Audited QR dependency integration and original Code 128 B/EAN-13 encoders have bounded JRNG APIs and conformance fixtures.
+- [x] Equal inputs produce stable encoding and stable SVG path/markup.
+- [x] Validation covers value limits, characters, EAN checksum, dimensions, quiet zone, and contrast.
+- [x] Browser-only export behavior is guarded; SVG rendering itself is pure and SSR-safe.
 
 #### Implementation
 
-- [ ] `value`, `symbology`, dimensions/size, quiet zone, colors, QR correction, visible text, accessible label, and invalid/ready behavior implemented.
-- [ ] One accessible SVG graphic is emitted; module internals are hidden and not individually focusable.
-- [ ] Responsive/print/RTL-safe styling preserves encoded order and quiet zones.
-- [ ] SVG export and disabled export action state implemented; PNG remains excluded unless proven lightweight.
-- [ ] Component tokens and `.j-*` classes implemented.
+- [x] `value`, `symbology`, dimensions/size, quiet zone, colors, QR correction, visible text, accessible label, and invalid/ready behavior implemented.
+- [x] One accessible SVG graphic is emitted; module internals are hidden and not individually focusable.
+- [x] Responsive/print/RTL-safe styling preserves encoded order and quiet zones.
+- [x] SVG export and disabled export action state implemented; PNG remains excluded unless proven lightweight.
+- [x] Component tokens and `.j-*` classes implemented.
 
 #### Testing
 
-- [ ] Determinism and trusted QR, Code 128, and EAN-13 vectors/checksums pass.
-- [ ] Invalid/empty/oversized values, quiet zone, contrast, dimensions, repeated changes, export, SSR, responsive/RTL markers, memory, and cleanup pass.
-- [ ] Focused tests, full relevant suite, lint, library/docs builds, API/registry/package/SSR checks pass.
+- [x] Determinism and trusted QR, Code 128, and EAN-13 vectors/checksums pass.
+- [x] Invalid/empty/oversized values, quiet zone, contrast, dimensions, repeated changes, export, SSR, responsive/RTL markers, memory, and cleanup pass.
+- [x] Focused tests, full relevant suite, lint, library/docs builds, API/registry/package/SSR checks pass.
 
 #### Documentation and packaging
 
-- [ ] Selector is exactly `j-barcode`; modular entry point and exports work.
-- [ ] Registry/navigation/inventory updates are generated and removed selectors remain guarded.
-- [ ] Independent examples cover QR, inventory Code 128, retail EAN-13, URL/ticket, sizing, caption, colors, invalid, print, export, accessibility, responsive/RTL, theming, API, scanner testing, FAQ, and changelog.
-- [ ] Scanning risks and manual physical-scanner validation steps are documented without hardware-dependent automation.
+- [x] Selector is exactly `j-barcode`; modular entry point and exports work.
+- [x] Registry/navigation/inventory updates are generated and removed selectors remain guarded.
+- [x] Independent examples cover QR, inventory Code 128, retail EAN-13, URL/ticket, sizing, caption, colors, invalid, print, export, accessibility, responsive/RTL, theming, API, scanner testing, FAQ, and changelog.
+- [x] Scanning risks and manual physical-scanner validation steps are documented without hardware-dependent automation.
 
 ## 8. Definition of done
 

@@ -30,34 +30,34 @@ The current gate is recorded in `advanced-components-baseline.md`.
 
 ## Candidate register
 
-| Candidate              | Selector direction  | Priority             | Status                      | Decision                                                                                                        |
-| ---------------------- | ------------------- | -------------------- | --------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| Query Builder          | `j-query-builder`   | P0                   | Approved for implementation | First bounded delivery; establishes a neutral typed Boolean-expression model.                                   |
-| Cron Expression Editor | `j-cron-expression` | P1                   | Approved for implementation | Bounded parser/form-control responsibility with no scheduler execution.                                         |
-| Barcode                | `j-barcode`         | P1                   | Approved for implementation | Bounded deterministic renderer covering QR, Code 128, and EAN-13.                                               |
-| Chat                   | `j-chat`            | P1                   | Candidate                   | Valuable transport-neutral UI, but feed virtualisation/live collaboration needs a separate design.              |
-| Pivot Table            | `j-pivot-table`     | P1 after foundations | Deferred                    | Requires aggregation, two-axis navigation/virtualisation, and field-chooser foundations.                        |
-| Diagram                | `j-diagram`         | P2                   | Deferred                    | Requires geometry, selection, command history, SVG accessibility, and performance budgets.                      |
-| Map                    | `j-map`             | P2 / demand-based    | Candidate                   | Provider adapters, licensing, SSR, offline behavior, and bundle policy require demand evidence.                 |
-| Ribbon                 | `j-ribbon`          | P2                   | Approved for design         | May become a command-surface foundation; must not pre-empt a consumer-driven API.                               |
-| Code Editor            | `j-code-editor`     | P2 / adapter-based   | Approved for design         | Core owns the Angular shell and contract; editing engines must be optional adapters.                            |
-| Dock Manager           | `j-dock-manager`    | P3                   | Deferred                    | Depends on mature drag, resize, persistence, focus, and layout primitives.                                      |
-| Spreadsheet            | `j-spreadsheet`     | P3                   | Deferred                    | Very high correctness/accessibility scope; needs formula, selection, clipboard, and virtualisation foundations. |
-| Image Editor           | `j-image-editor`    | P3                   | Deferred                    | Requires canvas/SVG rendering, history, export, gesture, and memory design.                                     |
-| Block Editor           | `j-block-editor`    | P3 / research        | Research only               | Structured editing and schema boundaries need feasibility research and demand.                                  |
-| Document Editor        | `j-document-editor` | research only        | Research only               | Pagination, document formats, collaboration, and conversion are not approved product commitments.               |
+| Candidate              | Selector direction  | Priority             | Status              | Decision                                                                                                        |
+| ---------------------- | ------------------- | -------------------- | ------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Query Builder          | `j-query-builder`   | P0                   | Implemented         | Delivered with a neutral typed Boolean-expression model, tests, docs, exports, and package validation.          |
+| Cron Expression Editor | `j-cron-expression` | P1                   | Implemented         | Delivered with Linux five-field parsing, forms integration, tests, docs, exports, and package validation.       |
+| Barcode                | `j-barcode`         | P1                   | Implemented         | Delivered with deterministic QR, Code 128 B, and EAN-13 SVG, tests, docs, exports, and package validation.      |
+| Chat                   | `j-chat`            | P1                   | Candidate           | Valuable transport-neutral UI, but feed virtualisation/live collaboration needs a separate design.              |
+| Pivot Table            | `j-pivot-table`     | P1 after foundations | Deferred            | Requires aggregation, two-axis navigation/virtualisation, and field-chooser foundations.                        |
+| Diagram                | `j-diagram`         | P2                   | Deferred            | Requires geometry, selection, command history, SVG accessibility, and performance budgets.                      |
+| Map                    | `j-map`             | P2 / demand-based    | Candidate           | Provider adapters, licensing, SSR, offline behavior, and bundle policy require demand evidence.                 |
+| Ribbon                 | `j-ribbon`          | P2                   | Approved for design | May become a command-surface foundation; must not pre-empt a consumer-driven API.                               |
+| Code Editor            | `j-code-editor`     | P2 / adapter-based   | Approved for design | Core owns the Angular shell and contract; editing engines must be optional adapters.                            |
+| Dock Manager           | `j-dock-manager`    | P3                   | Deferred            | Depends on mature drag, resize, persistence, focus, and layout primitives.                                      |
+| Spreadsheet            | `j-spreadsheet`     | P3                   | Deferred            | Very high correctness/accessibility scope; needs formula, selection, clipboard, and virtualisation foundations. |
+| Image Editor           | `j-image-editor`    | P3                   | Deferred            | Requires canvas/SVG rendering, history, export, gesture, and memory design.                                     |
+| Block Editor           | `j-block-editor`    | P3 / research        | Research only       | Structured editing and schema boundaries need feasibility research and demand.                                  |
+| Document Editor        | `j-document-editor` | research only        | Research only       | Pagination, document formats, collaboration, and conversion are not approved product commitments.               |
 
-Exactly Query Builder, Cron Expression Editor, and Barcode are approved for implementation in the current batch. No other candidate may begin source implementation in this batch.
+Exactly Query Builder, Cron Expression Editor, and Barcode were approved and are now implemented in the completed batch. No other candidate began source implementation.
 
 ## Current implementation order
 
-### Batch 1 — approved and sequential
+### Batch 1 — implemented sequentially
 
 1. Query Builder (P0)
 2. Cron Expression Editor (P1)
 3. Barcode (P1)
 
-The detailed checklists are in `advanced-components-phase-1.md`.
+The completed checklists are in `advanced-components-phase-1.md`; integrated evidence is in `advanced-components-phase-1-completion.md`.
 
 ### Later decision gates
 
