@@ -20,6 +20,7 @@ export const COMPONENT_CATEGORIES = [
       'j-listbox',
       'j-multiselect',
       'j-password',
+      'j-query-builder',
       'j-radio',
       'j-radio-group',
       'j-rating',
@@ -176,7 +177,7 @@ export const COMPONENT_CATEGORY_ORDER = Object.freeze([
   'Pages',
 ]);
 export const COMPONENT_CATEGORY_COUNTS = Object.freeze({
-  Form: 28,
+  Form: 29,
   Button: 2,
   Data: 16,
   Panel: 15,
@@ -191,7 +192,7 @@ export const COMPONENT_CATEGORY_COUNTS = Object.freeze({
   Utilities: 3,
   Pages: 2,
 });
-export const ACTIVE_COMPONENT_TOTAL = 119;
+export const ACTIVE_COMPONENT_TOTAL = 120;
 export const COMPONENT_CATEGORY_TOTAL = 14;
 export const REMOVED_COMPONENT_SELECTORS = new Set([
   'j-activity-feed',

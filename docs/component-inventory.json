@@ -16,7 +16,7 @@
     "themeTokenSupport": "Direct or inherited JRNG semantic-token coverage."
   },
   "categories": [
-    { "name": "Form", "count": 28 },
+    { "name": "Form", "count": 29 },
     { "name": "Button", "count": 2 },
     { "name": "Data", "count": 16 },
     { "name": "Panel", "count": 15 },
@@ -32,12 +32,12 @@
     { "name": "Pages", "count": 2 }
   ],
   "summary": {
-    "publicComponents": 119,
-    "activeComponents": 119,
-    "expectedActiveComponents": 119,
+    "publicComponents": 120,
+    "activeComponents": 120,
+    "expectedActiveComponents": 120,
     "totalCategories": 14,
     "categoryCounts": {
-      "Form": 28,
+      "Form": 29,
       "Button": 2,
       "Data": 16,
       "Panel": 15,
@@ -55,35 +55,35 @@
     "uncategorized": 0,
     "duplicateEntries": 0,
     "removedComponentsPresent": 0,
-    "componentsWithDocumentation": 119,
-    "componentsWithWorkingPreview": 119,
-    "componentsWithApiReference": 119,
-    "componentsWithExamples": 119,
-    "componentsWithDirectTests": 119,
-    "componentsWithAccessibilityValidation": 119,
-    "componentsWithResponsiveExamples": 77,
+    "componentsWithDocumentation": 120,
+    "componentsWithWorkingPreview": 120,
+    "componentsWithApiReference": 120,
+    "componentsWithExamples": 120,
+    "componentsWithDirectTests": 120,
+    "componentsWithAccessibilityValidation": 120,
+    "componentsWithResponsiveExamples": 78,
     "responsiveExamplesNotApplicable": 42,
-    "componentsWithThemeTokenCoverage": 119,
+    "componentsWithThemeTokenCoverage": 120,
     "componentsRemainingIncomplete": 0,
     "stableComponents": 3,
-    "betaComponents": 116,
+    "betaComponents": 117,
     "experimentalComponents": 0,
-    "distinctSelectors": 119,
+    "distinctSelectors": 120,
     "selectorPrefixViolations": 0,
-    "dedicatedDocumentationRecords": 42,
+    "dedicatedDocumentationRecords": 43,
     "entrypointCoveredDocumentation": 4,
     "generatedDocumentationRecords": 73,
     "missingLiveDocumentation": 0,
     "missingStaticMarkdownMentions": 0,
-    "directTestCoverage": 119,
+    "directTestCoverage": 120,
     "indirectEntrypointTestCoverage": 0,
     "noDetectedTests": 0,
-    "accessibilityTestsDetected": 119,
-    "accessibilityMarkupDetected": 105,
+    "accessibilityTestsDetected": 120,
+    "accessibilityMarkupDetected": 106,
     "keyboardHandlingDetected": 40,
-    "focusHandlingDetected": 41,
-    "themeTokenSupportDetected": 113,
-    "browserApiUsageDetected": 38,
+    "focusHandlingDetected": 42,
+    "themeTokenSupportDetected": 114,
+    "browserApiUsageDetected": 39,
     "optionalLibraryComponents": 1,
     "unclassifiedCategories": 0,
     "unclassifiedStability": 0
@@ -218,7 +218,12 @@
         "value"
       ],
       "outputs": ["valueChange"],
-      "publicMethods": ["handleBlur()", "handleChange()", "setDisabledState()", "writeValue()"],
+      "publicMethods": [
+        "handleBlur()",
+        "handleChange()",
+        "setDisabledState()",
+        "writeValue()"
+      ],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": true,
@@ -1134,7 +1139,11 @@
         "styleClass"
       ],
       "outputs": ["valueChange"],
-      "publicMethods": ["handleKeydown()", "setDisabledState()", "writeValue()"],
+      "publicMethods": [
+        "handleKeydown()",
+        "setDisabledState()",
+        "writeValue()"
+      ],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -1514,6 +1523,98 @@
       }
     },
     {
+      "name": "Query Builder",
+      "className": "JQueryBuilderComponent",
+      "selector": "j-query-builder",
+      "category": "Form",
+      "publicImportPath": "jrng-ui/query-builder",
+      "stability": "beta",
+      "documentationStatus": "complete",
+      "documentationSource": "dedicated-record",
+      "documentationRoute": "/docs/components#query-builder",
+      "previewStatus": "rendered",
+      "codeExampleStatus": "complete",
+      "apiReferenceStatus": "complete",
+      "examplesStatus": "complete",
+      "basicExample": true,
+      "inputs": [
+        "ariaLabel",
+        "description",
+        "dir",
+        "disabled",
+        "emptyMessage",
+        "errorLabel",
+        "fields",
+        "label",
+        "operators",
+        "readonly",
+        "styleClass",
+        "value"
+      ],
+      "outputs": ["validationChange", "valueChange"],
+      "publicMethods": [
+        "canMutate()",
+        "changeField()",
+        "changeJoin()",
+        "changeListValue()",
+        "changeOperator()",
+        "changeRangeValue()",
+        "changeScalarValue()",
+        "clear()",
+        "conditionNumber()",
+        "duplicateNode()",
+        "emptyContext()",
+        "field()",
+        "fieldContext()",
+        "groupContext()",
+        "groupLabel()",
+        "if()",
+        "inputType()",
+        "listValue()",
+        "markTouched()",
+        "nodeIssues()",
+        "operator()",
+        "operatorsFor()",
+        "rangeValue()",
+        "removeNode()",
+        "setDisabledState()",
+        "stringValue()",
+        "validate()",
+        "validateExpression()",
+        "valueContext()",
+        "writeValue()"
+      ],
+      "templateDirectives": [],
+      "requiredProviders": [],
+      "detailedDocumentation": true,
+      "staticMarkdownMention": true,
+      "testStatus": "direct",
+      "interactive": true,
+      "accessibilityStatus": "validated",
+      "hasAccessibilityMarkup": true,
+      "hasKeyboardHandling": false,
+      "hasFocusHandling": true,
+      "hasAccessibilityTests": true,
+      "hasAccessibilityDocumentation": true,
+      "themeTokenSupport": "css-custom-properties",
+      "themeCoverage": "light-dark-system-high-contrast-preview",
+      "responsiveRelevant": true,
+      "responsiveStatus": "preview-available",
+      "ssrStatus": "guarded-and-build-verified",
+      "usesBrowserOnlyApis": true,
+      "optionalExternalLibraries": [],
+      "incomplete": [],
+      "auditStatus": "Complete",
+      "auditChecklist": {
+        "api": "API reviewed",
+        "implementation": "Implementation reviewed",
+        "tests": "Tests completed",
+        "documentation": "Documentation completed",
+        "accessibility": "Accessibility validated",
+        "preview": "Preview verified"
+      }
+    },
+    {
       "name": "Radio",
       "className": "JRadioComponent",
       "selector": "j-radio",
@@ -1541,7 +1642,12 @@
         "value"
       ],
       "outputs": ["valueChange"],
-      "publicMethods": ["handleBlur()", "handleChange()", "setDisabledState()", "writeValue()"],
+      "publicMethods": [
+        "handleBlur()",
+        "handleChange()",
+        "setDisabledState()",
+        "writeValue()"
+      ],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": true,
@@ -1853,7 +1959,12 @@
         "styleClass"
       ],
       "outputs": ["valueChange"],
-      "publicMethods": ["isSelected()", "setDisabledState()", "toggleOption()", "writeValue()"],
+      "publicMethods": [
+        "isSelected()",
+        "setDisabledState()",
+        "toggleOption()",
+        "writeValue()"
+      ],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -1984,7 +2095,12 @@
         "trueValue"
       ],
       "outputs": ["valueChange"],
-      "publicMethods": ["handleBlur()", "handleChange()", "setDisabledState()", "writeValue()"],
+      "publicMethods": [
+        "handleBlur()",
+        "handleChange()",
+        "setDisabledState()",
+        "writeValue()"
+      ],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": true,
@@ -2386,7 +2502,13 @@
       "examplesStatus": "complete",
       "basicExample": true,
       "inputs": ["activeDate", "ariaLabel", "events", "styleClass", "view"],
-      "outputs": ["dateClick", "eventClick", "viewChange", "activeDateChange", "viewChange"],
+      "outputs": [
+        "dateClick",
+        "eventClick",
+        "viewChange",
+        "activeDateChange",
+        "viewChange"
+      ],
       "publicMethods": [
         "handleEventClick()",
         "if()",
@@ -2755,9 +2877,22 @@
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": ["emptyMessage", "end", "labelHeader", "scale", "start", "styleClass", "tasks"],
+      "inputs": [
+        "emptyMessage",
+        "end",
+        "labelHeader",
+        "scale",
+        "start",
+        "styleClass",
+        "tasks"
+      ],
       "outputs": [],
-      "publicMethods": ["dependencyLabel()", "if()", "progress()", "taskContext()"],
+      "publicMethods": [
+        "dependencyLabel()",
+        "if()",
+        "progress()",
+        "taskContext()"
+      ],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -2931,7 +3066,12 @@
       "basicExample": true,
       "inputs": ["collapsible", "orientation", "styleClass", "value"],
       "outputs": [],
-      "publicMethods": ["isExpanded()", "nodeContext()", "nodeKeyFor()", "toggle()"],
+      "publicMethods": [
+        "isExpanded()",
+        "nodeContext()",
+        "nodeKeyFor()",
+        "toggle()"
+      ],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -3375,7 +3515,12 @@
         "variant"
       ],
       "outputs": [],
-      "publicMethods": ["handleItemKeydown()", "isExpanded()", "itemContext()", "toggleItem()"],
+      "publicMethods": [
+        "handleItemKeydown()",
+        "isExpanded()",
+        "itemContext()",
+        "toggleItem()"
+      ],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": true,
@@ -3677,7 +3822,12 @@
         "viewportItems"
       ],
       "outputs": ["lazyLoad"],
-      "publicMethods": ["handleScroll()", "itemContext()", "scrollToIndex()", "trackItem()"],
+      "publicMethods": [
+        "handleScroll()",
+        "itemContext()",
+        "scrollToIndex()",
+        "trackItem()"
+      ],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -3723,9 +3873,20 @@
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": ["activeIndex", "disabled", "header", "multiple", "value", "variant"],
+      "inputs": [
+        "activeIndex",
+        "disabled",
+        "header",
+        "multiple",
+        "value",
+        "variant"
+      ],
       "outputs": ["toggleRequest", "activeIndexChange", "valueChange"],
-      "publicMethods": ["ngAfterContentInit()", "requestToggle()", "togglePanel()"],
+      "publicMethods": [
+        "ngAfterContentInit()",
+        "requestToggle()",
+        "togglePanel()"
+      ],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": true,
@@ -3771,9 +3932,20 @@
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": ["activeIndex", "disabled", "header", "multiple", "value", "variant"],
+      "inputs": [
+        "activeIndex",
+        "disabled",
+        "header",
+        "multiple",
+        "value",
+        "variant"
+      ],
       "outputs": ["toggleRequest", "activeIndexChange", "valueChange"],
-      "publicMethods": ["ngAfterContentInit()", "requestToggle()", "togglePanel()"],
+      "publicMethods": [
+        "ngAfterContentInit()",
+        "requestToggle()",
+        "togglePanel()"
+      ],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -3819,9 +3991,20 @@
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": ["activeIndex", "disabled", "header", "multiple", "value", "variant"],
+      "inputs": [
+        "activeIndex",
+        "disabled",
+        "header",
+        "multiple",
+        "value",
+        "variant"
+      ],
       "outputs": ["toggleRequest", "activeIndexChange", "valueChange"],
-      "publicMethods": ["ngAfterContentInit()", "requestToggle()", "togglePanel()"],
+      "publicMethods": [
+        "ngAfterContentInit()",
+        "requestToggle()",
+        "togglePanel()"
+      ],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -3867,9 +4050,20 @@
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": ["activeIndex", "disabled", "header", "multiple", "value", "variant"],
+      "inputs": [
+        "activeIndex",
+        "disabled",
+        "header",
+        "multiple",
+        "value",
+        "variant"
+      ],
       "outputs": ["toggleRequest", "activeIndexChange", "valueChange"],
-      "publicMethods": ["ngAfterContentInit()", "requestToggle()", "togglePanel()"],
+      "publicMethods": [
+        "ngAfterContentInit()",
+        "requestToggle()",
+        "togglePanel()"
+      ],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -4642,7 +4836,12 @@
       "basicExample": true,
       "inputs": [],
       "outputs": [],
-      "publicMethods": ["accept()", "handleOverlayMouseDown()", "reject()", "severityIcon()"],
+      "publicMethods": [
+        "accept()",
+        "handleOverlayMouseDown()",
+        "reject()",
+        "severityIcon()"
+      ],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": true,
@@ -4690,7 +4889,12 @@
       "basicExample": true,
       "inputs": [],
       "outputs": [],
-      "publicMethods": ["accept()", "focusPanel()", "handleKeydown()", "reject()"],
+      "publicMethods": [
+        "accept()",
+        "focusPanel()",
+        "handleKeydown()",
+        "reject()"
+      ],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -4757,7 +4961,15 @@
         "visible",
         "width"
       ],
-      "outputs": ["closed", "hide", "jrClose", "openChange", "opened", "show", "visibleChange"],
+      "outputs": [
+        "closed",
+        "hide",
+        "jrClose",
+        "openChange",
+        "opened",
+        "show",
+        "visibleChange"
+      ],
       "publicMethods": [
         "close()",
         "endDrag()",
@@ -4955,7 +5167,13 @@
         "target",
         "visible"
       ],
-      "outputs": ["delete", "loadMore", "markAllReadChange", "markReadChange", "visibleChange"],
+      "outputs": [
+        "delete",
+        "loadMore",
+        "markAllReadChange",
+        "markReadChange",
+        "visibleChange"
+      ],
       "publicMethods": [
         "clearAll()",
         "isRead()",
@@ -5066,7 +5284,14 @@
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": ["actions", "ariaLabel", "popup", "rowIndex", "triggerIcon", "triggerLabel"],
+      "inputs": [
+        "actions",
+        "ariaLabel",
+        "popup",
+        "rowIndex",
+        "triggerIcon",
+        "triggerLabel"
+      ],
       "outputs": ["action"],
       "publicMethods": [
         "activate()",
@@ -5193,7 +5418,14 @@
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": ["commands", "emptyMessage", "heading", "placeholder", "shortcut", "visible"],
+      "inputs": [
+        "commands",
+        "emptyMessage",
+        "heading",
+        "placeholder",
+        "shortcut",
+        "visible"
+      ],
       "outputs": ["command", "visibleChange"],
       "publicMethods": [
         "handleClosed()",
@@ -5590,7 +5822,12 @@
       "basicExample": true,
       "inputs": ["position"],
       "outputs": [],
-      "publicMethods": ["endSwipe()", "startSwipe()", "templateContext()", "visibleToasts()"],
+      "publicMethods": [
+        "endSwipe()",
+        "startSwipe()",
+        "templateContext()",
+        "visibleToasts()"
+      ],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": true,
@@ -5709,7 +5946,13 @@
         "visibleItems"
       ],
       "outputs": ["activeIndexChange"],
-      "publicMethods": ["handleKeydown()", "itemContext()", "next()", "previous()", "transform()"],
+      "publicMethods": [
+        "handleKeydown()",
+        "itemContext()",
+        "next()",
+        "previous()",
+        "transform()"
+      ],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -5839,7 +6082,13 @@
         "zoom"
       ],
       "outputs": ["exported", "openWindow", "print", "refreshed"],
-      "publicMethods": ["copy()", "export()", "openPreview()", "printPreview()", "refresh()"],
+      "publicMethods": [
+        "copy()",
+        "export()",
+        "openPreview()",
+        "printPreview()",
+        "refresh()"
+      ],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -6291,7 +6540,13 @@
         "legendClick",
         "print"
       ],
-      "publicMethods": ["destroy()", "download()", "exportImage()", "refresh()", "resize()"],
+      "publicMethods": [
+        "destroy()",
+        "download()",
+        "exportImage()",
+        "refresh()",
+        "resize()"
+      ],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -6385,7 +6640,13 @@
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": ["footer", "sidebarCollapsed", "sidebarLabel", "sidebarOpen", "styleClass"],
+      "inputs": [
+        "footer",
+        "sidebarCollapsed",
+        "sidebarLabel",
+        "sidebarOpen",
+        "styleClass"
+      ],
       "outputs": ["sidebarCollapsedChange", "sidebarOpenChange"],
       "publicMethods": ["toggleSidebar()"],
       "templateDirectives": [],
@@ -6655,7 +6916,15 @@
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": ["align", "columnGap", "gap", "justify", "rowGap", "styleClass", "wrap"],
+      "inputs": [
+        "align",
+        "columnGap",
+        "gap",
+        "justify",
+        "rowGap",
+        "styleClass",
+        "wrap"
+      ],
       "outputs": [],
       "publicMethods": [],
       "templateDirectives": [],
@@ -6858,7 +7127,14 @@
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": ["description", "loading", "sticky", "styleClass", "title", "variant"],
+      "inputs": [
+        "description",
+        "loading",
+        "sticky",
+        "styleClass",
+        "title",
+        "variant"
+      ],
       "outputs": [],
       "publicMethods": [],
       "templateDirectives": [],
@@ -7260,7 +7536,14 @@
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": ["ariaLabel", "name", "pt", "size", "strokeWidth", "styleClass"],
+      "inputs": [
+        "ariaLabel",
+        "name",
+        "pt",
+        "size",
+        "strokeWidth",
+        "styleClass"
+      ],
       "outputs": [],
       "publicMethods": [],
       "templateDirectives": [],
@@ -7416,7 +7699,15 @@
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": ["indeterminate", "label", "pt", "severity", "styleClass", "value", "variant"],
+      "inputs": [
+        "indeterminate",
+        "label",
+        "pt",
+        "severity",
+        "styleClass",
+        "value",
+        "variant"
+      ],
       "outputs": [],
       "publicMethods": [],
       "templateDirectives": [],
@@ -7570,7 +7861,15 @@
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": ["colorMap", "label", "pt", "severity", "size", "status", "styleClass"],
+      "inputs": [
+        "colorMap",
+        "label",
+        "pt",
+        "severity",
+        "size",
+        "status",
+        "styleClass"
+      ],
       "outputs": [],
       "publicMethods": [],
       "templateDirectives": [],
@@ -7734,7 +8033,13 @@
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": ["caseSensitive", "diacriticInsensitive", "markClass", "term", "text"],
+      "inputs": [
+        "caseSensitive",
+        "diacriticInsensitive",
+        "markClass",
+        "term",
+        "text"
+      ],
       "outputs": [],
       "publicMethods": ["for()"],
       "templateDirectives": [],
@@ -7785,7 +8090,9 @@
       "inputs": ["dir"],
       "outputs": [],
       "publicMethods": [],
-      "templateDirectives": [{ "name": "JTourStepDirective", "selector": "[jTourStep]" }],
+      "templateDirectives": [
+        { "name": "JTourStepDirective", "selector": "[jTourStep]" }
+      ],
       "requiredProviders": [],
       "detailedDocumentation": true,
       "staticMarkdownMention": true,

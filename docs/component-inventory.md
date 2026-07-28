@@ -4,25 +4,25 @@ Generated from the 0.1.0 canonical build declarations.
 
 | Metric                                   | Total |
 | ---------------------------------------- | ----: |
-| Total public components                  |   119 |
+| Total public components                  |   120 |
 | Total categories                         |    14 |
 | Uncategorized components                 |     0 |
 | Duplicate entries                        |     0 |
 | Removed components present               |     0 |
-| Components with documentation            |   119 |
-| Components with working preview          |   119 |
-| Components with API reference            |   119 |
-| Components with examples                 |   119 |
-| Components with direct tests             |   119 |
-| Components with accessibility validation |   119 |
-| Components with responsive examples      |    77 |
+| Components with documentation            |   120 |
+| Components with working preview          |   120 |
+| Components with API reference            |   120 |
+| Components with examples                 |   120 |
+| Components with direct tests             |   120 |
+| Components with accessibility validation |   120 |
+| Components with responsive examples      |    78 |
 | Responsive examples not applicable       |    42 |
-| Components with theme-token coverage     |   119 |
+| Components with theme-token coverage     |   120 |
 | Components remaining incomplete          |     0 |
 
 | Category  | Components |
 | --------- | ---------: |
-| Form      |         28 |
+| Form      |         29 |
 | Button    |          2 |
 | Data      |         16 |
 | Panel     |         15 |
@@ -57,6 +57,7 @@ Generated from the 0.1.0 canonical build declarations.
 | Listbox             | j-listbox             | jrng-ui/listbox             | Form      | beta      | rendered | direct | validated     |
 | Multiselect         | j-multiselect         | jrng-ui/multiselect         | Form      | beta      | rendered | direct | validated     |
 | Password            | j-password            | jrng-ui/password            | Form      | beta      | rendered | direct | validated     |
+| Query Builder       | j-query-builder       | jrng-ui/query-builder       | Form      | beta      | rendered | direct | validated     |
 | Radio               | j-radio               | jrng-ui/radio               | Form      | beta      | rendered | direct | validated     |
 | Radio Group         | j-radio-group         | jrng-ui/radio-group         | Form      | beta      | rendered | direct | validated     |
 | Rating              | j-rating              | jrng-ui/rating              | Form      | beta      | rendered | direct | validated     |

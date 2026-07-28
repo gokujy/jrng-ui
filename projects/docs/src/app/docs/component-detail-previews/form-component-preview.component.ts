@@ -11,6 +11,15 @@ import {
   template: `
     @let example = previewExample();
     @switch (doc().slug) {
+      @case ('query-builder') {
+        <j-query-builder
+          ariaLabel="Customer search query"
+          label="Customer search"
+          description="Match customers using typed, nested conditions."
+          [fields]="queryBuilderFields"
+          [value]="queryBuilderValue"
+        />
+      }
       @case ('autocomplete') {
         <div class="j-overlay-form-preview">
           <j-autocomplete

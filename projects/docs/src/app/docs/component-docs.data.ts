@@ -341,6 +341,175 @@ shortText = 'Ready to publish.';`,
 
 const detailedComponentDocs: readonly ComponentDoc[] = [
   {
+    slug: 'query-builder',
+    name: 'Query Builder',
+    category: 'Form',
+    icon: 'list-filter',
+    selector: 'j-query-builder',
+    importPath: 'jrng-ui/query-builder',
+    status: 'Beta',
+    description:
+      'Authors a typed, immutable, backend-neutral Boolean expression tree without executing a query.',
+    whenToUse:
+      'Use Query Builder for nested business search rules that exceed the simple fields owned by Filter Bar.',
+    whenNotToUse: [
+      'Do not use it for a small fixed filter form.',
+      'Do not treat the model as SQL or execute untrusted values as code.',
+    ],
+    code: {
+      importCode: `import {
+  JQueryBuilderComponent,
+  JQueryField,
+  JQueryGroup,
+  jCreateQueryGroup
+} from 'jrng-ui/query-builder';`,
+      basic: `<j-query-builder
+  label="Customer search"
+  ariaLabel="Customer search query"
+  [fields]="fields"
+  [value]="query"
+  (valueChange)="query = $event"
+/>`,
+      variants: `<j-query-builder [fields]="fields" [value]="nestedQuery" />
+
+<j-query-builder [fields]="auditFields" [value]="auditQuery" />
+
+<j-query-builder [fields]="fields" [operators]="operators" [value]="query" />`,
+      sizes: `<div style="max-width: 42rem">
+  <j-query-builder [fields]="fields" [value]="query" />
+</div>
+
+<div dir="rtl">
+  <j-query-builder dir="rtl" [fields]="fields" [value]="query" />
+</div>`,
+      states: `<j-query-builder [fields]="fields" [value]="query" disabled />
+<j-query-builder [fields]="fields" [value]="query" readonly />
+<j-query-builder [fields]="fields" [value]="persistedQuery" />`,
+      angular: `fields: readonly JQueryField[] = [
+  { key: 'customer', label: 'Customer', type: 'text' },
+  { key: 'total', label: 'Order total', type: 'number' },
+  { key: 'active', label: 'Active', type: 'boolean' },
+  { key: 'created', label: 'Created', type: 'date' }
+];
+
+query: JQueryGroup = jCreateQueryGroup('customer-root');
+
+control = new FormControl<JQueryGroup>(this.query, { nonNullable: true });`,
+    },
+    usage: [
+      'Basic Query Builder: provide typed fields and a controlled group value.',
+      'Nested AND/OR groups: groups retain stable IDs and explicit all/any language.',
+      'Customer search: combine text, numeric, boolean, and date fields.',
+      'Audit-log search: constrain operators per field and preserve persisted unknown metadata for recovery.',
+      'Field types: text, number, boolean, and date select type-aware editors.',
+      'Custom operator: append a JQueryOperator with an original key, arity, and compatible field types.',
+      'Custom value editor: project #jQueryValueEditor and call the provided update function.',
+      'Controlled value: handle valueChange and replace application state immutably.',
+      'Reactive Forms: bind a FormControl<JQueryGroup>; validation issues appear as queryExpression errors.',
+      'Validation: subscribe to validationChange or call validateExpression().',
+      'Testing: assert the JSON model and public events rather than private DOM structure.',
+      'Changelog: introduced in the advanced-components Phase 1 batch.',
+    ],
+    variants: [
+      'Basic flat conditions',
+      'Nested customer or audit rules',
+      'Custom field, value-editor, group-header, and empty-state templates',
+    ],
+    sizes: [
+      'The condition grid stacks below 760px and uses logical indentation.',
+      'Test the built-in 320, 375, 768, and full-width documentation previews.',
+    ],
+    states: [
+      'empty',
+      'valid',
+      'recoverable unknown field/operator',
+      'disabled',
+      'read-only',
+      'invalid',
+      'RTL',
+    ],
+    inputs: [
+      prop('value', 'JQueryGroup | null', 'null', 'Controlled JSON-safe expression root.'),
+      prop('fields', 'readonly JQueryField[]', '[]', 'Typed field metadata.'),
+      prop(
+        'operators',
+        'readonly JQueryOperator[]',
+        'J_QUERY_OPERATORS',
+        'Operator metadata and arity.',
+      ),
+      prop('label', 'string', "'Query builder'", 'Visible builder heading.'),
+      prop('ariaLabel', 'string', "'Query builder'", 'Accessible name for the full builder.'),
+      prop('disabled', 'boolean', 'false', 'Blocks pointer, keyboard, and public mutations.'),
+      prop('readonly', 'boolean', 'false', 'Shows the model without mutation actions.'),
+      prop('dir', 'ltr | rtl', "'ltr'", 'Logical UI direction; values remain unchanged.'),
+    ],
+    outputs: [
+      event('valueChange', 'JQueryGroup', 'Emits a new immutable expression tree.'),
+      event(
+        'validationChange',
+        'readonly JQueryValidationIssue[]',
+        'Emits recoverable model and metadata issues.',
+      ),
+    ],
+    cssVariables: [
+      cssVar('--j-query-builder-bg', 'var(--j-color-card)', 'Builder surface.'),
+      cssVar('--j-query-builder-border', 'var(--j-color-border)', 'Builder boundary.'),
+      cssVar('--j-query-builder-group-accent', 'var(--j-color-primary)', 'Hierarchy accent.'),
+      cssVar('--j-query-builder-indent', '1.25rem', 'Logical nesting indentation.'),
+      cssVar('--j-query-builder-error', 'var(--j-color-danger)', 'Validation state.'),
+      cssVar('--j-query-builder-focus', 'var(--j-focus-ring)', 'Visible keyboard focus.'),
+    ],
+    accessibility: [
+      'The full builder, every group, condition, field, operator, value, and error has an accessible name or association.',
+      'All creation and editing uses native controls or JRNG buttons and works from the keyboard.',
+      'Add, duplicate, and remove operations use polite announcements; deletion restores focus to the parent group.',
+      'Hierarchy uses semantic grouping, labels, indentation, and borders rather than colour alone.',
+    ],
+    keyboard: [
+      'Tab and Shift+Tab follow the linear depth-first reading order.',
+      'Enter or Space activates JRNG action buttons; native selects support arrow keys.',
+      'Escape follows native select behavior; no custom popup or keyboard trap is introduced.',
+    ],
+    responsive: [
+      'Conditions stack into one column below 760px.',
+      'RTL mirrors layout with logical margin and border properties while field values are preserved.',
+    ],
+    bestPractices: [
+      'Persist the returned JSON-safe JRNG model with its stable IDs.',
+      'Validate again in the application/backend before evaluating a query.',
+      'Keep serializers and backend query execution outside this component.',
+    ],
+    commonMistakes: [
+      'Generating SQL directly from display values.',
+      'Recreating IDs whenever controlled state is emitted.',
+      'Using Query Builder for a two-field Filter Bar workflow.',
+    ],
+    publicMethods: [
+      'addCondition(groupId?)',
+      'addGroup(groupId?)',
+      'removeNode(nodeId, parentId)',
+      'duplicateNode(nodeId)',
+      'clear()',
+      'validateExpression()',
+    ],
+    templates: [
+      '#jQueryField receives JQueryFieldTemplateContext.',
+      '#jQueryValueEditor receives JQueryValueTemplateContext.',
+      '#jQueryGroupHeader receives JQueryGroupTemplateContext.',
+      '#jQueryEmpty receives JQueryEmptyTemplateContext.',
+    ],
+    limitations: [
+      'The first release supports text, number, boolean, and date field types.',
+      'It does not execute expressions or provide SQL, database, or transport integration.',
+      'FAQ: use Filter Bar for fixed simple searches; use a custom operator only when the application also defines its evaluation semantics.',
+    ],
+    relatedComponents: ['Filter Bar', 'Table', 'Tree Table', 'Select', 'Date Picker'],
+    testingNotes: [
+      'Round-trip the model through JSON, exercise unknown metadata, keyboard-only edits, disabled/read-only modes, RTL, narrow containers, and SSR.',
+      'Each documentation preview owns its own query value; examples do not share mutable state.',
+    ],
+  },
+  {
     slug: 'input',
     name: 'Input',
     category: 'Form',

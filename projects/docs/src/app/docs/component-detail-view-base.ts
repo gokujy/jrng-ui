@@ -98,6 +98,13 @@ import { JPasswordComponent } from 'jrng-ui/password';
 import { JPanelComponent } from 'jrng-ui/panel';
 import { JPageHeaderComponent, JPageHeaderVariant } from 'jrng-ui/page-header';
 import { JPopoverComponent } from 'jrng-ui/popover';
+import {
+  JQueryBuilderComponent,
+  JQueryField,
+  JQueryGroup,
+  jCreateQueryCondition,
+  jCreateQueryGroup,
+} from 'jrng-ui/query-builder';
 import { JProgressBarComponent, JProgressBarVariant } from 'jrng-ui/progress-bar';
 import { JProgressSpinnerComponent } from 'jrng-ui/progress-spinner';
 import { JRadioGroupComponent } from 'jrng-ui/radio-group';
@@ -1575,6 +1582,7 @@ export const COMPONENT_PREVIEW_IMPORTS = [
   JPanelComponent,
   JPageHeaderComponent,
   JPopoverComponent,
+  JQueryBuilderComponent,
   JProgressBarComponent,
   JProgressSpinnerComponent,
   JRadioGroupComponent,
@@ -1657,6 +1665,29 @@ export const COMPONENT_PREVIEW_IMPORTS = [
 
 @Directive()
 export class ComponentDetailViewBase {
+  readonly queryBuilderFields: readonly JQueryField[] = [
+    { key: 'customer', label: 'Customer', type: 'text' },
+    { key: 'total', label: 'Order total', type: 'number' },
+    { key: 'active', label: 'Active account', type: 'boolean' },
+    { key: 'created', label: 'Created date', type: 'date' },
+  ];
+  readonly queryBuilderValue: JQueryGroup = jCreateQueryGroup('docs-query-root', 'and', [
+    {
+      ...jCreateQueryCondition('docs-query-customer', this.queryBuilderFields[0]),
+      value: 'Acme',
+    },
+    jCreateQueryGroup('docs-query-nested', 'or', [
+      {
+        ...jCreateQueryCondition('docs-query-total', this.queryBuilderFields[1]),
+        operator: 'greater-than',
+        value: 1000,
+      },
+      {
+        ...jCreateQueryCondition('docs-query-active', this.queryBuilderFields[2]),
+        value: true,
+      },
+    ]),
+  ]);
   readonly previewWidths = [
     { label: 'Full', width: null },
     { label: '320', width: 320 },
