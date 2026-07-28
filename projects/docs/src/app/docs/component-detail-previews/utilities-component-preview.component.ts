@@ -29,25 +29,20 @@ import {
       @case ('tour-guide') {
         <div class="j-preview-stack">
           <div class="j-preview-row">
-            <button
+            <j-button
               id="createBtn"
-              class="j-doc-preview-button"
-              type="button"
+              label="Create customer"
               jTourStep="create-button"
-              tourTitle="Create"
-              tourDescription="Click here to create a new record."
-            >
-              Create
-            </button>
-            <button
-              class="j-doc-preview-button"
-              type="button"
+              tourTitle="Create customer"
+              tourDescription="Start a fictional customer record here."
+            />
+            <j-button
+              label="Filter customers"
+              variant="outlined"
               jTourStep="filter-button"
-              tourTitle="Filter"
-              tourDescription="Narrow the table to the records that matter."
-            >
-              Filter
-            </button>
+              tourTitle="Filter customers"
+              tourDescription="Narrow the customer table to the records that matter."
+            />
           </div>
           <j-button label="Start guided tour" (onClick)="startPreviewTour()" />
         </div>

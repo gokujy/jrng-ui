@@ -13,8 +13,8 @@ import {
     @switch (doc().slug) {
       @case ('barcode') {
         <j-barcode
-          value="https://jrngui.dev/components/barcode"
-          ariaLabel="JRNG Barcode documentation link"
+          value="CUS-TICKET-2048"
+          ariaLabel="Customer ticket CUS-TICKET-2048"
           [width]="220"
           [height]="220"
           showValue

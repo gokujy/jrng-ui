@@ -189,7 +189,7 @@ import {
         />
       }
       @case ('calendar-scheduler') {
-        <j-calendar-scheduler [events]="schedulerEvents" ariaLabel="Team schedule" />
+        <j-calendar-scheduler [events]="schedulerEvents" ariaLabel="Customer meeting schedule" />
       }
       @case ('data-view') {
         <j-data-view
@@ -239,7 +239,44 @@ import {
         <j-tree [value]="treeNodes" filter ariaLabel="Customer folders" />
       }
       @case ('tree-table') {
-        <j-tree-table [value]="treeNodes" [columns]="treeColumns" ariaLabel="Customer hierarchy" />
+        <div [attr.dir]="example.key === 'rtl' ? 'rtl' : null">
+          <j-tree-table
+            [value]="
+              example.key === 'empty'
+                ? []
+                : example.key === 'lazy-children'
+                  ? lazyTreeNodes
+                  : treeNodes
+            "
+            [columns]="example.key === 'sorting' ? treeSortableColumns : treeColumns"
+            [lazy]="example.key === 'lazy-children'"
+            [filter]="example.key === 'filtering'"
+            filterPlaceholder="Search customers"
+            [selectionMode]="
+              example.key === 'multiple-selection'
+                ? 'multiple'
+                : example.key === 'checkbox-selection'
+                  ? 'checkbox'
+                  : example.key === 'single-selection'
+                    ? 'single'
+                    : 'none'
+            "
+            [selection]="treeSelection"
+            (selectionChange)="treeSelection = $event"
+            [expandedKeys]="treeExpandedKeys"
+            (expandedKeysChange)="treeExpandedKeys = $event"
+            [propagateSelectionDown]="example.key === 'checkbox-selection'"
+            [propagateSelectionUp]="example.key === 'checkbox-selection'"
+            emptyMessage="No customer records found."
+            [ariaLabel]="example.name + ' customer hierarchy'"
+          >
+            @if (example.key === 'custom-template') {
+              <ng-template jTreeTableCell="type" let-value="value">
+                <strong>{{ value }}</strong>
+              </ng-template>
+            }
+          </j-tree-table>
+        </div>
       }
       @case ('virtual-scroller') {
         <j-virtual-scroller

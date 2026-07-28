@@ -243,3 +243,12 @@ Before this audit began, three video assets were staged and three documentation 
 - The new examples use JRNG inputs, selects, date pickers, number input, buttons, chips, badges, avatars, tooltip, and table components with theme tokens and reduced-motion handling.
 - Legacy Table preview labels and data fields using the forbidden Client code, Legal name, Public name, Parent account, and Billing type terminology were replaced with Customer ID, Customer Name, Company, Account Manager, and Subscription.
 - Library/docs tests, lint, docs build, route checks, compiled-example checks, and API-example validation pass. The production docs bundle retains the non-failing 1.15 MB initial-bundle warning.
+
+### Phase 7 — Tree Table and advanced previews
+
+- Tree Table now has 14 progressive examples covering basic hierarchy, expansion, controlled expansion, lazy children, sibling sorting, filtering, single/multiple/checkbox selection, templates, empty data, keyboard navigation, RTL, and accessibility.
+- Unsupported Tree Table loading and error inputs were not invented; generated API coverage continues to map only APIs present in source.
+- Chart, Sparkline, Calendar Scheduler, Gantt, Kanban, Editor, Tour Guide, Query Builder, Cron Expression, and Barcode previews now use fictional customer growth, segmentation, meetings, onboarding, notes, tours, reports, tickets, and implementation scenarios.
+- Data, Chart, and Utilities generated API examples now isolate appearance, state, configuration, and accessibility controls instead of repeating broad property sets.
+- Forbidden BDMS labels and `j-data-grid` references are absent from runtime documentation source.
+- API coverage remains complete for 122 components, 1,446 inputs, 241 outputs, and 713 registry methods.

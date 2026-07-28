@@ -13,8 +13,8 @@ import {
     @switch (doc().slug) {
       @case ('cron-expression') {
         <j-cron-expression
-          ariaLabel="Nightly backup schedule"
-          label="Nightly backup"
+          ariaLabel="Nightly customer report schedule"
+          label="Nightly customer report"
           value="0 2 * * 1-5"
           [previewFrom]="cronPreviewFrom"
         />

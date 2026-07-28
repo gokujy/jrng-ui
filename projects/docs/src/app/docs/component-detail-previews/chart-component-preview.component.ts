@@ -13,28 +13,28 @@ import {
     @switch (doc().slug) {
       @case ('sparkline') {
         <div class="j-preview-row">
-          <j-sparkline [value]="sparklineValues" ariaLabel="Revenue trend" />
-          <j-sparkline [value]="sparklineValues" type="bar" ariaLabel="Volume trend" />
+          <j-sparkline [value]="sparklineValues" ariaLabel="Customer growth trend" />
+          <j-sparkline [value]="sparklineValues" type="bar" ariaLabel="Active customer trend" />
         </div>
       }
       @case ('chart') {
         <section class="j-live-chart-example">
           @switch (example.key) {
             @case ('line') {
-              <strong>Daily active users</strong>
-              <j-chart type="line" [data]="lineChartData" ariaLabel="Daily active users" />
+              <strong>Daily active customers</strong>
+              <j-chart type="line" [data]="lineChartData" ariaLabel="Daily active customers" />
             }
             @case ('doughnut') {
-              <strong>Traffic sources</strong>
-              <j-chart type="doughnut" [data]="doughnutChartData" ariaLabel="Traffic sources" />
+              <strong>Customer segments</strong>
+              <j-chart type="doughnut" [data]="doughnutChartData" ariaLabel="Customer segments" />
             }
             @case ('mixed') {
               <strong>Revenue and target</strong>
               <j-chart type="mixed" [data]="mixedChartData" ariaLabel="Revenue and target" />
             }
             @default {
-              <strong>Monthly signups</strong>
-              <j-chart type="bar" [data]="chartData" ariaLabel="Monthly signups" />
+              <strong>Monthly customer growth</strong>
+              <j-chart type="bar" [data]="chartData" ariaLabel="Monthly customer growth" />
             }
           }
         </section>

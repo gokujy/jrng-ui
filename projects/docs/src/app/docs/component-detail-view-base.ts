@@ -154,7 +154,8 @@ import { JTourGuideComponent, JTourService, JTourStepDirective } from 'jrng-ui/t
 import { JToastContainerComponent, JToastService } from 'jrng-ui/toast';
 import { JTransferListComponent } from 'jrng-ui/transfer-list';
 import { JTreeComponent } from 'jrng-ui/tree';
-import { JTreeTableComponent } from 'jrng-ui/tree-table';
+import { JTreeTableCellTemplateDirective, JTreeTableComponent } from 'jrng-ui/tree-table';
+import { JTreeNode } from 'jrng-ui/tree';
 import { JVideoPlayerComponent } from 'jrng-ui/video-player';
 import { JVirtualScrollerComponent } from 'jrng-ui/virtual-scroller';
 import { JValidationMessageComponent } from 'jrng-ui/validation-message';
@@ -347,6 +348,116 @@ const TABLE_FEATURE_EXAMPLES = [
   <ng-template jTableEmpty let-state>{{ state }}</ng-template>
   <ng-template jTableLoading let-variant>{{ variant }}</ng-template>
 </j-table>`,
+  },
+] as const;
+
+const TREE_TABLE_FEATURE_EXAMPLES = [
+  {
+    key: 'basic',
+    name: 'Basic',
+    details: 'Render a compact customer hierarchy with semantic tree-grid rows.',
+    html: `<j-tree-table [value]="customerHierarchy" [columns]="columns" ariaLabel="Customer hierarchy" />`,
+  },
+  {
+    key: 'expansion',
+    name: 'Expansion',
+    details: 'Expand and collapse customer groups using pointer or keyboard controls.',
+    html: `<j-tree-table [value]="customerHierarchy" [columns]="columns" />`,
+  },
+  {
+    key: 'controlled-expansion',
+    name: 'Controlled Expansion',
+    details: 'Own expanded row keys explicitly for programmatic hierarchy control.',
+    html: `<j-tree-table
+  [value]="customerHierarchy"
+  [columns]="columns"
+  [expandedKeys]="expandedKeys"
+  (expandedKeysChange)="expandedKeys = $event"
+/>`,
+  },
+  {
+    key: 'lazy-children',
+    name: 'Lazy Children',
+    details: 'Request child customer records only when a parent row is opened.',
+    html: `<j-tree-table
+  [value]="lazyCustomerHierarchy"
+  [columns]="columns"
+  lazy
+  (lazyLoad)="loadCustomerChildren($event)"
+/>`,
+  },
+  {
+    key: 'sorting',
+    name: 'Sorting',
+    details: 'Sort siblings while preserving their position inside the customer hierarchy.',
+    html: `<j-tree-table [value]="customerHierarchy" [columns]="sortableColumns" />`,
+  },
+  {
+    key: 'filtering',
+    name: 'Filtering',
+    details: 'Filter parent and child rows with one accessible customer search field.',
+    html: `<j-tree-table [value]="customerHierarchy" [columns]="columns" filter filterPlaceholder="Search customers" />`,
+  },
+  {
+    key: 'single-selection',
+    name: 'Single Selection',
+    details: 'Select one customer hierarchy row at a time.',
+    html: `<j-tree-table [value]="customerHierarchy" [columns]="columns" selectionMode="single" />`,
+  },
+  {
+    key: 'multiple-selection',
+    name: 'Multiple Selection',
+    details: 'Select several independent rows with explicit multiple-selection behavior.',
+    html: `<j-tree-table [value]="customerHierarchy" [columns]="columns" selectionMode="multiple" />`,
+  },
+  {
+    key: 'checkbox-selection',
+    name: 'Checkbox Selection',
+    details: 'Propagate checkbox selection through customer parent and child rows.',
+    html: `<j-tree-table
+  [value]="customerHierarchy"
+  [columns]="columns"
+  selectionMode="checkbox"
+  propagateSelectionDown
+  propagateSelectionUp
+/>`,
+  },
+  {
+    key: 'custom-template',
+    name: 'Custom Template',
+    details: 'Format the customer type column without replacing tree-grid semantics.',
+    html: `<j-tree-table [value]="customerHierarchy" [columns]="columns">
+  <ng-template jTreeTableCell="type" let-value="value">
+    <strong>{{ value }}</strong>
+  </ng-template>
+</j-tree-table>`,
+  },
+  {
+    key: 'empty',
+    name: 'Empty',
+    details: 'Explain that no customer hierarchy records are available.',
+    html: `<j-tree-table [value]="[]" [columns]="columns" emptyMessage="No customer records found." />`,
+  },
+  {
+    key: 'keyboard',
+    name: 'Keyboard Navigation',
+    details: 'Use arrow keys to move, expand, collapse, and select hierarchy rows.',
+    html: `<j-tree-table [value]="customerHierarchy" [columns]="columns" ariaLabel="Keyboard-navigable customer hierarchy" />`,
+  },
+  {
+    key: 'rtl',
+    name: 'RTL',
+    details: 'Verify hierarchy indentation and controls in a right-to-left context.',
+    html: `<div dir="rtl">
+  <j-tree-table [value]="customerHierarchy" [columns]="columns" ariaLabel="RTL customer hierarchy" />
+</div>`,
+  },
+  {
+    key: 'accessibility',
+    name: 'Accessibility',
+    details:
+      'Provide a clear name while retaining row level, expansion, selection, and sort state.',
+    html: `<j-tree-table [value]="customerHierarchy" [columns]="columns" ariaLabel="Customer account hierarchy" />`,
   },
 ] as const;
 
@@ -1426,19 +1537,19 @@ const CHART_FEATURE_EXAMPLES = [
     key: 'bar',
     name: 'Bar chart',
     details: 'Compare values across discrete categories with a zero-based bar chart.',
-    html: `<j-chart type="bar" [data]="monthlySignups" ariaLabel="Monthly signups" />`,
+    html: `<j-chart type="bar" [data]="monthlyCustomers" ariaLabel="Monthly customer growth" />`,
   },
   {
     key: 'line',
     name: 'Line chart',
     details: 'Show a time-series trend with accessible alternative text.',
-    html: `<j-chart type="line" [data]="activeUsers" ariaLabel="Daily active users" />`,
+    html: `<j-chart type="line" [data]="activeCustomers" ariaLabel="Daily active customers" />`,
   },
   {
     key: 'doughnut',
     name: 'Doughnut chart',
     details: 'Communicate a small part-to-whole comparison with clearly named segments.',
-    html: `<j-chart type="doughnut" [data]="trafficSources" ariaLabel="Traffic sources" />`,
+    html: `<j-chart type="doughnut" [data]="customerSegments" ariaLabel="Customer segments" />`,
   },
   {
     key: 'mixed',
@@ -1663,6 +1774,7 @@ export const COMPONENT_PREVIEW_IMPORTS = [
   JTransferListComponent,
   JTreeComponent,
   JTreeTableComponent,
+  JTreeTableCellTemplateDirective,
   JVideoPlayerComponent,
   JVirtualScrollerComponent,
   JValidationMessageComponent,
@@ -1750,6 +1862,12 @@ export class ComponentDetailViewBase {
           ...example,
           index,
         })),
+      );
+    }
+    if (doc.slug === 'tree-table') {
+      return this.withApiCoverage(
+        doc,
+        TREE_TABLE_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
       );
     }
     if (doc.slug === 'text-expand') {
@@ -2111,8 +2229,9 @@ export class ComponentDetailViewBase {
     this.rating = 4;
     this.completion = 65;
     this.dateRange = ['2026-07-12', '2026-07-19'];
-    this.editorValue = '<p>Build accessible Angular interfaces with stable components.</p>';
-    this.editorHtmlValue = '<h2>Release 0.0.9</h2><p>Accessibility checks passed.</p>';
+    this.editorValue = '<p>Customer prefers quarterly account reviews and email updates.</p>';
+    this.editorHtmlValue =
+      '<h2>Customer note</h2><p>The renewal review is scheduled for August.</p>';
     this.meetingTime = '14:30';
     this.selectedCustomer = 'acme';
     this.tags = [
@@ -2392,8 +2511,8 @@ export class ComponentDetailViewBase {
   rating = 4;
   completion = 65;
   dateRange: readonly string[] = ['2026-07-12', '2026-07-19'];
-  editorValue = '<p>Build accessible Angular interfaces with stable components.</p>';
-  editorHtmlValue = '<h2>Release 0.0.9</h2><p>Accessibility checks passed.</p>';
+  editorValue = '<p>Customer prefers quarterly account reviews and email updates.</p>';
+  editorHtmlValue = '<h2>Customer note</h2><p>The renewal review is scheduled for August.</p>';
   meetingTime = '14:30';
   selectedCustomer = 'acme';
   tags = [
@@ -2454,14 +2573,14 @@ export class ComponentDetailViewBase {
   readonly schedulerEvents = [
     {
       id: 'planning',
-      title: 'Planning',
+      title: 'Customer onboarding',
       start: new Date(2026, 6, 12, 10),
       end: new Date(2026, 6, 12, 11),
       color: '#6366f1',
     },
     {
       id: 'review',
-      title: 'Design review',
+      title: 'Renewal review',
       start: new Date(2026, 6, 14, 14),
       end: new Date(2026, 6, 14, 15),
       color: '#0ea5e9',
@@ -2489,13 +2608,13 @@ export class ComponentDetailViewBase {
   ] as const;
   readonly chartData = {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
-    datasets: [{ label: 'Signups', data: [32, 48, 41, 64, 78], backgroundColor: '#6366f1' }],
+    datasets: [{ label: 'New customers', data: [32, 48, 41, 64, 78], backgroundColor: '#6366f1' }],
   };
   readonly lineChartData = {
     labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
     datasets: [
       {
-        label: 'Active users',
+        label: 'Active customers',
         data: [120, 154, 148, 190, 224, 205, 248],
         borderColor: '#0891b2',
         backgroundColor: 'rgba(8, 145, 178, 0.14)',
@@ -2505,15 +2624,15 @@ export class ComponentDetailViewBase {
     ],
   };
   readonly doughnutChartData = {
-    labels: ['Direct', 'Search', 'Referrals'],
-    datasets: [{ label: 'Sessions', data: [46, 34, 20] }],
+    labels: ['Enterprise', 'Growth', 'Starter'],
+    datasets: [{ label: 'Customer segments', data: [46, 34, 20] }],
   };
   readonly mixedChartData = {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
     datasets: [
       {
         type: 'bar',
-        label: 'Revenue',
+        label: 'Customer revenue',
         data: [42, 48, 53, 61, 68],
         backgroundColor: '#6366f1',
       },
@@ -2600,28 +2719,40 @@ export class ComponentDetailViewBase {
     },
   ] as const;
   readonly ganttTasks = [
-    { id: 'design', label: 'Design', start: '2026-07-06', end: '2026-07-12', progress: 100 },
-    { id: 'build', label: 'Build', start: '2026-07-10', end: '2026-07-20', progress: 65 },
-    { id: 'qa', label: 'QA', start: '2026-07-18', end: '2026-07-24', progress: 20 },
+    {
+      id: 'discovery',
+      label: 'Customer discovery',
+      start: '2026-07-06',
+      end: '2026-07-12',
+      progress: 100,
+    },
+    { id: 'setup', label: 'Account setup', start: '2026-07-10', end: '2026-07-20', progress: 65 },
+    {
+      id: 'launch',
+      label: 'Customer launch',
+      start: '2026-07-18',
+      end: '2026-07-24',
+      progress: 20,
+    },
   ] as const;
   readonly kanbanColumns = [
     {
       id: 'todo',
       title: 'To do',
       cards: [
-        { id: 'docs', title: 'Polish docs spacing', metadata: 'Design system' },
-        { id: 'tests', title: 'Add visual tests', metadata: 'Quality' },
+        { id: 'harbor', title: 'Harbor & Pine', metadata: 'Growth subscription' },
+        { id: 'summit', title: 'Summit Route', metadata: 'Enterprise subscription' },
       ],
     },
     {
       id: 'doing',
       title: 'In progress',
-      cards: [{ id: 'previews', title: 'Complete previews', metadata: 'Documentation' }],
+      cards: [{ id: 'crescent', title: 'Crescent Health', metadata: 'Account setup' }],
     },
     {
       id: 'done',
       title: 'Done',
-      cards: [{ id: 'checkbox', title: 'Fix checkbox alignment', metadata: 'Components' }],
+      cards: [{ id: 'northstar', title: 'Northstar Logistics', metadata: 'Customer launched' }],
     },
   ] as const;
   kanbanPreviewColumns: readonly JKanbanColumn[] = this.kanbanColumns;
@@ -2658,26 +2789,60 @@ export class ComponentDetailViewBase {
     { label: 'Review', description: 'Check your changes' },
     { label: 'Publish' },
   ] as const;
-  readonly treeNodes = [
+  readonly treeNodes: readonly JTreeNode[] = [
     {
-      key: 'workspace',
-      label: 'Workspace',
+      key: 'enterprise',
+      label: 'Enterprise customers',
+      data: { type: 'Segment' },
       children: [
-        { key: 'components', label: 'Components', leaf: true },
-        { key: 'guides', label: 'Guides', leaf: true },
+        {
+          key: 'northstar',
+          label: 'Northstar Logistics',
+          data: { type: 'Customer' },
+          leaf: true,
+        },
+        {
+          key: 'crescent',
+          label: 'Crescent Health',
+          data: { type: 'Customer' },
+          leaf: true,
+        },
       ],
     },
-    { key: 'archive', label: 'Archive', leaf: true },
+    {
+      key: 'growth',
+      label: 'Growth customers',
+      data: { type: 'Segment' },
+      children: [
+        {
+          key: 'harbor',
+          label: 'Harbor & Pine',
+          data: { type: 'Customer' },
+          leaf: true,
+        },
+      ],
+    },
   ] as const;
-  readonly lazyTreeNodes = [
-    { key: 'shared', label: 'Shared workspace', leaf: false },
-    { key: 'archive', label: 'Archive', leaf: true },
+  readonly lazyTreeNodes: readonly JTreeNode[] = [
+    {
+      key: 'onboarding',
+      label: 'Onboarding customers',
+      data: { type: 'Segment' },
+      leaf: false,
+    },
+    { key: 'paused', label: 'Paused customers', data: { type: 'Segment' }, leaf: true },
   ] as const;
+  treeExpandedKeys: ReadonlySet<string> = new Set(['enterprise']);
+  treeSelection: JTreeNode | readonly JTreeNode[] | null = null;
   readonly tableLoadError = new Error('Customer records could not be loaded.');
   readonly treeColumns: readonly JTableColumn[] = [
-    { field: 'label', header: 'Name' },
-    { field: 'type', header: 'Type' },
+    { field: 'label', header: 'Customer hierarchy' },
+    { field: 'type', header: 'Record type' },
   ];
+  readonly treeSortableColumns: readonly JTableColumn[] = this.treeColumns.map((column) => ({
+    ...column,
+    sortable: true,
+  }));
   readonly virtualItems = Array.from({ length: 100 }, (_, index) => `Record ${index + 1}`);
   readonly tableActionMessage = signal('');
   readonly orderColumns: readonly JTableColumn[] = [

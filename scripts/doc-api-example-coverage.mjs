@@ -135,6 +135,9 @@ function createComponentCoverage(component, inventory, existingExamples) {
     'Panel',
     'Media',
     'File',
+    'Data',
+    'Chart',
+    'Utilities',
   ].includes(component.category);
   addInputExample(
     examples,
@@ -314,6 +317,7 @@ async function readExistingExampleCounts(workspace, components) {
     ['loader', 'LOADER_FEATURE_EXAMPLES'],
     ['card', 'CARD_FEATURE_EXAMPLES'],
     ['chart', 'CHART_FEATURE_EXAMPLES'],
+    ['tree-table', 'TREE_TABLE_FEATURE_EXAMPLES'],
   ]);
   const variantCounts = objectArrayCounts(declarations.get('FEATURE_VARIANT_KEYS')?.initializer);
   const gridCounts = objectArrayCounts(declarations.get('GRID_FEATURE_EXAMPLES')?.initializer);
