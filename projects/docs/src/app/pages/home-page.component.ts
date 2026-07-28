@@ -7,6 +7,7 @@ import { JCheckboxComponent } from 'jrng-ui/checkbox';
 import { JInputComponent } from 'jrng-ui/input';
 import { JIconComponent } from 'jrng-ui/icon';
 import { JSwitchComponent } from 'jrng-ui/switch';
+import { JTableColumn, JTableComponent } from 'jrng-ui/table';
 import { componentDocs } from '../docs/component-docs.data';
 import { generatedComponentCategories } from '../docs/generated-component-categories';
 import { DocsAnalyticsService } from '../core/analytics.service';
@@ -31,6 +32,15 @@ interface CategoryPreview {
   readonly count: number;
 }
 
+interface FooterGroup {
+  readonly title: string;
+  readonly links: readonly {
+    readonly label: string;
+    readonly path: string;
+    readonly external?: boolean;
+  }[];
+}
+
 @Component({
   selector: 'app-home-page',
   imports: [
@@ -42,26 +52,31 @@ interface CategoryPreview {
     JSwitchComponent,
     JBadgeComponent,
     JCardComponent,
+    JTableComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="docs-home">
+      <div class="j-docs-home-announcement">
+        <span>JRNG UI 0.1 brings three original presets and expanded advanced components.</span>
+        <a routerLink="/themes">Explore theming</a>
+      </div>
       <section class="docs-home-hero">
         <div class="docs-home-hero__glow" aria-hidden="true"></div>
         <div class="docs-container docs-home-hero__inner">
           <div class="docs-home-hero__copy">
             <span class="docs-home-pill">
               <span aria-hidden="true"></span>
-              jrng-ui@0.0.9
+              jrng-ui@0.1.0 · Angular 21
             </span>
 
             <h1>
-              <span class="docs-home-highlight">Premium UI Suite for Angular</span>
+              <span class="docs-home-highlight">Build clear, capable Angular products.</span>
             </h1>
 
             <p>
-              Build responsive admin panels and dashboards with {{ totalComponents }}+ standalone
-              components, advanced data tools, accessible themes, SSR support, and modular imports.
+              JRNG UI gives product teams standalone Angular components, advanced data tools,
+              accessible themes, SSR support, and modular imports for real operational software.
             </p>
 
             <div class="docs-cta">
@@ -132,10 +147,10 @@ interface CategoryPreview {
                     <span></span>
                     Live
                   </span>
-                  <h2>Portfolio command</h2>
-                  <p>Monitor exposure, settlement flow, and component adoption.</p>
+                  <h2>Customer workspace</h2>
+                  <p>Monitor growth, subscriptions, support cases, and account activity.</p>
                 </div>
-                <div class="docs-home-search">Search components</div>
+                <j-input ariaLabel="Search customers" placeholder="Search customers" />
               </header>
 
               <div class="docs-home-segments" aria-hidden="true">
@@ -156,7 +171,7 @@ interface CategoryPreview {
 
               <div class="docs-home-chart" aria-hidden="true">
                 <div class="docs-home-chart__header">
-                  <strong>Component activity</strong>
+                  <strong>Customer growth</strong>
                   <span>Last 12 weeks</span>
                 </div>
                 <svg viewBox="0 0 640 160" preserveAspectRatio="none">
@@ -193,6 +208,67 @@ interface CategoryPreview {
               Evaluate its APIs, accessibility, component coverage, maintenance needs, and migration
               cost against your own requirements.
             </p>
+          </div>
+        </section>
+
+        <section class="docs-home-section">
+          <div class="docs-home-section__heading">
+            <span class="docs-eyebrow">Theme presets</span>
+            <h2>One JRNG system, three distinct working styles.</h2>
+            <p>Switch presets from the settings button to see every preview update live.</p>
+          </div>
+          <div class="j-docs-home-presets">
+            @for (preset of presets; track preset.name) {
+              <article [attr.data-preset]="preset.name.toLowerCase()">
+                <span>{{ preset.name }}</span>
+                <h3>{{ preset.title }}</h3>
+                <p>{{ preset.description }}</p>
+                <div aria-hidden="true"><i></i><i></i><i></i></div>
+              </article>
+            }
+          </div>
+        </section>
+
+        <section class="docs-home-section">
+          <div class="docs-home-section__heading docs-home-section__heading--split">
+            <div>
+              <span class="docs-eyebrow">Featured component</span>
+              <h2>A customer table that starts simple.</h2>
+              <p>Search, sort, scan status, and paginate without mixing in editing or expansion.</p>
+            </div>
+            <a routerLink="/docs/components" fragment="table">Explore j-table -></a>
+          </div>
+          <div class="j-docs-home-featured-table">
+            <j-table
+              caption="Customers"
+              [value]="customers"
+              [columns]="customerColumns"
+              [paginator]="true"
+              [rows]="5"
+              [showGlobalFilter]="true"
+              globalFilterPlaceholder="Search customers"
+              responsiveMode="scroll"
+            />
+          </div>
+        </section>
+
+        <section class="docs-home-section">
+          <div class="docs-home-section__heading">
+            <span class="docs-eyebrow">Advanced workflows</span>
+            <h2>Go beyond foundational controls.</h2>
+            <p>These cards link only to advanced components implemented in this repository.</p>
+          </div>
+          <div class="j-docs-home-advanced">
+            @for (component of advancedComponents; track component.slug) {
+              <a routerLink="/docs/components" [fragment]="component.slug">
+                <j-icon [name]="component.icon" aria-hidden="true" />
+                <div>
+                  <h3>{{ component.name }}</h3>
+                  <p>{{ component.description }}</p>
+                </div>
+                <span aria-hidden="true">-></span>
+              </a>
+            }
           </div>
         </section>
         <section class="docs-home-section">
@@ -296,8 +372,161 @@ interface CategoryPreview {
           </div>
         </section>
       </main>
+
+      <footer class="j-docs-home-footer docs-container">
+        @for (group of footerGroups; track group.title) {
+          <section>
+            <h2>{{ group.title }}</h2>
+            @for (link of group.links; track link.label) {
+              @if (link.external) {
+                <a [href]="link.path" target="_blank" rel="noreferrer">{{ link.label }}</a>
+              } @else {
+                <a [routerLink]="link.path">{{ link.label }}</a>
+              }
+            }
+          </section>
+        }
+      </footer>
     </div>
   `,
+  styles: [
+    `
+      .j-docs-home-announcement {
+        align-items: center;
+        background: var(--j-color-primary-soft);
+        color: var(--j-color-foreground);
+        display: flex;
+        font-size: var(--j-font-size-sm);
+        gap: var(--j-spacing-3);
+        justify-content: center;
+        padding: var(--j-spacing-2) var(--j-spacing-4);
+        text-align: center;
+      }
+      .j-docs-home-announcement a {
+        color: var(--j-color-primary);
+        font-weight: var(--j-font-weight-semibold);
+      }
+      .j-docs-home-presets {
+        display: grid;
+        gap: var(--j-spacing-4);
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .j-docs-home-presets article,
+      .j-docs-home-featured-table {
+        background: var(--j-color-card);
+        border: 1px solid var(--j-color-border);
+        border-radius: var(--j-radius-xl);
+        padding: var(--j-spacing-5);
+      }
+      .j-docs-home-presets article > span {
+        color: var(--j-color-primary);
+        font-size: var(--j-font-size-xs);
+        font-weight: var(--j-font-weight-bold);
+        text-transform: uppercase;
+      }
+      .j-docs-home-presets h3,
+      .j-docs-home-presets p {
+        margin-block: var(--j-spacing-2) 0;
+      }
+      .j-docs-home-presets p {
+        color: var(--j-color-muted-foreground);
+      }
+      .j-docs-home-presets article > div {
+        display: grid;
+        gap: var(--j-spacing-2);
+        grid-template-columns: 2fr 1fr 1fr;
+        margin-top: var(--j-spacing-5);
+      }
+      .j-docs-home-presets i {
+        background: var(--j-color-primary);
+        border-radius: var(--j-radius-sm);
+        display: block;
+        height: 2.25rem;
+        opacity: 0.3;
+      }
+      .j-docs-home-presets i:first-child {
+        opacity: 0.85;
+      }
+      .j-docs-home-advanced {
+        display: grid;
+        gap: var(--j-spacing-3);
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .j-docs-home-advanced a {
+        align-items: center;
+        background: var(--j-color-card);
+        border: 1px solid var(--j-color-border);
+        border-radius: var(--j-radius-lg);
+        color: inherit;
+        display: flex;
+        gap: var(--j-spacing-3);
+        padding: var(--j-spacing-4);
+        text-decoration: none;
+      }
+      .j-docs-home-advanced a:hover {
+        border-color: var(--j-color-primary);
+        transform: translateY(-2px);
+      }
+      .j-docs-home-advanced h3,
+      .j-docs-home-advanced p {
+        margin: 0;
+      }
+      .j-docs-home-advanced p {
+        color: var(--j-color-muted-foreground);
+        font-size: var(--j-font-size-sm);
+        margin-top: var(--j-spacing-1);
+      }
+      .j-docs-home-advanced a > span {
+        margin-inline-start: auto;
+      }
+      .j-docs-home-footer {
+        border-top: 1px solid var(--j-color-border);
+        display: grid;
+        gap: var(--j-spacing-6);
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        padding-block: var(--j-spacing-8);
+      }
+      .j-docs-home-footer section {
+        display: grid;
+        gap: var(--j-spacing-2);
+      }
+      .j-docs-home-footer h2 {
+        font-size: var(--j-font-size-sm);
+        margin: 0;
+      }
+      .j-docs-home-footer a {
+        color: var(--j-color-muted-foreground);
+        font-size: var(--j-font-size-sm);
+        text-decoration: none;
+      }
+      .j-docs-home-footer a:hover {
+        color: var(--j-color-primary);
+      }
+      @media (max-width: 800px) {
+        .j-docs-home-presets,
+        .j-docs-home-advanced {
+          grid-template-columns: 1fr;
+        }
+        .j-docs-home-footer {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+      @media (max-width: 480px) {
+        .j-docs-home-announcement {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+        .j-docs-home-footer {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .j-docs-home-advanced a:hover {
+          transform: none;
+        }
+      }
+    `,
+  ],
 })
 export class HomePageComponent {
   readonly analytics = inject(DocsAnalyticsService);
@@ -309,10 +538,10 @@ export class HomePageComponent {
   );
 
   readonly stats: readonly Stat[] = [
-    { label: 'Components', value: `${this.totalComponents}`, delta: 'registry', tone: 'up' },
-    { label: 'Entrypoints', value: '1:1', delta: 'tree-shakeable', tone: 'neutral' },
-    { label: 'Theme modes', value: '3', delta: 'light/dark/system', tone: 'up' },
-    { label: 'Status', value: '0.0.9', delta: 'current', tone: 'down' },
+    { label: 'Active customers', value: '1,284', delta: '+8.6% this quarter', tone: 'up' },
+    { label: 'Subscriptions', value: '936', delta: '73% active', tone: 'neutral' },
+    { label: 'Support cases', value: '24', delta: '6 need attention', tone: 'down' },
+    { label: 'Renewals', value: '48', delta: 'next 30 days', tone: 'up' },
   ];
 
   readonly features: readonly Feature[] = [
@@ -333,7 +562,7 @@ export class HomePageComponent {
       icon: 'T',
       tag: 'theming',
       title: 'Runtime design tokens',
-      text: 'Swap mode, palette, density, and component tokens at runtime through CSS variables.',
+      text: 'Use Default, Material, or Nexus with live palette, surface, and light/dark controls.',
     },
     {
       icon: 'E',
@@ -352,6 +581,161 @@ export class HomePageComponent {
       tag: 'rendering',
       title: 'SSR-aware utilities',
       text: 'Clipboard, focus, overlay, storage, and timing utilities are guarded for browser and server environments.',
+    },
+  ];
+
+  readonly presets = [
+    {
+      name: 'Default',
+      title: 'Balanced by design',
+      description: 'A modern general-purpose foundation for product interfaces.',
+    },
+    {
+      name: 'Material',
+      title: 'Structured and familiar',
+      description: 'JRNG styling inspired by Material Design principles.',
+    },
+    {
+      name: 'Nexus',
+      title: 'Compact and information-rich',
+      description: 'An enterprise preset for dashboards and operational tools.',
+    },
+  ] as const;
+
+  readonly customerColumns: readonly JTableColumn[] = [
+    { field: 'id', header: 'Customer ID', sortable: true, width: '8rem' },
+    { field: 'name', header: 'Customer Name', sortable: true, width: '12rem' },
+    { field: 'company', header: 'Company', sortable: true, width: '13rem' },
+    { field: 'manager', header: 'Account Manager', sortable: true, width: '12rem' },
+    { field: 'joined', header: 'Joined Date', type: 'date', sortable: true, width: '10rem' },
+    { field: 'status', header: 'Status', type: 'status', sortable: true, width: '8rem' },
+    { field: 'activity', header: 'Activity', sortable: true, align: 'end', width: '7rem' },
+  ];
+
+  readonly customers = [
+    {
+      id: 'CUS-1042',
+      name: 'Mira Patel',
+      company: 'Northwind Harbor',
+      manager: 'Evan Cole',
+      joined: new Date('2025-02-14'),
+      status: 'Active',
+      activity: 18,
+    },
+    {
+      id: 'CUS-1048',
+      name: 'Jon Bell',
+      company: 'Willow & Pine',
+      manager: 'Lena Ortiz',
+      joined: new Date('2025-03-08'),
+      status: 'Active',
+      activity: 12,
+    },
+    {
+      id: 'CUS-1051',
+      name: 'Amara Reed',
+      company: 'Brightpath Works',
+      manager: 'Evan Cole',
+      joined: new Date('2025-04-19'),
+      status: 'Onboarding',
+      activity: 9,
+    },
+    {
+      id: 'CUS-1057',
+      name: 'Noah Kim',
+      company: 'Summit Field Labs',
+      manager: 'Priya Shah',
+      joined: new Date('2025-05-27'),
+      status: 'Active',
+      activity: 21,
+    },
+    {
+      id: 'CUS-1063',
+      name: 'Sofia Lane',
+      company: 'Copperline Studio',
+      manager: 'Lena Ortiz',
+      joined: new Date('2025-06-11'),
+      status: 'Review',
+      activity: 7,
+    },
+    {
+      id: 'CUS-1068',
+      name: 'Theo Grant',
+      company: 'Juniper Systems',
+      manager: 'Priya Shah',
+      joined: new Date('2025-07-02'),
+      status: 'Active',
+      activity: 15,
+    },
+  ] as const;
+
+  readonly advancedComponents = [
+    {
+      slug: 'query-builder',
+      name: 'Query Builder',
+      description: 'Compose customer segments with nested rules.',
+      icon: 'filter',
+    },
+    {
+      slug: 'cron-expression',
+      name: 'Cron Expression',
+      description: 'Schedule recurring customer reports.',
+      icon: 'clock',
+    },
+    {
+      slug: 'barcode',
+      name: 'Barcode',
+      description: 'Create customer ticket QR and linear codes.',
+      icon: 'square',
+    },
+    {
+      slug: 'calendar-scheduler',
+      name: 'Scheduler',
+      description: 'Plan meetings, renewals, and follow-ups.',
+      icon: 'calendar',
+    },
+    {
+      slug: 'gantt',
+      name: 'Gantt',
+      description: 'Track customer implementation plans.',
+      icon: 'chart-no-axes-column',
+    },
+    {
+      slug: 'kanban',
+      name: 'Kanban',
+      description: 'Move customer onboarding through clear stages.',
+      icon: 'layout-dashboard',
+    },
+  ] as const;
+
+  readonly footerGroups: readonly FooterGroup[] = [
+    {
+      title: 'Documentation',
+      links: [
+        { label: 'Get Started', path: '/docs' },
+        { label: 'Theming', path: '/themes' },
+      ],
+    },
+    {
+      title: 'Components',
+      links: [
+        { label: 'Component Directory', path: '/docs/components' },
+        { label: 'Public API Index', path: '/docs/index' },
+      ],
+    },
+    {
+      title: 'Resources',
+      links: [
+        { label: 'Examples', path: '/examples' },
+        { label: 'Guides', path: '/guides' },
+      ],
+    },
+    {
+      title: 'Community',
+      links: [
+        { label: 'Community', path: '/community' },
+        { label: 'GitHub', path: this.githubUrl, external: true },
+      ],
     },
   ];
 

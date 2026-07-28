@@ -92,27 +92,22 @@ describe('App', () => {
     expect(compiled.querySelector('.docs-sidebar')).toBeNull();
   });
 
-  it('supports responsive navigation state and theme switching', () => {
+  it('supports responsive navigation state', () => {
     const fixture = TestBed.createComponent(App);
     const app = fixture.componentInstance;
     expect(app.navOpen()).toBe(false);
     app.toggleNavigation();
     expect(app.navOpen()).toBe(true);
-    const before = app.isDark();
-    app.toggleDark();
-    expect(app.isDark()).toBe(!before);
   });
 
-  it('opens the theme configurator and applies a color preset', () => {
+  it('renders the documentation-only theme settings trigger', () => {
     const fixture = TestBed.createComponent(App);
-    const app = fixture.componentInstance;
-    expect(app.configOpen()).toBe(false);
-    app.toggleConfig();
-    expect(app.configOpen()).toBe(true);
-    app.selectPreset('emerald');
-    expect(app.activePreset()).toBe('emerald');
-    app.closeConfig();
-    expect(app.configOpen()).toBe(false);
+    fixture.detectChanges();
+    const trigger = fixture.nativeElement.querySelector(
+      '[aria-label="Open theme settings"]',
+    ) as HTMLButtonElement;
+    expect(trigger).toBeTruthy();
+    expect(fixture.nativeElement.querySelectorAll('app-docs-theme-settings')).toHaveLength(1);
   });
 
   it('updates canonical and social metadata for documentation routes', async () => {
