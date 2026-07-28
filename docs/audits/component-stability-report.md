@@ -7,7 +7,7 @@ Stability is derived from the canonical build inventory, rendered-preview regist
 | Status | Count |
 | --- | ---: |
 | Stable | 3 |
-| Beta | 118 |
+| Beta | 119 |
 | Experimental | 0 |
 
 ## Non-stable components
@@ -95,6 +95,7 @@ Stability is derived from the canonical build inventory, rendered-preview regist
 | Tiered Menu | `j-tiered-menu` | beta | Manual cross-browser and visual baseline is not independently certified. | Complete the browser matrix and approve deterministic visual baselines. | No release blocker for documented beta use. | Promote only after evidence is recorded. |
 | Toast | `j-toast` | beta | Manual cross-browser and visual baseline is not independently certified. | Complete the browser matrix and approve deterministic visual baselines. | No release blocker for documented beta use. | Promote only after evidence is recorded. |
 | Validation Message | `j-validation-message` | beta | Manual cross-browser and visual baseline is not independently certified. | Complete the browser matrix and approve deterministic visual baselines. | No release blocker for documented beta use. | Promote only after evidence is recorded. |
+| Barcode | `j-barcode` | beta | Manual cross-browser and visual baseline is not independently certified. | Complete the browser matrix and approve deterministic visual baselines. | No release blocker for documented beta use. | Promote only after evidence is recorded. |
 | Carousel | `j-carousel` | beta | Manual cross-browser and visual baseline is not independently certified. | Complete the browser matrix and approve deterministic visual baselines. | No release blocker for documented beta use. | Promote only after evidence is recorded. |
 | Gallery | `j-gallery` | beta | Manual cross-browser and visual baseline is not independently certified. | Complete the browser matrix and approve deterministic visual baselines. | No release blocker for documented beta use. | Promote only after evidence is recorded. |
 | Html Preview | `j-html-preview` | beta | Manual cross-browser and visual baseline is not independently certified. | Complete the browser matrix and approve deterministic visual baselines. | No release blocker for documented beta use. | Promote only after evidence is recorded. |

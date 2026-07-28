@@ -4838,6 +4838,61 @@
       ]
     },
     {
+      "name": "Barcode",
+      "selector": "j-barcode",
+      "importPath": "jrng-ui/barcode",
+      "entryPoint": "jrng-ui/barcode",
+      "category": "Media",
+      "description": "Angular Barcode component for reusable admin, dashboard, and business application interfaces.",
+      "inputs": [
+        "ariaLabel",
+        "background",
+        "dir",
+        "disabled",
+        "errorCorrection",
+        "exportFilename",
+        "foreground",
+        "height",
+        "quietZone",
+        "showExportAction",
+        "showValue",
+        "symbology",
+        "value",
+        "width"
+      ],
+      "outputs": [
+        "invalid",
+        "ready",
+        "svgExport"
+      ],
+      "methods": [
+        "exportSvg()",
+        "toSvg()"
+      ],
+      "formCompatibility": "Not a form control",
+      "usageExample": "<j-barcode></j-barcode>",
+      "importExample": "import { JBarcodeComponent } from 'jrng-ui/barcode';",
+      "documentationUrl": "https://jrngui.dev/docs/components#barcode",
+      "status": "Basic",
+      "stability": "beta",
+      "sinceVersion": null,
+      "angularCompatibility": ">=21.2.0 <22.0.0",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ]
+    },
+    {
       "name": "Carousel",
       "selector": "j-carousel",
       "importPath": "jrng-ui/carousel",

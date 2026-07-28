@@ -2,9 +2,9 @@
 
 Generated: jrng-ui 0.1.0
 
-Canonical public components: **121**
+Canonical public components: **122**
 
-- light-dark-system-high-contrast-preview: 121
+- light-dark-system-high-contrast-preview: 122
 
 | Component | Selector | Category | Status |
 | --- | --- | --- | --- |
@@ -90,6 +90,7 @@ Canonical public components: **121**
 | Tiered Menu | `j-tiered-menu` | Menu | light-dark-system-high-contrast-preview |
 | Toast | `j-toast` | Messages | light-dark-system-high-contrast-preview |
 | Validation Message | `j-validation-message` | Messages | light-dark-system-high-contrast-preview |
+| Barcode | `j-barcode` | Media | light-dark-system-high-contrast-preview |
 | Carousel | `j-carousel` | Media | light-dark-system-high-contrast-preview |
 | Gallery | `j-gallery` | Media | light-dark-system-high-contrast-preview |
 | Html Preview | `j-html-preview` | Media | light-dark-system-high-contrast-preview |

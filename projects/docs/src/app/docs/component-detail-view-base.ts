@@ -22,6 +22,7 @@ import { JAutocompleteComponent } from 'jrng-ui/autocomplete';
 import { JAvatarGroupComponent } from 'jrng-ui/avatar-group';
 import { JAvatarComponent } from 'jrng-ui/avatar';
 import { JBadgeComponent } from 'jrng-ui/badge';
+import { JBarcodeComponent } from 'jrng-ui/barcode';
 import { JBottomSheetComponent } from 'jrng-ui/bottom-sheet';
 import { JBreadcrumbComponent, JBreadcrumbItem, JBreadcrumbVariant } from 'jrng-ui/breadcrumb';
 import { JButtonComponent, JButtonVariant } from 'jrng-ui/button';
@@ -1539,6 +1540,7 @@ export const COMPONENT_PREVIEW_IMPORTS = [
   JAvatarGroupComponent,
   JAvatarComponent,
   JBadgeComponent,
+  JBarcodeComponent,
   JBreadcrumbComponent,
   JButtonComponent,
   JCardComponent,

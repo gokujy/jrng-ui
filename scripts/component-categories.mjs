@@ -106,7 +106,14 @@ export const COMPONENT_CATEGORIES = [
   { name: 'Messages', selectors: ['j-toast', 'j-validation-message'] },
   {
     name: 'Media',
-    selectors: ['j-carousel', 'j-gallery', 'j-html-preview', 'j-image', 'j-video-player'],
+    selectors: [
+      'j-barcode',
+      'j-carousel',
+      'j-gallery',
+      'j-html-preview',
+      'j-image',
+      'j-video-player',
+    ],
   },
   {
     name: 'File',
@@ -185,7 +192,7 @@ export const COMPONENT_CATEGORY_COUNTS = Object.freeze({
   Overlay: 8,
   Menu: 9,
   Messages: 2,
-  Media: 5,
+  Media: 6,
   File: 3,
   Chart: 2,
   Layout: 11,
@@ -193,7 +200,7 @@ export const COMPONENT_CATEGORY_COUNTS = Object.freeze({
   Utilities: 3,
   Pages: 2,
 });
-export const ACTIVE_COMPONENT_TOTAL = 121;
+export const ACTIVE_COMPONENT_TOTAL = 122;
 export const COMPONENT_CATEGORY_TOTAL = 14;
 export const REMOVED_COMPONENT_SELECTORS = new Set([
   'j-activity-feed',

@@ -4,20 +4,20 @@ Generated from the 0.1.0 canonical build declarations.
 
 | Metric                                   | Total |
 | ---------------------------------------- | ----: |
-| Total public components                  |   121 |
+| Total public components                  |   122 |
 | Total categories                         |    14 |
 | Uncategorized components                 |     0 |
 | Duplicate entries                        |     0 |
 | Removed components present               |     0 |
-| Components with documentation            |   121 |
-| Components with working preview          |   121 |
-| Components with API reference            |   121 |
-| Components with examples                 |   121 |
-| Components with direct tests             |   121 |
-| Components with accessibility validation |   121 |
-| Components with responsive examples      |    79 |
+| Components with documentation            |   122 |
+| Components with working preview          |   122 |
+| Components with API reference            |   122 |
+| Components with examples                 |   122 |
+| Components with direct tests             |   122 |
+| Components with accessibility validation |   122 |
+| Components with responsive examples      |    80 |
 | Responsive examples not applicable       |    42 |
-| Components with theme-token coverage     |   121 |
+| Components with theme-token coverage     |   122 |
 | Components remaining incomplete          |     0 |
 
 | Category  | Components |
@@ -29,7 +29,7 @@ Generated from the 0.1.0 canonical build declarations.
 | Overlay   |          8 |
 | Menu      |          9 |
 | Messages  |          2 |
-| Media     |          5 |
+| Media     |          6 |
 | File      |          3 |
 | Chart     |          2 |
 | Layout    |         11 |
@@ -121,6 +121,7 @@ Generated from the 0.1.0 canonical build declarations.
 | Tiered Menu         | j-tiered-menu         | jrng-ui/tiered-menu         | Menu      | beta      | rendered | direct | validated     |
 | Toast               | j-toast               | jrng-ui/toast               | Messages  | beta      | rendered | direct | validated     |
 | Validation Message  | j-validation-message  | jrng-ui/validation-message  | Messages  | beta      | rendered | direct | validated     |
+| Barcode             | j-barcode             | jrng-ui/barcode             | Media     | beta      | rendered | direct | validated     |
 | Carousel            | j-carousel            | jrng-ui/carousel            | Media     | beta      | rendered | direct | validated     |
 | Gallery             | j-gallery             | jrng-ui/gallery             | Media     | beta      | rendered | direct | validated     |
 | Html Preview        | j-html-preview        | jrng-ui/html-preview        | Media     | beta      | rendered | direct | validated     |

@@ -648,6 +648,133 @@ control = new FormControl('0 2 * * *', { nonNullable: true });`,
     ],
   },
   {
+    slug: 'barcode',
+    name: 'Barcode',
+    category: 'Media',
+    icon: 'scan-line',
+    selector: 'j-barcode',
+    importPath: 'jrng-ui/barcode',
+    status: 'Beta',
+    description:
+      'Renders deterministic, accessible QR Code, Code 128 B, and EAN-13 graphics as compact SVG.',
+    whenToUse:
+      'Use Barcode to display a validated machine-readable value for tickets, URLs, retail products, or internal labels.',
+    whenNotToUse: [
+      'Do not use it to scan a code, access a camera, or manage inventory.',
+      'Do not rely on an on-screen preview instead of validating the final printed artifact.',
+    ],
+    code: {
+      importCode: `import { JBarcodeComponent } from 'jrng-ui/barcode';`,
+      basic: `<j-barcode
+  value="https://jrngui.dev"
+  symbology="qr"
+  ariaLabel="JRNG website QR code"
+  showValue
+/>`,
+      variants: `<j-barcode value="INV-2026-0042" symbology="code128" showValue />
+<j-barcode value="4006381333931" symbology="ean13" showValue />
+<j-barcode value="https://jrngui.dev/tickets/42" symbology="qr" errorCorrection="Q" />`,
+      sizes: `<j-barcode value="Compact QR" [width]="160" [height]="160" [quietZone]="4" />
+<j-barcode value="SHIP-42" symbology="code128" [width]="360" [height]="120" />`,
+      states: `<j-barcode value="" />
+<j-barcode value="4006381333932" symbology="ean13" />
+<j-barcode value="Export me" showExportAction exportFilename="ticket-code" />`,
+      angular: `value = 'INV-2026-0042';
+exportedSvg = '';
+
+onSvgExport(svg: string) {
+  this.exportedSvg = svg;
+}`,
+    },
+    usage: [
+      'QR Code: encode text or a URL with L, M, Q, or H error correction.',
+      'Inventory Code 128: encode printable ASCII with Code Set B.',
+      'Retail EAN-13: provide 12 digits to calculate the checksum or 13 to validate it.',
+      'Ticket or URL QR: give the graphic an accessible label describing its destination.',
+      'Size and quiet zone: preserve enough surrounding whitespace at the final output size.',
+      'Visible value: showValue renders decoded text outside the SVG accessibility tree.',
+      'Custom color: use valid hex colors with at least 3:1 contrast.',
+      'SVG export: showExportAction exposes a named JRNG button; toSvg() supports application-owned export.',
+      'Changelog: introduced in the advanced-components Phase 1 batch.',
+    ],
+    variants: ['QR Code', 'Code 128 B', 'EAN-13'],
+    sizes: [
+      'Width and height set the requested SVG viewport while max-width: 100% preserves responsive sizing.',
+      'QR remains square; linear symbols preserve their viewBox and quiet zones.',
+    ],
+    states: ['ready', 'invalid', 'contrast warning', 'disabled export', 'RTL', 'print'],
+    inputs: [
+      prop('value', 'string', "''", 'Value to encode.'),
+      prop('symbology', 'qr | code128 | ean13', "'qr'", 'Validated encoder selection.'),
+      prop('width', 'number', '256', 'Requested rendered width in pixels.'),
+      prop('height', 'number', '256', 'Requested rendered height in pixels.'),
+      prop(
+        'quietZone',
+        'number | undefined',
+        'undefined',
+        'Logical clear modules around the code.',
+      ),
+      prop('foreground', 'string', "'#000000'", 'Hex module/bar color.'),
+      prop('background', 'string', "'#ffffff'", 'Hex background color.'),
+      prop('errorCorrection', 'L | M | Q | H', "'M'", 'QR error-correction level.'),
+      prop('showValue', 'boolean', 'false', 'Shows decoded text in a separate caption.'),
+      prop('ariaLabel', 'string', "''", 'Explicit accessible graphic name.'),
+      prop('showExportAction', 'boolean', 'false', 'Shows the SVG export button.'),
+      prop('exportFilename', 'string', "'barcode'", 'Downloaded SVG base filename.'),
+      prop('disabled', 'boolean', 'false', 'Blocks export actions.'),
+      prop('dir', 'ltr | rtl', "'ltr'", 'Direction of surrounding UI only.'),
+    ],
+    outputs: [
+      event('ready', 'JBarcodeGraphic', 'Emits when valid deterministic output changes.'),
+      event('invalid', 'readonly JBarcodeIssue[]', 'Emits when an invalid configuration changes.'),
+      event('svgExport', 'string', 'Emits the exported SVG text.'),
+    ],
+    cssVariables: [
+      cssVar('--j-barcode-surface', 'transparent', 'Figure surface.'),
+      cssVar('--j-barcode-text', 'var(--j-color-foreground)', 'Visible value color.'),
+      cssVar('--j-barcode-caption-font', 'ui-monospace', 'Visible value typography.'),
+      cssVar('--j-barcode-invalid-bg', 'var(--j-color-muted)', 'Issue surface.'),
+      cssVar('--j-barcode-invalid', 'var(--j-color-danger)', 'Invalid text and border.'),
+    ],
+    accessibility: [
+      'The SVG is one image with one accessible name; its background and path are hidden from assistive technology.',
+      'The optional decoded caption is separate from the encoded graphic.',
+      'Invalid state is announced as an alert and contrast guidance as status text.',
+      'Export uses a clearly named JRNG button and introduces no focusable SVG modules.',
+    ],
+    keyboard: [
+      'Static barcodes are not focusable.',
+      'Tab reaches Export SVG only when the optional action is present.',
+      'Enter or Space activates the JRNG export button.',
+    ],
+    responsive: [
+      'SVG scales down to its container without changing its viewBox, encoded order, or quiet-zone modules.',
+      'RTL affects caption and action placement, never the encoded matrix or bar sequence.',
+    ],
+    bestPractices: [
+      'Use black on white, keep the documented quiet zone, and test the final physical size.',
+      'Give destination QR codes a label that describes where they lead.',
+      'Use the normalized EAN value emitted in the ready graphic when displaying a 12-digit input.',
+    ],
+    commonMistakes: [
+      'Cropping the quiet zone in CSS or print templates.',
+      'Choosing low-contrast brand colors or rasterizing at a tiny size.',
+      'Assuming Code 128 B supports arbitrary Unicode.',
+    ],
+    publicMethods: ['toSvg()', 'exportSvg()'],
+    limitations: [
+      'Only QR Code byte mode, Code 128 B printable ASCII, and EAN-13 are supported.',
+      'PNG export and scanning/camera APIs are intentionally excluded.',
+      'QR encoding uses the MIT qrcode-generator dependency; linear encoders and SVG rendering are JRNG-owned.',
+      'FAQ: scanner success depends on the printer, substrate, contrast, module size, and reader.',
+    ],
+    relatedComponents: ['Image', 'File Preview', 'Copy Button'],
+    testingNotes: [
+      'Automated vectors cover QR geometry, Code 128 structure, EAN checksum, deterministic SVG, invalid input, contrast, SSR, responsive CSS, RTL, export, and repeated updates.',
+      'For release print validation, scan a 100% scale print from two representative phone cameras and a hardware scanner; record printer DPI, size, and distance.',
+    ],
+  },
+  {
     slug: 'input',
     name: 'Input',
     category: 'Form',

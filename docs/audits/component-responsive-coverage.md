@@ -2,9 +2,9 @@
 
 Generated: jrng-ui 0.1.0
 
-Canonical public components: **121**
+Canonical public components: **122**
 
-- preview-available: 79
+- preview-available: 80
 - not-applicable: 42
 
 | Component | Selector | Category | Status |
@@ -91,6 +91,7 @@ Canonical public components: **121**
 | Tiered Menu | `j-tiered-menu` | Menu | not-applicable |
 | Toast | `j-toast` | Messages | preview-available |
 | Validation Message | `j-validation-message` | Messages | not-applicable |
+| Barcode | `j-barcode` | Media | preview-available |
 | Carousel | `j-carousel` | Media | preview-available |
 | Gallery | `j-gallery` | Media | preview-available |
 | Html Preview | `j-html-preview` | Media | preview-available |

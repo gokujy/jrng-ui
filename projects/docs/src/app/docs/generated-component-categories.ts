@@ -120,8 +120,9 @@ export const generatedComponentCategories = [
   },
   {
     name: "Media",
-    count: 5,
+    count: 6,
     selectors: [
+      "j-barcode",
       "j-carousel",
       "j-gallery",
       "j-html-preview",
@@ -190,4 +191,4 @@ export const generatedComponentCategories = [
 export const generatedComponentCategoryOrder = generatedComponentCategories.map(
   ({ name }) => name,
 );
-export const generatedActiveComponentTotal = 121;
+export const generatedActiveComponentTotal = 122;

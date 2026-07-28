@@ -2,9 +2,9 @@
 
 Generated: jrng-ui 0.1.0
 
-Canonical public components: **121**
+Canonical public components: **122**
 
-- validated: 121
+- validated: 122
 
 | Component | Selector | Category | Status |
 | --- | --- | --- | --- |
@@ -90,6 +90,7 @@ Canonical public components: **121**
 | Tiered Menu | `j-tiered-menu` | Menu | validated |
 | Toast | `j-toast` | Messages | validated |
 | Validation Message | `j-validation-message` | Messages | validated |
+| Barcode | `j-barcode` | Media | validated |
 | Carousel | `j-carousel` | Media | validated |
 | Gallery | `j-gallery` | Media | validated |
 | Html Preview | `j-html-preview` | Media | validated |

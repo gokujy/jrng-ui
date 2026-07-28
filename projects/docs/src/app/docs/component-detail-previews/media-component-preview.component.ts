@@ -11,6 +11,15 @@ import {
   template: `
     @let example = previewExample();
     @switch (doc().slug) {
+      @case ('barcode') {
+        <j-barcode
+          value="https://jrngui.dev/components/barcode"
+          ariaLabel="JRNG Barcode documentation link"
+          [width]="220"
+          [height]="220"
+          showValue
+        />
+      }
       @case ('carousel') {
         <j-carousel
           [value]="carouselItems"
