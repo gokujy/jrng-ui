@@ -99,10 +99,10 @@ export interface JFilePreviewAction {
     `
       .j-file-preview {
         align-items: center;
-        background: var(--j-file-preview-bg, var(--j-color-card, #ffffff));
-        border: 1px solid var(--j-file-preview-border-color, var(--j-color-border, #e2e8f0));
+        background: var(--j-file-preview-bg, var(--j-color-card));
+        border: 1px solid var(--j-file-preview-border-color, var(--j-color-border));
         border-radius: var(--j-radius-lg);
-        color: var(--j-file-preview-color, var(--j-color-card-foreground, #111827));
+        color: var(--j-file-preview-color, var(--j-color-card-foreground));
         display: grid;
         gap: var(--j-spacing-4);
         grid-template-columns: 3.25rem minmax(10rem, 1fr) auto;

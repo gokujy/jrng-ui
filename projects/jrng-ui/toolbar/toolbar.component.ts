@@ -19,8 +19,8 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
     `
       .j-toolbar {
         align-items: center;
-        background: var(--j-color-surface, #ffffff);
-        border: 1px solid var(--j-color-border, #dbe2ea);
+        background: var(--j-color-surface);
+        border: 1px solid var(--j-color-border);
         border-radius: var(--j-radius-md, 0.5rem);
         display: flex;
         gap: var(--j-spacing-md, 0.75rem);

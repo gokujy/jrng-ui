@@ -386,10 +386,10 @@ interface JQueryRow {
       }
 
       .j-query-builder {
-        background: var(--j-query-builder-bg, var(--j-color-card, #fff));
-        border: 1px solid var(--j-query-builder-border, var(--j-color-border, #e2e8f0));
+        background: var(--j-query-builder-bg, var(--j-color-card));
+        border: 1px solid var(--j-query-builder-border, var(--j-color-border));
         border-radius: var(--j-query-builder-radius, var(--j-radius-lg, 0.75rem));
-        color: var(--j-query-builder-color, var(--j-color-card-foreground, #111827));
+        color: var(--j-query-builder-color, var(--j-color-card-foreground));
         display: grid;
         gap: var(--j-spacing-3, 0.75rem);
         padding: var(--j-spacing-4, 1rem);
@@ -411,7 +411,7 @@ interface JQueryRow {
       }
 
       .j-query-builder__header p {
-        color: var(--j-color-muted-foreground, #64748b);
+        color: var(--j-color-muted-foreground);
         margin: var(--j-spacing-1, 0.25rem) 0 0;
       }
 
@@ -426,8 +426,7 @@ interface JQueryRow {
       }
 
       .j-query-builder__group {
-        border-inline-start: 3px solid
-          var(--j-query-builder-group-accent, var(--j-color-primary, #2563eb));
+        border-inline-start: 3px solid var(--j-query-builder-group-accent, var(--j-color-primary));
         padding-inline-start: var(--j-spacing-3, 0.75rem);
       }
 
@@ -436,7 +435,7 @@ interface JQueryRow {
       }
 
       .j-query-builder__group-header {
-        background: var(--j-query-builder-group-bg, var(--j-color-muted, #f1f5f9));
+        background: var(--j-query-builder-group-bg, var(--j-color-muted));
         border-radius: var(--j-radius-md, 0.5rem);
         justify-content: space-between;
         padding: var(--j-spacing-2, 0.5rem);
@@ -444,7 +443,7 @@ interface JQueryRow {
 
       .j-query-builder__condition {
         align-items: end;
-        border: 1px solid var(--j-color-border, #e2e8f0);
+        border: 1px solid var(--j-color-border);
         border-radius: var(--j-radius-md, 0.5rem);
         display: grid;
         gap: var(--j-spacing-2, 0.5rem);
@@ -453,7 +452,7 @@ interface JQueryRow {
       }
 
       .j-query-builder__condition--invalid {
-        border-color: var(--j-query-builder-error, var(--j-color-danger, #dc2626));
+        border-color: var(--j-query-builder-error, var(--j-color-danger));
       }
 
       .j-query-builder__control,
@@ -465,15 +464,15 @@ interface JQueryRow {
 
       .j-query-builder__control > span,
       .j-query-builder__value > span:first-child {
-        color: var(--j-color-muted-foreground, #64748b);
+        color: var(--j-color-muted-foreground);
         font-size: var(--j-font-size-xs, 0.75rem);
         font-weight: var(--j-font-weight-semibold, 600);
       }
 
       .j-query-builder input,
       .j-query-builder select {
-        background: var(--j-query-builder-control-bg, var(--j-color-card, #fff));
-        border: 1px solid var(--j-query-builder-control-border, var(--j-color-border, #cbd5e1));
+        background: var(--j-query-builder-control-bg, var(--j-color-card));
+        border: 1px solid var(--j-query-builder-control-border, var(--j-color-border));
         border-radius: var(--j-radius-md, 0.5rem);
         color: inherit;
         font: inherit;
@@ -495,13 +494,13 @@ interface JQueryRow {
 
       .j-query-builder__no-value {
         align-items: center;
-        color: var(--j-color-muted-foreground, #64748b);
+        color: var(--j-color-muted-foreground);
         display: flex;
         min-height: 2.5rem;
       }
 
       .j-query-builder__node-errors {
-        color: var(--j-query-builder-error, var(--j-color-danger, #dc2626));
+        color: var(--j-query-builder-error, var(--j-color-danger));
         font-size: var(--j-font-size-xs, 0.75rem);
         grid-column: 1 / -1;
         margin: 0;
@@ -509,9 +508,9 @@ interface JQueryRow {
       }
 
       .j-query-builder__empty {
-        border: 1px dashed var(--j-color-border, #cbd5e1);
+        border: 1px dashed var(--j-color-border);
         border-radius: var(--j-radius-md, 0.5rem);
-        color: var(--j-color-muted-foreground, #64748b);
+        color: var(--j-color-muted-foreground);
         display: grid;
         justify-items: center;
         padding: var(--j-spacing-6, 1.5rem);
@@ -522,11 +521,11 @@ interface JQueryRow {
         align-items: center;
         background: color-mix(
           in srgb,
-          var(--j-query-builder-error, var(--j-color-danger, #dc2626)) 10%,
+          var(--j-query-builder-error, var(--j-color-danger)) 10%,
           transparent
         );
         border-radius: var(--j-radius-md, 0.5rem);
-        color: var(--j-query-builder-error, var(--j-color-danger, #dc2626));
+        color: var(--j-query-builder-error, var(--j-color-danger));
         display: flex;
         gap: var(--j-spacing-2, 0.5rem);
         justify-content: space-between;
@@ -538,7 +537,7 @@ interface JQueryRow {
       }
 
       .j-query-builder--readonly .j-query-builder__condition {
-        background: var(--j-color-muted, #f8fafc);
+        background: var(--j-color-muted);
       }
 
       @media (max-width: 760px) {

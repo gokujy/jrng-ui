@@ -114,7 +114,7 @@ export class JAccordionContentComponent {}
   styles: [
     `
       .j-accordion-panel {
-        border-bottom: 1px solid var(--j-color-border, #dbe2ea);
+        border-bottom: 1px solid var(--j-color-border);
       }
 
       .j-accordion-panel:last-child {
@@ -127,9 +127,9 @@ export class JAccordionContentComponent {}
 
       .j-accordion-panel__button {
         align-items: center;
-        background: var(--j-color-surface, #ffffff);
+        background: var(--j-color-surface);
         border: 0;
-        color: var(--j-color-text, #111827);
+        color: var(--j-color-text);
         cursor: pointer;
         display: flex;
         font: inherit;
@@ -143,12 +143,12 @@ export class JAccordionContentComponent {}
 
       .j-accordion-panel__button:hover:not(:disabled),
       .j-accordion-panel.is-active .j-accordion-panel__button {
-        background: var(--j-color-muted, #f8fafc);
-        color: var(--j-color-primary, #4f46e5);
+        background: var(--j-color-muted);
+        color: var(--j-color-primary);
       }
 
       .j-accordion-panel__button:focus-visible {
-        box-shadow: inset var(--j-focus-ring, 0 0 0 3px rgb(79 70 229 / 24%));
+        box-shadow: inset var(--j-focus-ring);
         outline: none;
       }
 
@@ -162,15 +162,15 @@ export class JAccordionContentComponent {}
       }
 
       .j-accordion-panel__content {
-        background: var(--j-color-card, #ffffff);
-        border-top: 1px solid var(--j-color-border, #dbe2ea);
-        color: var(--j-color-muted-foreground, #64748b);
+        background: var(--j-color-card);
+        border-top: 1px solid var(--j-color-border);
+        color: var(--j-color-muted-foreground);
         line-height: 1.6;
         padding: var(--j-spacing-4, 1rem);
       }
 
       .j-accordion-panel--separated {
-        border: 1px solid var(--j-color-border, #dbe2ea);
+        border: 1px solid var(--j-color-border);
         border-radius: var(--j-radius-lg, 0.75rem);
         overflow: hidden;
       }
@@ -225,11 +225,11 @@ export class JAccordionPanelComponent {
   styles: [
     `
       .j-accordion {
-        background: var(--j-color-surface, #ffffff);
-        border: 1px solid var(--j-color-border, #dbe2ea);
+        background: var(--j-color-surface);
+        border: 1px solid var(--j-color-border);
         border-radius: var(--j-radius-lg, 0.75rem);
         box-shadow: var(--j-shadow-sm);
-        color: var(--j-color-text, #111827);
+        color: var(--j-color-text);
         overflow: hidden;
       }
 

@@ -37,9 +37,9 @@ import { JTableSkeletonColumn } from './table.types';
         animation: j-table-skeleton-pulse 1.2s ease-in-out infinite;
         background: linear-gradient(
           90deg,
-          var(--j-color-surface-muted, #f8fafc),
-          var(--j-color-surface-subtle, #eef2f7),
-          var(--j-color-surface-muted, #f8fafc)
+          var(--j-color-surface-muted),
+          var(--j-color-surface-subtle),
+          var(--j-color-surface-muted)
         );
         border-radius: var(--j-radius-sm, 0.375rem);
         display: block;

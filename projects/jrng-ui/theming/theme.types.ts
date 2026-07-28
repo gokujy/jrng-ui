@@ -1,8 +1,4 @@
-import {
-  JComponentThemeTokens,
-  JThemePresetSource,
-  JThemeTokens,
-} from './preset.types';
+import { JComponentThemeTokens, JThemePresetSource, JThemeTokens } from './preset.types';
 
 export type JThemeColorScheme = 'light' | 'dark' | 'system';
 export type JThemeTarget = 'document' | HTMLElement;

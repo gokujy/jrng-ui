@@ -116,10 +116,10 @@ export interface JFilterBarValue {
     `
       .j-filter-bar {
         align-items: end;
-        background: var(--j-filter-bar-bg, var(--j-color-card, #ffffff));
-        border: 1px solid var(--j-filter-bar-border-color, var(--j-color-border, #e2e8f0));
+        background: var(--j-filter-bar-bg, var(--j-color-card));
+        border: 1px solid var(--j-filter-bar-border-color, var(--j-color-border));
         border-radius: var(--j-filter-bar-radius, var(--j-radius-lg, 0.75rem));
-        color: var(--j-filter-bar-color, var(--j-color-card-foreground, #111827));
+        color: var(--j-filter-bar-color, var(--j-color-card-foreground));
         display: grid;
         gap: var(--j-spacing-3, 0.75rem);
         grid-template-columns: minmax(14rem, 1.5fr) repeat(3, minmax(9rem, 1fr));
@@ -138,17 +138,17 @@ export interface JFilterBarValue {
 
       .j-filter-bar__search span,
       .j-filter-bar__field span {
-        color: var(--j-filter-bar-label-color, var(--j-color-muted-foreground, #64748b));
+        color: var(--j-filter-bar-label-color, var(--j-color-muted-foreground));
         font-size: var(--j-font-size-xs, 0.75rem);
         font-weight: var(--j-font-weight-semibold, 600);
       }
 
       .j-filter-bar input,
       .j-filter-bar select {
-        background: var(--j-filter-bar-control-bg, var(--j-color-card, #ffffff));
-        border: 1px solid var(--j-filter-bar-control-border-color, var(--j-color-border, #e2e8f0));
+        background: var(--j-filter-bar-control-bg, var(--j-color-card));
+        border: 1px solid var(--j-filter-bar-control-border-color, var(--j-color-border));
         border-radius: var(--j-radius-md, 0.5rem);
-        color: var(--j-filter-bar-control-color, var(--j-color-foreground, #111827));
+        color: var(--j-filter-bar-control-color, var(--j-color-foreground));
         font: inherit;
         min-height: 2.5rem;
         padding: 0 var(--j-spacing-3, 0.75rem);
@@ -168,10 +168,10 @@ export interface JFilterBarValue {
       }
 
       .j-filter-bar__button {
-        background: var(--j-filter-bar-button-bg, var(--j-color-card, #ffffff));
-        border: 1px solid var(--j-filter-bar-button-border-color, var(--j-color-border, #e2e8f0));
+        background: var(--j-filter-bar-button-bg, var(--j-color-card));
+        border: 1px solid var(--j-filter-bar-button-border-color, var(--j-color-border));
         border-radius: var(--j-radius-md, 0.5rem);
-        color: var(--j-filter-bar-button-color, var(--j-color-foreground, #111827));
+        color: var(--j-filter-bar-button-color, var(--j-color-foreground));
         cursor: pointer;
         font: inherit;
         min-height: 2.5rem;
@@ -179,13 +179,13 @@ export interface JFilterBarValue {
       }
 
       .j-filter-bar__button--primary {
-        background: var(--j-filter-bar-primary-bg, var(--j-color-primary, #2563eb));
-        border-color: var(--j-filter-bar-primary-bg, var(--j-color-primary, #2563eb));
-        color: var(--j-filter-bar-primary-color, var(--j-color-primary-foreground, #ffffff));
+        background: var(--j-filter-bar-primary-bg, var(--j-color-primary));
+        border-color: var(--j-filter-bar-primary-bg, var(--j-color-primary));
+        color: var(--j-filter-bar-primary-color, var(--j-color-primary-foreground));
       }
 
       .j-filter-bar__advanced {
-        border-top: 1px solid var(--j-color-border, #e2e8f0);
+        border-top: 1px solid var(--j-color-border);
         grid-column: 1 / -1;
         padding-top: var(--j-spacing-3, 0.75rem);
       }

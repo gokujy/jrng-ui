@@ -141,11 +141,11 @@ export class JTabComponent {
   styles: [
     `
       .j-tabs {
-        color: var(--j-color-text, #111827);
+        color: var(--j-color-text);
       }
 
       .j-tabs__list {
-        border-bottom: 1px solid var(--j-color-border, #dbe2ea);
+        border-bottom: 1px solid var(--j-color-border);
         display: flex;
         gap: var(--j-spacing-xs, 0.25rem);
         overflow-x: hidden;
@@ -160,7 +160,7 @@ export class JTabComponent {
         background: transparent;
         border: 0;
         border-bottom: 2px solid transparent;
-        color: var(--j-color-text-muted, #64748b);
+        color: var(--j-color-text-muted);
         cursor: pointer;
         display: inline-flex;
         font: inherit;
@@ -176,8 +176,8 @@ export class JTabComponent {
       }
 
       .j-tabs__tab.is-active {
-        border-bottom-color: var(--j-color-primary, #4f46e5);
-        color: var(--j-color-primary, #4f46e5);
+        border-bottom-color: var(--j-color-primary);
+        color: var(--j-color-primary);
       }
 
       .j-tabs__tab:disabled {
@@ -187,7 +187,7 @@ export class JTabComponent {
 
       .j-tabs__tab:focus-visible,
       .j-tabs__close:focus-visible {
-        box-shadow: var(--j-focus-ring, 0 0 0 3px rgb(79 70 229 / 24%));
+        box-shadow: var(--j-focus-ring);
         outline: none;
       }
 
@@ -214,12 +214,12 @@ export class JTabComponent {
       }
 
       .j-tabs--pills .j-tabs__tab.is-active {
-        background: var(--j-color-primary, #4f46e5);
-        color: var(--j-color-on-primary, #ffffff);
+        background: var(--j-color-primary);
+        color: var(--j-color-on-primary);
       }
 
       .j-tabs--segmented .j-tabs__list {
-        background: var(--j-color-surface-subtle, #eef2f7);
+        background: var(--j-color-surface-subtle);
         border: 0;
         border-radius: var(--j-radius-lg, 0.75rem);
         gap: var(--j-spacing-2xs, 0.125rem);
@@ -233,9 +233,9 @@ export class JTabComponent {
       }
 
       .j-tabs--segmented .j-tabs__tab.is-active {
-        background: var(--j-color-surface, #ffffff);
+        background: var(--j-color-surface);
         box-shadow: var(--j-shadow-sm);
-        color: var(--j-color-text, #111827);
+        color: var(--j-color-text);
       }
 
       .j-tabs:has(.j-tabs__list[aria-orientation='vertical']) {
@@ -247,7 +247,7 @@ export class JTabComponent {
       .j-tabs__list[aria-orientation='vertical'] {
         align-items: stretch;
         border-bottom: 0;
-        border-inline-end: 1px solid var(--j-color-border, #dbe2ea);
+        border-inline-end: 1px solid var(--j-color-border);
         flex-direction: column;
       }
 
@@ -263,7 +263,7 @@ export class JTabComponent {
         }
 
         .j-tabs__list[aria-orientation='vertical'] {
-          border-bottom: 1px solid var(--j-color-border, #dbe2ea);
+          border-bottom: 1px solid var(--j-color-border);
           border-inline-end: 0;
           flex-direction: row;
           overflow-x: auto;

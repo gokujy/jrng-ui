@@ -80,7 +80,7 @@ import { ChangeDetectionStrategy, Component, input, model } from '@angular/core'
         }
 
         .j-responsive-sidebar__mask {
-          background: rgb(15 23 42 / 48%);
+          background: var(--j-overlay-backdrop-bg);
           display: block;
           inset: 0;
           position: fixed;

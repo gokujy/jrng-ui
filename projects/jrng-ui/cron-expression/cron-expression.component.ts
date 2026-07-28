@@ -151,10 +151,10 @@ import {
       }
 
       .j-cron-expression {
-        background: var(--j-cron-bg, var(--j-color-card, #fff));
-        border: 1px solid var(--j-cron-border, var(--j-color-border, #e2e8f0));
+        background: var(--j-cron-bg, var(--j-color-card));
+        border: 1px solid var(--j-cron-border, var(--j-color-border));
         border-radius: var(--j-cron-radius, var(--j-radius-lg, 0.75rem));
-        color: var(--j-cron-color, var(--j-color-card-foreground, #111827));
+        color: var(--j-cron-color, var(--j-color-card-foreground));
         display: grid;
         gap: var(--j-spacing-4, 1rem);
         padding: var(--j-spacing-4, 1rem);
@@ -170,7 +170,7 @@ import {
       }
 
       .j-cron-expression__header p {
-        color: var(--j-color-muted-foreground, #64748b);
+        color: var(--j-color-muted-foreground);
         margin: var(--j-spacing-1, 0.25rem) 0 0;
       }
 
@@ -181,8 +181,8 @@ import {
       }
 
       .j-cron-expression input {
-        background: var(--j-cron-control-bg, var(--j-color-card, #fff));
-        border: 1px solid var(--j-cron-control-border, var(--j-color-border, #cbd5e1));
+        background: var(--j-cron-control-bg, var(--j-color-card));
+        border: 1px solid var(--j-cron-control-border, var(--j-color-border));
         border-radius: var(--j-radius-md, 0.5rem);
         color: inherit;
         font: var(--j-cron-font, 500 0.95rem/1.4 ui-monospace, monospace);
@@ -197,11 +197,11 @@ import {
       }
 
       .j-cron-expression small {
-        color: var(--j-color-muted-foreground, #64748b);
+        color: var(--j-color-muted-foreground);
       }
 
       .j-cron-expression__structured {
-        border: 1px solid var(--j-color-border, #e2e8f0);
+        border: 1px solid var(--j-color-border);
         border-radius: var(--j-radius-md, 0.5rem);
         margin: 0;
         min-width: 0;
@@ -216,7 +216,7 @@ import {
 
       .j-cron-expression__field-error,
       .j-cron-expression__errors {
-        color: var(--j-cron-error, var(--j-color-danger, #dc2626));
+        color: var(--j-cron-error, var(--j-color-danger));
       }
 
       .j-cron-expression__field-error {
@@ -225,7 +225,7 @@ import {
 
       .j-cron-expression__errors,
       .j-cron-expression__preview {
-        background: var(--j-cron-preview-bg, var(--j-color-muted, #f1f5f9));
+        background: var(--j-cron-preview-bg, var(--j-color-muted));
         border-radius: var(--j-radius-md, 0.5rem);
         display: grid;
         gap: var(--j-spacing-2, 0.5rem);
@@ -239,7 +239,7 @@ import {
       }
 
       .j-cron-expression--invalid {
-        border-color: var(--j-cron-error, var(--j-color-danger, #dc2626));
+        border-color: var(--j-cron-error, var(--j-color-danger));
       }
 
       .j-cron-expression--disabled {

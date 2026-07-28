@@ -267,7 +267,7 @@ export interface JMenuItemTemplateContext {
         font-size: var(--j-font-size-xs);
       }
       .j-menu__item--destructive .j-menu__button {
-        color: var(--j-color-danger, #dc2626);
+        color: var(--j-color-danger);
       }
 
       .j-menu__separator {

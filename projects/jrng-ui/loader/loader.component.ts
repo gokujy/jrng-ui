@@ -76,7 +76,7 @@ const LOADER_VARIANTS: readonly JLoaderVariant[] = [
       .j-loader {
         --j-loader-duration: 900ms;
         align-items: center;
-        color: var(--j-loader-color, var(--j-color-primary, #2563eb));
+        color: var(--j-loader-color, var(--j-color-primary));
         display: inline-flex;
         justify-content: center;
         position: relative;
@@ -89,7 +89,7 @@ const LOADER_VARIANTS: readonly JLoaderVariant[] = [
 
       .j-loader--overlay,
       .j-loader--fullscreen {
-        background: color-mix(in srgb, var(--j-color-background, #fff) 82%, transparent);
+        background: color-mix(in srgb, var(--j-color-background) 82%, transparent);
         inset: 0;
         position: absolute;
         width: auto !important;
@@ -158,7 +158,7 @@ const LOADER_VARIANTS: readonly JLoaderVariant[] = [
       }
 
       .j-loader--typing .j-loader__visual {
-        background: var(--j-color-surface-subtle, #eef2f7);
+        background: var(--j-color-surface-subtle);
         border-radius: var(--j-radius-full, 999px);
         padding-inline: var(--j-spacing-sm, 0.5rem);
       }

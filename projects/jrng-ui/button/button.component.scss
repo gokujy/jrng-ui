@@ -14,7 +14,7 @@
   display: inline-flex;
   font: inherit;
   font-size: var(--j-font-size-sm);
-  font-weight: var(--j-font-weight-semibold);
+  font-weight: var(--j-button-font-weight);
   gap: var(--j-spacing-sm);
   justify-content: center;
   letter-spacing: 0;
@@ -59,7 +59,7 @@
 
 .j-button--xl {
   font-size: var(--j-font-size-md);
-  min-height: 3rem;
+  min-height: var(--j-button-height-lg);
   padding: 0 var(--j-spacing-xl);
 }
 
@@ -132,10 +132,10 @@
 }
 
 .j-button--contrast {
-  --j-button-color: var(--j-color-foreground, #111827);
-  --j-button-color-hover: var(--j-color-text, #0f172a);
-  --j-button-color-text: var(--j-color-background, #ffffff);
-  --j-button-soft: var(--j-color-surface-subtle, #eef2f7);
+  --j-button-color: var(--j-color-contrast);
+  --j-button-color-hover: var(--j-color-foreground);
+  --j-button-color-text: var(--j-color-contrast-foreground);
+  --j-button-soft: var(--j-color-contrast-soft);
 }
 
 .j-button--solid {
@@ -203,7 +203,7 @@
 
 .j-button__badge {
   align-items: center;
-  background: var(--j-button-badge-bg, var(--j-color-card, #ffffff));
+  background: var(--j-button-badge-bg, var(--j-color-card));
   border-radius: var(--j-radius-full);
   color: var(--j-button-badge-color, var(--j-button-color));
   display: inline-flex;

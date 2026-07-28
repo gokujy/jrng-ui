@@ -102,7 +102,7 @@ import {
       }
 
       .j-barcode__value {
-        color: var(--j-barcode-text, var(--j-color-foreground, #111827));
+        color: var(--j-barcode-text, var(--j-color-foreground));
         font: var(--j-barcode-caption-font, 500 0.875rem/1.4 ui-monospace, monospace);
         overflow-wrap: anywhere;
         text-align: center;
@@ -115,9 +115,9 @@ import {
       }
 
       .j-barcode__issues {
-        background: var(--j-barcode-invalid-bg, var(--j-color-muted, #f1f5f9));
+        background: var(--j-barcode-invalid-bg, var(--j-color-muted));
         border-radius: var(--j-radius-md, 0.5rem);
-        color: var(--j-barcode-invalid, var(--j-color-danger, #b91c1c));
+        color: var(--j-barcode-invalid, var(--j-color-danger));
         display: grid;
         font-size: var(--j-font-size-sm, 0.875rem);
         gap: var(--j-spacing-1, 0.25rem);
@@ -126,7 +126,7 @@ import {
       }
 
       .j-barcode--invalid {
-        border: 1px solid var(--j-barcode-invalid, var(--j-color-danger, #b91c1c));
+        border: 1px solid var(--j-barcode-invalid, var(--j-color-danger));
         border-radius: var(--j-radius-md, 0.5rem);
         padding: var(--j-spacing-2, 0.5rem);
       }

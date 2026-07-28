@@ -260,10 +260,10 @@ const DEFAULT_OPERATORS: Readonly<Record<JTableFilterType, readonly JTableFilter
 
       .j-column-filter__control,
       .j-column-filter__operator {
-        background: var(--j-color-surface, #ffffff);
-        border: 1px solid var(--j-color-border, #dbe2ea);
+        background: var(--j-color-surface);
+        border: 1px solid var(--j-color-border);
         border-radius: var(--j-radius-sm, 0.375rem);
-        color: var(--j-color-text, #111827);
+        color: var(--j-color-text);
         font: inherit;
         min-height: 2rem;
         padding: 0 var(--j-spacing-sm, 0.5rem);
@@ -283,7 +283,7 @@ const DEFAULT_OPERATORS: Readonly<Record<JTableFilterType, readonly JTableFilter
 
       .j-column-filter__control:focus-visible,
       .j-column-filter__operator:focus-visible {
-        box-shadow: var(--j-focus-ring, 0 0 0 3px rgb(79 70 229 / 24%));
+        box-shadow: var(--j-focus-ring);
         outline: none;
       }
     `,

@@ -41,10 +41,10 @@ export interface JStatusChipColor {
     `
       .j-status-chip {
         align-items: center;
-        background: var(--j-status-chip-bg, var(--j-color-muted, #f1f5f9));
+        background: var(--j-status-chip-bg, var(--j-color-muted));
         border: 1px solid var(--j-status-chip-border, transparent);
         border-radius: var(--j-radius-full, 999px);
-        color: var(--j-status-chip-color, var(--j-color-foreground, #111827));
+        color: var(--j-status-chip-color, var(--j-color-foreground));
         display: inline-flex;
         font-weight: var(--j-font-weight-semibold, 650);
         gap: var(--j-spacing-sm, 0.5rem);
@@ -77,45 +77,45 @@ export interface JStatusChipColor {
       }
 
       .j-status-chip--primary {
-        --j-status-chip-bg: var(--j-color-primary-soft, #eef2ff);
+        --j-status-chip-bg: var(--j-color-primary-soft);
         --j-status-chip-border: transparent;
-        --j-status-chip-color: var(--j-color-primary, #4f46e5);
+        --j-status-chip-color: var(--j-color-primary);
       }
 
       .j-status-chip--secondary {
-        --j-status-chip-bg: var(--j-color-secondary-soft, #dbeafe);
+        --j-status-chip-bg: var(--j-color-secondary-soft);
         --j-status-chip-border: transparent;
-        --j-status-chip-color: var(--j-color-secondary, #2563eb);
+        --j-status-chip-color: var(--j-color-secondary);
       }
 
       .j-status-chip--success {
-        --j-status-chip-bg: var(--j-color-success-soft, #dcfce7);
+        --j-status-chip-bg: var(--j-color-success-soft);
         --j-status-chip-border: transparent;
-        --j-status-chip-color: var(--j-color-success, #16a34a);
+        --j-status-chip-color: var(--j-color-success);
       }
 
       .j-status-chip--warning {
-        --j-status-chip-bg: var(--j-color-warning-soft, #fef3c7);
+        --j-status-chip-bg: var(--j-color-warning-soft);
         --j-status-chip-border: transparent;
-        --j-status-chip-color: var(--j-color-warning, #d97706);
+        --j-status-chip-color: var(--j-color-warning);
       }
 
       .j-status-chip--danger {
-        --j-status-chip-bg: var(--j-color-danger-soft, #fee2e2);
+        --j-status-chip-bg: var(--j-color-danger-soft);
         --j-status-chip-border: transparent;
-        --j-status-chip-color: var(--j-color-danger, #dc2626);
+        --j-status-chip-color: var(--j-color-danger);
       }
 
       .j-status-chip--info {
-        --j-status-chip-bg: var(--j-color-info-soft, #e0f2fe);
+        --j-status-chip-bg: var(--j-color-info-soft);
         --j-status-chip-border: transparent;
-        --j-status-chip-color: var(--j-color-info, #0284c7);
+        --j-status-chip-color: var(--j-color-info);
       }
 
       .j-status-chip--neutral {
-        --j-status-chip-bg: var(--j-color-surface-subtle, #eef2f7);
-        --j-status-chip-border: var(--j-color-border, #dbe2ea);
-        --j-status-chip-color: var(--j-color-text, #111827);
+        --j-status-chip-bg: var(--j-color-surface-subtle);
+        --j-status-chip-border: var(--j-color-border);
+        --j-status-chip-color: var(--j-color-text);
       }
     `,
   ],

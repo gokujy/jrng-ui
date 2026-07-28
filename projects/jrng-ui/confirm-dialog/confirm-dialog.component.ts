@@ -83,10 +83,7 @@ import { JButtonComponent } from 'jrng-ui/button';
     `
       .j-confirm-dialog__backdrop {
         align-items: center;
-        background: var(
-          --j-confirm-dialog-backdrop-bg,
-          var(--j-overlay-backdrop-bg, rgb(15 23 42 / 56%))
-        );
+        background: var(--j-confirm-dialog-backdrop-bg, var(--j-overlay-backdrop-bg));
         display: flex;
         inset: 0;
         justify-content: center;
@@ -95,11 +92,11 @@ import { JButtonComponent } from 'jrng-ui/button';
         z-index: var(--j-z-index-modal);
       }
       .j-confirm-dialog {
-        background: var(--j-confirm-dialog-bg, var(--j-color-card, #ffffff));
-        border: 1px solid var(--j-confirm-dialog-border-color, var(--j-color-border, #e2e8f0));
+        background: var(--j-confirm-dialog-bg, var(--j-color-card));
+        border: 1px solid var(--j-confirm-dialog-border-color, var(--j-color-border));
         border-radius: var(--j-confirm-dialog-radius, var(--j-radius-lg, 0.75rem));
         box-shadow: var(--j-confirm-dialog-shadow, var(--j-shadow-lg));
-        color: var(--j-confirm-dialog-color, var(--j-color-card-foreground, #111827));
+        color: var(--j-confirm-dialog-color, var(--j-color-card-foreground));
         max-width: 28rem;
         outline: none;
         overflow: hidden;
@@ -116,14 +113,10 @@ import { JButtonComponent } from 'jrng-ui/button';
         align-items: center;
         background: var(
           --j-confirm-dialog-icon-bg,
-          color-mix(
-            in srgb,
-            var(--j-confirm-dialog-accent, var(--j-color-info, #0284c7)) 12%,
-            transparent
-          )
+          color-mix(in srgb, var(--j-confirm-dialog-accent, var(--j-color-info)) 12%, transparent)
         );
         border-radius: var(--j-radius-full, 999px);
-        color: var(--j-confirm-dialog-accent, var(--j-color-info, #0284c7));
+        color: var(--j-confirm-dialog-accent, var(--j-color-info));
         display: inline-flex;
         flex: 0 0 auto;
         height: 2rem;
@@ -139,13 +132,13 @@ import { JButtonComponent } from 'jrng-ui/button';
         line-height: 1.35;
       }
       .j-confirm-dialog__message {
-        color: var(--j-confirm-dialog-message-color, var(--j-color-muted-foreground, #64748b));
+        color: var(--j-confirm-dialog-message-color, var(--j-color-muted-foreground));
         line-height: var(--j-line-height-normal, 1.5);
         padding: 0 var(--j-spacing-lg, 1.5rem) var(--j-spacing-lg, 1.5rem);
       }
       .j-confirm-dialog__footer {
-        background: var(--j-color-muted, #f8fafc);
-        border-top: 1px solid var(--j-color-border, #e2e8f0);
+        background: var(--j-color-muted);
+        border-top: 1px solid var(--j-color-border);
         display: flex;
         flex-wrap: wrap;
         gap: var(--j-spacing-sm, 0.5rem);
@@ -163,33 +156,33 @@ import { JButtonComponent } from 'jrng-ui/button';
       .j-confirm-dialog__button--accept {
         background: var(
           --j-confirm-dialog-accept-bg,
-          var(--j-confirm-dialog-accent, var(--j-color-primary, #2563eb))
+          var(--j-confirm-dialog-accent, var(--j-color-primary))
         );
         border-color: var(
           --j-confirm-dialog-accept-bg,
-          var(--j-confirm-dialog-accent, var(--j-color-primary, #2563eb))
+          var(--j-confirm-dialog-accent, var(--j-color-primary))
         );
-        color: var(--j-confirm-dialog-accept-color, var(--j-color-primary-foreground, #ffffff));
+        color: var(--j-confirm-dialog-accept-color, var(--j-color-primary-foreground));
       }
       .j-confirm-dialog__button--reject {
-        background: var(--j-confirm-dialog-cancel-bg, var(--j-color-card, #ffffff));
-        color: var(--j-confirm-dialog-cancel-color, var(--j-color-foreground, #111827));
+        background: var(--j-confirm-dialog-cancel-bg, var(--j-color-card));
+        color: var(--j-confirm-dialog-cancel-color, var(--j-color-foreground));
       }
       .j-confirm-dialog__button:focus-visible {
         box-shadow: var(--j-focus-ring);
         outline: none;
       }
       .j-confirm-dialog--success {
-        --j-confirm-dialog-accent: var(--j-color-success, #16a34a);
+        --j-confirm-dialog-accent: var(--j-color-success);
       }
       .j-confirm-dialog--warning {
-        --j-confirm-dialog-accent: var(--j-color-warning, #d97706);
+        --j-confirm-dialog-accent: var(--j-color-warning);
       }
       .j-confirm-dialog--danger {
-        --j-confirm-dialog-accent: var(--j-color-danger, #dc2626);
+        --j-confirm-dialog-accent: var(--j-color-danger);
       }
       .j-confirm-dialog--info {
-        --j-confirm-dialog-accent: var(--j-color-info, #0284c7);
+        --j-confirm-dialog-accent: var(--j-color-info);
       }
     `,
   ],

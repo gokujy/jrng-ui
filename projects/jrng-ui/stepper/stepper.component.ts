@@ -84,10 +84,10 @@ export type JStepperVariant = 'default' | 'rail' | 'progress';
 
       .j-stepper__step {
         align-items: center;
-        background: var(--j-color-surface, #ffffff);
-        border: 1px solid var(--j-color-border, #dbe2ea);
+        background: var(--j-color-surface);
+        border: 1px solid var(--j-color-border);
         border-radius: var(--j-radius-md, 0.5rem);
-        color: var(--j-color-text, #111827);
+        color: var(--j-color-text);
         cursor: pointer;
         display: inline-flex;
         flex: 1 1 0;
@@ -105,9 +105,9 @@ export type JStepperVariant = 'default' | 'rail' | 'progress';
       }
 
       .j-stepper__step.is-active {
-        background: color-mix(in srgb, var(--j-color-primary) 5%, var(--j-color-surface, #ffffff));
-        border-color: var(--j-color-primary, #4f46e5);
-        box-shadow: inset 0 0 0 1px var(--j-color-primary, #4f46e5);
+        background: color-mix(in srgb, var(--j-color-primary) 5%, var(--j-color-surface));
+        border-color: var(--j-color-primary);
+        box-shadow: inset 0 0 0 1px var(--j-color-primary);
       }
 
       .j-stepper__step:not(:disabled):hover {
@@ -116,7 +116,7 @@ export type JStepperVariant = 'default' | 'rail' | 'progress';
       }
 
       .j-stepper__step.is-error {
-        background: color-mix(in srgb, var(--j-color-danger) 5%, var(--j-color-surface, #ffffff));
+        background: color-mix(in srgb, var(--j-color-danger) 5%, var(--j-color-surface));
         border-color: var(--j-color-danger);
       }
 
@@ -126,13 +126,13 @@ export type JStepperVariant = 'default' | 'rail' | 'progress';
       }
 
       .j-stepper__step:focus-visible {
-        box-shadow: var(--j-focus-ring, 0 0 0 3px rgb(79 70 229 / 24%));
+        box-shadow: var(--j-focus-ring);
         outline: none;
       }
 
       .j-stepper__marker {
         align-items: center;
-        background: var(--j-color-surface-subtle, #eef2f7);
+        background: var(--j-color-surface-subtle);
         border-radius: var(--j-radius-full, 999px);
         display: inline-flex;
         flex: 0 0 2rem;
@@ -152,13 +152,13 @@ export type JStepperVariant = 'default' | 'rail' | 'progress';
 
       .j-stepper__step.is-active .j-stepper__marker,
       .j-stepper__step.is-completed .j-stepper__marker {
-        background: var(--j-color-primary, #4f46e5);
-        color: var(--j-color-on-primary, #ffffff);
+        background: var(--j-color-primary);
+        color: var(--j-color-on-primary);
       }
 
       .j-stepper__step.is-error .j-stepper__marker {
         background: var(--j-color-danger);
-        color: var(--j-color-danger-foreground, #ffffff);
+        color: var(--j-color-danger-foreground);
       }
 
       .j-stepper__text {
@@ -174,7 +174,7 @@ export type JStepperVariant = 'default' | 'rail' | 'progress';
       }
 
       .j-stepper__text small {
-        color: var(--j-color-text-muted, #64748b);
+        color: var(--j-color-text-muted);
       }
 
       .j-stepper--rail {
@@ -207,7 +207,7 @@ export type JStepperVariant = 'default' | 'rail' | 'progress';
       }
 
       .j-stepper--rail .j-stepper__step:not(:last-child)::after {
-        background: var(--j-color-border, #dbe2ea);
+        background: var(--j-color-border);
         content: '';
         height: 2px;
         inset-inline-start: calc(50% + 1rem);
@@ -218,7 +218,7 @@ export type JStepperVariant = 'default' | 'rail' | 'progress';
       }
 
       .j-stepper--rail .j-stepper__step.is-completed:not(:last-child)::after {
-        background: var(--j-color-primary, #4f46e5);
+        background: var(--j-color-primary);
       }
 
       .j-stepper--rail .j-stepper__marker {
@@ -227,7 +227,7 @@ export type JStepperVariant = 'default' | 'rail' | 'progress';
       }
 
       .j-stepper--progress {
-        background: var(--j-color-surface-subtle, #eef2f7);
+        background: var(--j-color-surface-subtle);
         border-radius: var(--j-radius-lg, 0.75rem);
         gap: var(--j-spacing-2xs, 0.125rem);
         padding: var(--j-spacing-xs, 0.25rem);
@@ -243,7 +243,7 @@ export type JStepperVariant = 'default' | 'rail' | 'progress';
       }
 
       .j-stepper--progress .j-stepper__step.is-active {
-        background: var(--j-color-surface, #ffffff);
+        background: var(--j-color-surface);
         box-shadow:
           var(--j-shadow-sm),
           inset 0 0 0 1px color-mix(in srgb, var(--j-color-primary) 16%, transparent);

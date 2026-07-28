@@ -132,7 +132,7 @@ export type JSkeletonVariant = 'rectangle' | 'text' | 'avatar' | 'button' | 'car
         background: linear-gradient(
           90deg,
           transparent,
-          var(--j-skeleton-shimmer-color, rgb(255 255 255 / 42%)),
+          var(--j-skeleton-shimmer-color),
           transparent
         );
         content: '';

@@ -16,7 +16,7 @@
 }
 
 .j-dialog__backdrop.is-modal {
-  background: var(--j-overlay-backdrop-bg, rgb(15 23 42 / 56%));
+  background: var(--j-overlay-backdrop-bg);
 }
 
 .j-dialog__backdrop--center {
@@ -127,7 +127,7 @@
 .j-dialog__header,
 .j-dialog__body,
 .j-dialog__footer {
-  padding: var(--j-spacing-lg);
+  padding: var(--j-dialog-padding);
 }
 
 .j-dialog__header {

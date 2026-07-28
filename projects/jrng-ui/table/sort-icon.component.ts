@@ -11,14 +11,14 @@ import { JTableSortOrder } from 'jrng-ui/core';
   styles: [
     `
       .j-sort-icon {
-        color: var(--j-color-text-soft, #94a3b8);
+        color: var(--j-color-text-soft);
         display: inline-flex;
         font-size: var(--j-font-size-xs, 0.75rem);
         line-height: 1;
       }
 
       .j-sort-icon.is-active {
-        color: var(--j-color-primary, #4f46e5);
+        color: var(--j-color-primary);
       }
     `,
   ],

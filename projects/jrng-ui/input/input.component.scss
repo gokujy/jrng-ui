@@ -1,12 +1,12 @@
 :host {
-  color: var(--j-input-text-color, var(--j-color-text, #111827));
+  color: var(--j-input-text-color, var(--j-color-text));
   display: block;
   font: inherit;
 }
 
 .j-input__label {
   align-items: center;
-  color: var(--j-input-label-color, var(--j-input-text-color, var(--j-color-text, #111827)));
+  color: var(--j-input-label-color, var(--j-input-text-color, var(--j-color-text)));
   display: inline-flex;
   font-size: var(--j-font-size-sm);
   font-weight: var(--j-font-weight-semibold);
@@ -16,14 +16,13 @@
 
 .j-input__required,
 .j-input__message--error {
-  color: var(--j-input-error-color, var(--j-color-danger, #dc2626));
+  color: var(--j-input-error-color, var(--j-color-danger));
 }
 
 .j-input {
   align-items: center;
-  background: var(--j-input-bg, var(--j-control-bg, var(--j-color-card, #ffffff)));
-  border: 1px solid
-    var(--j-input-border-color, var(--j-control-border-color, var(--j-color-input, #d8e0ea)));
+  background: var(--j-input-bg, var(--j-control-bg, var(--j-color-card)));
+  border: 1px solid var(--j-input-border-color, var(--j-control-border-color, var(--j-color-input)));
   border-radius: var(--j-input-radius, var(--j-control-radius, var(--j-radius-md, 0.5rem)));
   display: flex;
   gap: var(--j-spacing-sm);
@@ -32,7 +31,7 @@
 }
 
 .j-input--filled {
-  background: var(--j-input-filled-bg, var(--j-color-surface-muted, var(--j-color-muted, #f1f5f9)));
+  background: var(--j-input-filled-bg, var(--j-color-surface-muted, var(--j-color-muted)));
 }
 
 .j-input--sm {
@@ -52,27 +51,27 @@
 }
 
 .j-input:focus-within {
-  border-color: var(--j-input-focus-border-color, var(--j-color-primary, #4f46e5));
-  box-shadow: 0 0 0 3px var(--j-input-focus-shadow-color, var(--j-color-ring, rgb(79 70 229 / 28%)));
+  border-color: var(--j-input-focus-border-color);
+  box-shadow: var(--j-control-focus-ring);
 }
 
 .j-input:not(.is-disabled, .is-readonly):hover {
-  border-color: var(--j-input-hover-border-color, var(--j-color-border-strong, #cbd5e1));
+  border-color: var(--j-input-hover-border-color, var(--j-color-border-strong));
 }
 
 .j-input.is-invalid {
-  border-color: var(--j-input-error-color, var(--j-color-danger, #dc2626));
+  border-color: var(--j-input-error-color, var(--j-color-danger));
 }
 
 .j-input.is-disabled {
-  background: var(--j-input-disabled-bg, var(--j-color-surface-subtle, #f1f5f9));
+  background: var(--j-input-disabled-bg, var(--j-color-surface-subtle));
   opacity: var(--j-disabled-opacity);
 }
 
 .j-input.is-readonly {
   background: var(
     --j-input-readonly-bg,
-    var(--j-input-bg, var(--j-control-bg, var(--j-color-card, #ffffff)))
+    var(--j-input-bg, var(--j-control-bg, var(--j-color-card)))
   );
 }
 
@@ -81,7 +80,7 @@
   border: 0;
   color: var(
     --j-input-text-color,
-    var(--j-input-color, var(--j-control-color, var(--j-color-card-foreground, #111827)))
+    var(--j-input-color, var(--j-control-color, var(--j-color-card-foreground)))
   );
   flex: 1;
   font: inherit;
@@ -93,7 +92,7 @@
 .j-input__field::placeholder {
   color: var(
     --j-input-placeholder-color,
-    var(--j-control-placeholder-color, var(--j-color-muted-foreground, #64748b))
+    var(--j-control-placeholder-color, var(--j-color-muted-foreground))
   );
 }
 
@@ -104,7 +103,7 @@
 
 .j-input__icon {
   align-items: center;
-  color: var(--j-input-icon-color, var(--j-color-text-muted, #64748b));
+  color: var(--j-input-icon-color, var(--j-color-text-muted));
   display: inline-flex;
   flex: 0 0 auto;
 }
@@ -118,7 +117,7 @@
   background: transparent;
   border: 0;
   border-radius: var(--j-radius-sm, 0.375rem);
-  color: var(--j-input-clear-color, var(--j-input-icon-color, var(--j-color-text-muted, #64748b)));
+  color: var(--j-input-clear-color, var(--j-input-icon-color, var(--j-color-text-muted)));
   cursor: pointer;
   display: inline-flex;
   font: inherit;
@@ -129,17 +128,17 @@
 }
 
 .j-input__clear:hover {
-  background: var(--j-input-clear-hover-bg, var(--j-color-muted, #f1f5f9));
-  color: var(--j-input-clear-hover-color, var(--j-input-text-color, var(--j-color-text, #111827)));
+  background: var(--j-input-clear-hover-bg, var(--j-color-muted));
+  color: var(--j-input-clear-hover-color, var(--j-input-text-color, var(--j-color-text)));
 }
 
 .j-input__clear:focus-visible {
-  box-shadow: 0 0 0 3px var(--j-input-focus-shadow-color, var(--j-color-ring, rgb(79 70 229 / 28%)));
+  box-shadow: var(--j-control-focus-ring);
   outline: none;
 }
 
 .j-input__message {
-  color: var(--j-input-helper-color, var(--j-color-text-muted, #64748b));
+  color: var(--j-input-helper-color, var(--j-color-text-muted));
   font-size: var(--j-font-size-xs);
   margin: var(--j-spacing-sm) 0 0;
 }

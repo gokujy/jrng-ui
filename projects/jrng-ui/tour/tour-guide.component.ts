@@ -96,7 +96,7 @@ import { JTourService } from './tour.service';
       }
       .j-tour-guide__spotlight {
         background: transparent;
-        box-shadow: 0 0 0 100vmax var(--j-tour-overlay, rgb(15 23 42 / 66%));
+        box-shadow: 0 0 0 100vmax var(--j-tour-overlay);
         pointer-events: none;
         position: fixed;
         transition:
@@ -109,11 +109,11 @@ import { JTourService } from './tour.service';
         pointer-events: none;
       }
       .j-tour-guide__popover {
-        background: var(--j-color-card, #fff);
-        border: 1px solid var(--j-color-border, #dbe2ea);
+        background: var(--j-color-card);
+        border: 1px solid var(--j-color-border);
         border-radius: var(--j-radius-lg, 0.75rem);
-        box-shadow: var(--j-shadow-xl, 0 20px 40px rgb(15 23 42 / 25%));
-        color: var(--j-color-text, #111827);
+        box-shadow: var(--j-shadow-lg);
+        color: var(--j-color-text);
         display: grid;
         gap: var(--j-spacing-md, 0.75rem);
         max-width: min(22rem, calc(100vw - 2rem));
@@ -142,19 +142,19 @@ import { JTourService } from './tour.service';
         margin: 0;
       }
       .j-tour-guide p {
-        color: var(--j-color-text-muted, #64748b);
+        color: var(--j-color-text-muted);
         line-height: 1.55;
         margin: 0;
         white-space: pre-line;
       }
       .j-tour-guide__heading span {
-        color: var(--j-color-text-muted, #64748b);
+        color: var(--j-color-text-muted);
         font-size: var(--j-font-size-xs, 0.75rem);
         white-space: nowrap;
       }
       .j-tour-guide__arrow {
-        background: var(--j-color-card, #fff);
-        border: solid var(--j-color-border, #dbe2ea);
+        background: var(--j-color-card);
+        border: solid var(--j-color-border);
         height: 0.75rem;
         position: absolute;
         transform: rotate(45deg);

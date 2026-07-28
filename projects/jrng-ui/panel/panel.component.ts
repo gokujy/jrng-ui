@@ -77,17 +77,17 @@ export type JPanelVariant = 'bordered' | 'borderless' | 'filled' | 'elevated';
   styles: [
     `
       .j-panel {
-        background: var(--j-color-surface, #fff);
-        border: 1px solid var(--j-color-border, #dbe2ea);
+        background: var(--j-color-surface);
+        border: 1px solid var(--j-color-border);
         border-radius: var(--j-radius-md, 0.5rem);
-        color: var(--j-color-text, #111827);
+        color: var(--j-color-text);
         overflow: hidden;
       }
       .j-panel--borderless {
         border: 0;
       }
       .j-panel--filled {
-        background: var(--j-color-surface-muted, #f8fafc);
+        background: var(--j-color-surface-muted);
       }
       .j-panel--elevated {
         border-color: transparent;
@@ -95,8 +95,8 @@ export type JPanelVariant = 'bordered' | 'borderless' | 'filled' | 'elevated';
       }
       .j-panel__header {
         align-items: center;
-        background: var(--j-color-surface-muted, #f8fafc);
-        border-bottom: 1px solid var(--j-color-border, #dbe2ea);
+        background: var(--j-color-surface-muted);
+        border-bottom: 1px solid var(--j-color-border);
         display: flex;
         justify-content: space-between;
         min-height: 3rem;
@@ -117,7 +117,7 @@ export type JPanelVariant = 'bordered' | 'borderless' | 'filled' | 'elevated';
         white-space: nowrap;
       }
       .j-panel__heading p {
-        color: var(--j-color-text-muted, #64748b);
+        color: var(--j-color-text-muted);
         font-size: var(--j-font-size-sm, 0.875rem);
         margin: 0.125rem 0 0;
       }

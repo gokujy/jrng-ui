@@ -23,16 +23,16 @@
 
 .j-select {
   align-items: center;
-  background: var(--j-color-surface);
-  border: 1px solid var(--j-color-border);
-  border-radius: var(--j-radius-md);
-  color: var(--j-color-text);
+  background: var(--j-select-bg);
+  border: 1px solid var(--j-select-border-color);
+  border-radius: var(--j-control-radius);
+  color: var(--j-select-color);
   cursor: pointer;
   display: flex;
   font: inherit;
   gap: var(--j-spacing-sm);
-  min-height: 2.5rem;
-  padding: 0 var(--j-spacing-md);
+  min-height: var(--j-control-height-md);
+  padding: 0 var(--j-control-padding-x-sm);
   text-align: start;
   transition: var(--j-transition-colors), var(--j-transition-shadow);
   width: 100%;
@@ -53,11 +53,11 @@
 }
 
 .j-select-field--sm .j-select {
-  min-height: 2.125rem;
+  min-height: var(--j-control-height-sm);
 }
 
 .j-select-field--lg .j-select {
-  min-height: 3rem;
+  min-height: var(--j-control-height-lg);
 }
 
 .j-select:focus-visible,
@@ -121,7 +121,7 @@
 .j-select__panel {
   background: var(--j-color-surface);
   border: 1px solid var(--j-color-border);
-  border-radius: var(--j-radius-md);
+  border-radius: var(--j-select-overlay-radius);
   box-shadow: var(--j-shadow-lg);
   inset-inline-start: 0;
   margin-block-start: var(--j-spacing-xs);
@@ -180,10 +180,11 @@
 
 .j-select__option:hover,
 .j-select__option.is-active {
-  background: var(--j-color-surface-muted);
+  background: var(--j-select-option-hover-bg);
 }
 
 .j-select__option.is-selected {
+  background: var(--j-select-option-selected-bg);
   color: var(--j-color-primary);
   font-weight: var(--j-font-weight-semibold);
 }

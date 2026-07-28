@@ -121,10 +121,10 @@ export type JAvatarGroupMode = 'stacked' | 'spaced';
 
       .j-avatar-group__item {
         align-items: center;
-        background: var(--j-color-surface-subtle, #eef2f7);
-        border: 2px solid var(--j-color-surface, #ffffff);
+        background: var(--j-color-surface-subtle);
+        border: 2px solid var(--j-color-surface);
         border-radius: var(--j-radius-full, 999px);
-        color: var(--j-color-text, #111827);
+        color: var(--j-color-text);
         display: inline-flex;
         font-weight: var(--j-font-weight-bold, 700);
         justify-content: center;

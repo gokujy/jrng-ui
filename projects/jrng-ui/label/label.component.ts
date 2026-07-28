@@ -67,7 +67,7 @@ export type JLabelDensity = 'compact' | 'normal';
       .j-label {
         display: grid;
         gap: var(--j-spacing-xs, 0.25rem);
-        color: var(--j-color-text, #111827);
+        color: var(--j-color-text);
       }
       .j-label__label {
         align-items: center;
@@ -78,20 +78,20 @@ export type JLabelDensity = 'compact' | 'normal';
       }
       .j-label__required,
       .j-label--error .j-label__message {
-        color: var(--j-color-danger, #dc2626);
+        color: var(--j-color-danger);
       }
       .j-label__optional,
       .j-label__description,
       .j-label__message {
-        color: var(--j-color-text-muted, #64748b);
+        color: var(--j-color-text-muted);
         font-size: var(--j-font-size-xs, 0.75rem);
         font-weight: 400;
       }
       .j-label--success .j-label__message {
-        color: var(--j-color-success, #15803d);
+        color: var(--j-color-success);
       }
       .j-label--warning .j-label__message {
-        color: var(--j-color-warning, #b45309);
+        color: var(--j-color-warning);
       }
       .j-label--inline {
         align-items: center;
@@ -107,7 +107,7 @@ export type JLabelDensity = 'compact' | 'normal';
       }
       .j-label--floating .j-label__label {
         align-self: center;
-        background: var(--j-color-surface, #fff);
+        background: var(--j-color-surface);
         grid-area: control;
         justify-self: start;
         margin-inline-start: var(--j-spacing-md, 0.75rem);
@@ -137,13 +137,13 @@ export type JLabelDensity = 'compact' | 'normal';
       }
       .j-label--floating.is-focused .j-label__label,
       .j-label--floating.is-filled .j-label__label {
-        color: var(--j-color-primary, #4f46e5);
+        color: var(--j-color-primary);
         padding-inline: var(--j-spacing-xs, 0.25rem);
         transform: translateY(calc(-50% - 1.25rem)) scale(0.86);
         transform-origin: left center;
       }
       .j-label--in-field {
-        border: 1px solid var(--j-color-border, #cbd5e1);
+        border: 1px solid var(--j-color-border);
         border-radius: var(--j-input-radius, 0.5rem);
         gap: 0;
         padding: var(--j-spacing-xs, 0.25rem) var(--j-spacing-md, 0.75rem)
@@ -153,11 +153,11 @@ export type JLabelDensity = 'compact' | 'normal';
           box-shadow var(--j-duration-fast, 150ms);
       }
       .j-label--in-field:focus-within {
-        border-color: var(--j-color-primary, #4f46e5);
-        box-shadow: var(--j-focus-ring, 0 0 0 3px rgb(79 70 229 / 20%));
+        border-color: var(--j-color-primary);
+        box-shadow: var(--j-focus-ring);
       }
       .j-label--in-field .j-label__label {
-        color: var(--j-color-text-muted, #64748b);
+        color: var(--j-color-text-muted);
         font-size: var(--j-font-size-xs, 0.75rem);
       }
       .j-label--in-field .j-label__control :is(input, textarea, select, [role='combobox']) {
@@ -176,13 +176,13 @@ export type JLabelDensity = 'compact' | 'normal';
         padding-block: var(--j-spacing-2xs, 0.125rem) var(--j-spacing-xs, 0.25rem);
       }
       .j-label--error.j-label--in-field {
-        border-color: var(--j-color-danger, #dc2626);
+        border-color: var(--j-color-danger);
       }
       .j-label--disabled {
         opacity: var(--j-disabled-opacity, 0.55);
       }
       .j-label--readonly.j-label--in-field {
-        background: var(--j-color-surface-subtle, #f8fafc);
+        background: var(--j-color-surface-subtle);
       }
     `,
   ],

@@ -564,7 +564,7 @@ export interface JDatePickerDayContext {
         background: var(--j-color-popover);
         border: 1px solid var(--j-color-border);
         border-radius: var(--j-radius-lg);
-        box-shadow: var(--j-shadow-lg, 0 18px 45px rgb(15 23 42 / 0.14));
+        box-shadow: var(--j-shadow-lg);
         color: var(--j-color-popover-foreground);
         margin-top: var(--j-spacing-2);
         padding: var(--j-spacing-3);

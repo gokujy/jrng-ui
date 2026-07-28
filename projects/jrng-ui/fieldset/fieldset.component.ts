@@ -56,7 +56,7 @@ export type JFieldsetLegendPosition = 'start' | 'center' | 'end';
   styles: [
     `
       .j-fieldset {
-        border: 1px solid var(--j-color-border, #dbe2ea);
+        border: 1px solid var(--j-color-border);
         border-radius: var(--j-radius-md, 0.5rem);
         padding: var(--j-spacing-lg, 1rem);
       }
@@ -64,7 +64,7 @@ export type JFieldsetLegendPosition = 'start' | 'center' | 'end';
         border: 0;
       }
       .j-fieldset--filled {
-        background: var(--j-color-surface-muted, #f8fafc);
+        background: var(--j-color-surface-muted);
       }
       .j-fieldset--elevated {
         border-color: transparent;
@@ -78,7 +78,7 @@ export type JFieldsetLegendPosition = 'start' | 'center' | 'end';
       }
       .j-fieldset__legend {
         align-items: center;
-        color: var(--j-color-text, #111827);
+        color: var(--j-color-text);
         display: flex;
         font-weight: var(--j-font-weight-semibold, 650);
         gap: var(--j-spacing-xs, 0.25rem);

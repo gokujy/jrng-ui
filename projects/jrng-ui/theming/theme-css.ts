@@ -8,9 +8,7 @@ export function jNormalizeThemeTokens(tokens: JThemeTokens = {}): JThemeTokens {
     Object.entries(tokens)
       .filter(
         (entry): entry is [JThemeTokenName, string] =>
-          TOKEN_NAME.test(entry[0]) &&
-          typeof entry[1] === 'string' &&
-          entry[1].trim().length > 0,
+          TOKEN_NAME.test(entry[0]) && typeof entry[1] === 'string' && entry[1].trim().length > 0,
       )
       .sort(([left], [right]) => left.localeCompare(right)),
   ) as JThemeTokens;

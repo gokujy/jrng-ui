@@ -107,8 +107,8 @@ export type JPaginatorVariant = 'standard' | 'simple';
     `
       .j-paginator {
         align-items: center;
-        background: var(--j-color-surface-muted, #f8fafc);
-        color: var(--j-color-text-muted, #64748b);
+        background: var(--j-color-surface-muted);
+        color: var(--j-color-text-muted);
         display: flex;
         flex-wrap: wrap;
         font-size: var(--j-font-size-sm, 0.875rem);
@@ -126,10 +126,10 @@ export type JPaginatorVariant = 'standard' | 'simple';
 
       .j-paginator__button,
       .j-paginator__rows select {
-        background: var(--j-color-surface, #ffffff);
-        border: 1px solid var(--j-color-border, #dbe2ea);
+        background: var(--j-color-surface);
+        border: 1px solid var(--j-color-border);
         border-radius: var(--j-radius-sm, 0.375rem);
-        color: var(--j-color-text, #111827);
+        color: var(--j-color-text);
         font: inherit;
         min-height: 2rem;
         padding: 0 var(--j-spacing-sm, 0.5rem);
@@ -144,8 +144,8 @@ export type JPaginatorVariant = 'standard' | 'simple';
       }
 
       .j-paginator--simple .j-paginator__controls {
-        background: var(--j-color-surface, #ffffff);
-        border: 1px solid var(--j-color-border, #dbe2ea);
+        background: var(--j-color-surface);
+        border: 1px solid var(--j-color-border);
         border-radius: var(--j-radius-full, 999px);
         padding: var(--j-spacing-xs, 0.25rem);
       }
@@ -157,7 +157,7 @@ export type JPaginatorVariant = 'standard' | 'simple';
       }
 
       .j-paginator--simple .j-paginator__page-count {
-        color: var(--j-color-text, #111827);
+        color: var(--j-color-text);
         display: inline-block;
         min-width: 6.5rem;
         text-align: center;
@@ -169,9 +169,9 @@ export type JPaginatorVariant = 'standard' | 'simple';
       }
 
       .j-paginator__button.is-active {
-        background: var(--j-color-primary, #4f46e5);
-        border-color: var(--j-color-primary, #4f46e5);
-        color: var(--j-color-on-primary, #ffffff);
+        background: var(--j-color-primary);
+        border-color: var(--j-color-primary);
+        color: var(--j-color-on-primary);
       }
 
       .j-paginator__button:disabled {
@@ -181,7 +181,7 @@ export type JPaginatorVariant = 'standard' | 'simple';
 
       .j-paginator__button:focus-visible,
       .j-paginator__rows select:focus-visible {
-        box-shadow: var(--j-focus-ring, 0 0 0 3px rgb(79 70 229 / 24%));
+        box-shadow: var(--j-focus-ring);
         outline: none;
       }
 

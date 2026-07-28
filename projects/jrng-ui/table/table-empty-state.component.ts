@@ -25,7 +25,7 @@ import { JTableEmptyState } from './table.types';
   styles: [
     `
       .j-table-empty-state {
-        color: var(--j-color-text-muted, #64748b);
+        color: var(--j-color-text-muted);
         display: grid;
         gap: var(--j-spacing-xs, 0.25rem);
         justify-items: center;
@@ -34,12 +34,12 @@ import { JTableEmptyState } from './table.types';
       }
 
       .j-table-empty-state strong {
-        color: var(--j-color-text, #111827);
+        color: var(--j-color-text);
         font-size: var(--j-font-size-sm, 0.875rem);
       }
 
       .j-table-empty-state__icon {
-        color: var(--j-color-muted-foreground, #64748b);
+        color: var(--j-color-muted-foreground);
         font-size: 1.5rem;
       }
 

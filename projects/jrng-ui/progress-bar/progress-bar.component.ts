@@ -106,7 +106,7 @@ export type JProgressBarVariant = 'default' | 'segmented' | 'labeled';
       }
 
       .j-progress-bar--labeled .j-progress-bar__value {
-        color: var(--j-color-text, #111827);
+        color: var(--j-color-text);
         font-size: var(--j-font-size-xs, 0.75rem);
         font-weight: var(--j-font-weight-semibold, 650);
         inset-inline-end: var(--j-spacing-sm, 0.5rem);

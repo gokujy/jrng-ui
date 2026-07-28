@@ -163,7 +163,7 @@ import { jCreateId } from 'jrng-ui/core';
         }
 
         .j-app-shell__mask {
-          background: rgb(15 23 42 / 48%);
+          background: var(--j-overlay-backdrop-bg);
           border: 0;
           border-radius: 0;
           display: block;

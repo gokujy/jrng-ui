@@ -19,12 +19,7 @@ import { J_THEME_OPTIONS } from './theme-config.token';
 import { jApplyThemeTokens, jThemeDeclarations } from './theme-css';
 import { JThemePresetRegistry } from './theme-registry';
 import { jMergeThemeOverrides, jResolveTheme } from './theme-resolver';
-import {
-  JThemeColorScheme,
-  JThemeOptions,
-  JThemeScope,
-  JThemeScopeOptions,
-} from './theme.types';
+import { JThemeColorScheme, JThemeOptions, JThemeScope, JThemeScopeOptions } from './theme.types';
 
 const PRESET_STYLE_ID = 'j-theme-preset';
 
@@ -55,9 +50,7 @@ export class JThemeService {
   private readonly destroyRef = inject(DestroyRef);
   private readonly options = inject(J_THEME_OPTIONS, { optional: true }) ?? {};
   private readonly registry = inject(JThemePresetRegistry);
-  private readonly presetSource = signal<JThemePresetSource>(
-    this.options.preset ?? 'default',
-  );
+  private readonly presetSource = signal<JThemePresetSource>(this.options.preset ?? 'default');
   private readonly tokenOverrides = signal<JThemeTokens>(this.options.tokens ?? {});
   private readonly componentOverrides = signal<JComponentThemeTokens>(
     this.options.components ?? {},
@@ -261,8 +254,7 @@ export class JThemeService {
         this.registry.resolve(record.options.preset ?? this.presetSource()),
       );
       const scheme = record.options.colorScheme ?? this.colorScheme();
-      const dark =
-        scheme === 'dark' || (scheme === 'system' && this.systemPrefersDark());
+      const dark = scheme === 'dark' || (scheme === 'system' && this.systemPrefersDark());
       const tokens = jMergeThemeOverrides(
         dark ? resolved.dark : resolved.light,
         record.options.tokens,

@@ -1,25 +1,14 @@
-import {
-  JComponentThemeTokens,
-  JResolvedTheme,
-  JThemePreset,
-  JThemeTokens,
-} from './preset.types';
+import { JComponentThemeTokens, JResolvedTheme, JThemePreset, JThemeTokens } from './preset.types';
 import { jNormalizeThemeTokens } from './theme-css';
 import { jPresetId } from './theme-registry';
 
 function flatten(components?: JComponentThemeTokens): JThemeTokens {
   return Object.keys(components ?? {})
     .sort()
-    .reduce<JThemeTokens>(
-      (tokens, name) => ({ ...tokens, ...(components?.[name] ?? {}) }),
-      {},
-    );
+    .reduce<JThemeTokens>((tokens, name) => ({ ...tokens, ...(components?.[name] ?? {}) }), {});
 }
 
-function aliases(
-  tokens: JThemeTokens,
-  mapping?: JThemePreset['aliases'],
-): JThemeTokens {
+function aliases(tokens: JThemeTokens, mapping?: JThemePreset['aliases']): JThemeTokens {
   const values = { ...tokens };
   for (const [alias, canonical] of Object.entries(mapping ?? {}).sort(([a], [b]) =>
     a.localeCompare(b),

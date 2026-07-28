@@ -50,10 +50,10 @@ import { JIconComponent, JIconName } from 'jrng-ui/icon';
     `
       .j-copy-button {
         align-items: center;
-        background: var(--j-color-surface, #ffffff);
-        border: 1px solid var(--j-color-border, #dbe2ea);
+        background: var(--j-color-surface);
+        border: 1px solid var(--j-color-border);
         border-radius: var(--j-radius-sm, 0.375rem);
-        color: var(--j-color-text, #111827);
+        color: var(--j-color-text);
         cursor: pointer;
         display: inline-flex;
         font: inherit;
@@ -63,17 +63,17 @@ import { JIconComponent, JIconName } from 'jrng-ui/icon';
       }
 
       .j-copy-button[data-j-active='true'] {
-        border-color: var(--j-copy-success-color, var(--j-color-success, #16a34a));
-        color: var(--j-copy-success-color, var(--j-color-success, #16a34a));
+        border-color: var(--j-copy-success-color, var(--j-color-success));
+        color: var(--j-copy-success-color, var(--j-color-success));
       }
 
       .j-copy-button[data-j-error='true'] {
-        border-color: var(--j-copy-error-color, var(--j-color-danger, #dc2626));
-        color: var(--j-copy-error-color, var(--j-color-danger, #dc2626));
+        border-color: var(--j-copy-error-color, var(--j-color-danger));
+        color: var(--j-copy-error-color, var(--j-color-danger));
       }
 
       .j-copy-button:focus-visible {
-        box-shadow: var(--j-focus-ring, 0 0 0 3px rgb(79 70 229 / 24%));
+        box-shadow: var(--j-focus-ring);
         outline: none;
       }
 

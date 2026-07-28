@@ -125,9 +125,9 @@ export type JPageHeaderVariant = 'standard' | 'stacked' | 'centered' | 'hero';
       .j-page-header__back {
         align-items: center;
         background: var(--j-page-header-back-bg, transparent);
-        border: 1px solid var(--j-page-header-back-border-color, var(--j-color-border, #e2e8f0));
+        border: 1px solid var(--j-page-header-back-border-color, var(--j-color-border));
         border-radius: var(--j-radius-md, 0.5rem);
-        color: var(--j-page-header-back-color, var(--j-color-muted-foreground, #64748b));
+        color: var(--j-page-header-back-color, var(--j-color-muted-foreground));
         cursor: pointer;
         display: inline-flex;
         font: inherit;

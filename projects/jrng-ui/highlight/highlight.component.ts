@@ -56,7 +56,7 @@ export function jHighlightText(
         display: inline;
       }
       mark {
-        background: var(--j-highlight-background, #fde68a);
+        background: var(--j-highlight-background);
         color: inherit;
         border-radius: var(--j-radius-xs);
         padding-inline: 0.08em;

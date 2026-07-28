@@ -67,9 +67,9 @@ import { JButtonComponent } from 'jrng-ui/button';
         gap: var(--j-spacing-md, 1rem);
         min-height: 3.5rem;
         padding: var(--j-spacing-3, 0.75rem) var(--j-spacing-4, 1rem);
-        border-bottom: 1px solid var(--j-color-border, #d9e0e8);
-        background: var(--j-color-surface, #fff);
-        color: var(--j-color-text, #172033);
+        border-bottom: 1px solid var(--j-color-border);
+        background: var(--j-color-surface);
+        color: var(--j-color-text);
       }
 
       .j-overlay-header--dense {
@@ -102,7 +102,7 @@ import { JButtonComponent } from 'jrng-ui/button';
 
       .j-overlay-header__subtitle {
         overflow: hidden;
-        color: var(--j-color-text-muted, #64748b);
+        color: var(--j-color-text-muted);
         font-size: var(--j-font-size-sm, 0.875rem);
         line-height: 1.35;
         text-overflow: ellipsis;

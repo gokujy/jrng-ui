@@ -191,10 +191,10 @@ export interface JFileUploadItemEvent {
   styles: [
     `
       .j-file-upload {
-        background: var(--j-file-upload-bg, var(--j-color-card, #ffffff));
-        border: 1px dashed var(--j-file-upload-border-color, var(--j-color-border, #e2e8f0));
+        background: var(--j-file-upload-bg, var(--j-color-card));
+        border: 1px dashed var(--j-file-upload-border-color, var(--j-color-border));
         border-radius: var(--j-radius-lg);
-        color: var(--j-file-upload-color, var(--j-color-card-foreground, #111827));
+        color: var(--j-file-upload-color, var(--j-color-card-foreground));
         display: grid;
         gap: var(--j-spacing-4);
         padding: var(--j-spacing-4);
@@ -257,7 +257,7 @@ export interface JFileUploadItemEvent {
       }
 
       .j-file-upload__drop {
-        background: var(--j-file-upload-drop-bg, var(--j-color-muted, #f1f5f9));
+        background: var(--j-file-upload-drop-bg, var(--j-color-muted));
         border-radius: var(--j-radius-lg);
         display: grid;
         min-height: 8rem;
@@ -312,14 +312,14 @@ export interface JFileUploadItemEvent {
       }
 
       .j-file-upload__progress span {
-        background: var(--j-file-upload-progress-color, var(--j-color-primary, #2563eb));
+        background: var(--j-file-upload-progress-color, var(--j-color-primary));
         display: block;
         height: 100%;
       }
 
       .j-file-upload__error,
       .j-file-upload__errors {
-        color: var(--j-file-upload-error-color, var(--j-color-danger, #dc2626));
+        color: var(--j-file-upload-error-color, var(--j-color-danger));
       }
 
       @media (max-width: 640px) {

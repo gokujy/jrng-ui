@@ -98,7 +98,7 @@ const SPLITTER_CONTROLLER = new InjectionToken<JSplitterController>('JRNG_SPLITT
         inset-inline: 0;
       }
       .j-splitter-panel__handle {
-        background: var(--j-color-border-strong, #94a3b8);
+        background: var(--j-color-border-strong);
         border-radius: 999px;
         block-size: 2rem;
         inline-size: 0.1875rem;
@@ -108,7 +108,7 @@ const SPLITTER_CONTROLLER = new InjectionToken<JSplitterController>('JRNG_SPLITT
         inline-size: 2rem;
       }
       .j-splitter-panel__gutter:focus-visible {
-        box-shadow: var(--j-focus-ring, 0 0 0 3px rgb(79 70 229 / 24%));
+        box-shadow: var(--j-focus-ring);
         outline: none;
       }
       .j-splitter-panel__gutter[aria-disabled='true'] {

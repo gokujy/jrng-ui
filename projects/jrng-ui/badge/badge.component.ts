@@ -97,7 +97,7 @@ export type JBadgeVariant = 'solid' | 'soft' | 'outlined';
       .j-badge--warning {
         --j-badge-accent: var(--j-color-warning);
         --j-badge-soft: var(--j-color-warning-soft);
-        --j-badge-foreground: #111827;
+        --j-badge-foreground: var(--j-color-warning-foreground);
       }
       .j-badge--danger {
         --j-badge-accent: var(--j-color-danger);

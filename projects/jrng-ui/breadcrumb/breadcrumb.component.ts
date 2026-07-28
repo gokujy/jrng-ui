@@ -142,7 +142,7 @@ export type JBreadcrumbVariant = 'default' | 'steps' | 'contained';
       }
 
       .j-breadcrumb--contained .j-breadcrumb__list {
-        background: var(--j-color-surface-subtle, #eef2f7);
+        background: var(--j-color-surface-subtle);
         border-radius: var(--j-radius-lg, 0.75rem);
         padding: var(--j-spacing-sm, 0.5rem) var(--j-spacing-md, 0.75rem);
       }
@@ -155,7 +155,7 @@ export type JBreadcrumbVariant = 'default' | 'steps' | 'contained';
       }
 
       .j-breadcrumb--steps .j-breadcrumb__item {
-        background: var(--j-color-surface-subtle, #eef2f7);
+        background: var(--j-color-surface-subtle);
         min-height: 2.5rem;
         padding-inline: var(--j-spacing-md, 0.75rem);
       }
@@ -166,13 +166,13 @@ export type JBreadcrumbVariant = 'default' | 'steps' | 'contained';
       }
 
       .j-breadcrumb--steps .j-breadcrumb__item:last-child {
-        background: var(--j-color-primary, #4f46e5);
+        background: var(--j-color-primary);
         border-end-end-radius: var(--j-radius-md, 0.5rem);
         border-start-end-radius: var(--j-radius-md, 0.5rem);
       }
 
       .j-breadcrumb--steps .j-breadcrumb__item:last-child .j-breadcrumb__current {
-        color: var(--j-color-on-primary, #ffffff);
+        color: var(--j-color-on-primary);
       }
 
       .j-breadcrumb--steps .j-breadcrumb__separator {
@@ -180,7 +180,7 @@ export type JBreadcrumbVariant = 'default' | 'steps' | 'contained';
       }
 
       .j-breadcrumb--steps .j-breadcrumb__separator::after {
-        color: var(--j-color-muted-foreground, #64748b);
+        color: var(--j-color-muted-foreground);
         content: '›';
         font-size: var(--j-font-size-lg, 1.125rem);
         margin-inline-end: var(--j-spacing-md, 0.75rem);

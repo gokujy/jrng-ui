@@ -59,7 +59,7 @@ export type JEmptyStateVariant =
     `
       .j-empty-state {
         align-items: center;
-        color: var(--j-empty-state-color, var(--j-color-foreground, #111827));
+        color: var(--j-empty-state-color, var(--j-color-foreground));
         display: flex;
         flex-direction: column;
         gap: var(--j-spacing-sm);
@@ -74,9 +74,9 @@ export type JEmptyStateVariant =
 
       .j-empty-state__icon {
         align-items: center;
-        background: var(--j-empty-state-icon-bg, var(--j-color-muted, #f1f5f9));
+        background: var(--j-empty-state-icon-bg, var(--j-color-muted));
         border-radius: var(--j-radius-full);
-        color: var(--j-empty-state-icon-color, var(--j-color-muted-foreground, #64748b));
+        color: var(--j-empty-state-icon-color, var(--j-color-muted-foreground));
         display: inline-flex;
         font-size: var(--j-font-size-2xl);
         height: 3rem;
@@ -104,7 +104,7 @@ export type JEmptyStateVariant =
       }
 
       .j-empty-state__description {
-        color: var(--j-empty-state-description-color, var(--j-color-muted-foreground, #64748b));
+        color: var(--j-empty-state-description-color, var(--j-color-muted-foreground));
         margin: 0;
         max-width: 32rem;
       }
@@ -143,8 +143,8 @@ export type JEmptyStateVariant =
       }
 
       .j-empty-state--panel {
-        background: var(--j-color-surface-subtle, #eef2f7);
-        border: 1px dashed var(--j-color-border, #dbe2ea);
+        background: var(--j-color-surface-subtle);
+        border: 1px dashed var(--j-color-border);
         border-radius: var(--j-radius-xl, 1rem);
       }
 
@@ -156,13 +156,13 @@ export type JEmptyStateVariant =
       .j-empty-state--error,
       .j-empty-state--permission,
       .j-empty-state--offline {
-        background: var(--j-color-surface-subtle, #eef2f7);
-        border: 1px dashed var(--j-color-border, #dbe2ea);
+        background: var(--j-color-surface-subtle);
+        border: 1px dashed var(--j-color-border);
         border-radius: var(--j-radius-xl, 1rem);
       }
 
       .j-empty-state--card {
-        background: var(--j-color-card, #fff);
+        background: var(--j-color-card);
         border-style: solid;
         box-shadow: var(--j-shadow-sm);
       }
@@ -172,11 +172,11 @@ export type JEmptyStateVariant =
         justify-content: center;
       }
       .j-empty-state--error .j-empty-state__icon {
-        color: var(--j-color-danger, #dc2626);
+        color: var(--j-color-danger);
       }
       .j-empty-state--permission .j-empty-state__icon,
       .j-empty-state--offline .j-empty-state__icon {
-        color: var(--j-color-warning, #b45309);
+        color: var(--j-color-warning);
       }
 
       @media (max-width: 640px) {

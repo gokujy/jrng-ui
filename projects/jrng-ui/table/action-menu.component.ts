@@ -88,8 +88,8 @@ import { JButtonComponent } from 'jrng-ui/button';
 
       .j-action-menu__items--popup {
         align-items: stretch;
-        background: var(--j-action-menu-bg, var(--j-color-card, #ffffff));
-        border: 1px solid var(--j-action-menu-border-color, var(--j-color-border, #dbe2ea));
+        background: var(--j-action-menu-bg, var(--j-color-card));
+        border: 1px solid var(--j-action-menu-border-color, var(--j-color-border));
         border-radius: var(--j-action-menu-radius, var(--j-radius-md, 0.5rem));
         box-shadow: var(--j-action-menu-shadow, var(--j-shadow-lg));
         display: grid;
@@ -105,10 +105,10 @@ import { JButtonComponent } from 'jrng-ui/button';
       .j-action-menu__trigger,
       .j-action-menu__item {
         align-items: center;
-        background: var(--j-action-menu-item-bg, var(--j-color-card, #ffffff));
-        border: 1px solid var(--j-action-menu-item-border-color, var(--j-color-border, #dbe2ea));
+        background: var(--j-action-menu-item-bg, var(--j-color-card));
+        border: 1px solid var(--j-action-menu-item-border-color, var(--j-color-border));
         border-radius: var(--j-radius-sm, 0.375rem);
-        color: var(--j-action-menu-item-color, var(--j-color-foreground, #111827));
+        color: var(--j-action-menu-item-color, var(--j-color-foreground));
         cursor: pointer;
         display: inline-flex;
         font: inherit;
@@ -131,13 +131,13 @@ import { JButtonComponent } from 'jrng-ui/button';
       }
 
       .j-action-menu__item:hover:not(:disabled) {
-        border-color: var(--j-color-primary, #4f46e5);
-        color: var(--j-color-primary, #4f46e5);
+        border-color: var(--j-color-primary);
+        color: var(--j-color-primary);
       }
 
       .j-action-menu__trigger:focus-visible,
       .j-action-menu__item:focus-visible {
-        box-shadow: var(--j-focus-ring, 0 0 0 3px rgb(79 70 229 / 24%));
+        box-shadow: var(--j-focus-ring);
         outline: none;
       }
 
@@ -147,7 +147,7 @@ import { JButtonComponent } from 'jrng-ui/button';
       }
 
       .j-action-menu__item--danger {
-        color: var(--j-color-danger, #dc2626);
+        color: var(--j-color-danger);
       }
 
       :host ::ng-deep .j-action-menu__trigger {

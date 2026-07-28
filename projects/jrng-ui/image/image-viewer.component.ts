@@ -89,7 +89,7 @@ import { JInternalOverlayHeaderComponent } from 'jrng-ui/overlay-header';
         z-index: var(--j-z-index-fullscreen, 1200);
       }
       .j-image-viewer__backdrop {
-        background: rgb(15 23 42 / 78%);
+        background: var(--j-image-viewer-backdrop-bg, var(--j-overlay-backdrop-bg));
         border: 0;
         cursor: zoom-out;
         inset: 0;
@@ -115,7 +115,7 @@ import { JInternalOverlayHeaderComponent } from 'jrng-ui/overlay-header';
       }
       .j-image-viewer__header {
         align-items: center;
-        background: var(--j-color-card, #fff);
+        background: var(--j-color-card);
         border-radius: var(--j-radius-lg, 0.75rem) var(--j-radius-lg, 0.75rem) 0 0;
         display: flex;
         gap: var(--j-spacing-md, 0.75rem);
@@ -139,7 +139,7 @@ import { JInternalOverlayHeaderComponent } from 'jrng-ui/overlay-header';
       }
       .j-image-viewer__viewport {
         align-items: center;
-        background: rgb(15 23 42 / 45%);
+        background: var(--j-image-viewer-control-bg, var(--j-overlay-backdrop-bg));
         border-radius: 0 0 var(--j-radius-lg, 0.75rem) var(--j-radius-lg, 0.75rem);
         display: flex;
         justify-content: center;
