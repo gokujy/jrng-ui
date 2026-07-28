@@ -17,7 +17,7 @@ export interface JStepItem {
   readonly error?: boolean;
 }
 
-/** Complete presentation presets for the stepper. `default` preserves the pre-0.0.9 design. */
+/** Complete presentation presets for the stepper. `default` preserves the pre-0.1.1 design. */
 export type JStepperVariant = 'default' | 'rail' | 'progress';
 
 @Component({

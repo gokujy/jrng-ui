@@ -1490,7 +1490,7 @@ const CARD_FEATURE_EXAMPLES = [
   [
     'slots',
     'Header and footer',
-    `<j-card header="Release plan" subheader="Version 0.0.9" footer="Updated today">All milestones are on track.</j-card>`,
+    `<j-card header="Release plan" subheader="Version 0.1.1" footer="Updated today">All milestones are on track.</j-card>`,
   ],
   [
     'form',
