@@ -1,147 +1,283 @@
-# JRNG UI Theme System
+# JRNG UI Themes
 
-`provideJrngUI()` immutably merges partial configuration with library defaults. Component inputs override global values. Version 0.1.0 applies `themeMode`, `inputStyle`, `ripple`, `locale`, `zIndex`, `appendTo`, `animation`, and `density` through configuration tokens and document-level behavior hooks. Reduced-motion preferences suppress non-essential ripple and motion.
+JRNG UI provides three original, runtime-switchable visual presets built on one
+layered token contract. The theme system owns visual tokens and theme
+application; application layout and preference persistence remain application
+responsibilities.
+
+## Installation
+
+Import the public theming entrypoint and include the JRNG stylesheet once:
+
+```scss
+@use 'jrng-ui/theme';
+```
+
+Plain CSS applications can include
+`node_modules/jrng-ui/theme/jrng-ui.css`.
+
+## Theme provider setup
 
 ```ts
-provideJrngUI({
-  themeMode: 'system',
-  inputStyle: 'filled',
-  ripple: false,
-  locale: 'de-DE',
-  appendTo: 'body',
-  animation: 'enabled',
-  density: 'compact',
+import { ApplicationConfig } from '@angular/core';
+import { provideJrngTheme } from 'jrng-ui/theming';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideJrngTheme({
+      preset: 'default',
+      colorScheme: 'system',
+      primary: 'indigo',
+      surface: 'cool',
+    }),
+  ],
+};
+```
+
+`provideJrngTheme()` eagerly starts the SSR-safe, signal-based theme service.
+Use `provideJrngUI()` separately for non-theme library configuration.
+
+## Available presets
+
+- **Default** (`default`) is JRNG's modern, balanced, friendly visual identity
+  for general websites and business applications.
+- **Material** (`material`) is an original JRNG preset inspired by Material
+  Design principles. It is not Angular Material and does not require Angular
+  Material.
+- **Nexus** (`nexus`) is JRNG's enterprise-oriented preset for ERP, CRM,
+  dashboards, admin panels, and data-heavy applications.
+
+Each preset includes complete light and dark values for colour, typography,
+spacing, radius, density, elevation, focus, motion, feedback, forms, overlays,
+navigation, and data components.
+
+## Colour schemes
+
+`colorScheme` accepts:
+
+- `light`: always resolve the light token set.
+- `dark`: always resolve the dark token set.
+- `system`: follow `prefers-color-scheme` and react to changes.
+
+The active request is exposed through `JThemeService.colorScheme`; the resolved
+state is exposed through `isDark`.
+
+## Runtime switching
+
+```ts
+const theme = inject(JThemeService);
+
+theme.setPreset('nexus');
+theme.setColorScheme('dark');
+theme.setPrimaryPalette('emerald');
+theme.setSurfacePalette('neutral');
+```
+
+All changes update CSS custom properties without reloading the application.
+`setMode()` remains as a compatibility alias for `setColorScheme()`.
+
+## Primary colours
+
+Built-in primary palettes are `blue`, `indigo`, `violet`, `emerald`, `teal`,
+`orange`, and `rose`. A partial custom scale is also accepted:
+
+```ts
+provideJrngTheme({
+  primary: {
+    400: '#56b7aa',
+    500: '#2b998d',
+    600: '#197a71',
+    700: '#155f59',
+  },
 });
 ```
 
-Use `provideJrngLocale(jLocales['hi'])` or `provideJrngLocale(jLocales['gu'])` as tree-shakable Hindi and Gujarati examples; partial locales merge over the complete English locale.
+Missing custom steps fall back deterministically. The resolver derives primary
+hover, active, contrast, subtle, selection, highlight, and focus-ring semantic
+tokens from the completed scale.
 
-JRNG UI is a generic, premium Angular UI component library. Its visual language
-is defined with original CSS variables and layered CSS, independent of any UI
-framework.
+## Surface palettes
 
-Import the theme once in the application global stylesheet:
+Built-in surface palettes are `cool`, `neutral`, and `warm`. Custom surface
+palettes may independently define light and dark `ground`, `section`, `card`,
+`overlay`, `border`, `borderStrong`, `muted`, `hover`, and `selected` values.
 
-```scss
-@use 'jrng-ui/theme';
+```ts
+provideJrngTheme({
+  surface: {
+    light: { ground: '#f7f8fa', card: '#ffffff', border: '#dfe3e8' },
+    dark: { ground: '#101216', card: '#181b20', border: '#343940' },
+  },
+});
 ```
 
-If a Sass resolver does not read the package `sass` export, import the copied
-asset directly:
+## Semantic tokens
 
-```scss
-@use 'jrng-ui/theme/jrng-ui';
+Semantic tokens describe intent. Components should use them instead of primitive
+palette steps. Important groups include:
+
+- primary, primary contrast, and secondary;
+- ground, section, card, overlay, borders, hover, and selected surfaces;
+- primary, secondary, and muted text;
+- success, information, warning, danger, selection, highlight, and backdrop;
+- focus, disabled, read-only, valid, and invalid states.
+
+Use `theme.applyTokens({ '--j-color-primary': '...' })` for runtime semantic or
+foundation overrides.
+
+## Component tokens
+
+Component groups inherit from semantic values and can be overridden without
+changing component APIs:
+
+```ts
+theme.applyComponentTokens({
+  button: {
+    '--j-button-radius': '0.375rem',
+    '--j-button-height-md': '2.5rem',
+  },
+  table: {
+    '--j-table-cell-padding': '0.625rem 0.75rem',
+  },
+});
 ```
 
-Plain CSS builds can include:
+Explicit component overrides have priority over preset component defaults.
 
-```json
-{
-  "styles": ["node_modules/jrng-ui/theme/jrng-ui.css", "src/styles.css"]
-}
+## Token overrides
+
+Resolution order is:
+
+1. preset primitive tokens;
+2. shared preset semantic tokens;
+3. active light or dark semantic tokens;
+4. preset component tokens;
+5. configured palette values;
+6. application semantic overrides;
+7. application component overrides.
+
+Call `reset()` to restore the exact provider configuration and remove runtime
+overrides.
+
+## Scoped themes
+
+Use a scope when a preview, embedded workflow, or feature must have independent
+theme settings:
+
+```ts
+const scope = theme.createScope(hostElement, {
+  preset: 'material',
+  colorScheme: 'dark',
+  primary: 'teal',
+});
+
+scope.update({ preset: 'nexus', colorScheme: 'light' });
+scope.reset();
+scope.destroy();
 ```
 
-## CSS Layers
+The handle manages only its own attributes and variables. Always destroy it
+with the host lifecycle. Nested CSS custom properties remain naturally RTL-safe.
 
-The theme declares predictable cascade layers:
+## SSR configuration
 
-```scss
-@layer j-theme, j-base, j-components, j-utilities;
+The resolver, registry, provider, and `getInitialState()` do not directly access
+browser-only APIs. Browser DOM application is guarded with `isPlatformBrowser`.
+The server can resolve a deterministic preset and explicit scheme:
+
+```ts
+const state = theme.getInitialState();
+// state.preset, state.colorScheme, state.darkClass, state.css
 ```
 
-- `j-theme`: design tokens and theme values.
-- `j-base`: base `.j-*` surfaces, focus behavior, reduced motion support, and high contrast focus handling.
-- `j-components`: reserved for shared component-level styling.
-- `j-utilities`: small `.j-*` helpers such as `.j-sr-only`, `.j-disabled`, and `.j-ripple`.
+For a system scheme, the server uses the configured deterministic base and the
+browser resolves the media preference after hydration.
 
-Do not add generic utility classes such as `.flex`, `.grid`, `.card`, or `.button`.
+## Preventing initial theme flash
 
-## Token Layers
+When the server knows the user's application-owned scheme, render
+`getInitialState().css` in the document head before application styles and set
+the matching root class and data attributes. Do not read local storage inside
+the library. If an application stores preferences, it should safely provide
+them to SSR and bootstrap.
 
-Theme source lives in `projects/jrng-ui/src/styles`.
+## RTL
 
-Primitive tokens:
+Theme tokens are direction-neutral. JRNG component styles use logical
+properties, so `dir="rtl"` changes layout direction without a different preset
+or duplicated theme. Applications should continue to use logical margin,
+padding, border, and inset properties in overrides.
 
-- `tokens/_primitive.scss`
-- Examples: `--j-color-slate-50`, `--j-color-slate-900`, `--j-color-blue-500`, `--j-radius-md`, `--j-spacing-2`, `--j-shadow-sm`.
+## Accessibility
 
-Semantic tokens:
+Every preset defines visible focus rings, readable disabled states, semantic
+feedback colours, selected states, and accessible control geometry. Components
+retain keyboard behavior and ARIA contracts when presets switch. Applications
+must recheck contrast when supplying custom token values.
 
-- `themes/light.scss`
-- `themes/dark.scss`
-- Examples: `--j-color-background`, `--j-color-foreground`, `--j-color-muted`, `--j-color-card`, `--j-color-popover`, `--j-color-border`, `--j-color-ring`, `--j-color-primary`, `--j-color-danger`.
+## Reduced motion
 
-Component tokens:
+Motion durations and easing are tokens. JRNG's base styles suppress
+non-essential animation and transitions under
+`prefers-reduced-motion: reduce`. A preset never overrides the user's reduced
+motion request.
 
-- `tokens/_component.scss`
-- Examples: `--j-button-height-md`, `--j-button-radius`, `--j-button-primary-bg`, `--j-input-height-md`, `--j-card-radius`, `--j-dialog-shadow`, `--j-table-header-bg`.
+## High contrast
 
-The global entry file is `jrng-ui.scss`.
+JRNG uses `@media (forced-colors: active)` to preserve visible focus and
+boundaries with system colours. Avoid replacing focus outlines with
+box-shadow-only custom styles.
 
-## Light And Dark
+## Migration guide
 
-Light theme is the default on `:root` and `.j-theme`.
+The full migration guide is in [`guides/theme-migration.md`](guides/theme-migration.md).
+Existing `themeMode`, `setMode()`, legacy preset objects, and documented CSS
+token aliases remain supported. New applications should use official preset
+identifiers and canonical semantic tokens.
 
-Dark theme is enabled with `.j-dark` on the application root:
+## API
 
-```html
-<app-root class="j-dark"></app-root>
-```
+Public imports come from `jrng-ui/theming`:
 
-## Overriding Tokens
+- `provideJrngTheme(options)`
+- `JThemeService`
+- `JThemePresetRegistry`
+- `JThemePreset`, `JThemePresetId`, `JThemeOptions`, and token contracts
+- `defaultPreset`, `materialPreset`, and `nexusPreset`
+- `jPrimaryPalettes` and `jSurfacePalettes`
+- CSS generation and resolution utilities for advanced integrations
 
-Override semantic tokens after importing the theme:
+The library theme API does not include sidebar, menu, topbar, footer, mobile
+navigation, profile, persistence, or application-layout configuration.
 
-```scss
-@use 'jrng-ui/theme';
+## FAQ
 
-:root {
-  --j-color-primary: #0f766e;
-  --j-color-primary-hover: #0f5f59;
-  --j-color-ring: rgb(15 118 110 / 28%);
-  --j-radius-md: 0.5rem;
-}
-```
+**Does Material require Angular Material?** No. Material is a JRNG-owned preset
+inspired by general Material Design principles and adds no Angular Material
+dependency.
 
-Tokens can be scoped to a feature shell:
+**Can presets switch without a reload?** Yes. Preset, scheme, palette, semantic,
+and component updates are applied at runtime.
 
-```scss
-.feature-module {
-  --j-color-primary: #7c3aed;
-  --j-color-card: #ffffff;
-  --j-card-radius: 0.75rem;
-}
-```
+**Can one page contain multiple presets?** Yes. Use `createScope()` and destroy
+each returned handle when its host is removed.
 
-## Component Tokens
+**Does JRNG store my choice?** No. Persistence policy belongs to the
+application.
 
-Prefer component tokens when changing the look of a specific component family:
+**Can I ship only one preset?** Official presets are TypeScript objects and
+remain individually importable. The base stylesheet is shared; no separate
+mandatory runtime dependency is added.
 
-```scss
-:root {
-  --j-button-radius: 0.625rem;
-  --j-button-height-md: 2.625rem;
-  --j-input-border-color: var(--j-color-border);
-  --j-card-shadow: var(--j-shadow-md);
-  --j-table-header-bg: var(--j-color-muted);
-}
-```
+## Changelog
 
-Use semantic tokens for product-level color and surface decisions. Use primitive
-tokens only when defining a new semantic token.
+- Added the official Default, Material, and Nexus preset identifiers.
+- Added light, dark, and system resolution with runtime and scoped switching.
+- Added primary and surface palette customisation.
+- Added layered primitive, semantic, and component token contracts.
+- Preserved compatibility aliases for established theme modes and CSS tokens.
 
-## Accessibility Defaults
-
-The theme includes:
-
-- Calm focus rings through `--j-color-ring` and `--j-focus-ring`.
-- High contrast focus support with `@media (forced-colors: active)`.
-- Reduced motion support with `@media (prefers-reduced-motion: reduce)`.
-- Disabled opacity through `--j-disabled-opacity`.
-
-## Original CSS Rule
-
-JRNG UI styling must be original. Do not copy source CSS, token names,
-documentation, examples, branding, or exact visual design from any external UI
-library. Common UI patterns are acceptable, but implementation and styling must
-remain JRNG-owned.
+See the preset-specific visual references in
+[`presets/default.md`](presets/default.md),
+[`presets/material.md`](presets/material.md), and
+[`presets/nexus.md`](presets/nexus.md).
