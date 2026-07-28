@@ -43,6 +43,8 @@
     "docs:check-examples": "node scripts/check-doc-examples.mjs",
     "docs:generate-api-examples": "node scripts/generate-doc-api-example-coverage.mjs",
     "docs:validate-api-examples": "node scripts/validate-doc-api-examples.mjs",
+    "docs:validate-content": "node scripts/validate-doc-content.mjs",
+    "docs:validate": "npm run docs:check-completeness && npm run docs:check-routes && npm run docs:check-examples && npm run docs:validate-api-examples && npm run docs:check-advanced && npm run docs:validate-content && npm run verify:doc-examples",
     "docs:reports": "node scripts/generate-component-quality-reports.mjs",
     "docs:audit": "npm run docs:inventory && npm run generate:docs-registry && npm run docs:generate-api-examples && npm run docs:check-completeness && npm run docs:check-routes && npm run docs:check-examples && npm run docs:validate-api-examples && npm run docs:reports",
     "generate:demos": "node scripts/generate-demo-sources.mjs",
