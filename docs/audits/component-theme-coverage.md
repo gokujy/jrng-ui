@@ -2,9 +2,9 @@
 
 Generated: jrng-ui 0.1.0
 
-Canonical public components: **120**
+Canonical public components: **121**
 
-- light-dark-system-high-contrast-preview: 120
+- light-dark-system-high-contrast-preview: 121
 
 | Component | Selector | Category | Status |
 | --- | --- | --- | --- |
@@ -12,6 +12,7 @@ Canonical public components: **120**
 | Checkbox | `j-checkbox` | Form | light-dark-system-high-contrast-preview |
 | Chips | `j-chips` | Form | light-dark-system-high-contrast-preview |
 | Color Picker | `j-color-picker` | Form | light-dark-system-high-contrast-preview |
+| Cron Expression | `j-cron-expression` | Form | light-dark-system-high-contrast-preview |
 | Date Picker | `j-date-picker` | Form | light-dark-system-high-contrast-preview |
 | Editor | `j-editor` | Form | light-dark-system-high-contrast-preview |
 | Form Field | `j-form-field` | Form | light-dark-system-high-contrast-preview |

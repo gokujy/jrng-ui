@@ -2,12 +2,13 @@
 export const generatedComponentCategories = [
   {
     name: "Form",
-    count: 29,
+    count: 30,
     selectors: [
       "j-autocomplete",
       "j-checkbox",
       "j-chips",
       "j-color-picker",
+      "j-cron-expression",
       "j-date-picker",
       "j-editor",
       "j-form-field",
@@ -189,4 +190,4 @@ export const generatedComponentCategories = [
 export const generatedComponentCategoryOrder = generatedComponentCategories.map(
   ({ name }) => name,
 );
-export const generatedActiveComponentTotal = 120;
+export const generatedActiveComponentTotal = 121;

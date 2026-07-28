@@ -6,7 +6,7 @@ The component showcase is route-level lazy loaded. Angular deferred blocks split
 
 | Metric | Bytes |
 | --- | ---: |
-| JavaScript output | 2209700 |
+| JavaScript output | 2268833 |
 | Initial named JavaScript | 111638 |
 | Component documentation route chunk | 19318 |
 | JavaScript chunks | 10 |

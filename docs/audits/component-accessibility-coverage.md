@@ -2,9 +2,9 @@
 
 Generated: jrng-ui 0.1.0
 
-Canonical public components: **120**
+Canonical public components: **121**
 
-- validated: 120
+- validated: 121
 
 | Component | Selector | Category | Status |
 | --- | --- | --- | --- |
@@ -12,6 +12,7 @@ Canonical public components: **120**
 | Checkbox | `j-checkbox` | Form | validated |
 | Chips | `j-chips` | Form | validated |
 | Color Picker | `j-color-picker` | Form | validated |
+| Cron Expression | `j-cron-expression` | Form | validated |
 | Date Picker | `j-date-picker` | Form | validated |
 | Editor | `j-editor` | Form | validated |
 | Form Field | `j-form-field` | Form | validated |

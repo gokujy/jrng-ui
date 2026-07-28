@@ -510,6 +510,144 @@ control = new FormControl<JQueryGroup>(this.query, { nonNullable: true });`,
     ],
   },
   {
+    slug: 'cron-expression',
+    name: 'Cron Expression Editor',
+    category: 'Form',
+    icon: 'clock-3',
+    selector: 'j-cron-expression',
+    importPath: 'jrng-ui/cron-expression',
+    status: 'Beta',
+    description:
+      'Creates, parses, explains, and validates Linux five-field cron expressions without executing scheduled work.',
+    whenToUse:
+      'Use Cron Expression Editor when an application needs an accessible structured and raw authoring surface for a Linux cron schedule.',
+    whenNotToUse: [
+      'Do not use it to run jobs or communicate with a scheduler.',
+      'Do not use it for Quartz, Spring, named month/day tokens, or timezone conversion.',
+    ],
+    code: {
+      importCode: `import { JCronExpressionComponent } from 'jrng-ui/cron-expression';`,
+      basic: `<j-cron-expression
+  label="Nightly backup"
+  value="0 2 * * *"
+  [previewFrom]="previewFrom"
+  (valueChange)="schedule = $event"
+/>`,
+      variants: `<j-cron-expression value="*/10 * * * *" />
+<j-cron-expression value="0 7 * * 1-5" />
+<j-cron-expression value="0 9 1 * *" />`,
+      sizes: `<div style="max-width: 48rem">
+  <j-cron-expression value="0 2 * * *" />
+</div>
+<div dir="rtl">
+  <j-cron-expression dir="rtl" value="0 7 * * 1-5" />
+</div>`,
+      states: `<j-cron-expression value="invalid" />
+<j-cron-expression value="0 2 * * *" disabled />
+<j-cron-expression value="0 2 * * *" readonly />`,
+      angular: `previewFrom = new Date('2026-07-28T00:00:00Z');
+control = new FormControl('0 2 * * *', { nonNullable: true });`,
+    },
+    usage: [
+      'Basic cron expression: edit the five standard fields in raw or structured form.',
+      'Every N minutes: use a step such as */15 in the minute field.',
+      'Nightly backup: 0 2 * * * means 02:00 every day.',
+      'Weekday report: 0 7 * * 1-5 means 07:00 Monday through Friday.',
+      'Monthly schedule: 0 9 1 * * means 09:00 on the first day of each month.',
+      'Invalid expression recovery: invalid raw text remains visible and is not emitted as a valid value.',
+      'Reactive Forms: bind a string FormControl; cronExpression errors contain the grammar issues.',
+      'Changelog: introduced in the advanced-components Phase 1 batch.',
+    ],
+    variants: [
+      'Raw expression and synchronized structured fields',
+      'Wildcard, single value, range, list, and step tokens',
+      'Hourly, daily, weekly, and monthly shortcut buttons',
+    ],
+    sizes: [
+      'Five fields share one row on wide containers, two columns below 820px, and one column below 480px.',
+      'Token entry keeps left-to-right cron order inside an RTL surrounding interface.',
+    ],
+    states: ['valid', 'invalid', 'disabled', 'read-only', 'Reactive Forms', 'RTL'],
+    inputs: [
+      prop('value', 'string | undefined', 'undefined', 'Controlled five-field expression.'),
+      prop('label', 'string', "'Cron expression'", 'Visible editor heading.'),
+      prop(
+        'description',
+        'string',
+        "'Create a Linux five-field cron schedule.'",
+        'Supporting text.',
+      ),
+      prop('ariaLabel', 'string', "'Cron expression editor'", 'Accessible editor name.'),
+      prop('disabled', 'boolean', 'false', 'Blocks form and shortcut interaction.'),
+      prop('readonly', 'boolean', 'false', 'Allows reading and copying without edits.'),
+      prop('dir', 'ltr | rtl', "'ltr'", 'Direction for the surrounding editor UI.'),
+      prop(
+        'previewFrom',
+        'Date | null',
+        'null',
+        'Explicit UTC reference for deterministic previews.',
+      ),
+      prop('previewCount', 'number', '3', 'Maximum number of preview runs.'),
+      prop('maximumPreviewIterations', 'number', '527040', 'Hard minute-search termination bound.'),
+    ],
+    outputs: [
+      event('valueChange', 'string', 'Emits only a valid normalized expression.'),
+      event('validationChange', 'readonly JCronIssue[]', 'Emits current parsing issues.'),
+    ],
+    cssVariables: [
+      cssVar('--j-cron-bg', 'var(--j-color-card)', 'Editor surface.'),
+      cssVar('--j-cron-border', 'var(--j-color-border)', 'Editor boundary.'),
+      cssVar('--j-cron-control-bg', 'var(--j-color-card)', 'Input surface.'),
+      cssVar('--j-cron-control-border', 'var(--j-color-border)', 'Input boundary.'),
+      cssVar('--j-cron-preview-bg', 'var(--j-color-muted)', 'Preview and error surface.'),
+      cssVar('--j-cron-error', 'var(--j-color-danger)', 'Invalid state.'),
+      cssVar('--j-cron-focus', 'var(--j-focus-ring)', 'Visible input focus.'),
+    ],
+    accessibility: [
+      'The editor, raw input, fieldset, each time field, shortcuts, errors, and copy action have explicit labels.',
+      'Validation is associated with the affected field and the full invalid state uses an alert.',
+      'The description and bounded next-run list use a polite live region.',
+      'All actions use native controls or JRNG buttons with visible focus.',
+    ],
+    keyboard: [
+      'Tab and Shift+Tab move through raw input, structured fields, shortcuts, and copy action.',
+      'Enter or Space activates shortcut and copy buttons.',
+      'Text editing follows native input behavior and introduces no keyboard trap.',
+    ],
+    responsive: [
+      'Structured controls collapse from five columns to two and then one.',
+      'RTL mirrors surrounding content while the cron token order and input direction remain LTR.',
+    ],
+    bestPractices: [
+      'Provide previewFrom when deterministic UTC next-run examples are required.',
+      'Validate the expression again at the backend scheduler boundary.',
+      'Keep job execution, timezone policy, and authorization outside this component.',
+    ],
+    commonMistakes: [
+      'Assuming Quartz question-mark, L, W, #, or named tokens are supported.',
+      'Treating day-of-month and day-of-week as AND; this Linux grammar uses OR when both are restricted.',
+      'Rendering a live preview without an explicit reference instant during SSR.',
+    ],
+    publicMethods: [
+      'writeValue(value)',
+      'validate(control)',
+      'changeRaw(event)',
+      'changePart(field, event)',
+      'applyShortcut(shortcut)',
+    ],
+    limitations: [
+      'Exactly five fields are supported; seconds are not part of this release.',
+      'Numeric tokens only: wildcard, single, range, list, and positive step.',
+      'Preview evaluation uses UTC and stops at the configured iteration bound.',
+      'FAQ: JRNG authors the string; the application scheduler owns execution and timezone interpretation.',
+    ],
+    relatedComponents: ['Input', 'Form Field', 'Copy Button', 'Calendar Scheduler'],
+    testingNotes: [
+      'Test parser/formatter round trips, field bounds, Linux day-field semantics, impossible schedules, CVA states, keyboard access, RTL, SSR, and preview termination.',
+      'The documentation preview uses a fixed reference date and independent form state.',
+    ],
+  },
+  {
     slug: 'input',
     name: 'Input',
     category: 'Form',

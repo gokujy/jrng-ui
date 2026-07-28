@@ -258,6 +258,65 @@
       ]
     },
     {
+      "name": "Cron Expression",
+      "selector": "j-cron-expression",
+      "importPath": "jrng-ui/cron-expression",
+      "entryPoint": "jrng-ui/cron-expression",
+      "category": "Form",
+      "description": "Angular Cron Expression component for reusable admin, dashboard, and business application interfaces.",
+      "inputs": [
+        "ariaLabel",
+        "description",
+        "dir",
+        "disabled",
+        "label",
+        "maximumPreviewIterations",
+        "previewCount",
+        "previewFrom",
+        "readonly",
+        "value"
+      ],
+      "outputs": [
+        "validationChange",
+        "valueChange"
+      ],
+      "methods": [
+        "applyShortcut()",
+        "canMutate()",
+        "changePart()",
+        "changeRaw()",
+        "fieldIssue()",
+        "formatPreviewDate()",
+        "markTouched()",
+        "part()",
+        "setDisabledState()",
+        "validate()",
+        "writeValue()"
+      ],
+      "formCompatibility": "ControlValueAccessor",
+      "usageExample": "<j-cron-expression></j-cron-expression>",
+      "importExample": "import { JCronExpressionComponent } from 'jrng-ui/cron-expression';",
+      "documentationUrl": "https://jrngui.dev/docs/components#cron-expression",
+      "status": "Basic",
+      "stability": "beta",
+      "sinceVersion": null,
+      "angularCompatibility": ">=21.2.0 <22.0.0",
+      "files": [],
+      "dependencies": [],
+      "peerDependencies": [
+        "@angular/common",
+        "@angular/core"
+      ],
+      "optionalDependencies": [],
+      "styles": [
+        "jrng-ui/styles"
+      ],
+      "assets": [],
+      "themeRequirements": [
+        "JRNG semantic tokens"
+      ]
+    },
+    {
       "name": "Date Picker",
       "selector": "j-date-picker",
       "importPath": "jrng-ui/date-picker",

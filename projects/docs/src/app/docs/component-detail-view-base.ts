@@ -38,6 +38,7 @@ import { JConfirmPopupComponent } from 'jrng-ui/confirm-popup';
 import { JContainerComponent } from 'jrng-ui/container';
 import { JContextMenuComponent } from 'jrng-ui/context-menu';
 import { JCopyButtonComponent } from 'jrng-ui/copy-button';
+import { JCronExpressionComponent } from 'jrng-ui/cron-expression';
 import { JColorPickerComponent } from 'jrng-ui/color-picker';
 import { JDataDisplayComponent } from 'jrng-ui/data-display';
 import { JDataViewComponent } from 'jrng-ui/data-view';
@@ -1546,6 +1547,7 @@ export const COMPONENT_PREVIEW_IMPORTS = [
   JConfirmDialogComponent,
   JContainerComponent,
   JCopyButtonComponent,
+  JCronExpressionComponent,
   JColorPickerComponent,
   JDataDisplayComponent,
   JDatePickerComponent,
@@ -1665,6 +1667,7 @@ export const COMPONENT_PREVIEW_IMPORTS = [
 
 @Directive()
 export class ComponentDetailViewBase {
+  readonly cronPreviewFrom = new Date('2026-07-28T00:00:00Z');
   readonly queryBuilderFields: readonly JQueryField[] = [
     { key: 'customer', label: 'Customer', type: 'text' },
     { key: 'total', label: 'Order total', type: 'number' },

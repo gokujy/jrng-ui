@@ -6,6 +6,7 @@ export const COMPONENT_CATEGORIES = [
       'j-checkbox',
       'j-chips',
       'j-color-picker',
+      'j-cron-expression',
       'j-date-picker',
       'j-editor',
       'j-form-field',
@@ -177,7 +178,7 @@ export const COMPONENT_CATEGORY_ORDER = Object.freeze([
   'Pages',
 ]);
 export const COMPONENT_CATEGORY_COUNTS = Object.freeze({
-  Form: 29,
+  Form: 30,
   Button: 2,
   Data: 16,
   Panel: 15,
@@ -192,7 +193,7 @@ export const COMPONENT_CATEGORY_COUNTS = Object.freeze({
   Utilities: 3,
   Pages: 2,
 });
-export const ACTIVE_COMPONENT_TOTAL = 120;
+export const ACTIVE_COMPONENT_TOTAL = 121;
 export const COMPONENT_CATEGORY_TOTAL = 14;
 export const REMOVED_COMPONENT_SELECTORS = new Set([
   'j-activity-feed',

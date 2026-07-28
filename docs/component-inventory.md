@@ -4,25 +4,25 @@ Generated from the 0.1.0 canonical build declarations.
 
 | Metric                                   | Total |
 | ---------------------------------------- | ----: |
-| Total public components                  |   120 |
+| Total public components                  |   121 |
 | Total categories                         |    14 |
 | Uncategorized components                 |     0 |
 | Duplicate entries                        |     0 |
 | Removed components present               |     0 |
-| Components with documentation            |   120 |
-| Components with working preview          |   120 |
-| Components with API reference            |   120 |
-| Components with examples                 |   120 |
-| Components with direct tests             |   120 |
-| Components with accessibility validation |   120 |
-| Components with responsive examples      |    78 |
+| Components with documentation            |   121 |
+| Components with working preview          |   121 |
+| Components with API reference            |   121 |
+| Components with examples                 |   121 |
+| Components with direct tests             |   121 |
+| Components with accessibility validation |   121 |
+| Components with responsive examples      |    79 |
 | Responsive examples not applicable       |    42 |
-| Components with theme-token coverage     |   120 |
+| Components with theme-token coverage     |   121 |
 | Components remaining incomplete          |     0 |
 
 | Category  | Components |
 | --------- | ---------: |
-| Form      |         29 |
+| Form      |         30 |
 | Button    |          2 |
 | Data      |         16 |
 | Panel     |         15 |
@@ -43,6 +43,7 @@ Generated from the 0.1.0 canonical build declarations.
 | Checkbox            | j-checkbox            | jrng-ui/checkbox            | Form      | beta      | rendered | direct | validated     |
 | Chips               | j-chips               | jrng-ui/chips               | Form      | beta      | rendered | direct | validated     |
 | Color Picker        | j-color-picker        | jrng-ui/color-picker        | Form      | beta      | rendered | direct | validated     |
+| Cron Expression     | j-cron-expression     | jrng-ui/cron-expression     | Form      | beta      | rendered | direct | validated     |
 | Date Picker         | j-date-picker         | jrng-ui/date-picker         | Form      | beta      | rendered | direct | validated     |
 | Editor              | j-editor              | jrng-ui/editor              | Form      | beta      | rendered | direct | validated     |
 | Form Field          | j-form-field          | jrng-ui/form-field          | Form      | beta      | rendered | direct | validated     |

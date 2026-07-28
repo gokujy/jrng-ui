@@ -11,6 +11,14 @@ import {
   template: `
     @let example = previewExample();
     @switch (doc().slug) {
+      @case ('cron-expression') {
+        <j-cron-expression
+          ariaLabel="Nightly backup schedule"
+          label="Nightly backup"
+          value="0 2 * * 1-5"
+          [previewFrom]="cronPreviewFrom"
+        />
+      }
       @case ('query-builder') {
         <j-query-builder
           ariaLabel="Customer search query"

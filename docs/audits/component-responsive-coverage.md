@@ -2,9 +2,9 @@
 
 Generated: jrng-ui 0.1.0
 
-Canonical public components: **120**
+Canonical public components: **121**
 
-- preview-available: 78
+- preview-available: 79
 - not-applicable: 42
 
 | Component | Selector | Category | Status |
@@ -13,6 +13,7 @@ Canonical public components: **120**
 | Checkbox | `j-checkbox` | Form | not-applicable |
 | Chips | `j-chips` | Form | preview-available |
 | Color Picker | `j-color-picker` | Form | not-applicable |
+| Cron Expression | `j-cron-expression` | Form | preview-available |
 | Date Picker | `j-date-picker` | Form | preview-available |
 | Editor | `j-editor` | Form | preview-available |
 | Form Field | `j-form-field` | Form | preview-available |

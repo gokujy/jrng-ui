@@ -201,10 +201,10 @@ function verifyForbiddenContent(files) {
 
 function verifySizeBudgets(report) {
   // Entry points remain independently tree-shakable, so consumers pay only for
-  // imports. The package-wide allowance includes the measured Query Builder
-  // model, component, declarations, and registry metadata with a narrow margin;
+  // imports. The package-wide allowance includes the measured Query Builder and
+  // Cron Expression model/component declarations and registry metadata with a narrow margin;
   // the per-entrypoint ceiling continues to guard accidental large bundles.
-  const maximumPackedBytes = 473_000;
+  const maximumPackedBytes = 480_000;
   const maximumUnpackedBytes = 3_300_000;
   const maximumFileCount = 315;
   const maximumFileBytes = 310_000;
