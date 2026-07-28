@@ -6,6 +6,7 @@ import { JCopyButtonComponent } from 'jrng-ui/copy-button';
 import { JSkeletonComponent } from 'jrng-ui/skeleton';
 import { ComponentDetailViewBase } from './component-detail-view-base';
 import { ComponentPreviewComponent } from './component-detail-previews/component-preview.component';
+import { JBreadcrumbComponent } from 'jrng-ui/breadcrumb';
 
 @Component({
   selector: 'app-component-detail-view',
@@ -16,6 +17,7 @@ import { ComponentPreviewComponent } from './component-detail-previews/component
     JCopyButtonComponent,
     JSkeletonComponent,
     ComponentPreviewComponent,
+    JBreadcrumbComponent,
   ],
   template: `
     <div class="j-doc-detail-layout">
@@ -40,6 +42,10 @@ import { ComponentPreviewComponent } from './component-detail-previews/component
         </nav>
 
         @if (detailViewTab() === 'features') {
+          <j-breadcrumb
+            [home]="{ label: 'Documentation', routerLink: '/docs' }"
+            [model]="detailBreadcrumbItems()"
+          />
           <header class="j-doc-detail__header">
             <div>
               <h1 tabindex="-1" data-component-heading>{{ doc().name }}</h1>
@@ -103,7 +109,7 @@ import { ComponentPreviewComponent } from './component-detail-previews/component
               <div class="j-full-code" id="j-component-example-code">
                 <div class="j-code-header">
                   <div class="j-code-tabs" role="tablist" aria-label="Example source files">
-                    @for (tab of codeTabs; track tab.value) {
+                    @for (tab of codeTabsFor(example); track tab.value) {
                       <button
                         type="button"
                         role="tab"
@@ -518,6 +524,23 @@ import { ComponentPreviewComponent } from './component-detail-previews/component
               </ul>
             </section>
           }
+
+          <section class="j-doc-grid-sections">
+            <div class="j-doc-section-block" id="component-faq">
+              <h3>FAQ</h3>
+              <p>
+                Use the runnable examples above as the supported integration baseline. APIs not
+                listed in this page's examples are not part of the documented component contract.
+              </p>
+            </div>
+            <div class="j-doc-section-block" id="component-changelog">
+              <h3>Changelog</h3>
+              <p>
+                Review the package changelog before upgrading for component-specific additions,
+                fixes, and migrations.
+              </p>
+            </div>
+          </section>
         }
       </article>
       <aside class="j-component-contents" aria-label="On this page">

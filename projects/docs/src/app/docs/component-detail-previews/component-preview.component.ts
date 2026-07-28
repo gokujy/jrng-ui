@@ -16,6 +16,7 @@ import { OverlayComponentPreviewComponent } from './overlay-component-preview.co
 import { PagesComponentPreviewComponent } from './pages-component-preview.component';
 import { PanelComponentPreviewComponent } from './panel-component-preview.component';
 import { UtilitiesComponentPreviewComponent } from './utilities-component-preview.component';
+import { ApiExamplePreviewComponent } from './api-example-preview.component';
 
 @Component({
   selector: 'app-component-preview',
@@ -35,53 +36,58 @@ import { UtilitiesComponentPreviewComponent } from './utilities-component-previe
     PagesComponentPreviewComponent,
     PanelComponentPreviewComponent,
     UtilitiesComponentPreviewComponent,
+    ApiExamplePreviewComponent,
   ],
   template: `
-    @switch (doc().category) {
-      @case ('Panel') {
-        <app-panel-component-preview [doc]="doc()" [previewExample]="previewExample()" />
-      }
-      @case ('Form') {
-        <app-form-component-preview [doc]="doc()" [previewExample]="previewExample()" />
-      }
-      @case ('Misc') {
-        <app-misc-component-preview [doc]="doc()" [previewExample]="previewExample()" />
-      }
-      @case ('Data') {
-        <app-data-component-preview [doc]="doc()" [previewExample]="previewExample()" />
-      }
-      @case ('Button') {
-        <app-button-component-preview [doc]="doc()" [previewExample]="previewExample()" />
-      }
-      @case ('Menu') {
-        <app-menu-component-preview [doc]="doc()" [previewExample]="previewExample()" />
-      }
-      @case ('Layout') {
-        <app-layout-component-preview [doc]="doc()" [previewExample]="previewExample()" />
-      }
-      @case ('Messages') {
-        <app-messages-component-preview [doc]="doc()" [previewExample]="previewExample()" />
-      }
-      @case ('Overlay') {
-        <app-overlay-component-preview [doc]="doc()" [previewExample]="previewExample()" />
-      }
-      @case ('Utilities') {
-        <app-utilities-component-preview [doc]="doc()" [previewExample]="previewExample()" />
-      }
-      @case ('File') {
-        <app-file-component-preview [doc]="doc()" [previewExample]="previewExample()" />
-      }
-      @case ('Pages') {
-        <app-pages-component-preview [doc]="doc()" [previewExample]="previewExample()" />
-      }
-      @case ('Chart') {
-        <app-chart-component-preview [doc]="doc()" [previewExample]="previewExample()" />
-      }
-      @case ('Media') {
-        <app-media-component-preview [doc]="doc()" [previewExample]="previewExample()" />
-      }
-      @default {
-        <app-generic-component-preview [doc]="doc()" [previewExample]="previewExample()" />
+    @if (previewExample().key.startsWith('api-')) {
+      <app-api-example-preview [doc]="doc()" [previewExample]="previewExample()" />
+    } @else {
+      @switch (doc().category) {
+        @case ('Panel') {
+          <app-panel-component-preview [doc]="doc()" [previewExample]="previewExample()" />
+        }
+        @case ('Form') {
+          <app-form-component-preview [doc]="doc()" [previewExample]="previewExample()" />
+        }
+        @case ('Misc') {
+          <app-misc-component-preview [doc]="doc()" [previewExample]="previewExample()" />
+        }
+        @case ('Data') {
+          <app-data-component-preview [doc]="doc()" [previewExample]="previewExample()" />
+        }
+        @case ('Button') {
+          <app-button-component-preview [doc]="doc()" [previewExample]="previewExample()" />
+        }
+        @case ('Menu') {
+          <app-menu-component-preview [doc]="doc()" [previewExample]="previewExample()" />
+        }
+        @case ('Layout') {
+          <app-layout-component-preview [doc]="doc()" [previewExample]="previewExample()" />
+        }
+        @case ('Messages') {
+          <app-messages-component-preview [doc]="doc()" [previewExample]="previewExample()" />
+        }
+        @case ('Overlay') {
+          <app-overlay-component-preview [doc]="doc()" [previewExample]="previewExample()" />
+        }
+        @case ('Utilities') {
+          <app-utilities-component-preview [doc]="doc()" [previewExample]="previewExample()" />
+        }
+        @case ('File') {
+          <app-file-component-preview [doc]="doc()" [previewExample]="previewExample()" />
+        }
+        @case ('Pages') {
+          <app-pages-component-preview [doc]="doc()" [previewExample]="previewExample()" />
+        }
+        @case ('Chart') {
+          <app-chart-component-preview [doc]="doc()" [previewExample]="previewExample()" />
+        }
+        @case ('Media') {
+          <app-media-component-preview [doc]="doc()" [previewExample]="previewExample()" />
+        }
+        @default {
+          <app-generic-component-preview [doc]="doc()" [previewExample]="previewExample()" />
+        }
       }
     }
   `,

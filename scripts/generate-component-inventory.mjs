@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
-import { format } from 'prettier';
+import { format, resolveConfig } from 'prettier';
 import ts from 'typescript';
 import {
   ACTIVE_COMPONENT_TOTAL,
@@ -35,6 +35,7 @@ const generatedCategoriesPath = path.join(
   'docs',
   'generated-component-categories.ts',
 );
+const prettierConfig = (await resolveConfig(outputPath)) ?? {};
 
 if (!fs.existsSync(declarationsDirectory)) {
   throw new Error('Build the jrng-ui library before generating the component inventory.');
@@ -98,7 +99,10 @@ const inventory = {
 };
 
 fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-const formattedInventory = await format(JSON.stringify(inventory), { parser: 'json' });
+const formattedInventory = await format(JSON.stringify(inventory), {
+  ...prettierConfig,
+  parser: 'json',
+});
 fs.writeFileSync(outputPath, formattedInventory, 'utf8');
 const markdownOutput = path.join(path.dirname(outputPath), 'component-inventory.md');
 fs.writeFileSync(markdownOutput, await formatInventoryMarkdown(inventory), 'utf8');
@@ -121,7 +125,7 @@ export const generatedComponentCategoryOrder = generatedComponentCategories.map(
 );
 export const generatedActiveComponentTotal = ${ACTIVE_COMPONENT_TOTAL};
 `,
-    { parser: 'typescript' },
+    { ...prettierConfig, parser: 'typescript' },
   ),
   'utf8',
 );
@@ -292,7 +296,7 @@ function readPublicComponents(fileName) {
       inputs: registryRecord?.inputs ?? [],
       outputs: registryRecord?.outputs ?? [],
       publicMethods: registryRecord?.methods ?? [],
-      templateDirectives: templateDirectives(publicImportPath),
+      templateDirectives: templateDirectives(publicImportPath, sourceText),
       requiredProviders: [],
       detailedDocumentation: Boolean(exactDocumentation),
       staticMarkdownMention: new RegExp(`\\b${escapeRegex(selector)}\\b`).test(markdownText),
@@ -375,10 +379,13 @@ function directTestStatus(specTexts, className) {
   return specTexts.length ? 'entrypoint-indirect' : 'none';
 }
 
-function templateDirectives(importPath) {
+function templateDirectives(importPath, componentSource) {
   const entrypoint = publicAudit.entrypoints?.find((item) => item.importPath === importPath);
   return (entrypoint?.artifacts ?? [])
     .filter((artifact) => artifact.kind === 'directive')
+    .filter((artifact) =>
+      new RegExp(`\\b${escapeRegex(artifact.originalName)}\\b`).test(componentSource),
+    )
     .map((artifact) => ({ name: artifact.name, selector: artifact.selector }));
 }
 
@@ -536,7 +543,7 @@ async function formatInventoryMarkdown(value) {
     ),
     '',
   ];
-  return format(lines.join('\n'), { parser: 'markdown' });
+  return format(lines.join('\n'), { ...prettierConfig, parser: 'markdown' });
 }
 
 function readJson(relativePath) {

@@ -184,6 +184,7 @@ import {
   PriorityComponentGuidance,
   priorityComponentGuidance,
 } from './priority-component-guidance';
+import { generatedApiExampleCoverage } from './generated-api-example-coverage';
 
 type DetailCodeTab = 'html' | 'ts' | 'scss' | 'data';
 
@@ -196,6 +197,11 @@ export interface DetailFeatureExample {
   readonly html: string;
   readonly ts?: string;
   readonly scss?: string;
+  readonly inputs?: readonly string[];
+  readonly outputs?: readonly string[];
+  readonly methods?: readonly string[];
+  readonly templates?: readonly string[];
+  readonly forms?: readonly string[];
 }
 
 interface DetailContentsItem {
@@ -1708,6 +1714,10 @@ export class ComponentDetailViewBase {
   private readonly tour = inject(JTourService);
 
   readonly doc = input.required<ComponentDoc>();
+  readonly detailBreadcrumbItems = computed<readonly JBreadcrumbItem[]>(() => [
+    { label: 'Components', routerLink: '/docs/components' },
+    { label: this.doc().name },
+  ]);
   readonly detailViewTab = signal<'features' | 'api'>('features');
   readonly activeContentsId = signal('component-import');
 
@@ -1725,112 +1735,199 @@ export class ComponentDetailViewBase {
     { label: 'SCSS', value: 'scss' },
     { label: 'Data', value: 'data', icon: 'database' },
   ];
+
+  codeTabsFor(
+    example: DetailFeatureExample,
+  ): readonly { label: string; value: DetailCodeTab; icon?: JIconName }[] {
+    return this.codeTabs.filter((tab) => tab.value !== 'scss' || Boolean(example.scss));
+  }
   readonly featureExamples = computed<readonly DetailFeatureExample[]>(() => {
     const doc = this.doc();
     if (doc.slug === 'table') {
-      return [...TABLE_FEATURE_EXAMPLES, ...TABLE_SCENARIO_DOCS].map((example, index) => ({
-        ...example,
-        index,
-      }));
+      return this.withApiCoverage(
+        doc,
+        [...TABLE_FEATURE_EXAMPLES, ...TABLE_SCENARIO_DOCS].map((example, index) => ({
+          ...example,
+          index,
+        })),
+      );
     }
     if (doc.slug === 'text-expand') {
-      return TEXT_EXPAND_FEATURE_EXAMPLES.map((example, index) =>
-        example.key === 'characters'
-          ? { ...example, index, ...demoSources['text-expand-basic-demo'] }
-          : { ...example, index, responsivePreview: example.key === 'responsive' },
+      return this.withApiCoverage(
+        doc,
+        TEXT_EXPAND_FEATURE_EXAMPLES.map((example, index) =>
+          example.key === 'characters'
+            ? { ...example, index, ...demoSources['text-expand-basic-demo'] }
+            : { ...example, index, responsivePreview: example.key === 'responsive' },
+        ),
       );
     }
     if (doc.slug === 'button') {
-      return BUTTON_FEATURE_EXAMPLES.map((example, index) =>
-        example.key === 'basic'
-          ? { ...example, index, ...demoSources['button-basic-demo'] }
-          : { ...example, index },
+      return this.withApiCoverage(
+        doc,
+        BUTTON_FEATURE_EXAMPLES.map((example, index) =>
+          example.key === 'basic'
+            ? { ...example, index, ...demoSources['button-basic-demo'] }
+            : { ...example, index },
+        ),
       );
     }
     if (doc.slug === 'avatar') {
-      return AVATAR_FEATURE_EXAMPLES.map((example, index) =>
-        example.key === 'zoom'
-          ? { ...example, index, ...demoSources['avatar-zoom-demo'] }
-          : { ...example, index },
+      return this.withApiCoverage(
+        doc,
+        AVATAR_FEATURE_EXAMPLES.map((example, index) =>
+          example.key === 'zoom'
+            ? { ...example, index, ...demoSources['avatar-zoom-demo'] }
+            : { ...example, index },
+        ),
       );
     }
     if (doc.slug === 'date-picker') {
-      return DATE_PICKER_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+      return this.withApiCoverage(
+        doc,
+        DATE_PICKER_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
+      );
     }
     if (doc.slug === 'checkbox') {
-      return CHECKBOX_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+      return this.withApiCoverage(
+        doc,
+        CHECKBOX_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
+      );
     }
     if (doc.slug === 'editor') {
-      return EDITOR_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+      return this.withApiCoverage(
+        doc,
+        EDITOR_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
+      );
     }
     if (doc.slug === 'icon-field') {
-      return ICON_FIELD_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+      return this.withApiCoverage(
+        doc,
+        ICON_FIELD_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
+      );
     }
     if (doc.slug === 'input-group') {
-      return INPUT_GROUP_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+      return this.withApiCoverage(
+        doc,
+        INPUT_GROUP_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
+      );
     }
     if (doc.slug === 'copy-button') {
-      return COPY_BUTTON_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+      return this.withApiCoverage(
+        doc,
+        COPY_BUTTON_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
+      );
     }
     if (doc.slug === 'radio') {
-      return RADIO_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+      return this.withApiCoverage(
+        doc,
+        RADIO_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
+      );
     }
     if (doc.slug === 'data-view') {
-      return DATA_VIEW_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+      return this.withApiCoverage(
+        doc,
+        DATA_VIEW_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
+      );
     }
     if (doc.slug === 'timeline') {
-      return TIMELINE_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+      return this.withApiCoverage(
+        doc,
+        TIMELINE_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
+      );
     }
     if (doc.slug === 'virtual-scroller') {
-      return VIRTUAL_SCROLLER_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+      return this.withApiCoverage(
+        doc,
+        VIRTUAL_SCROLLER_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
+      );
     }
     if (doc.slug === 'accordion-header') {
-      return ACCORDION_HEADER_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+      return this.withApiCoverage(
+        doc,
+        ACCORDION_HEADER_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
+      );
     }
     if (doc.slug === 'accordion-content') {
-      return ACCORDION_CONTENT_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+      return this.withApiCoverage(
+        doc,
+        ACCORDION_CONTENT_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
+      );
     }
     if (doc.slug === 'divider') {
-      return DIVIDER_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+      return this.withApiCoverage(
+        doc,
+        DIVIDER_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
+      );
     }
     if (doc.slug === 'splitter') {
-      return SPLITTER_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+      return this.withApiCoverage(
+        doc,
+        SPLITTER_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
+      );
     }
     if (doc.slug === 'splitter-panel') {
-      return SPLITTER_PANEL_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+      return this.withApiCoverage(
+        doc,
+        SPLITTER_PANEL_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
+      );
     }
     if (doc.slug === 'stepper') {
-      return STEPPER_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+      return this.withApiCoverage(
+        doc,
+        STEPPER_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
+      );
     }
     if (doc.slug === 'carousel') {
-      return CAROUSEL_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+      return this.withApiCoverage(
+        doc,
+        CAROUSEL_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
+      );
     }
     if (doc.slug === 'gallery') {
-      return GALLERY_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+      return this.withApiCoverage(
+        doc,
+        GALLERY_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
+      );
     }
     if (doc.slug === 'html-preview') {
-      return HTML_PREVIEW_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+      return this.withApiCoverage(
+        doc,
+        HTML_PREVIEW_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
+      );
     }
     if (doc.slug === 'loader') {
-      return LOADER_FEATURE_EXAMPLES.map((example, index) =>
-        example.key === 'basic'
-          ? { ...example, index, ...demoSources['loader-types-demo'] }
-          : { ...example, index },
+      return this.withApiCoverage(
+        doc,
+        LOADER_FEATURE_EXAMPLES.map((example, index) =>
+          example.key === 'basic'
+            ? { ...example, index, ...demoSources['loader-types-demo'] }
+            : { ...example, index },
+        ),
       );
     }
     if (doc.slug === 'card') {
-      return CARD_FEATURE_EXAMPLES.map((example, index) =>
-        example.key === 'metric'
-          ? { ...example, index, ...demoSources['card-metric-demo'] }
-          : { ...example, index },
+      return this.withApiCoverage(
+        doc,
+        CARD_FEATURE_EXAMPLES.map((example, index) =>
+          example.key === 'metric'
+            ? { ...example, index, ...demoSources['card-metric-demo'] }
+            : { ...example, index },
+        ),
       );
     }
     if (doc.slug === 'chart') {
-      return CHART_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+      return this.withApiCoverage(
+        doc,
+        CHART_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
+      );
     }
     const gridExamples = GRID_FEATURE_EXAMPLES[doc.slug];
     if (gridExamples) {
-      return gridExamples.map((example, index) => ({ ...example, index }));
+      return this.withApiCoverage(
+        doc,
+        gridExamples.map((example, index) => ({ ...example, index })),
+      );
     }
     const keys = FEATURE_VARIANT_KEYS[doc.slug];
 
@@ -1856,18 +1953,39 @@ export class ComponentDetailViewBase {
           html: this.addExampleBooleanInput(doc.code.basic, stateInput.name),
         });
       }
-      return examples;
+      return this.withApiCoverage(doc, examples);
     }
 
-    return keys.map((key, index) => ({
-      name: key.charAt(0).toUpperCase() + key.slice(1),
-      details: doc.variants[index] ?? doc.description,
-      key,
-      index,
-      html: variantExampleHtml(doc, key),
-      responsivePreview: key === 'responsive',
-    }));
+    return this.withApiCoverage(
+      doc,
+      keys.map((key, index) => ({
+        name: key.charAt(0).toUpperCase() + key.slice(1),
+        details: doc.variants[index] ?? doc.description,
+        key,
+        index,
+        html: variantExampleHtml(doc, key),
+        responsivePreview: key === 'responsive',
+      })),
+    );
   });
+
+  private withApiCoverage(
+    doc: ComponentDoc,
+    existing: readonly DetailFeatureExample[],
+  ): readonly DetailFeatureExample[] {
+    const coverage = generatedApiExampleCoverage.components.find(
+      (component) => component.selector === doc.selector,
+    );
+    if (!coverage) return existing;
+    const keys = new Set(existing.map((example) => example.key));
+    const additions = coverage.examples
+      .filter((example) => !keys.has(example.key))
+      .map((example, offset) => ({
+        ...example,
+        index: existing.length + offset,
+      }));
+    return [...existing, ...additions];
+  }
   readonly contentsItems = computed<readonly DetailContentsItem[]>(() => {
     if (this.detailViewTab() === 'features') {
       return [
@@ -1893,6 +2011,8 @@ export class ComponentDetailViewBase {
     items.push(
       { id: 'component-css-variables', label: 'CSS variables', level: 1 },
       { id: 'component-accessibility', label: 'Accessibility', level: 1 },
+      { id: 'component-faq', label: 'FAQ', level: 1 },
+      { id: 'component-changelog', label: 'Changelog', level: 1 },
     );
     return items;
   });

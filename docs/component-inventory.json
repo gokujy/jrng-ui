@@ -150,6 +150,8 @@
         "isSelected()",
         "open()",
         "optionId()",
+        "registerOnChange()",
+        "registerOnTouched()",
         "retryAsync()",
         "selectSuggestion()",
         "setDisabledState()",
@@ -221,6 +223,8 @@
       "publicMethods": [
         "handleBlur()",
         "handleChange()",
+        "registerOnChange()",
+        "registerOnTouched()",
         "setDisabledState()",
         "writeValue()"
       ],
@@ -292,6 +296,8 @@
         "handleBlur()",
         "handleInput()",
         "handleKeydown()",
+        "registerOnChange()",
+        "registerOnTouched()",
         "removeAt()",
         "setDisabledState()",
         "writeValue()"
@@ -360,6 +366,8 @@
         "close()",
         "handleInput()",
         "handleTextInput()",
+        "registerOnChange()",
+        "registerOnTouched()",
         "setDisabledState()",
         "setValue()",
         "toggle()",
@@ -432,6 +440,9 @@
         "formatPreviewDate()",
         "markTouched()",
         "part()",
+        "registerOnChange()",
+        "registerOnTouched()",
+        "registerOnValidatorChange()",
         "setDisabledState()",
         "validate()",
         "writeValue()"
@@ -534,12 +545,13 @@
         "handleTextInput()",
         "handleTimeInput()",
         "handleTimeStepClick()",
-        "if()",
         "isDateDisabled()",
         "isPresetAvailable()",
         "next()",
         "open()",
         "previous()",
+        "registerOnChange()",
+        "registerOnTouched()",
         "selectDate()",
         "selectMonth()",
         "selectToday()",
@@ -619,7 +631,7 @@
         "toolbar",
         "toolbarLabel"
       ],
-      "outputs": ["autosave", "dirtyChange", "valueChange"],
+      "outputs": ["autosave", "dirtyChange", "validationChange", "valueChange"],
       "publicMethods": [
         "canInteract()",
         "clearFormatting()",
@@ -630,8 +642,12 @@
         "handlePaste()",
         "handleSourceInput()",
         "handleToolbarMouseDown()",
+        "insertImage()",
         "insertTable()",
         "markTouched()",
+        "registerOnChange()",
+        "registerOnTouched()",
+        "registerOnValidatorChange()",
         "rememberSelection()",
         "setBlock()",
         "setDisabledState()",
@@ -826,7 +842,7 @@
       "examplesStatus": "complete",
       "basicExample": true,
       "inputs": [
-        "ariaDescribedby",
+        "aria-describedby",
         "clearable",
         "disabled",
         "error",
@@ -853,6 +869,8 @@
         "clearValue()",
         "handleBlur()",
         "handleInput()",
+        "registerOnChange()",
+        "registerOnTouched()",
         "setDisabledState()",
         "writeValue()"
       ],
@@ -965,7 +983,7 @@
       "examplesStatus": "complete",
       "basicExample": true,
       "inputs": [
-        "ariaDescribedby",
+        "aria-describedby",
         "clearable",
         "disabled",
         "error",
@@ -991,6 +1009,8 @@
         "clearValue()",
         "handleBlur()",
         "handleInput()",
+        "registerOnChange()",
+        "registerOnTouched()",
         "setDisabledState()",
         "writeValue()"
       ],
@@ -1040,7 +1060,7 @@
       "examplesStatus": "complete",
       "basicExample": true,
       "inputs": [
-        "ariaDescribedby",
+        "aria-describedby",
         "clearable",
         "currency",
         "disabled",
@@ -1076,6 +1096,8 @@
         "handleFocus()",
         "handleInput()",
         "handleKeydown()",
+        "registerOnChange()",
+        "registerOnTouched()",
         "setDisabledState()",
         "writeValue()"
       ],
@@ -1150,6 +1172,8 @@
         "handleInput()",
         "handleKeydown()",
         "handlePaste()",
+        "registerOnChange()",
+        "registerOnTouched()",
         "setDisabledState()",
         "writeValue()"
       ],
@@ -1212,6 +1236,8 @@
       "outputs": ["valueChange"],
       "publicMethods": [
         "handleKeydown()",
+        "registerOnChange()",
+        "registerOnTouched()",
         "setDisabledState()",
         "writeValue()"
       ],
@@ -1279,7 +1305,7 @@
         "variant"
       ],
       "outputs": [],
-      "publicMethods": [],
+      "publicMethods": ["onFocusIn()", "onFocusOut()", "onValueChange()"],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -1347,13 +1373,15 @@
         "size",
         "styleClass"
       ],
-      "outputs": ["asyncError", "filterChange", "valueChange"],
+      "outputs": ["asyncError", "filterChange", "selectionChange", "valueChange"],
       "publicMethods": [
         "handleFilterInput()",
         "handleKeydown()",
         "isSelected()",
         "optionContext()",
         "optionId()",
+        "registerOnChange()",
+        "registerOnTouched()",
         "retryAsync()",
         "selectOption()",
         "setDisabledState()",
@@ -1411,6 +1439,7 @@
         "chipCompact",
         "chipIconField",
         "chipSeverityField",
+        "chipSeverityResolver",
         "chipWrap",
         "chipsRemovable",
         "clearable",
@@ -1467,6 +1496,8 @@
         "itemContext()",
         "open()",
         "optionId()",
+        "registerOnChange()",
+        "registerOnTouched()",
         "removeChip()",
         "resolveChipIcon()",
         "resolveChipSeverity()",
@@ -1524,7 +1555,7 @@
       "examplesStatus": "complete",
       "basicExample": true,
       "inputs": [
-        "ariaDescribedby",
+        "aria-describedby",
         "clearable",
         "customRules",
         "disabled",
@@ -1559,6 +1590,8 @@
         "clearValue()",
         "handleBlur()",
         "handleInput()",
+        "registerOnChange()",
+        "registerOnTouched()",
         "setDisabledState()",
         "togglePassword()",
         "writeValue()"
@@ -1624,6 +1657,8 @@
       ],
       "outputs": ["validationChange", "valueChange"],
       "publicMethods": [
+        "addCondition()",
+        "addGroup()",
         "canMutate()",
         "changeField()",
         "changeJoin()",
@@ -1639,7 +1674,6 @@
         "fieldContext()",
         "groupContext()",
         "groupLabel()",
-        "if()",
         "inputType()",
         "listValue()",
         "markTouched()",
@@ -1647,6 +1681,9 @@
         "operator()",
         "operatorsFor()",
         "rangeValue()",
+        "registerOnChange()",
+        "registerOnTouched()",
+        "registerOnValidatorChange()",
         "removeNode()",
         "setDisabledState()",
         "stringValue()",
@@ -1716,6 +1753,8 @@
       "publicMethods": [
         "handleBlur()",
         "handleChange()",
+        "registerOnChange()",
+        "registerOnTouched()",
         "setDisabledState()",
         "writeValue()"
       ],
@@ -1784,6 +1823,8 @@
       "publicMethods": [
         "handleKeydown()",
         "isSelected()",
+        "registerOnChange()",
+        "registerOnTouched()",
         "selectOption()",
         "setDisabledState()",
         "writeValue()"
@@ -1852,6 +1893,8 @@
         "fillPercent()",
         "handleKeydown()",
         "previewAt()",
+        "registerOnChange()",
+        "registerOnTouched()",
         "selectAt()",
         "setDisabledState()",
         "setValue()",
@@ -1964,6 +2007,8 @@
         "loadMoreAsync()",
         "open()",
         "optionId()",
+        "registerOnChange()",
+        "registerOnTouched()",
         "retryAsync()",
         "selectOption()",
         "setDisabledState()",
@@ -2032,6 +2077,8 @@
       "outputs": ["valueChange"],
       "publicMethods": [
         "isSelected()",
+        "registerOnChange()",
+        "registerOnTouched()",
         "setDisabledState()",
         "toggleOption()",
         "writeValue()"
@@ -2104,6 +2151,8 @@
       "publicMethods": [
         "handleLowerInput()",
         "handleUpperInput()",
+        "registerOnChange()",
+        "registerOnTouched()",
         "setDisabledState()",
         "writeValue()"
       ],
@@ -2169,6 +2218,8 @@
       "publicMethods": [
         "handleBlur()",
         "handleChange()",
+        "registerOnChange()",
+        "registerOnTouched()",
         "setDisabledState()",
         "writeValue()"
       ],
@@ -2218,7 +2269,7 @@
       "examplesStatus": "complete",
       "basicExample": true,
       "inputs": [
-        "ariaDescribedby",
+        "aria-describedby",
         "autoResize",
         "clearable",
         "disabled",
@@ -2246,6 +2297,8 @@
         "clearValue()",
         "handleBlur()",
         "handleInput()",
+        "registerOnChange()",
+        "registerOnTouched()",
         "setDisabledState()",
         "writeValue()"
       ],
@@ -2319,15 +2372,15 @@
       "publicMethods": [
         "clearValue()",
         "close()",
-        "for()",
         "handleHourChange()",
         "handleMinuteChange()",
         "handlePeriodChange()",
         "handleSecondChange()",
         "handleTriggerKeydown()",
-        "if()",
         "open()",
         "pad()",
+        "registerOnChange()",
+        "registerOnTouched()",
         "selectNow()",
         "setDisabledState()",
         "toggle()",
@@ -2392,7 +2445,13 @@
         "trueValue"
       ],
       "outputs": ["valueChange"],
-      "publicMethods": ["setDisabledState()", "toggle()", "writeValue()"],
+      "publicMethods": [
+        "registerOnChange()",
+        "registerOnTouched()",
+        "setDisabledState()",
+        "toggle()",
+        "writeValue()"
+      ],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -2526,7 +2585,7 @@
         "text"
       ],
       "outputs": ["copied", "copyFailed"],
-      "publicMethods": [],
+      "publicMethods": ["copy()"],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": true,
@@ -2573,21 +2632,8 @@
       "examplesStatus": "complete",
       "basicExample": true,
       "inputs": ["activeDate", "ariaLabel", "events", "styleClass", "view"],
-      "outputs": [
-        "dateClick",
-        "eventClick",
-        "viewChange",
-        "activeDateChange",
-        "viewChange"
-      ],
-      "publicMethods": [
-        "handleEventClick()",
-        "if()",
-        "next()",
-        "previous()",
-        "setView()",
-        "today()"
-      ],
+      "outputs": ["dateClick", "eventClick", "viewChange", "activeDateChange", "viewChange"],
+      "publicMethods": ["handleEventClick()", "next()", "previous()", "setView()", "today()"],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -2636,6 +2682,7 @@
       "inputs": [
         "ariaLabel",
         "display",
+        "field",
         "hideOperator",
         "label",
         "max",
@@ -2661,32 +2708,7 @@
         "operatorLabel()",
         "selectOperator()"
       ],
-      "templateDirectives": [
-        {
-          "name": "JTableActionsTemplateDirective",
-          "selector": "ng-template[jTableActions]"
-        },
-        {
-          "name": "JTableCellTemplateDirective",
-          "selector": "ng-template[jTableCell]"
-        },
-        {
-          "name": "JTableEmptyTemplateDirective",
-          "selector": "ng-template[jTableEmpty]"
-        },
-        {
-          "name": "JTableFilterTemplateDirective",
-          "selector": "ng-template[jTableFilter]"
-        },
-        {
-          "name": "JTableHeaderTemplateDirective",
-          "selector": "ng-template[jTableHeader]"
-        },
-        {
-          "name": "JTableLoadingTemplateDirective",
-          "selector": "ng-template[jTableLoading]"
-        }
-      ],
+      "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": true,
       "staticMarkdownMention": true,
@@ -2743,7 +2765,7 @@
         "emptyText",
         "error",
         "falseLabel",
-        "hrefInput",
+        "href",
         "label",
         "listSeparator",
         "loading",
@@ -2821,6 +2843,7 @@
         "rowsPerPageOptions",
         "sortField",
         "sortLabel",
+        "sortOptions",
         "value"
       ],
       "outputs": ["layoutChange", "pageChange", "sortChange"],
@@ -2948,22 +2971,9 @@
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": [
-        "emptyMessage",
-        "end",
-        "labelHeader",
-        "scale",
-        "start",
-        "styleClass",
-        "tasks"
-      ],
+      "inputs": ["emptyMessage", "end", "labelHeader", "scale", "start", "styleClass", "tasks"],
       "outputs": [],
-      "publicMethods": [
-        "dependencyLabel()",
-        "if()",
-        "progress()",
-        "taskContext()"
-      ],
+      "publicMethods": ["dependencyLabel()", "progress()", "taskContext()"],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -3137,12 +3147,7 @@
       "basicExample": true,
       "inputs": ["collapsible", "orientation", "styleClass", "value"],
       "outputs": [],
-      "publicMethods": [
-        "isExpanded()",
-        "nodeContext()",
-        "nodeKeyFor()",
-        "toggle()"
-      ],
+      "publicMethods": ["isExpanded()", "nodeContext()", "nodeKeyFor()", "toggle()"],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -3190,9 +3195,9 @@
       "basicExample": true,
       "inputs": [
         "currentPageReportTemplate",
-        "firstInput",
+        "first",
         "pageLinkSize",
-        "rowsInput",
+        "rows",
         "rowsPerPageOptions",
         "showCurrentPageReport",
         "showFirstLastPageButtons",
@@ -3339,7 +3344,6 @@
         "timezone",
         "title",
         "totalRecords",
-        "transform",
         "value",
         "variant",
         "virtualFirst",
@@ -3359,6 +3363,7 @@
         "error",
         "expandedRowKeysChange",
         "export",
+        "exportProgress",
         "filterChange",
         "globalFilterChange",
         "headerContextMenu",
@@ -3373,6 +3378,7 @@
         "rowEditInit",
         "rowEditSave",
         "rowExpand",
+        "rowGroupToggle",
         "rowLock",
         "rowReorder",
         "rowSelect",
@@ -3408,6 +3414,7 @@
         "collapseAllRows()",
         "columnClass()",
         "columnRowSpan()",
+        "commitCellEdit()",
         "createServerQuery()",
         "dropColumn()",
         "dropRow()",
@@ -3419,6 +3426,7 @@
         "expandAllRows()",
         "expandedRowId()",
         "exportCSV()",
+        "exportWithAdapter()",
         "filter()",
         "filterContext()",
         "filterLabel()",
@@ -3476,6 +3484,7 @@
         "rowClassFor()",
         "rowId()",
         "rowTabIndex()",
+        "saveRowEdit()",
         "saveState()",
         "selectRows()",
         "setExpandedRows()",
@@ -3499,30 +3508,12 @@
         "updateRowEditValue()"
       ],
       "templateDirectives": [
-        {
-          "name": "JTableActionsTemplateDirective",
-          "selector": "ng-template[jTableActions]"
-        },
-        {
-          "name": "JTableCellTemplateDirective",
-          "selector": "ng-template[jTableCell]"
-        },
-        {
-          "name": "JTableEmptyTemplateDirective",
-          "selector": "ng-template[jTableEmpty]"
-        },
-        {
-          "name": "JTableFilterTemplateDirective",
-          "selector": "ng-template[jTableFilter]"
-        },
-        {
-          "name": "JTableHeaderTemplateDirective",
-          "selector": "ng-template[jTableHeader]"
-        },
-        {
-          "name": "JTableLoadingTemplateDirective",
-          "selector": "ng-template[jTableLoading]"
-        }
+        { "name": "JTableActionsTemplateDirective", "selector": "ng-template[jTableActions]" },
+        { "name": "JTableCellTemplateDirective", "selector": "ng-template[jTableCell]" },
+        { "name": "JTableEmptyTemplateDirective", "selector": "ng-template[jTableEmpty]" },
+        { "name": "JTableFilterTemplateDirective", "selector": "ng-template[jTableFilter]" },
+        { "name": "JTableHeaderTemplateDirective", "selector": "ng-template[jTableHeader]" },
+        { "name": "JTableLoadingTemplateDirective", "selector": "ng-template[jTableLoading]" }
       ],
       "requiredProviders": [],
       "detailedDocumentation": true,
@@ -3585,13 +3576,8 @@
         "value",
         "variant"
       ],
-      "outputs": [],
-      "publicMethods": [
-        "handleItemKeydown()",
-        "isExpanded()",
-        "itemContext()",
-        "toggleItem()"
-      ],
+      "outputs": ["itemToggle"],
+      "publicMethods": ["handleItemKeydown()", "isExpanded()", "itemContext()", "toggleItem()"],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": true,
@@ -3833,10 +3819,7 @@
         "toggleSort()"
       ],
       "templateDirectives": [
-        {
-          "name": "JTreeTableCellTemplateDirective",
-          "selector": "ng-template[jTreeTableCell]"
-        }
+        { "name": "JTreeTableCellTemplateDirective", "selector": "ng-template[jTreeTableCell]" }
       ],
       "requiredProviders": [],
       "detailedDocumentation": true,
@@ -3893,12 +3876,7 @@
         "viewportItems"
       ],
       "outputs": ["lazyLoad"],
-      "publicMethods": [
-        "handleScroll()",
-        "itemContext()",
-        "scrollToIndex()",
-        "trackItem()"
-      ],
+      "publicMethods": ["handleScroll()", "itemContext()", "scrollToIndex()", "trackItem()"],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -3944,20 +3922,9 @@
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": [
-        "activeIndex",
-        "disabled",
-        "header",
-        "multiple",
-        "value",
-        "variant"
-      ],
-      "outputs": ["toggleRequest", "activeIndexChange", "valueChange"],
-      "publicMethods": [
-        "ngAfterContentInit()",
-        "requestToggle()",
-        "togglePanel()"
-      ],
+      "inputs": ["activeIndex", "multiple", "value", "variant"],
+      "outputs": ["activeIndexChange", "valueChange"],
+      "publicMethods": ["ngAfterContentInit()", "togglePanel()"],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": true,
@@ -4003,20 +3970,9 @@
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": [
-        "activeIndex",
-        "disabled",
-        "header",
-        "multiple",
-        "value",
-        "variant"
-      ],
-      "outputs": ["toggleRequest", "activeIndexChange", "valueChange"],
-      "publicMethods": [
-        "ngAfterContentInit()",
-        "requestToggle()",
-        "togglePanel()"
-      ],
+      "inputs": [],
+      "outputs": [],
+      "publicMethods": [],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -4062,20 +4018,9 @@
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": [
-        "activeIndex",
-        "disabled",
-        "header",
-        "multiple",
-        "value",
-        "variant"
-      ],
-      "outputs": ["toggleRequest", "activeIndexChange", "valueChange"],
-      "publicMethods": [
-        "ngAfterContentInit()",
-        "requestToggle()",
-        "togglePanel()"
-      ],
+      "inputs": [],
+      "outputs": [],
+      "publicMethods": [],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -4121,20 +4066,9 @@
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": [
-        "activeIndex",
-        "disabled",
-        "header",
-        "multiple",
-        "value",
-        "variant"
-      ],
-      "outputs": ["toggleRequest", "activeIndexChange", "valueChange"],
-      "publicMethods": [
-        "ngAfterContentInit()",
-        "requestToggle()",
-        "togglePanel()"
-      ],
+      "inputs": ["disabled", "header", "value"],
+      "outputs": ["toggleRequest"],
+      "publicMethods": ["requestToggle()"],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -4423,24 +4357,14 @@
       "inputs": [
         "disabled",
         "gutterSize",
-        "maxSize",
-        "minSize",
         "orientation",
         "readOnly",
-        "size",
         "snapPoints",
         "storageKey",
         "styleClass"
       ],
       "outputs": ["resize"],
-      "publicMethods": [
-        "ngAfterContentInit()",
-        "resetSizes()",
-        "resizeAt()",
-        "resizeWithKeyboard()",
-        "separatorValue()",
-        "startResize()"
-      ],
+      "publicMethods": ["ngAfterContentInit()", "resetSizes()", "resizeAt()", "separatorValue()"],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -4486,27 +4410,9 @@
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": [
-        "disabled",
-        "gutterSize",
-        "maxSize",
-        "minSize",
-        "orientation",
-        "readOnly",
-        "size",
-        "snapPoints",
-        "storageKey",
-        "styleClass"
-      ],
-      "outputs": ["resize"],
-      "publicMethods": [
-        "ngAfterContentInit()",
-        "resetSizes()",
-        "resizeAt()",
-        "resizeWithKeyboard()",
-        "separatorValue()",
-        "startResize()"
-      ],
+      "inputs": ["maxSize", "minSize", "size"],
+      "outputs": [],
+      "publicMethods": ["resizeWithKeyboard()", "startResize()"],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -4609,25 +4515,9 @@
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": [
-        "closable",
-        "disabled",
-        "header",
-        "label",
-        "lazy",
-        "orientation",
-        "scrollable",
-        "selectedIndex",
-        "variant"
-      ],
-      "outputs": ["selectedIndexChange", "tabClose"],
-      "publicMethods": [
-        "closeTab()",
-        "handleCloseKeydown()",
-        "handleKeydown()",
-        "ngAfterContentInit()",
-        "selectTab()"
-      ],
+      "inputs": ["closable", "disabled", "header", "label"],
+      "outputs": [],
+      "publicMethods": [],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -4673,17 +4563,7 @@
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": [
-        "closable",
-        "disabled",
-        "header",
-        "label",
-        "lazy",
-        "orientation",
-        "scrollable",
-        "selectedIndex",
-        "variant"
-      ],
+      "inputs": ["lazy", "orientation", "scrollable", "selectedIndex", "variant"],
       "outputs": ["selectedIndexChange", "tabClose"],
       "publicMethods": [
         "closeTab()",
@@ -4907,12 +4787,7 @@
       "basicExample": true,
       "inputs": [],
       "outputs": [],
-      "publicMethods": [
-        "accept()",
-        "handleOverlayMouseDown()",
-        "reject()",
-        "severityIcon()"
-      ],
+      "publicMethods": ["accept()", "handleOverlayMouseDown()", "reject()", "severityIcon()"],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": true,
@@ -4960,12 +4835,7 @@
       "basicExample": true,
       "inputs": [],
       "outputs": [],
-      "publicMethods": [
-        "accept()",
-        "focusPanel()",
-        "handleKeydown()",
-        "reject()"
-      ],
+      "publicMethods": ["accept()", "focusPanel()", "handleKeydown()", "reject()"],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -5013,12 +4883,12 @@
       "basicExample": true,
       "inputs": [
         "appendTo",
-        "closableInput",
+        "closable",
         "closeOnBackdrop",
         "closeOnEscape",
-        "dismissableMaskInput",
+        "dismissableMask",
         "draggable",
-        "headerInput",
+        "header",
         "headless",
         "height",
         "modal",
@@ -5032,15 +4902,7 @@
         "visible",
         "width"
       ],
-      "outputs": [
-        "closed",
-        "hide",
-        "jrClose",
-        "openChange",
-        "opened",
-        "show",
-        "visibleChange"
-      ],
+      "outputs": ["closed", "hide", "jrClose", "openChange", "opened", "show", "visibleChange"],
       "publicMethods": [
         "close()",
         "endDrag()",
@@ -5239,6 +5101,7 @@
         "visible"
       ],
       "outputs": [
+        "action",
         "delete",
         "loadMore",
         "markAllReadChange",
@@ -5355,14 +5218,7 @@
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": [
-        "actions",
-        "ariaLabel",
-        "popup",
-        "rowIndex",
-        "triggerIcon",
-        "triggerLabel"
-      ],
+      "inputs": ["actions", "ariaLabel", "popup", "row", "rowIndex", "triggerIcon", "triggerLabel"],
       "outputs": ["action"],
       "publicMethods": [
         "activate()",
@@ -5371,32 +5227,7 @@
         "handleTriggerKeydown()",
         "toggle()"
       ],
-      "templateDirectives": [
-        {
-          "name": "JTableActionsTemplateDirective",
-          "selector": "ng-template[jTableActions]"
-        },
-        {
-          "name": "JTableCellTemplateDirective",
-          "selector": "ng-template[jTableCell]"
-        },
-        {
-          "name": "JTableEmptyTemplateDirective",
-          "selector": "ng-template[jTableEmpty]"
-        },
-        {
-          "name": "JTableFilterTemplateDirective",
-          "selector": "ng-template[jTableFilter]"
-        },
-        {
-          "name": "JTableHeaderTemplateDirective",
-          "selector": "ng-template[jTableHeader]"
-        },
-        {
-          "name": "JTableLoadingTemplateDirective",
-          "selector": "ng-template[jTableLoading]"
-        }
-      ],
+      "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": true,
       "staticMarkdownMention": true,
@@ -5489,14 +5320,7 @@
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": [
-        "commands",
-        "emptyMessage",
-        "heading",
-        "placeholder",
-        "shortcut",
-        "visible"
-      ],
+      "inputs": ["commands", "emptyMessage", "heading", "placeholder", "shortcut", "visible"],
       "outputs": ["command", "visibleChange"],
       "publicMethods": [
         "handleClosed()",
@@ -5668,7 +5492,7 @@
         "target",
         "visible"
       ],
-      "outputs": ["visibleChange"],
+      "outputs": ["itemClick", "visibleChange"],
       "publicMethods": [
         "activate()",
         "children()",
@@ -5732,7 +5556,7 @@
       "examplesStatus": "complete",
       "basicExample": true,
       "inputs": ["ariaLabel", "menuLabel", "mobileCollapse", "model"],
-      "outputs": [],
+      "outputs": ["itemClick"],
       "publicMethods": ["activate()", "templateContext()"],
       "templateDirectives": [],
       "requiredProviders": [],
@@ -5788,7 +5612,7 @@
         "expandLabel",
         "model"
       ],
-      "outputs": ["collapsedChange"],
+      "outputs": ["collapsedChange", "itemClick"],
       "publicMethods": ["handleClick()", "isActive()", "toggle()"],
       "templateDirectives": [],
       "requiredProviders": [],
@@ -5893,12 +5717,7 @@
       "basicExample": true,
       "inputs": ["position"],
       "outputs": [],
-      "publicMethods": [
-        "endSwipe()",
-        "startSwipe()",
-        "templateContext()",
-        "visibleToasts()"
-      ],
+      "publicMethods": ["endSwipe()", "startSwipe()", "templateContext()", "visibleToasts()"],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": true,
@@ -6080,13 +5899,7 @@
         "visibleItems"
       ],
       "outputs": ["activeIndexChange"],
-      "publicMethods": [
-        "handleKeydown()",
-        "itemContext()",
-        "next()",
-        "previous()",
-        "transform()"
-      ],
+      "publicMethods": ["handleKeydown()", "itemContext()", "next()", "previous()", "transform()"],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -6218,7 +6031,7 @@
       "outputs": ["exported", "openWindow", "print", "refreshed"],
       "publicMethods": [
         "copy()",
-        "export()",
+        "exportPreview()",
         "openPreview()",
         "printPreview()",
         "refresh()"
@@ -6591,7 +6404,6 @@
         "handleDrop()",
         "handleFileInput()",
         "handlePaste()",
-        "if()",
         "moveItem()",
         "openFilePicker()",
         "removeItem()",
@@ -6670,16 +6482,18 @@
         "chartHover",
         "dataPointClick",
         "datasetClick",
+        "exportImageRequest",
         "fullscreenChange",
         "legendClick",
         "print"
       ],
       "publicMethods": [
-        "destroy()",
+        "copyImage()",
         "download()",
         "exportImage()",
         "refresh()",
-        "resize()"
+        "resize()",
+        "toggleFullscreen()"
       ],
       "templateDirectives": [],
       "requiredProviders": [],
@@ -6774,13 +6588,7 @@
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": [
-        "footer",
-        "sidebarCollapsed",
-        "sidebarLabel",
-        "sidebarOpen",
-        "styleClass"
-      ],
+      "inputs": ["footer", "sidebarCollapsed", "sidebarLabel", "sidebarOpen", "styleClass"],
       "outputs": ["sidebarCollapsedChange", "sidebarOpenChange"],
       "publicMethods": ["toggleSidebar()"],
       "templateDirectives": [],
@@ -7050,15 +6858,7 @@
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": [
-        "align",
-        "columnGap",
-        "gap",
-        "justify",
-        "rowGap",
-        "styleClass",
-        "wrap"
-      ],
+      "inputs": ["align", "columnGap", "gap", "justify", "rowGap", "styleClass", "wrap"],
       "outputs": [],
       "publicMethods": [],
       "templateDirectives": [],
@@ -7261,14 +7061,7 @@
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": [
-        "description",
-        "loading",
-        "sticky",
-        "styleClass",
-        "title",
-        "variant"
-      ],
+      "inputs": ["description", "loading", "sticky", "styleClass", "title", "variant"],
       "outputs": [],
       "publicMethods": [],
       "templateDirectives": [],
@@ -7670,14 +7463,7 @@
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": [
-        "ariaLabel",
-        "name",
-        "pt",
-        "size",
-        "strokeWidth",
-        "styleClass"
-      ],
+      "inputs": ["ariaLabel", "name", "pt", "size", "strokeWidth", "styleClass"],
       "outputs": [],
       "publicMethods": [],
       "templateDirectives": [],
@@ -7833,15 +7619,7 @@
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": [
-        "indeterminate",
-        "label",
-        "pt",
-        "severity",
-        "styleClass",
-        "value",
-        "variant"
-      ],
+      "inputs": ["indeterminate", "label", "pt", "severity", "styleClass", "value", "variant"],
       "outputs": [],
       "publicMethods": [],
       "templateDirectives": [],
@@ -7995,15 +7773,7 @@
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": [
-        "colorMap",
-        "label",
-        "pt",
-        "severity",
-        "size",
-        "status",
-        "styleClass"
-      ],
+      "inputs": ["colorMap", "label", "pt", "severity", "size", "status", "styleClass"],
       "outputs": [],
       "publicMethods": [],
       "templateDirectives": [],
@@ -8167,15 +7937,9 @@
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": [
-        "caseSensitive",
-        "diacriticInsensitive",
-        "markClass",
-        "term",
-        "text"
-      ],
+      "inputs": ["caseSensitive", "diacriticInsensitive", "markClass", "term", "text"],
       "outputs": [],
-      "publicMethods": ["for()"],
+      "publicMethods": [],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -8224,9 +7988,7 @@
       "inputs": ["dir"],
       "outputs": [],
       "publicMethods": [],
-      "templateDirectives": [
-        { "name": "JTourStepDirective", "selector": "[jTourStep]" }
-      ],
+      "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": true,
       "staticMarkdownMention": true,
