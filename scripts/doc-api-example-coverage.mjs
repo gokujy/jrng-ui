@@ -124,13 +124,20 @@ function createComponentCoverage(component, inventory, existingExamples) {
   groupedInputs.configuration = coveredInputs.filter((api) => !alreadyGrouped.has(api));
 
   const examples = [];
+  const focusedCategory = ['Form', 'Button', 'Messages', 'Misc'].includes(component.category);
   addInputExample(
     examples,
     component,
     'api-appearance',
     'Variants, sizing, and layout',
     'Compare the public presentation and layout controls in one configured preview.',
-    [...groupedInputs.configuration, ...groupedInputs.accessibility, ...groupedInputs.appearance],
+    focusedCategory
+      ? groupedInputs.appearance
+      : [
+          ...groupedInputs.configuration,
+          ...groupedInputs.accessibility,
+          ...groupedInputs.appearance,
+        ],
   );
   addInputExample(
     examples,
@@ -138,7 +145,9 @@ function createComponentCoverage(component, inventory, existingExamples) {
     'api-states',
     'States',
     'Review disabled, read-only, loading, validation, and selection states supported by the component.',
-    [...groupedInputs.configuration, ...groupedInputs.accessibility, ...groupedInputs.states],
+    focusedCategory
+      ? groupedInputs.states
+      : [...groupedInputs.configuration, ...groupedInputs.accessibility, ...groupedInputs.states],
   );
   addInputExample(
     examples,
@@ -154,7 +163,9 @@ function createComponentCoverage(component, inventory, existingExamples) {
     'api-accessibility',
     'Accessibility',
     'Provide visible and assistive labels through the component accessibility inputs.',
-    [...groupedInputs.configuration, ...groupedInputs.accessibility],
+    focusedCategory
+      ? groupedInputs.accessibility
+      : [...groupedInputs.configuration, ...groupedInputs.accessibility],
   );
 
   if (component.outputs.length) {
@@ -394,7 +405,7 @@ function createExample(component, definition) {
     : `<${component.selector}>`;
   const projected = templates.length
     ? `\n${templates.map(templateSnippet).join('\n')}\n`
-    : '\n  Business example content\n';
+    : '\n  Fictional customer example\n';
   const componentMarkup = `${opening}${projected}</${component.selector}>`;
   const methodControls = methods
     .map((signature) => {
@@ -482,24 +493,24 @@ function sourceExampleValue(selector, api, exampleKey) {
   }
   if (/^(?:error|errorState)$/.test(api)) return `'Review the highlighted field.'`;
   if (/^(?:aria|label|title|caption|description|hint|placeholder|alt)/i.test(api)) {
-    return `'Business example'`;
+    return `'Customer example'`;
   }
   if (/date/i.test(api)) return `new Date('2026-07-28T09:30:00')`;
   if (/columns/i.test(api)) {
     return `[
-    { field: 'name', header: 'Work item' },
+    { field: 'name', header: 'Customer Name' },
     { field: 'status', header: 'Status' }
   ]`;
   }
   if (/^(?:options|suggestions|statuses|items|source|target|value|model)$/.test(api)) {
     return `[
-    { label: 'Design review', value: 'design' },
-    { label: 'Release approval', value: 'release' }
+    { label: 'Northwind Harbor', value: 'northwind' },
+    { label: 'Willow & Pine', value: 'willow' }
   ]`;
   }
   if (/Options$/.test(api)) return '[]';
   if (/data/i.test(api)) {
-    return `{ labels: ['Apr', 'May', 'Jun'], datasets: [{ label: 'Requests', data: [42, 58, 71] }] }`;
+    return `{ labels: ['Apr', 'May', 'Jun'], datasets: [{ label: 'Customers', data: [42, 58, 71] }] }`;
   }
   if (
     /^(?:min|max|step|rows|first|totalRecords|length|delay|duration|count|pageSize|itemSize|viewportItems)/i.test(
@@ -535,7 +546,7 @@ function formSourceValue(selector) {
   if (['j-checkbox', 'j-radio', 'j-switch', 'j-toggle-button'].includes(selector)) {
     return 'true';
   }
-  return `'Quarterly review'`;
+  return `'Customer review'`;
 }
 
 function templateSnippet(selector) {

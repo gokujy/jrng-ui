@@ -110,11 +110,7 @@ import {
         </div>
       }
       @case ('chip') {
-        <div class="j-preview-row">
-          <j-chip label="Design" />
-          <j-chip label="Approved" severity="success" />
-          <j-chip label="Removable filter" removable removeAriaLabel="Clear criterion" />
-        </div>
+        <j-chip label="Enterprise customer" />
       }
       @case ('icon') {
         <div class="j-preview-row">
@@ -124,36 +120,16 @@ import {
         </div>
       }
       @case ('progress-spinner') {
-        <div class="j-preview-row">
-          <j-progress-spinner label="Loading orders" />
-          <j-progress-spinner label="Loading report" [size]="48" [strokeWidth]="3" />
-        </div>
+        <j-progress-spinner label="Loading customers" />
       }
       @case ('badge') {
-        <div class="j-preview-row">
-          <j-badge value="12" />
-          <j-badge value="Active" severity="success" />
-          <j-badge value="Warning" severity="warning" />
-          <j-badge value="Error" severity="danger" />
-          <j-badge value="Info" severity="info" size="lg" />
-        </div>
+        <j-badge value="12 active customers" />
       }
       @case ('tag') {
-        <div class="j-preview-row">
-          <j-tag label="Design" />
-          <j-tag label="Published" severity="success" rounded />
-          <j-tag label="Blocked" severity="danger" />
-          <j-tag label="Filter" removable removeLabel="Clear criterion" />
-        </div>
+        <j-tag label="Active" severity="success" />
       }
       @case ('status-chip') {
-        <div class="j-preview-row">
-          <j-status-chip status="active" />
-          <j-status-chip status="pending" />
-          <j-status-chip status="approved" />
-          <j-status-chip status="rejected" />
-          <j-status-chip status="overdue" />
-        </div>
+        <j-status-chip status="active" />
       }
       @case ('empty-state') {
         <j-empty
@@ -175,13 +151,7 @@ import {
         />
       }
       @case ('skeleton') {
-        <div class="j-preview-grid">
-          <j-skeleton variant="text" />
-          <j-skeleton variant="avatar" />
-          <j-skeleton variant="button" width="8rem" />
-          <j-skeleton variant="card" />
-          <j-skeleton variant="table" [rows]="3" />
-        </div>
+        <j-skeleton variant="card" />
       }
       @case ('avatar-group') {
         <j-avatar-group [items]="avatarGroupItems" [max]="3" ariaLabel="Project team" />

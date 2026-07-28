@@ -81,13 +81,6 @@ import {
         />
       }
       @case ('copy-button') {
-        <div class="j-preview-row">
-          <j-copy-button text="npm install jrng-ui" />
-          <j-copy-button text="INV-2048" label="Copy ID" copiedLabel="Copied ID" />
-          <j-copy-button text="Disabled" disabled />
-        </div>
-      }
-      @case ('copy-button') {
         @if (example.key === 'labels') {
           <j-copy-button
             text="https://jrng.dev/components"
@@ -115,7 +108,7 @@ import {
         } @else if (example.key === 'disabled') {
           <j-copy-button text="Unavailable token" disabled />
         } @else {
-          <j-copy-button text="JRNG-2026" />
+          <j-copy-button text="CUS-2048" label="Copy customer ID" />
         }
       }
     }

@@ -140,8 +140,8 @@ Generated on 2026-07-28 from built public declarations, implementation-backed re
 - Public template directives detected: 7
 - Explicit exclusions with reasons: 636
 - Runnable examples before this audit: 547
-- Runnable examples after this audit: 1158
-- Documentation examples added: 611
+- Runnable examples after this audit: 1141
+- Documentation examples added: 594
 - Documentation examples removed or consolidated: 0
 - Remaining gaps: 0
 - Broken or undocumented APIs found: none remaining after registry reconciliation

@@ -217,3 +217,13 @@ There are no pre-existing failing validation commands. The npm client prints a n
 ## Working-tree boundary
 
 Before this audit began, three video assets were staged and three documentation preview/data files were modified. They are user-owned pre-existing work and are excluded from this phase commit.
+
+## Rebuild progress
+
+### Phase 4 — Forms, actions, and feedback
+
+- Form, Button, Messages, and Misc API examples now separate appearance, state, configuration, and accessibility inputs instead of repeating one broad property group.
+- Basic Input Mask, Input Number, Select, Switch, Copy Button, Toast, Validation Message, Chip, Badge, Tag, Status Chip, Spinner, and Skeleton previews were simplified to one primary concept.
+- Generated labels, projected content, form values, options, table headers, and chart series now use fictional customer scenarios.
+- The duplicate unreachable Copy Button preview branch was removed.
+- API coverage remains complete for 122 components, 1,446 inputs, 241 outputs, and 713 registry methods.

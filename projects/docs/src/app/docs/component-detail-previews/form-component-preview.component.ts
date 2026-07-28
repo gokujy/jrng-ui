@@ -114,36 +114,30 @@ import {
         </div>
       }
       @case ('input-mask') {
-        <div class="j-preview-grid">
-          <j-input-mask
-            label="Call-back line"
-            mask="(999) 999-9999"
-            placeholder="(555) 123-4567"
-            [(ngModel)]="maskedPhone"
-          />
-          <j-input-mask
-            label="Employee ID"
-            mask="aa-9999"
-            placeholder="AB-2048"
-            [(ngModel)]="employeeId"
-          />
-        </div>
+        <j-input-mask
+          label="Customer phone"
+          mask="(999) 999-9999"
+          placeholder="(555) 123-4567"
+          [(ngModel)]="maskedPhone"
+        />
       }
       @case ('input-number') {
-        <div class="j-preview-grid">
-          <j-input-number label="Quantity" [min]="1" [max]="100" [(ngModel)]="quantity" />
-          <j-input-number label="Budget" mode="currency" currency="USD" [(ngModel)]="budget" />
-        </div>
+        <j-input-number
+          label="Outstanding balance"
+          mode="currency"
+          currency="USD"
+          [(ngModel)]="budget"
+        />
       }
       @case ('input-otp') {
         <j-input-otp label="Verification code" [length]="6" numericOnly [(ngModel)]="otp" />
       }
       @case ('listbox') {
-        <j-listbox label="Team" [options]="teamOptions" [(ngModel)]="selectedTeam" />
+        <j-listbox label="Account manager" [options]="teamOptions" [(ngModel)]="selectedTeam" />
       }
       @case ('multiselect') {
         <j-multiselect
-          label="Skills"
+          label="Customer segments"
           [options]="skillOptions"
           placeholder="Select skills"
           [(ngModel)]="selectedSkills"
@@ -189,18 +183,12 @@ import {
         />
       }
       @case ('select') {
-        <div class="j-preview-grid j-overlay-form-preview">
-          <j-select label="Status" [options]="statuses" placeholder="Choose status" clearable />
-          <j-select
-            label="Searchable team"
-            [options]="teams"
-            optionLabel="name"
-            optionValue="id"
-            searchable
-          />
-          <j-select label="Loading" [options]="statuses" loading />
-          <j-select label="Required" [options]="statuses" invalid error="Choose a status" />
-        </div>
+        <j-select
+          label="Customer status"
+          [options]="statuses"
+          placeholder="Choose status"
+          clearable
+        />
       }
       @case ('checkbox') {
         <div class="j-preview-row">
@@ -287,12 +275,7 @@ import {
         </div>
       }
       @case ('switch') {
-        <div class="j-preview-row">
-          <j-switch label="Email alerts" [(ngModel)]="enabled" />
-          <j-switch onLabel="Published" offLabel="Draft" [(ngModel)]="published" />
-          <j-switch label="Disabled" disabled />
-          <j-switch label="Large" size="lg" [(ngModel)]="enabled" />
-        </div>
+        <j-switch label="Customer email alerts" [(ngModel)]="enabled" />
       }
       @case ('label') {
         <j-label
