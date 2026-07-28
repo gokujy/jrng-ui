@@ -24,10 +24,10 @@ import {
       }
       @case ('responsive-sidebar') {
         <div class="j-sidebar-demo">
-          <j-responsive-sidebar title="Workspace" [open]="true">
+          <j-responsive-sidebar title="Customers" [open]="true">
             <nav class="j-sidebar-demo__nav" aria-label="Preview sidebar">
               <a>Dashboard</a>
-              <a class="is-active">Projects</a>
+              <a class="is-active">Customers</a>
               <a>Settings</a>
             </nav>
           </j-responsive-sidebar>
@@ -41,8 +41,8 @@ import {
         </j-container>
       }
       @case ('section-header') {
-        <j-section-header title="Projects" description="Track active work and ownership.">
-          <j-button label="New project" />
+        <j-section-header title="Customers" description="Track account activity and ownership.">
+          <j-button label="New customer" />
         </j-section-header>
       }
       @case ('section-footer') {
@@ -54,12 +54,12 @@ import {
       @case ('app-shell') {
         <div class="j-layout-preview-frame">
           <j-app-shell styleClass="j-doc-compact-shell">
-            <strong jShellHeader>Workspace</strong>
+            <strong jShellHeader>Customer workspace</strong>
             <nav jShellSidebar class="j-preview-mini-nav">
-              <span class="is-active">Overview</span><span>Projects</span><span>Settings</span>
+              <span class="is-active">Overview</span><span>Customers</span><span>Settings</span>
             </nav>
             <j-card header="Dashboard" subheader="Application shell content" variant="outlined" />
-            <small jShellFooter>JRNG UI workspace</small>
+            <small jShellFooter>JRNG customer workspace</small>
           </j-app-shell>
         </div>
       }
@@ -90,7 +90,7 @@ import {
             <j-row>
               <j-col size="12" md="8">
                 <div class="j-doc-grid-cell j-doc-grid-cell--primary">
-                  <strong>Main workspace</strong>
+                  <strong>Customer workspace</strong>
                   <span>12 columns on mobile, 8 from md</span>
                 </div>
               </j-col>
@@ -116,7 +116,7 @@ import {
                 [size]="example.key === 'alignment' ? 'auto' : 12"
                 [sm]="example.key === 'alignment' ? null : 6"
               >
-                <div class="j-doc-grid-cell"><strong>Project title</strong></div>
+                <div class="j-doc-grid-cell"><strong>Customer name</strong></div>
               </j-col>
               <j-col
                 [size]="example.key === 'alignment' ? 'auto' : 12"

@@ -14,7 +14,7 @@ import {
       @case ('action-menu') {
         <div class="j-action-menu-preview">
           <section>
-            <span class="j-preview-label">Inline actions</span>
+            <span class="j-preview-label">Customer actions</span>
             <j-action-menu [actions]="rowActions" [row]="orders[0]" />
           </section>
           <section>
@@ -22,7 +22,7 @@ import {
             <j-action-menu
               popup
               triggerIcon="more-vertical"
-              triggerLabel="Open order actions"
+              triggerLabel="Open customer actions"
               [actions]="rowActions"
               [row]="orders[0]"
             />
@@ -37,7 +37,7 @@ import {
         />
       }
       @case ('menu') {
-        <j-menu [model]="menuItems" ariaLabel="Project actions" />
+        <j-menu [model]="menuItems" ariaLabel="Customer actions" />
       }
       @case ('command-palette') {
         <div class="j-preview-row">
@@ -56,7 +56,7 @@ import {
         <j-context-menu [target]="contextTarget" [model]="menubarItems" />
       }
       @case ('mega-menu') {
-        <j-mega-menu [model]="megaMenuItems" ariaLabel="Product navigation" />
+        <j-mega-menu [model]="megaMenuItems" ariaLabel="Customer navigation" />
       }
       @case ('menubar') {
         <j-menubar [model]="menubarItems" ariaLabel="Application menu" />

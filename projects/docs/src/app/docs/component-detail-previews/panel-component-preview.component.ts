@@ -26,7 +26,7 @@ import {
       @case ('accordion-panel') {
         <j-accordion value="summary">
           <j-accordion-panel value="summary">
-            <j-accordion-header>Project summary</j-accordion-header>
+            <j-accordion-header>Customer summary</j-accordion-header>
             <j-accordion-content>This panel is expanded by default.</j-accordion-content>
           </j-accordion-panel>
           <j-accordion-panel value="team">
@@ -66,14 +66,14 @@ import {
         <j-accordion value="section">
           <j-accordion-panel value="section">
             <j-accordion-header>
-              {{ example.key === 'form' ? 'Profile settings' : 'Project summary' }}
+              {{ example.key === 'form' ? 'Customer settings' : 'Customer summary' }}
             </j-accordion-header>
             <j-accordion-content>
               @if (example.key === 'form') {
                 <j-input label="Display name" value="Avery Reed" />
                 <j-button label="Save profile" />
               } @else {
-                <p>The release is on schedule and all required checks have passed.</p>
+                <p>The renewal is on schedule and all required reviews have passed.</p>
               }
             </j-accordion-content>
           </j-accordion-panel>
@@ -114,19 +114,19 @@ import {
         } @else {
           @switch (example.key) {
             @case ('slots') {
-              <j-card header="Release plan" subheader="Version 0.0.9" footer="Updated today"
-                >All milestones are on track.</j-card
+              <j-card header="Customer plan" subheader="Enterprise subscription" footer="Updated today"
+                >The next renewal review is scheduled.</j-card
               >
             }
             @case ('form') {
-              <j-card header="Workspace settings"
-                ><j-input label="Workspace name" value="Operations" /><j-button
+              <j-card header="Customer settings"
+                ><j-input label="Customer segment" value="Growth" /><j-button
                   jCardActions
                   label="Save"
               /></j-card>
             }
             @case ('profile') {
-              <j-card header="Avery Reed" subheader="Product designer"
+              <j-card header="Avery Reed" subheader="Account manager"
                 ><j-avatar image="/assets/images/avatar-user-01.webp" label="Avery Reed" size="lg"
               /></j-card>
             }
@@ -156,14 +156,14 @@ import {
               /></j-card>
             }
             @case ('status') {
-              <j-card header="Release status"
+              <j-card header="Customer status"
                 ><j-badge value="Ready" severity="success" />
                 <p>All required checks passed.</p></j-card
               >
             }
             @case ('clickable') {
-              <j-card header="Open project" subheader="Keyboard focusable" interactive
-                ><p>View project details.</p></j-card
+              <j-card header="Open customer" subheader="Keyboard focusable" interactive
+                ><p>View customer details.</p></j-card
               >
             }
             @case ('loading') {
@@ -193,8 +193,8 @@ import {
               /></j-card>
             }
             @default {
-              <j-card header="Design review"
-                ><p>Review navigation and responsive behavior before release.</p></j-card
+              <j-card header="Customer review"
+                ><p>Review account activity and the upcoming renewal.</p></j-card
               >
             }
           }
@@ -216,7 +216,7 @@ import {
         </j-fieldset>
       }
       @case ('panel') {
-        <j-panel header="Project health" toggleable>
+        <j-panel header="Customer health" toggleable>
           The latest build passed and documentation coverage is improving.
         </j-panel>
       }
@@ -232,12 +232,12 @@ import {
           @if (example.key === 'characters') {
             <app-text-expand-basic-demo />
           } @else if (example.key === 'responsive') {
-            <j-card header="Release summary">
+            <j-card header="Customer summary">
               <j-text-expand [text]="productDescription" mode="lines" [collapsedLines]="2" />
             </j-card>
           } @else if (example.key === 'projected') {
             <j-text-expand mode="lines" [collapsedLines]="2">
-              <strong>Release note:</strong> {{ projectedSummary }}
+              <strong>Customer note:</strong> {{ projectedSummary }}
             </j-text-expand>
           } @else {
             <j-text-expand

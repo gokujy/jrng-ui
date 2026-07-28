@@ -227,3 +227,10 @@ Before this audit began, three video assets were staged and three documentation 
 - Generated labels, projected content, form values, options, table headers, and chart series now use fictional customer scenarios.
 - The duplicate unreachable Copy Button preview branch was removed.
 - API coverage remains complete for 122 components, 1,446 inputs, 241 outputs, and 713 registry methods.
+
+### Phase 5 — Navigation, overlays, layout, data display, and media
+
+- Menu, Overlay, Layout, Panel, Media, and File API cards now keep appearance, state, configuration, and accessibility examples focused instead of repeating broad configuration sets.
+- Visible menu, dialog, drawer, popover, card, accordion, panel, application-shell, grid, tree, tree-table, upload, browser, and preview examples now use fictional customer scenarios.
+- Existing user-owned video-preview work remains isolated and was not staged or committed by this phase.
+- Route, compiled-example, API-example, lint, and documentation-build validation pass. The docs build retains the pre-existing non-failing 1.15 MB initial-bundle warning.

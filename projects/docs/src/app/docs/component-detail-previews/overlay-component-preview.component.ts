@@ -14,12 +14,12 @@ import {
         <div class="j-preview-row">
           <j-button label="Open dialog" (onClick)="dialogOpen.set(true)" />
           <j-dialog
-            header="Edit project"
+            header="Edit customer"
             [visible]="dialogOpen()"
             (visibleChange)="dialogOpen.set($event)"
           >
             <div class="j-dialog-demo">
-              <j-input label="Project name" value="JRNG UI Docs" />
+              <j-input label="Customer name" value="Avery Morgan" />
               <div class="j-preview-row">
                 <j-button label="Cancel" variant="soft" (onClick)="dialogOpen.set(false)" />
                 <j-button label="Save" (onClick)="dialogOpen.set(false)" />
@@ -90,15 +90,15 @@ import {
             position="bottom"
             [dismissable]="false"
           >
-            <strong>Project health</strong>
-            <p>Build is passing and docs coverage improved.</p>
+            <strong>Customer activity</strong>
+            <p>Last active today with two open support cases.</p>
           </j-popover>
         </div>
       }
       @case ('bottom-sheet') {
         <div class="j-preview-row">
           <j-button label="Open bottom sheet" (onClick)="bottomSheetVisible = true" />
-          <j-bottom-sheet header="Project actions" [(visible)]="bottomSheetVisible" [modal]="false">
+          <j-bottom-sheet header="Customer actions" [(visible)]="bottomSheetVisible" [modal]="false">
             <div class="j-preview-stack">
               <j-button label="Duplicate" variant="outlined" />
               <j-button label="Archive" variant="soft" />

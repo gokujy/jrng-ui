@@ -18,7 +18,7 @@ import {
             multiple
           />
           <j-file-preview
-            fileName="statement.pdf"
+            fileName="customer-summary.pdf"
             [fileSize]="245760"
             description="Uploaded 2 minutes ago"
             url="#"
@@ -27,7 +27,7 @@ import {
       }
       @case ('file-browser') {
         <j-file-browser
-          title="Shared files"
+          title="Customer files"
           [items]="fileBrowserItems"
           [breadcrumbs]="fileBrowserBreadcrumbs"
           [selection]="fileBrowserSelection"
@@ -43,14 +43,14 @@ import {
       @case ('file-preview') {
         <div class="j-file-preview-demo-grid">
           <j-file-preview
-            fileName="statement.pdf"
+            fileName="customer-summary.pdf"
             [fileSize]="245760"
-            description="Financial statement uploaded 2 minutes ago"
+            description="Customer summary uploaded 2 minutes ago"
             url="#"
             actionDisplay="icon-label"
           />
           <j-file-preview
-            fileName="avatar.png"
+            fileName="customer-avatar.png"
             [fileSize]="56320"
             description="Image asset"
             showTypeLabel

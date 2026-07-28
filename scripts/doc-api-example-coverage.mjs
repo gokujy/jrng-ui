@@ -124,7 +124,18 @@ function createComponentCoverage(component, inventory, existingExamples) {
   groupedInputs.configuration = coveredInputs.filter((api) => !alreadyGrouped.has(api));
 
   const examples = [];
-  const focusedCategory = ['Form', 'Button', 'Messages', 'Misc'].includes(component.category);
+  const focusedCategory = [
+    'Form',
+    'Button',
+    'Messages',
+    'Misc',
+    'Menu',
+    'Overlay',
+    'Layout',
+    'Panel',
+    'Media',
+    'File',
+  ].includes(component.category);
   addInputExample(
     examples,
     component,

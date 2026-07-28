@@ -236,10 +236,10 @@ import {
         />
       }
       @case ('tree') {
-        <j-tree [value]="treeNodes" filter ariaLabel="Workspace folders" />
+        <j-tree [value]="treeNodes" filter ariaLabel="Customer folders" />
       }
       @case ('tree-table') {
-        <j-tree-table [value]="treeNodes" [columns]="treeColumns" ariaLabel="Project hierarchy" />
+        <j-tree-table [value]="treeNodes" [columns]="treeColumns" ariaLabel="Customer hierarchy" />
       }
       @case ('virtual-scroller') {
         <j-virtual-scroller
