@@ -5100,7 +5100,7 @@ export const generatedApiExampleCoverage = {
     },
     {
       selector: 'j-table',
-      existingExamples: 236,
+      existingExamples: 239,
       examples: [
         {
           key: 'api-appearance',

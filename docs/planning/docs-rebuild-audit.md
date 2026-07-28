@@ -234,3 +234,12 @@ Before this audit began, three video assets were staged and three documentation 
 - Visible menu, dialog, drawer, popover, card, accordion, panel, application-shell, grid, tree, tree-table, upload, browser, and preview examples now use fictional customer scenarios.
 - Existing user-owned video-preview work remains isolated and was not staged or committed by this phase.
 - Route, compiled-example, API-example, lint, and documentation-build validation pass. The docs build retains the pre-existing non-failing 1.15 MB initial-bundle warning.
+
+### Phase 6 — Table
+
+- The Table page now contains 239 focused examples, including three new independent filtering experiences: Inline Column Filters, Filters Above Table, and Expandable Filter Panel.
+- Each new filtering component creates its own customer array and owns its draft/applied filters, sorting, pagination, loading, empty-result, and panel state.
+- Filtering is case-insensitive, combines active criteria with AND logic, restores the full dataset when cleared, and preserves advanced-filter drafts while the panel is collapsed.
+- The new examples use JRNG inputs, selects, date pickers, number input, buttons, chips, badges, avatars, tooltip, and table components with theme tokens and reduced-motion handling.
+- Legacy Table preview labels and data fields using the forbidden Client code, Legal name, Public name, Parent account, and Billing type terminology were replaced with Customer ID, Customer Name, Company, Account Manager, and Subscription.
+- Library/docs tests, lint, docs build, route checks, compiled-example checks, and API-example validation pass. The production docs bundle retains the non-failing 1.15 MB initial-bundle warning.

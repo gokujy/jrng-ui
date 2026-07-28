@@ -121,7 +121,7 @@ const TABLE_DEMO_ROWS: readonly TableDemoRow[] = [
     customer: 'Oakline Property',
     department: 'Sales',
     status: 'Review',
-    product: 'Portfolio dashboard',
+    product: 'Growth subscription',
     quantity: 5,
     price: 260,
     total: 1300,
@@ -269,7 +269,7 @@ export class TableScenarioState {
   readonly columns: readonly JTableColumn<TableDemoRow>[] = [
     {
       field: 'code',
-      header: 'Order',
+      header: 'Customer ID',
       sortable: true,
       filterable: true,
       frozen: true,
@@ -305,7 +305,7 @@ export class TableScenarioState {
     },
     {
       field: 'date',
-      header: 'Order date',
+      header: 'Joined date',
       type: 'date',
       sortable: true,
       filterable: true,
@@ -379,7 +379,7 @@ export class TableScenarioState {
   readonly columnGroups: readonly JTableColumnGroupRow[] = [
     [
       { header: 'Account', colspan: 2 },
-      { header: 'Order details', colspan: 3 },
+      { header: 'Customer details', colspan: 3 },
       { header: 'Availability', colspan: 1 },
     ],
   ];

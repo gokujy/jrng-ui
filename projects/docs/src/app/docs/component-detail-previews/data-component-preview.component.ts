@@ -28,8 +28,8 @@ import {
           } @else {
             @switch (example.key) {
               @case ('templates') {
-                <j-table [value]="clientRows" [columns]="clientColumns">
-                  <ng-template jTableHeader="legalName" let-column>
+                <j-table [value]="customerRows" [columns]="customerColumns">
+                  <ng-template jTableHeader="customerName" let-column>
                     {{ column.header }} / account
                   </ng-template>
                   <ng-template jTableCell="active" let-value="formattedValue">
@@ -42,8 +42,8 @@ import {
                   <div class="j-table-doc-variant">
                     <span class="j-preview-label">{{ variant }}</span>
                     <j-table
-                      [value]="clientRows.slice(0, 2)"
-                      [columns]="clientColumns"
+                      [value]="customerRows.slice(0, 2)"
+                      [columns]="customerColumns"
                       [variant]="variant"
                     />
                   </div>
@@ -54,8 +54,8 @@ import {
                   <div class="j-table-doc-variant">
                     <span class="j-preview-label">{{ density }}</span>
                     <j-table
-                      [value]="clientRows.slice(0, 2)"
-                      [columns]="clientColumns"
+                      [value]="customerRows.slice(0, 2)"
+                      [columns]="customerColumns"
                       [density]="density"
                     />
                   </div>
@@ -64,7 +64,7 @@ import {
               @case ('skeleton') {
                 <j-table
                   [value]="[]"
-                  [columns]="clientColumns"
+                  [columns]="customerColumns"
                   loading
                   loadingVariant="skeleton"
                   [skeletonRows]="4"
@@ -72,8 +72,8 @@ import {
               }
               @case ('overlay') {
                 <j-table
-                  [value]="clientRows.slice(0, 3)"
-                  [columns]="clientColumns"
+                  [value]="customerRows.slice(0, 3)"
+                  [columns]="customerColumns"
                   loading
                   loadingVariant="overlay"
                 />
@@ -81,24 +81,24 @@ import {
               @case ('no-data') {
                 <j-table
                   [value]="[]"
-                  [columns]="clientColumns"
-                  emptyTitle="No clients yet"
-                  emptyDescription="New client records will appear here."
-                  emptyActionLabel="Add account"
+                  [columns]="customerColumns"
+                  emptyTitle="No customers yet"
+                  emptyDescription="New customer records will appear here."
+                  emptyActionLabel="Add customer"
                 />
               }
               @case ('no-results') {
                 <j-table
-                  [value]="clientRows"
-                  [columns]="clientColumns"
-                  globalFilter="no matching client"
-                  noResultsTitle="No matching clients"
+                  [value]="customerRows"
+                  [columns]="customerColumns"
+                  globalFilter="no matching customer"
+                  noResultsTitle="No matching customers"
                 />
               }
               @case ('error') {
                 <j-table
                   [value]="[]"
-                  [columns]="clientColumns"
+                  [columns]="customerColumns"
                   [errorState]="tableLoadError"
                   emptyActionLabel="Retry"
                 />
@@ -110,7 +110,7 @@ import {
                 <j-tree-table [value]="lazyTreeNodes" [columns]="treeColumns" lazy />
               }
               @case ('migration') {
-                <j-table [value]="[]" [columns]="clientColumns">
+                <j-table [value]="[]" [columns]="customerColumns">
                   <ng-template jTableEmpty let-state>
                     <div class="j-preview-note">Integrated state: {{ state }}</div>
                   </ng-template>
@@ -118,8 +118,8 @@ import {
               }
               @default {
                 <j-table
-                  [value]="clientRows"
-                  [columns]="clientColumns"
+                  [value]="customerRows"
+                  [columns]="customerColumns"
                   [selectionMode]="
                     example.key === 'selection' || example.key === 'accessibility'
                       ? 'checkbox'
@@ -129,9 +129,9 @@ import {
                   [rows]="3"
                   [filterDisplay]="example.key === 'filtering' ? 'row' : 'none'"
                   [showGlobalFilter]="example.key === 'filtering'"
-                  [sortField]="example.key === 'sorting' ? 'legalName' : ''"
+                  [sortField]="example.key === 'sorting' ? 'customerName' : ''"
                   [sortOrder]="example.key === 'sorting' ? 1 : 0"
-                  [caption]="example.key === 'accessibility' ? 'Clients awaiting review' : ''"
+                  [caption]="example.key === 'accessibility' ? 'Customers awaiting review' : ''"
                   hover
                 />
               }

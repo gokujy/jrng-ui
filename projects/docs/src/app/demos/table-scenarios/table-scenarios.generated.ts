@@ -16,6 +16,10 @@ import {
   JTableLoadingTemplateDirective,
 } from 'jrng-ui/table';
 import { JTooltipDirective } from 'jrng-ui/tooltip';
+import {
+  TABLE_FILTER_EXAMPLE_COMPONENTS,
+  TABLE_FILTER_EXAMPLE_DOCS,
+} from './table-filter-examples.component';
 import { TableScenarioState } from './table-scenario-state';
 
 const TABLE_DEMO_IMPORTS = {
@@ -49,7 +53,12 @@ const TABLE_DEMO_IMPORTS = {
   states: [JTableComponent, JTableEmptyTemplateDirective],
   export: [JTableComponent],
   stateful: [JButtonComponent, JTableComponent],
-  actions: [JButtonComponent, JTableActionsTemplateDirective, JTableComponent, JTooltipDirective],
+  actions: [
+    JButtonComponent,
+    JTableActionsTemplateDirective,
+    JTableComponent,
+    JTooltipDirective,
+  ],
   advanced: [JTableComponent],
 };
 
@@ -69,7 +78,7 @@ const TABLE_DEMO_STYLES = `
   selector: 'app-basic-table-scenarios',
   imports: TABLE_DEMO_IMPORTS.basic,
   template:
-    '<j-table [value]="scenario().includes(\'empty-state\') || scenario().includes(\'loading-state\') ? [] : rows.slice(0, 5)" [columns]="scenario().includes(\'responsive\') || scenario().includes(\'dynamic\') ? wideColumns : scenario().includes(\'conditional-cell\') ? conditionalColumns : columns" [density]="scenario().includes(\'small\') || scenario().includes(\'compact\') ? \'compact\' : scenario().includes(\'large\') ? \'spacious\' : \'comfortable\'" [variant]="scenario().includes(\'grid-lines\') ? \'gridlines\' : scenario().includes(\'striped\') ? \'striped\' : \'standard\'" [responsiveMode]="scenario().includes(\'responsive\') ? \'stack\' : \'scroll\'" [rowClass]="scenario().includes(\'conditional-row\') ? rowClass : null" [loading]="scenario().includes(\'loading-state\')" [caption]="scenario()" selectionMode="none" [paginator]="false" [showGlobalFilter]="false" [showColumnManager]="false" [showExport]="false" [maximizable]="false">\n  <ng-template jTableHeader="customer" let-column>{{ column.header }} / account</ng-template>\n  <ng-template jTableCell="status" let-value="formattedValue"><strong>{{ value }}</strong></ng-template>\n  <ng-template #jTableFooter><tr><td [attr.colspan]="columns.length"><strong>Recent order total</strong></td></tr></ng-template>\n  <ng-template jTableEmpty let-state><div class="j-table-demo__detail"><strong>No orders available</strong><span>State: {{ state }}</span></div></ng-template>\n  <ng-template jTableLoading let-variant><div class="j-table-demo__detail" role="status">Preparing {{ variant }} rows…</div></ng-template>\n</j-table>',
+    '<j-table [value]="scenario().includes(\'empty-state\') || scenario().includes(\'loading-state\') ? [] : rows.slice(0, 5)" [columns]="scenario().includes(\'responsive\') || scenario().includes(\'dynamic\') ? wideColumns : scenario().includes(\'conditional-cell\') ? conditionalColumns : columns" [density]="scenario().includes(\'small\') || scenario().includes(\'compact\') ? \'compact\' : scenario().includes(\'large\') ? \'spacious\' : \'comfortable\'" [variant]="scenario().includes(\'grid-lines\') ? \'gridlines\' : scenario().includes(\'striped\') ? \'striped\' : \'standard\'" [responsiveMode]="scenario().includes(\'responsive\') ? \'stack\' : \'scroll\'" [rowClass]="scenario().includes(\'conditional-row\') ? rowClass : null" [loading]="scenario().includes(\'loading-state\')" [caption]="scenario()" selectionMode="none" [paginator]="false" [showGlobalFilter]="false" [showColumnManager]="false" [showExport]="false" [maximizable]="false">\n  <ng-template jTableHeader="customer" let-column>{{ column.header }} / account</ng-template>\n  <ng-template jTableCell="status" let-value="formattedValue"><strong>{{ value }}</strong></ng-template>\n  <ng-template #jTableFooter><tr><td [attr.colspan]="columns.length"><strong>Recent order total</strong></td></tr></ng-template>\n  <ng-template jTableEmpty let-state><div class="j-table-demo__detail"><strong>No customers available</strong><span>State: {{ state }}</span></div></ng-template>\n  <ng-template jTableLoading let-variant><div class="j-table-demo__detail" role="status">Preparing {{ variant }} rows…</div></ng-template>\n</j-table>',
   styles: [TABLE_DEMO_STYLES],
 })
 export class BasicTableScenariosComponent extends TableScenarioState {
@@ -102,7 +111,7 @@ export class SortingTableScenariosComponent extends TableScenarioState {
   selector: 'app-filtering-table-scenarios',
   imports: TABLE_DEMO_IMPORTS.filtering,
   template:
-    '<div class="j-table-demo__controls"><j-button label="Approved only" (onClick)="table.filter(\'status\', \'Approved\', \'equals\')" /><j-button label="Clear filters" variant="outlined" (onClick)="table.resetFilters()" /></div>\n<j-table #table [value]="scenario().includes(\'server-side\') ? serverRows : rows" [columns]="columns" [filterDisplay]="scenario().includes(\'filter-menu\') ? \'menu\' : \'row\'" [showGlobalFilter]="scenario().includes(\'global-search\')" [dataMode]="scenario().includes(\'server-side\') ? \'lazy\' : \'client\'" [totalRecords]="rows.length" (lazyLoad)="onLazyLoad($event)" [paginator]="scenario().includes(\'pagination\')" [rows]="5" [showColumnManager]="false" [showExport]="false" [maximizable]="false">\n  <ng-template jTableFilter="customer" let-apply="apply"><j-input label="Customer" placeholder="Filter customer" (valueChange)="apply($event)" /></ng-template>\n  <ng-template jTableFilter="total" let-apply="apply"><j-input-number label="Minimum total" (valueChange)="apply($event)" /></ng-template>\n  <ng-template jTableFilter="status" let-apply="apply"><j-select label="Status" [options]="statusOptions" (valueChange)="apply($event)" /></ng-template>\n  <ng-template jTableFilter="date" let-apply="apply"><j-date-picker label="Order date" (valueChange)="apply($event)" /></ng-template>\n  <ng-template jTableFilter="active" let-apply="apply"><j-checkbox label="Active only" (valueChange)="apply($event)" /></ng-template>\n</j-table>',
+    '<div class="j-table-demo__controls"><j-button label="Approved only" (onClick)="table.filter(\'status\', \'Approved\', \'equals\')" /><j-button label="Clear filters" variant="outlined" (onClick)="table.resetFilters()" /></div>\n<j-table #table [value]="scenario().includes(\'server-side\') ? serverRows : rows" [columns]="columns" [filterDisplay]="scenario().includes(\'filter-menu\') ? \'menu\' : \'row\'" [showGlobalFilter]="scenario().includes(\'global-search\')" [dataMode]="scenario().includes(\'server-side\') ? \'lazy\' : \'client\'" [totalRecords]="rows.length" (lazyLoad)="onLazyLoad($event)" [paginator]="scenario().includes(\'pagination\')" [rows]="5" [showColumnManager]="false" [showExport]="false" [maximizable]="false">\n  <ng-template jTableFilter="customer" let-apply="apply"><j-input label="Customer" placeholder="Filter customer" (valueChange)="apply($event)" /></ng-template>\n  <ng-template jTableFilter="total" let-apply="apply"><j-input-number label="Minimum total" (valueChange)="apply($event)" /></ng-template>\n  <ng-template jTableFilter="status" let-apply="apply"><j-select label="Status" [options]="statusOptions" (valueChange)="apply($event)" /></ng-template>\n  <ng-template jTableFilter="date" let-apply="apply"><j-date-picker label="Joined date" (valueChange)="apply($event)" /></ng-template>\n  <ng-template jTableFilter="active" let-apply="apply"><j-checkbox label="Active only" (valueChange)="apply($event)" /></ng-template>\n</j-table>',
   styles: [TABLE_DEMO_STYLES],
 })
 export class FilteringTableScenariosComponent extends TableScenarioState {
@@ -124,7 +133,7 @@ export class SelectionTableScenariosComponent extends TableScenarioState {
   selector: 'app-expansion-table-scenarios',
   imports: TABLE_DEMO_IMPORTS.expansion,
   template:
-    '<div class="j-table-demo__controls"><j-button label="Expand all" (onClick)="table.expandAllRows()" /><j-button label="Collapse all" variant="outlined" (onClick)="table.collapseAllRows()" /></div>\n<j-table #table [value]="rows" [columns]="columns" expandableRows rowKey="id" [expandedRowKeys]="expandedKeys" (expandedRowKeysChange)="expandedKeys = $event" (rowExpand)="eventMessage = \'Row expanded.\'" (rowCollapse)="eventMessage = \'Row collapsed.\'" [paginator]="scenario().includes(\'pagination\')" [rows]="5" [filterDisplay]="scenario().includes(\'filtering\') ? \'row\' : \'none\'" [showGlobalFilter]="false" [showColumnManager]="false" [showExport]="false" [maximizable]="false">\n  <ng-template #jTableExpandedRow let-row><j-card header="Order details"><div class="j-table-demo__detail"><span>{{ row.product }}</span><strong>{{ row.email }}</strong></div></j-card></ng-template>\n</j-table><p class="j-table-demo__status" role="status" aria-live="polite">{{ eventMessage }}</p>',
+    '<div class="j-table-demo__controls"><j-button label="Expand all" (onClick)="table.expandAllRows()" /><j-button label="Collapse all" variant="outlined" (onClick)="table.collapseAllRows()" /></div>\n<j-table #table [value]="rows" [columns]="columns" expandableRows rowKey="id" [expandedRowKeys]="expandedKeys" (expandedRowKeysChange)="expandedKeys = $event" (rowExpand)="eventMessage = \'Row expanded.\'" (rowCollapse)="eventMessage = \'Row collapsed.\'" [paginator]="scenario().includes(\'pagination\')" [rows]="5" [filterDisplay]="scenario().includes(\'filtering\') ? \'row\' : \'none\'" [showGlobalFilter]="false" [showColumnManager]="false" [showExport]="false" [maximizable]="false">\n  <ng-template #jTableExpandedRow let-row><j-card header="Customer details"><div class="j-table-demo__detail"><span>{{ row.product }}</span><strong>{{ row.email }}</strong></div></j-card></ng-template>\n</j-table><p class="j-table-demo__status" role="status" aria-live="polite">{{ eventMessage }}</p>',
   styles: [TABLE_DEMO_STYLES],
 })
 export class ExpansionTableScenariosComponent extends TableScenarioState {
@@ -212,7 +221,7 @@ export class StatesTableScenariosComponent extends TableScenarioState {
   selector: 'app-export-table-scenarios',
   imports: TABLE_DEMO_IMPORTS.export,
   template:
-    '<j-table [value]="rows" [columns]="actionColumns" [selectionMode]="scenario().includes(\'selected\') ? \'checkbox\' : \'none\'" [selection]="selection" (selectionChange)="selection = $event" [exportConfig]="{ rows: scenario().includes(\'selected\') ? \'selected\' : scenario().includes(\'visible\') ? \'visible\' : scenario().includes(\'filtered\') ? \'filtered\' : \'all\', filename: \'jrng-orders.csv\', visibleColumnsOnly: true }" [loading]="scenario().includes(\'loading\')" (export)="onExport($event)" [paginator]="true" [rows]="5" [showGlobalFilter]="false" [showColumnManager]="false" showExport [maximizable]="false" /><p class="j-table-demo__status" role="status" aria-live="polite">{{ eventMessage }}</p>',
+    '<j-table [value]="rows" [columns]="actionColumns" [selectionMode]="scenario().includes(\'selected\') ? \'checkbox\' : \'none\'" [selection]="selection" (selectionChange)="selection = $event" [exportConfig]="{ rows: scenario().includes(\'selected\') ? \'selected\' : scenario().includes(\'visible\') ? \'visible\' : scenario().includes(\'filtered\') ? \'filtered\' : \'all\', filename: \'jrng-customers.csv\', visibleColumnsOnly: true }" [loading]="scenario().includes(\'loading\')" (export)="onExport($event)" [paginator]="true" [rows]="5" [showGlobalFilter]="false" [showColumnManager]="false" showExport [maximizable]="false" /><p class="j-table-demo__status" role="status" aria-live="polite">{{ eventMessage }}</p>',
   styles: [TABLE_DEMO_STYLES],
 })
 export class ExportTableScenariosComponent extends TableScenarioState {
@@ -251,7 +260,10 @@ export class ActionsTableScenariosComponent extends TableScenarioState {
 export class AdvancedTableScenariosComponent extends TableScenarioState {
   readonly scenario = input.required<string>();
 }
-export const TABLE_SCENARIO_COMPONENTS: Readonly<Record<string, Type<unknown>>> = {
+export const TABLE_SCENARIO_COMPONENTS: Readonly<
+  Record<string, Type<unknown>>
+> = {
+  ...TABLE_FILTER_EXAMPLE_COMPONENTS,
   'basic-basic-table': BasicTableScenariosComponent,
   'basic-dynamic-columns': BasicTableScenariosComponent,
   'basic-custom-header-template': BasicTableScenariosComponent,
@@ -316,7 +328,8 @@ export const TABLE_SCENARIO_COMPONENTS: Readonly<Record<string, Type<unknown>>> 
   'filtering-programmatic-filtering': FilteringTableScenariosComponent,
   'filtering-client-side-filtering': FilteringTableScenariosComponent,
   'filtering-server-side-filtering': FilteringTableScenariosComponent,
-  'filtering-filtering-with-sorting-and-pagination': FilteringTableScenariosComponent,
+  'filtering-filtering-with-sorting-and-pagination':
+    FilteringTableScenariosComponent,
   'selection-single-row-selection': SelectionTableScenariosComponent,
   'selection-multiple-row-selection': SelectionTableScenariosComponent,
   'selection-checkbox-selection': SelectionTableScenariosComponent,
@@ -326,7 +339,8 @@ export const TABLE_SCENARIO_COMPONENTS: Readonly<Record<string, Type<unknown>>> 
   'selection-disabled-row-selection': SelectionTableScenariosComponent,
   'selection-conditional-row-selection': SelectionTableScenariosComponent,
   'selection-row-click-selection': SelectionTableScenariosComponent,
-  'selection-selection-using-a-dedicated-column': SelectionTableScenariosComponent,
+  'selection-selection-using-a-dedicated-column':
+    SelectionTableScenariosComponent,
   'selection-programmatic-selection': SelectionTableScenariosComponent,
   'selection-clear-selection': SelectionTableScenariosComponent,
   'selection-row-select-event': SelectionTableScenariosComponent,
@@ -341,7 +355,8 @@ export const TABLE_SCENARIO_COMPONENTS: Readonly<Record<string, Type<unknown>>> 
   'expansion-programmatic-expansion': ExpansionTableScenariosComponent,
   'expansion-custom-expanded-row-template': ExpansionTableScenariosComponent,
   'expansion-nested-detail-section': ExpansionTableScenariosComponent,
-  'expansion-expanded-content-containing-other-jrng-components': ExpansionTableScenariosComponent,
+  'expansion-expanded-content-containing-other-jrng-components':
+    ExpansionTableScenariosComponent,
   'expansion-expansion-events': ExpansionTableScenariosComponent,
   'expansion-expansion-with-pagination': ExpansionTableScenariosComponent,
   'expansion-expansion-with-filtering': ExpansionTableScenariosComponent,
@@ -393,7 +408,8 @@ export const TABLE_SCENARIO_COMPONENTS: Readonly<Record<string, Type<unknown>>> 
   'columns-grouped-columns-with-resizing': ColumnsTableScenariosComponent,
   'reorder-drag-and-drop-row-reordering': ReorderTableScenariosComponent,
   'reorder-reordering-using-a-drag-handle': ReorderTableScenariosComponent,
-  'reorder-disabled-reordering-for-specific-rows': ReorderTableScenariosComponent,
+  'reorder-disabled-reordering-for-specific-rows':
+    ReorderTableScenariosComponent,
   'reorder-reorder-events': ReorderTableScenariosComponent,
   'reorder-programmatic-row-updates': ReorderTableScenariosComponent,
   'reorder-reordering-with-selection': ReorderTableScenariosComponent,
@@ -413,12 +429,15 @@ export const TABLE_SCENARIO_COMPONENTS: Readonly<Record<string, Type<unknown>>> 
   'scrolling-scrolling-with-column-resizing': ScrollingTableScenariosComponent,
   'scrolling-scrolling-with-grouped-columns': ScrollingTableScenariosComponent,
   'virtual-basic-virtual-scrolling': VirtualTableScenariosComponent,
-  'virtual-virtual-scrolling-with-preloaded-data': VirtualTableScenariosComponent,
+  'virtual-virtual-scrolling-with-preloaded-data':
+    VirtualTableScenariosComponent,
   'virtual-lazy-virtual-scrolling': VirtualTableScenariosComponent,
-  'virtual-virtual-scrolling-with-loading-placeholders': VirtualTableScenariosComponent,
+  'virtual-virtual-scrolling-with-loading-placeholders':
+    VirtualTableScenariosComponent,
   'virtual-virtual-scrolling-with-filtering': VirtualTableScenariosComponent,
   'virtual-virtual-scrolling-with-sorting': VirtualTableScenariosComponent,
-  'virtual-virtual-scrolling-with-row-selection': VirtualTableScenariosComponent,
+  'virtual-virtual-scrolling-with-row-selection':
+    VirtualTableScenariosComponent,
   'virtual-large-dataset-example': VirtualTableScenariosComponent,
   'states-loading-overlay': StatesTableScenariosComponent,
   'states-loading-skeleton-rows': StatesTableScenariosComponent,
@@ -466,7 +485,7 @@ export const TABLE_SCENARIO_COMPONENTS: Readonly<Record<string, Type<unknown>>> 
   'advanced-customer-management-table': AdvancedTableScenariosComponent,
   'advanced-employee-directory': AdvancedTableScenariosComponent,
   'advanced-product-inventory': AdvancedTableScenariosComponent,
-  'advanced-order-management': AdvancedTableScenariosComponent,
+  'advanced-customer-renewals': AdvancedTableScenariosComponent,
   'advanced-transaction-history': AdvancedTableScenariosComponent,
   'advanced-database-editor': AdvancedTableScenariosComponent,
   'advanced-admin-user-management': AdvancedTableScenariosComponent,
@@ -474,7 +493,7 @@ export const TABLE_SCENARIO_COMPONENTS: Readonly<Record<string, Type<unknown>>> 
 
 const TABLE_SCENARIO_SOURCES = {
   basic: {
-    html: '<j-table [value]="scenario().includes(\'empty-state\') || scenario().includes(\'loading-state\') ? [] : rows.slice(0, 5)" [columns]="scenario().includes(\'responsive\') || scenario().includes(\'dynamic\') ? wideColumns : scenario().includes(\'conditional-cell\') ? conditionalColumns : columns" [density]="scenario().includes(\'small\') || scenario().includes(\'compact\') ? \'compact\' : scenario().includes(\'large\') ? \'spacious\' : \'comfortable\'" [variant]="scenario().includes(\'grid-lines\') ? \'gridlines\' : scenario().includes(\'striped\') ? \'striped\' : \'standard\'" [responsiveMode]="scenario().includes(\'responsive\') ? \'stack\' : \'scroll\'" [rowClass]="scenario().includes(\'conditional-row\') ? rowClass : null" [loading]="scenario().includes(\'loading-state\')" [caption]="scenario()" selectionMode="none" [paginator]="false" [showGlobalFilter]="false" [showColumnManager]="false" [showExport]="false" [maximizable]="false">\n  <ng-template jTableHeader="customer" let-column>{{ column.header }} / account</ng-template>\n  <ng-template jTableCell="status" let-value="formattedValue"><strong>{{ value }}</strong></ng-template>\n  <ng-template #jTableFooter><tr><td [attr.colspan]="columns.length"><strong>Recent order total</strong></td></tr></ng-template>\n  <ng-template jTableEmpty let-state><div class="j-table-demo__detail"><strong>No orders available</strong><span>State: {{ state }}</span></div></ng-template>\n  <ng-template jTableLoading let-variant><div class="j-table-demo__detail" role="status">Preparing {{ variant }} rows…</div></ng-template>\n</j-table>',
+    html: '<j-table [value]="scenario().includes(\'empty-state\') || scenario().includes(\'loading-state\') ? [] : rows.slice(0, 5)" [columns]="scenario().includes(\'responsive\') || scenario().includes(\'dynamic\') ? wideColumns : scenario().includes(\'conditional-cell\') ? conditionalColumns : columns" [density]="scenario().includes(\'small\') || scenario().includes(\'compact\') ? \'compact\' : scenario().includes(\'large\') ? \'spacious\' : \'comfortable\'" [variant]="scenario().includes(\'grid-lines\') ? \'gridlines\' : scenario().includes(\'striped\') ? \'striped\' : \'standard\'" [responsiveMode]="scenario().includes(\'responsive\') ? \'stack\' : \'scroll\'" [rowClass]="scenario().includes(\'conditional-row\') ? rowClass : null" [loading]="scenario().includes(\'loading-state\')" [caption]="scenario()" selectionMode="none" [paginator]="false" [showGlobalFilter]="false" [showColumnManager]="false" [showExport]="false" [maximizable]="false">\n  <ng-template jTableHeader="customer" let-column>{{ column.header }} / account</ng-template>\n  <ng-template jTableCell="status" let-value="formattedValue"><strong>{{ value }}</strong></ng-template>\n  <ng-template #jTableFooter><tr><td [attr.colspan]="columns.length"><strong>Recent order total</strong></td></tr></ng-template>\n  <ng-template jTableEmpty let-state><div class="j-table-demo__detail"><strong>No customers available</strong><span>State: {{ state }}</span></div></ng-template>\n  <ng-template jTableLoading let-variant><div class="j-table-demo__detail" role="status">Preparing {{ variant }} rows…</div></ng-template>\n</j-table>',
     ts: "@Component({\n  selector: 'app-basic-table-scenarios',\n  imports: TABLE_DEMO_IMPORTS.basic,\n  templateUrl: './basic-table-scenarios.component.html',\n})\nexport class BasicTableScenariosComponent extends TableScenarioState {\n  readonly scenario = input.required<string>();\n}",
     scss: ':host { display: block; min-width: 0; }',
   },
@@ -489,7 +508,7 @@ const TABLE_SCENARIO_SOURCES = {
     scss: ':host { display: block; min-width: 0; }',
   },
   filtering: {
-    html: '<div class="j-table-demo__controls"><j-button label="Approved only" (onClick)="table.filter(\'status\', \'Approved\', \'equals\')" /><j-button label="Clear filters" variant="outlined" (onClick)="table.resetFilters()" /></div>\n<j-table #table [value]="scenario().includes(\'server-side\') ? serverRows : rows" [columns]="columns" [filterDisplay]="scenario().includes(\'filter-menu\') ? \'menu\' : \'row\'" [showGlobalFilter]="scenario().includes(\'global-search\')" [dataMode]="scenario().includes(\'server-side\') ? \'lazy\' : \'client\'" [totalRecords]="rows.length" (lazyLoad)="onLazyLoad($event)" [paginator]="scenario().includes(\'pagination\')" [rows]="5" [showColumnManager]="false" [showExport]="false" [maximizable]="false">\n  <ng-template jTableFilter="customer" let-apply="apply"><j-input label="Customer" placeholder="Filter customer" (valueChange)="apply($event)" /></ng-template>\n  <ng-template jTableFilter="total" let-apply="apply"><j-input-number label="Minimum total" (valueChange)="apply($event)" /></ng-template>\n  <ng-template jTableFilter="status" let-apply="apply"><j-select label="Status" [options]="statusOptions" (valueChange)="apply($event)" /></ng-template>\n  <ng-template jTableFilter="date" let-apply="apply"><j-date-picker label="Order date" (valueChange)="apply($event)" /></ng-template>\n  <ng-template jTableFilter="active" let-apply="apply"><j-checkbox label="Active only" (valueChange)="apply($event)" /></ng-template>\n</j-table>',
+    html: '<div class="j-table-demo__controls"><j-button label="Approved only" (onClick)="table.filter(\'status\', \'Approved\', \'equals\')" /><j-button label="Clear filters" variant="outlined" (onClick)="table.resetFilters()" /></div>\n<j-table #table [value]="scenario().includes(\'server-side\') ? serverRows : rows" [columns]="columns" [filterDisplay]="scenario().includes(\'filter-menu\') ? \'menu\' : \'row\'" [showGlobalFilter]="scenario().includes(\'global-search\')" [dataMode]="scenario().includes(\'server-side\') ? \'lazy\' : \'client\'" [totalRecords]="rows.length" (lazyLoad)="onLazyLoad($event)" [paginator]="scenario().includes(\'pagination\')" [rows]="5" [showColumnManager]="false" [showExport]="false" [maximizable]="false">\n  <ng-template jTableFilter="customer" let-apply="apply"><j-input label="Customer" placeholder="Filter customer" (valueChange)="apply($event)" /></ng-template>\n  <ng-template jTableFilter="total" let-apply="apply"><j-input-number label="Minimum total" (valueChange)="apply($event)" /></ng-template>\n  <ng-template jTableFilter="status" let-apply="apply"><j-select label="Status" [options]="statusOptions" (valueChange)="apply($event)" /></ng-template>\n  <ng-template jTableFilter="date" let-apply="apply"><j-date-picker label="Joined date" (valueChange)="apply($event)" /></ng-template>\n  <ng-template jTableFilter="active" let-apply="apply"><j-checkbox label="Active only" (valueChange)="apply($event)" /></ng-template>\n</j-table>',
     ts: "@Component({\n  selector: 'app-filtering-table-scenarios',\n  imports: TABLE_DEMO_IMPORTS.filtering,\n  templateUrl: './filtering-table-scenarios.component.html',\n})\nexport class FilteringTableScenariosComponent extends TableScenarioState {\n  readonly scenario = input.required<string>();\n}",
     scss: ':host { display: block; min-width: 0; }',
   },
@@ -499,7 +518,7 @@ const TABLE_SCENARIO_SOURCES = {
     scss: ':host { display: block; min-width: 0; }',
   },
   expansion: {
-    html: '<div class="j-table-demo__controls"><j-button label="Expand all" (onClick)="table.expandAllRows()" /><j-button label="Collapse all" variant="outlined" (onClick)="table.collapseAllRows()" /></div>\n<j-table #table [value]="rows" [columns]="columns" expandableRows rowKey="id" [expandedRowKeys]="expandedKeys" (expandedRowKeysChange)="expandedKeys = $event" (rowExpand)="eventMessage = \'Row expanded.\'" (rowCollapse)="eventMessage = \'Row collapsed.\'" [paginator]="scenario().includes(\'pagination\')" [rows]="5" [filterDisplay]="scenario().includes(\'filtering\') ? \'row\' : \'none\'" [showGlobalFilter]="false" [showColumnManager]="false" [showExport]="false" [maximizable]="false">\n  <ng-template #jTableExpandedRow let-row><j-card header="Order details"><div class="j-table-demo__detail"><span>{{ row.product }}</span><strong>{{ row.email }}</strong></div></j-card></ng-template>\n</j-table><p class="j-table-demo__status" role="status" aria-live="polite">{{ eventMessage }}</p>',
+    html: '<div class="j-table-demo__controls"><j-button label="Expand all" (onClick)="table.expandAllRows()" /><j-button label="Collapse all" variant="outlined" (onClick)="table.collapseAllRows()" /></div>\n<j-table #table [value]="rows" [columns]="columns" expandableRows rowKey="id" [expandedRowKeys]="expandedKeys" (expandedRowKeysChange)="expandedKeys = $event" (rowExpand)="eventMessage = \'Row expanded.\'" (rowCollapse)="eventMessage = \'Row collapsed.\'" [paginator]="scenario().includes(\'pagination\')" [rows]="5" [filterDisplay]="scenario().includes(\'filtering\') ? \'row\' : \'none\'" [showGlobalFilter]="false" [showColumnManager]="false" [showExport]="false" [maximizable]="false">\n  <ng-template #jTableExpandedRow let-row><j-card header="Customer details"><div class="j-table-demo__detail"><span>{{ row.product }}</span><strong>{{ row.email }}</strong></div></j-card></ng-template>\n</j-table><p class="j-table-demo__status" role="status" aria-live="polite">{{ eventMessage }}</p>',
     ts: "@Component({\n  selector: 'app-expansion-table-scenarios',\n  imports: TABLE_DEMO_IMPORTS.expansion,\n  templateUrl: './expansion-table-scenarios.component.html',\n})\nexport class ExpansionTableScenariosComponent extends TableScenarioState {\n  readonly scenario = input.required<string>();\n}",
     scss: ':host { display: block; min-width: 0; }',
   },
@@ -539,7 +558,7 @@ const TABLE_SCENARIO_SOURCES = {
     scss: ':host { display: block; min-width: 0; }',
   },
   export: {
-    html: '<j-table [value]="rows" [columns]="actionColumns" [selectionMode]="scenario().includes(\'selected\') ? \'checkbox\' : \'none\'" [selection]="selection" (selectionChange)="selection = $event" [exportConfig]="{ rows: scenario().includes(\'selected\') ? \'selected\' : scenario().includes(\'visible\') ? \'visible\' : scenario().includes(\'filtered\') ? \'filtered\' : \'all\', filename: \'jrng-orders.csv\', visibleColumnsOnly: true }" [loading]="scenario().includes(\'loading\')" (export)="onExport($event)" [paginator]="true" [rows]="5" [showGlobalFilter]="false" [showColumnManager]="false" showExport [maximizable]="false" /><p class="j-table-demo__status" role="status" aria-live="polite">{{ eventMessage }}</p>',
+    html: '<j-table [value]="rows" [columns]="actionColumns" [selectionMode]="scenario().includes(\'selected\') ? \'checkbox\' : \'none\'" [selection]="selection" (selectionChange)="selection = $event" [exportConfig]="{ rows: scenario().includes(\'selected\') ? \'selected\' : scenario().includes(\'visible\') ? \'visible\' : scenario().includes(\'filtered\') ? \'filtered\' : \'all\', filename: \'jrng-customers.csv\', visibleColumnsOnly: true }" [loading]="scenario().includes(\'loading\')" (export)="onExport($event)" [paginator]="true" [rows]="5" [showGlobalFilter]="false" [showColumnManager]="false" showExport [maximizable]="false" /><p class="j-table-demo__status" role="status" aria-live="polite">{{ eventMessage }}</p>',
     ts: "@Component({\n  selector: 'app-export-table-scenarios',\n  imports: TABLE_DEMO_IMPORTS.export,\n  templateUrl: './export-table-scenarios.component.html',\n})\nexport class ExportTableScenariosComponent extends TableScenarioState {\n  readonly scenario = input.required<string>();\n}",
     scss: ':host { display: block; min-width: 0; }',
   },
@@ -561,6 +580,7 @@ const TABLE_SCENARIO_SOURCES = {
 } as const;
 
 export const TABLE_SCENARIO_DOCS = [
+  ...TABLE_FILTER_EXAMPLE_DOCS,
   {
     key: 'basic-basic-table',
     family: 'basic',
@@ -2274,11 +2294,11 @@ export const TABLE_SCENARIO_DOCS = [
     ...TABLE_SCENARIO_SOURCES.advanced,
   },
   {
-    key: 'advanced-order-management',
+    key: 'advanced-customer-renewals',
     family: 'advanced',
-    name: 'Order management',
+    name: 'Customer renewals',
     details:
-      'Order management using independent local state and realistic business records. Expected behavior: the visible controls update only this example and emit a polite status message. Accessibility: semantic headers, keyboard focus, labelled controls, and responsive scrolling remain available.',
+      'Customer renewals using independent local state and realistic business records. Expected behavior: the visible controls update only this example and emit a polite status message. Accessibility: semantic headers, keyboard focus, labelled controls, and responsive scrolling remain available.',
     ...TABLE_SCENARIO_SOURCES.advanced,
   },
   {

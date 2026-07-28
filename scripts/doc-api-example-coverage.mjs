@@ -260,6 +260,10 @@ async function readExistingExampleCounts(workspace, components) {
     workspace,
     'projects/docs/src/app/demos/table-scenarios/table-scenarios.generated.ts',
   );
+  const filterExamplesPath = resolve(
+    workspace,
+    'projects/docs/src/app/demos/table-scenarios/table-filter-examples.component.ts',
+  );
   const baseSource = ts.createSourceFile(
     basePath,
     await readFile(basePath, 'utf8'),
@@ -274,8 +278,16 @@ async function readExistingExampleCounts(workspace, components) {
     true,
     ts.ScriptKind.TS,
   );
+  const filterExampleSource = ts.createSourceFile(
+    filterExamplesPath,
+    await readFile(filterExamplesPath, 'utf8'),
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TS,
+  );
   const declarations = variableDeclarations(baseSource);
   const scenarioDeclarations = variableDeclarations(scenarioSource);
+  const filterExampleDeclarations = variableDeclarations(filterExampleSource);
   const special = new Map([
     ['text-expand', 'TEXT_EXPAND_FEATURE_EXAMPLES'],
     ['button', 'BUTTON_FEATURE_EXAMPLES'],
@@ -307,7 +319,9 @@ async function readExistingExampleCounts(workspace, components) {
   const gridCounts = objectArrayCounts(declarations.get('GRID_FEATURE_EXAMPLES')?.initializer);
   const tableCount =
     expressionArrayLength(declarations.get('TABLE_FEATURE_EXAMPLES')?.initializer) +
-    expressionArrayLength(scenarioDeclarations.get('TABLE_SCENARIO_DOCS')?.initializer);
+    expressionArrayLength(scenarioDeclarations.get('TABLE_SCENARIO_DOCS')?.initializer) -
+    1 +
+    expressionArrayLength(filterExampleDeclarations.get('TABLE_FILTER_EXAMPLE_DOCS')?.initializer);
   const counts = new Map();
 
   for (const component of components) {

@@ -256,7 +256,7 @@ const families = {
     'Customer management table',
     'Employee directory',
     'Product inventory',
-    'Order management',
+    'Customer renewals',
     'Transaction history',
     'Database editor',
     'Admin user management',
@@ -298,6 +298,10 @@ import {
   JTableLoadingTemplateDirective,
 } from 'jrng-ui/table';
 import { JTooltipDirective } from 'jrng-ui/tooltip';
+import {
+  TABLE_FILTER_EXAMPLE_COMPONENTS,
+  TABLE_FILTER_EXAMPLE_DOCS,
+} from './table-filter-examples.component';
 import { TableScenarioState } from './table-scenario-state';
 
 const TABLE_DEMO_IMPORTS = {
@@ -374,6 +378,7 @@ export class ${pascal(family)}TableScenariosComponent extends TableScenarioState
 `;
 
 const componentMap = `export const TABLE_SCENARIO_COMPONENTS: Readonly<Record<string, Type<unknown>>> = {
+  ...TABLE_FILTER_EXAMPLE_COMPONENTS,
 ${scenarios
   .map((scenario) => `  '${scenario.key}': ${pascal(scenario.family)}TableScenariosComponent,`)
   .join('\n')}
@@ -381,6 +386,7 @@ ${scenarios
 
 ${familySources}
 export const TABLE_SCENARIO_DOCS = [
+  ...TABLE_FILTER_EXAMPLE_DOCS,
 ${scenarios
   .map(
     (scenario) =>
@@ -421,7 +427,7 @@ function templateFor(family, name) {
 </j-table>`;
     if (name === 'Custom footer template')
       return `<j-table [value]="rows.slice(0, 5)" [columns]="columns" ${common}>
-  <ng-template #jTableFooter><tr><td [attr.colspan]="columns.length"><strong>Five recent orders</strong></td></tr></ng-template>
+  <ng-template #jTableFooter><tr><td [attr.colspan]="columns.length"><strong>Five recent customers</strong></td></tr></ng-template>
 </j-table>`;
     if (name === 'Small size' || name === 'Compact density')
       return `<j-table [value]="rows.slice(0, 5)" [columns]="columns" density="compact" ${common} />`;
@@ -439,7 +445,7 @@ function templateFor(family, name) {
       return `<j-table [value]="rows.slice(0, 6)" [columns]="conditionalColumns" ${common} />`;
     if (name === 'Custom empty state')
       return `<j-table [value]="[]" [columns]="columns" ${common}>
-  <ng-template jTableEmpty let-state><div class="j-table-demo__detail"><img src="/assets/images/empty-state-search.webp" alt="Document with a magnifying glass" width="180" height="120" /><strong>No orders available</strong><span>State: {{ state }}</span></div></ng-template>
+  <ng-template jTableEmpty let-state><div class="j-table-demo__detail"><img src="/assets/images/empty-state-search.webp" alt="Document with a magnifying glass" width="180" height="120" /><strong>No customers available</strong><span>State: {{ state }}</span></div></ng-template>
 </j-table>`;
     if (name === 'Custom loading state')
       return `<j-table [value]="[]" [columns]="columns" loading ${common}>
@@ -492,7 +498,7 @@ ${status}`;
     <j-select label="Status" [options]="statusOptions" (valueChange)="apply($event)" />
   </ng-template>
   <ng-template jTableFilter="date" let-apply="apply">
-    <j-date-picker label="Order date" (valueChange)="apply($event)" />
+    <j-date-picker label="Joined date" (valueChange)="apply($event)" />
   </ng-template>
   <ng-template jTableFilter="active" let-apply="apply">
     <j-checkbox label="Active only" (valueChange)="apply($event)" />
@@ -534,7 +540,7 @@ ${status}`;
       'pagination',
     )}" [rows]="5" [filterDisplay]="${name.includes('filtering') ? "'row'" : "'none'"}" [showGlobalFilter]="false" [showColumnManager]="false" [showExport]="false" [maximizable]="false">
   <ng-template #jTableExpandedRow let-row>
-    <j-card header="Order details"><div class="j-table-demo__detail"><span>{{ row.product }}</span><strong>{{ row.email }}</strong></div></j-card>
+    <j-card header="Customer details"><div class="j-table-demo__detail"><span>{{ row.product }}</span><strong>{{ row.email }}</strong></div></j-card>
   </ng-template>
 </j-table>
 ${status}`;
@@ -618,7 +624,7 @@ ${status}`;
           : 'all';
     return `<j-table [value]="rows" [columns]="actionColumns" selectionMode="${
       mode === 'selected' ? 'checkbox' : 'none'
-    }" [selection]="selection" (selectionChange)="selection = $event" [exportConfig]="{ rows: '${mode}', filename: 'jrng-orders.csv', visibleColumnsOnly: true }" [loading]="${name.includes(
+    }" [selection]="selection" (selectionChange)="selection = $event" [exportConfig]="{ rows: '${mode}', filename: 'jrng-customers.csv', visibleColumnsOnly: true }" [loading]="${name.includes(
       'loading',
     )}" (export)="onExport($event)" [paginator]="true" [rows]="5" [showGlobalFilter]="false" [showColumnManager]="false" showExport [maximizable]="false" />${status}`;
   }
@@ -650,7 +656,7 @@ function compiledTemplateFor(family, common, status) {
   <ng-template jTableHeader="customer" let-column>{{ column.header }} / account</ng-template>
   <ng-template jTableCell="status" let-value="formattedValue"><strong>{{ value }}</strong></ng-template>
   <ng-template #jTableFooter><tr><td [attr.colspan]="columns.length"><strong>Recent order total</strong></td></tr></ng-template>
-  <ng-template jTableEmpty let-state><div class="j-table-demo__detail"><strong>No orders available</strong><span>State: {{ state }}</span></div></ng-template>
+  <ng-template jTableEmpty let-state><div class="j-table-demo__detail"><strong>No customers available</strong><span>State: {{ state }}</span></div></ng-template>
   <ng-template jTableLoading let-variant><div class="j-table-demo__detail" role="status">Preparing {{ variant }} rows…</div></ng-template>
 </j-table>`;
 
@@ -670,7 +676,7 @@ ${status}`;
   <ng-template jTableFilter="customer" let-apply="apply"><j-input label="Customer" placeholder="Filter customer" (valueChange)="apply($event)" /></ng-template>
   <ng-template jTableFilter="total" let-apply="apply"><j-input-number label="Minimum total" (valueChange)="apply($event)" /></ng-template>
   <ng-template jTableFilter="status" let-apply="apply"><j-select label="Status" [options]="statusOptions" (valueChange)="apply($event)" /></ng-template>
-  <ng-template jTableFilter="date" let-apply="apply"><j-date-picker label="Order date" (valueChange)="apply($event)" /></ng-template>
+  <ng-template jTableFilter="date" let-apply="apply"><j-date-picker label="Joined date" (valueChange)="apply($event)" /></ng-template>
   <ng-template jTableFilter="active" let-apply="apply"><j-checkbox label="Active only" (valueChange)="apply($event)" /></ng-template>
 </j-table>`;
 
@@ -682,7 +688,7 @@ ${status}`;
   if (family === 'expansion')
     return `<div class="j-table-demo__controls"><j-button label="Expand all" (onClick)="table.expandAllRows()" /><j-button label="Collapse all" variant="outlined" (onClick)="table.collapseAllRows()" /></div>
 <j-table #table [value]="rows" [columns]="columns" expandableRows rowKey="id" [expandedRowKeys]="expandedKeys" (expandedRowKeysChange)="expandedKeys = $event" (rowExpand)="eventMessage = 'Row expanded.'" (rowCollapse)="eventMessage = 'Row collapsed.'" [paginator]="scenario().includes('pagination')" [rows]="5" [filterDisplay]="scenario().includes('filtering') ? 'row' : 'none'" [showGlobalFilter]="false" [showColumnManager]="false" [showExport]="false" [maximizable]="false">
-  <ng-template #jTableExpandedRow let-row><j-card header="Order details"><div class="j-table-demo__detail"><span>{{ row.product }}</span><strong>{{ row.email }}</strong></div></j-card></ng-template>
+  <ng-template #jTableExpandedRow let-row><j-card header="Customer details"><div class="j-table-demo__detail"><span>{{ row.product }}</span><strong>{{ row.email }}</strong></div></j-card></ng-template>
 </j-table>${status}`;
 
   if (family === 'editing')
@@ -737,7 +743,7 @@ ${status}`;
 </j-table>${status}`;
 
   if (family === 'export')
-    return `<j-table [value]="rows" [columns]="actionColumns" [selectionMode]="scenario().includes('selected') ? 'checkbox' : 'none'" [selection]="selection" (selectionChange)="selection = $event" [exportConfig]="{ rows: scenario().includes('selected') ? 'selected' : scenario().includes('visible') ? 'visible' : scenario().includes('filtered') ? 'filtered' : 'all', filename: 'jrng-orders.csv', visibleColumnsOnly: true }" [loading]="scenario().includes('loading')" (export)="onExport($event)" [paginator]="true" [rows]="5" [showGlobalFilter]="false" [showColumnManager]="false" showExport [maximizable]="false" />${status}`;
+    return `<j-table [value]="rows" [columns]="actionColumns" [selectionMode]="scenario().includes('selected') ? 'checkbox' : 'none'" [selection]="selection" (selectionChange)="selection = $event" [exportConfig]="{ rows: scenario().includes('selected') ? 'selected' : scenario().includes('visible') ? 'visible' : scenario().includes('filtered') ? 'filtered' : 'all', filename: 'jrng-customers.csv', visibleColumnsOnly: true }" [loading]="scenario().includes('loading')" (export)="onExport($event)" [paginator]="true" [rows]="5" [showGlobalFilter]="false" [showColumnManager]="false" showExport [maximizable]="false" />${status}`;
 
   if (family === 'stateful')
     return `<div class="j-table-demo__controls"><j-button label="Clear saved state" (onClick)="table.clearState()" /><j-button label="Restore defaults" variant="outlined" (onClick)="table.resetTableState()" /></div>

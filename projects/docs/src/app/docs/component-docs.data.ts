@@ -3273,7 +3273,7 @@ export class DashboardComponent {
 
 path = [
   { id: 'root', label: 'Files' },
-  { id: 'clients', label: 'Clients' }
+  { id: 'customers', label: 'Customers' }
 ];
 
 selectedIds: string[] = ['file-2'];`,

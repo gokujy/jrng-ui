@@ -230,23 +230,23 @@ const FEATURE_VARIANT_KEYS: Readonly<Record<string, readonly string[]>> = {
 const TABLE_FEATURE_EXAMPLES = [
   {
     key: 'basic',
-    name: 'Basic table',
-    details: 'Render flat, comparable records with semantic column headers.',
-    html: `<j-table [value]="orders" [columns]="columns" caption="Recent orders" />`,
+    name: 'Basic',
+    details: 'Render a small fictional customer list with semantic, sortable column headers.',
+    html: `<j-table [value]="customers" [columns]="columns" caption="Recent customers" />`,
   },
   {
     key: 'columns',
     name: 'Typed columns',
     details:
       'Use JTableColumn<T> for checked fields, widths, alignment, value getters, and formatters.',
-    html: `<j-table [value]="orders" [columns]="columns" />`,
+    html: `<j-table [value]="customers" [columns]="columns" />`,
   },
   {
     key: 'templates',
     name: 'Header and cell templates',
     details:
       'Replace selected headers or cells while retaining the table data and interaction model.',
-    html: `<j-table [value]="orders" [columns]="columns">
+    html: `<j-table [value]="customers" [columns]="columns">
   <ng-template jTableHeader="status" let-column>{{ column.header }} / owner</ng-template>
   <ng-template jTableCell="status" let-value="formattedValue"><strong>{{ value }}</strong></ng-template>
 </j-table>`,
@@ -255,13 +255,13 @@ const TABLE_FEATURE_EXAMPLES = [
     key: 'variants',
     name: 'Visual variants',
     details: 'Choose a recognizable surface concept without changing table behavior.',
-    html: `<j-table [value]="orders" [columns]="columns" variant="gridlines" />`,
+    html: `<j-table [value]="customers" [columns]="columns" variant="gridlines" />`,
   },
   {
     key: 'density',
     name: 'Density',
     details: 'Set information spacing independently from the visual variant.',
-    html: `<j-table [value]="orders" [columns]="columns" density="compact" />`,
+    html: `<j-table [value]="customers" [columns]="columns" density="compact" />`,
   },
   {
     key: 'skeleton',
@@ -273,21 +273,21 @@ const TABLE_FEATURE_EXAMPLES = [
     key: 'overlay',
     name: 'Spinner and overlay loading',
     details: 'Keep existing rows visible when refreshing data in place.',
-    html: `<j-table [value]="orders" [columns]="columns" loading loadingVariant="overlay" />`,
+    html: `<j-table [value]="customers" [columns]="columns" loading loadingVariant="overlay" />`,
   },
   {
     key: 'no-data',
     name: 'No data',
     details:
       'Explain that the source dataset has no records and optionally offer a recovery action.',
-    html: `<j-table [value]="[]" [columns]="columns" emptyTitle="No orders yet" emptyDescription="New orders will appear here." emptyActionLabel="Create order" />`,
+    html: `<j-table [value]="[]" [columns]="columns" emptyTitle="No customers yet" emptyDescription="New customers will appear here." emptyActionLabel="Add customer" />`,
   },
   {
     key: 'no-results',
     name: 'No results',
     details:
       'Automatically distinguish an active filter returning zero matches from an empty dataset.',
-    html: `<j-table [value]="orders" [columns]="columns" globalFilter="not-a-match" noResultsTitle="No matching orders" />`,
+    html: `<j-table [value]="customers" [columns]="columns" globalFilter="not-a-match" noResultsTitle="No matching customers" />`,
   },
   {
     key: 'error',
@@ -299,25 +299,25 @@ const TABLE_FEATURE_EXAMPLES = [
     key: 'selection',
     name: 'Selection',
     details: 'Use the established row or checkbox selection behavior with any presentation.',
-    html: `<j-table [value]="orders" [columns]="columns" selectionMode="checkbox" />`,
+    html: `<j-table [value]="customers" [columns]="columns" selectionMode="checkbox" />`,
   },
   {
     key: 'pagination',
     name: 'Pagination',
     details: 'Page local or server-backed rows without changing empty-state semantics.',
-    html: `<j-table [value]="orders" [columns]="columns" paginator [rows]="3" />`,
+    html: `<j-table [value]="customers" [columns]="columns" paginator [rows]="3" />`,
   },
   {
     key: 'sorting',
     name: 'Sorting',
     details: 'Mark sortable columns and activate them with pointer or keyboard input.',
-    html: `<j-table [value]="orders" [columns]="columns" sortField="total" [sortOrder]="-1" />`,
+    html: `<j-table [value]="customers" [columns]="columns" sortField="outstandingBalance" [sortOrder]="-1" />`,
   },
   {
     key: 'filtering',
     name: 'Filtering',
     details: 'Use the reusable filter row and typed match-mode configuration.',
-    html: `<j-table [value]="orders" [columns]="columns" filterDisplay="row" showGlobalFilter />`,
+    html: `<j-table [value]="customers" [columns]="columns" filterDisplay="row" showGlobalFilter />`,
   },
   {
     key: 'tree-table',
@@ -336,14 +336,14 @@ const TABLE_FEATURE_EXAMPLES = [
     name: 'Accessibility and keyboard',
     details:
       'Tables expose semantic headers and sort state; Tree Table exposes tree-grid level, selection, and expansion state.',
-    html: `<j-table [value]="orders" [columns]="columns" caption="Orders awaiting review" selectionMode="checkbox" />`,
+    html: `<j-table [value]="customers" [columns]="columns" caption="Customers awaiting review" selectionMode="checkbox" />`,
   },
   {
     key: 'composition',
     name: 'Composition',
     details:
       'Column metadata, empty content, and loading content are integrated Table capabilities.',
-    html: `<j-table [value]="orders" [columns]="columns" loadingVariant="skeleton">
+    html: `<j-table [value]="customers" [columns]="columns" loadingVariant="skeleton">
   <ng-template jTableEmpty let-state>{{ state }}</ng-template>
   <ng-template jTableLoading let-variant>{{ variant }}</ng-template>
 </j-table>`,
@@ -2561,7 +2561,7 @@ export class ComponentDetailViewBase {
   ];
   readonly fileBrowserBreadcrumbs = [
     { id: 'home', label: 'Home' },
-    { id: 'clients', label: 'Clients' },
+    { id: 'customers', label: 'Customers' },
     { id: 'acme', label: 'Acme Pty Ltd' },
   ] as const;
   readonly fileBrowserActions = [
@@ -2673,7 +2673,7 @@ export class ComponentDetailViewBase {
     { key: 'shared', label: 'Shared workspace', leaf: false },
     { key: 'archive', label: 'Archive', leaf: true },
   ] as const;
-  readonly tableLoadError = new Error('Client records could not be loaded.');
+  readonly tableLoadError = new Error('Customer records could not be loaded.');
   readonly treeColumns: readonly JTableColumn[] = [
     { field: 'label', header: 'Name' },
     { field: 'type', header: 'Type' },
@@ -2700,10 +2700,10 @@ export class ComponentDetailViewBase {
       ],
     },
   ];
-  readonly clientColumns: readonly JTableColumn[] = [
+  readonly customerColumns: readonly JTableColumn[] = [
     {
       field: 'code',
-      header: 'Client code',
+      header: 'Customer ID',
       sortable: true,
       filterable: true,
       resizable: true,
@@ -2714,8 +2714,8 @@ export class ComponentDetailViewBase {
       },
     },
     {
-      field: 'legalName',
-      header: 'Legal name',
+      field: 'customerName',
+      header: 'Customer Name',
       sortable: true,
       filterable: true,
       resizable: true,
@@ -2726,22 +2726,22 @@ export class ComponentDetailViewBase {
       },
     },
     {
-      field: 'tradingName',
-      header: 'Public name',
+      field: 'company',
+      header: 'Company',
       filterable: true,
       minWidth: '12rem',
       filter: { operators: ['contains', 'equals', 'notEquals'] },
     },
     {
-      field: 'parentClient',
-      header: 'Parent account',
+      field: 'accountManager',
+      header: 'Account Manager',
       filterable: true,
       minWidth: '11rem',
       filter: { operators: ['contains', 'equals', 'isEmpty', 'isNotEmpty'] },
     },
     {
-      field: 'billingType',
-      header: 'Billing type',
+      field: 'subscription',
+      header: 'Subscription',
       sortable: true,
       filterable: true,
       minWidth: '10rem',
@@ -2749,9 +2749,9 @@ export class ComponentDetailViewBase {
         type: 'select',
         operators: ['equals', 'notEquals'],
         options: [
-          { label: 'Monthly', value: 'Monthly' },
-          { label: 'Prepaid', value: 'Prepaid' },
-          { label: 'Project', value: 'Project' },
+          { label: 'Starter', value: 'Starter' },
+          { label: 'Growth', value: 'Growth' },
+          { label: 'Enterprise', value: 'Enterprise' },
         ],
       },
     },
@@ -2772,12 +2772,12 @@ export class ComponentDetailViewBase {
       actions: [
         {
           key: 'view',
-          label: 'View client',
+          label: 'View customer',
           command: (event) => this.handleTableAction(event),
         },
         {
           key: 'edit',
-          label: 'Edit client',
+          label: 'Edit customer',
           command: (event) => this.handleTableAction(event),
         },
         {
@@ -2790,59 +2790,59 @@ export class ComponentDetailViewBase {
     },
   ];
 
-  readonly clientRows = [
+  readonly customerRows = [
     {
       id: 1,
-      code: 'CL-10018',
-      legalName: 'Northstar Logistics Ltd.',
-      tradingName: 'Northstar',
-      parentClient: 'Northstar Group',
-      billingType: 'Monthly',
+      code: 'CUS-10018',
+      customerName: 'Avery Morgan',
+      company: 'Northstar Logistics',
+      accountManager: 'Jordan Lee',
+      subscription: 'Enterprise',
       active: true,
     },
     {
       id: 2,
-      code: 'CL-10024',
-      legalName: 'Harbor & Pine Retail Co.',
-      tradingName: 'Harbor & Pine',
-      parentClient: '',
-      billingType: 'Prepaid',
+      code: 'CUS-10024',
+      customerName: 'Riley Chen',
+      company: 'Harbor & Pine',
+      accountManager: 'Morgan Kim',
+      subscription: 'Growth',
       active: true,
     },
     {
       id: 3,
-      code: 'CL-10031',
-      legalName: 'Summit Field Services',
-      tradingName: 'Summit Field',
-      parentClient: 'Summit Holdings',
-      billingType: 'Project',
+      code: 'CUS-10031',
+      customerName: 'Noah Brooks',
+      company: 'Summit Field Services',
+      accountManager: 'Avery Reed',
+      subscription: 'Starter',
       active: false,
     },
     {
       id: 4,
-      code: 'CL-10042',
-      legalName: 'Blue Cedar Technologies',
-      tradingName: 'Blue Cedar',
-      parentClient: '',
-      billingType: 'Monthly',
+      code: 'CUS-10042',
+      customerName: 'Maya Patel',
+      company: 'Blue Cedar Technologies',
+      accountManager: 'Jordan Lee',
+      subscription: 'Enterprise',
       active: true,
     },
     {
       id: 5,
-      code: 'CL-10056',
-      legalName: 'Crescent Energy Partners',
-      tradingName: 'Crescent Energy',
-      parentClient: 'Crescent Group',
-      billingType: 'Project',
+      code: 'CUS-10056',
+      customerName: 'Elliot James',
+      company: 'Crescent Energy',
+      accountManager: 'Morgan Kim',
+      subscription: 'Growth',
       active: true,
     },
     {
       id: 6,
-      code: 'CL-10063',
-      legalName: 'Oakline Property Services',
-      tradingName: 'Oakline',
-      parentClient: '',
-      billingType: 'Prepaid',
+      code: 'CUS-10063',
+      customerName: 'Zoe Carter',
+      company: 'Oakline Property Services',
+      accountManager: 'Avery Reed',
+      subscription: 'Starter',
       active: false,
     },
   ];
