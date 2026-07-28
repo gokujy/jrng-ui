@@ -1379,6 +1379,39 @@ const GALLERY_FEATURE_EXAMPLES = [
   },
 ] as const;
 
+const VIDEO_PLAYER_FEATURE_EXAMPLES = [
+  {
+    key: 'sample-one',
+    name: 'Local video preview one',
+    details: 'Play the first bundled MP4 with native controls and an accessible description.',
+    html: `<j-video-player
+  src="/assets/videos/sample-video-1.mp4"
+  caption="Sample video 1"
+  ariaLabel="Play sample video 1"
+/>`,
+  },
+  {
+    key: 'sample-two',
+    name: 'Local video preview two',
+    details: 'Play the second bundled MP4 in the responsive video player.',
+    html: `<j-video-player
+  src="/assets/videos/sample-video-2.mp4"
+  caption="Sample video 2"
+  ariaLabel="Play sample video 2"
+/>`,
+  },
+  {
+    key: 'sample-three',
+    name: 'Local video preview three',
+    details: 'Play the third bundled MP4 while preserving the native keyboard and media controls.',
+    html: `<j-video-player
+  src="/assets/videos/sample-video-3.mp4"
+  caption="Sample video 3"
+  ariaLabel="Play sample video 3"
+/>`,
+  },
+] as const;
+
 const HTML_PREVIEW_FEATURE_EXAMPLES = [
   {
     key: 'iframe',
@@ -2006,6 +2039,12 @@ export class ComponentDetailViewBase {
       return this.withApiCoverage(
         doc,
         GALLERY_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
+      );
+    }
+    if (doc.slug === 'video-player') {
+      return this.withApiCoverage(
+        doc,
+        VIDEO_PLAYER_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
       );
     }
     if (doc.slug === 'html-preview') {

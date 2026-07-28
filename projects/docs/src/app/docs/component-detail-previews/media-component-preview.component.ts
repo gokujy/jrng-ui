@@ -75,7 +75,8 @@ import {
         />
       }
       @case ('video-player') {
-        <j-video-player src="/assets/demo-video.mp4" caption="YouTube embed example" />
+        @let video = videoPreviews[example.index];
+        <j-video-player [src]="video.src" [caption]="video.caption" [ariaLabel]="video.ariaLabel" />
       }
     }
   `,
@@ -84,4 +85,21 @@ import {
 })
 export class MediaComponentPreviewComponent extends ComponentDetailViewBase {
   readonly previewExample = input.required<DetailFeatureExample>();
+  readonly videoPreviews = [
+    {
+      src: '/assets/videos/sample-video-1.mp4',
+      caption: 'Sample video 1',
+      ariaLabel: 'Play sample video 1',
+    },
+    {
+      src: '/assets/videos/sample-video-2.mp4',
+      caption: 'Sample video 2',
+      ariaLabel: 'Play sample video 2',
+    },
+    {
+      src: '/assets/videos/sample-video-3.mp4',
+      caption: 'Sample video 3',
+      ariaLabel: 'Play sample video 3',
+    },
+  ] as const;
 }

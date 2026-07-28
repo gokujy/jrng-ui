@@ -3521,7 +3521,11 @@ const generatedBasicExamples: Readonly<Record<string, string>> = {
   targetHeader="Assigned tasks"
   filter>
 </j-transfer-list>`,
-  'video-player': `<j-video-player src="/assets/demo-video.mp4" caption="Local video example"></j-video-player>`,
+  'video-player': `<j-video-player
+  src="/assets/videos/sample-video-1.mp4"
+  caption="Sample video 1"
+  ariaLabel="Play sample video 1">
+</j-video-player>`,
   tree: `<j-tree [value]="nodes" filter ariaLabel="Workspace folders"></j-tree>`,
   'virtual-scroller': `<j-virtual-scroller [items]="records" [itemSize]="40" height="14rem"></j-virtual-scroller>`,
 };
@@ -3585,7 +3589,11 @@ const generatedFallbackExamples: Readonly<Record<string, string>> = {
 </j-tabs>`,
   'tiered-menu': `<j-tiered-menu [model]="menuItems"></j-tiered-menu>`,
   'tree-table': `<j-tree-table [value]="nodes" [columns]="columns"></j-tree-table>`,
-  'video-player': `<j-video-player src="/assets/demo-video.mp4" title="Product walkthrough"></j-video-player>`,
+  'video-player': `<j-video-player
+  src="/assets/videos/sample-video-1.mp4"
+  caption="Sample video 1"
+  ariaLabel="Play sample video 1">
+</j-video-player>`,
 };
 
 const createGeneratedBasicExample = (
