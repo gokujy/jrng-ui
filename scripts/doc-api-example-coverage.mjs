@@ -219,6 +219,9 @@ function createComponentCoverage(component, inventory, existingExamples) {
     importPath: component.importPath,
     inputs: component.inputs,
     outputs: component.outputs,
+    twoWayBindings: component.inputs.filter((input) =>
+      component.outputs.includes(`${input}Change`),
+    ),
     methods: component.methods,
     templates,
     forms: component.formCompatibility,

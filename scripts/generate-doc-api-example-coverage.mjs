@@ -43,13 +43,13 @@ async function coverageMarkdown(coverage) {
     '',
     '> Coverage rule: every meaningful public input, output, method, template, state, variant, and supported forms integration maps to at least one runnable example. Framework hooks and implementation helpers require a written exclusion reason.',
     '',
-    '| Component | Selector | Inputs | Outputs | Methods | Templates | Forms | Existing examples | Missing API examples | Status |',
-    '| --- | --- | --- | --- | --- | --- | --- | ---: | --- | --- |',
+    '| Component | Selector | Inputs | Outputs | Two-way bindings | Methods | Templates | Forms | Existing examples | Missing examples | Status |',
+    '| --- | --- | --- | --- | --- | --- | --- | --- | ---: | --- | --- |',
   ];
 
   for (const component of coverage.components) {
     lines.push(
-      `| ${escapeCell(component.component)} | \`${component.selector}\` | ${apiCell(component.inputs)} | ${apiCell(component.outputs)} | ${apiCell(component.methods)} | ${apiCell(component.templates)} | ${escapeCell(component.forms || 'None')} | ${component.existingExamples} | None | ${component.status} |`,
+      `| ${escapeCell(component.component)} | \`${component.selector}\` | ${apiCell(component.inputs)} | ${apiCell(component.outputs)} | ${apiCell(component.twoWayBindings)} | ${apiCell(component.methods)} | ${apiCell(component.templates)} | ${escapeCell(component.forms || 'None')} | ${component.existingExamples} | None | ${component.status} |`,
     );
   }
 
