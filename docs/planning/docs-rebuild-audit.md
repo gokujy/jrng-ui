@@ -252,3 +252,10 @@ Before this audit began, three video assets were staged and three documentation 
 - Data, Chart, and Utilities generated API examples now isolate appearance, state, configuration, and accessibility controls instead of repeating broad property sets.
 - Forbidden BDMS labels and `j-data-grid` references are absent from runtime documentation source.
 - API coverage remains complete for 122 components, 1,446 inputs, 241 outputs, and 713 registry methods.
+
+### Phase 8 — Advanced component visibility
+
+- All 14 implemented advanced components have verified source implementations, modular public entry points, registry records, component routes, generated navigation/search metadata, live previews, API/example coverage, accessibility metadata, theme metadata, and direct tests.
+- The shared component detail experience supplies keyboard, responsive, testing, CSS variable/theming, accessibility, FAQ, and changelog sections.
+- A dedicated `docs:check-advanced` validation fails when an implemented advanced component is hidden or when an unimplemented component receives fake registry/navigation documentation.
+- Eleven audited advanced concepts remain correctly absent because they are not implemented.

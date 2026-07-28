@@ -39,6 +39,7 @@
     "docs:inventory": "node scripts/sync-component-doc-categories.mjs && node scripts/generate-component-inventory.mjs",
     "docs:check-completeness": "node scripts/check-doc-completeness.mjs",
     "docs:check-routes": "node scripts/check-doc-routes.mjs",
+    "docs:check-advanced": "node scripts/check-advanced-doc-visibility.mjs",
     "docs:check-examples": "node scripts/check-doc-examples.mjs",
     "docs:generate-api-examples": "node scripts/generate-doc-api-example-coverage.mjs",
     "docs:validate-api-examples": "node scripts/validate-doc-api-examples.mjs",
