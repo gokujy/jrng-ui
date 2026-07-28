@@ -8,21 +8,44 @@ import {
   PLATFORM_ID,
   signal,
 } from '@angular/core';
-import { JRNG_CONFIG, JThemeMode } from 'jrng-ui/core';
-import { JComponentThemeTokens, JThemePreset, JThemeTokens } from './preset.types';
+import { JRNG_CONFIG } from 'jrng-ui/core';
+import {
+  JComponentThemeTokens,
+  JResolvedTheme,
+  JThemePresetSource,
+  JThemeTokens,
+} from './preset.types';
 import { J_THEME_OPTIONS } from './theme-config.token';
+import { jApplyThemeTokens, jThemeDeclarations } from './theme-css';
+import { JThemePresetRegistry } from './theme-registry';
+import { jMergeThemeOverrides, jResolveTheme } from './theme-resolver';
+import {
+  JThemeColorScheme,
+  JThemeOptions,
+  JThemeScope,
+  JThemeScopeOptions,
+} from './theme.types';
 
 const PRESET_STYLE_ID = 'j-theme-preset';
 
+interface ScopeRecord {
+  readonly id: string;
+  readonly target: HTMLElement;
+  options: JThemeScopeOptions;
+  managed: readonly string[];
+}
+
+export interface JThemeInitialState {
+  readonly preset: string;
+  readonly colorScheme: JThemeColorScheme;
+  readonly darkClass: string;
+  readonly css: string;
+}
+
 /**
- * Runtime theming control for JRNG UI. Manages dark mode (including `'system'`
- * OS-preference tracking) and lets applications override design tokens or apply
- * presets at runtime, on top of the token-driven CSS-variable theme.
- *
- * The initial mode is read from `JRNG_CONFIG.themeMode` (see `provideJrngUI`).
- * Available without configuration via `inject(JThemeService)`; use
- * `provideJrngTheme(options)` to apply a preset/darkClass and activate it at
- * bootstrap.
+ * Signal-based, SSR-safe runtime control for registered and custom JRNG themes.
+ * The service owns theme variables only; persistence and application layout
+ * remain application responsibilities.
  */
 @Injectable({ providedIn: 'root' })
 export class JThemeService {
@@ -31,29 +54,43 @@ export class JThemeService {
   private readonly config = inject(JRNG_CONFIG);
   private readonly destroyRef = inject(DestroyRef);
   private readonly options = inject(J_THEME_OPTIONS, { optional: true }) ?? {};
+  private readonly registry = inject(JThemePresetRegistry);
+  private readonly presetSource = signal<JThemePresetSource>(
+    this.options.preset ?? 'default',
+  );
+  private readonly tokenOverrides = signal<JThemeTokens>(this.options.tokens ?? {});
+  private readonly componentOverrides = signal<JComponentThemeTokens>(
+    this.options.components ?? {},
+  );
+  private readonly systemPrefersDark = signal(this.prefersDark());
+  private readonly scopes = new Map<string, ScopeRecord>();
+  private readonly scopeVersion = signal(0);
+  private rootManagedTokens: readonly string[] = [];
+  private nextScopeId = 0;
 
   /** Class toggled on the document root for dark styling. */
   readonly darkClass = this.options.darkClass ?? 'j-dark';
 
-  /** Current mode: `'light' | 'dark' | 'system'`. */
-  readonly mode = signal<JThemeMode>(this.config.themeMode);
+  /** Current requested colour scheme. `mode` is retained for compatibility. */
+  readonly colorScheme = signal<JThemeColorScheme>(
+    this.options.colorScheme ?? this.config.themeMode,
+  );
+  readonly mode = this.colorScheme;
 
-  private readonly systemPrefersDark = signal(this.prefersDark());
+  /** Current resolved preset and stable identifier. */
+  readonly resolvedTheme = computed(() =>
+    jResolveTheme(this.registry.resolve(this.presetSource())),
+  );
+  readonly presetId = computed(() => this.resolvedTheme().presetId);
 
-  /** Whether dark styling is currently active (resolves `'system'`). */
+  /** Whether dark styling is currently active after resolving `system`. */
   readonly isDark = computed(
-    () => this.mode() === 'dark' || (this.mode() === 'system' && this.systemPrefersDark()),
+    () =>
+      this.colorScheme() === 'dark' ||
+      (this.colorScheme() === 'system' && this.systemPrefersDark()),
   );
 
   constructor() {
-    if (this.options.preset) {
-      this.setPreset(this.options.preset);
-    }
-    this.applyTokens({
-      ...this.options.tokens,
-      ...this.flattenComponents(this.options.components),
-    });
-
     const darkModeQuery = this.darkModeQuery();
     if (darkModeQuery) {
       const onChange = (event: MediaQueryListEvent): void =>
@@ -62,95 +99,217 @@ export class JThemeService {
       this.destroyRef.onDestroy(() => darkModeQuery.removeEventListener('change', onChange));
     }
 
-    // Keep the root element's dark class in sync with the resolved mode.
     effect(() => {
+      const resolved = this.resolvedTheme();
       const dark = this.isDark();
-      if (this.isBrowser) {
-        this.documentRef.documentElement.classList.toggle(this.darkClass, dark);
-      }
+      const tokens = this.mergedTokens(resolved, dark);
+      this.scopeVersion();
+      if (!this.isBrowser) return;
+      this.applyRoot(resolved, tokens, dark);
+      this.applyScopes();
     });
+
+    this.destroyRef.onDestroy(() => this.cleanup());
   }
 
-  /** Set the theme mode. */
-  setMode(mode: JThemeMode): void {
-    this.mode.set(mode);
+  setMode(mode: JThemeColorScheme): void {
+    this.setColorScheme(mode);
   }
 
-  /** Toggle between light and dark (resolving the current effective mode). */
+  setColorScheme(colorScheme: JThemeColorScheme): void {
+    this.colorScheme.set(colorScheme);
+    this.refresh();
+  }
+
   toggle(): void {
-    this.mode.set(this.isDark() ? 'light' : 'dark');
+    this.setColorScheme(this.isDark() ? 'light' : 'dark');
   }
 
-  /** Override CSS custom properties on the document root, e.g. a brand color. */
+  /** Switch to a registered identifier or a legacy/custom preset object. */
+  setPreset(preset: JThemePresetSource): void {
+    this.presetSource.set(preset);
+    this.refresh();
+  }
+
+  /** Replace global semantic/foundation overrides. */
   applyTokens(tokens: JThemeTokens): void {
-    if (!this.isBrowser) {
-      return;
-    }
-    const root = this.documentRef.documentElement;
-    for (const [name, value] of Object.entries(tokens)) {
-      if (value !== undefined) {
-        root.style.setProperty(name, value);
-      }
-    }
+    this.tokenOverrides.set({ ...this.tokenOverrides(), ...tokens });
+    this.refresh();
   }
 
-  /** Apply a preset by injecting a managed stylesheet with its light/dark tokens. */
-  setPreset(preset: JThemePreset): void {
-    if (!this.isBrowser) {
-      return;
-    }
-    const shared = this.flattenComponents(preset.components);
-    const css =
-      (preset.light || preset.components
-        ? `:root{${this.toDeclarations({ ...preset.light, ...shared })}}`
-        : '') + (preset.dark ? `.${this.darkClass}{${this.toDeclarations(preset.dark)}}` : '');
-
-    let style = this.documentRef.getElementById(PRESET_STYLE_ID) as HTMLStyleElement | null;
-    if (!style) {
-      style = this.documentRef.createElement('style');
-      style.id = PRESET_STYLE_ID;
-      this.documentRef.head.appendChild(style);
-    }
-    style.textContent = css;
+  /** Replace global component-token groups. */
+  applyComponentTokens(components: JComponentThemeTokens): void {
+    this.componentOverrides.set({ ...this.componentOverrides(), ...components });
+    this.refresh();
   }
 
-  /** Read the computed value of a design token, e.g. `getToken('--j-color-primary')`. */
-  getToken(name: string): string {
-    if (!this.isBrowser) {
-      return '';
-    }
+  /** Restore provider defaults, clearing runtime overrides. */
+  reset(): void {
+    this.presetSource.set(this.options.preset ?? 'default');
+    this.colorScheme.set(this.options.colorScheme ?? this.config.themeMode);
+    this.tokenOverrides.set(this.options.tokens ?? {});
+    this.componentOverrides.set(this.options.components ?? {});
+    this.refresh();
+  }
+
+  /**
+   * Apply an independently configurable theme to a container. The returned
+   * handle owns only attributes and variables it applies.
+   */
+  createScope(target: HTMLElement, options: JThemeScopeOptions = {}): JThemeScope {
+    const id = `j-theme-scope-${++this.nextScopeId}`;
+    const record: ScopeRecord = { id, target, options, managed: [] };
+    this.scopes.set(id, record);
+    this.refreshScopes();
+    let destroyed = false;
+    return {
+      id,
+      target,
+      update: (next) => {
+        if (destroyed) return;
+        record.options = next;
+        this.refreshScopes();
+      },
+      reset: () => {
+        if (destroyed) return;
+        record.options = {};
+        this.refreshScopes();
+      },
+      destroy: () => {
+        if (destroyed) return;
+        destroyed = true;
+        this.clearScope(record);
+        this.scopes.delete(id);
+        this.bumpScopes();
+      },
+    };
+  }
+
+  /** Deterministic state that an SSR integration can serialize into the page. */
+  getInitialState(): JThemeInitialState {
+    const resolved = this.resolvedTheme();
+    const light = jMergeThemeOverrides(
+      resolved.light,
+      this.tokenOverrides(),
+      this.componentOverrides(),
+    );
+    const dark = jMergeThemeOverrides(
+      resolved.dark,
+      this.tokenOverrides(),
+      this.componentOverrides(),
+    );
+    return {
+      preset: resolved.presetId,
+      colorScheme: this.colorScheme(),
+      darkClass: this.darkClass,
+      css: `:root{${jThemeDeclarations(light)}}:root.${this.darkClass}{${jThemeDeclarations(dark)}}`,
+    };
+  }
+
+  getToken(name: string, target?: HTMLElement): string {
+    if (!this.isBrowser) return '';
     return (
       this.documentRef.defaultView
-        ?.getComputedStyle(this.documentRef.documentElement)
+        ?.getComputedStyle(target ?? this.documentRef.documentElement)
         .getPropertyValue(name)
         .trim() ?? ''
     );
   }
 
-  private toDeclarations(tokens: JThemeTokens): string {
-    return Object.entries(tokens)
-      .filter((entry): entry is [string, string] => entry[1] !== undefined)
-      .map(([name, value]) => `${name}:${value};`)
-      .join('');
+  private mergedTokens(resolved: JResolvedTheme, dark: boolean): JThemeTokens {
+    return jMergeThemeOverrides(
+      dark ? resolved.dark : resolved.light,
+      this.tokenOverrides(),
+      this.componentOverrides(),
+    );
   }
 
-  private flattenComponents(components?: JComponentThemeTokens): JThemeTokens {
-    return Object.values(components ?? {}).reduce<JThemeTokens>(
-      (tokens, componentTokens) => ({ ...tokens, ...componentTokens }),
-      {},
-    );
+  private refresh(): void {
+    if (!this.isBrowser) return;
+    const resolved = this.resolvedTheme();
+    this.applyRoot(resolved, this.mergedTokens(resolved, this.isDark()), this.isDark());
+    this.applyScopes();
+  }
+
+  private refreshScopes(): void {
+    this.bumpScopes();
+    if (this.isBrowser) this.applyScopes();
+  }
+
+  private applyRoot(resolved: JResolvedTheme, tokens: JThemeTokens, dark: boolean): void {
+    const root = this.documentRef.documentElement;
+    root.classList.toggle(this.darkClass, dark);
+    root.dataset['jThemePreset'] = resolved.presetId;
+    root.dataset['jColorScheme'] = this.colorScheme();
+    root.style.colorScheme = dark ? 'dark' : 'light';
+    this.rootManagedTokens = jApplyThemeTokens(root, tokens, this.rootManagedTokens);
+
+    let style = this.documentRef.getElementById(PRESET_STYLE_ID) as HTMLStyleElement | null;
+    if (!style) {
+      style = this.documentRef.createElement('style');
+      style.id = PRESET_STYLE_ID;
+      style.dataset['jThemeManaged'] = 'true';
+      this.documentRef.head.appendChild(style);
+    }
+    const state = this.getInitialState();
+    if (style.textContent !== state.css) style.textContent = state.css;
+  }
+
+  private applyScopes(): void {
+    for (const record of this.scopes.values()) {
+      const resolved = jResolveTheme(
+        this.registry.resolve(record.options.preset ?? this.presetSource()),
+      );
+      const scheme = record.options.colorScheme ?? this.colorScheme();
+      const dark =
+        scheme === 'dark' || (scheme === 'system' && this.systemPrefersDark());
+      const tokens = jMergeThemeOverrides(
+        dark ? resolved.dark : resolved.light,
+        record.options.tokens,
+        record.options.components,
+      );
+      record.target.dataset['jThemePreset'] = resolved.presetId;
+      record.target.dataset['jColorScheme'] = scheme;
+      record.target.classList.toggle(this.darkClass, dark);
+      record.target.style.colorScheme = dark ? 'dark' : 'light';
+      record.managed = jApplyThemeTokens(record.target, tokens, record.managed);
+    }
+  }
+
+  private clearScope(record: ScopeRecord): void {
+    for (const name of record.managed) record.target.style.removeProperty(name);
+    record.target.classList.remove(this.darkClass);
+    delete record.target.dataset['jThemePreset'];
+    delete record.target.dataset['jColorScheme'];
+    record.target.style.removeProperty('color-scheme');
+    record.managed = [];
+  }
+
+  private cleanup(): void {
+    if (!this.isBrowser) return;
+    for (const record of this.scopes.values()) this.clearScope(record);
+    this.scopes.clear();
+    const root = this.documentRef.documentElement;
+    for (const name of this.rootManagedTokens) root.style.removeProperty(name);
+    root.classList.remove(this.darkClass);
+    delete root.dataset['jThemePreset'];
+    delete root.dataset['jColorScheme'];
+    root.style.removeProperty('color-scheme');
+    const style = this.documentRef.getElementById(PRESET_STYLE_ID);
+    if (style?.dataset['jThemeManaged'] === 'true') style.remove();
+  }
+
+  private bumpScopes(): void {
+    this.scopeVersion.update((version) => version + 1);
   }
 
   private prefersDark(): boolean {
     return this.darkModeQuery()?.matches ?? false;
   }
 
-  /** The `prefers-color-scheme: dark` media query, or null when unavailable (SSR/jsdom). */
   private darkModeQuery(): MediaQueryList | null {
     const view = this.documentRef.defaultView;
-    if (!this.isBrowser || typeof view?.matchMedia !== 'function') {
-      return null;
-    }
+    if (!this.isBrowser || typeof view?.matchMedia !== 'function') return null;
     return view.matchMedia('(prefers-color-scheme: dark)');
   }
 }
