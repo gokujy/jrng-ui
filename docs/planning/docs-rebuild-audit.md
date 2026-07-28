@@ -250,7 +250,7 @@ Before this audit began, three video assets were staged and three documentation 
 - Unsupported Tree Table loading and error inputs were not invented; generated API coverage continues to map only APIs present in source.
 - Chart, Sparkline, Calendar Scheduler, Gantt, Kanban, Editor, Tour Guide, Query Builder, Cron Expression, and Barcode previews now use fictional customer growth, segmentation, meetings, onboarding, notes, tours, reports, tickets, and implementation scenarios.
 - Data, Chart, and Utilities generated API examples now isolate appearance, state, configuration, and accessibility controls instead of repeating broad property sets.
-- Forbidden BDMS labels and `j-data-grid` references are absent from runtime documentation source.
+- Forbidden reference labels and `j-data-grid` references are absent from runtime documentation source.
 - API coverage remains complete for 122 components, 1,446 inputs, 241 outputs, and 713 registry methods.
 
 ### Phase 8 — Advanced component visibility
@@ -262,7 +262,7 @@ Before this audit began, three video assets were staged and three documentation 
 
 ### Phase 9 — Automated validation
 
-- Added `docs:validate-content` for forbidden BDMS labels, removed selectors, third-party identity leakage, duplicate feature/API example keys, preview/source-tab wiring, copy-code metadata, modular imports, and the required independent Table filtering contracts.
+- Added `docs:validate-content` for forbidden reference labels, removed selectors, third-party identity leakage, duplicate feature/API example keys, preview/source-tab wiring, copy-code metadata, modular imports, and the required independent Table filtering contracts.
 - Added `docs:validate` as the single aggregate command for existing completeness, route, compiled-example, API-example, advanced visibility, content, and file-backed source validation.
 - Existing validators remain the authoritative checks for public docs coverage, routes, APIs, imports, and rendered selectors; no duplicate implementation was introduced.
 - The aggregate documentation validation and lint pass with zero failures.

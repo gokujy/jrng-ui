@@ -60,7 +60,7 @@ File-backed demos generate source tabs from their real files. Metadata-driven pr
 
 Use fictional customer-related business data: customer IDs, names, companies, email addresses, phone numbers, account managers, industries, locations, account types, subscriptions, statuses, dates, orders, support cases, balances, renewals, and segments.
 
-Never use private data, real people or companies, BDMS terminology, internal workflows, or removed selectors. `j-table` owns data-grid behavior, `j-tree-table` owns hierarchical table behavior, `j-editor` owns rich text, `j-file-browser` owns file management, and `j-file-preview` owns preview-only document behavior.
+Never use private data, real people or companies, reference terminology, internal workflows, or removed selectors. `j-table` owns data-grid behavior, `j-tree-table` owns hierarchical table behavior, `j-editor` owns rich text, `j-file-browser` owns file management, and `j-file-preview` owns preview-only document behavior.
 
 ## Accessibility
 
