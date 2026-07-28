@@ -39,7 +39,14 @@ rows = [
 ```
 
 ```html
-<j-table [value]="rows" [columns]="columns" dataKey="id" striped hover responsive />
+<j-table
+  [value]="rows"
+  [columns]="columns"
+  dataKey="id"
+  variant="striped"
+  [hover]="true"
+  responsiveMode="scroll"
+/>
 ```
 
 ## Pagination
@@ -167,7 +174,7 @@ Use `rowSelectable` to exclude disabled or permission-restricted rows. Select-al
   [value]="rows"
   [columns]="columns"
   expandableRows
-  cellEditing
+  editMode="cell"
   reorderableRows
   reorderableColumns
   (cellEditSave)="saveCell($event)"
@@ -207,6 +214,64 @@ Virtual scrolling is opt-in and keeps simple tables unchanged:
 ```
 
 For backend windows, combine `dataMode="virtual"` with the application’s lazy query handling.
+
+## Scroll
+
+The toolbar, native table viewport, loading layer, and paginator are separate layout regions. The
+viewport owns overflow, so a wide table does not make the page itself scroll.
+
+### Horizontal
+
+Horizontal scrolling activates when the combined column width exceeds the available table
+container. Define a minimum width for the table or individual columns to prevent columns from
+becoming too narrow.
+
+```html
+<j-table
+  [value]="customers"
+  [columns]="customerColumns"
+  [scrollable]="true"
+  [tableStyle]="{ 'min-width': '110rem' }"
+/>
+```
+
+Horizontal scrolling does not require a fixed vertical height. Use column `width`, `minWidth`, and
+`maxWidth` definitions to maintain readable content.
+
+### Vertical
+
+```html
+<j-table
+  [value]="customers"
+  [columns]="customerColumns"
+  [scrollable]="true"
+  scrollHeight="24rem"
+  [stickyHeader]="true"
+/>
+```
+
+### Horizontal and Vertical
+
+```html
+<j-table
+  [value]="customers"
+  [columns]="customerColumns"
+  [scrollable]="true"
+  scrollHeight="24rem"
+  [tableStyle]="{ 'min-width': '110rem' }"
+/>
+```
+
+### Flexible
+
+Place the table in a flex or grid child with `min-height: 0`, then use `scrollHeight="flex"`. The
+table fills the available height without installing a resize loop.
+
+### Frozen columns and rows
+
+Set `frozen: true` on a column and use `frozenAlign: 'start'` or `frozenAlign: 'end'`. Logical
+alignment follows RTL automatically; the compatibility aliases `left` and `right` remain
+supported. Frozen rows use `frozenRows` with `lockedRowKeys` and share the same scroll viewport.
 
 ## Row Actions
 

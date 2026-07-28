@@ -160,10 +160,17 @@
     [class.j-table__scroll--overlay-loading]="loading() && loadingVariant() === 'overlay'"
     data-jc-section="scroll"
     [ngStyle]="scrollStyles"
+    [attr.tabindex]="scrollable() ? 0 : null"
+    [attr.role]="scrollable() ? 'region' : null"
+    [attr.aria-label]="scrollable() ? scrollLabel() : null"
     (scroll)="handleVirtualScroll($event)"
   >
     <table
+      class="j-table__element"
+      [ngClass]="tableStyleClass()"
+      [ngStyle]="tableStyle()"
       data-jc-section="table"
+      [attr.inert]="loading() ? '' : null"
       [attr.role]="selectionMode !== 'none' ? 'grid' : 'table'"
       [attr.aria-multiselectable]="
         selectionMode === 'checkbox' || selectionMode === 'multiple' ? true : null
@@ -235,11 +242,11 @@
               [style.width]="column.width || null"
               [style.min-width]="column.minWidth || null"
               [style.max-width]="column.maxWidth || null"
-              [style.left]="
-                column.frozen && column.frozenAlign !== 'right' ? frozenColumnOffset(column) : null
+              [style.inset-inline-start]="
+                column.frozen && !isFrozenAtEnd(column) ? frozenColumnOffset(column) : null
               "
-              [style.right]="
-                column.frozen && column.frozenAlign === 'right' ? frozenColumnOffset(column) : null
+              [style.inset-inline-end]="
+                column.frozen && isFrozenAtEnd(column) ? frozenColumnOffset(column) : null
               "
               [attr.aria-sort]="ariaSort(column)"
               [attr.draggable]="reorderableColumns || column.reorderable ? 'true' : null"
@@ -601,15 +608,11 @@
                     [style.width]="column.width || null"
                     [style.min-width]="column.minWidth || null"
                     [style.max-width]="column.maxWidth || null"
-                    [style.left]="
-                      column.frozen && column.frozenAlign !== 'right'
-                        ? frozenColumnOffset(column)
-                        : null
+                    [style.inset-inline-start]="
+                      column.frozen && !isFrozenAtEnd(column) ? frozenColumnOffset(column) : null
                     "
-                    [style.right]="
-                      column.frozen && column.frozenAlign === 'right'
-                        ? frozenColumnOffset(column)
-                        : null
+                    [style.inset-inline-end]="
+                      column.frozen && isFrozenAtEnd(column) ? frozenColumnOffset(column) : null
                     "
                     [style.display]="columnRowSpan(row, column, rowIndex) === 0 ? 'none' : null"
                     [attr.rowspan]="

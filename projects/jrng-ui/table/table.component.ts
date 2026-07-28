@@ -177,7 +177,13 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   readonly rowReorderable = input<((row: JTableRow, index: number) => boolean) | null>(null);
   readonly rowKey = input('id');
   readonly dataKey = input('');
+  readonly scrollable = input(true, { transform: booleanAttribute });
   readonly scrollHeight = input('');
+  readonly scrollLabel = input('Scrollable table');
+  readonly tableStyle = input<Readonly<Record<string, string | number | null | undefined>> | null>(
+    null,
+  );
+  readonly tableStyleClass = input('');
   readonly virtualScroll = input(false, { transform: booleanAttribute });
   readonly virtualItemSize = input(44, { transform: numberAttribute });
   readonly virtualOverscan = input(4, { transform: numberAttribute });
@@ -300,6 +306,7 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   private internalLockedRowKeys = new Set<string>();
   private collapsedRowGroups = new Set<string>();
   private stopColumnResize: (() => void) | null = null;
+  private resizingColumn = false;
   private maximizedTableAttached = false;
   private readonly maximizeOwnerId = `j-table-maximized-${JTableComponent.nextMaximizeId++}`;
   maximized = false;
@@ -365,10 +372,10 @@ export class JTableComponent implements AfterContentInit, OnChanges {
 
     return this.sourceRows.filter((row) => {
       const matchesFieldFilters = activeFilters.every(([field, value]) =>
-        this.valueMatchesFilter(row[field], value),
+        this.valueMatchesFilter(this.fieldValue(row, field), value),
       );
       const modelMatches = activeModelFilters.map((item) =>
-        this.valueMatchesOperator(row[item.field], item),
+        this.valueMatchesOperator(this.fieldValue(row, item.field), item),
       );
       const matchesColumns =
         matchesFieldFilters &&
@@ -379,7 +386,7 @@ export class JTableComponent implements AfterContentInit, OnChanges {
       const matchesGlobal =
         !global ||
         this.globalFields.some((field) =>
-          String(row[field] ?? '')
+          String(this.fieldValue(row, field) ?? '')
             .toLowerCase()
             .includes(global),
         );
@@ -568,9 +575,12 @@ export class JTableComponent implements AfterContentInit, OnChanges {
       this.responsiveMode() === 'stack' || this.responsiveMode() === 'card'
         ? 'j-table--responsive'
         : '',
+      this.scrollable() ? 'j-table--scrollable' : 'j-table--not-scrollable',
+      this.scrollHeight() === 'flex' ? 'j-table--flex-scroll' : '',
       this.stickyHeader() || this.scrollHeight() ? 'j-table--sticky' : '',
       this.expandableRows() ? 'j-table--expandable' : '',
       this.loading() ? 'is-loading' : '',
+      this.resizingColumn ? 'is-resizing' : '',
       this.maximized ? 'is-maximized' : '',
       this.styleClass(),
     ].filter(Boolean);
@@ -593,7 +603,9 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   }
 
   get scrollStyles(): Record<string, string> | null {
-    return this.scrollHeight() ? { 'max-height': this.scrollHeight() } : null;
+    const height = this.scrollHeight().trim();
+    if (!height) return null;
+    return height === 'flex' ? { height: '100%', 'max-height': 'none' } : { 'max-height': height };
   }
 
   get colspan(): number {
@@ -693,7 +705,9 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   };
 
   cellValue(row: JTableRow, column: JTableColumn): unknown {
-    return column.valueGetter ? column.valueGetter(row, column) : row[column.field];
+    return column.valueGetter
+      ? column.valueGetter(row, column)
+      : this.fieldValue(row, column.field);
   }
 
   formattedCellValue(row: JTableRow, column: JTableColumn): string {
@@ -786,7 +800,7 @@ export class JTableComponent implements AfterContentInit, OnChanges {
       'j-table__cell',
       `j-table__cell--${align}`,
       column.frozen ? 'j-table__cell--frozen' : '',
-      column.frozenAlign === 'right' ? 'j-table__cell--frozen-right' : '',
+      this.isFrozenAtEnd(column) ? 'j-table__cell--frozen-right' : '',
       column.responsivePriority
         ? `j-table__cell--priority-${Math.max(1, Math.min(5, column.responsivePriority))}`
         : '',
@@ -811,13 +825,12 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     if (!column.frozen) {
       return null;
     }
-    const align = column.frozenAlign === 'right' ? 'right' : 'left';
+    const align = this.frozenEdge(column);
     const frozen = this.resolvedColumns.filter(
-      (candidate) =>
-        candidate.frozen && (candidate.frozenAlign === 'right' ? 'right' : 'left') === align,
+      (candidate) => candidate.frozen && this.frozenEdge(candidate) === align,
     );
     const index = frozen.findIndex((candidate) => candidate.field === column.field);
-    const preceding = align === 'left' ? frozen.slice(0, index) : frozen.slice(index + 1);
+    const preceding = align === 'start' ? frozen.slice(0, index) : frozen.slice(index + 1);
     if (!preceding.length) {
       return '0px';
     }
@@ -834,6 +847,10 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   headerColumnClass(column: JTableColumn): string {
     const align = this.normalizeAlign(column.headerAlign ?? column.align);
     return `${this.columnClass(column)} j-table__header--${align}`;
+  }
+
+  isFrozenAtEnd(column: JTableColumn): boolean {
+    return this.frozenEdge(column) === 'end';
   }
 
   triggerEmptyAction(): void {
@@ -2153,14 +2170,34 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     const nextColumn = this.resolvedColumns[columnIndex + 1];
     const nextHeader = header?.nextElementSibling as HTMLElement | null;
     const nextStartWidth = nextHeader?.getBoundingClientRect().width ?? 120;
+    const view = this.documentRef.defaultView;
+    const computed = header && view ? view.getComputedStyle(header) : null;
+    const nextComputed = nextHeader && view ? view.getComputedStyle(nextHeader) : null;
+    const minimum = Math.max(48, Number.parseFloat(computed?.minWidth ?? '') || 0);
+    const maximum = Number.parseFloat(computed?.maxWidth ?? '');
+    const nextMinimum = Math.max(48, Number.parseFloat(nextComputed?.minWidth ?? '') || 0);
+    const direction = computed?.direction === 'rtl' ? -1 : 1;
+    this.resizingColumn = true;
+    this.changeDetectorRef.markForCheck();
     const move = (moveEvent: PointerEvent) => {
-      const delta = moveEvent.clientX - startX;
-      const width = `${Math.max(48, startWidth + delta)}px`;
+      const requestedDelta = (moveEvent.clientX - startX) * direction;
+      const fitLimitedDelta =
+        this.columnResizeMode === 'fit' && nextColumn
+          ? Math.min(requestedDelta, nextStartWidth - nextMinimum)
+          : requestedDelta;
+      const nextWidth = Math.max(
+        minimum,
+        Number.isFinite(maximum)
+          ? Math.min(maximum, startWidth + fitLimitedDelta)
+          : startWidth + fitLimitedDelta,
+      );
+      const appliedDelta = nextWidth - startWidth;
+      const width = `${nextWidth}px`;
       const nextWidths =
         this.columnResizeMode === 'fit' && nextColumn
           ? {
               [column.field]: width,
-              [nextColumn.field]: `${Math.max(48, nextStartWidth - delta)}px`,
+              [nextColumn.field]: `${Math.max(nextMinimum, nextStartWidth - appliedDelta)}px`,
             }
           : { [column.field]: width };
       this.columnWidths = { ...this.columnWidths, ...nextWidths };
@@ -2188,6 +2225,10 @@ export class JTableComponent implements AfterContentInit, OnChanges {
 
   private cleanupColumnResize(): void {
     this.stopColumnResize?.();
+    if (this.resizingColumn) {
+      this.resizingColumn = false;
+      this.changeDetectorRef.markForCheck();
+    }
   }
 
   private applyConfig(): void {
@@ -2429,7 +2470,20 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     );
     return column?.sortComparator
       ? column.sortComparator(first, second, column)
-      : this.compareValues(first[field], second[field]);
+      : this.compareValues(this.fieldValue(first, field), this.fieldValue(second, field));
+  }
+
+  private fieldValue(row: JTableRow, field: string): unknown {
+    if (!field.includes('.')) return row[field];
+    return field.split('.').reduce<unknown>((value, segment) => {
+      return value != null && typeof value === 'object'
+        ? (value as Readonly<Record<string, unknown>>)[segment]
+        : undefined;
+    }, row);
+  }
+
+  private frozenEdge(column: JTableColumn): 'start' | 'end' {
+    return column.frozenAlign === 'right' || column.frozenAlign === 'end' ? 'end' : 'start';
   }
 
   private rowsEqual(first: JTableRow, second: JTableRow): boolean {

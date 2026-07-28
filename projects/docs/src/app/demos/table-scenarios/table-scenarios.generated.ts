@@ -58,6 +58,8 @@ const TABLE_DEMO_STYLES = `
   .j-table-demo__controls { display: flex; flex-wrap: wrap; gap: var(--j-spacing-2); margin-bottom: var(--j-spacing-3); }
   .j-table-demo__status { color: var(--j-color-muted-foreground); font-size: var(--j-font-size-sm); margin: var(--j-spacing-2) 0 0; }
   .j-table-demo__detail { display: grid; gap: var(--j-spacing-2); padding: var(--j-spacing-3); }
+  .j-table-demo__scroll-note { color: var(--j-color-muted-foreground); font-size: var(--j-font-size-sm); margin: 0 0 var(--j-spacing-3); }
+  .j-table-demo__flex-scroll { display: flex; flex-direction: column; height: min(55vh, 28rem); min-height: 18rem; min-width: 0; }
   :host ::ng-deep .j-table-demo__needs-review td { background: color-mix(in srgb, var(--j-color-warning) 9%, var(--j-table-bg)); }
   :host ::ng-deep .j-table-demo__high-value { color: var(--j-color-success); font-weight: var(--j-font-weight-semibold); }
   @media (max-width: 640px) { .j-table-demo__controls j-button { flex: 1 1 auto; } }
@@ -177,7 +179,7 @@ export class ReorderTableScenariosComponent extends TableScenarioState {
   selector: 'app-scrolling-table-scenarios',
   imports: TABLE_DEMO_IMPORTS.scrolling,
   template:
-    '<j-table [value]="rows" [columns]="wideColumns" [scrollHeight]="scenario().includes(\'flexible-height\') ? \'min(45vh, 24rem)\' : \'18rem\'" [paginator]="scenario().includes(\'pagination\')" [rows]="5" [frozenRows]="scenario().includes(\'frozen-rows\')" [lockedRowKeys]="scenario().includes(\'frozen-rows\') ? [\'1\'] : []" [columnGroups]="scenario().includes(\'grouped-columns\') ? columnGroups : []" [showGlobalFilter]="false" [showColumnManager]="false" [showExport]="false" [maximizable]="false" />',
+    "@if (scenario() === 'scrolling-horizontal') {\n  <p class=\"j-table-demo__scroll-note\">Horizontal scrolling activates when the combined column width exceeds the available table container. Define a minimum width for the table or individual columns to prevent columns from becoming too narrow.</p>\n}\n<div [class.j-table-demo__flex-scroll]=\"scenario().includes('flexible')\">\n  <j-table\n    [value]=\"scenario() === 'scrolling-horizontal' ? horizontalRows : rows\"\n    [columns]=\"scenario() === 'scrolling-horizontal' ? horizontalColumns : wideColumns\"\n    [scrollable]=\"true\"\n    [scrollHeight]=\"scenario() === 'scrolling-horizontal' ? '' : scenario().includes('flexible') ? 'flex' : '18rem'\"\n    [tableStyle]=\"scenario() === 'scrolling-horizontal' || scenario().includes('horizontal-and-vertical') ? { 'min-width': '110rem' } : null\"\n    [paginator]=\"scenario().includes('pagination')\"\n    [rows]=\"5\"\n    [frozenRows]=\"scenario().includes('frozen-rows')\"\n    [lockedRowKeys]=\"scenario().includes('frozen-rows') ? ['1'] : []\"\n    [columnGroups]=\"scenario().includes('grouped-columns') ? columnGroups : []\"\n    [showGlobalFilter]=\"false\"\n    [showColumnManager]=\"false\"\n    [showExport]=\"false\"\n    [maximizable]=\"false\"\n    scrollLabel=\"Customer table\"\n  />\n</div>",
   styles: [TABLE_DEMO_STYLES],
 })
 export class ScrollingTableScenariosComponent extends TableScenarioState {
@@ -397,13 +399,13 @@ export const TABLE_SCENARIO_COMPONENTS: Readonly<Record<string, Type<unknown>>> 
   'reorder-reordering-with-selection': ReorderTableScenariosComponent,
   'reorder-reordering-with-pagination': ReorderTableScenariosComponent,
   'reorder-keyboard-accessible-alternative': ReorderTableScenariosComponent,
-  'scrolling-vertical-scrolling': ScrollingTableScenariosComponent,
-  'scrolling-horizontal-scrolling': ScrollingTableScenariosComponent,
-  'scrolling-both-direction-scrolling': ScrollingTableScenariosComponent,
-  'scrolling-fixed-height-scrolling': ScrollingTableScenariosComponent,
-  'scrolling-flexible-height-scrolling': ScrollingTableScenariosComponent,
+  'scrolling-vertical': ScrollingTableScenariosComponent,
+  'scrolling-horizontal': ScrollingTableScenariosComponent,
+  'scrolling-horizontal-and-vertical': ScrollingTableScenariosComponent,
+  'scrolling-fixed-height': ScrollingTableScenariosComponent,
+  'scrolling-flexible': ScrollingTableScenariosComponent,
   'scrolling-responsive-scrolling': ScrollingTableScenariosComponent,
-  'scrolling-scrollable-header': ScrollingTableScenariosComponent,
+  'scrolling-sticky-header': ScrollingTableScenariosComponent,
   'scrolling-frozen-rows': ScrollingTableScenariosComponent,
   'scrolling-frozen-columns': ScrollingTableScenariosComponent,
   'scrolling-multiple-frozen-columns': ScrollingTableScenariosComponent,
@@ -522,7 +524,7 @@ const TABLE_SCENARIO_SOURCES = {
     scss: ':host { display: block; min-width: 0; }',
   },
   scrolling: {
-    html: '<j-table [value]="rows" [columns]="wideColumns" [scrollHeight]="scenario().includes(\'flexible-height\') ? \'min(45vh, 24rem)\' : \'18rem\'" [paginator]="scenario().includes(\'pagination\')" [rows]="5" [frozenRows]="scenario().includes(\'frozen-rows\')" [lockedRowKeys]="scenario().includes(\'frozen-rows\') ? [\'1\'] : []" [columnGroups]="scenario().includes(\'grouped-columns\') ? columnGroups : []" [showGlobalFilter]="false" [showColumnManager]="false" [showExport]="false" [maximizable]="false" />',
+    html: "@if (scenario() === 'scrolling-horizontal') {\n  <p class=\"j-table-demo__scroll-note\">Horizontal scrolling activates when the combined column width exceeds the available table container. Define a minimum width for the table or individual columns to prevent columns from becoming too narrow.</p>\n}\n<div [class.j-table-demo__flex-scroll]=\"scenario().includes('flexible')\">\n  <j-table\n    [value]=\"scenario() === 'scrolling-horizontal' ? horizontalRows : rows\"\n    [columns]=\"scenario() === 'scrolling-horizontal' ? horizontalColumns : wideColumns\"\n    [scrollable]=\"true\"\n    [scrollHeight]=\"scenario() === 'scrolling-horizontal' ? '' : scenario().includes('flexible') ? 'flex' : '18rem'\"\n    [tableStyle]=\"scenario() === 'scrolling-horizontal' || scenario().includes('horizontal-and-vertical') ? { 'min-width': '110rem' } : null\"\n    [paginator]=\"scenario().includes('pagination')\"\n    [rows]=\"5\"\n    [frozenRows]=\"scenario().includes('frozen-rows')\"\n    [lockedRowKeys]=\"scenario().includes('frozen-rows') ? ['1'] : []\"\n    [columnGroups]=\"scenario().includes('grouped-columns') ? columnGroups : []\"\n    [showGlobalFilter]=\"false\"\n    [showColumnManager]=\"false\"\n    [showExport]=\"false\"\n    [maximizable]=\"false\"\n    scrollLabel=\"Customer table\"\n  />\n</div>",
     ts: "@Component({\n  selector: 'app-scrolling-table-scenarios',\n  imports: TABLE_DEMO_IMPORTS.scrolling,\n  templateUrl: './scrolling-table-scenarios.component.html',\n})\nexport class ScrollingTableScenariosComponent extends TableScenarioState {\n  readonly scenario = input.required<string>();\n}",
     scss: ':host { display: block; min-width: 0; }',
   },
@@ -1736,43 +1738,43 @@ export const TABLE_SCENARIO_DOCS = [
     ...TABLE_SCENARIO_SOURCES.reorder,
   },
   {
-    key: 'scrolling-vertical-scrolling',
+    key: 'scrolling-vertical',
     family: 'scrolling',
-    name: 'Vertical scrolling',
+    name: 'Vertical',
     details:
-      'Vertical scrolling using independent local state and realistic business records. Expected behavior: the visible controls update only this example and emit a polite status message. Accessibility: semantic headers, keyboard focus, labelled controls, and responsive scrolling remain available.',
+      'Vertical using independent local state and realistic business records. Expected behavior: the visible controls update only this example and emit a polite status message. Accessibility: semantic headers, keyboard focus, labelled controls, and responsive scrolling remain available.',
     ...TABLE_SCENARIO_SOURCES.scrolling,
   },
   {
-    key: 'scrolling-horizontal-scrolling',
+    key: 'scrolling-horizontal',
     family: 'scrolling',
-    name: 'Horizontal scrolling',
+    name: 'Horizontal',
     details:
-      'Horizontal scrolling using independent local state and realistic business records. Expected behavior: the visible controls update only this example and emit a polite status message. Accessibility: semantic headers, keyboard focus, labelled controls, and responsive scrolling remain available.',
+      'Horizontal using independent local state and realistic business records. Expected behavior: the visible controls update only this example and emit a polite status message. Accessibility: semantic headers, keyboard focus, labelled controls, and responsive scrolling remain available.',
     ...TABLE_SCENARIO_SOURCES.scrolling,
   },
   {
-    key: 'scrolling-both-direction-scrolling',
+    key: 'scrolling-horizontal-and-vertical',
     family: 'scrolling',
-    name: 'Both-direction scrolling',
+    name: 'Horizontal and Vertical',
     details:
-      'Both-direction scrolling using independent local state and realistic business records. Expected behavior: the visible controls update only this example and emit a polite status message. Accessibility: semantic headers, keyboard focus, labelled controls, and responsive scrolling remain available.',
+      'Horizontal and Vertical using independent local state and realistic business records. Expected behavior: the visible controls update only this example and emit a polite status message. Accessibility: semantic headers, keyboard focus, labelled controls, and responsive scrolling remain available.',
     ...TABLE_SCENARIO_SOURCES.scrolling,
   },
   {
-    key: 'scrolling-fixed-height-scrolling',
+    key: 'scrolling-fixed-height',
     family: 'scrolling',
-    name: 'Fixed-height scrolling',
+    name: 'Fixed Height',
     details:
-      'Fixed-height scrolling using independent local state and realistic business records. Expected behavior: the visible controls update only this example and emit a polite status message. Accessibility: semantic headers, keyboard focus, labelled controls, and responsive scrolling remain available.',
+      'Fixed Height using independent local state and realistic business records. Expected behavior: the visible controls update only this example and emit a polite status message. Accessibility: semantic headers, keyboard focus, labelled controls, and responsive scrolling remain available.',
     ...TABLE_SCENARIO_SOURCES.scrolling,
   },
   {
-    key: 'scrolling-flexible-height-scrolling',
+    key: 'scrolling-flexible',
     family: 'scrolling',
-    name: 'Flexible-height scrolling',
+    name: 'Flexible',
     details:
-      'Flexible-height scrolling using independent local state and realistic business records. Expected behavior: the visible controls update only this example and emit a polite status message. Accessibility: semantic headers, keyboard focus, labelled controls, and responsive scrolling remain available.',
+      'Flexible using independent local state and realistic business records. Expected behavior: the visible controls update only this example and emit a polite status message. Accessibility: semantic headers, keyboard focus, labelled controls, and responsive scrolling remain available.',
     ...TABLE_SCENARIO_SOURCES.scrolling,
   },
   {
@@ -1784,11 +1786,11 @@ export const TABLE_SCENARIO_DOCS = [
     ...TABLE_SCENARIO_SOURCES.scrolling,
   },
   {
-    key: 'scrolling-scrollable-header',
+    key: 'scrolling-sticky-header',
     family: 'scrolling',
-    name: 'Scrollable header',
+    name: 'Sticky header',
     details:
-      'Scrollable header using independent local state and realistic business records. Expected behavior: the visible controls update only this example and emit a polite status message. Accessibility: semantic headers, keyboard focus, labelled controls, and responsive scrolling remain available.',
+      'Sticky header using independent local state and realistic business records. Expected behavior: the visible controls update only this example and emit a polite status message. Accessibility: semantic headers, keyboard focus, labelled controls, and responsive scrolling remain available.',
     ...TABLE_SCENARIO_SOURCES.scrolling,
   },
   {

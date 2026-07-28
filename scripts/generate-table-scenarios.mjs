@@ -177,13 +177,13 @@ const families = {
     'Keyboard-accessible alternative',
   ],
   scrolling: [
-    'Vertical scrolling',
-    'Horizontal scrolling',
-    'Both-direction scrolling',
-    'Fixed-height scrolling',
-    'Flexible-height scrolling',
+    'Vertical',
+    'Horizontal',
+    'Horizontal and Vertical',
+    'Fixed Height',
+    'Flexible',
     'Responsive scrolling',
-    'Scrollable header',
+    'Sticky header',
     'Frozen rows',
     'Frozen columns',
     'Multiple frozen columns',
@@ -325,6 +325,8 @@ const TABLE_DEMO_STYLES = \`
   .j-table-demo__controls { display: flex; flex-wrap: wrap; gap: var(--j-spacing-2); margin-bottom: var(--j-spacing-3); }
   .j-table-demo__status { color: var(--j-color-muted-foreground); font-size: var(--j-font-size-sm); margin: var(--j-spacing-2) 0 0; }
   .j-table-demo__detail { display: grid; gap: var(--j-spacing-2); padding: var(--j-spacing-3); }
+  .j-table-demo__scroll-note { color: var(--j-color-muted-foreground); font-size: var(--j-font-size-sm); margin: 0 0 var(--j-spacing-3); }
+  .j-table-demo__flex-scroll { display: flex; flex-direction: column; height: min(55vh, 28rem); min-height: 18rem; min-width: 0; }
   :host ::ng-deep .j-table-demo__needs-review td { background: color-mix(in srgb, var(--j-color-warning) 9%, var(--j-table-bg)); }
   :host ::ng-deep .j-table-demo__high-value { color: var(--j-color-success); font-weight: var(--j-font-weight-semibold); }
   @media (max-width: 640px) { .j-table-demo__controls j-button { flex: 1 1 auto; } }
@@ -697,7 +699,28 @@ ${status}`;
 <j-table [value]="rows.slice(0, 7)" [columns]="columns" reorderableRows [rowReorderable]="rowReorderable" [selectionMode]="scenario().includes('selection') ? 'checkbox' : 'none'" [paginator]="scenario().includes('pagination')" [rows]="4" (rowReorder)="onRowReorder($event)" [showGlobalFilter]="false" [showColumnManager]="false" [showExport]="false" [maximizable]="false" />${status}`;
 
   if (family === 'scrolling')
-    return `<j-table [value]="rows" [columns]="wideColumns" [scrollHeight]="scenario().includes('flexible-height') ? 'min(45vh, 24rem)' : '18rem'" [paginator]="scenario().includes('pagination')" [rows]="5" [frozenRows]="scenario().includes('frozen-rows')" [lockedRowKeys]="scenario().includes('frozen-rows') ? ['1'] : []" [columnGroups]="scenario().includes('grouped-columns') ? columnGroups : []" [showGlobalFilter]="false" [showColumnManager]="false" [showExport]="false" [maximizable]="false" />`;
+    return `@if (scenario() === 'scrolling-horizontal') {
+  <p class="j-table-demo__scroll-note">Horizontal scrolling activates when the combined column width exceeds the available table container. Define a minimum width for the table or individual columns to prevent columns from becoming too narrow.</p>
+}
+<div [class.j-table-demo__flex-scroll]="scenario().includes('flexible')">
+  <j-table
+    [value]="scenario() === 'scrolling-horizontal' ? horizontalRows : rows"
+    [columns]="scenario() === 'scrolling-horizontal' ? horizontalColumns : wideColumns"
+    [scrollable]="true"
+    [scrollHeight]="scenario() === 'scrolling-horizontal' ? '' : scenario().includes('flexible') ? 'flex' : '18rem'"
+    [tableStyle]="scenario() === 'scrolling-horizontal' || scenario().includes('horizontal-and-vertical') ? { 'min-width': '110rem' } : null"
+    [paginator]="scenario().includes('pagination')"
+    [rows]="5"
+    [frozenRows]="scenario().includes('frozen-rows')"
+    [lockedRowKeys]="scenario().includes('frozen-rows') ? ['1'] : []"
+    [columnGroups]="scenario().includes('grouped-columns') ? columnGroups : []"
+    [showGlobalFilter]="false"
+    [showColumnManager]="false"
+    [showExport]="false"
+    [maximizable]="false"
+    scrollLabel="Customer table"
+  />
+</div>`;
 
   if (family === 'virtual')
     return `<j-table [value]="virtualRows" [columns]="columns" virtualScroll [virtualItemSize]="44" scrollHeight="22rem" [dataMode]="scenario().includes('lazy') ? 'virtual' : 'client'" [loading]="scenario().includes('loading')" [selectionMode]="scenario().includes('selection') ? 'checkbox' : 'none'" [filterDisplay]="scenario().includes('filtering') ? 'row' : 'none'" [sortField]="scenario().includes('sorting') ? 'total' : ''" [sortOrder]="scenario().includes('sorting') ? -1 : 0" [paginator]="false" [showGlobalFilter]="false" [showColumnManager]="false" [showExport]="false" [maximizable]="false" />`;

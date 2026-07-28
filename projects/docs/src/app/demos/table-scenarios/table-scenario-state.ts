@@ -26,6 +26,15 @@ export interface TableDemoRow extends Record<string, unknown> {
   readonly email: string;
   readonly role: string;
   readonly locked?: boolean;
+  readonly country?: string;
+  readonly company?: string;
+  readonly representative?: string;
+  readonly joinedDate?: string;
+  readonly balance?: number;
+  readonly activity?: number;
+  readonly phone?: string;
+  readonly lastUpdated?: string;
+  readonly actions?: string;
 }
 
 const TABLE_DEMO_ROWS: readonly TableDemoRow[] = [
@@ -374,6 +383,44 @@ export class TableScenarioState {
     },
     { field: 'email', header: 'Contact', minWidth: '15rem', responsivePriority: 5 },
     { field: 'role', header: 'Role', width: '10rem', responsivePriority: 5 },
+  ];
+
+  readonly horizontalRows: readonly TableDemoRow[] = this.rows.map((row, index) => ({
+    ...row,
+    country: ['India', 'Canada', 'Germany', 'Japan'][index % 4],
+    company: row.customer,
+    representative: row.role,
+    joinedDate: row.date,
+    balance: row.total * 12,
+    activity: 28 + ((index * 7) % 71),
+    phone: `+1 555 01${String(index + 10).padStart(2, '0')}`,
+    lastUpdated: `2026-07-${String(28 - (index % 5)).padStart(2, '0')} 10:${String(
+      index * 4,
+    ).padStart(2, '0')}`,
+    actions: 'View',
+  }));
+
+  readonly horizontalColumns: readonly JTableColumn<TableDemoRow>[] = [
+    { field: 'id', header: 'ID', width: '6rem', minWidth: '6rem' },
+    { field: 'customer', header: 'Name', minWidth: '14rem' },
+    { field: 'country', header: 'Country', minWidth: '12rem' },
+    { field: 'company', header: 'Company', minWidth: '16rem' },
+    { field: 'representative', header: 'Representative', minWidth: '14rem' },
+    { field: 'status', header: 'Status', type: 'status', minWidth: '10rem' },
+    { field: 'joinedDate', header: 'Joined date', type: 'date', minWidth: '12rem' },
+    {
+      field: 'balance',
+      header: 'Balance',
+      type: 'number',
+      align: 'end',
+      minWidth: '10rem',
+      formatter: (value) => `$${Number(value).toLocaleString('en-US')}`,
+    },
+    { field: 'activity', header: 'Activity', type: 'number', minWidth: '10rem' },
+    { field: 'email', header: 'Email', minWidth: '18rem' },
+    { field: 'phone', header: 'Phone', minWidth: '12rem' },
+    { field: 'lastUpdated', header: 'Last updated', minWidth: '13rem' },
+    { field: 'actions', header: 'Actions', minWidth: '9rem' },
   ];
 
   readonly virtualRows: readonly TableDemoRow[] = Array.from({ length: 2500 }, (_, index) => {

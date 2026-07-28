@@ -99,7 +99,11 @@ export interface JTableColumnState {
   readonly order: number;
   readonly width?: string;
   readonly frozen?: boolean;
-  readonly frozenAlign?: 'left' | 'right';
+  /**
+   * Pins the column to a viewport edge. `start` and `end` follow the document
+   * writing direction; `left` and `right` remain compatibility aliases.
+   */
+  readonly frozenAlign?: 'start' | 'end' | 'left' | 'right';
 }
 
 export interface JTableSelectionState<TKey = string> {
@@ -258,7 +262,7 @@ export interface JTableColumn<T extends object = JTableRow> {
   readonly visible?: boolean;
   readonly hidden?: boolean;
   readonly frozen?: boolean;
-  readonly frozenAlign?: 'left' | 'right';
+  readonly frozenAlign?: 'start' | 'end' | 'left' | 'right';
   readonly responsivePriority?: number;
   readonly templateKey?: string;
   readonly actions?: readonly JTableAction[];

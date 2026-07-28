@@ -2265,6 +2265,8 @@ pre {
 .j-preview-code-tabs {
   display: grid;
   gap: var(--j-spacing-4);
+  max-width: 100%;
+  min-width: 0;
 }
 
 .j-feature-example + .j-feature-example {
@@ -2312,6 +2314,8 @@ pre {
   background: var(--j-color-background);
   border: 1px solid var(--j-color-border);
   border-radius: var(--j-radius-lg);
+  max-width: 100%;
+  min-width: 0;
   overflow: visible;
 }
 
@@ -2547,7 +2551,9 @@ pre {
   border-top: 1px solid var(--j-color-border);
   display: grid;
   gap: var(--j-spacing-4);
+  max-width: 100%;
   min-height: 11rem;
+  min-width: 0;
   padding: var(--j-spacing-5);
   place-items: center;
   position: relative;
@@ -2607,6 +2613,7 @@ pre {
 
 .j-preview-surface > * {
   max-width: 100%;
+  min-width: 0;
   width: 100%;
 }
 
