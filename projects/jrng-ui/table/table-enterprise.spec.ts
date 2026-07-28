@@ -37,6 +37,23 @@ describe('JTableComponent enterprise modes', () => {
     expect(none.nativeElement.querySelector('.j-column-filter')).toBeNull();
   });
 
+  it('moves focus into an opened filter menu and restores it on Escape', async () => {
+    const fixture = render('menu');
+    const menu = fixture.nativeElement.querySelector('.j-table__filter-menu') as HTMLDetailsElement;
+    const summary = menu.querySelector('summary') as HTMLElement;
+    menu.open = true;
+    menu.dispatchEvent(new Event('toggle'));
+    await Promise.resolve();
+
+    expect(menu.contains(document.activeElement)).toBe(true);
+    expect(document.activeElement).not.toBe(summary);
+
+    menu.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    await Promise.resolve();
+    expect(menu.open).toBe(false);
+    expect(document.activeElement).toBe(summary);
+  });
+
   it('reports malformed state instead of throwing', () => {
     const fixture = render('none');
     const component = fixture.componentInstance;

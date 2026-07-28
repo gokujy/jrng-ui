@@ -2,6 +2,7 @@ import {
   JTableColumnManager,
   jCreateMemoryTableStorage,
   jMatchTableValue,
+  jProcessTableData,
   jSerializeTableQuery,
 } from './table-data';
 
@@ -97,5 +98,27 @@ describe('table data infrastructure', () => {
         ],
       },
     ]);
+  });
+
+  it('processes and serializes explicit per-field constraint groups', () => {
+    const filterModel = {
+      items: [],
+      groups: [
+        {
+          field: 'amount',
+          operator: 'and' as const,
+          constraints: [
+            { matchMode: 'greaterThan' as const, value: 10 },
+            { matchMode: 'lessThan' as const, value: 100 },
+          ],
+        },
+      ],
+    };
+    expect(
+      jProcessTableData([{ amount: 5 }, { amount: 50 }, { amount: 120 }], { filterModel }),
+    ).toEqual([{ amount: 50 }]);
+    expect(jSerializeTableQuery({ first: 0, rows: 25, filterModel }).filters).toEqual(
+      filterModel.groups,
+    );
   });
 });

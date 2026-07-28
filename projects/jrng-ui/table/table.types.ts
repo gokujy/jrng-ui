@@ -15,6 +15,7 @@ export type JTableColumnType =
   | 'custom';
 export type JTableFilterDisplay = 'toolbar' | 'row' | 'menu' | 'none';
 export type JTableSelectionMode = 'none' | 'single' | 'multiple' | 'checkbox' | 'radio';
+export type JTableExpansionMode = 'single' | 'multiple';
 export type JTableEditMode = 'none' | 'cell' | 'row';
 export type JTableDataMode = 'client' | 'server' | 'lazy' | 'virtual';
 export type JTableResponsiveMode = 'scroll' | 'stack' | 'card' | 'none';
@@ -226,6 +227,8 @@ export interface JTableFilterItem {
 export interface JTableFilterModel {
   readonly items: readonly JTableFilterItem[];
   readonly logicOperator?: 'and' | 'or';
+  /** Optional per-field constraint groups; each group applies its own AND/OR operator. */
+  readonly groups?: readonly JTableFieldFilter[];
 }
 
 export interface JTableAction {
@@ -348,6 +351,10 @@ export interface JTablePageChange {
 export interface JTableLazyLoadEvent {
   readonly first: number;
   readonly rows: number;
+  /** Inclusive virtual-window start when emitted by virtual scrolling. */
+  readonly virtualFirst?: number;
+  /** Exclusive virtual-window end when emitted by virtual scrolling. */
+  readonly virtualLast?: number;
   readonly sortField?: string;
   readonly sortOrder?: JTableSortOrder;
   readonly multiSortMeta?: readonly JTableSort[];

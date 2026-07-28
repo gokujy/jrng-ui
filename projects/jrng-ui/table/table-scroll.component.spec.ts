@@ -109,8 +109,9 @@ describe('JTableComponent scrolling architecture', () => {
     const headers = [
       ...fixture.nativeElement.querySelectorAll('thead [data-jc-section="header-cell"]'),
     ] as HTMLElement[];
-    expect(headers[0]?.style.insetInlineStart).toBe('0px');
+    expect(headers[0]?.style.insetInlineStart).toContain('--j-table-select-column-width');
     expect(headers[2]?.style.insetInlineStart).toContain('6rem');
+    expect(headers[2]?.style.insetInlineStart).toContain('--j-table-select-column-width');
     expect(headers[3]?.style.insetInlineEnd).toBe('0px');
     expect(headers[0]?.style.left).toBe('');
     expect(headers[3]?.style.right).toBe('');

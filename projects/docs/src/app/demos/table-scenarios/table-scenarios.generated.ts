@@ -157,7 +157,7 @@ export class GroupingTableScenariosComponent extends TableScenarioState {
   selector: 'app-columns-table-scenarios',
   imports: TABLE_DEMO_IMPORTS.columns,
   template:
-    '<j-table [value]="rows.slice(0, 6)" [columns]="wideColumns" [columnGroups]="scenario().includes(\'group\') || scenario().includes(\'header\') ? columnGroups : []" [columnResizeMode]="scenario().includes(\'fit-mode\') ? \'fit\' : \'expand\'" scrollHeight="18rem" [reorderableColumns]="scenario().includes(\'reordering\')" [showGlobalFilter]="false" showColumnManager [showExport]="false" [maximizable]="false" />',
+    '<j-table [value]="rows.slice(0, 6)" [columns]="wideColumns" [columnGroups]="scenario().includes(\'group\') || scenario().includes(\'header\') ? columnGroups : []" [resizableColumns]="scenario().includes(\'resizing\')" [columnResizeMode]="scenario().includes(\'fit-mode\') ? \'fit\' : \'expand\'" scrollHeight="18rem" [reorderableColumns]="scenario().includes(\'reordering\')" [showGlobalFilter]="false" showColumnManager [showExport]="false" [maximizable]="false" />',
   styles: [TABLE_DEMO_STYLES],
 })
 export class ColumnsTableScenariosComponent extends TableScenarioState {
@@ -190,7 +190,7 @@ export class ScrollingTableScenariosComponent extends TableScenarioState {
   selector: 'app-virtual-table-scenarios',
   imports: TABLE_DEMO_IMPORTS.virtual,
   template:
-    '<j-table [value]="virtualRows" [columns]="columns" virtualScroll [virtualItemSize]="44" scrollHeight="22rem" [dataMode]="scenario().includes(\'lazy\') ? \'virtual\' : \'client\'" [loading]="scenario().includes(\'loading\')" [selectionMode]="scenario().includes(\'selection\') ? \'checkbox\' : \'none\'" [filterDisplay]="scenario().includes(\'filtering\') ? \'row\' : \'none\'" [sortField]="scenario().includes(\'sorting\') ? \'total\' : \'\'" [sortOrder]="scenario().includes(\'sorting\') ? -1 : 0" [paginator]="false" [showGlobalFilter]="false" [showColumnManager]="false" [showExport]="false" [maximizable]="false" />',
+    "<j-table [value]=\"scenario().includes('placeholders') ? virtualRows.slice(0, 4) : scenario().includes('lazy') ? virtualRows.slice(0, 25) : virtualRows\" [columns]=\"columns\" virtualScroll [virtualItemSize]=\"44\" scrollHeight=\"22rem\" [dataMode]=\"scenario().includes('lazy') || scenario().includes('placeholders') ? 'virtual' : 'client'\" [totalRecords]=\"virtualRows.length\" [selectionMode]=\"scenario().includes('selection') ? 'checkbox' : 'none'\" [filterDisplay]=\"scenario().includes('filtering') ? 'row' : 'none'\" [sortField]=\"scenario().includes('sorting') ? 'total' : ''\" [sortOrder]=\"scenario().includes('sorting') ? -1 : 0\" [paginator]=\"false\" [showGlobalFilter]=\"false\" [showColumnManager]=\"false\" [showExport]=\"false\" [maximizable]=\"false\" />",
   styles: [TABLE_DEMO_STYLES],
 })
 export class VirtualTableScenariosComponent extends TableScenarioState {
@@ -514,7 +514,7 @@ const TABLE_SCENARIO_SOURCES = {
     scss: ':host { display: block; min-width: 0; }',
   },
   columns: {
-    html: '<j-table [value]="rows.slice(0, 6)" [columns]="wideColumns" [columnGroups]="scenario().includes(\'group\') || scenario().includes(\'header\') ? columnGroups : []" [columnResizeMode]="scenario().includes(\'fit-mode\') ? \'fit\' : \'expand\'" scrollHeight="18rem" [reorderableColumns]="scenario().includes(\'reordering\')" [showGlobalFilter]="false" showColumnManager [showExport]="false" [maximizable]="false" />',
+    html: '<j-table [value]="rows.slice(0, 6)" [columns]="wideColumns" [columnGroups]="scenario().includes(\'group\') || scenario().includes(\'header\') ? columnGroups : []" [resizableColumns]="scenario().includes(\'resizing\')" [columnResizeMode]="scenario().includes(\'fit-mode\') ? \'fit\' : \'expand\'" scrollHeight="18rem" [reorderableColumns]="scenario().includes(\'reordering\')" [showGlobalFilter]="false" showColumnManager [showExport]="false" [maximizable]="false" />',
     ts: "@Component({\n  selector: 'app-columns-table-scenarios',\n  imports: TABLE_DEMO_IMPORTS.columns,\n  templateUrl: './columns-table-scenarios.component.html',\n})\nexport class ColumnsTableScenariosComponent extends TableScenarioState {\n  readonly scenario = input.required<string>();\n}",
     scss: ':host { display: block; min-width: 0; }',
   },
@@ -529,7 +529,7 @@ const TABLE_SCENARIO_SOURCES = {
     scss: ':host { display: block; min-width: 0; }',
   },
   virtual: {
-    html: '<j-table [value]="virtualRows" [columns]="columns" virtualScroll [virtualItemSize]="44" scrollHeight="22rem" [dataMode]="scenario().includes(\'lazy\') ? \'virtual\' : \'client\'" [loading]="scenario().includes(\'loading\')" [selectionMode]="scenario().includes(\'selection\') ? \'checkbox\' : \'none\'" [filterDisplay]="scenario().includes(\'filtering\') ? \'row\' : \'none\'" [sortField]="scenario().includes(\'sorting\') ? \'total\' : \'\'" [sortOrder]="scenario().includes(\'sorting\') ? -1 : 0" [paginator]="false" [showGlobalFilter]="false" [showColumnManager]="false" [showExport]="false" [maximizable]="false" />',
+    html: "<j-table [value]=\"scenario().includes('placeholders') ? virtualRows.slice(0, 4) : scenario().includes('lazy') ? virtualRows.slice(0, 25) : virtualRows\" [columns]=\"columns\" virtualScroll [virtualItemSize]=\"44\" scrollHeight=\"22rem\" [dataMode]=\"scenario().includes('lazy') || scenario().includes('placeholders') ? 'virtual' : 'client'\" [totalRecords]=\"virtualRows.length\" [selectionMode]=\"scenario().includes('selection') ? 'checkbox' : 'none'\" [filterDisplay]=\"scenario().includes('filtering') ? 'row' : 'none'\" [sortField]=\"scenario().includes('sorting') ? 'total' : ''\" [sortOrder]=\"scenario().includes('sorting') ? -1 : 0\" [paginator]=\"false\" [showGlobalFilter]=\"false\" [showColumnManager]=\"false\" [showExport]=\"false\" [maximizable]=\"false\" />",
     ts: "@Component({\n  selector: 'app-virtual-table-scenarios',\n  imports: TABLE_DEMO_IMPORTS.virtual,\n  templateUrl: './virtual-table-scenarios.component.html',\n})\nexport class VirtualTableScenariosComponent extends TableScenarioState {\n  readonly scenario = input.required<string>();\n}",
     scss: ':host { display: block; min-width: 0; }',
   },

@@ -11,10 +11,10 @@ for observable behavior and API concepts. No reference implementation code was c
 
 Behavioral reference locations:
 
-- `C:\Projects\angular-ui-workspace\primeng-reference\packages\primeng\src\table`
-- `C:\Projects\angular-ui-workspace\primeng-reference\apps\showcase\doc\table`
-- `C:\Projects\angular-ui-workspace\optimus-ui-reference\packages\optimus-ui\src\table`
-- `C:\Projects\angular-ui-workspace\optimus-ui-reference\apps\docs\doc\table`
+- PrimeNG reference Table package
+- PrimeNG reference Table showcase documentation
+- Optimus UI reference Table package
+- Optimus UI reference Table documentation
 
 ## Architecture found
 
@@ -69,7 +69,7 @@ styles. Eighty pre-existing Table tests passed at the start of the audit.
 
 ## Remaining audit risks
 
-The repository has no configured Playwright, Cypress, WebDriver, or e2e npm command. Layout-dependent
-sticky positioning, pointer drag, real scrollbar visibility, touch momentum, and page-width checks
-therefore still require a browser test harness before the entire Table surface should be labelled
-fully stable. See `TABLE-FEATURE-MATRIX.md` and `TABLE-TEST-RESULTS.md`.
+The new Playwright harness verifies real overflow, page containment, frozen positioning, RTL, and
+pointer-driven expand resizing and native column drag/drop in Edge and Firefox. Remaining
+browser-risk areas are row drag/drop geometry, touch-device momentum, WebKit, and physical
+forced-colors rendering. See `TABLE-FEATURE-MATRIX.md` and `TABLE-TEST-RESULTS.md`.

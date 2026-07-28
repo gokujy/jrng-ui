@@ -231,6 +231,34 @@ export class TableScenarioState {
   eventMessage = 'No interaction yet.';
   expandedKeys: readonly string[] = [];
   filterModel: JTableFilterModel = { items: [], logicOperator: 'and' };
+  readonly groupedFilterModel: JTableFilterModel = {
+    items: [],
+    logicOperator: 'and',
+    groups: [
+      {
+        field: 'total',
+        operator: 'and',
+        constraints: [
+          { value: 500, matchMode: 'greaterThanOrEqual' },
+          { value: 2000, matchMode: 'lessThanOrEqual' },
+        ],
+      },
+      {
+        field: 'status',
+        operator: 'or',
+        constraints: [
+          { value: 'Approved', matchMode: 'equals' },
+          { value: 'Review', matchMode: 'equals' },
+        ],
+      },
+    ],
+  };
+
+  filterModelForScenario(scenario: string): JTableFilterModel {
+    return scenario.includes('multiple-filter-constraints') || scenario.includes('and-or-operators')
+      ? this.groupedFilterModel
+      : this.filterModel;
+  }
 
   readonly statusOptions = [
     { label: 'Approved', value: 'Approved' },

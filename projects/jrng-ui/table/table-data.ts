@@ -3,6 +3,7 @@ import {
   JTableColumnState,
   JTableFieldFilter,
   JTableFilterItem,
+  JTableFilterModel,
   JTableMatchMode,
   JTableQueryMapper,
   JTableQuerySource,
@@ -19,10 +20,7 @@ export interface JTableSerializeOptions<TMapped = JTableServerQuery> {
 
 export interface JTableProcessOptions {
   readonly filters?: Readonly<Record<string, unknown>>;
-  readonly filterModel?: {
-    readonly items: readonly JTableFilterItem[];
-    readonly logicOperator?: 'and' | 'or';
-  };
+  readonly filterModel?: JTableFilterModel;
   readonly globalFilter?: string;
   readonly globalFields?: readonly string[];
   readonly sorts?: readonly JTableSort[];
@@ -36,6 +34,7 @@ export function jProcessTableData<TRow extends object>(
     ([, value]) => value != null && value !== '',
   );
   const constraints = options.filterModel?.items ?? [];
+  const groups = options.filterModel?.groups ?? [];
   const global = options.globalFilter?.trim().toLocaleLowerCase() ?? '';
   const filtered = rows.filter((row) => {
     const record = row as Readonly<Record<string, unknown>>;
@@ -45,11 +44,18 @@ export function jProcessTableData<TRow extends object>(
     const matches = constraints.map((item) =>
       jMatchTableValue(record[item.field], item.value, normalizeMatchMode(item.operator)),
     );
+    const groupMatches = groups.map((group) => {
+      const results = group.constraints.map((constraint) =>
+        jMatchTableValue(record[group.field], constraint.value, constraint.matchMode),
+      );
+      return group.operator === 'or' ? results.some(Boolean) : results.every(Boolean);
+    });
+    const allMatches = [...matches, ...groupMatches];
     const matchesConstraints =
-      !matches.length ||
+      !allMatches.length ||
       (options.filterModel?.logicOperator === 'or'
-        ? matches.some(Boolean)
-        : matches.every(Boolean));
+        ? allMatches.some(Boolean)
+        : allMatches.every(Boolean));
     const matchesGlobal =
       !global ||
       (options.globalFields ?? []).some((field) =>
@@ -83,7 +89,7 @@ export function jSerializeTableQuery<TMapped = JTableServerQuery>(
   for (const item of source.filterModel?.items ?? []) {
     grouped.set(item.field, [...(grouped.get(item.field) ?? []), item]);
   }
-  const filters = [...grouped.entries()].map(
+  const filters: JTableFieldFilter[] = [...grouped.entries()].map(
     ([field, items]) =>
       ({
         field,
@@ -97,6 +103,12 @@ export function jSerializeTableQuery<TMapped = JTableServerQuery>(
           matchMode: normalizeMatchMode(item.operator),
         })),
       }) satisfies JTableFieldFilter,
+  );
+  filters.push(
+    ...(source.filterModel?.groups ?? []).map((group) => ({
+      ...group,
+      operator: group.operator ?? 'and',
+    })),
   );
   const query: JTableServerQuery = {
     pageIndex: Math.max(0, Math.floor(Math.max(0, source.first ?? 0) / pageSize)),

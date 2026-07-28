@@ -1994,6 +1994,22 @@ pre {
   min-width: 0;
 }
 
+app-component-detail-view,
+app-component-preview,
+app-data-component-preview,
+app-table-scenario-host,
+.j-doc-detail,
+.j-doc-detail-layout,
+.j-feature-example,
+.j-preview-code-tabs,
+.j-full-code,
+.j-doc-code,
+app-code-block {
+  display: block;
+  max-width: 100%;
+  min-width: 0;
+}
+
 /* Surface cards: detail article + chart section cards --------------------- */
 
 .j-doc-detail,
@@ -2472,6 +2488,12 @@ pre {
 .j-table-doc-example {
   display: grid;
   gap: var(--j-spacing-3);
+  min-width: 0;
+  width: 100%;
+}
+
+.j-table-doc-variant {
+  max-width: 100%;
   min-width: 0;
   width: 100%;
 }
@@ -3711,6 +3733,7 @@ pre {
 }
 
 .j-doc-code pre {
+  max-width: 100%;
   margin: 0;
   overflow-x: auto;
   padding: var(--j-spacing-4);
@@ -3766,6 +3789,10 @@ pre {
 @media (max-width: 1024px) {
   .docs-layout {
     display: block;
+  }
+
+  .docs-nav--desktop {
+    display: none;
   }
 
   .docs-menu-button {

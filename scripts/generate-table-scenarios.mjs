@@ -502,7 +502,7 @@ ${status}`;
       return `<div class="j-table-demo__controls"><j-button label="Approved only" (onClick)="table.filter('status', 'Approved', 'equals')" /><j-button label="Clear filters" variant="outlined" (onClick)="table.resetFilters()" /></div>
 <j-table #table [value]="rows" [columns]="columns" filterDisplay="row" ${common} />`;
     const server = name === 'Server-side filtering';
-    return `<j-table [value]="${server ? 'serverRows' : 'rows'}" [columns]="columns" filterDisplay="${
+    return `<j-table [value]="${server ? 'serverRows' : 'rows'}" [columns]="columns" [filterModel]="filterModelForScenario(scenario())" filterDisplay="${
       name === 'Filter menu' ? 'menu' : 'row'
     }" [showGlobalFilter]="${name === 'Global search'}" ${
       server ? 'dataMode="lazy" [totalRecords]="rows.length" (lazyLoad)="onLazyLoad($event)"' : ''
@@ -562,7 +562,7 @@ ${status}`;
       name.includes('group') || name.includes('Group') || name.includes('Header')
         ? 'columnGroups'
         : '[]'
-    }" columnResizeMode="${name.includes('fit') ? 'fit' : 'expand'}" scrollHeight="18rem" [showGlobalFilter]="false" showColumnManager [showExport]="false" [maximizable]="false" />`;
+    }" ${name.includes('resizing') ? 'resizableColumns ' : ''}columnResizeMode="${name.includes('fit') ? 'fit' : 'expand'}" scrollHeight="18rem" [showGlobalFilter]="false" showColumnManager [showExport]="false" [maximizable]="false" />`;
 
   if (family === 'reorder')
     return `<p class="j-table-demo__status">Drag rows, or focus a row and press Alt+Arrow Up/Down.</p>
@@ -579,9 +579,15 @@ ${status}`;
     }" [showGlobalFilter]="false" [showColumnManager]="false" [showExport]="false" [maximizable]="false" />`;
 
   if (family === 'virtual')
-    return `<j-table [value]="virtualRows" [columns]="columns" virtualScroll [virtualItemSize]="44" scrollHeight="22rem" dataMode="${
-      name.includes('Lazy') ? 'virtual' : 'client'
-    }" [loading]="${name.includes('loading')}" selectionMode="${
+    return `<j-table [value]="${
+      name.includes('placeholders')
+        ? 'virtualRows.slice(0, 4)'
+        : name.includes('Lazy')
+          ? 'virtualRows.slice(0, 25)'
+          : 'virtualRows'
+    }" [columns]="columns" virtualScroll [virtualItemSize]="44" scrollHeight="22rem" dataMode="${
+      name.includes('Lazy') || name.includes('placeholders') ? 'virtual' : 'client'
+    }" [totalRecords]="virtualRows.length" selectionMode="${
       name.includes('selection') ? 'checkbox' : 'none'
     }" [filterDisplay]="${name.includes('filtering') ? "'row'" : "'none'"}" ${
       name.includes('sorting') ? 'sortField="total" [sortOrder]="-1"' : ''
@@ -692,7 +698,7 @@ ${status}`;
 </j-table>${status}`;
 
   if (family === 'columns')
-    return `<j-table [value]="rows.slice(0, 6)" [columns]="wideColumns" [columnGroups]="scenario().includes('group') || scenario().includes('header') ? columnGroups : []" [columnResizeMode]="scenario().includes('fit-mode') ? 'fit' : 'expand'" scrollHeight="18rem" [reorderableColumns]="scenario().includes('reordering')" [showGlobalFilter]="false" showColumnManager [showExport]="false" [maximizable]="false" />`;
+    return `<j-table [value]="rows.slice(0, 6)" [columns]="wideColumns" [columnGroups]="scenario().includes('group') || scenario().includes('header') ? columnGroups : []" [resizableColumns]="scenario().includes('resizing')" [columnResizeMode]="scenario().includes('fit-mode') ? 'fit' : 'expand'" scrollHeight="18rem" [reorderableColumns]="scenario().includes('reordering')" [showGlobalFilter]="false" showColumnManager [showExport]="false" [maximizable]="false" />`;
 
   if (family === 'reorder')
     return `<p class="j-table-demo__status">Use the drag handle or the labelled Move Up/Down buttons. Alt+Arrow also works from a focused row.</p>
@@ -723,7 +729,7 @@ ${status}`;
 </div>`;
 
   if (family === 'virtual')
-    return `<j-table [value]="virtualRows" [columns]="columns" virtualScroll [virtualItemSize]="44" scrollHeight="22rem" [dataMode]="scenario().includes('lazy') ? 'virtual' : 'client'" [loading]="scenario().includes('loading')" [selectionMode]="scenario().includes('selection') ? 'checkbox' : 'none'" [filterDisplay]="scenario().includes('filtering') ? 'row' : 'none'" [sortField]="scenario().includes('sorting') ? 'total' : ''" [sortOrder]="scenario().includes('sorting') ? -1 : 0" [paginator]="false" [showGlobalFilter]="false" [showColumnManager]="false" [showExport]="false" [maximizable]="false" />`;
+    return `<j-table [value]="scenario().includes('placeholders') ? virtualRows.slice(0, 4) : scenario().includes('lazy') ? virtualRows.slice(0, 25) : virtualRows" [columns]="columns" virtualScroll [virtualItemSize]="44" scrollHeight="22rem" [dataMode]="scenario().includes('lazy') || scenario().includes('placeholders') ? 'virtual' : 'client'" [totalRecords]="virtualRows.length" [selectionMode]="scenario().includes('selection') ? 'checkbox' : 'none'" [filterDisplay]="scenario().includes('filtering') ? 'row' : 'none'" [sortField]="scenario().includes('sorting') ? 'total' : ''" [sortOrder]="scenario().includes('sorting') ? -1 : 0" [paginator]="false" [showGlobalFilter]="false" [showColumnManager]="false" [showExport]="false" [maximizable]="false" />`;
 
   if (family === 'states')
     return `<j-table [value]="scenario().includes('empty') || scenario().includes('error') || scenario().includes('retry') ? [] : rows.slice(0, 5)" [columns]="columns" [loading]="scenario().includes('loading')" [loadingVariant]="scenario().includes('overlay') ? 'overlay' : 'skeleton'" [globalFilter]="scenario().includes('no-filter-results') ? 'no-match' : ''" [errorState]="scenario().includes('error') || scenario().includes('retry') ? true : null" emptyActionLabel="Retry" (emptyAction)="retry()" ${common}>

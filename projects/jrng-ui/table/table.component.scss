@@ -161,7 +161,8 @@
 }
 
 .j-table__element {
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   min-width: 100%;
   table-layout: auto;
   width: max-content;
@@ -401,14 +402,27 @@ tbody tr.is-frozen td {
 }
 
 .j-table__select-cell {
+  max-width: var(--j-table-select-column-width, 3rem);
+  min-width: var(--j-table-select-column-width, 3rem);
+  padding-inline: 0;
   text-align: center;
-  width: 3rem;
+  width: var(--j-table-select-column-width, 3rem);
 }
 
-.j-table__expand-cell,
-.j-table__lock-cell {
+.j-table__expand-cell {
+  max-width: var(--j-table-expand-column-width, 3rem);
+  min-width: var(--j-table-expand-column-width, 3rem);
+  padding-inline: 0;
   text-align: center;
-  width: 3rem;
+  width: var(--j-table-expand-column-width, 3rem);
+}
+
+.j-table__lock-cell {
+  max-width: var(--j-table-lock-column-width, 4.5rem);
+  min-width: var(--j-table-lock-column-width, 4.5rem);
+  padding-inline: 0;
+  text-align: center;
+  width: var(--j-table-lock-column-width, 4.5rem);
 }
 
 .j-table__expand-button,
@@ -544,6 +558,30 @@ tbody tr.is-frozen td {
 .j-table__virtual-spacer td {
   border: 0;
   padding: 0;
+}
+
+.j-table__virtual-placeholder td {
+  color: transparent;
+  pointer-events: none;
+  position: relative;
+}
+
+.j-table__virtual-placeholder td > * {
+  visibility: hidden;
+}
+
+.j-table__virtual-placeholder td::after {
+  background: linear-gradient(
+    90deg,
+    var(--j-color-muted, #e5e7eb),
+    var(--j-color-surface, #f8fafc),
+    var(--j-color-muted, #e5e7eb)
+  );
+  background-size: 200% 100%;
+  border-radius: var(--j-radius-sm, 0.25rem);
+  content: '';
+  inset: 30% var(--j-spacing-md, 0.75rem);
+  position: absolute;
 }
 
 .j-table__group-row th {
@@ -687,8 +725,10 @@ tbody tr.is-frozen td {
 }
 
 .j-table__reorder-cell {
+  max-width: var(--j-table-reorder-column-width, 6.5rem);
+  min-width: var(--j-table-reorder-column-width, 6.5rem);
   white-space: nowrap;
-  width: 6.5rem;
+  width: var(--j-table-reorder-column-width, 6.5rem);
 }
 
 .j-table__drag-handle,

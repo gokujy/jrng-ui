@@ -46,6 +46,7 @@ export class JButtonComponent {
   readonly styleClass = input('');
   readonly ariaLabel = input('');
   readonly ariaExpanded = input<boolean | null>(null);
+  readonly ariaControls = input<string | null>(null);
   readonly ariaPressed = input<boolean | null>(null);
   readonly ariaChecked = input<boolean | null>(null);
   readonly ariaRole = input('');

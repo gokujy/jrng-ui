@@ -20,6 +20,8 @@ import {
       [selection]="selection"
       [rowSelectable]="rowSelectable"
       [dataMode]="dataMode"
+      [totalRecords]="totalRecords"
+      [virtualFirst]="virtualFirst"
       [groupRowsBy]="groupRowsBy"
       [collapsibleRowGroups]="collapsibleRowGroups"
       [virtualScroll]="virtualScroll"
@@ -36,6 +38,7 @@ import {
       (selectionChange)="selection = $event"
       (sortChange)="sortField = $event.field"
       (pageChange)="page = $event.page"
+      (lazyLoad)="lazyEvent = $event"
     />
   `,
 })
@@ -47,7 +50,10 @@ class TableHostComponent {
   selectionMode: 'single' | 'checkbox' = 'single';
   selection: JTableRow | readonly JTableRow[] | null = null;
   rowSelectable: ((row: JTableRow) => boolean) | null = null;
-  dataMode: 'client' | 'lazy' = 'client';
+  dataMode: 'client' | 'lazy' | 'virtual' = 'client';
+  lazyEvent: import('./table.types').JTableLazyLoadEvent | null = null;
+  totalRecords = 0;
+  virtualFirst = 0;
   groupRowsBy = '';
   collapsibleRowGroups = false;
   virtualScroll = false;
@@ -356,6 +362,58 @@ describe('JTableComponent', () => {
     expect((spacers[0] as HTMLElement).style.height).toBe('352px');
   });
 
+  it('emits deduplicated lazy ranges for virtual data', () => {
+    host.rows = Array.from({ length: 100 }, (_, index) => ({
+      id: index + 1,
+      code: `REC-${index + 1}`,
+      name: `Record ${index + 1}`,
+      amount: index,
+    }));
+    host.dataMode = 'virtual';
+    detectHostChanges();
+    const table = fixture.debugElement.query(By.directive(JTableComponent))
+      .componentInstance as JTableComponent;
+    const target = { scrollTop: 440, clientHeight: 88 };
+
+    table.handleVirtualScroll({ currentTarget: target } as unknown as Event);
+    expect(host.lazyEvent).toMatchObject({
+      first: 8,
+      rows: 6,
+      virtualFirst: 8,
+      virtualLast: 14,
+    });
+    const firstEvent = host.lazyEvent;
+    table.handleVirtualScroll({ currentTarget: target } as unknown as Event);
+    expect(host.lazyEvent).toBe(firstEvent);
+  });
+
+  it('renders inert placeholders around a loaded lazy virtual slice', () => {
+    host.dataMode = 'virtual';
+    host.totalRecords = 100;
+    host.virtualFirst = 8;
+    host.rows = [
+      { id: 9, code: 'REC-9', name: 'Record 9', amount: 9 },
+      { id: 10, code: 'REC-10', name: 'Record 10', amount: 10 },
+    ];
+    detectHostChanges();
+    const table = fixture.debugElement.query(By.directive(JTableComponent))
+      .componentInstance as JTableComponent;
+
+    table.handleVirtualScroll({
+      currentTarget: { scrollTop: 440, clientHeight: 88 },
+    } as unknown as Event);
+    fixture.detectChanges();
+
+    expect(table.visibleRows).toHaveLength(6);
+    expect(table.visibleRows.slice(0, 2).map((row) => row['id'])).toEqual([9, 10]);
+    expect(fixture.nativeElement.querySelectorAll('.j-table__virtual-placeholder')).toHaveLength(4);
+    expect(
+      fixture.nativeElement
+        .querySelector('.j-table__virtual-placeholder')
+        ?.getAttribute('aria-hidden'),
+    ).toBe('true');
+  });
+
   it('filters rows with the global filter and emits filterChange', () => {
     const table = fixture.debugElement.query(By.directive(JTableComponent))
       .componentInstance as JTableComponent;
@@ -366,6 +424,40 @@ describe('JTableComponent', () => {
     expect(table.visibleRows.length).toBe(1);
     expect(table.visibleRows[0]?.['code']).toBe('REC-1');
     expect(emitted.length).toBe(1);
+  });
+
+  it('combines multiple constraints per field with independent AND and OR operators', () => {
+    const table = fixture.debugElement.query(By.directive(JTableComponent))
+      .componentInstance as JTableComponent;
+    table.filterModel = {
+      items: [],
+      groups: [
+        {
+          field: 'amount',
+          operator: 'and',
+          constraints: [
+            { value: 100, matchMode: 'greaterThan' },
+            { value: 300, matchMode: 'lessThan' },
+          ],
+        },
+      ],
+    };
+    expect(table.filteredRows.map((row) => row['amount'])).toEqual([200]);
+
+    table.filterModel = {
+      items: [],
+      groups: [
+        {
+          field: 'name',
+          operator: 'or',
+          constraints: [
+            { value: 'Record Gamma', matchMode: 'equals' },
+            { value: 'Record Alpha', matchMode: 'equals' },
+          ],
+        },
+      ],
+    };
+    expect(table.filteredRows.map((row) => row['name'])).toEqual(['Record Gamma', 'Record Alpha']);
   });
 
   it('tracks multiple sort metadata when sortMode is multiple', () => {

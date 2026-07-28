@@ -144,10 +144,13 @@ describe('JButtonComponent', () => {
     expect(native.textContent).toContain('Saving record');
   });
 
-  it('forwards expanded state for disclosure actions', () => {
+  it('forwards expanded state and controlled content for disclosure actions', () => {
     const direct = TestBed.createComponent(JButtonComponent);
     direct.componentRef.setInput('ariaExpanded', true);
+    direct.componentRef.setInput('ariaControls', 'details-panel');
     direct.detectChanges();
-    expect(direct.nativeElement.querySelector('button').getAttribute('aria-expanded')).toBe('true');
+    const native = direct.nativeElement.querySelector('button');
+    expect(native.getAttribute('aria-expanded')).toBe('true');
+    expect(native.getAttribute('aria-controls')).toBe('details-panel');
   });
 });

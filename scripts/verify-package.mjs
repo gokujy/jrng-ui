@@ -202,11 +202,12 @@ function verifyForbiddenContent(files) {
 function verifySizeBudgets(report) {
   // Enterprise table behavior is isolated in its modular entrypoint. Consumers
   // still pay only for imported entrypoints. Keep a narrow package-wide margin
-  // and a 300 kB per-entrypoint ceiling over the measured table bundle.
-  const maximumPackedBytes = 460_000;
+  // and a 310 kB per-entrypoint ceiling over the measured table bundle. The
+  // Table budget includes its focused accessibility and scroll interactions.
+  const maximumPackedBytes = 465_000;
   const maximumUnpackedBytes = 3_300_000;
   const maximumFileCount = 315;
-  const maximumFileBytes = 300_000;
+  const maximumFileBytes = 310_000;
 
   if (report.size > maximumPackedBytes) {
     fail(`Packed size ${report.size} exceeds ${maximumPackedBytes} bytes.`);

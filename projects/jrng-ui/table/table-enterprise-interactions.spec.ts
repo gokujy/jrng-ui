@@ -4,6 +4,7 @@ import { By } from '@angular/platform-browser';
 import { JTableComponent } from './table.component';
 import {
   JTableColumn,
+  JTableColumnReorderEvent,
   JTableColumnGroupRow,
   JTableEditEvent,
   JTableReorderEvent,
@@ -24,6 +25,8 @@ import {
       dataKey="id"
       editMode="row"
       expandableRows
+      [expansionMode]="expansionMode"
+      [rowExpandable]="rowExpandable"
       reorderableRows
       [rowReorderable]="canReorder"
       [paginator]="false"
@@ -38,6 +41,7 @@ import {
       (rowEditSave)="saveEdit($event)"
       (rowEditCancel)="editCancel = $event"
       (rowReorder)="applyReorder($event)"
+      (columnReorder)="columnReorderEvent = $event"
     />
   `,
 })
@@ -66,7 +70,10 @@ class EnterpriseTableHostComponent {
   editInit: JTableEditEvent | null = null;
   editCancel: JTableEditEvent | null = null;
   savedEdit: JTableEditEvent | null = null;
+  columnReorderEvent: JTableColumnReorderEvent | null = null;
+  expansionMode: 'single' | 'multiple' = 'multiple';
   readonly canReorder = (row: JTableRow) => row['locked'] !== true;
+  rowExpandable: (row: JTableRow) => boolean = () => true;
 
   saveEdit(event: JTableEditEvent): void {
     this.savedEdit = event;
@@ -91,6 +98,11 @@ describe('JTableComponent enterprise interactions', () => {
     table = fixture.debugElement.query(By.directive(JTableComponent))
       .componentInstance as JTableComponent;
   });
+
+  function detectHostChanges(): void {
+    fixture.changeDetectorRef.markForCheck();
+    fixture.detectChanges();
+  }
 
   it('renders grouped and responsive-priority columns with an indeterminate select-all state', () => {
     const root = fixture.nativeElement as HTMLElement;
@@ -188,5 +200,68 @@ describe('JTableComponent enterprise interactions', () => {
         (button) => button.textContent?.trim() === 'Edit',
       ),
     ).toBe(true);
+  });
+
+  it('supports Ctrl/Cmd+A and Shift+Arrow range selection without trapping cell controls', () => {
+    const root = fixture.nativeElement as HTMLElement;
+    const rows = root.querySelectorAll<HTMLTableRowElement>('tbody tr[data-j-table-row]');
+
+    rows[0].dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }));
+    rows[0].dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'ArrowDown', shiftKey: true, bubbles: true }),
+    );
+    fixture.detectChanges();
+
+    expect(
+      (fixture.componentInstance.selection as readonly JTableRow[]).map((row) => row['id']),
+    ).toEqual([1, 2]);
+
+    rows[1].dispatchEvent(new KeyboardEvent('keydown', { key: 'a', ctrlKey: true, bubbles: true }));
+    fixture.detectChanges();
+    expect((fixture.componentInstance.selection as readonly JTableRow[]).length).toBe(3);
+
+    const nestedButton = rows[0].querySelector('button') as HTMLButtonElement;
+    nestedButton.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }));
+    expect((fixture.componentInstance.selection as readonly JTableRow[]).length).toBe(3);
+  });
+
+  it('enforces single expansion, disables ineligible togglers, and links controls to content', () => {
+    fixture.componentInstance.expansionMode = 'single';
+    fixture.componentInstance.rowExpandable = (row) => row['id'] !== 2;
+    detectHostChanges();
+
+    const root = fixture.nativeElement as HTMLElement;
+    const togglers = root.querySelectorAll<HTMLButtonElement>('[aria-label="Expand row"]');
+    expect(togglers[1].disabled).toBe(true);
+
+    togglers[0].click();
+    fixture.detectChanges();
+    const firstTarget = togglers[0].getAttribute('aria-controls');
+    expect(firstTarget).toBeTruthy();
+    expect(root.querySelector(`#${firstTarget}`)).toBeTruthy();
+
+    table.toggleRowExpansion(fixture.componentInstance.rows[2], 2);
+    fixture.detectChanges();
+    expect(table.isExpanded(fixture.componentInstance.rows[0], 0)).toBe(false);
+    expect(table.isExpanded(fixture.componentInstance.rows[2], 2)).toBe(true);
+  });
+
+  it('keeps column reordering within the same frozen region', () => {
+    fixture.componentInstance.columns = [
+      { field: 'name', header: 'Name', frozen: true, frozenAlign: 'start' },
+      { field: 'amount', header: 'Amount' },
+      { field: 'status', header: 'Status' },
+    ];
+    detectHostChanges();
+
+    table.startColumnDrag(0);
+    table.dropColumn(1, new Event('drop') as unknown as DragEvent);
+    expect(fixture.componentInstance.columnReorderEvent).toBeNull();
+
+    table.startColumnDrag(1);
+    table.dropColumn(2, new Event('drop') as unknown as DragEvent);
+    expect(
+      fixture.componentInstance.columnReorderEvent?.columns.map((column) => column.field),
+    ).toEqual(['name', 'status', 'amount']);
   });
 });

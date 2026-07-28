@@ -249,9 +249,9 @@
                 column.frozen && isFrozenAtEnd(column) ? frozenColumnOffset(column) : null
               "
               [attr.aria-sort]="ariaSort(column)"
-              [attr.draggable]="reorderableColumns || column.reorderable ? 'true' : null"
+              [attr.draggable]="canReorderColumn(column) ? 'true' : null"
               (dragstart)="startColumnDrag(columnIndex)"
-              (dragover)="$event.preventDefault()"
+              (dragover)="canReorderColumn(column) && $event.preventDefault()"
               (drop)="dropColumn(columnIndex, $event)"
               (contextmenu)="handleHeaderContextMenu(column, columnIndex, $event)"
             >
@@ -279,7 +279,10 @@
                 <details
                   #filterMenu
                   class="j-table__filter-menu"
+                  tabindex="-1"
                   [attr.data-j-active]="isFilterActive(column.field) ? 'true' : null"
+                  (toggle)="handleFilterMenuToggle(filterMenu)"
+                  (keydown)="handleFilterMenuKeydown($event, filterMenu)"
                 >
                   <summary [attr.aria-label]="'Filter ' + column.header">&#9660;</summary>
                   <div class="j-table__filter-menu-popup">
@@ -486,6 +489,7 @@
             @if (!isGroupCollapsed(row)) {
               <tr
                 data-jc-section="row"
+                [class.j-table__virtual-placeholder]="isVirtualPlaceholder(row)"
                 [class.is-active]="isSelected(row)"
                 [class.is-locked]="isRowLocked(row, rowIndex)"
                 [class.is-frozen]="isFrozenRow(row, rowIndex)"
@@ -496,7 +500,8 @@
                 [attr.data-j-frozen]="isFrozenRow(row, rowIndex) ? 'true' : null"
                 [attr.data-j-active]="isSelected(row) ? 'true' : null"
                 [attr.data-j-table-row]="rowId(row, rowIndex)"
-                [attr.tabindex]="rowTabIndex(row, rowIndex)"
+                [attr.tabindex]="isVirtualPlaceholder(row) ? null : rowTabIndex(row, rowIndex)"
+                [attr.aria-hidden]="isVirtualPlaceholder(row) ? 'true' : null"
                 [attr.aria-selected]="selectionMode !== 'none' ? isSelected(row) : null"
                 [attr.draggable]="reorderableRows && canReorderRow(row, rowIndex) ? 'true' : null"
                 (focus)="focusedRowKey = rowId(row, rowIndex)"
@@ -546,6 +551,8 @@
                       [ariaLabel]="isExpanded(row, rowIndex) ? 'Collapse row' : 'Expand row'"
                       [title]="isExpanded(row, rowIndex) ? 'Collapse row' : 'Expand row'"
                       [ariaExpanded]="isExpanded(row, rowIndex)"
+                      [ariaControls]="expandedRowId(row, rowIndex)"
+                      [disabled]="!isRowExpandable(row, rowIndex)"
                       (onClick)="toggleRowExpansion(row, rowIndex, $event)"
                     />
                   </td>
@@ -744,7 +751,11 @@
                 }
               </tr>
               @if (expandableRows() && isExpanded(row, rowIndex)) {
-                <tr class="j-table__expanded-row" data-jc-section="expanded-row">
+                <tr
+                  class="j-table__expanded-row"
+                  data-jc-section="expanded-row"
+                  [attr.id]="expandedRowId(row, rowIndex)"
+                >
                   <td [attr.colspan]="colspan">
                     @if (expandedRowTemplate) {
                       <ng-container

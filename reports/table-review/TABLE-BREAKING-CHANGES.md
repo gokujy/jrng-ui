@@ -13,6 +13,12 @@ None.
 - `tableStyleClass: string`
 - `scrollLabel: string`
 - `JTableColumn.frozenAlign` additionally accepts `start` and `end`
+- `expansionMode: 'single' | 'multiple'`
+- `rowExpandable: ((row, index) => boolean) | null`
+- `JTableLazyLoadEvent.virtualFirst` and `virtualLast`
+- `virtualFirst: number` for positioning lazy virtual slices
+- `JTableFilterModel.groups` for per-field constraint groups
+- `JButtonComponent.ariaControls` (shared accessibility support used by Table)
 
 ## Behavioral corrections
 
@@ -23,6 +29,8 @@ None.
 - Frozen `left`/`right` compatibility values now map to logical start/end behavior. Use explicit
   `start`/`end` in new RTL-aware code.
 - `scrollHeight="flex"` now fills the available flex height instead of emitting invalid CSS.
+- Frozen start offsets now include leading utility columns, preventing sticky drift.
+- Column drag/drop is rejected when it would cross a frozen-region boundary.
 
 ## Migration guidance
 
