@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { JThemePreset, JThemePresetSource } from './preset.types';
 import { defaultPreset } from './presets/default.preset';
+import { materialPreset } from './presets/material.preset';
 
 /** @deprecated Default is now a complete official preset. */
 export const J_EMPTY_DEFAULT_PRESET: JThemePreset = defaultPreset;
@@ -16,7 +17,10 @@ export function jPresetId(preset: JThemePreset): string {
 /** Tree-shakable registry for official and application-owned presets. */
 @Injectable({ providedIn: 'root' })
 export class JThemePresetRegistry {
-  private readonly presets = new Map<string, JThemePreset>([['default', J_EMPTY_DEFAULT_PRESET]]);
+  private readonly presets = new Map<string, JThemePreset>([
+    ['default', J_EMPTY_DEFAULT_PRESET],
+    ['material', materialPreset],
+  ]);
 
   register(preset: JThemePreset): () => void {
     const id = jPresetId(preset);
