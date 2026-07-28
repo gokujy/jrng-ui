@@ -17,6 +17,11 @@ import {
 } from './preset.types';
 import { J_THEME_OPTIONS } from './theme-config.token';
 import { jApplyThemeTokens, jThemeDeclarations } from './theme-css';
+import {
+  jApplyThemePalettes,
+  JPrimaryPaletteSource,
+  JSurfacePaletteSource,
+} from './theme-palettes';
 import { JThemePresetRegistry } from './theme-registry';
 import { jMergeThemeOverrides, jResolveTheme } from './theme-resolver';
 import { JThemeColorScheme, JThemeOptions, JThemeScope, JThemeScopeOptions } from './theme.types';
@@ -55,6 +60,8 @@ export class JThemeService {
   private readonly componentOverrides = signal<JComponentThemeTokens>(
     this.options.components ?? {},
   );
+  private readonly primaryPalette = signal<JPrimaryPaletteSource | undefined>(this.options.primary);
+  private readonly surfacePalette = signal<JSurfacePaletteSource | undefined>(this.options.surface);
   private readonly systemPrefersDark = signal(this.prefersDark());
   private readonly scopes = new Map<string, ScopeRecord>();
   private readonly scopeVersion = signal(0);
@@ -72,7 +79,11 @@ export class JThemeService {
 
   /** Current resolved preset and stable identifier. */
   readonly resolvedTheme = computed(() =>
-    jResolveTheme(this.registry.resolve(this.presetSource())),
+    jApplyThemePalettes(
+      jResolveTheme(this.registry.resolve(this.presetSource())),
+      this.primaryPalette(),
+      this.surfacePalette(),
+    ),
   );
   readonly presetId = computed(() => this.resolvedTheme().presetId);
 
@@ -136,12 +147,24 @@ export class JThemeService {
     this.refresh();
   }
 
+  setPrimaryPalette(primary?: JPrimaryPaletteSource): void {
+    this.primaryPalette.set(primary);
+    this.refresh();
+  }
+
+  setSurfacePalette(surface?: JSurfacePaletteSource): void {
+    this.surfacePalette.set(surface);
+    this.refresh();
+  }
+
   /** Restore provider defaults, clearing runtime overrides. */
   reset(): void {
     this.presetSource.set(this.options.preset ?? 'default');
     this.colorScheme.set(this.options.colorScheme ?? this.config.themeMode);
     this.tokenOverrides.set(this.options.tokens ?? {});
     this.componentOverrides.set(this.options.components ?? {});
+    this.primaryPalette.set(this.options.primary);
+    this.surfacePalette.set(this.options.surface);
     this.refresh();
   }
 
@@ -250,8 +273,10 @@ export class JThemeService {
 
   private applyScopes(): void {
     for (const record of this.scopes.values()) {
-      const resolved = jResolveTheme(
-        this.registry.resolve(record.options.preset ?? this.presetSource()),
+      const resolved = jApplyThemePalettes(
+        jResolveTheme(this.registry.resolve(record.options.preset ?? this.presetSource())),
+        record.options.primary ?? this.primaryPalette(),
+        record.options.surface ?? this.surfacePalette(),
       );
       const scheme = record.options.colorScheme ?? this.colorScheme();
       const dark = scheme === 'dark' || (scheme === 'system' && this.systemPrefersDark());

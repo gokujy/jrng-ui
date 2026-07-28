@@ -1,4 +1,5 @@
 import { JComponentThemeTokens, JThemePresetSource, JThemeTokens } from './preset.types';
+import { JPrimaryPaletteSource, JSurfacePaletteSource } from './theme-palettes';
 
 export type JThemeColorScheme = 'light' | 'dark' | 'system';
 export type JThemeTarget = 'document' | HTMLElement;
@@ -11,6 +12,10 @@ export interface JThemeOptions {
   preset?: JThemePresetSource;
   /** Scheme override. Defaults to `JRNG_CONFIG.themeMode`. */
   colorScheme?: JThemeColorScheme;
+  /** Built-in name or custom primary scale. */
+  primary?: JPrimaryPaletteSource;
+  /** Built-in name or custom light/dark surface mapping. */
+  surface?: JSurfacePaletteSource;
   /** Global semantic or foundation token overrides applied at startup. */
   tokens?: JThemeTokens;
   /** Component token overrides applied at startup. */

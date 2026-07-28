@@ -1,6 +1,7 @@
 export * from './preset.types';
 export * from './theme.types';
 export * from './theme-css';
+export * from './theme-palettes';
 export * from './theme-registry';
 export * from './theme-resolver';
 export * from './theme-config.token';
