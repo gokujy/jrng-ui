@@ -76,6 +76,7 @@
     "verify:visual-manifest": "node scripts/verify-enterprise-audits.mjs",
     "verify:circular": "node scripts/verify-enterprise-audits.mjs",
     "verify:optional-dependencies": "node scripts/verify-enterprise-audits.mjs",
+    "verify:theme": "node scripts/verify-theme-release.mjs",
     "quality:enterprise": "npm run generate:enterprise-audits && npm run verify:enterprise-audits && npm run verify:api && npm run verify:registry && npm run verify:spec-coverage && npm run verify:package && npm run verify:consumer && npm run verify:ssr",
     "verify:release": "node scripts/verify-release.mjs",
     "release:check": "node scripts/verify-release.mjs",

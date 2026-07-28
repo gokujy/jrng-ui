@@ -24,7 +24,7 @@ import {
 } from './theme-palettes';
 import { JThemePresetRegistry } from './theme-registry';
 import { jMergeThemeOverrides, jResolveTheme } from './theme-resolver';
-import { JThemeColorScheme, JThemeOptions, JThemeScope, JThemeScopeOptions } from './theme.types';
+import { JThemeColorScheme, JThemeScope, JThemeScopeOptions } from './theme.types';
 
 const PRESET_STYLE_ID = 'j-theme-preset';
 
