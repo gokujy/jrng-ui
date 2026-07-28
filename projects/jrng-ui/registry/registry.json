@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "package": "jrng-ui",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "components": [
     {
       "name": "Autocomplete",
