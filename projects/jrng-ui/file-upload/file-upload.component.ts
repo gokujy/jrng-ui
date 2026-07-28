@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   ElementRef,
   booleanAttribute,
   computed,
@@ -59,6 +60,8 @@ export interface JFileUploadItemEvent {
       (drop)="handleDrop($event)"
       (paste)="handlePaste($event)"
       [attr.tabindex]="allowPaste() && !disabled() ? 0 : null"
+      [attr.aria-disabled]="disabled() ? 'true' : null"
+      [attr.aria-busy]="uploading() ? 'true' : null"
     >
       <input
         #fileInput
@@ -124,7 +127,13 @@ export interface JFileUploadItemEvent {
               <div class="j-file-upload__meta">
                 <span>{{ item.displayName || item.file.name }}</span>
                 <small>{{ formatSize(item.file.size) }} - {{ item.status }}</small>
-                <span class="j-file-upload__progress"
+                <span
+                  class="j-file-upload__progress"
+                  role="progressbar"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                  [attr.aria-valuenow]="item.progress"
+                  [attr.aria-label]="'Upload progress for ' + (item.displayName || item.file.name)"
                   ><span [style.width.%]="item.progress"></span
                 ></span>
                 @if (item.error) {
@@ -330,6 +339,7 @@ export interface JFileUploadItemEvent {
 })
 export class JFileUploadComponent {
   readonly locale = inject(JRNG_LOCALE);
+  private readonly destroyRef = inject(DestroyRef);
   readonly fileInput = viewChild<ElementRef<HTMLInputElement>>('fileInput');
 
   readonly mode = input<JFileUploadMode>('advanced');
@@ -364,7 +374,12 @@ export class JFileUploadComponent {
   readonly queue = signal<readonly JFileUploadItem[]>([]);
   readonly errors = signal<readonly JFileUploadError[]>([]);
   readonly dragover = signal(false);
+  readonly uploading = computed(() => this.queue().some((item) => item.status === 'uploading'));
   private readonly uploadTasks = new Map<string, AbortController>();
+
+  constructor() {
+    this.destroyRef.onDestroy(() => this.abortAllUploads());
+  }
 
   readonly uploaderClasses = computed(() =>
     ['j-file-upload', this.mode() === 'basic' ? 'j-file-upload--basic' : '', this.styleClass()]
@@ -415,6 +430,7 @@ export class JFileUploadComponent {
 
   removeItem(item: JFileUploadItem): void {
     if (this.disabled()) return;
+    this.abortUpload(item.id);
     this.queue.set(this.queue().filter((entry) => entry.id !== item.id));
     this.remove.emit(item.file);
     this.emitFilesChange();
@@ -422,6 +438,7 @@ export class JFileUploadComponent {
 
   clear(): void {
     if (this.disabled()) return;
+    this.abortAllUploads();
     this.queue.set([]);
     this.errors.set([]);
     this.emitFilesChange();
@@ -479,9 +496,10 @@ export class JFileUploadComponent {
   }
 
   setProgress(itemId: string, progress: number): void {
+    const normalized = Number.isFinite(progress) ? Math.min(100, Math.max(0, progress)) : 0;
     this.updateItem(itemId, {
-      progress: Math.min(100, Math.max(0, progress)),
-      status: progress >= 100 ? 'complete' : 'uploading',
+      progress: normalized,
+      status: normalized >= 100 ? 'complete' : 'uploading',
     });
   }
 
@@ -609,8 +627,20 @@ export class JFileUploadComponent {
       if (!abort.signal.aborted)
         this.setError(item.id, error instanceof Error ? error.message : 'Upload failed');
     } finally {
-      this.uploadTasks.delete(item.id);
+      if (this.uploadTasks.get(item.id) === abort) {
+        this.uploadTasks.delete(item.id);
+      }
     }
+  }
+
+  private abortUpload(itemId: string): void {
+    this.uploadTasks.get(itemId)?.abort();
+    this.uploadTasks.delete(itemId);
+  }
+
+  private abortAllUploads(): void {
+    for (const task of this.uploadTasks.values()) task.abort();
+    this.uploadTasks.clear();
   }
 
   private emitFilesChange(): void {

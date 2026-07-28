@@ -33,9 +33,9 @@ interface JSparklineBar {
       data-jc-section="root"
       role="img"
       [attr.aria-label]="ariaLabel()"
-      [attr.viewBox]="'0 0 ' + width() + ' ' + height()"
-      [attr.width]="width()"
-      [attr.height]="height()"
+      [attr.viewBox]="'0 0 ' + renderedWidth() + ' ' + renderedHeight()"
+      [attr.width]="renderedWidth()"
+      [attr.height]="renderedHeight()"
       preserveAspectRatio="none"
     >
       @if (type() === 'line') {
@@ -89,16 +89,19 @@ export class JSparklineComponent {
   readonly height = input(32, { transform: numberAttribute });
   readonly ariaLabel = input('Sparkline');
   readonly styleClass = input('');
+  readonly renderedWidth = computed(() => normalizeDimension(this.width(), 120));
+  readonly renderedHeight = computed(() => normalizeDimension(this.height(), 32));
 
   readonly points = computed<readonly JSparklinePoint[]>(() => {
-    const values = this.value();
+    const values = this.value().map(normalizeValue);
     const min = Math.min(...values, 0);
     const max = Math.max(...values, 0);
     const range = max - min || 1;
-    const xStep = values.length > 1 ? this.width() / (values.length - 1) : this.width();
+    const xStep =
+      values.length > 1 ? this.renderedWidth() / (values.length - 1) : this.renderedWidth();
     return values.map((value, index) => ({
       x: index * xStep,
-      y: this.height() - ((value - min) / range) * this.height(),
+      y: this.renderedHeight() - ((value - min) / range) * this.renderedHeight(),
       value,
     }));
   });
@@ -110,14 +113,14 @@ export class JSparklineComponent {
   );
 
   readonly bars = computed<readonly JSparklineBar[]>(() => {
-    const values = this.value();
+    const values = this.value().map(normalizeValue);
     const min = Math.min(...values, 0);
     const max = Math.max(...values, 0);
     const range = max - min || 1;
-    const barWidth = values.length ? this.width() / values.length : this.width();
-    const zeroY = this.height() - ((0 - min) / range) * this.height();
+    const barWidth = values.length ? this.renderedWidth() / values.length : this.renderedWidth();
+    const zeroY = this.renderedHeight() - ((0 - min) / range) * this.renderedHeight();
     return values.map((value, index) => {
-      const y = this.height() - ((value - min) / range) * this.height();
+      const y = this.renderedHeight() - ((value - min) / range) * this.renderedHeight();
       return {
         x: index * barWidth + 1,
         y: Math.min(y, zeroY),
@@ -127,4 +130,12 @@ export class JSparklineComponent {
       };
     });
   });
+}
+
+function normalizeDimension(value: number, fallback: number): number {
+  return Number.isFinite(value) ? Math.max(1, value) : fallback;
+}
+
+function normalizeValue(value: number): number {
+  return Number.isFinite(value) ? value : 0;
 }

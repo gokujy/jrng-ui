@@ -60,9 +60,7 @@ interface JTreeFlatEntry {
       data-jc-name="tree"
       data-jc-section="root"
       role="tree"
-      tabindex="0"
       [attr.aria-label]="ariaLabel()"
-      (keydown)="handleKeydown($event)"
     >
       @if (filter()) {
         <label class="j-tree__filter" data-jc-section="filter">
@@ -90,13 +88,18 @@ interface JTreeFlatEntry {
             class="j-tree__node"
             role="treeitem"
             data-jc-section="node"
+            [attr.data-j-tree-key]="key"
             [attr.aria-level]="level"
             [attr.aria-expanded]="hasChildren(node) ? isExpandedKey(key) : null"
-            [attr.aria-selected]="isSelected(node)"
+            [attr.aria-selected]="selectionMode() === 'none' ? null : isSelected(node)"
+            [attr.aria-disabled]="node.disabled || null"
             [attr.data-j-selected]="isSelected(node) ? 'true' : null"
             [attr.data-j-focused]="activeKey() === key ? 'true' : null"
             [attr.data-j-disabled]="node.disabled ? 'true' : null"
             [attr.data-j-open]="isExpandedKey(key) ? 'true' : null"
+            [attr.tabindex]="itemTabIndex(key, level, index, parentKey)"
+            (focus)="setActive(key)"
+            (keydown)="handleKeydown($event, key)"
           >
             <div
               class="j-tree__row"
@@ -108,9 +111,8 @@ interface JTreeFlatEntry {
                 type="button"
                 [disabled]="!hasChildren(node) || node.disabled"
                 [attr.aria-label]="isExpandedKey(key) ? 'Collapse node' : 'Expand node'"
-                [attr.tabindex]="activeKey() === key ? 0 : -1"
+                tabindex="-1"
                 (click)="toggle(node, key)"
-                (focus)="setActive(key)"
               >
                 @if (hasChildren(node)) {
                   <span aria-hidden="true">{{ isExpandedKey(key) ? '-' : '+' }}</span>
@@ -123,6 +125,8 @@ interface JTreeFlatEntry {
                   type="checkbox"
                   [disabled]="node.disabled || node.selectable === false"
                   [checked]="isSelected(node)"
+                  [attr.aria-label]="'Select ' + node.label"
+                  tabindex="-1"
                   (change)="toggleSelection(node, $event)"
                 />
               }
@@ -131,9 +135,8 @@ interface JTreeFlatEntry {
                 class="j-tree__label"
                 type="button"
                 [disabled]="node.disabled"
-                [attr.tabindex]="activeKey() === key ? 0 : -1"
+                tabindex="-1"
                 (click)="selectNode(node, key, $event)"
-                (focus)="setActive(key)"
               >
                 @if (nodeTemplate(); as template) {
                   <ng-container
@@ -234,10 +237,9 @@ interface JTreeFlatEntry {
         text-align: left;
       }
 
-      .j-tree__toggle:focus-visible,
-      .j-tree__label:focus-visible,
+      .j-tree__node:focus-visible,
       .j-tree__filter input:focus-visible {
-        box-shadow: var(--j-focus-ring);
+        box-shadow: inset var(--j-focus-ring);
         outline: none;
       }
 
@@ -292,6 +294,13 @@ export class JTreeComponent {
     this.activeKey.set(key);
   }
 
+  itemTabIndex(key: string, level: number, index: number, parentKey: string): number {
+    if (this.activeKey()) {
+      return this.activeKey() === key ? 0 : -1;
+    }
+    return level === 1 && index === 0 && parentKey === 'root' ? 0 : -1;
+  }
+
   toggle(node: JTreeNode, key: string): void {
     if (node.disabled || !this.hasChildren(node)) {
       return;
@@ -335,14 +344,14 @@ export class JTreeComponent {
     this.selection.set(next);
   }
 
-  handleKeydown(event: KeyboardEvent): void {
+  handleKeydown(event: KeyboardEvent, key: string): void {
     const flat = this.flatten(this.visibleNodes());
     if (!flat.length) {
       return;
     }
     const current = Math.max(
       0,
-      flat.findIndex((entry) => entry.key === this.activeKey()),
+      flat.findIndex((entry) => entry.key === key),
     );
 
     if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
@@ -351,7 +360,14 @@ export class JTreeComponent {
         event.key === 'ArrowDown'
           ? Math.min(flat.length - 1, current + 1)
           : Math.max(0, current - 1);
-      this.activeKey.set(flat[next]?.key ?? this.activeKey());
+      this.focusEntry(event, flat[next]);
+      return;
+    }
+
+    if (event.key === 'Home' || event.key === 'End') {
+      event.preventDefault();
+      this.focusEntry(event, event.key === 'Home' ? flat[0] : flat[flat.length - 1]);
+      return;
     }
 
     if (event.key === 'ArrowRight') {
@@ -361,7 +377,10 @@ export class JTreeComponent {
       // lazy-load path (and respects node.disabled).
       if (entry && this.hasChildren(entry.node) && !this.expandedKeys().has(entry.key)) {
         this.toggle(entry.node, entry.key);
+      } else if (entry && this.expandedKeys().has(entry.key)) {
+        this.focusEntry(event, flat[current + 1]);
       }
+      return;
     }
 
     if (event.key === 'ArrowLeft') {
@@ -369,7 +388,13 @@ export class JTreeComponent {
       const entry = flat[current];
       if (entry && this.expandedKeys().has(entry.key)) {
         this.toggle(entry.node, entry.key);
+      } else if (entry?.parentKey && entry.parentKey !== 'root') {
+        this.focusEntry(
+          event,
+          flat.find((candidate) => candidate.key === entry.parentKey),
+        );
       }
+      return;
     }
 
     if (event.key === 'Enter' || event.key === ' ') {
@@ -431,10 +456,27 @@ export class JTreeComponent {
     for (const node of nodes) {
       const children = node.children ? this.filterNodes(node.children) : [];
       if (node.label.toLowerCase().includes(query) || children.length) {
-        filtered.push(children.length ? { ...node, children } : node);
+        // Preserve node identity. The recursive template applies the same
+        // filter to children, so cloning parents is unnecessary and breaks
+        // reference-based selection for nodes without explicit keys.
+        filtered.push(node);
       }
     }
     return filtered;
+  }
+
+  private focusEntry(event: KeyboardEvent, entry: JTreeFlatEntry | undefined): void {
+    if (!entry) {
+      return;
+    }
+    const tree = (event.currentTarget as HTMLElement | null)?.closest('[role="tree"]');
+    const item = Array.from(tree?.querySelectorAll<HTMLElement>('[role="treeitem"]') ?? []).find(
+      (candidate) => candidate.dataset['jTreeKey'] === entry.key,
+    );
+    if (item) {
+      this.activeKey.set(entry.key);
+      item.focus();
+    }
   }
 
   private flatten(nodes: readonly JTreeNode[], level = 1, parentKey = 'root'): JTreeFlatEntry[] {

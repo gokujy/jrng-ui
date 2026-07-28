@@ -201,10 +201,18 @@ export class JGanttComponent {
   });
 
   readonly range = computed(() => {
-    const dates = this.tasks().flatMap((task) => [toDate(task.start), toDate(task.end)]);
-    const start = this.start() ? toDate(this.start() as Date | string) : minDate(dates);
-    const end = this.end() ? toDate(this.end() as Date | string) : maxDate(dates);
-    return { start: startOfDay(start), end: startOfDay(end) };
+    const dates = this.tasks()
+      .flatMap((task) => [toDate(task.start), toDate(task.end)])
+      .filter(isValidDate);
+    const requestedStart = this.start() ? toDate(this.start() as Date | string) : null;
+    const requestedEnd = this.end() ? toDate(this.end() as Date | string) : null;
+    const start = requestedStart && isValidDate(requestedStart) ? requestedStart : minDate(dates);
+    const end = requestedEnd && isValidDate(requestedEnd) ? requestedEnd : maxDate(dates);
+    const normalizedStart = startOfDay(start);
+    const normalizedEnd = startOfDay(end);
+    return normalizedStart <= normalizedEnd
+      ? { start: normalizedStart, end: normalizedEnd }
+      : { start: normalizedEnd, end: normalizedStart };
   });
 
   readonly timelineSlots = computed<readonly JGanttSlot[]>(() => {
@@ -221,8 +229,12 @@ export class JGanttComponent {
   readonly taskViews = computed<readonly JGanttTaskView[]>(() => {
     const total = Math.max(1, diffDays(this.range().start, this.range().end) + 1);
     return this.tasks().map((task) => {
-      const start = startOfDay(toDate(task.start));
-      const end = startOfDay(toDate(task.end));
+      const rawStart = toDate(task.start);
+      const rawEnd = toDate(task.end);
+      const taskStart = isValidDate(rawStart) ? startOfDay(rawStart) : this.range().start;
+      const taskEnd = isValidDate(rawEnd) ? startOfDay(rawEnd) : taskStart;
+      const start = taskStart <= taskEnd ? taskStart : taskEnd;
+      const end = taskStart <= taskEnd ? taskEnd : taskStart;
       const left = (diffDays(this.range().start, start) / total) * 100;
       const width = ((diffDays(start, end) + 1) / total) * 100;
       return { task, left: Math.max(0, left), width: Math.min(100, Math.max(2, width)) };
@@ -230,7 +242,8 @@ export class JGanttComponent {
   });
 
   progress(task: JGanttTask): number {
-    return Math.min(100, Math.max(0, task.progress ?? 0));
+    const value = task.progress ?? 0;
+    return Number.isFinite(value) ? Math.min(100, Math.max(0, value)) : 0;
   }
 
   dependencyLabel(task: JGanttTask): string {
@@ -244,6 +257,10 @@ export class JGanttComponent {
 
 function toDate(value: Date | string): Date {
   return value instanceof Date ? value : new Date(value);
+}
+
+function isValidDate(value: Date): boolean {
+  return Number.isFinite(value.getTime());
 }
 
 function startOfDay(value: Date): Date {
@@ -269,6 +286,7 @@ function addScale(date: Date, scale: JGanttScale): Date {
   } else if (scale === 'week') {
     next.setDate(next.getDate() + 7);
   } else {
+    next.setDate(1);
     next.setMonth(next.getMonth() + 1);
   }
   return next;

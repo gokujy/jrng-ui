@@ -28,6 +28,7 @@ export interface JHtmlPreviewExportAdapter {
     class="j-html-preview"
     data-jc-name="html-preview"
     [attr.data-j-device]="device()"
+    [attr.aria-busy]="loading() ? 'true' : null"
   >
     <div class="j-html-preview__toolbar" role="toolbar" aria-label="Preview controls">
       <j-button label="Refresh" icon="undo" variant="outlined" (onClick)="refresh()" />
@@ -57,8 +58,8 @@ export interface JHtmlPreviewExportAdapter {
         #surface
         class="j-html-preview__surface"
         [style.width.px]="previewWidth()"
-        [style.height.px]="height()"
-        [style.transform]="'scale(' + zoom() + ')'"
+        [style.height.px]="previewHeight()"
+        [style.transform]="'scale(' + previewZoom() + ')'"
       >
         @if (mode() === 'iframe') {
           <iframe
@@ -154,9 +155,19 @@ export class JHtmlPreviewComponent {
     const sanitized = jSanitizeEditorHtml(adapted, this.documentRef);
     return this.allowRemoteContent() ? sanitized : removeRemoteSources(sanitized, this.documentRef);
   });
-  readonly previewWidth = computed(
-    () => this.width() || { desktop: 1200, tablet: 768, mobile: 375, custom: 800 }[this.device()],
-  );
+  readonly previewWidth = computed(() => {
+    const configured = this.width();
+    const fallback = { desktop: 1200, tablet: 768, mobile: 375, custom: 800 }[this.device()] ?? 800;
+    return Number.isFinite(configured) && configured > 0 ? configured : fallback;
+  });
+  readonly previewHeight = computed(() => {
+    const configured = this.height();
+    return Number.isFinite(configured) && configured > 0 ? configured : 600;
+  });
+  readonly previewZoom = computed(() => {
+    const configured = this.zoom();
+    return Number.isFinite(configured) ? Math.min(4, Math.max(0.1, configured)) : 1;
+  });
   refresh(): void {
     this.refreshKey.update((v) => v + 1);
     this.refreshed.emit();
@@ -199,7 +210,8 @@ function removeRemoteSources(html: string, documentRef: Document): string {
   const template = documentRef.createElement('template');
   template.innerHTML = html;
   for (const element of template.content.querySelectorAll('[src]')) {
-    if (/^https?:/i.test(element.getAttribute('src') ?? '')) element.removeAttribute('src');
+    if (/^(?:https?:)?\/\//i.test(element.getAttribute('src') ?? ''))
+      element.removeAttribute('src');
   }
   return template.innerHTML;
 }

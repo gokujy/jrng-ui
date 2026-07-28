@@ -12,9 +12,11 @@ import {
   input,
   model,
   signal,
+  viewChild,
 } from '@angular/core';
 import { JInternalImageViewerComponent } from 'jrng-ui/image';
 import { JButtonComponent } from 'jrng-ui/button';
+import { JOverlayStackService } from 'jrng-ui/core';
 
 export interface JGalleryItem {
   readonly src: string;
@@ -52,7 +54,7 @@ export type JGallerySlideDirection = 'left' | 'right' | 'up' | 'down';
               />
             }
           }
-          @for (active of [item]; track active.src) {
+          @for (active of [item]; track $index) {
             <img
               [class]="
                 'j-gallery__image j-gallery__image--active j-gallery__image--' +
@@ -100,13 +102,21 @@ export type JGallerySlideDirection = 'left' | 'right' | 'up' | 'down';
         </div>
       }
 
-      <div class="j-gallery__thumbs" data-jc-section="thumbnails">
-        @for (item of value(); track item.src; let index = $index) {
+      <div
+        class="j-gallery__thumbs"
+        data-jc-section="thumbnails"
+        role="group"
+        aria-label="Choose image"
+      >
+        @for (item of value(); track $index; let index = $index) {
           <button
             type="button"
             [class.is-active]="index === activeIndex()"
             [attr.aria-current]="index === activeIndex() ? 'true' : null"
+            [attr.aria-label]="'Show image ' + (index + 1)"
+            [attr.tabindex]="index === activeIndex() ? 0 : -1"
             (click)="select(index)"
+            (keydown)="handleThumbnailKeydown($event, index)"
           >
             <img [src]="item.thumbnail || item.src" [alt]="item.alt || ''" />
           </button>
@@ -305,6 +315,8 @@ export class JGalleryComponent {
   private readonly renderer = inject(Renderer2);
   private readonly destroyRef = inject(DestroyRef);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  private readonly overlayStack = inject(JOverlayStackService);
+  private readonly viewer = viewChild(JInternalImageViewerComponent);
 
   readonly value = input<readonly JGalleryItem[]>([]);
   readonly activeIndex = model(0);
@@ -324,6 +336,15 @@ export class JGalleryComponent {
   private readonly preloadRequests = new Map<string, HTMLImageElement>();
 
   constructor() {
+    effect(() => {
+      const length = this.value().length;
+      const index = this.activeIndex();
+      const normalized = Number.isFinite(index)
+        ? Math.min(Math.max(0, length - 1), Math.max(0, Math.floor(index)))
+        : 0;
+      if (index !== normalized) this.activeIndex.set(normalized);
+    });
+
     if (!this.isBrowser) {
       return;
     }
@@ -331,6 +352,8 @@ export class JGalleryComponent {
       if (!this.previewVisible()) {
         return;
       }
+      const viewer = this.viewer();
+      if (!viewer || !this.overlayStack.isTopmost(viewer)) return;
       if (event.key === 'ArrowRight') {
         this.next();
       }
@@ -379,6 +402,26 @@ export class JGalleryComponent {
     if (index >= 0 && index < this.value().length && index !== this.activeIndex()) {
       this.activeIndex.set(index);
     }
+  }
+
+  handleThumbnailKeydown(event: KeyboardEvent, index: number): void {
+    let next = index;
+    if (event.key === 'ArrowRight' || event.key === 'ArrowDown') next = index + 1;
+    else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') next = index - 1;
+    else if (event.key === 'Home') next = 0;
+    else if (event.key === 'End') next = this.value().length - 1;
+    else return;
+    event.preventDefault();
+    const length = this.value().length;
+    if (!length) return;
+    const normalized = this.loop()
+      ? (next + length) % length
+      : Math.min(length - 1, Math.max(0, next));
+    this.select(normalized);
+    const buttons = (
+      event.currentTarget as HTMLElement
+    ).parentElement?.querySelectorAll<HTMLButtonElement>('button');
+    buttons?.item(normalized).focus();
   }
 
   isLoaded(src: string): boolean {

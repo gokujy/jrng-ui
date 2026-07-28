@@ -10,6 +10,7 @@ import {
   COMPONENT_CATEGORY_ORDER,
   COMPONENT_ORDER_BY_SELECTOR,
   REMOVED_COMPONENT_SELECTORS,
+  STABLE_COMPONENT_SELECTORS,
   validateComponentCategories,
 } from './component-categories.mjs';
 
@@ -45,17 +46,8 @@ const publicRegistry = readJson('projects/jrng-ui/registry/registry.json');
 const registryBySelector = new Map(
   publicRegistry.components.map((component) => [component.selector, component]),
 );
-const previewSource = fs.readFileSync(
-  path.join(
-    workspaceRoot,
-    'projects',
-    'docs',
-    'src',
-    'app',
-    'docs',
-    'component-detail-view.component.ts',
-  ),
-  'utf8',
+const previewSource = readTypeScriptTree(
+  path.join(workspaceRoot, 'projects', 'docs', 'src', 'app', 'docs'),
 );
 const publicAudit = fs.existsSync(path.join(workspaceRoot, 'docs/audits/public-api-inventory.json'))
   ? readJson('docs/audits/public-api-inventory.json')
@@ -142,6 +134,19 @@ function declarationFiles() {
     .readdirSync(declarationsDirectory)
     .filter((fileName) => /^jrng-ui-.+\.d\.ts$/.test(fileName))
     .sort();
+}
+
+function readTypeScriptTree(directory) {
+  return fs
+    .readdirSync(directory, { withFileTypes: true })
+    .flatMap((entry) => {
+      const entryPath = path.join(directory, entry.name);
+      if (entry.isDirectory()) return readTypeScriptTree(entryPath);
+      return entry.isFile() && entry.name.endsWith('.ts') && !entry.name.endsWith('.spec.ts')
+        ? [fs.readFileSync(entryPath, 'utf8')]
+        : [];
+    })
+    .join('\n');
 }
 
 function readPublicComponents(fileName) {
@@ -250,6 +255,7 @@ function readPublicComponents(fileName) {
     const apiReferenceStatus = registryRecord ? 'complete' : 'missing';
     const category = COMPONENT_CATEGORY_BY_SELECTOR.get(selector);
     const stability = componentStability({
+      explicitlyStable: STABLE_COMPONENT_SELECTORS.has(selector),
       exactDocumentation,
       testStatus,
       hasRenderedPreview,
@@ -377,12 +383,14 @@ function templateDirectives(importPath) {
 }
 
 function componentStability({
+  explicitlyStable,
   exactDocumentation,
   testStatus,
   hasRenderedPreview,
   accessibilityValidated,
 }) {
   if (
+    explicitlyStable &&
     exactDocumentation?.status === 'Stable' &&
     testStatus === 'direct' &&
     hasRenderedPreview &&

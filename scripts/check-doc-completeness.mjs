@@ -1,9 +1,9 @@
-import { readFile } from 'node:fs/promises';
+import { readdir, readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
 const root = resolve(import.meta.dirname, '..');
 const inventory = JSON.parse(await read('docs/component-inventory.json'));
-const previewSource = await read('projects/docs/src/app/docs/component-detail-view.component.ts');
+const previewSource = await readTypeScriptTree('projects/docs/src/app/docs');
 const registrySource = await read('projects/docs/src/app/docs/generated-component-registry.ts');
 const failures = [];
 const selectors = new Set();
@@ -89,4 +89,18 @@ function check(condition, message) {
 }
 function read(path) {
   return readFile(resolve(root, path), 'utf8');
+}
+async function readTypeScriptTree(path) {
+  const directory = resolve(root, path);
+  const entries = await readdir(directory, { withFileTypes: true });
+  const sources = await Promise.all(
+    entries.map((entry) => {
+      const entryPath = `${path}/${entry.name}`;
+      if (entry.isDirectory()) return readTypeScriptTree(entryPath);
+      return entry.isFile() && entry.name.endsWith('.ts') && !entry.name.endsWith('.spec.ts')
+        ? read(entryPath)
+        : '';
+    }),
+  );
+  return sources.join('\n');
 }

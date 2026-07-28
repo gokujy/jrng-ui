@@ -39,5 +39,13 @@ describe('JImageComponent', () => {
     expect(fixture.componentInstance.currentSrc()).toBe('/fallback.svg');
     image.triggerEventHandler('error');
     expect(fixture.componentInstance.currentSrc()).toBe('/fallback.svg');
+
+    fixture.componentRef.setInput('alt', 'Updated profile');
+    fixture.detectChanges();
+    expect(fixture.componentInstance.currentSrc()).toBe('/fallback.svg');
+
+    fixture.componentRef.setInput('src', '/replacement.svg');
+    fixture.detectChanges();
+    expect(fixture.componentInstance.currentSrc()).toBe('/replacement.svg');
   });
 });

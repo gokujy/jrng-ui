@@ -56,4 +56,24 @@ describe('JGalleryComponent stable transitions', () => {
       'Unable to load image',
     );
   });
+
+  it('clamps stale active state and supports roving thumbnail navigation', () => {
+    const fixture = TestBed.createComponent(JGalleryComponent);
+    fixture.componentRef.setInput('value', [
+      { src: '/same.jpg', alt: 'First' },
+      { src: '/same.jpg', alt: 'Second' },
+    ]);
+    fixture.componentRef.setInput('activeIndex', 20);
+    fixture.detectChanges();
+    expect(fixture.componentInstance.activeIndex()).toBe(1);
+
+    const buttons = fixture.nativeElement.querySelectorAll(
+      '.j-gallery__thumbs button',
+    ) as NodeListOf<HTMLButtonElement>;
+    expect([...buttons].filter((button) => button.tabIndex === 0)).toHaveLength(1);
+    buttons[1].dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', bubbles: true }));
+    fixture.detectChanges();
+    expect(fixture.componentInstance.activeIndex()).toBe(0);
+    expect(document.activeElement).toBe(buttons[0]);
+  });
 });

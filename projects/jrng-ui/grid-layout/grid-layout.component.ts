@@ -9,7 +9,7 @@ import { ChangeDetectionStrategy, Component, input, numberAttribute } from '@ang
       [class]="styleClass()"
       data-jc-name="grid-layout"
       data-jc-section="root"
-      [style.--j-grid-columns]="columns()"
+      [style.--j-grid-columns]="columnCount()"
       [style.--j-grid-min]="minItemWidth()"
       [style.--j-grid-gap]="gap()"
     >
@@ -46,4 +46,9 @@ export class JGridLayoutComponent {
   readonly minItemWidth = input('16rem');
   readonly gap = input('var(--j-spacing-4)');
   readonly styleClass = input('');
+
+  protected columnCount(): number {
+    const value = this.columns();
+    return Number.isFinite(value) ? Math.max(1, Math.floor(value)) : 1;
+  }
 }

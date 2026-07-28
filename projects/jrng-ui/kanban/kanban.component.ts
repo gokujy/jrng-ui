@@ -99,10 +99,15 @@ interface JKanbanDragState {
                 class="j-kanban__card"
                 data-jc-section="card"
                 draggable="true"
+                role="group"
+                tabindex="0"
+                [attr.aria-label]="card.title + ', column ' + column.title"
+                aria-keyshortcuts="Alt+ArrowUp Alt+ArrowDown Alt+ArrowLeft Alt+ArrowRight"
                 (dragstart)="handleDragStart(column, card, cardIndex)"
                 (dragend)="handleDragEnd()"
                 (dragover)="handleDragOver($event, column.id)"
                 (drop)="handleDrop($event, column, cardIndex)"
+                (keydown)="handleCardKeydown($event, column, card, columnIndex, cardIndex)"
               >
                 @if (cardTemplate(); as template) {
                   <ng-container
@@ -192,6 +197,11 @@ interface JKanbanDragState {
         display: grid;
         gap: var(--j-spacing-2);
         padding: var(--j-spacing-3);
+      }
+
+      .j-kanban__card:focus-visible {
+        box-shadow: var(--j-focus-ring);
+        outline: none;
       }
 
       .j-kanban__card p,
@@ -293,6 +303,48 @@ export class JKanbanComponent {
   handleDragEnd(): void {
     this.dragState.set(null);
     this.dropColumnId.set('');
+  }
+
+  handleCardKeydown(
+    event: KeyboardEvent,
+    fromColumn: JKanbanColumn,
+    card: JKanbanCard,
+    columnIndex: number,
+    cardIndex: number,
+  ): void {
+    if (
+      event.target !== event.currentTarget ||
+      !event.altKey ||
+      !['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)
+    ) {
+      return;
+    }
+    const columnDelta = event.key === 'ArrowLeft' ? -1 : event.key === 'ArrowRight' ? 1 : 0;
+    const targetColumnIndex = columnIndex + columnDelta;
+    if (targetColumnIndex < 0 || targetColumnIndex >= this.value().length) {
+      return;
+    }
+    const toColumn = this.value()[targetColumnIndex]!;
+    const toIndex =
+      columnDelta === 0
+        ? Math.max(
+            0,
+            Math.min(fromColumn.cards.length - 1, cardIndex + (event.key === 'ArrowUp' ? -1 : 1)),
+          )
+        : Math.min(cardIndex, toColumn.cards.length);
+    if (fromColumn.id === toColumn.id && cardIndex === toIndex) {
+      return;
+    }
+    event.preventDefault();
+    const columns = this.moveCard(fromColumn, toColumn, card, cardIndex, toIndex);
+    this.reorder.emit({
+      card,
+      fromColumn,
+      toColumn,
+      fromIndex: cardIndex,
+      toIndex,
+      columns,
+    });
   }
 
   cardContext(

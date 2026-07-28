@@ -3,7 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   input,
-  OnChanges,
+  linkedSignal,
   signal,
 } from '@angular/core';
 import { JInternalImageViewerComponent } from './image-viewer.component';
@@ -24,7 +24,7 @@ import { JInternalImageViewerComponent } from './image-viewer.component';
         <button
           type="button"
           class="j-image__button"
-          [attr.aria-label]="'Preview image: ' + alt()"
+          [attr.aria-label]="'Preview image: ' + (alt() || 'image')"
           (click)="openPreview()"
         >
           <img
@@ -86,7 +86,7 @@ import { JInternalImageViewerComponent } from './image-viewer.component';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class JImageComponent implements OnChanges {
+export class JImageComponent {
   readonly src = input('');
   readonly alt = input('');
   readonly width = input('');
@@ -96,12 +96,8 @@ export class JImageComponent implements OnChanges {
   readonly fallback = input('');
   readonly styleClass = input('');
 
-  readonly currentSrc = signal('');
+  readonly currentSrc = linkedSignal(() => this.src());
   readonly previewVisible = signal(false);
-
-  ngOnChanges(): void {
-    this.currentSrc.set(this.src());
-  }
 
   openPreview(): void {
     this.previewVisible.set(true);

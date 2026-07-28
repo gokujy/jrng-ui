@@ -30,4 +30,35 @@ describe('notification state', () => {
     fixture.componentInstance.remove(item);
     expect(fixture.componentInstance.filtered()).toEqual([]);
   });
+
+  it('uses the shared drawer primitive for drawer layout', () => {
+    const fixture = TestBed.createComponent(JNotificationCenterComponent);
+    fixture.componentRef.setInput('layout', 'drawer');
+    fixture.componentRef.setInput('visible', true);
+    fixture.componentRef.setInput('heading', 'Team notifications');
+    fixture.detectChanges();
+
+    const dialog = fixture.nativeElement.querySelector('[role="dialog"]') as HTMLElement;
+    expect(dialog).not.toBeNull();
+    expect(fixture.nativeElement.textContent).toContain('Team notifications');
+  });
+
+  it('names its popover and content region from the configured heading', () => {
+    const fixture = TestBed.createComponent(JNotificationCenterComponent);
+    fixture.componentRef.setInput('layout', 'popover');
+    fixture.componentRef.setInput('visible', true);
+    fixture.componentRef.setInput('heading', 'Account notifications');
+    fixture.detectChanges();
+
+    expect(
+      (fixture.nativeElement.querySelector('[role="dialog"]') as HTMLElement).getAttribute(
+        'aria-label',
+      ),
+    ).toBe('Account notifications');
+    expect(
+      (fixture.nativeElement.querySelector('[role="region"]') as HTMLElement).getAttribute(
+        'aria-label',
+      ),
+    ).toBe('Account notifications');
+  });
 });

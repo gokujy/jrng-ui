@@ -67,6 +67,18 @@ class TableHostComponent {
   ];
 }
 
+@Component({
+  imports: [JTableComponent],
+  template: `
+    <j-table [columns]="columns" [value]="rows" selectionMode="radio" editMode="row" />
+    <j-table [columns]="columns" [value]="rows" selectionMode="radio" editMode="row" />
+  `,
+})
+class MultipleTablesHostComponent {
+  columns: readonly JTableColumn[] = [{ field: 'name', header: 'Name', editable: true }];
+  rows: readonly JTableRow[] = [{ id: 1, name: 'Shared row key' }];
+}
+
 describe('JTableComponent', () => {
   let fixture: ComponentFixture<TableHostComponent>;
   let host: TableHostComponent;
@@ -139,6 +151,41 @@ describe('JTableComponent', () => {
     fixture.detectChanges();
 
     expect(host.selected?.['code']).toBe('REC-1');
+  });
+
+  it('uses grid semantics and a roving row tab stop with arrow, Home, and End navigation', () => {
+    const table = fixture.debugElement.query(By.css('table')).nativeElement as HTMLTableElement;
+    const rows = fixture.debugElement
+      .queryAll(By.css('tbody tr[data-j-table-row]'))
+      .map((row) => row.nativeElement as HTMLElement);
+    expect(table.getAttribute('role')).toBe('grid');
+    expect(rows.map((row) => row.tabIndex)).toEqual([0, -1, -1]);
+
+    rows[0]?.focus();
+    rows[0]?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    fixture.detectChanges();
+    expect(document.activeElement).toBe(rows[1]);
+
+    rows[1]?.dispatchEvent(new KeyboardEvent('keydown', { key: 'End', bubbles: true }));
+    fixture.detectChanges();
+    expect(document.activeElement).toBe(rows[2]);
+
+    rows[2]?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', bubbles: true }));
+    fixture.detectChanges();
+    expect(document.activeElement).toBe(rows[0]);
+  });
+
+  it('does not activate a row from keyboard events owned by a nested selection control', () => {
+    host.selectionMode = 'checkbox';
+    detectHostChanges();
+    const checkbox = fixture.debugElement.query(By.css('tbody input[type="checkbox"]'))
+      .nativeElement as HTMLInputElement;
+
+    checkbox.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    fixture.detectChanges();
+
+    expect(host.selection).toBeNull();
+    expect(checkbox.tabIndex).toBe(-1);
   });
 
   it('renders empty state', () => {
@@ -467,5 +514,34 @@ describe('JTableComponent', () => {
     expect(table.sortField).toBe('');
     expect(table.resolvedColumns.map((column) => column.field)).toEqual(['amount', 'code']);
     localStorage.removeItem(table.stateKey);
+  });
+});
+
+describe('JTableComponent multiple-instance isolation', () => {
+  it('uses distinct radio groups and scopes row-edit focus to the owning table', async () => {
+    await TestBed.configureTestingModule({
+      imports: [MultipleTablesHostComponent],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(MultipleTablesHostComponent);
+    fixture.detectChanges();
+    const tableDebugElements = fixture.debugElement.queryAll(By.directive(JTableComponent));
+    const tables = tableDebugElements.map(
+      (debugElement) => debugElement.componentInstance as JTableComponent,
+    );
+    const radios = fixture.debugElement
+      .queryAll(By.css('input[type="radio"]'))
+      .map((radio) => radio.nativeElement as HTMLInputElement);
+
+    expect(radios[0]?.name).toBeTruthy();
+    expect(radios[0]?.name).not.toBe(radios[1]?.name);
+
+    tables[0]?.startRowEdit({ id: 1, name: 'Shared row key' }, 0);
+    fixture.detectChanges();
+    await Promise.resolve();
+    tables[1]?.startRowEdit({ id: 1, name: 'Shared row key' }, 0);
+    fixture.detectChanges();
+    await Promise.resolve();
+
+    expect(tableDebugElements[1]?.nativeElement.contains(document.activeElement)).toBe(true);
   });
 });

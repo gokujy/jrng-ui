@@ -4,6 +4,7 @@ import {
   ChangeDetectorRef,
   Component,
   ContentChildren,
+  DestroyRef,
   OnChanges,
   QueryList,
   SimpleChanges,
@@ -14,6 +15,7 @@ import {
   numberAttribute,
   output,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 let nextTabId = 0;
 
@@ -273,6 +275,7 @@ export class JTabComponent {
 })
 export class JTabsComponent implements AfterContentInit, OnChanges {
   private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly destroyRef = inject(DestroyRef);
 
   @ContentChildren(JTabComponent) tabs?: QueryList<JTabComponent>;
 
@@ -296,7 +299,7 @@ export class JTabsComponent implements AfterContentInit, OnChanges {
 
   ngAfterContentInit(): void {
     this.syncTabs();
-    this.tabs?.changes.subscribe(() => {
+    this.tabs?.changes.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.syncTabs();
       this.changeDetector.markForCheck();
     });

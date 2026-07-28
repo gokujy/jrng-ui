@@ -127,6 +127,7 @@ export class JFileBrowserComponent<T = unknown> {
   }
 
   handleItemKeydown(event: KeyboardEvent, item: JFileBrowserItem<T>, index: number): void {
+    if (this.disabled() || this.loading() || item.disabled) return;
     if (event.key === 'Enter') {
       event.preventDefault();
       this.openItem(item, index, event);
@@ -143,7 +144,7 @@ export class JFileBrowserComponent<T = unknown> {
     const container = (event.currentTarget as HTMLElement).parentElement;
     const candidates = Array.from(
       container?.querySelectorAll<HTMLElement>('[data-j-file-item]') ?? [],
-    );
+    ).filter((candidate) => candidate.getAttribute('aria-disabled') !== 'true');
     const current = candidates.indexOf(event.currentTarget as HTMLElement);
     const next =
       event.key === 'Home'
@@ -181,6 +182,29 @@ export class JFileBrowserComponent<T = unknown> {
 
   isSelected(item: JFileBrowserItem<T>): boolean {
     return this.selection().includes(item.id);
+  }
+
+  itemTabIndex(item: JFileBrowserItem<T>, index: number): number {
+    if (this.disabled() || this.loading() || item.disabled) return -1;
+    const firstEnabled = this.resolvedItems().findIndex((candidate) => !candidate.disabled);
+    return index === firstEnabled ? 0 : -1;
+  }
+
+  changeSort(event: Event): void {
+    if (this.disabled() || this.loading()) return;
+    const field = (event.target as HTMLSelectElement).value as JFileBrowserSortField;
+    if (!['name', 'size', 'modifiedAt', 'type'].includes(field)) return;
+    this.sortChange.emit({ field, direction: this.sortDirection() });
+  }
+
+  changeViewMode(): void {
+    if (this.disabled() || this.loading()) return;
+    this.viewModeChange.emit(this.viewMode() === 'list' ? 'grid' : 'list');
+  }
+
+  selectBreadcrumb(crumb: JFileBrowserBreadcrumb, last: boolean): void {
+    if (this.disabled() || this.loading() || crumb.disabled || last) return;
+    this.breadcrumbSelect.emit(crumb);
   }
   formatSize(size?: number): string {
     return size == null ? '' : formatFileSize(size);

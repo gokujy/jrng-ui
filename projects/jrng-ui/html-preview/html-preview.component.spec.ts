@@ -34,4 +34,23 @@ describe('JHtmlPreviewComponent', () => {
       'Preview content',
     );
   });
+
+  it('blocks protocol-relative remote sources and normalizes preview dimensions', () => {
+    const fixture = TestBed.createComponent(JHtmlPreviewComponent);
+    fixture.componentRef.setInput(
+      'html',
+      '<img src="//example.invalid/tracker.png" alt="Tracker">',
+    );
+    fixture.componentRef.setInput('width', Number.NaN);
+    fixture.componentRef.setInput('height', -1);
+    fixture.componentRef.setInput('zoom', Number.POSITIVE_INFINITY);
+    fixture.detectChanges();
+
+    const frame = fixture.nativeElement.querySelector('iframe') as HTMLIFrameElement;
+    const surface = fixture.nativeElement.querySelector('.j-html-preview__surface') as HTMLElement;
+    expect(frame.getAttribute('srcdoc')).not.toContain('example.invalid');
+    expect(surface.style.width).toBe('1200px');
+    expect(surface.style.height).toBe('600px');
+    expect(surface.style.transform).toBe('scale(1)');
+  });
 });

@@ -10,8 +10,9 @@ import { JDataDisplayComponent, JDataDisplayType } from './data-display.componen
     [value]="value()"
     [loading]="loading()"
     [error]="error()"
+    [currency]="currency()"
+    [dateOptions]="dateOptions()"
     locale="en-US"
-    currency="USD"
   />`,
 })
 class Host {
@@ -19,6 +20,8 @@ class Host {
   value = signal<unknown>('Hello');
   loading = signal(false);
   error = signal('');
+  currency = signal('USD');
+  dateOptions = signal<Intl.DateTimeFormatOptions>({});
 }
 
 describe('JDataDisplayComponent', () => {
@@ -55,5 +58,28 @@ describe('JDataDisplayComponent', () => {
     expect(fixture.nativeElement.querySelector('[role="alert"]').textContent).toContain(
       'Unavailable',
     );
+  });
+
+  it('falls back to empty text for invalid Intl configuration', () => {
+    fixture.componentInstance.type.set('currency');
+    fixture.componentInstance.value.set(10);
+    fixture.componentInstance.currency.set('not-a-currency');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('—');
+
+    fixture.componentInstance.type.set('date');
+    fixture.componentInstance.value.set(new Date(2026, 0, 1));
+    fixture.componentInstance.dateOptions.set({ dateStyle: 'medium', year: 'numeric' });
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('—');
+  });
+
+  it('handles circular JSON values without throwing', () => {
+    const value: { self?: unknown } = {};
+    value.self = value;
+    fixture.componentInstance.type.set('json');
+    fixture.componentInstance.value.set(value);
+    expect(() => fixture.detectChanges()).not.toThrow();
+    expect(fixture.nativeElement.textContent).toContain('—');
   });
 });

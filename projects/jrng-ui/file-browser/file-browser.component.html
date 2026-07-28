@@ -1,4 +1,9 @@
-<section [class]="classes()" [attr.aria-label]="ariaLabel()" data-jc-name="file-browser">
+<section
+  [class]="classes()"
+  [attr.aria-label]="ariaLabel()"
+  [attr.aria-busy]="loading() ? 'true' : null"
+  data-jc-name="file-browser"
+>
   <header class="j-file-browser__header">
     <div>
       <h2>{{ title() }}</h2>
@@ -31,9 +36,8 @@
           ><span>Sort files</span>
           <select
             [value]="sortField()"
-            (change)="
-              sortChange.emit({ field: $any($event.target).value, direction: sortDirection() })
-            "
+            [disabled]="disabled() || loading()"
+            (change)="changeSort($event)"
           >
             <option value="name">Name</option>
             <option value="size">Size</option>
@@ -43,8 +47,9 @@
         </label>
         <button
           type="button"
+          [disabled]="disabled() || loading()"
           [attr.aria-label]="viewMode() === 'list' ? 'Use grid view' : 'Use list view'"
-          (click)="viewModeChange.emit(viewMode() === 'list' ? 'grid' : 'list')"
+          (click)="changeViewMode()"
         >
           {{ viewMode() === 'list' ? 'Grid' : 'List' }}
         </button>
@@ -64,9 +69,9 @@
           <li>
             <button
               type="button"
-              [disabled]="crumb.disabled || last"
+              [disabled]="disabled() || loading() || crumb.disabled || last"
               [attr.aria-current]="last ? 'page' : null"
-              (click)="breadcrumbSelect.emit(crumb)"
+              (click)="selectBreadcrumb(crumb, last)"
             >
               {{ crumb.label }}
             </button>
@@ -86,16 +91,20 @@
       <p>{{ emptyDescription() }}</p>
     </div>
   } @else {
-    <div class="j-file-browser__items" [attr.role]="viewMode() === 'list' ? 'grid' : 'list'">
+    <div
+      class="j-file-browser__items"
+      role="grid"
+      [attr.aria-multiselectable]="selectionMode() === 'multiple' ? 'true' : null"
+    >
       @for (item of resolvedItems(); track item.id; let index = $index) {
         <article
           data-j-file-item
           role="row"
-          tabindex="0"
+          [attr.tabindex]="itemTabIndex(item, index)"
           [class.is-selected]="isSelected(item)"
           [class.is-disabled]="item.disabled"
           [attr.aria-selected]="selectionMode() === 'none' ? null : isSelected(item)"
-          [attr.aria-disabled]="item.disabled || null"
+          [attr.aria-disabled]="disabled() || item.disabled || null"
           (click)="openItem(item, index, $event)"
           (keydown)="handleItemKeydown($event, item, index)"
         >

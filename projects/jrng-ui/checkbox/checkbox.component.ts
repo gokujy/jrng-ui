@@ -200,7 +200,8 @@ export class JCheckboxComponent implements ControlValueAccessor {
   readonly valueChange = output<boolean | readonly unknown[]>();
 
   checked = false;
-  readonly isDisabled = signal(false);
+  private readonly formDisabled = signal(false);
+  readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
   readonly isIndeterminate = signal(false);
   private arrayValue: readonly unknown[] | null = null;
 
@@ -217,7 +218,6 @@ export class JCheckboxComponent implements ControlValueAccessor {
   );
 
   constructor() {
-    effect(() => this.isDisabled.set(this.disabled()));
     effect(() => this.isIndeterminate.set(this.indeterminate()));
   }
 
@@ -256,7 +256,7 @@ export class JCheckboxComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled.set(isDisabled);
+    this.formDisabled.set(isDisabled);
     this.changeDetectorRef.markForCheck();
   }
 

@@ -79,4 +79,49 @@ describe('JTourService', () => {
     second.remove();
     localStorage.removeItem('jrng-tour:native-tour');
   });
+
+  it('continues without persistence when localStorage is unavailable', async () => {
+    TestBed.resetTestingModule();
+    const storage = vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+      throw new DOMException('Blocked');
+    });
+    const service = TestBed.inject(JTourService);
+
+    await service.start({
+      id: 'storage-blocked',
+      showOnce: true,
+      steps: [{ title: 'Available without storage' }],
+    });
+
+    expect(service.isActive()).toBe(true);
+    expect(service.lastError()).toBe('Tour persistence storage is unavailable.');
+    service.destroy();
+    storage.mockRestore();
+  });
+
+  it('normalizes invalid programmatic indexes and stage padding', async () => {
+    TestBed.resetTestingModule();
+    const service = TestBed.inject(JTourService);
+    const target = document.createElement('div');
+    target.id = 'tour-normalized';
+    Object.defineProperty(target, 'getBoundingClientRect', {
+      configurable: true,
+      value: () => ({ top: 10, left: 20, width: 100, height: 50 }),
+    });
+    document.body.append(target);
+
+    await service.start({
+      stagePadding: Number.NaN,
+      steps: [
+        { element: target, title: 'First' },
+        { element: target, title: 'Second' },
+      ],
+    });
+    await service.goTo(Number.NaN);
+
+    expect(service.activeIndex()).toBe(0);
+    expect(service.targetRect()).toEqual({ top: 2, left: 12, width: 116, height: 66 });
+    service.destroy();
+    target.remove();
+  });
 });

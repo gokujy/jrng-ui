@@ -13,6 +13,7 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { jCreateId } from 'jrng-ui/core';
 import { JDialogComponent } from 'jrng-ui/dialog';
 
 export interface JCommandPaletteItem {
@@ -46,21 +47,33 @@ export interface JCommandPaletteItem {
         <input
           class="j-command-palette__search"
           type="search"
+          role="combobox"
           aria-label="Search commands"
+          aria-autocomplete="list"
+          [attr.aria-controls]="listId"
+          [attr.aria-expanded]="visible()"
+          [attr.aria-activedescendant]="activeItem() ? optionId(activeItem()!) : null"
           [placeholder]="placeholder()"
           [ngModel]="query()"
-          (ngModelChange)="query.set($event)"
+          (ngModelChange)="setQuery($event)"
           (keydown)="handleSearchKeydown($event)"
           data-j-initial-focus
         />
-        <div class="j-command-palette__list" role="listbox">
+        <div
+          class="j-command-palette__list"
+          role="listbox"
+          [id]="listId"
+          [attr.aria-label]="heading()"
+        >
           @for (group of groupedResults(); track group.label) {
-            <section class="j-command-palette__group">
-              <h3>{{ group.label }}</h3>
+            <section class="j-command-palette__group" role="group" [attr.aria-label]="group.label">
+              <h3 aria-hidden="true">{{ group.label }}</h3>
               @for (item of group.items; track item.id || item.label) {
                 <button
                   type="button"
                   role="option"
+                  tabindex="-1"
+                  [id]="optionId(item)"
                   [class]="itemClasses(item)"
                   [disabled]="item.disabled"
                   [attr.aria-selected]="activeItem() === item"
@@ -184,6 +197,7 @@ export class JCommandPaletteComponent {
   readonly placeholder = input('Search commands');
   readonly emptyMessage = input('No commands found.');
   readonly shortcut = input('k');
+  readonly listId = jCreateId('j-command-palette-list');
 
   readonly results = computed(() => {
     const query = this.query().trim().toLowerCase();
@@ -214,6 +228,7 @@ export class JCommandPaletteComponent {
     }
     const remove = this.renderer.listen(this.documentRef, 'keydown', (event: KeyboardEvent) => {
       if (
+        !event.defaultPrevented &&
         (event.ctrlKey || event.metaKey) &&
         event.key.toLowerCase() === this.shortcut().toLowerCase()
       ) {
@@ -227,7 +242,7 @@ export class JCommandPaletteComponent {
   handleSearchKeydown(event: KeyboardEvent): void {
     const items = this.results().filter((item) => !item.disabled);
     const current = this.activeItem();
-    const index = Math.max(0, current ? items.indexOf(current) : 0);
+    const index = current ? items.indexOf(current) : -1;
     if (event.key === 'ArrowDown') {
       event.preventDefault();
       this.activeItem.set(items[(index + 1) % items.length] ?? null);
@@ -240,6 +255,11 @@ export class JCommandPaletteComponent {
       event.preventDefault();
       this.run(this.activeItem() ?? items[0] ?? null);
     }
+  }
+
+  setQuery(value: string): void {
+    this.query.set(value);
+    this.activeItem.set(this.results().find((item) => !item.disabled) ?? null);
   }
 
   run(item: JCommandPaletteItem | null): void {
@@ -260,5 +280,10 @@ export class JCommandPaletteComponent {
     return ['j-command-palette__item', this.activeItem() === item ? 'is-active' : '']
       .filter(Boolean)
       .join(' ');
+  }
+
+  optionId(item: JCommandPaletteItem): string {
+    const index = this.commands().indexOf(item);
+    return `${this.listId}-option-${index >= 0 ? index : 'filtered'}`;
   }
 }

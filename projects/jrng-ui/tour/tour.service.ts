@@ -80,12 +80,7 @@ export class JTourService {
       animate: config.animate ?? !jPrefersReducedMotion(this.documentRef),
     };
     const storageKey = this.storageKey(merged);
-    if (
-      merged.showOnce &&
-      storageKey &&
-      this.documentRef.defaultView?.localStorage.getItem(storageKey) === 'complete'
-    )
-      return;
+    if (merged.showOnce && storageKey && this.readStorage(storageKey) === 'complete') return;
     if ((await merged.beforeStart?.()) === false) return;
     this.finish(false);
     const version = ++this.runVersion;
@@ -119,8 +114,10 @@ export class JTourService {
     }
   }
   async goTo(index: number): Promise<void> {
-    if (this._isActive())
-      await this.activate(Math.max(0, Math.min(index, this.steps.length - 1)), this.runVersion);
+    if (this._isActive()) {
+      const requested = Number.isFinite(index) ? Math.floor(index) : 0;
+      await this.activate(Math.max(0, Math.min(requested, this.steps.length - 1)), this.runVersion);
+    }
   }
   moveTo(index: number): void {
     void this.goTo(index);
@@ -139,14 +136,14 @@ export class JTourService {
   }
   reset(id?: string): void {
     const key = id ? `jrng-tour:${id}` : this.storageKey(this._config());
-    if (key) this.documentRef.defaultView?.localStorage.removeItem(key);
+    if (key) this.removeStorage(key);
   }
 
   async complete(): Promise<void> {
     if (!this._isActive()) return;
     this.emit('complete', this._activeIndex());
     const key = this.storageKey(this._config());
-    if (key) this.documentRef.defaultView?.localStorage.setItem(key, 'complete');
+    if (key) this.writeStorage(key, 'complete');
     await this._config()?.afterEnd?.();
     this.finish(true);
   }
@@ -234,7 +231,8 @@ export class JTourService {
       return;
     }
     const rect = this.target.getBoundingClientRect();
-    const padding = this._currentStep()?.padding ?? this._config()?.stagePadding ?? 8;
+    const requestedPadding = this._currentStep()?.padding ?? this._config()?.stagePadding ?? 8;
+    const padding = Number.isFinite(requestedPadding) ? Math.max(0, requestedPadding) : 8;
     this._targetRect.set({
       top: rect.top - padding,
       left: rect.left - padding,
@@ -296,6 +294,28 @@ export class JTourService {
   }
   private storageKey(config: JTourConfig | null): string | null {
     return config?.storageKey ?? (config?.id ? `jrng-tour:${config.id}` : null);
+  }
+  private readStorage(key: string): string | null {
+    try {
+      return this.documentRef.defaultView?.localStorage.getItem(key) ?? null;
+    } catch {
+      this._lastError.set('Tour persistence storage is unavailable.');
+      return null;
+    }
+  }
+  private writeStorage(key: string, value: string): void {
+    try {
+      this.documentRef.defaultView?.localStorage.setItem(key, value);
+    } catch {
+      this._lastError.set('Tour persistence storage is unavailable.');
+    }
+  }
+  private removeStorage(key: string): void {
+    try {
+      this.documentRef.defaultView?.localStorage.removeItem(key);
+    } catch {
+      this._lastError.set('Tour persistence storage is unavailable.');
+    }
   }
   private emit(type: JTourEventType, index: number): void {
     const event: JTourEvent = { type, tourId: this._config()?.id, step: this.steps[index], index };

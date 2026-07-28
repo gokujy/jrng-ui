@@ -1,12 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { JPopoverComponent } from 'jrng-ui/popover';
 import { JConfirmDialogComponent } from './confirm-dialog.component';
 import { JConfirmationService } from './confirmation.service';
 
 describe('JConfirmDialogComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [JConfirmDialogComponent],
+      imports: [JConfirmDialogComponent, JPopoverComponent],
     }).compileComponents();
   });
 
@@ -69,6 +70,29 @@ describe('JConfirmDialogComponent', () => {
 
     expect(fixture.debugElement.query(By.css('[role="alertdialog"]'))).toBeNull();
     service.close();
+    target.remove();
+  });
+
+  it('does not consume Escape while a newer overlay is front-most', () => {
+    const fixture = TestBed.createComponent(JConfirmDialogComponent);
+    const popoverFixture = TestBed.createComponent(JPopoverComponent);
+    const service = TestBed.inject(JConfirmationService);
+    const target = document.createElement('button');
+    document.body.append(target);
+    service.confirm({ message: 'Keep this confirmation open' });
+    fixture.detectChanges();
+    popoverFixture.componentInstance.show(target);
+    popoverFixture.detectChanges();
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    fixture.detectChanges();
+    popoverFixture.detectChanges();
+
+    expect(service.confirmation()).not.toBeNull();
+    expect(popoverFixture.componentInstance.visible()).toBe(false);
+    service.close();
+    fixture.destroy();
+    popoverFixture.destroy();
     target.remove();
   });
 });

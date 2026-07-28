@@ -178,12 +178,16 @@ export class JDiffViewerComponent {
         (!q || `${r.key} ${r.before} ${r.after}`.toLocaleLowerCase().includes(q)),
     );
   });
-  format(v: unknown, k: string) {
-    const masked = this.mask()?.(k, v) ?? v;
-    return (
-      this.formatter()?.(masked, k) ??
-      (typeof masked === 'string' ? masked : JSON.stringify(masked, null, 2))
-    );
+  format(v: unknown, k: string): string {
+    try {
+      const masked = this.mask()?.(k, v) ?? v;
+      const formatted =
+        this.formatter()?.(masked, k) ??
+        (typeof masked === 'string' ? masked : JSON.stringify(masked, null, 2));
+      return formatted ?? '';
+    } catch {
+      return '[Unable to display value]';
+    }
   }
   copy() {
     void this.clipboard

@@ -1,7 +1,7 @@
 import { DOCUMENT } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { JButtonComponent } from 'jrng-ui/button';
-import { JFocusTrapDirective } from 'jrng-ui/core';
+import { JFocusTrapDirective, jCreateId } from 'jrng-ui/core';
 import { JTourService } from './tour.service';
 
 @Component({
@@ -32,6 +32,7 @@ import { JTourService } from './tour.service';
           aria-modal="true"
           [attr.aria-labelledby]="step.title ? titleId : null"
           [attr.aria-describedby]="step.description ? descriptionId : null"
+          [attr.aria-label]="step.title ? null : 'Guided tour'"
           jFocusTrap
         >
           <header class="j-tour-guide__header">
@@ -201,8 +202,8 @@ export class JTourGuideComponent {
   readonly tour = inject(JTourService);
   private readonly view = inject(DOCUMENT).defaultView;
   readonly dir = input<'ltr' | 'rtl'>('ltr');
-  readonly titleId = 'j-tour-title';
-  readonly descriptionId = 'j-tour-description';
+  readonly titleId = jCreateId('j-tour-title');
+  readonly descriptionId = jCreateId('j-tour-description');
   readonly stepCount = computed(() => this.tour.config()?.steps.length ?? 0);
   readonly placement = computed(() => {
     const requested = this.tour.currentStep()?.side ?? 'auto';

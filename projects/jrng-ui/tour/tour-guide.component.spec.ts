@@ -21,7 +21,9 @@ describe('JTourGuideComponent', () => {
 
     const dialog = fixture.debugElement.query(By.css('[role="dialog"]'));
     expect(dialog).toBeTruthy();
-    expect(dialog.attributes['aria-labelledby']).toBe('j-tour-title');
+    expect(
+      document.getElementById(dialog.attributes['aria-labelledby'] ?? '')?.textContent,
+    ).toContain('Welcome');
     expect(fixture.nativeElement.textContent).toContain('1 / 1');
     expect(fixture.debugElement.queryAll(By.css('j-button')).length).toBeGreaterThan(0);
 

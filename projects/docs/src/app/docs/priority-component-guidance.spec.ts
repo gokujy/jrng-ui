@@ -4,6 +4,11 @@ import { publicItemIndex } from './public-item-index.data';
 describe('priority component documentation', () => {
   it('provides every extended documentation section and an explicit status', () => {
     for (const [slug, guide] of Object.entries(priorityComponentGuidance)) {
+      const documentedItem = publicItemIndex.find(
+        (item) =>
+          item.documentationRoute.endsWith(`#${slug}`) || item.importPath === `jrng-ui/${slug}`,
+      );
+
       expect(guide.advancedExample).toBeTruthy();
       expect(guide.templates.length).toBeGreaterThan(0);
       expect(guide.validationStates.length).toBeGreaterThan(0);
@@ -13,10 +18,7 @@ describe('priority component documentation', () => {
       expect(guide.darkMode).toBeTruthy();
       expect(guide.composedExample).toBeTruthy();
       expect(guide.troubleshooting.length).toBeGreaterThan(0);
-      expect(
-        publicItemIndex.find((item) => item.documentationRoute.endsWith(`#${slug}`))
-          ?.documentationStatus,
-      ).toBe('Complete');
+      expect(documentedItem?.documentationStatus).toBe('Complete');
     }
   });
 });

@@ -4,6 +4,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  computed,
   ContentChild,
   DestroyRef,
   effect,
@@ -298,7 +299,8 @@ export class JListboxComponent implements ControlValueAccessor {
   readonly hintId = jCreateId('j-listbox-hint');
   readonly errorId = jCreateId('j-listbox-error');
   value: unknown = null;
-  readonly isDisabled = signal(false);
+  private readonly formDisabled = signal(false);
+  readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
   readonly asyncState = signal<JAsyncDataState<JListboxOption>>({
     loading: false,
     items: [],
@@ -313,7 +315,6 @@ export class JListboxComponent implements ControlValueAccessor {
   private searchTimer?: ReturnType<typeof setTimeout>;
 
   constructor() {
-    effect(() => this.isDisabled.set(this.disabled()));
     effect(() => {
       const source = this.dataSource();
       this.asyncController?.destroy();
@@ -400,7 +401,7 @@ export class JListboxComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled.set(isDisabled);
+    this.formDisabled.set(isDisabled);
     this.changeDetectorRef.markForCheck();
   }
 

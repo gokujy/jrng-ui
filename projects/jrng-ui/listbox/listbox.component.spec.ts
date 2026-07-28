@@ -1,4 +1,5 @@
 import { reflectComponentType } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { JListboxComponent } from './listbox.component';
 
 describe('JListboxComponent public contract', () => {
@@ -15,5 +16,21 @@ describe('JListboxComponent public contract', () => {
     expect(new Set(inputs).size).toBe(inputs.length);
     expect(new Set(outputs).size).toBe(outputs.length);
     expect(metadata?.ngContentSelectors).toBeDefined();
+  });
+});
+
+describe('JListboxComponent disabled-state composition', () => {
+  it('does not let input and form state re-enable one another', () => {
+    const fixture = TestBed.createComponent(JListboxComponent);
+    fixture.detectChanges();
+    fixture.componentInstance.setDisabledState(true);
+    fixture.componentRef.setInput('disabled', false);
+    fixture.detectChanges();
+    expect(fixture.componentInstance.isDisabled()).toBe(true);
+
+    fixture.componentInstance.setDisabledState(false);
+    fixture.componentRef.setInput('disabled', true);
+    fixture.detectChanges();
+    expect(fixture.componentInstance.isDisabled()).toBe(true);
   });
 });

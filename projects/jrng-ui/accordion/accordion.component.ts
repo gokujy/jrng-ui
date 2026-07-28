@@ -4,6 +4,7 @@ import {
   ChangeDetectorRef,
   Component,
   ContentChildren,
+  DestroyRef,
   OnChanges,
   QueryList,
   SimpleChanges,
@@ -14,6 +15,7 @@ import {
   output,
   signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { JIconComponent } from 'jrng-ui/icon';
 
 export type JAccordionActiveIndex = number | readonly number[] | null;
@@ -253,6 +255,11 @@ export class JAccordionPanelComponent {
 })
 export class JAccordionComponent implements AfterContentInit, OnChanges {
   private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly panelSubscriptions = new Map<
+    JAccordionPanelComponent,
+    { unsubscribe(): void }
+  >();
 
   @ContentChildren(JAccordionPanelComponent) panels?: QueryList<JAccordionPanelComponent>;
   readonly multiple = input(false, { transform: booleanAttribute });
@@ -264,10 +271,14 @@ export class JAccordionComponent implements AfterContentInit, OnChanges {
   ngAfterContentInit(): void {
     this.syncPanels();
     this.bindPanels();
-    this.panels?.changes.subscribe(() => {
+    this.panels?.changes.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.syncPanels();
       this.bindPanels();
       this.changeDetector.markForCheck();
+    });
+    this.destroyRef.onDestroy(() => {
+      this.panelSubscriptions.forEach((subscription) => subscription.unsubscribe());
+      this.panelSubscriptions.clear();
     });
   }
 
@@ -316,8 +327,19 @@ export class JAccordionComponent implements AfterContentInit, OnChanges {
   }
 
   private bindPanels(): void {
-    this.panels?.forEach((panel) => {
-      panel.toggleRequest.subscribe((target) => this.togglePanel(target));
+    const currentPanels = new Set(this.panels?.toArray() ?? []);
+    this.panelSubscriptions.forEach((subscription, panel) => {
+      if (!currentPanels.has(panel)) {
+        subscription.unsubscribe();
+        this.panelSubscriptions.delete(panel);
+      }
+    });
+    currentPanels.forEach((panel) => {
+      if (this.panelSubscriptions.has(panel)) return;
+      this.panelSubscriptions.set(
+        panel,
+        panel.toggleRequest.subscribe((target) => this.togglePanel(target)),
+      );
     });
   }
 

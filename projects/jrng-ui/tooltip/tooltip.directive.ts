@@ -26,6 +26,7 @@ export class JTooltipDirective {
   private tooltipElement: HTMLElement | null = null;
   private showTimer: ReturnType<typeof setTimeout> | null = null;
   private hideTimer: ReturnType<typeof setTimeout> | null = null;
+  private cleanupViewportListeners: (() => void) | null = null;
 
   readonly tooltip = input('', { alias: 'jTooltip' });
   readonly tooltipPosition = input<JTooltipPosition>('top');
@@ -122,6 +123,14 @@ export class JTooltipDirective {
       element.addEventListener('mouseleave', () => this.hide());
     }
     this.positionTooltip();
+    const view = this.documentRef.defaultView;
+    const reposition = () => this.positionTooltip();
+    view?.addEventListener('scroll', reposition, true);
+    view?.addEventListener('resize', reposition);
+    this.cleanupViewportListeners = () => {
+      view?.removeEventListener('scroll', reposition, true);
+      view?.removeEventListener('resize', reposition);
+    };
   }
 
   private positionTooltip(): void {
@@ -231,6 +240,8 @@ export class JTooltipDirective {
 
   private removeTooltip(): void {
     const id = this.tooltipElement?.id;
+    this.cleanupViewportListeners?.();
+    this.cleanupViewportListeners = null;
     this.tooltipElement?.remove();
     this.tooltipElement = null;
     if (id && this.elementRef.nativeElement.getAttribute('aria-describedby') === id) {

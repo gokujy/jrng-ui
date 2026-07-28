@@ -1,4 +1,5 @@
 import { reflectComponentType } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { JResponsiveSidebarComponent } from './responsive-sidebar.component';
 
 describe('JResponsiveSidebarComponent public contract', () => {
@@ -15,5 +16,19 @@ describe('JResponsiveSidebarComponent public contract', () => {
     expect(new Set(inputs).size).toBe(inputs.length);
     expect(new Set(outputs).size).toBe(outputs.length);
     expect(metadata?.ngContentSelectors).toBeDefined();
+  });
+
+  it('exposes an accessible name and closes on Escape', () => {
+    const fixture = TestBed.createComponent(JResponsiveSidebarComponent);
+    fixture.componentRef.setInput('open', true);
+    fixture.componentRef.setInput('title', 'Workspace navigation');
+    fixture.detectChanges();
+
+    const sidebar = fixture.nativeElement.querySelector('aside') as HTMLElement;
+    expect(sidebar.getAttribute('aria-label')).toBe('Workspace navigation');
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    fixture.detectChanges();
+    expect(fixture.componentInstance.open()).toBe(false);
   });
 });

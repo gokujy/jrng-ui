@@ -7,6 +7,7 @@ import { spawnSync } from 'node:child_process';
 const root = process.cwd();
 const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'jrng-ui-consumer-'));
 const app = path.join(temporaryRoot, 'consumer');
+const angularCliRunner = path.join(root, 'scripts', 'run-angular-cli.mjs');
 
 try {
   run('npm', ['run', 'build:lib'], root);
@@ -74,7 +75,7 @@ export const appConfig: ApplicationConfig = {
 `,
   );
   fs.appendFileSync(path.join(app, 'src', 'styles.css'), "\n@import 'jrng-ui/styles';\n");
-  run('npx', ['ng', 'build', '--configuration', 'production'], app);
+  runAngularCli(['build', '--configuration', 'production'], app);
   ensureOptionalPeersAbsent(app);
 
   run('npm', ['install', 'chart.js@^4.5.1'], app);
@@ -96,7 +97,7 @@ export class App {
 }
 `,
   );
-  run('npx', ['ng', 'build', '--configuration', 'production'], app);
+  runAngularCli(['build', '--configuration', 'production'], app);
   console.log(
     'Clean Angular consumer verified with SSR, direct entrypoints, styles, and optional peers.',
   );
@@ -112,6 +113,10 @@ function ensureOptionalPeersAbsent(directory) {
   }
 }
 
+function runAngularCli(args, cwd) {
+  return run(process.execPath, [angularCliRunner, ...args], cwd);
+}
+
 function run(command, args, cwd, capture = false) {
   const npmCli = process.env.npm_execpath;
   const usesNodeCli = (command === 'npm' || command === 'npx') && npmCli;
@@ -122,6 +127,10 @@ function run(command, args, cwd, capture = false) {
       : command === 'npm' && npmCli
         ? [npmCli, ...args]
         : args;
+  if (!capture) {
+    console.log(`[consumer] ${path.basename(command)} ${args.join(' ')}`);
+  }
+
   const result = spawnSync(executable, cliArgs, {
     cwd,
     encoding: 'utf8',

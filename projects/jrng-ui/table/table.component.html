@@ -162,7 +162,13 @@
     [ngStyle]="scrollStyles"
     (scroll)="handleVirtualScroll($event)"
   >
-    <table data-jc-section="table" role="table">
+    <table
+      data-jc-section="table"
+      [attr.role]="selectionMode !== 'none' ? 'grid' : 'table'"
+      [attr.aria-multiselectable]="
+        selectionMode === 'checkbox' || selectionMode === 'multiple' ? true : null
+      "
+    >
       @if (caption()) {
         <caption data-jc-section="caption">
           {{
@@ -482,12 +488,11 @@
                 [attr.data-j-locked]="isRowLocked(row, rowIndex) ? 'true' : null"
                 [attr.data-j-frozen]="isFrozenRow(row, rowIndex) ? 'true' : null"
                 [attr.data-j-active]="isSelected(row) ? 'true' : null"
-                [attr.tabindex]="selectionMode !== 'none' ? 0 : null"
+                [attr.data-j-table-row]="rowId(row, rowIndex)"
+                [attr.tabindex]="rowTabIndex(row, rowIndex)"
                 [attr.aria-selected]="selectionMode !== 'none' ? isSelected(row) : null"
                 [attr.draggable]="reorderableRows && canReorderRow(row, rowIndex) ? 'true' : null"
-                [attr.aria-disabled]="
-                  reorderableRows && !canReorderRow(row, rowIndex) ? 'true' : null
-                "
+                (focus)="focusedRowKey = rowId(row, rowIndex)"
                 (click)="handleRowClick(row, rowIndex, $event)"
                 (contextmenu)="handleContextMenu(row, rowIndex, $event)"
                 (dblclick)="handleRowDoubleClick(row, rowIndex, $event)"
@@ -504,6 +509,7 @@
                       aria-label="Select row"
                       [checked]="isSelected(row)"
                       [disabled]="!isRowSelectable(row)"
+                      tabindex="-1"
                       (click)="$event.stopPropagation()"
                       (change)="handleCheckboxChange(row, $event)"
                     />
@@ -513,9 +519,10 @@
                   <td class="j-table__select-cell">
                     <input
                       type="radio"
-                      [name]="'j-table-selection-' + stateKey"
+                      [name]="radioGroupName"
                       [checked]="isSelected(row)"
                       [disabled]="!isRowSelectable(row)"
+                      tabindex="-1"
                       [attr.aria-label]="'Select row ' + (rowIndex + 1)"
                       (change)="handleCheckboxChange(row, $event)"
                     />

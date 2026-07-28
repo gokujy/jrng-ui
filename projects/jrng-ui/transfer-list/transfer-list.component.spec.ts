@@ -5,10 +5,14 @@ import { JTransferListComponent } from './transfer-list.component';
 
 @Component({
   imports: [JTransferListComponent],
-  template: `<j-transfer-list [filter]="true" [source]="source" />`,
+  template: `<j-transfer-list [filter]="true" [source]="source" [target]="target" />`,
 })
 class TransferListHostComponent {
-  source = [{ label: 'Users', value: 'users' }];
+  source = [
+    { label: 'Locked', value: 'locked', disabled: true },
+    { label: 'Users', value: 'users' },
+  ];
+  target = [{ label: 'Admins', value: 'admins' }];
 }
 
 describe('JTransferListComponent', () => {
@@ -36,5 +40,38 @@ describe('JTransferListComponent', () => {
       .componentInstance as JTransferListComponent;
     expect(component.sourceFilter()).toBe('user');
     expect(component.targetFilter()).toBe('order');
+  });
+
+  it('renders disabled options as unavailable and excludes them from move-all', () => {
+    const component = fixture.debugElement.query(By.directive(JTransferListComponent))
+      .componentInstance as JTransferListComponent;
+    const sourceOptions = fixture.debugElement.queryAll(
+      By.css('[data-jc-section="source"] [role="option"]'),
+    );
+
+    expect((sourceOptions[0]?.nativeElement as HTMLButtonElement).disabled).toBe(true);
+    expect(
+      (sourceOptions[0]?.nativeElement as HTMLButtonElement).getAttribute('aria-disabled'),
+    ).toBe('true');
+
+    component.moveAllToTarget();
+    fixture.detectChanges();
+    expect(component.source()).toEqual([fixture.componentInstance.source[0]]);
+    expect(component.target()).toEqual([
+      fixture.componentInstance.target[0],
+      fixture.componentInstance.source[1],
+    ]);
+  });
+
+  it('does not lose a disabled item when stale selected state requests a transfer', () => {
+    const component = fixture.debugElement.query(By.directive(JTransferListComponent))
+      .componentInstance as JTransferListComponent;
+    component.sourceSelected.set(['locked']);
+
+    component.moveSelectedToTarget();
+    fixture.detectChanges();
+
+    expect(component.source()).toEqual(fixture.componentInstance.source);
+    expect(component.target()).toEqual(fixture.componentInstance.target);
   });
 });

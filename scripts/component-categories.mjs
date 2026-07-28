@@ -152,6 +152,13 @@ export const COMPONENT_CATEGORIES = [
   { name: 'Pages', selectors: ['j-error-page', 'j-maintenance-page'] },
 ];
 
+/**
+ * Stability is an explicit release decision, never an inference from generated
+ * documentation or test metadata. Add selectors only after the full stability
+ * review has been completed and recorded.
+ */
+export const STABLE_COMPONENT_SELECTORS = new Set(['j-copy-button', 'j-skeleton', 'j-tour-guide']);
+
 export const COMPONENT_CATEGORY_ORDER = Object.freeze([
   'Form',
   'Button',

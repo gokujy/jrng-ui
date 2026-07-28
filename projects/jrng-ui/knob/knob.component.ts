@@ -3,7 +3,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  effect,
+  computed,
   forwardRef,
   inject,
   input,
@@ -111,13 +111,10 @@ export class JKnobComponent implements ControlValueAccessor {
 
   value = 0;
   /** Writable disabled state so `setDisabledState()` (forms) works; seeded from the input. */
-  readonly isDisabled = signal(false);
+  private readonly formDisabled = signal(false);
+  readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
   onTouched: () => void = () => undefined;
   private onChange: (value: number) => void = () => undefined;
-
-  constructor() {
-    effect(() => this.isDisabled.set(this.disabled()));
-  }
 
   get knobClasses(): string {
     return [
@@ -152,7 +149,7 @@ export class JKnobComponent implements ControlValueAccessor {
     this.onTouched = fn;
   }
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled.set(isDisabled);
+    this.formDisabled.set(isDisabled);
     this.changeDetectorRef.markForCheck();
   }
   handleKeydown(event: KeyboardEvent): void {

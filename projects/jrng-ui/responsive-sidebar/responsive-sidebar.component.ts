@@ -3,6 +3,9 @@ import { ChangeDetectionStrategy, Component, input, model } from '@angular/core'
 @Component({
   selector: 'j-responsive-sidebar',
   imports: [],
+  host: {
+    '(document:keydown.escape)': 'close()',
+  },
   template: `
     <aside
       class="j-responsive-sidebar"
@@ -11,10 +14,11 @@ import { ChangeDetectionStrategy, Component, input, model } from '@angular/core'
       data-jc-name="responsive-sidebar"
       data-jc-section="root"
       [attr.data-j-open]="open() ? 'true' : null"
+      [attr.aria-label]="title()"
     >
       <header class="j-responsive-sidebar__header">
         <strong>{{ title() }}</strong>
-        <button type="button" aria-label="Close sidebar" (click)="open.set(false)">Close</button>
+        <button type="button" aria-label="Close sidebar" (click)="close()">Close</button>
       </header>
       <ng-content />
     </aside>
@@ -23,7 +27,7 @@ import { ChangeDetectionStrategy, Component, input, model } from '@angular/core'
         class="j-responsive-sidebar__mask"
         type="button"
         aria-label="Close sidebar"
-        (click)="open.set(false)"
+        (click)="close()"
       ></button>
     }
   `,
@@ -61,7 +65,7 @@ import { ChangeDetectionStrategy, Component, input, model } from '@angular/core'
       @media (max-width: 768px) {
         .j-responsive-sidebar {
           bottom: 0;
-          left: 0;
+          inset-inline-start: 0;
           max-width: 20rem;
           position: fixed;
           top: 0;
@@ -83,6 +87,12 @@ import { ChangeDetectionStrategy, Component, input, model } from '@angular/core'
           z-index: 30;
         }
       }
+
+      @media (prefers-reduced-motion: reduce) {
+        .j-responsive-sidebar {
+          transition: none;
+        }
+      }
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -91,4 +101,8 @@ export class JResponsiveSidebarComponent {
   readonly open = model(false);
   readonly title = input('Navigation');
   readonly styleClass = input('');
+
+  protected close(): void {
+    this.open.set(false);
+  }
 }

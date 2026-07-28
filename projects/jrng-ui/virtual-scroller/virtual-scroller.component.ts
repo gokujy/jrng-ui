@@ -37,6 +37,7 @@ export interface JVirtualScrollerItemContext<T> {
       data-jc-name="virtual-scroller"
       data-jc-section="root"
       [style.height]="height()"
+      [attr.aria-busy]="loading() || null"
       (scroll)="handleScroll($event)"
     >
       <div class="j-virtual-scroller__spacer" [style.height.px]="totalHeight">
@@ -46,15 +47,22 @@ export interface JVirtualScrollerItemContext<T> {
         >
           @if (loading() && !items().length) {
             @for (placeholder of placeholders; track placeholder) {
-              <div class="j-virtual-scroller__placeholder" [style.height.px]="itemSize()"></div>
+              <div
+                class="j-virtual-scroller__placeholder"
+                [style.height.px]="resolvedItemSize"
+              ></div>
             }
           } @else {
-            @for (item of visibleItems; track trackItem(item, $index); let index = $index) {
-              <div class="j-virtual-scroller__item" [style.height.px]="itemSize()">
+            @for (
+              item of visibleItems;
+              track trackItem(item, resolvedFirst + $index);
+              let index = $index
+            ) {
+              <div class="j-virtual-scroller__item" [style.height.px]="resolvedItemSize">
                 @if (itemTemplate) {
                   <ng-container
                     [ngTemplateOutlet]="itemTemplate"
-                    [ngTemplateOutletContext]="itemContext(item, first + index)"
+                    [ngTemplateOutletContext]="itemContext(item, resolvedFirst + index)"
                   />
                 } @else {
                   {{ item }}
@@ -62,7 +70,11 @@ export interface JVirtualScrollerItemContext<T> {
               </div>
             }
             @if (showIncrementalLoader) {
-              <div class="j-virtual-scroller__loader" [style.height.px]="itemSize()" role="status">
+              <div
+                class="j-virtual-scroller__loader"
+                [style.height.px]="resolvedItemSize"
+                role="status"
+              >
                 <j-loader type="spinner" inline size="sm" [label]="loadingLabel()" />
               </div>
             }
@@ -135,45 +147,70 @@ export class JVirtualScrollerComponent<T = unknown> {
 
   first = 0;
 
+  get resolvedItemSize(): number {
+    return Math.max(1, Number.isFinite(this.itemSize()) ? this.itemSize() : 44);
+  }
+
+  get resolvedViewportItems(): number {
+    return Math.max(
+      1,
+      Math.floor(Number.isFinite(this.viewportItems()) ? this.viewportItems() : 12),
+    );
+  }
+
+  get resolvedFirst(): number {
+    return Math.min(Math.max(0, this.first), Math.max(0, this.items().length - 1));
+  }
+
   get totalHeight(): number {
     return (
-      this.items().length * this.itemSize() +
-      (this.loading() && this.items().length ? this.itemSize() : 0)
+      this.items().length * this.resolvedItemSize +
+      (this.loading() && this.items().length ? this.resolvedItemSize : 0)
     );
   }
 
   get last(): number {
-    return Math.min(this.items().length, this.first + this.viewportItems() + 4);
+    return Math.min(this.items().length, this.resolvedFirst + this.resolvedViewportItems + 4);
   }
 
   get visibleItems(): readonly T[] {
-    return this.items().slice(this.first, this.last);
+    return this.items().slice(this.resolvedFirst, this.last);
   }
 
   get offsetY(): number {
-    return this.first * this.itemSize();
+    return this.resolvedFirst * this.resolvedItemSize;
   }
 
   get placeholders(): readonly number[] {
-    return Array.from({ length: this.viewportItems() }, (_, index) => index);
+    return Array.from({ length: this.resolvedViewportItems }, (_, index) => index);
   }
 
   get showIncrementalLoader(): boolean {
     if (!this.loading() || !this.items().length) {
       return false;
     }
-    return this.items().length - this.last <= Math.max(0, this.loadingThreshold());
+    return (
+      this.items().length - this.last <=
+      Math.max(0, Number.isFinite(this.loadingThreshold()) ? this.loadingThreshold() : 0)
+    );
   }
 
   handleScroll(event: Event): void {
     const element = event.target as HTMLElement;
-    const nextFirst = Math.max(0, Math.floor(element.scrollTop / this.itemSize()) - 2);
+    const nextFirst = Math.min(
+      Math.max(0, this.items().length - 1),
+      Math.max(0, Math.floor(element.scrollTop / this.resolvedItemSize) - 2),
+    );
     if (nextFirst === this.first) {
       return;
     }
     this.first = nextFirst;
     if (this.lazy()) {
-      this.lazyLoad.emit({ first: this.first, last: this.last, rows: this.last - this.first });
+      this.lazyLoad.emit({
+        first: this.resolvedFirst,
+        last: this.last,
+        rows: this.last - this.resolvedFirst,
+      });
     }
   }
 
@@ -184,19 +221,26 @@ export class JVirtualScrollerComponent<T = unknown> {
    */
   scrollToIndex(index: number): number {
     const element = this.viewport?.nativeElement;
+    const safeIndex = Math.min(
+      Math.max(0, this.items().length - 1),
+      Math.max(0, Number.isFinite(index) ? Math.floor(index) : this.items().length - 1),
+    );
     if (!element) {
-      this.first = Math.max(0, index - 2);
+      this.first = Math.max(0, safeIndex - 2);
       this.changeDetectorRef.markForCheck();
       return this.first;
     }
-    const top = index * this.itemSize();
+    const top = safeIndex * this.resolvedItemSize;
     const viewHeight = element.clientHeight;
     if (top < element.scrollTop) {
       element.scrollTop = top;
-    } else if (top + this.itemSize() > element.scrollTop + viewHeight) {
-      element.scrollTop = top + this.itemSize() - viewHeight;
+    } else if (top + this.resolvedItemSize > element.scrollTop + viewHeight) {
+      element.scrollTop = top + this.resolvedItemSize - viewHeight;
     }
-    this.first = Math.max(0, Math.floor(element.scrollTop / this.itemSize()) - 2);
+    this.first = Math.min(
+      Math.max(0, this.items().length - 1),
+      Math.max(0, Math.floor(element.scrollTop / this.resolvedItemSize) - 2),
+    );
     // When the target is already in view no scroll event fires, so refresh the
     // rendered window explicitly rather than relying on the scroll listener.
     this.changeDetectorRef.markForCheck();

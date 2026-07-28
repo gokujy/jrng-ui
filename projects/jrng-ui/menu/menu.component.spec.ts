@@ -55,4 +55,44 @@ describe('JMenuComponent item model', () => {
     fixture.componentInstance.show();
     expect(fixture.componentInstance.activePath).toContain('Visible');
   });
+
+  it('keeps the first enabled item tabbable when disabled items precede it', () => {
+    const fixture = TestBed.createComponent(JMenuComponent);
+    fixture.componentRef.setInput('model', [
+      { label: 'Unavailable', disabled: true },
+      { label: 'Open' },
+    ]);
+    fixture.detectChanges();
+    const element = fixture.nativeElement as HTMLElement;
+    const list = element.querySelector<HTMLElement>('.j-menu__list');
+    const buttons = element.querySelectorAll<HTMLButtonElement>('.j-menu__button');
+
+    expect(list?.tabIndex).toBe(-1);
+    expect(buttons[0].tabIndex).toBe(-1);
+    expect(buttons[1].tabIndex).toBe(0);
+  });
+
+  it('activates and focuses the item matching the active path rather than its raw DOM index', async () => {
+    const firstCommand = vi.fn();
+    const secondCommand = vi.fn();
+    const fixture = TestBed.createComponent(JMenuComponent);
+    fixture.componentRef.setInput('model', [
+      { label: 'Unavailable', disabled: true },
+      { label: 'Open', command: firstCommand },
+      { label: 'Archive', command: secondCommand },
+    ]);
+    fixture.detectChanges();
+    const element = fixture.nativeElement as HTMLElement;
+    const buttons = element.querySelectorAll<HTMLButtonElement>('.j-menu__button');
+
+    buttons[1].focus();
+    buttons[1].dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }));
+    expect(firstCommand).toHaveBeenCalledOnce();
+
+    buttons[1].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    fixture.detectChanges();
+    await Promise.resolve();
+    expect(document.activeElement).toBe(buttons[2]);
+    expect(secondCommand).not.toHaveBeenCalled();
+  });
 });

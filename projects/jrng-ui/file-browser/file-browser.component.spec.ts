@@ -12,9 +12,12 @@ import { JFileBrowserItem } from './file-browser.types';
     [selection]="selection"
     [actions]="actions"
     selectionMode="multiple"
+    [disabled]="disabled"
     (folderOpen)="opened = $event.item.id"
     (selectionChange)="selection = $event"
     (action)="actionId = $event.action.id"
+    (viewModeChange)="changedView = $event"
+    (sortChange)="changedSort = $event.field"
   />`,
 })
 class FileBrowserHostComponent {
@@ -27,6 +30,9 @@ class FileBrowserHostComponent {
   actions = [{ id: 'download', label: 'Download', selection: 'any' as const }];
   opened = '';
   actionId = '';
+  changedView = '';
+  changedSort = '';
+  disabled = false;
 }
 
 describe('JFileBrowserComponent', () => {
@@ -83,5 +89,33 @@ describe('JFileBrowserComponent', () => {
     expect(action.disabled).toBe(false);
     action.click();
     expect(fixture.componentInstance.actionId).toBe('download');
+  });
+
+  it('uses one roving item tab stop and consistent grid semantics', () => {
+    const container = fixture.nativeElement.querySelector('.j-file-browser__items') as HTMLElement;
+    const items = fixture.nativeElement.querySelectorAll(
+      '[data-j-file-item]',
+    ) as NodeListOf<HTMLElement>;
+    expect(container.getAttribute('role')).toBe('grid');
+    expect(container.getAttribute('aria-multiselectable')).toBe('true');
+    expect([...items].filter((item) => item.tabIndex === 0)).toHaveLength(1);
+  });
+
+  it('disables sorting, view changes, and item focus when disabled', () => {
+    const disabledFixture = TestBed.createComponent(JFileBrowserComponent);
+    disabledFixture.componentRef.setInput('items', fixture.componentInstance.items);
+    disabledFixture.componentRef.setInput('selectionMode', 'multiple');
+    disabledFixture.componentRef.setInput('disabled', true);
+    disabledFixture.detectChanges();
+    const select = disabledFixture.nativeElement.querySelector('select') as HTMLSelectElement;
+    const view = disabledFixture.nativeElement.querySelector(
+      '[aria-label="Use grid view"]',
+    ) as HTMLButtonElement;
+    const item = disabledFixture.nativeElement.querySelector('[data-j-file-item]') as HTMLElement;
+
+    expect(select.disabled).toBe(true);
+    expect(view.disabled).toBe(true);
+    expect(item.tabIndex).toBe(-1);
+    expect(item.getAttribute('aria-disabled')).toBe('true');
   });
 });

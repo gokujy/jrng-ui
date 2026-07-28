@@ -75,4 +75,30 @@ describe('JVirtualScrollerComponent', () => {
 
     expect(fixture.nativeElement.querySelector('.j-virtual-scroller__loader')).toBeTruthy();
   });
+
+  it('normalizes invalid dimensions instead of producing invalid layout or arrays', () => {
+    fixture.componentRef.setInput('itemSize', 0);
+    fixture.componentRef.setInput('viewportItems', -5);
+    fixture.detectChanges();
+
+    expect(component.resolvedItemSize).toBe(1);
+    expect(component.resolvedViewportItems).toBe(1);
+    expect(component.totalHeight).toBe(100);
+    expect(component.placeholders).toHaveLength(1);
+  });
+
+  it('clamps a stale window when async data shrinks', () => {
+    component.first = 80;
+    fixture.componentRef.setInput('items', [1, 2, 3]);
+    fixture.detectChanges();
+
+    expect(component.resolvedFirst).toBe(2);
+    expect(component.visibleItems).toEqual([3]);
+    expect(component.offsetY).toBe(80);
+  });
+
+  it('clamps programmatic scrolling to valid item indexes', () => {
+    expect(component.scrollToIndex(Number.POSITIVE_INFINITY)).toBe(97);
+    expect(component.scrollToIndex(-10)).toBe(0);
+  });
 });

@@ -4,7 +4,6 @@ import {
   ChangeDetectorRef,
   Component,
   computed,
-  effect,
   forwardRef,
   inject,
   input,
@@ -161,14 +160,11 @@ export class JRatingComponent implements ControlValueAccessor {
 
   value = 0;
   readonly previewValue = signal<number | null>(null);
-  readonly isDisabled = signal(false);
+  private readonly formDisabled = signal(false);
+  readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
 
   onTouched: () => void = () => undefined;
   private onChange: (value: number) => void = () => undefined;
-
-  constructor() {
-    effect(() => this.isDisabled.set(this.disabled()));
-  }
 
   readonly stars = computed<readonly number[]>(() =>
     Array.from({ length: Math.max(0, this.max()) }, (_, index) => index + 1),
@@ -201,7 +197,7 @@ export class JRatingComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled.set(isDisabled);
+    this.formDisabled.set(isDisabled);
     this.clearPreview();
     this.changeDetectorRef.markForCheck();
   }

@@ -224,7 +224,7 @@ export class JPaginatorComponent {
   }
 
   get pageCount(): number {
-    return Math.max(1, Math.ceil(this.totalRecords() / this.normalizedRows));
+    return Math.max(1, Math.ceil(this.normalizedTotalRecords / this.normalizedRows));
   }
 
   get currentPage(): number {
@@ -232,7 +232,8 @@ export class JPaginatorComponent {
   }
 
   get pageLinks(): readonly number[] {
-    const size = Math.max(1, this.pageLinkSize());
+    const requestedSize = this.pageLinkSize();
+    const size = Math.max(1, Math.floor(Number.isFinite(requestedSize) ? requestedSize : 5));
     const half = Math.floor(size / 2);
     const start = Math.max(1, Math.min(this.currentPage - half, this.pageCount - size + 1));
     const end = Math.min(this.pageCount, start + size - 1);
@@ -240,27 +241,36 @@ export class JPaginatorComponent {
   }
 
   get currentReport(): string {
-    const first = this.totalRecords() === 0 ? 0 : this.normalizedFirst + 1;
-    const last = Math.min(this.normalizedFirst + this.normalizedRows, this.totalRecords());
+    const first = this.normalizedTotalRecords === 0 ? 0 : this.normalizedFirst + 1;
+    const last = Math.min(this.normalizedFirst + this.normalizedRows, this.normalizedTotalRecords);
     return this.currentPageReportTemplate()
       .replace('{first}', String(first))
       .replace('{last}', String(last))
       .replace('{rows}', String(this.normalizedRows))
-      .replace('{totalRecords}', String(this.totalRecords()))
+      .replace('{totalRecords}', String(this.normalizedTotalRecords))
       .replace('{currentPage}', String(this.currentPage))
       .replace('{totalPages}', String(this.pageCount));
   }
 
   private get normalizedRows(): number {
-    return Math.max(1, this.rows());
+    const value = this.rows();
+    return Math.max(1, Math.floor(Number.isFinite(value) ? value : 10));
   }
 
   private get normalizedFirst(): number {
-    return Math.max(0, Math.min(this.first(), Math.max(0, this.totalRecords() - 1)));
+    const value = this.first();
+    const first = Math.max(0, Math.floor(Number.isFinite(value) ? value : 0));
+    return Math.min(first, Math.max(0, this.normalizedTotalRecords - 1));
+  }
+
+  private get normalizedTotalRecords(): number {
+    const value = this.totalRecords();
+    return Math.max(0, Math.floor(Number.isFinite(value) ? value : 0));
   }
 
   setPage(page: number): void {
-    const nextPage = Math.min(Math.max(1, page), this.pageCount);
+    const requested = Number.isFinite(page) ? Math.floor(page) : 1;
+    const nextPage = Math.min(Math.max(1, requested), this.pageCount);
     this.emitChange((nextPage - 1) * this.normalizedRows, this.normalizedRows);
   }
 
@@ -277,7 +287,7 @@ export class JPaginatorComponent {
       first,
       rows,
       page: Math.floor(first / rows) + 1,
-      pageCount: Math.max(1, Math.ceil(this.totalRecords() / rows)),
+      pageCount: Math.max(1, Math.ceil(this.normalizedTotalRecords / rows)),
     });
   }
 }

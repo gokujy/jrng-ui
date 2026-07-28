@@ -34,6 +34,7 @@ export interface JOrderListReorderEvent {
           class="j-order-list__filter"
           data-jc-section="filter"
           [placeholder]="filterPlaceholder()"
+          [attr.aria-label]="filterPlaceholder()"
           [value]="filterText()"
           (input)="handleFilter($event)"
         />
@@ -42,7 +43,7 @@ export interface JOrderListReorderEvent {
         <div
           class="j-order-list__items"
           role="listbox"
-          aria-multiselectable="true"
+          [attr.aria-multiselectable]="multiple()"
           [attr.aria-label]="ariaLabel()"
         >
           @for (option of visibleOptions(); track option.value; let i = $index) {
@@ -55,7 +56,10 @@ export interface JOrderListReorderEvent {
               [class.is-selected]="isSelected(option)"
               [attr.aria-selected]="isSelected(option)"
               [attr.aria-disabled]="option.disabled ? 'true' : null"
+              [attr.tabindex]="optionTabIndex(option)"
               (click)="toggleSelected(option)"
+              (focus)="activeValue.set(option.value)"
+              (keydown)="handleOptionKeydown($event)"
             >
               {{ option.label }}
             </button>
@@ -165,6 +169,7 @@ export class JOrderListComponent {
 
   readonly filterText = signal('');
   readonly selected = signal<readonly unknown[]>([]);
+  readonly activeValue = signal<unknown>(null);
 
   readonly normalizedOptions = computed<readonly JNormalizedSelectionOption[]>(() =>
     jNormalizeSelectionOptions(
@@ -206,6 +211,39 @@ export class JOrderListComponent {
 
   isSelected(option: JNormalizedSelectionOption): boolean {
     return this.selected().some((value) => jSameSelectionValue(value, option.value));
+  }
+
+  optionTabIndex(option: JNormalizedSelectionOption): number {
+    if (option.disabled) return -1;
+    const enabled = this.visibleOptions().filter((candidate) => !candidate.disabled);
+    const activeIsVisible = enabled.some((candidate) =>
+      jSameSelectionValue(candidate.value, this.activeValue()),
+    );
+    return (activeIsVisible && jSameSelectionValue(option.value, this.activeValue())) ||
+      (!activeIsVisible && enabled[0] === option)
+      ? 0
+      : -1;
+  }
+
+  handleOptionKeydown(event: KeyboardEvent): void {
+    if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) return;
+    event.preventDefault();
+    const current = event.currentTarget as HTMLElement | null;
+    const options = Array.from(
+      current
+        ?.closest('[role="listbox"]')
+        ?.querySelectorAll<HTMLButtonElement>('[role="option"]:not(:disabled)') ?? [],
+    );
+    const currentIndex = current ? options.indexOf(current as HTMLButtonElement) : -1;
+    const targetIndex =
+      event.key === 'Home'
+        ? 0
+        : event.key === 'End'
+          ? options.length - 1
+          : event.key === 'ArrowDown'
+            ? Math.min(options.length - 1, currentIndex + 1)
+            : Math.max(0, currentIndex - 1);
+    options[targetIndex]?.focus();
   }
 
   moveTop(): void {

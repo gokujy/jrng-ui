@@ -212,6 +212,7 @@ export class JChartComponent {
       this.loading();
 
       if (!this.isBrowser || this.loading() || !this.hasData()) {
+        this.renderVersion += 1;
         this.destroyChart();
         return;
       }
@@ -279,12 +280,19 @@ export class JChartComponent {
     }
 
     this.destroyChart();
-    this.chart = new ChartConstructor(canvas, {
-      type: this.resolvedType(),
-      data: this.themedData(canvas),
-      options: this.mergedOptions(),
-      plugins: this.plugins(),
-    });
+    try {
+      this.chart = new ChartConstructor(canvas, {
+        type: this.resolvedType(),
+        data: this.themedData(canvas),
+        options: this.mergedOptions(),
+        plugins: this.plugins(),
+      });
+      this.loadError.set('');
+    } catch {
+      this.loadError.set('Unable to render chart.');
+      this.chart = null;
+      return;
+    }
     const ResizeObserverCtor = canvas.ownerDocument.defaultView?.ResizeObserver;
     if (ResizeObserverCtor) {
       this.resizeObserver?.disconnect();

@@ -14,6 +14,7 @@ import {
   input,
   model,
   output,
+  untracked,
 } from '@angular/core';
 import { JClickOutsideDirective } from 'jrng-ui/core';
 import { JAppendTo, JOverlayHandle, JOverlayService, JOverlayStackService } from 'jrng-ui/core';
@@ -126,7 +127,7 @@ export class JPopoverComponent {
   readonly dismissable = input(true, { transform: booleanAttribute });
   readonly closeOnEscape = input(true, { transform: booleanAttribute });
   /** Accessible label for the popover dialog (screen readers). */
-  readonly ariaLabel = input('');
+  readonly ariaLabel = input('Popover');
 
   readonly opened = output<void>();
   readonly closed = output<void>();
@@ -145,22 +146,33 @@ export class JPopoverComponent {
 
   constructor() {
     effect(() => {
-      if (this.visible()) {
-        this.zIndex = this.zIndexManager.next(1200);
-        this.overlayStack.push(this);
-        this.positionPanel();
-        this.attachRepositionListeners();
-        queueMicrotask(() => {
-          const panel = this.panel?.nativeElement;
-          if (panel) this.overlayHandle = this.overlay.portal(panel, this.appendTo());
+      const visible = this.visible();
+      untracked(() => {
+        if (visible) {
+          this.zIndex = this.zIndexManager.next(1200);
+          this.overlayStack.push(this);
           this.positionPanel();
-        });
-        this.opened.emit();
-      } else {
-        this.overlayStack.remove(this);
-        this.detachRepositionListeners();
-        this.overlayHandle?.detach();
-        this.overlayHandle = undefined;
+          this.attachRepositionListeners();
+          queueMicrotask(() => {
+            const panel = this.panel?.nativeElement;
+            if (panel) this.overlayHandle = this.overlay.portal(panel, this.appendTo());
+            this.positionPanel();
+          });
+          this.opened.emit();
+        } else {
+          this.overlayStack.remove(this);
+          this.detachRepositionListeners();
+          this.overlayHandle?.detach();
+          this.overlayHandle = undefined;
+        }
+      });
+    });
+
+    effect(() => {
+      this.position();
+      this.target();
+      if (this.visible()) {
+        untracked(() => queueMicrotask(() => this.positionPanel()));
       }
     });
 
@@ -210,13 +222,14 @@ export class JPopoverComponent {
   }
 
   handleOutside(): void {
-    if (this.dismissable()) {
+    if (this.dismissable() && this.overlayStack.isTopmost(this)) {
       this.hide();
     }
   }
 
   private positionPanel(): void {
-    if (!this.isBrowser) {
+    const view = this.documentRef.defaultView;
+    if (!this.isBrowser || !view) {
       return;
     }
     const anchor = this.target() ?? this.hostRef.nativeElement;
@@ -231,8 +244,10 @@ export class JPopoverComponent {
       right: { left: rect.right + gap, top: rect.top },
       left: { left: rect.left - width - gap, top: rect.top },
     };
-    this.left = Math.max(8, positions[this.position()].left);
-    this.top = Math.max(8, positions[this.position()].top);
+    const maxLeft = Math.max(8, view.innerWidth - width - 8);
+    const maxTop = Math.max(8, view.innerHeight - height - 8);
+    this.left = Math.min(maxLeft, Math.max(8, positions[this.position()].left));
+    this.top = Math.min(maxTop, Math.max(8, positions[this.position()].top));
     this.changeDetectorRef.markForCheck();
   }
 

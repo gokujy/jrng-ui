@@ -3,7 +3,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  effect,
+  computed,
   forwardRef,
   inject,
   input,
@@ -197,16 +197,13 @@ export class JSliderComponent implements ControlValueAccessor {
   lowerValue = 0;
   upperValue = 100;
   /** Writable disabled state so `setDisabledState()` (forms) works; seeded from the input. */
-  readonly isDisabled = signal(false);
+  private readonly formDisabled = signal(false);
+  readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
 
   readonly disabled = input(false, { transform: booleanAttribute });
 
   onTouched: () => void = () => undefined;
   private onChange: (value: JSliderValue) => void = () => undefined;
-
-  constructor() {
-    effect(() => this.isDisabled.set(this.disabled()));
-  }
 
   get hasError(): boolean {
     return this.invalid() || this.error().trim().length > 0;
@@ -251,7 +248,7 @@ export class JSliderComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled.set(isDisabled);
+    this.formDisabled.set(isDisabled);
     this.changeDetectorRef.markForCheck();
   }
 

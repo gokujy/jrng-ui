@@ -3,7 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   booleanAttribute,
-  effect,
+  computed,
   forwardRef,
   inject,
   input,
@@ -259,15 +259,11 @@ export class JColorPickerComponent implements ControlValueAccessor {
   open = false;
   readonly fallbackColor = '#4f46e5';
 
-  /** Writable disabled state so `setDisabledState()` (forms) works; seeded from the input. */
-  protected readonly disabledState = signal(false);
+  private readonly formDisabled = signal(false);
+  protected readonly disabledState = computed(() => this.disabled() || this.formDisabled());
 
   private onChange: (value: string | null) => void = () => undefined;
   onTouched: () => void = () => undefined;
-
-  constructor() {
-    effect(() => this.disabledState.set(this.disabled()));
-  }
 
   get rootClasses(): string {
     return [
@@ -294,7 +290,7 @@ export class JColorPickerComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.disabledState.set(isDisabled);
+    this.formDisabled.set(isDisabled);
     this.changeDetectorRef.markForCheck();
   }
 

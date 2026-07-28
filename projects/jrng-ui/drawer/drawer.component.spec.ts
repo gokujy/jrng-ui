@@ -1,5 +1,6 @@
 import { reflectComponentType } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { JBodyScrollLockService } from 'jrng-ui/core';
 import { JDrawerComponent } from './drawer.component';
 
 describe('JDrawerComponent public contract', () => {
@@ -27,5 +28,18 @@ describe('JDrawerComponent bottom sheet sizing', () => {
     fixture.detectChanges();
 
     expect(fixture.componentInstance.computedHeight).toBe('36%');
+  });
+
+  it('releases its shared scroll lock when destroyed while open', () => {
+    const fixture = TestBed.createComponent(JDrawerComponent);
+    const scrollLock = TestBed.inject(JBodyScrollLockService);
+    fixture.componentRef.setInput('visible', true);
+    fixture.detectChanges();
+    expect(document.body.style.overflow).toBe('hidden');
+
+    fixture.destroy();
+
+    expect(document.body.style.overflow).toBe('');
+    scrollLock.clear();
   });
 });

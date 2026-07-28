@@ -27,4 +27,12 @@ describe('JGridLayoutComponent public contract', () => {
     expect(grid.style.getPropertyValue('--j-grid-columns')).toBe('4');
     expect(grid.style.getPropertyValue('--j-grid-min')).toBe('14rem');
   });
+
+  it('normalizes invalid column limits', () => {
+    const fixture = TestBed.createComponent(JGridLayoutComponent);
+    fixture.componentRef.setInput('columns', Number.NaN);
+    fixture.detectChanges();
+    const grid = fixture.nativeElement.querySelector('.j-grid-layout') as HTMLElement;
+    expect(grid.style.getPropertyValue('--j-grid-columns')).toBe('1');
+  });
 });

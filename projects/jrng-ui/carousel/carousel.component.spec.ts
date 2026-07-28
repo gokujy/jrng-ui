@@ -51,4 +51,19 @@ describe('JCarouselComponent navigation', () => {
     expect(fixture.componentInstance.activeIndex()).toBe(1);
     expect(root.getAttribute('aria-label')).toBe('Product gallery');
   });
+
+  it('normalizes invalid configuration and renders no controls as active for empty data', () => {
+    const fixture = TestBed.createComponent(JCarouselComponent);
+    fixture.componentRef.setInput('visibleItems', Number.NaN);
+    fixture.componentRef.setInput('activeIndex', Number.NaN);
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.normalizedVisibleItems()).toBe(1);
+    expect(fixture.componentInstance.activeIndex()).toBe(0);
+    expect(fixture.componentInstance.indicatorIndexes()).toEqual([]);
+    const controls = fixture.nativeElement.querySelectorAll(
+      '.j-carousel__control',
+    ) as NodeListOf<HTMLButtonElement>;
+    expect([...controls].every((control) => control.disabled)).toBe(true);
+  });
 });

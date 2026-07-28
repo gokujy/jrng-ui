@@ -89,7 +89,7 @@ import {
   JTableHeaderTemplateDirective,
   JTableLoadingTemplateDirective,
 } from './table-template.directive';
-import { JTableSortOrder } from 'jrng-ui/core';
+import { JBodyScrollLockService, JTableSortOrder } from 'jrng-ui/core';
 import { JButtonComponent } from 'jrng-ui/button';
 
 export type JTableSortDirection = 'asc' | 'desc';
@@ -301,17 +301,18 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   private collapsedRowGroups = new Set<string>();
   private stopColumnResize: (() => void) | null = null;
   private maximizedTableAttached = false;
-  private previousBodyOverflow = '';
   private readonly maximizeOwnerId = `j-table-maximized-${JTableComponent.nextMaximizeId++}`;
   maximized = false;
   virtualStart = 0;
   virtualWindowSize = 20;
+  focusedRowKey = '';
 
   private readonly documentRef = inject(DOCUMENT);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly destroyRef = inject(DestroyRef);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
   private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly bodyScrollLock = inject(JBodyScrollLockService);
   private readonly memoryStorage = jCreateMemoryTableStorage();
 
   constructor() {
@@ -647,6 +648,10 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     return this.selection == null ? 0 : 1;
   }
 
+  get radioGroupName(): string {
+    return `${this.maximizeOwnerId}-selection`;
+  }
+
   ngAfterContentInit(): void {
     this.applyConfig();
     this.syncLockedRows();
@@ -973,6 +978,17 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   }
 
   handleRowKeydown(event: KeyboardEvent, row: JTableRow, index: number): void {
+    if (event.target !== event.currentTarget) {
+      return;
+    }
+    if (
+      this.selectionMode !== 'none' &&
+      ['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)
+    ) {
+      event.preventDefault();
+      this.focusRow(event);
+      return;
+    }
     if (
       this.reorderableRows &&
       event.altKey &&
@@ -991,6 +1007,52 @@ export class JTableComponent implements AfterContentInit, OnChanges {
 
     event.preventDefault();
     this.toggleSelection(row);
+  }
+
+  rowTabIndex(row: JTableRow, index: number): number | null {
+    if (this.selectionMode === 'none') {
+      return null;
+    }
+    const key = this.rowId(row, index);
+    if (this.focusedRowKey === key) {
+      return 0;
+    }
+    const focusedIsVisible =
+      !!this.focusedRowKey &&
+      this.visibleRows.some(
+        (candidate, candidateIndex) =>
+          !this.isGroupCollapsed(candidate) &&
+          this.rowId(candidate, candidateIndex) === this.focusedRowKey,
+      );
+    if (focusedIsVisible) {
+      return -1;
+    }
+    const firstVisibleIndex = this.visibleRows.findIndex(
+      (candidate) => !this.isGroupCollapsed(candidate),
+    );
+    return index === firstVisibleIndex ? 0 : -1;
+  }
+
+  private focusRow(event: KeyboardEvent): void {
+    const current = event.currentTarget as HTMLElement | null;
+    const rows = Array.from(
+      current?.closest('table')?.querySelectorAll<HTMLElement>('tbody tr[data-j-table-row]') ?? [],
+    );
+    const currentIndex = current ? rows.indexOf(current) : -1;
+    const targetIndex =
+      event.key === 'Home'
+        ? 0
+        : event.key === 'End'
+          ? rows.length - 1
+          : event.key === 'ArrowDown'
+            ? Math.min(rows.length - 1, currentIndex + 1)
+            : Math.max(0, currentIndex - 1);
+    const target = rows[targetIndex];
+    if (target) {
+      this.focusedRowKey = target.dataset['jTableRow'] ?? '';
+      target.focus();
+      this.changeDetectorRef.markForCheck();
+    }
   }
 
   handleCheckboxChange(row: JTableRow, event: Event): void {
@@ -1406,8 +1468,8 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     this.changeDetectorRef.markForCheck();
     if (isPlatformBrowser(this.platformId)) {
       queueMicrotask(() =>
-        this.documentRef
-          .querySelector<HTMLInputElement>(
+        this.tableRoot()
+          ?.querySelector<HTMLInputElement>(
             `[data-j-table-row-edit="${this.cssEscape(this.editingRowKey)}"]`,
           )
           ?.focus(),
@@ -1470,8 +1532,8 @@ export class JTableComponent implements AfterContentInit, OnChanges {
       this.changeDetectorRef.markForCheck();
       if (isPlatformBrowser(this.platformId)) {
         queueMicrotask(() =>
-          this.documentRef
-            .querySelector<HTMLInputElement>(
+          this.tableRoot()
+            ?.querySelector<HTMLInputElement>(
               `[data-j-table-row-edit-field="${this.cssEscape(firstInvalidField)}"]`,
             )
             ?.focus(),
@@ -1525,6 +1587,15 @@ export class JTableComponent implements AfterContentInit, OnChanges {
 
   private cssEscape(value: string): string {
     return this.documentRef.defaultView?.CSS?.escape(value) ?? value.replaceAll('"', '\\"');
+  }
+
+  private tableRoot(): HTMLElement | null {
+    return (
+      this.elementRef.nativeElement.querySelector<HTMLElement>(':scope > .j-table') ??
+      this.documentRef.body.querySelector<HTMLElement>(
+        `.j-table[data-j-maximized-owner="${this.maximizeOwnerId}"]`,
+      )
+    );
   }
 
   editError(row: JTableRow, column: JTableColumn, index: number): string {
@@ -2007,8 +2078,7 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     }
     const bounds = table.getBoundingClientRect();
     this.elementRef.nativeElement.style.minHeight = `${bounds.height}px`;
-    this.previousBodyOverflow = this.documentRef.body.style.overflow;
-    this.documentRef.body.style.overflow = 'hidden';
+    this.bodyScrollLock.lock();
     table.setAttribute('data-j-maximized-owner', this.maximizeOwnerId);
     this.documentRef.body.appendChild(table);
     this.maximizedTableAttached = true;
@@ -2026,7 +2096,7 @@ export class JTableComponent implements AfterContentInit, OnChanges {
       this.elementRef.nativeElement.appendChild(table);
     }
     this.elementRef.nativeElement.style.removeProperty('min-height');
-    this.documentRef.body.style.overflow = this.previousBodyOverflow;
+    this.bodyScrollLock.unlock();
     this.maximizedTableAttached = false;
   }
 
@@ -2104,11 +2174,14 @@ export class JTableComponent implements AfterContentInit, OnChanges {
       const resizeEvent: JTableColumnResizeEvent = { column, field: column.field, width };
       this.columnResize.emit(resizeEvent);
     };
+    const cancel = () => this.cleanupColumnResize();
     this.documentRef.addEventListener('pointermove', move);
     this.documentRef.addEventListener('pointerup', up);
+    this.documentRef.addEventListener('pointercancel', cancel);
     this.stopColumnResize = () => {
       this.documentRef.removeEventListener('pointermove', move);
       this.documentRef.removeEventListener('pointerup', up);
+      this.documentRef.removeEventListener('pointercancel', cancel);
       this.stopColumnResize = null;
     };
   }

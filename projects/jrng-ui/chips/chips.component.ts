@@ -4,7 +4,6 @@ import {
   ChangeDetectorRef,
   Component,
   contentChild,
-  effect,
   forwardRef,
   inject,
   input,
@@ -204,16 +203,13 @@ export class JChipsComponent implements ControlValueAccessor {
 
   value: readonly JChipItem[] = [];
   draft = '';
-  isDisabled = false;
+  private formDisabled = false;
 
   private onChange: (value: readonly JChipItem[]) => void = () => undefined;
   private onTouched: () => void = () => undefined;
 
-  constructor() {
-    effect(() => {
-      this.isDisabled = this.disabled();
-      this.changeDetectorRef.markForCheck();
-    });
+  get isDisabled(): boolean {
+    return this.disabled() || this.formDisabled;
   }
 
   get hasError(): boolean {
@@ -245,7 +241,7 @@ export class JChipsComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled = isDisabled;
+    this.formDisabled = isDisabled;
     this.changeDetectorRef.markForCheck();
   }
 

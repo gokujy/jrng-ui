@@ -84,6 +84,22 @@ describe('JTooltipDirective', () => {
     expect(document.querySelector('.j-tooltip')).toBeNull();
   });
 
+  it('tracks viewport changes only while the tooltip is open', async () => {
+    const add = vi.spyOn(window, 'addEventListener');
+    const remove = vi.spyOn(window, 'removeEventListener');
+    const { directive } = getDirective(HostComponent);
+
+    directive.show();
+    await tick();
+    expect(add).toHaveBeenCalledWith('scroll', expect.any(Function), true);
+    expect(add).toHaveBeenCalledWith('resize', expect.any(Function));
+
+    directive.hide();
+    await tick();
+    expect(remove).toHaveBeenCalledWith('scroll', expect.any(Function), true);
+    expect(remove).toHaveBeenCalledWith('resize', expect.any(Function));
+  });
+
   it('closes on Escape and clears the ARIA relationship', async () => {
     const { directive } = getDirective(HostComponent);
     directive.show();

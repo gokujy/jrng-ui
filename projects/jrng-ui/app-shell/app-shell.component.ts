@@ -1,8 +1,20 @@
-import { ChangeDetectionStrategy, Component, booleanAttribute, input, model } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  booleanAttribute,
+  input,
+  model,
+  viewChild,
+} from '@angular/core';
+import { jCreateId } from 'jrng-ui/core';
 
 @Component({
   selector: 'j-app-shell',
   imports: [],
+  host: {
+    '(document:keydown.escape)': 'closeSidebar(true)',
+  },
   template: `
     <div
       class="j-app-shell"
@@ -15,9 +27,11 @@ import { ChangeDetectionStrategy, Component, booleanAttribute, input, model } fr
     >
       <header class="j-app-shell__header" data-jc-section="header">
         <button
+          #sidebarToggle
           class="j-app-shell__toggle"
           type="button"
           [attr.aria-expanded]="sidebarOpen()"
+          [attr.aria-controls]="sidebarId"
           (click)="toggleSidebar()"
         >
           {{ sidebarOpen() ? 'Close' : 'Menu' }}
@@ -25,7 +39,12 @@ import { ChangeDetectionStrategy, Component, booleanAttribute, input, model } fr
         <ng-content select="[jShellHeader]" />
       </header>
 
-      <aside class="j-app-shell__sidebar" data-jc-section="sidebar">
+      <aside
+        class="j-app-shell__sidebar"
+        data-jc-section="sidebar"
+        [id]="sidebarId"
+        [attr.aria-label]="sidebarLabel()"
+      >
         <ng-content select="[jShellSidebar]" />
       </aside>
 
@@ -34,7 +53,7 @@ import { ChangeDetectionStrategy, Component, booleanAttribute, input, model } fr
           class="j-app-shell__mask"
           type="button"
           aria-label="Close sidebar"
-          (click)="sidebarOpen.set(false)"
+          (click)="closeSidebar(true)"
         ></button>
       }
 
@@ -129,7 +148,7 @@ import { ChangeDetectionStrategy, Component, booleanAttribute, input, model } fr
 
         .j-app-shell__sidebar {
           bottom: 0;
-          left: 0;
+          inset-inline-start: 0;
           max-width: 20rem;
           position: fixed;
           top: 0;
@@ -153,17 +172,33 @@ import { ChangeDetectionStrategy, Component, booleanAttribute, input, model } fr
           z-index: 30;
         }
       }
+
+      @media (prefers-reduced-motion: reduce) {
+        .j-app-shell__sidebar {
+          transition: none;
+        }
+      }
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JAppShellComponent {
+  protected readonly sidebarId = jCreateId('j-app-shell-sidebar');
+  private readonly sidebarToggle = viewChild<ElementRef<HTMLButtonElement>>('sidebarToggle');
+
   readonly sidebarCollapsed = model(false);
   readonly sidebarOpen = model(false);
+  readonly sidebarLabel = input('Primary navigation');
   readonly footer = input(true, { transform: booleanAttribute });
   readonly styleClass = input('');
 
   toggleSidebar(): void {
     this.sidebarOpen.set(!this.sidebarOpen());
+  }
+
+  protected closeSidebar(restoreFocus = false): void {
+    if (!this.sidebarOpen()) return;
+    this.sidebarOpen.set(false);
+    if (restoreFocus) this.sidebarToggle()?.nativeElement.focus();
   }
 }

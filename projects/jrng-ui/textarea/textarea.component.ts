@@ -3,7 +3,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  effect,
+  computed,
   ElementRef,
   forwardRef,
   inject,
@@ -223,14 +223,11 @@ export class JTextareaComponent implements ControlValueAccessor {
   readonly hintId = jCreateId('j-textarea-hint');
   readonly errorId = jCreateId('j-textarea-error');
   value = '';
-  readonly isDisabled = signal(false);
+  private readonly formDisabled = signal(false);
+  readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
 
   private onChange: (value: string) => void = () => undefined;
   private onTouched: () => void = () => undefined;
-
-  constructor() {
-    effect(() => this.isDisabled.set(this.disabled()));
-  }
 
   get hasError(): boolean {
     return this.invalid() || this.error().trim().length > 0;
@@ -274,7 +271,7 @@ export class JTextareaComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled.set(isDisabled);
+    this.formDisabled.set(isDisabled);
     this.changeDetectorRef.markForCheck();
   }
 

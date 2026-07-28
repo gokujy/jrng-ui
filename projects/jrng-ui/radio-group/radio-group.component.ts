@@ -4,7 +4,6 @@ import {
   ChangeDetectorRef,
   Component,
   computed,
-  effect,
   ElementRef,
   forwardRef,
   inject,
@@ -193,15 +192,12 @@ export class JRadioGroupComponent implements ControlValueAccessor {
   readonly errorId = jCreateId('j-radio-group-error');
   value: unknown = null;
   // Writable so `setDisabledState` (CVA) can update it; seeded from the input.
-  readonly isDisabled = signal(false);
+  private readonly formDisabled = signal(false);
+  readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
   activeIndex = 0;
 
   onTouched: () => void = () => undefined;
   private onChange: (value: unknown) => void = () => undefined;
-
-  constructor() {
-    effect(() => this.isDisabled.set(this.disabled()));
-  }
 
   readonly normalizedOptions = computed<readonly JNormalizedSelectionOption[]>(() =>
     jNormalizeSelectionOptions(this.options(), this.optionLabel(), this.optionValue()),
@@ -245,7 +241,7 @@ export class JRadioGroupComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled.set(isDisabled);
+    this.formDisabled.set(isDisabled);
   }
 
   selectOption(option: JNormalizedSelectionOption, index: number): void {

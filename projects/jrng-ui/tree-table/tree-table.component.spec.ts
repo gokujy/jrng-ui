@@ -21,6 +21,7 @@ interface FileData {
       [(selection)]="selection"
       [(expandedKeys)]="expandedKeys"
       [lazy]="lazy"
+      [filter]="filter"
       [propagateSelectionDown]="propagateDown"
       [propagateSelectionUp]="propagateUp"
       (lazyLoad)="lazyNode = $event.node"
@@ -58,6 +59,7 @@ class TreeTableHostComponent {
   selection: JTreeNode | readonly JTreeNode[] | null = null;
   expandedKeys: ReadonlySet<string> = new Set();
   lazy = false;
+  filter = false;
   propagateDown = false;
   propagateUp = false;
   lazyNode: JTreeNode | null = null;
@@ -150,5 +152,77 @@ describe('JTreeTableComponent', () => {
     refresh();
     expect((host.selection as JTreeNode)?.key).toBe('report');
     expect(rows()[1]?.getAttribute('aria-selected')).toBe('true');
+  });
+
+  it('does not expand disabled rows through keyboard interaction', () => {
+    host.nodes = [{ ...host.nodes[0]!, disabled: true }];
+    refresh();
+    const first = rows()[0]!;
+
+    first.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    refresh();
+
+    expect(rows()).toHaveLength(1);
+    expect(first.getAttribute('aria-disabled')).toBe('true');
+    expect(host.expandedKeys.size).toBe(0);
+  });
+
+  it('keeps non-selectable nodes out of checkbox interaction and propagation', () => {
+    const disabledChild = { ...host.nodes[0]!.children![1]!, disabled: true };
+    host.nodes = [
+      {
+        ...host.nodes[0]!,
+        children: [host.nodes[0]!.children![0]!, disabledChild],
+      },
+    ];
+    host.selectionMode = 'checkbox';
+    host.propagateDown = true;
+    host.expandedKeys = new Set(['documents']);
+    refresh();
+    const checkboxes = fixture.debugElement.queryAll(By.css('tbody input[type="checkbox"]'));
+
+    (checkboxes[0]?.nativeElement as HTMLInputElement).click();
+    refresh();
+
+    expect((host.selection as readonly JTreeNode[]).map((node) => node.key)).toEqual([
+      'documents',
+      'report',
+    ]);
+    expect((checkboxes[2]?.nativeElement as HTMLInputElement).disabled).toBe(true);
+  });
+
+  it('sorts numeric values numerically and reports positions in rendered order', () => {
+    host.columns = [
+      { field: 'label', header: 'Name' },
+      { field: 'size', header: 'Size', type: 'number', sortable: true },
+    ];
+    host.nodes = [
+      { key: 'ten', label: 'Ten', data: { size: 10, status: 'Ready' }, leaf: true },
+      { key: 'two', label: 'Two', data: { size: 2, status: 'Ready' }, leaf: true },
+    ];
+    refresh();
+    const sortButtons = fixture.debugElement.queryAll(By.css('.j-tree-table__sort'));
+
+    (sortButtons[0]?.nativeElement as HTMLButtonElement).click();
+    refresh();
+
+    expect(rows()[0]?.textContent).toContain('2');
+    expect(rows()[0]?.getAttribute('aria-posinset')).toBe('1');
+    expect(rows()[1]?.getAttribute('aria-posinset')).toBe('2');
+  });
+
+  it('preserves row selection identity when a descendant filter keeps its parent', () => {
+    host.filter = true;
+    refresh();
+    const search = fixture.debugElement.query(By.css('input[type="search"]'))
+      .nativeElement as HTMLInputElement;
+    search.value = 'Report';
+    search.dispatchEvent(new Event('input', { bubbles: true }));
+    refresh();
+
+    rows()[0]?.click();
+    refresh();
+
+    expect(host.selection).toBe(host.nodes[0]);
   });
 });

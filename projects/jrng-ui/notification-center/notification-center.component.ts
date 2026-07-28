@@ -15,6 +15,7 @@ import { JSeverity } from 'jrng-ui/core';
 import { JPopoverComponent } from 'jrng-ui/popover';
 import { JToastService } from 'jrng-ui/toast';
 import { JButtonComponent } from 'jrng-ui/button';
+import { JDrawerComponent } from 'jrng-ui/drawer';
 import { JTooltipDirective } from 'jrng-ui/tooltip';
 
 export type JNotificationCenterLayout = 'panel' | 'drawer' | 'popover';
@@ -31,7 +32,14 @@ export interface JNotification<T = unknown> {
 
 @Component({
   selector: 'j-notification-center',
-  imports: [JPopoverComponent, NgTemplateOutlet, DatePipe, JButtonComponent, JTooltipDirective],
+  imports: [
+    JPopoverComponent,
+    JDrawerComponent,
+    NgTemplateOutlet,
+    DatePipe,
+    JButtonComponent,
+    JTooltipDirective,
+  ],
   template: `
     <ng-template #content
       ><section
@@ -39,9 +47,13 @@ export interface JNotification<T = unknown> {
         [class.j-notification-center__panel--drawer]="layout() === 'drawer'"
         data-jc-name="notification-center"
         data-jc-section="root"
+        role="region"
+        [attr.aria-label]="heading()"
       >
         <header>
-          <strong>{{ heading() }}</strong>
+          @if (layout() !== 'drawer') {
+            <strong>{{ heading() }}</strong>
+          }
           @if (showMarkAll() || notifications()) {
             <j-button size="sm" variant="text" [label]="markAllLabel()" (onClick)="markAllRead()" />
           }
@@ -128,6 +140,17 @@ export interface JNotification<T = unknown> {
     ></ng-template>
     @if (layout() === 'panel') {
       <ng-container [ngTemplateOutlet]="content" />
+    } @else if (layout() === 'drawer') {
+      <j-drawer
+        [visible]="visible()"
+        (visibleChange)="visible.set($event)"
+        [header]="heading()"
+        position="right"
+        width="min(28rem, 100vw)"
+        styleClass="j-notification-center"
+      >
+        <ng-container [ngTemplateOutlet]="content" />
+      </j-drawer>
     } @else {
       <j-popover
         [visible]="visible()"
@@ -135,6 +158,7 @@ export interface JNotification<T = unknown> {
         [target]="target()"
         position="bottom"
         styleClass="j-notification-center"
+        [ariaLabel]="heading()"
         ><ng-container [ngTemplateOutlet]="content"
       /></j-popover>
     }

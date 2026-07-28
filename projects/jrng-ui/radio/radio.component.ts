@@ -3,7 +3,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  effect,
+  computed,
   forwardRef,
   inject,
   input,
@@ -139,14 +139,11 @@ export class JRadioComponent implements ControlValueAccessor {
   readonly valueChange = output<unknown>();
 
   selectedValue: unknown = null;
-  readonly isDisabled = signal(false);
+  private readonly formDisabled = signal(false);
+  readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
 
   private onChange: (value: unknown) => void = () => undefined;
   private onTouched: () => void = () => undefined;
-
-  constructor() {
-    effect(() => this.isDisabled.set(this.disabled()));
-  }
 
   get selected(): boolean {
     return Object.is(this.selectedValue, this.value());
@@ -179,7 +176,7 @@ export class JRadioComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled.set(isDisabled);
+    this.formDisabled.set(isDisabled);
     this.changeDetectorRef.markForCheck();
   }
 

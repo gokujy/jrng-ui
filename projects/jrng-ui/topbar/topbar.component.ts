@@ -12,16 +12,20 @@ import { JMenuItem } from 'jrng-ui/menu';
       </div>
       @if (showNavigation()) {
         <nav class="j-topbar__nav" data-jc-section="nav" [attr.aria-label]="ariaLabel()">
-          @for (item of model(); track item.label || item.url || item.routerLink || $index) {
+          @for (item of visibleItems(); track item.id || $index) {
             <a
               class="j-topbar__link"
               [href]="item.url || null"
               [routerLink]="item.routerLink || null"
+              [target]="item.target"
               [class.is-active]="isActive(item)"
               [class.is-disabled]="item.disabled"
               [attr.data-j-active]="isActive(item) ? 'true' : null"
               [attr.data-j-disabled]="item.disabled ? 'true' : null"
-              (click)="item.command?.({ item, originalEvent: $event })"
+              [attr.aria-disabled]="item.disabled ? 'true' : null"
+              [attr.aria-current]="isActive(item) ? 'page' : null"
+              [attr.tabindex]="item.disabled ? -1 : null"
+              (click)="activateItem($event, item)"
             >
               @if (item.icon) {
                 <span aria-hidden="true">{{ item.icon }}</span>
@@ -121,6 +125,13 @@ export class JTopbarComponent {
   readonly activeKey = input('');
   readonly showNavigation = input(true, { transform: booleanAttribute });
 
+  protected visibleItems(): readonly JMenuItem[] {
+    return this.model().filter((item) => {
+      const visible = typeof item.visible === 'function' ? item.visible() : item.visible !== false;
+      return visible && (item.permission?.() ?? true) && !item.separator;
+    });
+  }
+
   isActive(item: JMenuItem): boolean {
     return (
       !!this.activeKey() &&
@@ -128,5 +139,14 @@ export class JTopbarComponent {
         item.url === this.activeKey() ||
         item.routerLink === this.activeKey())
     );
+  }
+
+  protected activateItem(event: MouseEvent, item: JMenuItem): void {
+    if (item.disabled) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      return;
+    }
+    item.command?.({ item, originalEvent: event });
   }
 }

@@ -248,9 +248,13 @@ export class JCalendarSchedulerComponent {
   readonly viewChange = output<JCalendarSchedulerView>();
 
   readonly weekdayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as const;
+  readonly resolvedActiveDate = computed(() => {
+    const active = this.activeDate();
+    return isValidDate(active) ? active : new Date();
+  });
 
   readonly title = computed(() => {
-    const date = this.activeDate();
+    const date = this.resolvedActiveDate();
     if (this.view() === 'day') {
       return formatDate(date);
     }
@@ -263,7 +267,7 @@ export class JCalendarSchedulerComponent {
   });
 
   readonly visibleDays = computed<readonly JCalendarDay[]>(() => {
-    const active = this.activeDate();
+    const active = this.resolvedActiveDate();
     if (this.view() === 'day') {
       return [this.dayView(active, false)];
     }
@@ -284,17 +288,17 @@ export class JCalendarSchedulerComponent {
   }
 
   next(): void {
-    this.activeDate.set(addByView(this.activeDate(), this.view(), 1));
+    this.activeDate.set(addByView(this.resolvedActiveDate(), this.view(), 1));
   }
 
   previous(): void {
-    this.activeDate.set(addByView(this.activeDate(), this.view(), -1));
+    this.activeDate.set(addByView(this.resolvedActiveDate(), this.view(), -1));
   }
 
   setView(event: Event): void {
     const value = (event.target as HTMLSelectElement | null)?.value as
       JCalendarSchedulerView | undefined;
-    if (!value) {
+    if (!value || !['day', 'week', 'month'].includes(value)) {
       return;
     }
     this.view.set(value);
@@ -345,8 +349,13 @@ function addByView(date: Date, view: JCalendarSchedulerView, direction: number):
 }
 
 function eventOccursOn(event: JCalendarSchedulerEvent, date: Date): boolean {
-  const start = startOfDay(toDate(event.start));
-  const end = startOfDay(toDate(event.end ?? event.start));
+  const rawStart = toDate(event.start);
+  const rawEnd = toDate(event.end ?? event.start);
+  if (!isValidDate(rawStart) || !isValidDate(rawEnd)) {
+    return false;
+  }
+  const start = startOfDay(rawStart);
+  const end = startOfDay(rawEnd);
   const day = startOfDay(date);
   return day >= start && day <= end;
 }
@@ -365,6 +374,10 @@ function startOfDay(date: Date): Date {
 
 function toDate(value: Date | string): Date {
   return value instanceof Date ? value : new Date(value);
+}
+
+function isValidDate(value: Date): boolean {
+  return Number.isFinite(value.getTime());
 }
 
 function formatDate(date: Date): string {

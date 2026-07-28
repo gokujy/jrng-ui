@@ -14,6 +14,7 @@ import { JConfirmationService } from './confirmation.service';
 import {
   JBodyScrollLockService,
   JFocusTrapDirective,
+  JOverlayStackService,
   jCreateId,
   jRememberFocus,
 } from 'jrng-ui/core';
@@ -204,6 +205,7 @@ export class JConfirmDialogComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   private readonly bodyScrollLock = inject(JBodyScrollLockService);
+  private readonly overlayStack = inject(JOverlayStackService);
   private restorePreviousFocus: (() => void) | null = null;
   private scrollLocked = false;
 
@@ -217,9 +219,11 @@ export class JConfirmDialogComponent {
     effect(() => {
       const confirmation = this.dialogConfirmation();
       if (confirmation) {
+        this.overlayStack.push(this);
         this.handleOpened();
         return;
       }
+      this.overlayStack.remove(this);
       this.restoreFocus();
     });
 
@@ -231,6 +235,7 @@ export class JConfirmDialogComponent {
     this.documentRef.addEventListener('keydown', keydownListener);
     this.destroyRef.onDestroy(() => {
       this.documentRef.removeEventListener('keydown', keydownListener);
+      this.overlayStack.remove(this);
       if (this.scrollLocked) {
         this.bodyScrollLock.unlock();
       }
@@ -287,7 +292,12 @@ export class JConfirmDialogComponent {
 
   private handleDocumentKeydown(event: KeyboardEvent): void {
     const confirmation = this.dialogConfirmation();
-    if (!confirmation || event.key !== 'Escape' || confirmation.closeOnEscape === false) {
+    if (
+      !confirmation ||
+      event.key !== 'Escape' ||
+      confirmation.closeOnEscape === false ||
+      !this.overlayStack.isTopmost(this)
+    ) {
       return;
     }
     event.preventDefault();

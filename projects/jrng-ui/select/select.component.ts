@@ -4,6 +4,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  computed,
   ContentChild,
   DestroyRef,
   effect,
@@ -158,7 +159,8 @@ export class JSelectComponent implements ControlValueAccessor {
   readonly filterId = jCreateId('j-select-filter');
 
   value: unknown = null;
-  readonly isDisabled = signal(false);
+  private readonly formDisabled = signal(false);
+  readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
   readonly asyncState = signal<JAsyncDataState<JSelectOptionSource>>({
     loading: false,
     items: [],
@@ -178,7 +180,6 @@ export class JSelectComponent implements ControlValueAccessor {
   private onTouched: () => void = () => undefined;
 
   constructor() {
-    effect(() => this.isDisabled.set(this.disabled()));
     effect(() => {
       const source = this.dataSource();
       this.asyncController?.destroy();
@@ -321,7 +322,7 @@ export class JSelectComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled.set(isDisabled);
+    this.formDisabled.set(isDisabled);
     if (isDisabled) {
       this.close();
     }

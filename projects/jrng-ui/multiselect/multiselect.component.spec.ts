@@ -83,3 +83,19 @@ describe('JMultiselectComponent', () => {
     expect(component.value).toEqual([1]);
   });
 });
+
+describe('JMultiselectComponent disabled-state composition', () => {
+  it('does not let input and form state re-enable one another', () => {
+    const fixture = TestBed.createComponent(JMultiselectComponent);
+    fixture.detectChanges();
+    fixture.componentInstance.setDisabledState(true);
+    fixture.componentRef.setInput('disabled', false);
+    fixture.detectChanges();
+    expect(fixture.componentInstance.isDisabled()).toBe(true);
+
+    fixture.componentInstance.setDisabledState(false);
+    fixture.componentRef.setInput('disabled', true);
+    fixture.detectChanges();
+    expect(fixture.componentInstance.isDisabled()).toBe(true);
+  });
+});

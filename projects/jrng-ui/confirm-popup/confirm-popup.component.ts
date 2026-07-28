@@ -6,7 +6,7 @@ import {
   computed,
   inject,
 } from '@angular/core';
-import { JFocusTrapDirective } from 'jrng-ui/core';
+import { JFocusTrapDirective, jCreateId } from 'jrng-ui/core';
 import { JRNG_LOCALE } from 'jrng-ui/core';
 import { JPopoverComponent } from 'jrng-ui/popover';
 import { JConfirmationService } from 'jrng-ui/confirm-dialog';
@@ -21,6 +21,8 @@ import { JButtonComponent } from 'jrng-ui/button';
         [visible]="true"
         [target]="confirmation.target ?? null"
         position="bottom"
+        [dismissable]="confirmation.closeOnOverlayClick !== false"
+        [closeOnEscape]="confirmation.closeOnEscape !== false"
         data-jc-name="confirm-popup"
         data-jc-section="popover"
         (opened)="focusPanel()"
@@ -31,6 +33,8 @@ import { JButtonComponent } from 'jrng-ui/button';
           class="j-confirm-popup"
           jFocusTrap
           role="alertdialog"
+          [attr.aria-labelledby]="titleId"
+          [attr.aria-describedby]="confirmation.message ? messageId : null"
           data-jc-name="confirm-popup"
           data-jc-section="root"
           data-j-open="true"
@@ -41,10 +45,10 @@ import { JButtonComponent } from 'jrng-ui/button';
             @if (confirmation.icon) {
               <span class="j-confirm-popup__icon" aria-hidden="true">{{ confirmation.icon }}</span>
             }
-            <strong>{{ confirmation.header || 'Confirm' }}</strong>
+            <strong [id]="titleId">{{ confirmation.header || 'Confirm' }}</strong>
           </header>
           @if (confirmation.message) {
-            <p class="j-confirm-popup__message" data-jc-section="message">
+            <p class="j-confirm-popup__message" data-jc-section="message" [id]="messageId">
               {{ confirmation.message }}
             </p>
           }
@@ -53,13 +57,13 @@ import { JButtonComponent } from 'jrng-ui/button';
               size="sm"
               variant="outlined"
               [severity]="confirmation.rejectButtonSeverity || 'secondary'"
-              [label]="confirmation.rejectLabel || locale.cancel"
+              [label]="confirmation.cancelText || confirmation.rejectLabel || locale.cancel"
               (onClick)="reject()"
             />
             <j-button
               size="sm"
               [severity]="confirmation.acceptButtonSeverity || confirmation.severity || 'primary'"
-              [label]="confirmation.acceptLabel || locale.accept"
+              [label]="confirmation.confirmText || confirmation.acceptLabel || locale.accept"
               (onClick)="accept()"
             />
           </footer>
@@ -126,6 +130,8 @@ export class JConfirmPopupComponent {
     return confirmation?.target ? confirmation : null;
   });
   readonly locale = inject(JRNG_LOCALE);
+  readonly titleId = jCreateId('j-confirm-popup-title');
+  readonly messageId = jCreateId('j-confirm-popup-message');
 
   @ViewChild('panel') private panel?: ElementRef<HTMLElement>;
 
@@ -159,7 +165,7 @@ export class JConfirmPopupComponent {
       event.preventDefault();
       this.reject();
     }
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter' && event.target === event.currentTarget) {
       event.preventDefault();
       this.accept();
     }

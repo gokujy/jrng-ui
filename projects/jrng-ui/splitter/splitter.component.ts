@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   ContentChildren,
+  DestroyRef,
   ElementRef,
   InjectionToken,
   OnDestroy,
@@ -17,7 +18,8 @@ import {
   output,
   signal,
 } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 export type JSplitterOrientation = 'horizontal' | 'vertical';
 
@@ -25,6 +27,7 @@ interface JSplitterController {
   readonly orientation: () => JSplitterOrientation;
   readonly disabled: () => boolean;
   readonly readOnly: () => boolean;
+  separatorValue(index: number): { min: number; now: number; max: number };
   resizeAt(index: number, delta: number): void;
   resetSizes(): void;
 }
@@ -38,9 +41,12 @@ const SPLITTER_CONTROLLER = new InjectionToken<JSplitterController>('JRNG_SPLITT
       <div
         class="j-splitter-panel__gutter"
         role="separator"
-        tabindex="0"
+        [attr.tabindex]="controller.disabled() || controller.readOnly() ? -1 : 0"
         [attr.aria-orientation]="controller.orientation()"
         [attr.aria-disabled]="controller.disabled() || controller.readOnly()"
+        [attr.aria-valuemin]="controller.separatorValue(index).min"
+        [attr.aria-valuenow]="controller.separatorValue(index).now"
+        [attr.aria-valuemax]="controller.separatorValue(index).max"
         (pointerdown)="startResize($event)"
         (keydown)="resizeWithKeyboard($event)"
         (dblclick)="controller.resetSizes()"
@@ -115,6 +121,7 @@ const SPLITTER_CONTROLLER = new InjectionToken<JSplitterController>('JRNG_SPLITT
 })
 export class JSplitterPanelComponent implements OnDestroy {
   readonly controller = inject(SPLITTER_CONTROLLER);
+  private readonly documentRef = inject(DOCUMENT);
   readonly size = input(50, { transform: numberAttribute });
   readonly minSize = input(10, { transform: numberAttribute });
   readonly maxSize = input(90, { transform: numberAttribute });
@@ -125,18 +132,23 @@ export class JSplitterPanelComponent implements OnDestroy {
   startResize(event: PointerEvent): void {
     if (this.controller.disabled() || this.controller.readOnly()) return;
     event.preventDefault();
+    this.stopResize();
     let origin = this.controller.orientation() === 'horizontal' ? event.clientX : event.clientY;
+    const view = this.documentRef.defaultView;
+    if (!view) return;
     const move = (next: PointerEvent) => {
       const position = this.controller.orientation() === 'horizontal' ? next.clientX : next.clientY;
       this.controller.resizeAt(this.index, position - origin);
       origin = position;
     };
     const stop = () => this.stopResize();
-    window.addEventListener('pointermove', move);
-    window.addEventListener('pointerup', stop, { once: true });
+    view.addEventListener('pointermove', move);
+    view.addEventListener('pointerup', stop, { once: true });
+    view.addEventListener('pointercancel', stop, { once: true });
     this.cleanupDrag = () => {
-      window.removeEventListener('pointermove', move);
-      window.removeEventListener('pointerup', stop);
+      view.removeEventListener('pointermove', move);
+      view.removeEventListener('pointerup', stop);
+      view.removeEventListener('pointercancel', stop);
     };
   }
 
@@ -208,6 +220,8 @@ export class JSplitterPanelComponent implements OnDestroy {
 })
 export class JSplitterComponent implements AfterContentInit {
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly documentRef = inject(DOCUMENT);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
   @ContentChildren(JSplitterPanelComponent) panels?: QueryList<JSplitterPanelComponent>;
   readonly orientation = input<JSplitterOrientation>('horizontal');
@@ -223,7 +237,18 @@ export class JSplitterComponent implements AfterContentInit {
 
   ngAfterContentInit(): void {
     this.configurePanels();
-    this.panels?.changes.subscribe(() => this.configurePanels());
+    this.panels?.changes
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.configurePanels());
+  }
+
+  separatorValue(index: number): { min: number; now: number; max: number } {
+    const panel = this.panels?.get(index - 1);
+    return {
+      min: panel?.minSize() ?? 0,
+      now: panel?.currentSize() ?? 0,
+      max: panel?.maxSize() ?? 100,
+    };
   }
 
   resizeAt(index: number, pixelDelta: number): void {
@@ -251,6 +276,7 @@ export class JSplitterComponent implements AfterContentInit {
   }
 
   resetSizes(): void {
+    if (this.disabled() || this.readOnly()) return;
     this.applySizes(this.initialSizes);
     this.persist();
     this.resize.emit(this.sizes());
@@ -265,9 +291,21 @@ export class JSplitterComponent implements AfterContentInit {
     this.initialSizes = panels.map((panel) => panel.size());
     if (isPlatformBrowser(this.platformId) && this.storageKey()) {
       try {
-        const saved = JSON.parse(localStorage.getItem(this.storageKey()!) ?? 'null') as unknown;
-        if (Array.isArray(saved) && saved.every((item) => typeof item === 'number'))
+        const storage = this.documentRef.defaultView?.localStorage;
+        const saved = JSON.parse(storage?.getItem(this.storageKey()!) ?? 'null') as unknown;
+        if (
+          Array.isArray(saved) &&
+          saved.length === panels.length &&
+          saved.every(
+            (item, index) =>
+              typeof item === 'number' &&
+              Number.isFinite(item) &&
+              item >= panels[index].minSize() &&
+              item <= panels[index].maxSize(),
+          )
+        ) {
           this.applySizes(saved);
+        }
       } catch {
         /* Ignore malformed or unavailable storage. */
       }
@@ -289,7 +327,10 @@ export class JSplitterComponent implements AfterContentInit {
   private persist(): void {
     if (!isPlatformBrowser(this.platformId) || !this.storageKey()) return;
     try {
-      localStorage.setItem(this.storageKey()!, JSON.stringify(this.sizes()));
+      this.documentRef.defaultView?.localStorage.setItem(
+        this.storageKey()!,
+        JSON.stringify(this.sizes()),
+      );
     } catch {
       /* Storage can be unavailable. */
     }

@@ -83,7 +83,8 @@ export class JGridComponent {
   readonly styleClass = input('');
 
   protected columnCount(): number {
-    return Math.max(1, this.columns());
+    const value = this.columns();
+    return Number.isFinite(value) ? Math.max(1, Math.floor(value)) : 1;
   }
 
   protected resolvedColumnGap(): string {

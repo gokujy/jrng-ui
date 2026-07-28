@@ -44,4 +44,15 @@ describe('JDiffViewerComponent', () => {
       fixture.nativeElement.querySelector('[data-state="changed"]').getAttribute('aria-label'),
     ).toBe('status: changed');
   });
+
+  it('renders a stable fallback for circular or failing custom values', () => {
+    const fixture = TestBed.createComponent(JDiffViewerComponent);
+    const circular: Record<string, unknown> = {};
+    circular['self'] = circular;
+    expect(fixture.componentInstance.format(circular, 'self')).toBe('[Unable to display value]');
+    fixture.componentRef.setInput('formatter', () => {
+      throw new Error('formatter failure');
+    });
+    expect(fixture.componentInstance.format('value', 'field')).toBe('[Unable to display value]');
+  });
 });

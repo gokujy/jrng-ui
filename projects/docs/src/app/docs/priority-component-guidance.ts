@@ -136,6 +136,32 @@ export const priorityComponentGuidance: Readonly<Record<string, PriorityComponen
       ],
     },
   ),
+  'command-palette': guidance(
+    `<j-command-palette [(visible)]="paletteVisible" [commands]="commands" heading="Quick actions" />`,
+    'Offer a searchable keyboard-first launcher for a bounded set of application commands.',
+    {
+      templates: [
+        'The dialog renders the documented command label, description, icon, and group fields.',
+      ],
+      validationStates: [
+        'Disabled commands remain visible but are skipped by keyboard navigation and cannot execute.',
+        'An empty result set displays the configured emptyMessage.',
+      ],
+      loadingDisabledStates: [
+        'Resolve asynchronous command sources before replacing the commands input.',
+        'Keep the palette closed while required permissions are still unknown.',
+      ],
+      keyboardBehaviour: [
+        'Control+K or Command+K opens one palette instance.',
+        'Arrow Up and Arrow Down move through enabled results while focus remains in the search field.',
+        'Enter executes the active result and Escape closes the dialog.',
+      ],
+      troubleshooting: [
+        'Give commands stable ids when labels may repeat.',
+        'Use keywords for alternate terminology rather than duplicating commands.',
+      ],
+    },
+  ),
   table: guidance(
     `<j-table [value]="rows" [columns]="columns" [loading]="loading" paginator />`,
     'Review, sort, filter, select, and paginate operational records.',
@@ -186,6 +212,28 @@ export const priorityComponentGuidance: Readonly<Record<string, PriorityComponen
       templates: ['Menu item labels, icons, badges, separators, and nested items.'],
       keyboardBehaviour: [
         'Arrow keys navigate, Enter activates, and Escape closes an overlay menu.',
+      ],
+    },
+  ),
+  'mega-menu': guidance(
+    `<j-mega-menu [model]="navigation" ariaLabel="Product navigation" [columns]="3" />`,
+    'Present a small number of top-level navigation areas with grouped destination or action entries.',
+    {
+      templates: ['jMegaMenuItem customizes visible entry content without replacing interaction.'],
+      validationStates: [
+        'Hide unauthorized items with visible or permission metadata.',
+        'Use disabled only when an unavailable action must remain discoverable.',
+      ],
+      keyboardBehaviour: [
+        'Left and Right move between enabled top-level triggers; Home and End move to the first and last trigger.',
+        'Arrow Down, Enter, and Space open a panel; Arrow Up and Arrow Down move between enabled entries.',
+        'Escape closes the panel and restores focus to its trigger.',
+      ],
+      responsiveBehaviour:
+        'Keep groups concise at desktop widths; use application-level compact navigation until a responsive disclosure API is added.',
+      troubleshooting: [
+        'Provide a stable item id when labels may change.',
+        'Use command for actions; link and router-link rendering remains a documented limitation in the current beta API.',
       ],
     },
   ),

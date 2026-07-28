@@ -44,8 +44,10 @@ export type JTransferListResponsiveMode = 'auto' | 'stack' | 'none';
             <button
               type="button"
               role="option"
+              [disabled]="item.disabled"
               [class.j-is-selected]="isSourceSelected(item)"
               [attr.aria-selected]="isSourceSelected(item)"
+              [attr.aria-disabled]="item.disabled || null"
               (click)="toggleSource(item)"
             >
               {{ item.label }}
@@ -70,7 +72,7 @@ export type JTransferListResponsiveMode = 'auto' | 'stack' | 'none';
           ariaLabel="Move all to target"
           title="Move all to target"
           (onClick)="moveAllToTarget()"
-          [disabled]="!source().length"
+          [disabled]="!hasMovableSource()"
         />
         <j-button
           label="Remove selected"
@@ -88,7 +90,7 @@ export type JTransferListResponsiveMode = 'auto' | 'stack' | 'none';
           ariaLabel="Move all to source"
           title="Move all to source"
           (onClick)="moveAllToSource()"
-          [disabled]="!target().length"
+          [disabled]="!hasMovableTarget()"
         />
       </div>
       <div class="j-transfer-list__pane" data-jc-section="target">
@@ -106,8 +108,10 @@ export type JTransferListResponsiveMode = 'auto' | 'stack' | 'none';
             <button
               type="button"
               role="option"
+              [disabled]="item.disabled"
               [class.j-is-selected]="isTargetSelected(item)"
               [attr.aria-selected]="isTargetSelected(item)"
+              [attr.aria-disabled]="item.disabled || null"
               (click)="toggleTarget(item)"
             >
               {{ item.label }}
@@ -299,9 +303,11 @@ export class JTransferListComponent {
   }
 
   toggleSource(item: JNormalizedSelectionOption): void {
+    if (item.disabled) return;
     this.sourceSelected.set(this.toggle(this.sourceSelected(), item.value));
   }
   toggleTarget(item: JNormalizedSelectionOption): void {
+    if (item.disabled) return;
     this.targetSelected.set(this.toggle(this.targetSelected(), item.value));
   }
   isSourceSelected(item: JNormalizedSelectionOption): boolean {
@@ -319,13 +325,29 @@ export class JTransferListComponent {
     this.moveToTarget(this.sourceSelected());
   }
   moveAllToTarget(): void {
-    this.moveToTarget(this.normalizedSource().map((item) => item.value));
+    this.moveToTarget(
+      this.normalizedSource()
+        .filter((item) => !item.disabled)
+        .map((item) => item.value),
+    );
   }
   moveSelectedToSource(): void {
     this.moveToSource(this.targetSelected());
   }
   moveAllToSource(): void {
-    this.moveToSource(this.normalizedTarget().map((item) => item.value));
+    this.moveToSource(
+      this.normalizedTarget()
+        .filter((item) => !item.disabled)
+        .map((item) => item.value),
+    );
+  }
+
+  hasMovableSource(): boolean {
+    return this.normalizedSource().some((item) => !item.disabled);
+  }
+
+  hasMovableTarget(): boolean {
+    return this.normalizedTarget().some((item) => !item.disabled);
   }
 
   reorderTarget(direction: 1 | -1): void {
@@ -346,24 +368,26 @@ export class JTransferListComponent {
   }
 
   protected moveToTarget(values: readonly unknown[]): void {
-    const moving = this.source().filter((item) =>
-      values.some((value) => jSameSelectionValue(value, this.valueFor(item))),
-    );
-    const remaining = this.source().filter(
-      (item) => !values.some((value) => jSameSelectionValue(value, this.valueFor(item))),
-    );
+    const moving = this.source().filter((item) => {
+      const normalized = this.normalizeItem(item);
+      return (
+        !normalized.disabled && values.some((value) => jSameSelectionValue(value, normalized.value))
+      );
+    });
+    const remaining = this.source().filter((item) => !moving.includes(item));
     this.sourceSelected.set([]);
     this.source.set(remaining);
     this.target.set([...this.target(), ...moving]);
   }
 
   protected moveToSource(values: readonly unknown[]): void {
-    const moving = this.target().filter((item) =>
-      values.some((value) => jSameSelectionValue(value, this.valueFor(item))),
-    );
-    const remaining = this.target().filter(
-      (item) => !values.some((value) => jSameSelectionValue(value, this.valueFor(item))),
-    );
+    const moving = this.target().filter((item) => {
+      const normalized = this.normalizeItem(item);
+      return (
+        !normalized.disabled && values.some((value) => jSameSelectionValue(value, normalized.value))
+      );
+    });
+    const remaining = this.target().filter((item) => !moving.includes(item));
     this.targetSelected.set([]);
     this.target.set(remaining);
     this.source.set([...this.source(), ...moving]);
@@ -383,12 +407,12 @@ export class JTransferListComponent {
       ? values.filter((item) => !jSameSelectionValue(item, value))
       : [...values, value];
   }
-  private valueFor(item: JSelectionOptionSource): unknown {
+  private normalizeItem(item: JSelectionOptionSource): JNormalizedSelectionOption {
     return jNormalizeSelectionOptions(
       [item],
       this.optionLabel(),
       this.optionValue(),
       this.optionDisabled(),
-    )[0]?.value;
+    )[0]!;
   }
 }

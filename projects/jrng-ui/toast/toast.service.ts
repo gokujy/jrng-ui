@@ -78,7 +78,25 @@ export class JToastService {
   }
 
   show(options: JToastOptions): JToast {
-    const severity = options.severity ?? options.type ?? 'info';
+    const requestedSeverity = options.severity ?? options.type ?? 'info';
+    const severity: JToastSeverity = ['success', 'error', 'warning', 'info', 'neutral'].includes(
+      requestedSeverity,
+    )
+      ? requestedSeverity
+      : 'info';
+    const requestedLife = options.life ?? options.duration ?? 5000;
+    const life = Number.isFinite(requestedLife) ? Math.max(0, Math.floor(requestedLife)) : 5000;
+    const requestedPosition = options.position ?? 'top-right';
+    const position: JToastPosition = [
+      'top-right',
+      'top-left',
+      'bottom-right',
+      'bottom-left',
+      'top-center',
+      'bottom-center',
+    ].includes(requestedPosition)
+      ? requestedPosition
+      : 'top-right';
     const toast: JToast = {
       id: `j-toast-${++this.nextId}`,
       severity,
@@ -87,11 +105,11 @@ export class JToastService {
       title: options.summary ?? options.title ?? this.defaultTitle(severity),
       detail: options.detail ?? options.message ?? '',
       message: options.detail ?? options.message ?? '',
-      life: options.life ?? options.duration ?? 5000,
-      duration: options.life ?? options.duration ?? 5000,
+      life,
+      duration: life,
       sticky: options.sticky ?? false,
       closable: options.closable ?? true,
-      position: options.position ?? 'top-right',
+      position,
       actions: options.actions ?? [],
       cancelAction: options.cancelAction,
       createdAt: Date.now(),

@@ -108,7 +108,9 @@ export class JVideoPlayerComponent {
   });
 
   play(): void {
-    void this.video()?.nativeElement.play();
+    void this.video()
+      ?.nativeElement.play()
+      .catch(() => undefined);
   }
 
   pause(): void {

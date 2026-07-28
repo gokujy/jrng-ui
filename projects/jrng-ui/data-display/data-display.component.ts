@@ -315,57 +315,59 @@ export class JDataDisplayComponent {
   }
 
   private format(value: unknown): string {
-    const type = this.type();
-    if (type === 'number' || type === 'currency' || type === 'percent') {
-      const number = typeof value === 'number' ? value : Number(value);
-      if (!Number.isFinite(number)) return this.emptyText();
-      return new Intl.NumberFormat(this.locale(), {
-        ...(type === 'currency'
-          ? {
-              style: 'currency',
-              currency: this.currency(),
-              currencyDisplay: this.currencyDisplay(),
-            }
-          : type === 'percent'
-            ? { style: 'percent' }
-            : {}),
-        ...this.numberOptions(),
-      }).format(number);
-    }
-    if (type === 'date' || type === 'time' || type === 'datetime') {
-      const date = normalizeDate(value as Date | string | number);
-      if (!date) return this.emptyText();
-      const defaults: Intl.DateTimeFormatOptions =
-        type === 'date'
-          ? { dateStyle: 'medium' }
-          : type === 'time'
-            ? { timeStyle: 'short' }
-            : { dateStyle: 'medium', timeStyle: 'short' };
-      return new Intl.DateTimeFormat(this.locale(), { ...defaults, ...this.dateOptions() }).format(
-        date,
-      );
-    }
-    if (type === 'relative-time') {
-      const date = normalizeDate(value as Date | string | number);
-      if (!date) return this.emptyText();
-      const seconds = (date.getTime() - Date.now()) / 1000;
-      const [unit, divisor] = relativeUnit(seconds);
-      return new Intl.RelativeTimeFormat(this.locale(), { numeric: 'auto' }).format(
-        Math.round(seconds / divisor),
-        unit,
-      );
-    }
-    if (type === 'boolean') return value ? this.trueLabel() : this.falseLabel();
-    if (type === 'list') return (Array.isArray(value) ? value : [value]).join(this.listSeparator());
-    if (type === 'json') {
-      try {
-        return JSON.stringify(value, null, 2) ?? this.emptyText();
-      } catch {
-        return this.emptyText();
+    try {
+      const type = this.type();
+      if (type === 'number' || type === 'currency' || type === 'percent') {
+        const number = typeof value === 'number' ? value : Number(value);
+        if (!Number.isFinite(number)) return this.emptyText();
+        return new Intl.NumberFormat(this.locale(), {
+          ...(type === 'currency'
+            ? {
+                style: 'currency',
+                currency: this.currency(),
+                currencyDisplay: this.currencyDisplay(),
+              }
+            : type === 'percent'
+              ? { style: 'percent' }
+              : {}),
+          ...this.numberOptions(),
+        }).format(number);
       }
+      if (type === 'date' || type === 'time' || type === 'datetime') {
+        const date = normalizeDate(value as Date | string | number);
+        if (!date) return this.emptyText();
+        const defaults: Intl.DateTimeFormatOptions =
+          type === 'date'
+            ? { dateStyle: 'medium' }
+            : type === 'time'
+              ? { timeStyle: 'short' }
+              : { dateStyle: 'medium', timeStyle: 'short' };
+        return new Intl.DateTimeFormat(this.locale(), {
+          ...defaults,
+          ...this.dateOptions(),
+        }).format(date);
+      }
+      if (type === 'relative-time') {
+        const date = normalizeDate(value as Date | string | number);
+        if (!date) return this.emptyText();
+        const seconds = (date.getTime() - Date.now()) / 1000;
+        const [unit, divisor] = relativeUnit(seconds);
+        return new Intl.RelativeTimeFormat(this.locale(), { numeric: 'auto' }).format(
+          Math.round(seconds / divisor),
+          unit,
+        );
+      }
+      if (type === 'boolean') return value ? this.trueLabel() : this.falseLabel();
+      if (type === 'list')
+        return (Array.isArray(value) ? value : [value]).join(this.listSeparator());
+      if (type === 'json') {
+        return JSON.stringify(value, null, 2) ?? this.emptyText();
+      }
+      if (type === 'file-size') return convertBytes(Number(value));
+      return String(value);
+    } catch {
+      return this.emptyText();
     }
-    if (type === 'file-size') return convertBytes(Number(value));
-    return String(value);
   }
 }
 

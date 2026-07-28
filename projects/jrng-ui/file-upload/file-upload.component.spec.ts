@@ -94,4 +94,68 @@ describe('JFileUploadComponent', () => {
     component.removeItem(component.queue()[0]!);
     expect(component.queue()).toEqual([]);
   });
+
+  it('aborts active work when an item is removed or the uploader is destroyed', () => {
+    let firstSignal: AbortSignal | undefined;
+    fixture.componentRef.setInput('uploadAdapter', {
+      upload: (_file: File, context: { signal: AbortSignal }) => {
+        firstSignal = context.signal;
+        return new Promise<never>(() => undefined);
+      },
+    });
+    fixture.detectChanges();
+    select([new File(['x'], 'active.txt', { type: 'text/plain' })]);
+    component.emitUpload();
+
+    expect(firstSignal?.aborted).toBe(false);
+    component.removeItem(component.queue()[0]!);
+    expect(firstSignal?.aborted).toBe(true);
+
+    let secondSignal: AbortSignal | undefined;
+    fixture.componentRef.setInput('uploadAdapter', {
+      upload: (_file: File, context: { signal: AbortSignal }) => {
+        secondSignal = context.signal;
+        return new Promise<never>(() => undefined);
+      },
+    });
+    select([new File(['y'], 'destroy.txt', { type: 'text/plain' })]);
+    component.emitUpload();
+    fixture.destroy();
+    expect(secondSignal?.aborted).toBe(true);
+  });
+
+  it('normalizes non-finite progress and exposes progress semantics', () => {
+    select([new File(['x'], 'progress.txt', { type: 'text/plain' })]);
+    const item = component.queue()[0]!;
+    component.setProgress(item.id, Number.NaN);
+    fixture.detectChanges();
+
+    expect(component.queue()[0]?.progress).toBe(0);
+    const progress = fixture.nativeElement.querySelector('[role="progressbar"]') as HTMLElement;
+    expect(progress.getAttribute('aria-valuenow')).toBe('0');
+    expect(progress.getAttribute('aria-label')).toContain('progress.txt');
+  });
+
+  it('does not let an older upload completion detach a retried upload', async () => {
+    const resolvers: ((value: Record<string, never>) => void)[] = [];
+    const signals: AbortSignal[] = [];
+    fixture.componentRef.setInput('uploadAdapter', {
+      upload: (_file: File, context: { signal: AbortSignal }) => {
+        signals.push(context.signal);
+        return new Promise<Record<string, never>>((resolve) => resolvers.push(resolve));
+      },
+    });
+    select([new File(['x'], 'retry.txt', { type: 'text/plain' })]);
+    component.emitUpload();
+    component.cancel(component.queue()[0]!);
+    component.retry(component.queue()[0]!);
+    expect(signals).toHaveLength(2);
+
+    resolvers[0]?.({});
+    await Promise.resolve();
+    await Promise.resolve();
+    component.cancel(component.queue()[0]!);
+
+    expect(signals[1]?.aborted).toBe(true);
+  });
 });

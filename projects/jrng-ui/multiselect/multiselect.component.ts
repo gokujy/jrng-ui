@@ -4,6 +4,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  computed,
   ContentChild,
   DestroyRef,
   effect,
@@ -526,7 +527,8 @@ export class JMultiselectComponent implements ControlValueAccessor {
   readonly errorId = jCreateId('j-multiselect-error');
   readonly listboxId = jCreateId('j-multiselect-listbox');
   value: readonly unknown[] = [];
-  readonly isDisabled = signal(false);
+  private readonly formDisabled = signal(false);
+  readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
   readonly asyncState = signal<JAsyncDataState<JMultiselectOption>>({
     loading: false,
     items: [],
@@ -542,7 +544,6 @@ export class JMultiselectComponent implements ControlValueAccessor {
   private onChange: (value: readonly unknown[]) => void = () => undefined;
 
   constructor() {
-    effect(() => this.isDisabled.set(this.disabled()));
     effect(() => {
       const source = this.dataSource();
       this.asyncController?.destroy();
@@ -700,7 +701,7 @@ export class JMultiselectComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled.set(isDisabled);
+    this.formDisabled.set(isDisabled);
     if (isDisabled) {
       this.close();
     }

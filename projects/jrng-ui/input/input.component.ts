@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  computed,
   effect,
   forwardRef,
   inject,
@@ -64,7 +65,8 @@ export class JInputComponent implements ControlValueAccessor {
 
   readonly hintId = jCreateId('j-input-hint');
   readonly errorId = jCreateId('j-input-error');
-  readonly isDisabled = signal(false);
+  private readonly formDisabled = signal(false);
+  readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
 
   private onChange: (value: string) => void = () => undefined;
   private onTouched: () => void = () => undefined;
@@ -76,7 +78,6 @@ export class JInputComponent implements ControlValueAccessor {
         this.internalValue.set(value === null ? '' : String(value));
       }
     });
-    effect(() => this.isDisabled.set(this.disabled()));
   }
 
   get hasError(): boolean {
@@ -125,7 +126,7 @@ export class JInputComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled.set(isDisabled);
+    this.formDisabled.set(isDisabled);
     this.changeDetectorRef.markForCheck();
   }
 

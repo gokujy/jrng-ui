@@ -3,8 +3,8 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  computed,
   contentChild,
-  effect,
   forwardRef,
   inject,
   input,
@@ -290,14 +290,11 @@ export class JPasswordComponent implements ControlValueAccessor {
   readonly errorId = jCreateId('j-password-error');
   value = '';
   visible = false;
-  readonly isDisabled = signal(false);
+  private readonly formDisabled = signal(false);
+  readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
 
   private onChange: (value: string) => void = () => undefined;
   private onTouched: () => void = () => undefined;
-
-  constructor() {
-    effect(() => this.isDisabled.set(this.disabled()));
-  }
 
   get hasError(): boolean {
     return this.invalid() || this.error().trim().length > 0;
@@ -402,7 +399,7 @@ export class JPasswordComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled.set(isDisabled);
+    this.formDisabled.set(isDisabled);
     this.changeDetectorRef.markForCheck();
   }
 

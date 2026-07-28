@@ -3,7 +3,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  effect,
+  computed,
   forwardRef,
   inject,
   input,
@@ -106,13 +106,10 @@ export class JToggleButtonComponent implements ControlValueAccessor {
   readonly valueChange = output<unknown>();
 
   value: unknown = false;
-  readonly isDisabled = signal(false);
+  private readonly formDisabled = signal(false);
+  readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
   onTouched: () => void = () => undefined;
   private onChange: (value: unknown) => void = () => undefined;
-
-  constructor() {
-    effect(() => this.isDisabled.set(this.disabled()));
-  }
 
   get pressed(): boolean {
     return Object.is(this.value, this.trueValue());
@@ -141,7 +138,7 @@ export class JToggleButtonComponent implements ControlValueAccessor {
     this.onTouched = fn;
   }
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled.set(isDisabled);
+    this.formDisabled.set(isDisabled);
     this.changeDetectorRef.markForCheck();
   }
   toggle(): void {

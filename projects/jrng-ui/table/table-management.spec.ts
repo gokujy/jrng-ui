@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { JBodyScrollLockService } from 'jrng-ui/core';
 import { JTableComponent } from './table.component';
 import {
   JTableActionEvent,
@@ -105,6 +106,43 @@ describe('JTableComponent management surface', () => {
     expect(table.showExport).toBe(true);
     expect(table.maximizable).toBe(true);
     expect(table.dataMode()).toBe('client');
+  });
+
+  it('cleans up column-resize listeners when pointer input is cancelled', () => {
+    const table = fixture.debugElement.query(By.directive(JTableComponent))
+      .componentInstance as JTableComponent;
+    const remove = vi.spyOn(document, 'removeEventListener');
+    table.startColumnResize(
+      {
+        preventDefault: vi.fn(),
+        stopPropagation: vi.fn(),
+        target: document.createElement('span'),
+        clientX: 100,
+      } as unknown as PointerEvent,
+      fixture.componentInstance.columns[0],
+    );
+
+    document.dispatchEvent(new Event('pointercancel'));
+
+    expect(remove).toHaveBeenCalledWith('pointermove', expect.any(Function));
+    expect(remove).toHaveBeenCalledWith('pointerup', expect.any(Function));
+    expect(remove).toHaveBeenCalledWith('pointercancel', expect.any(Function));
+  });
+
+  it('does not release another overlay scroll lock when leaving maximized mode', () => {
+    const scrollLock = TestBed.inject(JBodyScrollLockService);
+    const table = fixture.debugElement.query(By.directive(JTableComponent))
+      .componentInstance as JTableComponent;
+    scrollLock.lock();
+
+    table.setMaximized(true);
+    fixture.detectChanges();
+    table.setMaximized(false);
+    fixture.detectChanges();
+
+    expect(document.body.style.overflow).toBe('hidden');
+    scrollLock.unlock();
+    expect(document.body.style.overflow).toBe('');
   });
 
   it('emits global filter changes and uses the configured search placeholder', () => {

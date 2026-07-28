@@ -50,4 +50,27 @@ describe('JPaginatorComponent variants', () => {
     fixture.debugElement.query(By.css('[aria-label="Next page"]')).triggerEventHandler('click');
     expect(emitted).toHaveLength(1);
   });
+
+  it('normalizes non-finite and negative pagination inputs', () => {
+    fixture.componentRef.setInput('totalRecords', -10);
+    fixture.componentRef.setInput('rows', 0);
+    fixture.componentRef.setInput('first', Number.POSITIVE_INFINITY);
+    fixture.componentRef.setInput('pageLinkSize', Number.POSITIVE_INFINITY);
+    fixture.detectChanges();
+
+    expect(component.pageCount).toBe(1);
+    expect(component.currentPage).toBe(1);
+    expect(component.pageLinks).toEqual([1]);
+    expect(component.currentReport).toContain('Showing 0 to 0 of 0');
+  });
+
+  it('does not emit NaN when a programmatic page is invalid', () => {
+    fixture.detectChanges();
+    let change: JPaginatorPageChange | undefined;
+    component.pageChange.subscribe((event) => (change = event));
+
+    component.setPage(Number.NaN);
+
+    expect(change).toEqual({ first: 0, rows: 10, page: 1, pageCount: 8 });
+  });
 });

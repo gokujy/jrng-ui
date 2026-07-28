@@ -76,8 +76,13 @@ export class JContextMenuComponent {
       (event: KeyboardEvent) => {
         if (event.key === 'ContextMenu' || (event.shiftKey && event.key === 'F10')) {
           const target = this.documentRef.activeElement;
+          const configuredTarget = this.resolveTarget();
           const HTMLElementCtor = this.documentRef.defaultView?.HTMLElement;
-          if (HTMLElementCtor && target instanceof HTMLElementCtor) {
+          if (
+            HTMLElementCtor &&
+            target instanceof HTMLElementCtor &&
+            configuredTarget?.contains(target)
+          ) {
             event.preventDefault();
             this.show(target);
           }
@@ -100,5 +105,10 @@ export class JContextMenuComponent {
   hide(): void {
     this.visible = false;
     this.menu?.hide();
+  }
+
+  private resolveTarget(): HTMLElement | null {
+    const value = this.target();
+    return value instanceof ElementRef ? value.nativeElement : (value ?? null);
   }
 }

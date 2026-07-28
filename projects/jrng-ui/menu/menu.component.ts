@@ -91,7 +91,7 @@ export interface JMenuItemTemplateContext {
         [class.j-menu__list--submenu]="level > 0"
         data-jc-section="list"
         role="menu"
-        tabindex="0"
+        tabindex="-1"
         (keydown)="handleKeydown($event)"
       >
         @for (item of items; track item.label || item.icon || $index; let i = $index) {
@@ -118,9 +118,10 @@ export interface JMenuItemTemplateContext {
                 type="button"
                 role="menuitem"
                 [disabled]="item.disabled"
+                [attr.data-j-path]="path"
                 [attr.aria-haspopup]="children(item).length ? 'menu' : null"
                 [attr.aria-expanded]="children(item).length ? submenuOpen(path) : null"
-                [attr.tabindex]="path === activePath ? 0 : -1"
+                [attr.tabindex]="isPathTabStop(path) ? 0 : -1"
                 [attr.data-j-focused]="path === activePath ? 'true' : null"
                 [attr.data-j-active]="path === activePath ? 'true' : null"
                 [attr.data-j-disabled]="item.disabled ? 'true' : null"
@@ -402,7 +403,7 @@ export class JMenuComponent {
 
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
-      this.buttons?.get(this.activeButtonIndex())?.nativeElement.click();
+      this.activeButton()?.click();
       return;
     }
 
@@ -428,6 +429,14 @@ export class JMenuComponent {
 
   isPathActive(path: string): boolean {
     return this.activePath === path;
+  }
+
+  isPathTabStop(path: string): boolean {
+    if (path === this.activePath) {
+      return true;
+    }
+    const enabled = this.flatEnabledItems();
+    return !enabled.some((entry) => entry.path === this.activePath) && enabled[0]?.path === path;
   }
 
   setActive(path: string): void {
@@ -542,15 +551,15 @@ export class JMenuComponent {
     }
   }
 
-  private activeButtonIndex(): number {
-    return Math.max(
-      0,
-      this.flatEnabledItems().findIndex((entry) => entry.path === this.activePath),
-    );
+  private focusActive(): void {
+    this.activeButton()?.focus();
   }
 
-  private focusActive(): void {
-    this.buttons?.get(this.activeButtonIndex())?.nativeElement.focus();
+  private activeButton(): HTMLButtonElement | undefined {
+    return this.buttons?.find(
+      ({ nativeElement }) =>
+        nativeElement.dataset['jPath'] === this.activePath && !nativeElement.disabled,
+    )?.nativeElement;
   }
 
   private flatEnabledItems(

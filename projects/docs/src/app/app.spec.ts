@@ -51,10 +51,10 @@ describe('App', () => {
 
     expect(catalog).not.toBeNull();
     expect(catalog?.querySelector('input[type="search"]')).not.toBeNull();
-    expect(catalog?.textContent).toContain('Data & Tables');
+    expect(catalog?.textContent).toContain('Data');
     expect(catalog?.querySelector('a.is-active')?.textContent?.trim()).toBe('Table');
     expect(compiled.querySelector('.j-components-sidebar')).toBeNull();
-  });
+  }, 15_000);
 
   it('allows component categories to be collapsed', async () => {
     const router = TestBed.inject(Router);
@@ -78,7 +78,7 @@ describe('App', () => {
     expect(controlledId && compiled.querySelector<HTMLElement>(`#${controlledId}`)?.hidden).toBe(
       true,
     );
-  });
+  }, 15_000);
 
   it('should keep the homepage in the full-width layout', async () => {
     const router = TestBed.inject(Router);

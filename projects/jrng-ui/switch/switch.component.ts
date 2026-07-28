@@ -3,7 +3,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  effect,
+  computed,
   forwardRef,
   inject,
   input,
@@ -166,14 +166,11 @@ export class JSwitchComponent implements ControlValueAccessor {
 
   value: unknown = false;
   checked = false;
-  readonly isDisabled = signal(false);
+  private readonly formDisabled = signal(false);
+  readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
 
   private onChange: (value: unknown) => void = () => undefined;
   private onTouched: () => void = () => undefined;
-
-  constructor() {
-    effect(() => this.isDisabled.set(this.disabled()));
-  }
 
   get rootClasses(): string {
     return [
@@ -203,7 +200,7 @@ export class JSwitchComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled.set(isDisabled);
+    this.formDisabled.set(isDisabled);
     this.changeDetectorRef.markForCheck();
   }
 

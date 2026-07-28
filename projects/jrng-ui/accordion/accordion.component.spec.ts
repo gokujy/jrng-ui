@@ -39,6 +39,20 @@ class AccordionCompositionHost {
   activeValue: string | number | readonly (string | number)[] | null = 'profile';
 }
 
+@Component({
+  imports: [JAccordionComponent, JAccordionPanelComponent],
+  template: `<j-accordion [(value)]="activeValue">
+    <j-accordion-panel value="first" header="First">First content</j-accordion-panel>
+    @if (showExtra) {
+      <j-accordion-panel value="extra" header="Extra">Extra content</j-accordion-panel>
+    }
+  </j-accordion>`,
+})
+class DynamicAccordionHost {
+  activeValue: string | number | readonly (string | number)[] | null = null;
+  showExtra = false;
+}
+
 describe('JAccordionComponent variants', () => {
   let fixture: ComponentFixture<AccordionVariantHost>;
 
@@ -91,5 +105,18 @@ describe('JAccordionComponent composition', () => {
     fixture.detectChanges();
     expect(fixture.componentInstance.activeValue).toBe('security');
     expect(buttons[1].attributes['aria-expanded']).toBe('true');
+  });
+
+  it('does not duplicate panel toggle handlers after projected panels change', () => {
+    const fixture = TestBed.createComponent(DynamicAccordionHost);
+    fixture.detectChanges();
+    fixture.componentInstance.showExtra = true;
+    fixture.changeDetectorRef.markForCheck();
+    fixture.detectChanges();
+
+    fixture.debugElement.query(By.css('.j-accordion-panel__button')).nativeElement.click();
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.activeValue).toBe('first');
   });
 });

@@ -14,7 +14,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { JButtonComponent } from 'jrng-ui/button';
-import { JFocusTrapDirective } from 'jrng-ui/core';
+import { JBodyScrollLockService, JFocusTrapDirective, JOverlayStackService } from 'jrng-ui/core';
 import { JInternalOverlayHeaderComponent } from 'jrng-ui/overlay-header';
 
 /** @internal Fullscreen implementation shared by j-image, Avatar and Gallery. */
@@ -166,10 +166,12 @@ export class JInternalImageViewerComponent {
   private readonly documentRef = inject(DOCUMENT);
   private readonly renderer = inject(Renderer2);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly bodyScrollLock = inject(JBodyScrollLockService);
+  private readonly overlayStack = inject(JOverlayStackService);
   private readonly browser = isPlatformBrowser(inject(PLATFORM_ID));
   private readonly overlayHeader = viewChild(JInternalOverlayHeaderComponent);
   private previousFocus: HTMLElement | null = null;
-  private previousBodyOverflow: string | null = null;
+  private scrollLocked = false;
   private wasVisible = false;
 
   readonly src = input('');
@@ -187,6 +189,7 @@ export class JInternalImageViewerComponent {
     if (!this.browser) return;
     const remove = this.renderer.listen(this.documentRef, 'keydown', (event: KeyboardEvent) => {
       if (!this.visible()) return;
+      if (!this.overlayStack.isTopmost(this)) return;
       if (event.key === 'Escape') {
         event.preventDefault();
         this.close();
@@ -197,17 +200,22 @@ export class JInternalImageViewerComponent {
     this.destroyRef.onDestroy(remove);
     afterRenderEffect(() => {
       if (this.visible() && !this.wasVisible) {
+        this.overlayStack.push(this);
         this.previousFocus = this.documentRef.activeElement as HTMLElement | null;
         this.lockPageScroll();
         queueMicrotask(() => this.overlayHeader()?.focusClose());
       } else if (!this.visible() && this.wasVisible) {
+        this.overlayStack.remove(this);
         this.restorePageScroll();
         queueMicrotask(() => this.previousFocus?.focus());
         this.previousFocus = null;
       }
       this.wasVisible = this.visible();
     });
-    this.destroyRef.onDestroy(() => this.restorePageScroll());
+    this.destroyRef.onDestroy(() => {
+      this.overlayStack.remove(this);
+      this.restorePageScroll();
+    });
   }
 
   zoomBy(delta: number): void {
@@ -224,26 +232,22 @@ export class JInternalImageViewerComponent {
     if (this.closeOnBackdrop()) this.close();
   }
   close(): void {
+    if (!this.visible()) return;
+    this.overlayStack.remove(this);
     this.visible.set(false);
     this.reset();
     this.closed.emit();
   }
 
   private lockPageScroll(): void {
-    const body = this.documentRef.body;
-    if (this.previousBodyOverflow !== null) return;
-    this.previousBodyOverflow = body.style.overflow;
-    this.renderer.setStyle(body, 'overflow', 'hidden');
+    if (this.scrollLocked) return;
+    this.bodyScrollLock.lock();
+    this.scrollLocked = true;
   }
 
   private restorePageScroll(): void {
-    if (this.previousBodyOverflow === null) return;
-    const body = this.documentRef.body;
-    if (this.previousBodyOverflow) {
-      this.renderer.setStyle(body, 'overflow', this.previousBodyOverflow);
-    } else {
-      this.renderer.removeStyle(body, 'overflow');
-    }
-    this.previousBodyOverflow = null;
+    if (!this.scrollLocked) return;
+    this.bodyScrollLock.unlock();
+    this.scrollLocked = false;
   }
 }

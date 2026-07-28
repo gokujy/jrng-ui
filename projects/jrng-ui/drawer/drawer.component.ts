@@ -343,6 +343,10 @@ export class JDrawerComponent {
     this.destroyRef.onDestroy(() => {
       this.overlayStack.remove(this);
       this.overlayHandle?.detach();
+      if (this.scrollLocked) {
+        this.bodyScrollLock.unlock();
+        this.scrollLocked = false;
+      }
     });
 
     if (!this.isBrowser) {

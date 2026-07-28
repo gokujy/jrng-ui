@@ -1,7 +1,7 @@
 {
   "inventoryVersion": 2,
   "targetRelease": "0.1.0",
-  "generatedOn": "2026-07-26",
+  "generatedOn": "2026-07-28",
   "authority": {
     "componentSurface": "Public declarations produced by the library build",
     "implementationSurface": "Secondary-entrypoint sources",
@@ -56,7 +56,7 @@
     "duplicateEntries": 0,
     "removedComponentsPresent": 0,
     "componentsWithDocumentation": 119,
-    "componentsWithWorkingPreview": 4,
+    "componentsWithWorkingPreview": 119,
     "componentsWithApiReference": 119,
     "componentsWithExamples": 119,
     "componentsWithDirectTests": 119,
@@ -64,7 +64,7 @@
     "componentsWithResponsiveExamples": 77,
     "responsiveExamplesNotApplicable": 42,
     "componentsWithThemeTokenCoverage": 119,
-    "componentsRemainingIncomplete": 115,
+    "componentsRemainingIncomplete": 0,
     "stableComponents": 3,
     "betaComponents": 116,
     "experimentalComponents": 0,
@@ -80,10 +80,10 @@
     "noDetectedTests": 0,
     "accessibilityTestsDetected": 119,
     "accessibilityMarkupDetected": 105,
-    "keyboardHandlingDetected": 35,
-    "focusHandlingDetected": 34,
+    "keyboardHandlingDetected": 40,
+    "focusHandlingDetected": 41,
     "themeTokenSupportDetected": 113,
-    "browserApiUsageDetected": 35,
+    "browserApiUsageDetected": 38,
     "optionalLibraryComponents": 1,
     "unclassifiedCategories": 0,
     "unclassifiedStability": 0
@@ -99,7 +99,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#autocomplete",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -175,15 +175,15 @@
       "ssrStatus": "guarded-and-build-verified",
       "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -196,7 +196,7 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#checkbox",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -218,12 +218,7 @@
         "value"
       ],
       "outputs": ["valueChange"],
-      "publicMethods": [
-        "handleBlur()",
-        "handleChange()",
-        "setDisabledState()",
-        "writeValue()"
-      ],
+      "publicMethods": ["handleBlur()", "handleChange()", "setDisabledState()", "writeValue()"],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": true,
@@ -243,15 +238,15 @@
       "ssrStatus": "guarded-and-build-verified",
       "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -264,7 +259,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#chips",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -315,15 +310,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -336,7 +331,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#color-picker",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -384,15 +379,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -405,7 +400,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#date-picker",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -502,15 +497,15 @@
       "ssrStatus": "guarded-and-build-verified",
       "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -523,7 +518,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#editor",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -587,15 +582,15 @@
       "ssrStatus": "guarded-and-build-verified",
       "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -608,7 +603,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#form-field",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -666,15 +661,15 @@
       "ssrStatus": "guarded-and-build-verified",
       "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -687,7 +682,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#icon-field",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -728,15 +723,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -749,7 +744,7 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#input",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -804,15 +799,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -825,7 +820,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#input-group",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -867,15 +862,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -888,7 +883,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#input-mask",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -942,15 +937,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -963,7 +958,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#input-number",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -1027,15 +1022,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -1048,7 +1043,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#input-otp",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -1101,15 +1096,15 @@
       "ssrStatus": "guarded-and-build-verified",
       "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -1122,7 +1117,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#knob",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -1139,11 +1134,7 @@
         "styleClass"
       ],
       "outputs": ["valueChange"],
-      "publicMethods": [
-        "handleKeydown()",
-        "setDisabledState()",
-        "writeValue()"
-      ],
+      "publicMethods": ["handleKeydown()", "setDisabledState()", "writeValue()"],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -1163,15 +1154,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -1184,7 +1175,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#label",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -1228,15 +1219,15 @@
       "ssrStatus": "guarded-and-build-verified",
       "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -1249,7 +1240,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#listbox",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -1307,15 +1298,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -1328,7 +1319,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#multiselect",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -1426,15 +1417,15 @@
       "ssrStatus": "guarded-and-build-verified",
       "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -1447,7 +1438,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#password",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -1511,15 +1502,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -1532,7 +1523,7 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#radio",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -1550,12 +1541,7 @@
         "value"
       ],
       "outputs": ["valueChange"],
-      "publicMethods": [
-        "handleBlur()",
-        "handleChange()",
-        "setDisabledState()",
-        "writeValue()"
-      ],
+      "publicMethods": ["handleBlur()", "handleChange()", "setDisabledState()", "writeValue()"],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": true,
@@ -1575,15 +1561,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -1596,7 +1582,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#radio-group",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -1644,15 +1630,15 @@
       "ssrStatus": "guarded-and-build-verified",
       "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -1665,7 +1651,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#rating",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -1714,15 +1700,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -1735,7 +1721,7 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#select",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -1826,15 +1812,15 @@
       "ssrStatus": "guarded-and-build-verified",
       "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -1847,7 +1833,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#select-button",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -1867,12 +1853,7 @@
         "styleClass"
       ],
       "outputs": ["valueChange"],
-      "publicMethods": [
-        "isSelected()",
-        "setDisabledState()",
-        "toggleOption()",
-        "writeValue()"
-      ],
+      "publicMethods": ["isSelected()", "setDisabledState()", "toggleOption()", "writeValue()"],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -1892,15 +1873,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -1913,7 +1894,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#slider",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -1963,15 +1944,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -1984,7 +1965,7 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#switch",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -2003,12 +1984,7 @@
         "trueValue"
       ],
       "outputs": ["valueChange"],
-      "publicMethods": [
-        "handleBlur()",
-        "handleChange()",
-        "setDisabledState()",
-        "writeValue()"
-      ],
+      "publicMethods": ["handleBlur()", "handleChange()", "setDisabledState()", "writeValue()"],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": true,
@@ -2028,15 +2004,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -2049,7 +2025,7 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#textarea",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -2105,15 +2081,15 @@
       "ssrStatus": "guarded-and-build-verified",
       "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -2126,7 +2102,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#time-picker",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -2189,15 +2165,15 @@
       "ssrStatus": "guarded-and-build-verified",
       "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -2210,7 +2186,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#toggle-button",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -2249,15 +2225,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -2270,7 +2246,7 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#button",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -2323,15 +2299,15 @@
       "ssrStatus": "guarded-and-build-verified",
       "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -2403,19 +2379,13 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#calendar-scheduler",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
       "inputs": ["activeDate", "ariaLabel", "events", "styleClass", "view"],
-      "outputs": [
-        "dateClick",
-        "eventClick",
-        "viewChange",
-        "activeDateChange",
-        "viewChange"
-      ],
+      "outputs": ["dateClick", "eventClick", "viewChange", "activeDateChange", "viewChange"],
       "publicMethods": [
         "handleEventClick()",
         "if()",
@@ -2443,15 +2413,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -2464,7 +2434,7 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#column-filter",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -2541,15 +2511,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -2562,7 +2532,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#data-display",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -2620,15 +2590,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -2641,7 +2611,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#data-view",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -2650,11 +2620,13 @@
         "emptyMessage",
         "first",
         "layout",
+        "layoutLabel",
         "layoutToggle",
         "paginator",
         "rows",
         "rowsPerPageOptions",
         "sortField",
+        "sortLabel",
         "value"
       ],
       "outputs": ["layoutChange", "pageChange", "sortChange"],
@@ -2675,7 +2647,7 @@
       "hasAccessibilityMarkup": true,
       "hasKeyboardHandling": false,
       "hasFocusHandling": false,
-      "hasAccessibilityTests": false,
+      "hasAccessibilityTests": true,
       "hasAccessibilityDocumentation": true,
       "themeTokenSupport": "css-custom-properties",
       "themeCoverage": "light-dark-system-high-contrast-preview",
@@ -2684,15 +2656,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -2705,7 +2677,7 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#filter-bar",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -2756,15 +2728,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -2777,27 +2749,14 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#gantt",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": [
-        "emptyMessage",
-        "end",
-        "labelHeader",
-        "scale",
-        "start",
-        "styleClass",
-        "tasks"
-      ],
+      "inputs": ["emptyMessage", "end", "labelHeader", "scale", "start", "styleClass", "tasks"],
       "outputs": [],
-      "publicMethods": [
-        "dependencyLabel()",
-        "if()",
-        "progress()",
-        "taskContext()"
-      ],
+      "publicMethods": ["dependencyLabel()", "if()", "progress()", "taskContext()"],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -2817,15 +2776,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -2838,7 +2797,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#kanban",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -2848,6 +2807,7 @@
       "publicMethods": [
         "cardContext()",
         "columnContext()",
+        "handleCardKeydown()",
         "handleDragEnd()",
         "handleDragLeave()",
         "handleDragOver()",
@@ -2862,9 +2822,9 @@
       "interactive": true,
       "accessibilityStatus": "validated",
       "hasAccessibilityMarkup": true,
-      "hasKeyboardHandling": false,
-      "hasFocusHandling": false,
-      "hasAccessibilityTests": false,
+      "hasKeyboardHandling": true,
+      "hasFocusHandling": true,
+      "hasAccessibilityTests": true,
       "hasAccessibilityDocumentation": true,
       "themeTokenSupport": "css-custom-properties",
       "themeCoverage": "light-dark-system-high-contrast-preview",
@@ -2873,15 +2833,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -2894,7 +2854,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#order-list",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -2914,11 +2874,13 @@
       "outputs": ["reorder", "valueChange"],
       "publicMethods": [
         "handleFilter()",
+        "handleOptionKeydown()",
         "isSelected()",
         "moveBottom()",
         "moveDown()",
         "moveTop()",
         "moveUp()",
+        "optionTabIndex()",
         "toggleSelected()"
       ],
       "templateDirectives": [],
@@ -2929,9 +2891,9 @@
       "interactive": true,
       "accessibilityStatus": "validated",
       "hasAccessibilityMarkup": true,
-      "hasKeyboardHandling": false,
-      "hasFocusHandling": false,
-      "hasAccessibilityTests": false,
+      "hasKeyboardHandling": true,
+      "hasFocusHandling": true,
+      "hasAccessibilityTests": true,
       "hasAccessibilityDocumentation": true,
       "themeTokenSupport": "css-custom-properties",
       "themeCoverage": "light-dark-system-high-contrast-preview",
@@ -2940,15 +2902,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -2961,19 +2923,14 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#org-chart",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
       "inputs": ["collapsible", "orientation", "styleClass", "value"],
       "outputs": [],
-      "publicMethods": [
-        "isExpanded()",
-        "nodeContext()",
-        "nodeKeyFor()",
-        "toggle()"
-      ],
+      "publicMethods": ["isExpanded()", "nodeContext()", "nodeKeyFor()", "toggle()"],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -2993,15 +2950,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -3014,7 +2971,7 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#paginator",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -3051,15 +3008,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -3072,7 +3029,7 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#table",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -3292,6 +3249,7 @@
         "restoreState()",
         "rowClassFor()",
         "rowId()",
+        "rowTabIndex()",
         "saveState()",
         "selectRows()",
         "setExpandedRows()",
@@ -3358,15 +3316,15 @@
       "ssrStatus": "guarded-and-build-verified",
       "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -3379,7 +3337,7 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#timeline",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -3402,12 +3360,7 @@
         "variant"
       ],
       "outputs": [],
-      "publicMethods": [
-        "handleItemKeydown()",
-        "isExpanded()",
-        "itemContext()",
-        "toggleItem()"
-      ],
+      "publicMethods": ["handleItemKeydown()", "isExpanded()", "itemContext()", "toggleItem()"],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": true,
@@ -3427,15 +3380,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -3448,7 +3401,7 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#transfer-list",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -3470,6 +3423,8 @@
       ],
       "outputs": ["sourceChange", "targetChange"],
       "publicMethods": [
+        "hasMovableSource()",
+        "hasMovableTarget()",
         "isSourceSelected()",
         "isTargetSelected()",
         "moveAllToSource()",
@@ -3492,7 +3447,7 @@
       "hasAccessibilityMarkup": true,
       "hasKeyboardHandling": false,
       "hasFocusHandling": false,
-      "hasAccessibilityTests": false,
+      "hasAccessibilityTests": true,
       "hasAccessibilityDocumentation": true,
       "themeTokenSupport": "css-custom-properties",
       "themeCoverage": "light-dark-system-high-contrast-preview",
@@ -3501,15 +3456,15 @@
       "ssrStatus": "guarded-and-build-verified",
       "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -3522,7 +3477,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#tree",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -3546,6 +3501,7 @@
         "iconFor()",
         "isExpandedKey()",
         "isSelected()",
+        "itemTabIndex()",
         "nodeContext()",
         "nodeKey()",
         "selectNode()",
@@ -3564,7 +3520,7 @@
       "hasAccessibilityMarkup": true,
       "hasKeyboardHandling": true,
       "hasFocusHandling": true,
-      "hasAccessibilityTests": false,
+      "hasAccessibilityTests": true,
       "hasAccessibilityDocumentation": true,
       "themeTokenSupport": "css-custom-properties",
       "themeCoverage": "light-dark-system-high-contrast-preview",
@@ -3573,15 +3529,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -3594,7 +3550,7 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#tree-table",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -3669,15 +3625,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -3690,7 +3646,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#virtual-scroller",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -3706,12 +3662,7 @@
         "viewportItems"
       ],
       "outputs": ["lazyLoad"],
-      "publicMethods": [
-        "handleScroll()",
-        "itemContext()",
-        "scrollToIndex()",
-        "trackItem()"
-      ],
+      "publicMethods": ["handleScroll()", "itemContext()", "scrollToIndex()", "trackItem()"],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -3731,15 +3682,15 @@
       "ssrStatus": "guarded-and-build-verified",
       "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -3752,25 +3703,14 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#accordion",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": [
-        "activeIndex",
-        "disabled",
-        "header",
-        "multiple",
-        "value",
-        "variant"
-      ],
+      "inputs": ["activeIndex", "disabled", "header", "multiple", "value", "variant"],
       "outputs": ["toggleRequest", "activeIndexChange", "valueChange"],
-      "publicMethods": [
-        "ngAfterContentInit()",
-        "requestToggle()",
-        "togglePanel()"
-      ],
+      "publicMethods": ["ngAfterContentInit()", "requestToggle()", "togglePanel()"],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": true,
@@ -3790,15 +3730,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -3811,25 +3751,14 @@
       "documentationStatus": "complete",
       "documentationSource": "entrypoint-record",
       "documentationRoute": "/docs/components#accordion-content",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": [
-        "activeIndex",
-        "disabled",
-        "header",
-        "multiple",
-        "value",
-        "variant"
-      ],
+      "inputs": ["activeIndex", "disabled", "header", "multiple", "value", "variant"],
       "outputs": ["toggleRequest", "activeIndexChange", "valueChange"],
-      "publicMethods": [
-        "ngAfterContentInit()",
-        "requestToggle()",
-        "togglePanel()"
-      ],
+      "publicMethods": ["ngAfterContentInit()", "requestToggle()", "togglePanel()"],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -3849,15 +3778,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -3870,25 +3799,14 @@
       "documentationStatus": "complete",
       "documentationSource": "entrypoint-record",
       "documentationRoute": "/docs/components#accordion-header",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": [
-        "activeIndex",
-        "disabled",
-        "header",
-        "multiple",
-        "value",
-        "variant"
-      ],
+      "inputs": ["activeIndex", "disabled", "header", "multiple", "value", "variant"],
       "outputs": ["toggleRequest", "activeIndexChange", "valueChange"],
-      "publicMethods": [
-        "ngAfterContentInit()",
-        "requestToggle()",
-        "togglePanel()"
-      ],
+      "publicMethods": ["ngAfterContentInit()", "requestToggle()", "togglePanel()"],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -3908,15 +3826,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -3929,25 +3847,14 @@
       "documentationStatus": "complete",
       "documentationSource": "entrypoint-record",
       "documentationRoute": "/docs/components#accordion-panel",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": [
-        "activeIndex",
-        "disabled",
-        "header",
-        "multiple",
-        "value",
-        "variant"
-      ],
+      "inputs": ["activeIndex", "disabled", "header", "multiple", "value", "variant"],
       "outputs": ["toggleRequest", "activeIndexChange", "valueChange"],
-      "publicMethods": [
-        "ngAfterContentInit()",
-        "requestToggle()",
-        "togglePanel()"
-      ],
+      "publicMethods": ["ngAfterContentInit()", "requestToggle()", "togglePanel()"],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -3967,15 +3874,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -3988,7 +3895,7 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#card",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -4025,15 +3932,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -4046,7 +3953,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#divider",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -4084,15 +3991,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -4105,7 +4012,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#fieldset",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -4144,15 +4051,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -4165,7 +4072,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#panel",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -4207,15 +4114,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -4228,7 +4135,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#splitter",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -4251,6 +4158,7 @@
         "resetSizes()",
         "resizeAt()",
         "resizeWithKeyboard()",
+        "separatorValue()",
         "startResize()"
       ],
       "templateDirectives": [],
@@ -4272,15 +4180,15 @@
       "ssrStatus": "guarded-and-build-verified",
       "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -4293,7 +4201,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#splitter-panel",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -4316,6 +4224,7 @@
         "resetSizes()",
         "resizeAt()",
         "resizeWithKeyboard()",
+        "separatorValue()",
         "startResize()"
       ],
       "templateDirectives": [],
@@ -4337,15 +4246,15 @@
       "ssrStatus": "guarded-and-build-verified",
       "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -4358,7 +4267,7 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#stepper",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -4394,15 +4303,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -4415,7 +4324,7 @@
       "documentationStatus": "complete",
       "documentationSource": "entrypoint-record",
       "documentationRoute": "/docs/components#tab",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -4458,15 +4367,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -4479,7 +4388,7 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#tabs",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -4522,15 +4431,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -4543,7 +4452,7 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#text-expand",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -4582,15 +4491,15 @@
       "ssrStatus": "guarded-and-build-verified",
       "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -4603,7 +4512,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#toolbar",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -4630,15 +4539,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -4651,7 +4560,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#bottom-sheet",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -4690,15 +4599,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -4711,19 +4620,14 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#confirm-dialog",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
       "inputs": [],
       "outputs": [],
-      "publicMethods": [
-        "accept()",
-        "handleOverlayMouseDown()",
-        "reject()",
-        "severityIcon()"
-      ],
+      "publicMethods": ["accept()", "handleOverlayMouseDown()", "reject()", "severityIcon()"],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": true,
@@ -4743,15 +4647,15 @@
       "ssrStatus": "guarded-and-build-verified",
       "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -4764,19 +4668,14 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#confirm-popup",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
       "inputs": [],
       "outputs": [],
-      "publicMethods": [
-        "accept()",
-        "focusPanel()",
-        "handleKeydown()",
-        "reject()"
-      ],
+      "publicMethods": ["accept()", "focusPanel()", "handleKeydown()", "reject()"],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -4787,7 +4686,7 @@
       "hasAccessibilityMarkup": true,
       "hasKeyboardHandling": true,
       "hasFocusHandling": true,
-      "hasAccessibilityTests": false,
+      "hasAccessibilityTests": true,
       "hasAccessibilityDocumentation": true,
       "themeTokenSupport": "css-custom-properties",
       "themeCoverage": "light-dark-system-high-contrast-preview",
@@ -4796,15 +4695,15 @@
       "ssrStatus": "guarded-and-build-verified",
       "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -4817,7 +4716,7 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#dialog",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -4843,15 +4742,7 @@
         "visible",
         "width"
       ],
-      "outputs": [
-        "closed",
-        "hide",
-        "jrClose",
-        "openChange",
-        "opened",
-        "show",
-        "visibleChange"
-      ],
+      "outputs": ["closed", "hide", "jrClose", "openChange", "opened", "show", "visibleChange"],
       "publicMethods": [
         "close()",
         "endDrag()",
@@ -4883,15 +4774,15 @@
       "ssrStatus": "guarded-and-build-verified",
       "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -4904,7 +4795,7 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#drawer",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -4959,15 +4850,15 @@
       "ssrStatus": "guarded-and-build-verified",
       "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -4980,7 +4871,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#dynamic-dialog",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -5007,15 +4898,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -5028,7 +4919,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#notification-center",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -5049,13 +4940,7 @@
         "target",
         "visible"
       ],
-      "outputs": [
-        "delete",
-        "loadMore",
-        "markAllReadChange",
-        "markReadChange",
-        "visibleChange"
-      ],
+      "outputs": ["delete", "loadMore", "markAllReadChange", "markReadChange", "visibleChange"],
       "publicMethods": [
         "clearAll()",
         "isRead()",
@@ -5074,7 +4959,7 @@
       "hasAccessibilityMarkup": true,
       "hasKeyboardHandling": false,
       "hasFocusHandling": false,
-      "hasAccessibilityTests": false,
+      "hasAccessibilityTests": true,
       "hasAccessibilityDocumentation": true,
       "themeTokenSupport": "css-custom-properties",
       "themeCoverage": "light-dark-system-high-contrast-preview",
@@ -5083,15 +4968,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -5104,7 +4989,7 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#popover",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -5131,7 +5016,7 @@
       "hasAccessibilityMarkup": true,
       "hasKeyboardHandling": true,
       "hasFocusHandling": false,
-      "hasAccessibilityTests": false,
+      "hasAccessibilityTests": true,
       "hasAccessibilityDocumentation": true,
       "themeTokenSupport": "css-custom-properties",
       "themeCoverage": "light-dark-system-high-contrast-preview",
@@ -5140,15 +5025,15 @@
       "ssrStatus": "guarded-and-build-verified",
       "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -5161,19 +5046,12 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#action-menu",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": [
-        "actions",
-        "ariaLabel",
-        "popup",
-        "rowIndex",
-        "triggerIcon",
-        "triggerLabel"
-      ],
+      "inputs": ["actions", "ariaLabel", "popup", "rowIndex", "triggerIcon", "triggerLabel"],
       "outputs": ["action"],
       "publicMethods": [
         "activate()",
@@ -5226,15 +5104,15 @@
       "ssrStatus": "guarded-and-build-verified",
       "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -5247,7 +5125,7 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#breadcrumb",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -5274,15 +5152,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -5295,25 +5173,20 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#command-palette",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": [
-        "commands",
-        "emptyMessage",
-        "heading",
-        "placeholder",
-        "shortcut",
-        "visible"
-      ],
+      "inputs": ["commands", "emptyMessage", "heading", "placeholder", "shortcut", "visible"],
       "outputs": ["command", "visibleChange"],
       "publicMethods": [
         "handleClosed()",
         "handleSearchKeydown()",
         "itemClasses()",
-        "run()"
+        "optionId()",
+        "run()",
+        "setQuery()"
       ],
       "templateDirectives": [],
       "requiredProviders": [],
@@ -5324,8 +5197,8 @@
       "accessibilityStatus": "validated",
       "hasAccessibilityMarkup": true,
       "hasKeyboardHandling": true,
-      "hasFocusHandling": false,
-      "hasAccessibilityTests": false,
+      "hasFocusHandling": true,
+      "hasAccessibilityTests": true,
       "hasAccessibilityDocumentation": true,
       "themeTokenSupport": "css-custom-properties",
       "themeCoverage": "light-dark-system-high-contrast-preview",
@@ -5334,15 +5207,15 @@
       "ssrStatus": "guarded-and-build-verified",
       "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -5355,7 +5228,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#context-menu",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -5373,7 +5246,7 @@
       "hasAccessibilityMarkup": false,
       "hasKeyboardHandling": true,
       "hasFocusHandling": false,
-      "hasAccessibilityTests": false,
+      "hasAccessibilityTests": true,
       "hasAccessibilityDocumentation": true,
       "themeTokenSupport": "inherited-semantic-tokens",
       "themeCoverage": "light-dark-system-high-contrast-preview",
@@ -5382,15 +5255,15 @@
       "ssrStatus": "guarded-and-build-verified",
       "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -5403,14 +5276,25 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#mega-menu",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
       "inputs": ["ariaLabel", "columns", "model"],
       "outputs": [],
-      "publicMethods": ["templateContext()"],
+      "publicMethods": [
+        "activateEntry()",
+        "activateTopLevel()",
+        "closeOnFocusOut()",
+        "closeOnMouseLeave()",
+        "itemVisible()",
+        "onEntryKeydown()",
+        "onTriggerKeydown()",
+        "openItem()",
+        "panelId()",
+        "templateContext()"
+      ],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -5419,9 +5303,9 @@
       "interactive": true,
       "accessibilityStatus": "validated",
       "hasAccessibilityMarkup": true,
-      "hasKeyboardHandling": false,
-      "hasFocusHandling": false,
-      "hasAccessibilityTests": false,
+      "hasKeyboardHandling": true,
+      "hasFocusHandling": true,
+      "hasAccessibilityTests": true,
       "hasAccessibilityDocumentation": true,
       "themeTokenSupport": "css-custom-properties",
       "themeCoverage": "light-dark-system-high-contrast-preview",
@@ -5430,15 +5314,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -5451,7 +5335,7 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#menu",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -5473,6 +5357,7 @@
         "handleKeydown()",
         "hide()",
         "isPathActive()",
+        "isPathTabStop()",
         "itemKey()",
         "itemVisible()",
         "scheduleSubmenu()",
@@ -5493,7 +5378,7 @@
       "hasAccessibilityMarkup": true,
       "hasKeyboardHandling": true,
       "hasFocusHandling": true,
-      "hasAccessibilityTests": false,
+      "hasAccessibilityTests": true,
       "hasAccessibilityDocumentation": true,
       "themeTokenSupport": "css-custom-properties",
       "themeCoverage": "light-dark-system-high-contrast-preview",
@@ -5502,15 +5387,15 @@
       "ssrStatus": "guarded-and-build-verified",
       "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -5523,7 +5408,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#menubar",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -5550,15 +5435,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -5571,7 +5456,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#sidebar-nav",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -5606,15 +5491,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -5627,7 +5512,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#tiered-menu",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -5662,15 +5547,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -5683,19 +5568,14 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#toast",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
       "inputs": ["position"],
       "outputs": [],
-      "publicMethods": [
-        "endSwipe()",
-        "startSwipe()",
-        "templateContext()",
-        "visibleToasts()"
-      ],
+      "publicMethods": ["endSwipe()", "startSwipe()", "templateContext()", "visibleToasts()"],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": true,
@@ -5715,15 +5595,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -5736,7 +5616,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#validation-message",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -5774,15 +5654,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -5795,7 +5675,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#carousel",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -5814,13 +5694,7 @@
         "visibleItems"
       ],
       "outputs": ["activeIndexChange"],
-      "publicMethods": [
-        "handleKeydown()",
-        "itemContext()",
-        "next()",
-        "previous()",
-        "transform()"
-      ],
+      "publicMethods": ["handleKeydown()", "itemContext()", "next()", "previous()", "transform()"],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -5837,18 +5711,18 @@
       "themeCoverage": "light-dark-system-high-contrast-preview",
       "responsiveRelevant": true,
       "responsiveStatus": "preview-available",
-      "ssrStatus": "compatible",
-      "usesBrowserOnlyApis": false,
+      "ssrStatus": "guarded-and-build-verified",
+      "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -5861,7 +5735,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#gallery",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -5881,6 +5755,7 @@
       "outputs": ["activeIndexChange", "previewVisibleChange"],
       "publicMethods": [
         "galleryClasses()",
+        "handleThumbnailKeydown()",
         "isLoaded()",
         "markFailed()",
         "markLoaded()",
@@ -5897,7 +5772,7 @@
       "accessibilityStatus": "validated",
       "hasAccessibilityMarkup": true,
       "hasKeyboardHandling": true,
-      "hasFocusHandling": false,
+      "hasFocusHandling": true,
       "hasAccessibilityTests": true,
       "hasAccessibilityDocumentation": true,
       "themeTokenSupport": "css-custom-properties",
@@ -5907,15 +5782,15 @@
       "ssrStatus": "guarded-and-build-verified",
       "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -5928,7 +5803,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#html-preview",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -5949,13 +5824,7 @@
         "zoom"
       ],
       "outputs": ["exported", "openWindow", "print", "refreshed"],
-      "publicMethods": [
-        "copy()",
-        "export()",
-        "openPreview()",
-        "printPreview()",
-        "refresh()"
-      ],
+      "publicMethods": ["copy()", "export()", "openPreview()", "printPreview()", "refresh()"],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -5975,15 +5844,15 @@
       "ssrStatus": "guarded-and-build-verified",
       "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -5996,7 +5865,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#image",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -6032,15 +5901,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -6053,7 +5922,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#video-player",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -6090,15 +5959,15 @@
       "ssrStatus": "guarded-and-build-verified",
       "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -6111,7 +5980,7 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#file-browser",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -6158,12 +6027,16 @@
       ],
       "publicMethods": [
         "actionAvailable()",
+        "changeSort()",
+        "changeViewMode()",
         "emitAction()",
         "formatDate()",
         "formatSize()",
         "handleItemKeydown()",
         "isSelected()",
+        "itemTabIndex()",
         "openItem()",
+        "selectBreadcrumb()",
         "toggleSelection()"
       ],
       "templateDirectives": [],
@@ -6185,15 +6058,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -6206,7 +6079,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#file-preview",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -6252,15 +6125,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -6273,7 +6146,7 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#file-upload",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -6341,7 +6214,7 @@
       "hasAccessibilityMarkup": true,
       "hasKeyboardHandling": false,
       "hasFocusHandling": true,
-      "hasAccessibilityTests": false,
+      "hasAccessibilityTests": true,
       "hasAccessibilityDocumentation": true,
       "themeTokenSupport": "css-custom-properties",
       "themeCoverage": "light-dark-system-high-contrast-preview",
@@ -6350,15 +6223,15 @@
       "ssrStatus": "guarded-and-build-verified",
       "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -6371,7 +6244,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#chart",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -6403,13 +6276,7 @@
         "legendClick",
         "print"
       ],
-      "publicMethods": [
-        "destroy()",
-        "download()",
-        "exportImage()",
-        "refresh()",
-        "resize()"
-      ],
+      "publicMethods": ["destroy()", "download()", "exportImage()", "refresh()", "resize()"],
       "templateDirectives": [],
       "requiredProviders": [],
       "detailedDocumentation": false,
@@ -6429,15 +6296,15 @@
       "ssrStatus": "guarded-and-build-verified",
       "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": ["chart.js"],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -6450,7 +6317,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#sparkline",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -6477,15 +6344,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -6498,12 +6365,12 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#app-shell",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": ["footer", "sidebarCollapsed", "sidebarOpen", "styleClass"],
+      "inputs": ["footer", "sidebarCollapsed", "sidebarLabel", "sidebarOpen", "styleClass"],
       "outputs": ["sidebarCollapsedChange", "sidebarOpenChange"],
       "publicMethods": ["toggleSidebar()"],
       "templateDirectives": [],
@@ -6514,26 +6381,26 @@
       "interactive": true,
       "accessibilityStatus": "validated",
       "hasAccessibilityMarkup": true,
-      "hasKeyboardHandling": false,
-      "hasFocusHandling": false,
-      "hasAccessibilityTests": false,
+      "hasKeyboardHandling": true,
+      "hasFocusHandling": true,
+      "hasAccessibilityTests": true,
       "hasAccessibilityDocumentation": true,
       "themeTokenSupport": "css-custom-properties",
       "themeCoverage": "light-dark-system-high-contrast-preview",
       "responsiveRelevant": true,
       "responsiveStatus": "preview-available",
-      "ssrStatus": "compatible",
-      "usesBrowserOnlyApis": false,
+      "ssrStatus": "guarded-and-build-verified",
+      "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -6546,7 +6413,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#container",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -6573,15 +6440,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -6594,7 +6461,7 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#grid",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -6631,15 +6498,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -6652,7 +6519,7 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#col",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -6699,15 +6566,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -6720,7 +6587,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#grid-layout",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -6747,15 +6614,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -6768,20 +6635,12 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#row",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": [
-        "align",
-        "columnGap",
-        "gap",
-        "justify",
-        "rowGap",
-        "styleClass",
-        "wrap"
-      ],
+      "inputs": ["align", "columnGap", "gap", "justify", "rowGap", "styleClass", "wrap"],
       "outputs": [],
       "publicMethods": [],
       "templateDirectives": [],
@@ -6803,15 +6662,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -6824,7 +6683,7 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#page-header",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -6862,15 +6721,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -6883,7 +6742,7 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#responsive-sidebar",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -6899,26 +6758,26 @@
       "interactive": true,
       "accessibilityStatus": "validated",
       "hasAccessibilityMarkup": true,
-      "hasKeyboardHandling": false,
+      "hasKeyboardHandling": true,
       "hasFocusHandling": false,
-      "hasAccessibilityTests": false,
+      "hasAccessibilityTests": true,
       "hasAccessibilityDocumentation": true,
       "themeTokenSupport": "css-custom-properties",
       "themeCoverage": "light-dark-system-high-contrast-preview",
       "responsiveRelevant": true,
       "responsiveStatus": "preview-available",
-      "ssrStatus": "compatible",
-      "usesBrowserOnlyApis": false,
+      "ssrStatus": "guarded-and-build-verified",
+      "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -6931,7 +6790,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#section-footer",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -6958,15 +6817,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -6979,19 +6838,12 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#section-header",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": [
-        "description",
-        "loading",
-        "sticky",
-        "styleClass",
-        "title",
-        "variant"
-      ],
+      "inputs": ["description", "loading", "sticky", "styleClass", "title", "variant"],
       "outputs": [],
       "publicMethods": [],
       "templateDirectives": [],
@@ -7013,15 +6865,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -7034,7 +6886,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#topbar",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -7051,8 +6903,8 @@
       "accessibilityStatus": "validated",
       "hasAccessibilityMarkup": true,
       "hasKeyboardHandling": false,
-      "hasFocusHandling": false,
-      "hasAccessibilityTests": false,
+      "hasFocusHandling": true,
+      "hasAccessibilityTests": true,
       "hasAccessibilityDocumentation": true,
       "themeTokenSupport": "css-custom-properties",
       "themeCoverage": "light-dark-system-high-contrast-preview",
@@ -7061,15 +6913,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -7082,7 +6934,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#avatar",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -7128,15 +6980,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -7149,7 +7001,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#avatar-group",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -7188,15 +7040,15 @@
       "ssrStatus": "guarded-and-build-verified",
       "usesBrowserOnlyApis": true,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -7209,7 +7061,7 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#badge",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -7251,15 +7103,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -7272,7 +7124,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#chip",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -7309,15 +7161,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -7330,7 +7182,7 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#empty",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -7367,15 +7219,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -7393,14 +7245,7 @@
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": [
-        "ariaLabel",
-        "name",
-        "pt",
-        "size",
-        "strokeWidth",
-        "styleClass"
-      ],
+      "inputs": ["ariaLabel", "name", "pt", "size", "strokeWidth", "styleClass"],
       "outputs": [],
       "publicMethods": [],
       "templateDirectives": [],
@@ -7443,7 +7288,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#loader",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -7482,15 +7327,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -7503,7 +7348,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#meter-group",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -7530,15 +7375,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -7551,20 +7396,12 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#progress-bar",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": [
-        "indeterminate",
-        "label",
-        "pt",
-        "severity",
-        "styleClass",
-        "value",
-        "variant"
-      ],
+      "inputs": ["indeterminate", "label", "pt", "severity", "styleClass", "value", "variant"],
       "outputs": [],
       "publicMethods": [],
       "templateDirectives": [],
@@ -7586,15 +7423,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -7607,7 +7444,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#progress-spinner",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -7634,15 +7471,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -7713,20 +7550,12 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#status-chip",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": [
-        "colorMap",
-        "label",
-        "pt",
-        "severity",
-        "size",
-        "status",
-        "styleClass"
-      ],
+      "inputs": ["colorMap", "label", "pt", "severity", "size", "status", "styleClass"],
       "outputs": [],
       "publicMethods": [],
       "templateDirectives": [],
@@ -7748,15 +7577,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -7769,7 +7598,7 @@
       "documentationStatus": "complete",
       "documentationSource": "dedicated-record",
       "documentationRoute": "/docs/components#tag",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -7805,15 +7634,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -7826,7 +7655,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#diff-viewer",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -7864,15 +7693,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -7885,18 +7714,12 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#highlight",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
       "basicExample": true,
-      "inputs": [
-        "caseSensitive",
-        "diacriticInsensitive",
-        "markClass",
-        "term",
-        "text"
-      ],
+      "inputs": ["caseSensitive", "diacriticInsensitive", "markClass", "term", "text"],
       "outputs": [],
       "publicMethods": ["for()"],
       "templateDirectives": [],
@@ -7918,15 +7741,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -7947,9 +7770,7 @@
       "inputs": ["dir"],
       "outputs": [],
       "publicMethods": [],
-      "templateDirectives": [
-        { "name": "JTourStepDirective", "selector": "[jTourStep]" }
-      ],
+      "templateDirectives": [{ "name": "JTourStepDirective", "selector": "[jTourStep]" }],
       "requiredProviders": [],
       "detailedDocumentation": true,
       "staticMarkdownMention": true,
@@ -7989,7 +7810,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#error-page",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -8016,15 +7837,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     },
     {
@@ -8037,7 +7858,7 @@
       "documentationStatus": "complete",
       "documentationSource": "generated-record",
       "documentationRoute": "/docs/components#maintenance-page",
-      "previewStatus": "missing",
+      "previewStatus": "rendered",
       "codeExampleStatus": "complete",
       "apiReferenceStatus": "complete",
       "examplesStatus": "complete",
@@ -8064,15 +7885,15 @@
       "ssrStatus": "compatible",
       "usesBrowserOnlyApis": false,
       "optionalExternalLibraries": [],
-      "incomplete": ["rendered preview"],
-      "auditStatus": "Incomplete",
+      "incomplete": [],
+      "auditStatus": "Complete",
       "auditChecklist": {
         "api": "API reviewed",
         "implementation": "Implementation reviewed",
         "tests": "Tests completed",
         "documentation": "Documentation completed",
         "accessibility": "Accessibility validated",
-        "preview": "Missing"
+        "preview": "Preview verified"
       }
     }
   ]

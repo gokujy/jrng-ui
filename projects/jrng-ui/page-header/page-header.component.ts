@@ -25,7 +25,7 @@ export type JPageHeaderVariant = 'standard' | 'stacked' | 'centered' | 'hero';
           aria-label="Breadcrumb"
           data-jc-section="breadcrumbs"
         >
-          @for (item of breadcrumbs(); track item.label; let last = $last) {
+          @for (item of breadcrumbs(); track $index; let last = $last) {
             @if (item.url && !last) {
               <a [href]="item.url">{{ item.label }}</a>
             } @else {

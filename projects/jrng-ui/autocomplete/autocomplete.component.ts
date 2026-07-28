@@ -4,6 +4,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  computed,
   DestroyRef,
   effect,
   ElementRef,
@@ -362,7 +363,8 @@ export class JAutocompleteComponent implements ControlValueAccessor {
   readonly listboxId = jCreateId('j-autocomplete-listbox');
   value: unknown = null;
   query = '';
-  readonly isDisabled = signal(false);
+  private readonly formDisabled = signal(false);
+  readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
   readonly asyncState = signal<JAsyncDataState<JAutocompleteSuggestion>>({
     loading: false,
     items: [],
@@ -382,7 +384,6 @@ export class JAutocompleteComponent implements ControlValueAccessor {
       this.clearCompleteTimer();
       this.asyncController?.destroy();
     });
-    effect(() => this.isDisabled.set(this.disabled()));
     effect(() => {
       const source = this.dataSource();
       this.asyncController?.destroy();
@@ -483,7 +484,7 @@ export class JAutocompleteComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled.set(isDisabled);
+    this.formDisabled.set(isDisabled);
     if (isDisabled) {
       this.close();
     }

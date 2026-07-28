@@ -6,7 +6,6 @@ import {
   Component,
   computed,
   ContentChild,
-  effect,
   forwardRef,
   inject,
   input,
@@ -154,13 +153,10 @@ export class JSelectButtonComponent implements ControlValueAccessor {
   readonly valueChange = output<unknown>();
 
   value: unknown = null;
-  readonly isDisabled = signal(false);
+  private readonly formDisabled = signal(false);
+  readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
   private onChange: (value: unknown) => void = () => undefined;
   onTouched: () => void = () => undefined;
-
-  constructor() {
-    effect(() => this.isDisabled.set(this.disabled()));
-  }
 
   readonly normalizedOptions = computed<readonly JNormalizedSelectionOption[]>(() =>
     jNormalizeSelectionOptions(
@@ -192,7 +188,7 @@ export class JSelectButtonComponent implements ControlValueAccessor {
     this.onTouched = fn;
   }
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled.set(isDisabled);
+    this.formDisabled.set(isDisabled);
     this.changeDetectorRef.markForCheck();
   }
   toggleOption(option: JNormalizedSelectionOption): void {

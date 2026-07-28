@@ -112,6 +112,7 @@ interface JTreeTableEntry {
                   hasChildren(entry.node) ? expandedKeys().has(entry.key) : null
                 "
                 [attr.aria-selected]="selectionMode() === 'none' ? null : isSelected(entry.node)"
+                [attr.aria-disabled]="entry.node.disabled || null"
                 [attr.data-j-selected]="isSelected(entry.node) ? 'true' : null"
                 [attr.data-j-disabled]="entry.node.disabled ? 'true' : null"
                 [attr.data-j-open]="expandedKeys().has(entry.key) ? 'true' : null"
@@ -129,8 +130,9 @@ interface JTreeTableEntry {
                       [attr.aria-checked]="
                         isPartiallySelected(entry.node) ? 'mixed' : isSelected(entry.node)
                       "
-                      [disabled]="entry.node.disabled"
+                      [disabled]="entry.node.disabled || entry.node.selectable === false"
                       [attr.aria-label]="'Select ' + entry.node.label"
+                      tabindex="-1"
                       (click)="$event.stopPropagation()"
                       (change)="toggleSelection(entry.node, $event)"
                     />
@@ -376,6 +378,9 @@ export class JTreeTableComponent {
 
   toggle(node: JTreeNode, key: string, event?: Event): void {
     event?.stopPropagation();
+    if (node.disabled || !this.hasChildren(node)) {
+      return;
+    }
     const next = new Set(this.expandedKeys());
     if (next.has(key)) {
       next.delete(key);
@@ -518,7 +523,7 @@ export class JTreeTableComponent {
   }
 
   isPartiallySelected(node: JTreeNode): boolean {
-    const children = this.childrenOf(node);
+    const children = this.selectableChildrenOf(node);
     if (!children.length) {
       return false;
     }
@@ -574,13 +579,20 @@ export class JTreeTableComponent {
     // Pair each node with its original index so keys (and therefore expand
     // state) stay stable regardless of the active sort order.
     const ordered = this.sortSiblings(nodes.map((node, index) => ({ node, index })));
-    return ordered.flatMap(({ node, index }) => {
+    return ordered.flatMap(({ node, index }, sortedIndex) => {
       const key = node.key ?? `${parent}-${index}-${node.label}`;
       const children = this.expandedKeys().has(key)
-        ? this.flatten(this.childrenOf(node), level + 1, key)
+        ? this.flatten(this.filteredChildren(node), level + 1, key)
         : [];
       return [
-        { node, level, key, parentKey: parent, position: index + 1, setSize: ordered.length },
+        {
+          node,
+          level,
+          key,
+          parentKey: parent,
+          position: sortedIndex + 1,
+          setSize: ordered.length,
+        },
         ...children,
       ];
     });
@@ -594,12 +606,22 @@ export class JTreeTableComponent {
     if (!field || order === 0) {
       return entries;
     }
-    return [...entries].sort(
-      (a, b) =>
-        String(this.cellValue(a.node, { field, header: field })).localeCompare(
-          String(this.cellValue(b.node, { field, header: field })),
-        ) * order,
-    );
+    return [...entries].sort((a, b) => {
+      const left = this.cellValue(a.node, { field, header: field });
+      const right = this.cellValue(b.node, { field, header: field });
+      if (typeof left === 'number' && typeof right === 'number') {
+        return (left - right) * order;
+      }
+      if (left instanceof Date && right instanceof Date) {
+        return (left.getTime() - right.getTime()) * order;
+      }
+      return (
+        String(left ?? '').localeCompare(String(right ?? ''), undefined, {
+          numeric: true,
+          sensitivity: 'base',
+        }) * order
+      );
+    });
   }
 
   private filterNodes(nodes: readonly JTreeNode[]): readonly JTreeNode[] {
@@ -609,7 +631,7 @@ export class JTreeTableComponent {
       const nodeChildren = this.childrenOf(node);
       const children = nodeChildren.length ? this.filterNodes(nodeChildren) : [];
       if (node.label.toLowerCase().includes(query) || children.length) {
-        filtered.push(children.length ? { ...node, children } : node);
+        filtered.push(node);
       }
     }
     return filtered;
@@ -637,7 +659,10 @@ export class JTreeTableComponent {
   }
 
   private descendantsOf(node: JTreeNode): readonly JTreeNode[] {
-    return this.childrenOf(node).flatMap((child) => [child, ...this.descendantsOf(child)]);
+    return this.selectableChildrenOf(node).flatMap((child) => [
+      child,
+      ...this.descendantsOf(child),
+    ]);
   }
 
   private reconcileParentSelection(
@@ -646,7 +671,7 @@ export class JTreeTableComponent {
   ): JTreeNode[] {
     let next = [...selection];
     for (const node of nodes) {
-      const children = this.childrenOf(node);
+      const children = this.selectableChildrenOf(node);
       if (!children.length) {
         continue;
       }
@@ -673,6 +698,15 @@ export class JTreeTableComponent {
       this.focusedKey.set(this.visibleEntries()[index]?.key ?? '');
       row.focus();
     }
+  }
+
+  private filteredChildren(node: JTreeNode): readonly JTreeNode[] {
+    const children = this.childrenOf(node);
+    return this.filterValue() ? this.filterNodes(children) : children;
+  }
+
+  private selectableChildrenOf(node: JTreeNode): readonly JTreeNode[] {
+    return this.childrenOf(node).filter((child) => !child.disabled && child.selectable !== false);
   }
 
   private keyForNode(node: JTreeNode): string {

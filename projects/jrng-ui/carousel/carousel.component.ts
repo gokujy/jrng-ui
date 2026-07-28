@@ -6,12 +6,14 @@ import {
   computed,
   contentChild,
   effect,
+  inject,
   input,
   model,
   numberAttribute,
+  PLATFORM_ID,
   signal,
 } from '@angular/core';
-import { NgTemplateOutlet } from '@angular/common';
+import { isPlatformBrowser, NgTemplateOutlet } from '@angular/common';
 
 export interface JCarouselItem {
   readonly title?: string;
@@ -45,7 +47,7 @@ export interface JCarouselItemContext {
       (mouseleave)="paused.set(false)"
     >
       <div class="j-carousel__viewport" [style.--j-carousel-items]="visibleItems()">
-        @for (item of value(); track item.image || item.title || $index; let index = $index) {
+        @for (item of value(); track $index; let index = $index) {
           <article
             class="j-carousel__item"
             [class.is-active]="index === activeIndex()"
@@ -78,6 +80,7 @@ export interface JCarouselItemContext {
           type="button"
           (click)="previous()"
           aria-label="Previous"
+          [disabled]="!value().length || (!loop() && activeIndex() === 0)"
         >
           &lt;
         </button>
@@ -86,6 +89,7 @@ export interface JCarouselItemContext {
           type="button"
           (click)="next()"
           aria-label="Next"
+          [disabled]="!value().length || (!loop() && activeIndex() === maxIndex())"
         >
           &gt;
         </button>
@@ -204,6 +208,7 @@ export interface JCarouselItemContext {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JCarouselComponent {
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   readonly value = input<readonly JCarouselItem[]>([]);
   readonly activeIndex = model(0);
   readonly autoplay = input(false, { transform: booleanAttribute });
@@ -216,7 +221,10 @@ export class JCarouselComponent {
   readonly ariaLabel = input('Featured items');
   readonly styleClass = input('');
   readonly paused = signal(false);
-  readonly normalizedVisibleItems = computed(() => Math.max(1, Math.floor(this.visibleItems())));
+  readonly normalizedVisibleItems = computed(() => {
+    const value = this.visibleItems();
+    return Number.isFinite(value) ? Math.max(1, Math.floor(value)) : 1;
+  });
   readonly maxIndex = computed(() =>
     Math.max(0, this.value().length - this.normalizedVisibleItems()),
   );
@@ -224,7 +232,7 @@ export class JCarouselComponent {
     Math.min(this.value().length - 1, this.activeIndex() + this.normalizedVisibleItems() - 1),
   );
   readonly indicatorIndexes = computed(() =>
-    Array.from({ length: this.maxIndex() + 1 }, (_, index) => index),
+    this.value().length ? Array.from({ length: this.maxIndex() + 1 }, (_, index) => index) : [],
   );
   readonly itemTemplate = contentChild<unknown, TemplateRef<JCarouselItemContext>>(
     'jCarouselItem',
@@ -236,16 +244,29 @@ export class JCarouselComponent {
     // points past the last slide.
     effect(() => {
       const maxIndex = this.maxIndex();
-      if (this.activeIndex() > maxIndex) {
-        this.activeIndex.set(maxIndex);
+      const index = this.activeIndex();
+      const normalized = Number.isFinite(index)
+        ? Math.min(maxIndex, Math.max(0, Math.floor(index)))
+        : 0;
+      if (index !== normalized) {
+        this.activeIndex.set(normalized);
       }
     });
 
     effect((onCleanup) => {
-      if (!this.autoplay() || this.value().length < 2 || (this.pauseOnHover() && this.paused())) {
+      if (
+        !this.isBrowser ||
+        !this.autoplay() ||
+        this.value().length < 2 ||
+        (this.pauseOnHover() && this.paused())
+      ) {
         return;
       }
-      const timer = setInterval(() => this.next(), this.interval());
+      const configuredInterval = this.interval();
+      const delay = Number.isFinite(configuredInterval)
+        ? Math.max(100, Math.floor(configuredInterval))
+        : 4000;
+      const timer = setInterval(() => this.next(), delay);
       onCleanup(() => clearInterval(timer));
     });
   }

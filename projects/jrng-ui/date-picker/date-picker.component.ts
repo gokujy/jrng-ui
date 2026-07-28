@@ -4,6 +4,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  computed,
   ContentChild,
   DestroyRef,
   effect,
@@ -947,7 +948,8 @@ export class JDatePickerComponent implements ControlValueAccessor {
   timeHours = 0;
   timeMinutes = 0;
   timeSeconds = 0;
-  readonly isDisabled = signal(false);
+  private readonly formDisabled = signal(false);
+  readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
   isOpen = false;
   currentView: JDatePickerView = 'date';
   viewDate = startOfMonth(new Date());
@@ -961,12 +963,6 @@ export class JDatePickerComponent implements ControlValueAccessor {
   private pointerStepHandled = false;
 
   constructor() {
-    effect(() => {
-      const disabled = this.disabled();
-      this.isDisabled.set(disabled);
-      this.changeDetectorRef.markForCheck();
-    });
-
     effect(() => {
       const value = this.value();
       if (value !== undefined) {
@@ -1288,7 +1284,7 @@ export class JDatePickerComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled.set(isDisabled);
+    this.formDisabled.set(isDisabled);
     if (isDisabled) {
       this.close();
     }
