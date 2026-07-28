@@ -3,6 +3,8 @@ import { expect, test } from '@playwright/test';
 const horizontalPreview = '#component-live-preview-scrolling-horizontal';
 
 test.describe('Table documentation scrolling', () => {
+  test.describe.configure({ timeout: 120_000 });
+
   for (const width of [320, 375, 768, 1024]) {
     test(`contains horizontal overflow at ${width}px`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });

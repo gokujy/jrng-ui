@@ -534,6 +534,57 @@
       ],
       "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
       "baselineStatus": "candidate"
+    },
+    {
+      "component": "timeline",
+      "selector": "j-timeline",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "stepper",
+      "selector": "j-stepper",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
+    },
+    {
+      "component": "empty",
+      "selector": "j-empty",
+      "states": [
+        "default",
+        "disabled",
+        "readonly",
+        "invalid",
+        "loading",
+        "empty",
+        "error",
+        "long-content",
+        "rtl"
+      ],
+      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "baselineStatus": "candidate"
     }
   ]
 }
