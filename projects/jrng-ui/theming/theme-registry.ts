@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { JThemePreset, JThemePresetSource } from './preset.types';
 import { defaultPreset } from './presets/default.preset';
 import { materialPreset } from './presets/material.preset';
+import { nexusPreset } from './presets/nexus.preset';
 
 /** @deprecated Default is now a complete official preset. */
 export const J_EMPTY_DEFAULT_PRESET: JThemePreset = defaultPreset;
@@ -20,6 +21,7 @@ export class JThemePresetRegistry {
   private readonly presets = new Map<string, JThemePreset>([
     ['default', J_EMPTY_DEFAULT_PRESET],
     ['material', materialPreset],
+    ['nexus', nexusPreset],
   ]);
 
   register(preset: JThemePreset): () => void {
