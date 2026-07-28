@@ -71,10 +71,11 @@ export class JThemeService {
   /** Class toggled on the document root for dark styling. */
   readonly darkClass = this.options.darkClass ?? 'j-dark';
 
-  /** Current requested colour scheme. `mode` is retained for compatibility. */
+  /** Current requested colour scheme. */
   readonly colorScheme = signal<JThemeColorScheme>(
     this.options.colorScheme ?? this.config.themeMode,
   );
+  /** @deprecated Use `colorScheme` instead. Retained for source compatibility. */
   readonly mode = this.colorScheme;
 
   /** Current resolved preset and stable identifier. */
@@ -116,6 +117,7 @@ export class JThemeService {
     this.destroyRef.onDestroy(() => this.cleanup());
   }
 
+  /** @deprecated Use `setColorScheme()` instead. */
   setMode(mode: JThemeColorScheme): void {
     this.setColorScheme(mode);
   }

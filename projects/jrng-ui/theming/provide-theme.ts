@@ -16,7 +16,7 @@ import { JThemeOptions } from './theme.types';
  * bootstrapApplication(App, {
  *   providers: [
  *     provideJrngUI({ themeMode: 'system' }),
- *     provideJrngTheme({ preset: violetPreset }),
+ *     provideJrngTheme({ preset: 'default', primary: 'violet' }),
  *   ],
  * });
  * ```

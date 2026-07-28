@@ -7,6 +7,7 @@ import { JThemePreset } from '../preset.types';
  * `provideJrngTheme({ preset })`, or author your own {@link JThemePreset}.
  */
 
+/** @deprecated Use `provideJrngTheme({ primary: 'indigo' })`. */
 export const indigoPreset: JThemePreset = {
   name: 'indigo',
   light: {
@@ -25,6 +26,7 @@ export const indigoPreset: JThemePreset = {
   },
 };
 
+/** @deprecated Use `provideJrngTheme({ primary: 'violet' })`. */
 export const violetPreset: JThemePreset = {
   name: 'violet',
   light: {
@@ -43,6 +45,7 @@ export const violetPreset: JThemePreset = {
   },
 };
 
+/** @deprecated Use `provideJrngTheme({ primary: 'emerald' })`. */
 export const emeraldPreset: JThemePreset = {
   name: 'emerald',
   light: {
@@ -61,6 +64,7 @@ export const emeraldPreset: JThemePreset = {
   },
 };
 
+/** @deprecated Use `provideJrngTheme({ primary: 'rose' })`. */
 export const rosePreset: JThemePreset = {
   name: 'rose',
   light: {
@@ -79,6 +83,10 @@ export const rosePreset: JThemePreset = {
   },
 };
 
+/**
+ * @deprecated Use `provideJrngTheme({ primary: 'orange' })` or a custom palette.
+ * The legacy amber values remain supported without becoming an official preset.
+ */
 export const amberPreset: JThemePreset = {
   name: 'amber',
   light: {
@@ -97,6 +105,10 @@ export const amberPreset: JThemePreset = {
   },
 };
 
+/**
+ * @deprecated Use `provideJrngTheme({ primary: 'blue' })` or a custom palette.
+ * The legacy sky values remain supported without becoming an official preset.
+ */
 export const skyPreset: JThemePreset = {
   name: 'sky',
   light: {
@@ -115,10 +127,13 @@ export const skyPreset: JThemePreset = {
   },
 };
 
-/** Name of a built-in preset. */
+/** @deprecated These are legacy colour presets. Use `JPrimaryPaletteName`. */
 export type JThemePresetName = 'indigo' | 'violet' | 'emerald' | 'rose' | 'amber' | 'sky';
 
-/** Registry of all built-in presets, keyed by name. */
+/**
+ * @deprecated Use `jPrimaryPalettes` and an official visual preset identifier.
+ * Retained so existing applications can migrate without a breaking release.
+ */
 export const jThemePresets: Record<JThemePresetName, JThemePreset> = {
   indigo: indigoPreset,
   violet: violetPreset,
