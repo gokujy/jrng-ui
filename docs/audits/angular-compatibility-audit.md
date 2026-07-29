@@ -6,20 +6,20 @@ Verdict: **PASS**
 - Standalone/OnPush canonical components: verified by production compilation and inventory.
 - SSR/hydration smoke build: required release gate.
 - Zoneless-safe explicit signal/state updates: covered by component tests and no mandatory NgZone dependency.
-- Browser API occurrences reviewed: 466.
+- Browser API occurrences reviewed: 490.
 
 | API                   | Static occurrences | Guard/cleanup policy                                              |
 | --------------------- | -----------------: | ----------------------------------------------------------------- |
-| window                |                 24 | Platform guard, feature detection, and lifecycle cleanup required |
-| document              |                330 | Platform guard, feature detection, and lifecycle cleanup required |
+| window                |                 29 | Platform guard, feature detection, and lifecycle cleanup required |
+| document              |                337 | Platform guard, feature detection, and lifecycle cleanup required |
 | navigator             |                  4 | Platform guard, feature detection, and lifecycle cleanup required |
 | localStorage          |                 18 | Platform guard, feature detection, and lifecycle cleanup required |
 | sessionStorage        |                  2 | Platform guard, feature detection, and lifecycle cleanup required |
-| ResizeObserver        |                 25 | Platform guard, feature detection, and lifecycle cleanup required |
-| IntersectionObserver  |                  3 | Platform guard, feature detection, and lifecycle cleanup required |
+| ResizeObserver        |                 33 | Platform guard, feature detection, and lifecycle cleanup required |
+| IntersectionObserver  |                  5 | Platform guard, feature detection, and lifecycle cleanup required |
 | MutationObserver      |                  9 | Platform guard, feature detection, and lifecycle cleanup required |
-| requestAnimationFrame |                  2 | Platform guard, feature detection, and lifecycle cleanup required |
-| matchMedia            |                 16 | Platform guard, feature detection, and lifecycle cleanup required |
+| requestAnimationFrame |                  3 | Platform guard, feature detection, and lifecycle cleanup required |
+| matchMedia            |                 17 | Platform guard, feature detection, and lifecycle cleanup required |
 | clipboard             |                 25 | Platform guard, feature detection, and lifecycle cleanup required |
 | requestFullscreen     |                  2 | Platform guard, feature detection, and lifecycle cleanup required |
 | createObjectURL       |                  6 | Platform guard, feature detection, and lifecycle cleanup required |

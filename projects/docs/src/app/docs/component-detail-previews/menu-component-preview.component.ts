@@ -11,6 +11,29 @@ import {
   template: `
     @let example = previewExample();
     @switch (doc().slug) {
+      @case ('anchor') {
+        <div class="j-preview-grid">
+          <j-anchor [links]="customerAnchorLinks" [updateFragment]="false" />
+          <div class="j-preview-stack">
+            <section id="customer-overview-preview">
+              <strong>Overview</strong>
+              <p>Aster Labs</p>
+            </section>
+            <section id="customer-contacts-preview">
+              <strong>Contacts</strong>
+              <p>Avery Reed</p>
+            </section>
+            <section id="customer-account-preview">
+              <strong>Account</strong>
+              <p>Active</p>
+            </section>
+            <section id="customer-history-preview">
+              <strong>History</strong>
+              <p>Joined 2025</p>
+            </section>
+          </div>
+        </div>
+      }
       @case ('action-menu') {
         <div class="j-action-menu-preview">
           <section>

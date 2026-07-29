@@ -11,6 +11,33 @@ import {
   template: `
     @let example = previewExample();
     @switch (doc().slug) {
+      @case ('inplace') {
+        <j-inplace>
+          <ng-template jInplaceDisplay>
+            <strong>Customer status:</strong> {{ customerInplaceStatus }}
+          </ng-template>
+          <ng-template jInplaceContent>
+            <j-select
+              label="Customer status"
+              [options]="['Active', 'Review', 'Inactive']"
+              [(ngModel)]="customerInplaceDraft"
+            />
+          </ng-template>
+          <ng-template jInplaceActions let-inplace>
+            <j-button
+              label="Save"
+              size="sm"
+              (onClick)="customerInplaceStatus = customerInplaceDraft; inplace.save()"
+            />
+            <j-button
+              label="Cancel"
+              size="sm"
+              variant="outlined"
+              (onClick)="customerInplaceDraft = customerInplaceStatus; inplace.cancel()"
+            />
+          </ng-template>
+        </j-inplace>
+      }
       @case ('accordion') {
         <j-accordion [variant]="accordionVariants[example.index]" value="account">
           <j-accordion-panel value="account">
@@ -114,7 +141,10 @@ import {
         } @else {
           @switch (example.key) {
             @case ('slots') {
-              <j-card header="Customer plan" subheader="Enterprise subscription" footer="Updated today"
+              <j-card
+                header="Customer plan"
+                subheader="Enterprise subscription"
+                footer="Updated today"
                 >The next renewal review is scheduled.</j-card
               >
             }

@@ -4,6 +4,8 @@
 
 ### Added
 
+- Added beta `jrng-ui/inplace`, `jrng-ui/anchor`, `jrng-ui/affix`, and `jrng-ui/watermark` entrypoints with editable content, scroll spy, layout-preserving affix, print support, accessibility, and SSR-safe observer cleanup.
+
 - Added beta `jrng-ui/split-button`, `jrng-ui/tree-select`, `jrng-ui/cascader`, and `jrng-ui/mention` entrypoints with Forms, keyboard, async, responsive, accessibility, and SSR-safe behavior.
 - Added backwards-compatible multi-column, sortable, custom-cell, virtualized, and responsive stacked option rendering to `j-select`.
 

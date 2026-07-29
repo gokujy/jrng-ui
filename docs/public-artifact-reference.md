@@ -4,6 +4,16 @@ Generated from built public declarations. Each record is covered by the strict e
 
 ## Directives
 
+### JAffixDirective
+
+- Import: import { JAffixDirective } from 'jrng-ui/affix';
+- Selector: [jAffix]
+- Test status: covered
+- SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
+- Accessibility/keyboard: semantic behavior is part of the directive/component contract
+- Errors: recoverable operations return/emit explicit failure state where applicable.
+- Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
+
 ### JAutoFocusDirective
 
 - Import: import { JAutoFocusDirective } from 'jrng-ui/core';
@@ -128,6 +138,36 @@ Generated from built public declarations. Each record is covered by the strict e
 
 - Import: import { JHotkeyDirective } from 'jrng-ui/core';
 - Selector: [jHotkey]
+- Test status: covered
+- SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
+- Accessibility/keyboard: semantic behavior is part of the directive/component contract
+- Errors: recoverable operations return/emit explicit failure state where applicable.
+- Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
+
+### JInplaceActionsDirective
+
+- Import: import { JInplaceActionsDirective } from 'jrng-ui/inplace';
+- Selector: ng-template[jInplaceActions]
+- Test status: covered
+- SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
+- Accessibility/keyboard: semantic behavior is part of the directive/component contract
+- Errors: recoverable operations return/emit explicit failure state where applicable.
+- Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
+
+### JInplaceContentDirective
+
+- Import: import { JInplaceContentDirective } from 'jrng-ui/inplace';
+- Selector: ng-template[jInplaceContent]
+- Test status: covered
+- SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
+- Accessibility/keyboard: semantic behavior is part of the directive/component contract
+- Errors: recoverable operations return/emit explicit failure state where applicable.
+- Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
+
+### JInplaceDisplayDirective
+
+- Import: import { JInplaceDisplayDirective } from 'jrng-ui/inplace';
+- Selector: ng-template[jInplaceDisplay]
 - Test status: covered
 - SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
 - Accessibility/keyboard: semantic behavior is part of the directive/component contract

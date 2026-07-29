@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, input } f
 import { Meta, Title } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 import { JButtonComponent } from 'jrng-ui/button';
+import { JAffixDirective } from 'jrng-ui/affix';
 import { JDragDirective, JDragHandleDirective, JDropListDirective } from 'jrng-ui/drag-drop';
 import { JPanDirective, JSwipeDirective, JZoomDirective } from 'jrng-ui/gesture';
 import { JMentionDirective } from 'jrng-ui/mention';
@@ -16,6 +17,7 @@ import { guides } from './guides.data';
     RouterLink,
     CodeBlockComponent,
     JButtonComponent,
+    JAffixDirective,
     JDragDirective,
     JDragHandleDirective,
     JDropListDirective,
@@ -136,6 +138,29 @@ import { guides } from './guides.data';
             </div>
           </section>
         }
+        @if (item.slug === 'layout-behaviors') {
+          <section>
+            <h2>Live Affix preview</h2>
+            <div
+              #affixScroll
+              class="j-preview-stack"
+              style="max-height: 12rem; overflow: auto"
+              aria-label="Scrollable customer list"
+            >
+              <div
+                [jAffix]="'top'"
+                [scrollContainer]="affixScroll"
+                [offset]="0"
+                class="j-doc-preview-card"
+              >
+                Customer filters remain available
+              </div>
+              @for (customer of affixCustomers; track customer) {
+                <p>{{ customer }}</p>
+              }
+            </div>
+          </section>
+        }
         <section>
           <h2>Explanation</h2>
           <ul>
@@ -208,6 +233,10 @@ export class GuidesPageComponent {
     { label: 'Avery Reed', value: 'avery' },
     { label: 'Morgan Kim', value: 'morgan' },
   ];
+  readonly affixCustomers = Array.from(
+    { length: 10 },
+    (_, index) => `CUS-${String(index + 1).padStart(4, '0')} · Fictional customer`,
+  );
   gestureStatus = 'Swipe, pan or pinch this surface';
 
   constructor() {

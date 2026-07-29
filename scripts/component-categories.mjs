@@ -68,6 +68,7 @@ export const COMPONENT_CATEGORIES = [
       'j-card',
       'j-divider',
       'j-fieldset',
+      'j-inplace',
       'j-panel',
       'j-splitter',
       'j-splitter-panel',
@@ -95,6 +96,7 @@ export const COMPONENT_CATEGORIES = [
     name: 'Menu',
     selectors: [
       'j-action-menu',
+      'j-anchor',
       'j-breadcrumb',
       'j-command-palette',
       'j-context-menu',
@@ -156,6 +158,7 @@ export const COMPONENT_CATEGORIES = [
       'j-status-chip',
       'j-swipe-actions',
       'j-tag',
+      'j-watermark',
     ],
   },
   {
@@ -192,19 +195,19 @@ export const COMPONENT_CATEGORY_COUNTS = Object.freeze({
   Form: 32,
   Button: 3,
   Data: 16,
-  Panel: 15,
+  Panel: 16,
   Overlay: 8,
-  Menu: 9,
+  Menu: 10,
   Messages: 2,
   Media: 6,
   File: 3,
   Chart: 2,
   Layout: 11,
-  Misc: 15,
+  Misc: 16,
   Utilities: 3,
   Pages: 2,
 });
-export const ACTIVE_COMPONENT_TOTAL = 127;
+export const ACTIVE_COMPONENT_TOTAL = 130;
 export const COMPONENT_CATEGORY_TOTAL = 14;
 export const REMOVED_COMPONENT_SELECTORS = new Set([
   'j-activity-feed',

@@ -1,0 +1,67 @@
+:host {
+  display: block;
+  color: var(--j-color-text);
+}
+
+.j-inplace__display {
+  inline-size: 100%;
+  min-block-size: 2.5rem;
+  border: 1px dashed transparent;
+  border-radius: var(--j-radius-md);
+  background: transparent;
+  color: inherit;
+  padding: var(--j-spacing-2);
+  text-align: start;
+  cursor: pointer;
+}
+
+.j-inplace__display:hover:not(:disabled) {
+  border-color: var(--j-color-border);
+  background: var(--j-color-surface-hover);
+}
+
+.j-inplace__display:focus-visible,
+.j-inplace__editor:focus-within {
+  outline: 2px solid var(--j-color-focus-ring);
+  outline-offset: 2px;
+}
+
+.j-inplace__editor {
+  border: 1px solid var(--j-color-border);
+  border-radius: var(--j-radius-md);
+  background: var(--j-color-surface);
+  padding: var(--j-spacing-3);
+}
+
+.j-inplace__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--j-spacing-2);
+  margin-block-start: var(--j-spacing-3);
+}
+
+.j-inplace__actions > button {
+  min-block-size: 2.25rem;
+  border: 1px solid var(--j-color-border);
+  border-radius: var(--j-radius-sm);
+  background: var(--j-color-surface);
+  color: inherit;
+  padding-inline: var(--j-spacing-3);
+}
+
+.j-inplace__error {
+  color: var(--j-color-danger);
+  margin-block: var(--j-spacing-2) 0;
+}
+
+:host(.j-inplace--disabled),
+:host(.j-inplace--readonly) {
+  opacity: 0.72;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .j-inplace__display {
+    transition: none;
+  }
+}

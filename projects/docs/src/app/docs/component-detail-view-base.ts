@@ -18,6 +18,7 @@ import {
   JAccordionVariant,
 } from 'jrng-ui/accordion';
 import { JAppShellComponent } from 'jrng-ui/app-shell';
+import { JAnchorComponent, JAnchorLink } from 'jrng-ui/anchor';
 import { JAutocompleteComponent } from 'jrng-ui/autocomplete';
 import { JAvatarGroupComponent } from 'jrng-ui/avatar-group';
 import { JAvatarComponent } from 'jrng-ui/avatar';
@@ -85,6 +86,12 @@ import { JInputMaskComponent } from 'jrng-ui/input-mask';
 import { JInputNumberComponent } from 'jrng-ui/input-number';
 import { JInputOtpComponent } from 'jrng-ui/input-otp';
 import { JInputComponent, JInputVariant } from 'jrng-ui/input';
+import {
+  JInplaceActionsDirective,
+  JInplaceComponent,
+  JInplaceContentDirective,
+  JInplaceDisplayDirective,
+} from 'jrng-ui/inplace';
 import { JListboxComponent } from 'jrng-ui/listbox';
 import { JLoaderComponent, JLoaderVariant } from 'jrng-ui/loader';
 import { JMaintenancePageComponent } from 'jrng-ui/maintenance-page';
@@ -172,6 +179,7 @@ import { JTreeTableCellTemplateDirective, JTreeTableComponent } from 'jrng-ui/tr
 import { JTreeNode } from 'jrng-ui/tree';
 import { JVideoPlayerComponent } from 'jrng-ui/video-player';
 import { JVirtualScrollerComponent } from 'jrng-ui/virtual-scroller';
+import { JWatermarkComponent } from 'jrng-ui/watermark';
 import { JValidationMessageComponent } from 'jrng-ui/validation-message';
 import {
   JKanbanCardEvent,
@@ -1701,6 +1709,7 @@ export const COMPONENT_PREVIEW_IMPORTS = [
   JAccordionContentComponent,
   JAccordionHeaderComponent,
   JAccordionPanelComponent,
+  JAnchorComponent,
   JAutocompleteComponent,
   JAvatarGroupComponent,
   JAvatarComponent,
@@ -1741,6 +1750,10 @@ export const COMPONENT_PREVIEW_IMPORTS = [
   JInputNumberComponent,
   JInputOtpComponent,
   JInputComponent,
+  JInplaceActionsDirective,
+  JInplaceComponent,
+  JInplaceContentDirective,
+  JInplaceDisplayDirective,
   JListboxComponent,
   JLoaderComponent,
   JMaintenancePageComponent,
@@ -1837,6 +1850,7 @@ export const COMPONENT_PREVIEW_IMPORTS = [
   JTreeTableCellTemplateDirective,
   JVideoPlayerComponent,
   JVirtualScrollerComponent,
+  JWatermarkComponent,
   JValidationMessageComponent,
   JCurrencyFormatPipe,
   JDateTimeFormatPipe,
@@ -1847,6 +1861,17 @@ export const COMPONENT_PREVIEW_IMPORTS = [
 
 @Directive()
 export class ComponentDetailViewBase {
+  readonly customerAnchorLinks: readonly JAnchorLink[] = [
+    { id: 'customer-overview-preview', label: 'Overview' },
+    { id: 'customer-contacts-preview', label: 'Contacts' },
+    {
+      id: 'customer-account-preview',
+      label: 'Account',
+      children: [{ id: 'customer-history-preview', label: 'History' }],
+    },
+  ];
+  customerInplaceStatus = 'Active';
+  customerInplaceDraft = 'Active';
   readonly splitButtonItems: readonly JMenuItem[] = [
     { label: 'Save and notify', icon: 'check', command: () => undefined },
     { separator: true },

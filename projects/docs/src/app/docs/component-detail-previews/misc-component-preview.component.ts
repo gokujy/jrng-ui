@@ -11,6 +11,14 @@ import {
   template: `
     @let example = previewExample();
     @switch (doc().slug) {
+      @case ('watermark') {
+        <j-watermark [text]="['CONFIDENTIAL', 'Aster Labs']" [opacity]="0.12">
+          <j-card header="Customer summary" subheader="CUS-1001">
+            <p>Avery Reed · Technology · Active</p>
+            <j-button label="Open customer" size="sm" />
+          </j-card>
+        </j-watermark>
+      }
       @case ('avatar') {
         <div class="j-preview-row">
           @if (example.key === 'zoom') {

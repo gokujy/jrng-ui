@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "generatedOn": "2026-07-29T12:07:16.425Z",
+  "generatedOn": "2026-07-29T12:28:20.900Z",
   "package": "jrng-ui",
   "version": "0.1.1",
   "authority": "Built declaration files and canonical secondary-entrypoint source; projects/jrng-ui/src/lib is excluded.",
   "totals": {
-    "entrypoints": 140,
-    "artifacts": 832,
-    "component": 128,
-    "type": 462,
+    "entrypoints": 144,
+    "artifacts": 843,
+    "component": 131,
+    "type": 466,
+    "directive": 44,
     "class": 152,
-    "directive": 40,
     "service": 22,
     "token": 4,
     "function": 1,
@@ -852,6 +852,36 @@
     ],
     "missingDocumentation": [],
     "browserApiArtifacts": [
+      {
+        "name": "JAffixDirective",
+        "kind": "directive",
+        "entrypoint": "jrng-ui/affix",
+        "selector": "[jAffix]"
+      },
+      {
+        "name": "JAffixPosition",
+        "kind": "type",
+        "entrypoint": "jrng-ui/affix",
+        "selector": null
+      },
+      {
+        "name": "JAnchorComponent",
+        "kind": "component",
+        "entrypoint": "jrng-ui/anchor",
+        "selector": "j-anchor"
+      },
+      {
+        "name": "JAnchorLink",
+        "kind": "type",
+        "entrypoint": "jrng-ui/anchor",
+        "selector": null
+      },
+      {
+        "name": "JAnchorNavigateEvent",
+        "kind": "type",
+        "entrypoint": "jrng-ui/anchor",
+        "selector": null
+      },
       {
         "name": "JAppShellComponent",
         "kind": "component",
@@ -2339,6 +2369,36 @@
         "kind": "class",
         "entrypoint": "jrng-ui/image",
         "selector": "j-internal-image-viewer"
+      },
+      {
+        "name": "JInplaceActionsDirective",
+        "kind": "directive",
+        "entrypoint": "jrng-ui/inplace",
+        "selector": "ng-template[jInplaceActions]"
+      },
+      {
+        "name": "JInplaceComponent",
+        "kind": "component",
+        "entrypoint": "jrng-ui/inplace",
+        "selector": "j-inplace"
+      },
+      {
+        "name": "JInplaceContentDirective",
+        "kind": "directive",
+        "entrypoint": "jrng-ui/inplace",
+        "selector": "ng-template[jInplaceContent]"
+      },
+      {
+        "name": "JInplaceDisplayDirective",
+        "kind": "directive",
+        "entrypoint": "jrng-ui/inplace",
+        "selector": "ng-template[jInplaceDisplay]"
+      },
+      {
+        "name": "JInplaceTemplateContext",
+        "kind": "type",
+        "entrypoint": "jrng-ui/inplace",
+        "selector": null
       },
       {
         "name": "JInputComponent",
@@ -4117,6 +4177,90 @@
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
           "browserApis": [],
+          "optionalDependencies": []
+        }
+      ]
+    },
+    {
+      "importPath": "jrng-ui/affix",
+      "declaration": "types/jrng-ui-affix.d.ts",
+      "artifactCount": 2,
+      "optionalDependencies": [],
+      "artifacts": [
+        {
+          "name": "JAffixDirective",
+          "originalName": "JAffixDirective",
+          "kind": "directive",
+          "entrypoint": "jrng-ui/affix",
+          "selector": "[jAffix]",
+          "exportAlias": false,
+          "tested": true,
+          "documented": true,
+          "accessibility": "static-review",
+          "themeTokens": "not-applicable",
+          "browserApis": ["window", "document", "ResizeObserver", "requestAnimationFrame"],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JAffixPosition",
+          "originalName": "JAffixPosition",
+          "kind": "type",
+          "entrypoint": "jrng-ui/affix",
+          "selector": null,
+          "exportAlias": false,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "not-applicable",
+          "browserApis": ["window", "document", "ResizeObserver", "requestAnimationFrame"],
+          "optionalDependencies": []
+        }
+      ]
+    },
+    {
+      "importPath": "jrng-ui/anchor",
+      "declaration": "types/jrng-ui-anchor.d.ts",
+      "artifactCount": 3,
+      "optionalDependencies": [],
+      "artifacts": [
+        {
+          "name": "JAnchorComponent",
+          "originalName": "JAnchorComponent",
+          "kind": "component",
+          "entrypoint": "jrng-ui/anchor",
+          "selector": "j-anchor",
+          "exportAlias": false,
+          "tested": true,
+          "documented": true,
+          "accessibility": "validated",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["window", "document", "IntersectionObserver", "matchMedia"],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JAnchorLink",
+          "originalName": "JAnchorLink",
+          "kind": "type",
+          "entrypoint": "jrng-ui/anchor",
+          "selector": null,
+          "exportAlias": false,
+          "tested": true,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["window", "document", "IntersectionObserver", "matchMedia"],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JAnchorNavigateEvent",
+          "originalName": "JAnchorNavigateEvent",
+          "kind": "type",
+          "entrypoint": "jrng-ui/anchor",
+          "selector": null,
+          "exportAlias": false,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["window", "document", "IntersectionObserver", "matchMedia"],
           "optionalDependencies": []
         }
       ]
@@ -11862,6 +12006,83 @@
       ]
     },
     {
+      "importPath": "jrng-ui/inplace",
+      "declaration": "types/jrng-ui-inplace.d.ts",
+      "artifactCount": 5,
+      "optionalDependencies": [],
+      "artifacts": [
+        {
+          "name": "JInplaceActionsDirective",
+          "originalName": "JInplaceActionsDirective",
+          "kind": "directive",
+          "entrypoint": "jrng-ui/inplace",
+          "selector": "ng-template[jInplaceActions]",
+          "exportAlias": false,
+          "tested": true,
+          "documented": true,
+          "accessibility": "static-review",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["document"],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JInplaceComponent",
+          "originalName": "JInplaceComponent",
+          "kind": "component",
+          "entrypoint": "jrng-ui/inplace",
+          "selector": "j-inplace",
+          "exportAlias": false,
+          "tested": true,
+          "documented": true,
+          "accessibility": "validated",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["document"],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JInplaceContentDirective",
+          "originalName": "JInplaceContentDirective",
+          "kind": "directive",
+          "entrypoint": "jrng-ui/inplace",
+          "selector": "ng-template[jInplaceContent]",
+          "exportAlias": false,
+          "tested": true,
+          "documented": true,
+          "accessibility": "static-review",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["document"],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JInplaceDisplayDirective",
+          "originalName": "JInplaceDisplayDirective",
+          "kind": "directive",
+          "entrypoint": "jrng-ui/inplace",
+          "selector": "ng-template[jInplaceDisplay]",
+          "exportAlias": false,
+          "tested": true,
+          "documented": true,
+          "accessibility": "static-review",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["document"],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JInplaceTemplateContext",
+          "originalName": "JInplaceTemplateContext",
+          "kind": "type",
+          "entrypoint": "jrng-ui/inplace",
+          "selector": null,
+          "exportAlias": false,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["document"],
+          "optionalDependencies": []
+        }
+      ]
+    },
+    {
       "importPath": "jrng-ui/input",
       "declaration": "types/jrng-ui-input.d.ts",
       "artifactCount": 3,
@@ -18645,6 +18866,28 @@
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
           "browserApis": ["window"],
+          "optionalDependencies": []
+        }
+      ]
+    },
+    {
+      "importPath": "jrng-ui/watermark",
+      "declaration": "types/jrng-ui-watermark.d.ts",
+      "artifactCount": 1,
+      "optionalDependencies": [],
+      "artifacts": [
+        {
+          "name": "JWatermarkComponent",
+          "originalName": "JWatermarkComponent",
+          "kind": "component",
+          "entrypoint": "jrng-ui/watermark",
+          "selector": "j-watermark",
+          "exportAlias": false,
+          "tested": true,
+          "documented": true,
+          "accessibility": "validated",
+          "themeTokens": "css-custom-properties",
+          "browserApis": [],
           "optionalDependencies": []
         }
       ]

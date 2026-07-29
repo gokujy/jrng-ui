@@ -67,7 +67,7 @@ export const generatedComponentCategories = [
   },
   {
     name: 'Panel',
-    count: 15,
+    count: 16,
     selectors: [
       'j-accordion',
       'j-accordion-content',
@@ -76,6 +76,7 @@ export const generatedComponentCategories = [
       'j-card',
       'j-divider',
       'j-fieldset',
+      'j-inplace',
       'j-panel',
       'j-splitter',
       'j-splitter-panel',
@@ -102,9 +103,10 @@ export const generatedComponentCategories = [
   },
   {
     name: 'Menu',
-    count: 9,
+    count: 10,
     selectors: [
       'j-action-menu',
+      'j-anchor',
       'j-breadcrumb',
       'j-command-palette',
       'j-context-menu',
@@ -161,7 +163,7 @@ export const generatedComponentCategories = [
   },
   {
     name: 'Misc',
-    count: 15,
+    count: 16,
     selectors: [
       'j-avatar',
       'j-avatar-group',
@@ -178,6 +180,7 @@ export const generatedComponentCategories = [
       'j-status-chip',
       'j-swipe-actions',
       'j-tag',
+      'j-watermark',
     ],
   },
   {
@@ -193,4 +196,4 @@ export const generatedComponentCategories = [
 ] as const;
 
 export const generatedComponentCategoryOrder = generatedComponentCategories.map(({ name }) => name);
-export const generatedActiveComponentTotal = 127;
+export const generatedActiveComponentTotal = 130;

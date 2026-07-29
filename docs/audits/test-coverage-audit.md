@@ -2,7 +2,7 @@
 
 Verdict: **PASS**
 
-- Canonical public components with direct tests: 127.
+- Canonical public components with direct tests: 130.
 - Indirect entrypoint coverage: 0.
 - No detected component tests: 0.
 - Public component/directive/pipe/service artifacts without detected direct or entrypoint specs: 4.

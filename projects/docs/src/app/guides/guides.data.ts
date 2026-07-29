@@ -399,6 +399,57 @@ export class CustomerRoutingComponent {}`,
     related: related('Split Button', 'Tree Select', 'Cascader', 'Select'),
   },
   {
+    slug: 'layout-behaviors',
+    title: 'Build editable, anchored, affixed, and watermarked surfaces',
+    description:
+      'Use Inplace, Anchor, Affix, and Watermark for focused customer-detail and document layouts.',
+    problem:
+      'Long business surfaces need compact editing, section navigation, persistent actions, and document classification without losing keyboard access, layout stability, or SSR safety.',
+    implementation: [
+      'Use Inplace templates for display, editor, and action modes.',
+      'Provide stable section ids to Anchor and configure any fixed-header offset.',
+      'Apply jAffix to an existing toolbar and identify its scroll and boundary containers.',
+      'Wrap content with Watermark and use a low-opacity text or image tile.',
+    ],
+    code: `import { Component } from '@angular/core';
+import { JAffixDirective } from 'jrng-ui/affix';
+import { JAnchorComponent } from 'jrng-ui/anchor';
+import { JInplaceComponent } from 'jrng-ui/inplace';
+import { JWatermarkComponent } from 'jrng-ui/watermark';
+
+@Component({
+  selector: 'app-customer-detail',
+  imports: [JAffixDirective, JAnchorComponent, JInplaceComponent, JWatermarkComponent],
+  template: \`
+    <j-anchor [links]="sections" [offset]="64" />
+    <div jAffix [offset]="64">Customer filters</div>
+    <j-watermark [text]="['INTERNAL', customer.company]">
+      <j-inplace>Customer details</j-inplace>
+    </j-watermark>
+  \`,
+})
+export class CustomerDetailComponent {}`,
+    explanation: [
+      'Inplace lazily creates editor content and restores focus after save or cancel.',
+      'Anchor observes sections only in the browser and retains direct fragment navigation as a fallback.',
+      'Affix inserts a measured placeholder so fixed positioning does not shift surrounding content.',
+      'Watermark is decorative, pointer-transparent, dynamically generated, and printable.',
+    ],
+    accessibility: [
+      'Every editable and navigation action is keyboard accessible with visible focus.',
+      'Affix does not reorder the document or add a focus stop.',
+      'Watermark is hidden from assistive technology and never blocks projected controls.',
+      'Reduced-motion preferences disable smooth Anchor scrolling.',
+    ],
+    mistakes: [
+      'Affixing content without a boundary in a long nested scroll surface.',
+      'Using duplicate or unstable section ids.',
+      'Using a watermark as an authorization mechanism.',
+      'Hiding save errors or allowing duplicate async saves.',
+    ],
+    related: related('Inplace', 'Anchor', 'Watermark', 'Button'),
+  },
+  {
     slug: 'zoneless',
     title: 'Use JRNG UI with zoneless Angular',
     description:

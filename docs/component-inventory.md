@@ -4,20 +4,20 @@ Generated from the 0.1.1 canonical build declarations.
 
 | Metric                                   | Total |
 | ---------------------------------------- | ----: |
-| Total public components                  |   127 |
+| Total public components                  |   130 |
 | Total categories                         |    14 |
 | Uncategorized components                 |     0 |
 | Duplicate entries                        |     0 |
 | Removed components present               |     0 |
-| Components with documentation            |   127 |
-| Components with working preview          |   127 |
-| Components with API reference            |   127 |
-| Components with examples                 |   127 |
-| Components with direct tests             |   127 |
-| Components with accessibility validation |   127 |
-| Components with responsive examples      |    85 |
+| Components with documentation            |   130 |
+| Components with working preview          |   130 |
+| Components with API reference            |   130 |
+| Components with examples                 |   130 |
+| Components with direct tests             |   130 |
+| Components with accessibility validation |   130 |
+| Components with responsive examples      |    88 |
 | Responsive examples not applicable       |    42 |
-| Components with theme-token coverage     |   127 |
+| Components with theme-token coverage     |   130 |
 | Components remaining incomplete          |     0 |
 
 | Category  | Components |
@@ -25,15 +25,15 @@ Generated from the 0.1.1 canonical build declarations.
 | Form      |         32 |
 | Button    |          3 |
 | Data      |         16 |
-| Panel     |         15 |
+| Panel     |         16 |
 | Overlay   |          8 |
-| Menu      |          9 |
+| Menu      |         10 |
 | Messages  |          2 |
 | Media     |          6 |
 | File      |          3 |
 | Chart     |          2 |
 | Layout    |         11 |
-| Misc      |         15 |
+| Misc      |         16 |
 | Utilities |          3 |
 | Pages     |          2 |
 
@@ -97,6 +97,7 @@ Generated from the 0.1.1 canonical build declarations.
 | Card                | j-card                | jrng-ui/card                | Panel     | beta      | rendered | direct | validated     |
 | Divider             | j-divider             | jrng-ui/divider             | Panel     | beta      | rendered | direct | validated     |
 | Fieldset            | j-fieldset            | jrng-ui/fieldset            | Panel     | beta      | rendered | direct | validated     |
+| Inplace             | j-inplace             | jrng-ui/inplace             | Panel     | beta      | rendered | direct | validated     |
 | Panel               | j-panel               | jrng-ui/panel               | Panel     | beta      | rendered | direct | validated     |
 | Splitter            | j-splitter            | jrng-ui/splitter            | Panel     | beta      | rendered | direct | validated     |
 | Splitter Panel      | j-splitter-panel      | jrng-ui/splitter            | Panel     | beta      | rendered | direct | validated     |
@@ -114,6 +115,7 @@ Generated from the 0.1.1 canonical build declarations.
 | Notification Center | j-notification-center | jrng-ui/notification-center | Overlay   | beta      | rendered | direct | validated     |
 | Popover             | j-popover             | jrng-ui/popover             | Overlay   | beta      | rendered | direct | validated     |
 | Action Menu         | j-action-menu         | jrng-ui/table               | Menu      | beta      | rendered | direct | validated     |
+| Anchor              | j-anchor              | jrng-ui/anchor              | Menu      | beta      | rendered | direct | validated     |
 | Breadcrumb          | j-breadcrumb          | jrng-ui/breadcrumb          | Menu      | beta      | rendered | direct | validated     |
 | Command Palette     | j-command-palette     | jrng-ui/command-palette     | Menu      | beta      | rendered | direct | validated     |
 | Context Menu        | j-context-menu        | jrng-ui/context-menu        | Menu      | beta      | rendered | direct | validated     |
@@ -161,6 +163,7 @@ Generated from the 0.1.1 canonical build declarations.
 | Status Chip         | j-status-chip         | jrng-ui/status-chip         | Misc      | beta      | rendered | direct | validated     |
 | Swipe Actions       | j-swipe-actions       | jrng-ui/swipe-actions       | Misc      | beta      | rendered | direct | validated     |
 | Tag                 | j-tag                 | jrng-ui/tag                 | Misc      | beta      | rendered | direct | validated     |
+| Watermark           | j-watermark           | jrng-ui/watermark           | Misc      | beta      | rendered | direct | validated     |
 | Diff Viewer         | j-diff-viewer         | jrng-ui/diff-viewer         | Utilities | beta      | rendered | direct | validated     |
 | Highlight           | j-highlight           | jrng-ui/highlight           | Utilities | beta      | rendered | direct | validated     |
 | Tour Guide          | j-tour-guide          | jrng-ui/tour                | Utilities | stable    | rendered | direct | validated     |

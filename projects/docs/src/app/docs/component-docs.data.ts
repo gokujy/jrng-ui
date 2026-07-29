@@ -341,6 +341,206 @@ shortText = 'Ready to publish.';`,
 
 const detailedComponentDocs: readonly ComponentDoc[] = [
   {
+    slug: 'inplace',
+    name: 'Inplace',
+    category: 'Panel',
+    icon: 'text-cursor-input',
+    selector: 'j-inplace',
+    importPath: 'jrng-ui/inplace',
+    status: 'Beta',
+    description:
+      'An accessible display-to-edit surface with lazy content, controlled or local state, async save, cancellation, and focus restoration.',
+    whenToUse:
+      'Use Inplace for compact customer fields that are usually read but occasionally edited in context.',
+    whenNotToUse: [
+      'Use a normal form when several fields must be reviewed and submitted together.',
+    ],
+    code: {
+      importCode: `import { JInplaceComponent, JInplaceDisplayDirective, JInplaceContentDirective, JInplaceActionsDirective } from 'jrng-ui/inplace';`,
+      basic: `<j-inplace>
+  <ng-template jInplaceDisplay>Customer status: {{ status }}</ng-template>
+  <ng-template jInplaceContent><j-select [(ngModel)]="draft" [options]="statuses" /></ng-template>
+</j-inplace>`,
+      variants: `<j-inplace [(active)]="editing" autoFocus [saveHandler]="saveCustomer">
+  <ng-template jInplaceDisplay>{{ customer.name }}</ng-template>
+  <ng-template jInplaceContent><j-input [(ngModel)]="draftName" /></ng-template>
+  <ng-template jInplaceActions let-inplace>...</ng-template>
+</j-inplace>`,
+      states: `<j-inplace disabled>...</j-inplace>
+<j-inplace readonly>...</j-inplace>
+<j-inplace loading error="Customer could not be saved">...</j-inplace>`,
+      angular: `readonly saveCustomer = async () => this.customers.update(this.draft);`,
+    },
+    usage: [
+      'Project display, content, and optional action templates; content is created on activation.',
+    ],
+    variants: ['uncontrolled', 'two-way controlled active state', 'custom actions', 'async save'],
+    sizes: ['Projected controls determine the responsive editor size.'],
+    states: ['display', 'editing', 'loading', 'error', 'disabled', 'read-only'],
+    inputs: [
+      prop('active', 'boolean', 'false', 'Two-way controlled editing state.'),
+      prop('disabled / readonly', 'boolean', 'false', 'Blocks activation and modification.'),
+      prop('loading', 'boolean', 'false', 'Blocks save and cancel during external work.'),
+      prop('autoFocus', 'boolean', 'true', 'Focuses the first editable control.'),
+      prop('saveHandler', 'function | null', 'null', 'Promise-capable save operation.'),
+      prop('error', 'string', "''", 'Externally controlled error message.'),
+    ],
+    outputs: [
+      event('activeChange', 'boolean', 'Supports controlled state.'),
+      event('activated / deactivated', 'void', 'Reports mode changes.'),
+      event('saveRequested / saved / cancelled', 'void', 'Reports editing actions.'),
+      event('saveError', 'unknown', 'Reports a rejected save.'),
+    ],
+    publicMethods: ['activate()', 'deactivate(restoreFocus?)', 'save()', 'cancel()'],
+    templates: ['jInplaceDisplay', 'jInplaceContent', 'jInplaceActions'],
+    accessibility: [
+      'Display mode is a native button; edit mode links errors and exposes busy state.',
+      'Activation moves focus into the editor and save or cancel restores it.',
+    ],
+    keyboard: [
+      'Enter or Space activates; projected controls retain their native keyboard behavior.',
+    ],
+    responsive: ['Actions wrap on narrow screens; logical alignment supports RTL.'],
+    limitations: ['Application code owns field validation before resolving saveHandler.'],
+    relatedComponents: ['Input', 'Select', 'Date Picker'],
+    testingNotes: [
+      'Test controlled/local state, all templates, focus, async success/error, duplicate save prevention, states, RTL, and SSR.',
+    ],
+    bestPractices: [
+      'Provide explicit Save and Cancel actions when edits have domain consequences.',
+    ],
+  },
+  {
+    slug: 'anchor',
+    name: 'Anchor',
+    category: 'Menu',
+    icon: 'route',
+    selector: 'j-anchor',
+    importPath: 'jrng-ui/anchor',
+    status: 'Beta',
+    description:
+      'A vertical or horizontal section navigator with nested links, scroll spy, URL fragments, custom scroll roots, and reduced-motion behavior.',
+    whenToUse: 'Use Anchor to navigate and track sections in long customer details or forms.',
+    whenNotToUse: ['Use Tabs when content should not coexist in one scrolling document.'],
+    code: {
+      importCode: `import { JAnchorComponent, JAnchorLink } from 'jrng-ui/anchor';`,
+      basic: `<j-anchor [links]="sections" [offset]="72" />`,
+      variants: `<j-anchor orientation="horizontal" [links]="sections"
+  [scrollContainer]="detailsPanel" [(activeId)]="activeSection" />`,
+      states: `<j-anchor [links]="[{ id: 'summary', label: 'Summary' },
+  { id: 'billing', label: 'Billing', disabled: true }]" />`,
+      angular: `readonly sections = [
+  { id: 'overview', label: 'Overview' },
+  { id: 'account', label: 'Account', children: [{ id: 'history', label: 'History' }] }
+];`,
+    },
+    usage: ['Match every link id to a stable section id and configure offset for fixed headers.'],
+    variants: ['vertical', 'horizontal', 'nested', 'custom scroll container'],
+    sizes: ['Horizontal mode scrolls rather than clipping at narrow widths.'],
+    states: ['active', 'inactive', 'disabled link', 'observer fallback'],
+    inputs: [
+      prop('links', 'readonly JAnchorLink[]', '[]', 'Nested section links.'),
+      prop('orientation', 'vertical | horizontal', "'vertical'", 'Navigation layout.'),
+      prop('scrollContainer', 'HTMLElement | null', 'null', 'Optional observer and scroll root.'),
+      prop('offset', 'number', '0', 'Fixed-header offset.'),
+      prop('smooth / updateFragment', 'boolean', 'true', 'Scrolling and URL behavior.'),
+      prop('activeId', 'string', "''", 'Two-way active section.'),
+    ],
+    outputs: [
+      event('activeIdChange / activeSectionChange', 'string', 'Reports active section.'),
+      event('navigated', 'JAnchorNavigateEvent', 'Reports completed programmatic navigation.'),
+    ],
+    publicMethods: ['navigate(id, focus?)', 'refresh()'],
+    accessibility: [
+      'Uses a named navigation landmark, aria-current, and disabled link semantics.',
+      'Programmatic focus is optional so pointer scrolling does not unexpectedly move focus.',
+    ],
+    keyboard: [
+      'Arrow keys move between links; Home and End reach the bounds; Enter follows a link.',
+    ],
+    responsive: ['Horizontal links scroll on small screens; logical markers support RTL.'],
+    limitations: [
+      'Without IntersectionObserver, navigation still works and the URL fragment seeds state.',
+    ],
+    relatedComponents: ['Tabs', 'Menu'],
+    testingNotes: [
+      'Test scroll roots, offsets, fragment updates, observer fallback/cleanup, keyboard, disabled links, reduced motion, RTL, and SSR.',
+    ],
+    bestPractices: ['Keep section ids stable and call refresh after dynamically adding sections.'],
+  },
+  {
+    slug: 'watermark',
+    name: 'Watermark',
+    category: 'Misc',
+    icon: 'image',
+    selector: 'j-watermark',
+    importPath: 'jrng-ui/watermark',
+    status: 'Beta',
+    description:
+      'A non-interactive repeating text or image watermark for containers, full pages, and printed customer documents.',
+    whenToUse:
+      'Use Watermark to communicate document classification or ownership without blocking content.',
+    whenNotToUse: ['Do not use a watermark as the only security or authorization control.'],
+    code: {
+      importCode: `import { JWatermarkComponent } from 'jrng-ui/watermark';`,
+      basic: `<j-watermark text="CONFIDENTIAL"><app-customer-summary /></j-watermark>`,
+      variants: `<j-watermark [text]="['CONFIDENTIAL', customer.company]" [rotate]="-18" />
+<j-watermark image="/assets/company-mark.svg" [opacity]="0.1" fullPage />`,
+      states: `<j-watermark text="DRAFT" [opacity]="0.08" [zIndex]="2">...</j-watermark>`,
+      angular: `classification = ['INTERNAL', 'Aster Labs'];`,
+    },
+    usage: [
+      'Provide text lines or an image and tune tile dimensions, gaps, offsets, and rotation.',
+    ],
+    variants: ['single text', 'multiple lines', 'image/logo', 'container', 'full-page'],
+    sizes: [
+      'width and height size the mark; horizontalGap and verticalGap size the repeating tile.',
+    ],
+    states: ['container', 'full-page', 'screen', 'print', 'high contrast'],
+    inputs: [
+      prop('text', 'string | readonly string[]', "'JRNG UI'", 'Text lines.'),
+      prop('image', 'string', "''", 'Optional image URL.'),
+      prop('rotate / opacity', 'number', '-22 / 0.14', 'Mark presentation.'),
+      prop(
+        'fontFamily / fontSize / fontWeight / color',
+        'string / number',
+        'theme defaults',
+        'Text style.',
+      ),
+      prop(
+        'horizontalGap / verticalGap / offsetX / offsetY',
+        'number',
+        'configured',
+        'Tile spacing.',
+      ),
+      prop(
+        'width / height / zIndex / fullPage',
+        'number / boolean',
+        'configured',
+        'Geometry and scope.',
+      ),
+    ],
+    outputs: [],
+    publicMethods: [],
+    templates: ['Default projection remains fully interactive beneath the decorative layer.'],
+    accessibility: [
+      'The watermark layer is decorative and aria-hidden; underlying controls remain interactive.',
+      'Do not encode essential status only in the watermark.',
+    ],
+    keyboard: ['The watermark adds no focus stop and does not change projected keyboard behavior.'],
+    responsive: [
+      'Repeating tiles cover changing container dimensions; full-page mode follows the viewport.',
+    ],
+    limitations: ['Remote image printing depends on browser print and cross-origin image policy.'],
+    relatedComponents: ['Card', 'Image'],
+    testingNotes: [
+      'Test text escaping, image mode, dynamic updates, clamping, projected interaction, print styles, themes, and SSR.',
+    ],
+    bestPractices: [
+      'Use low opacity and retain readable semantic contrast for the content beneath.',
+    ],
+  },
+  {
     slug: 'split-button',
     name: 'Split Button',
     category: 'Button',

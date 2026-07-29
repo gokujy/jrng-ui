@@ -33,6 +33,7 @@ The final shared vocabularies are JComponentSize, JSeverity, JDensity, JOrientat
 | formatting           | medium (2)   | md         | Normalize and document |
 | html-preview         | error (1)    | danger     | Normalize and document |
 | icon                 | error (1)    | danger     | Normalize and document |
+| inplace              | error (1)    | danger     | Normalize and document |
 | input                | error (1)    | danger     | Normalize and document |
 | input-mask           | error (1)    | danger     | Normalize and document |
 | input-number         | error (1)    | danger     | Normalize and document |
