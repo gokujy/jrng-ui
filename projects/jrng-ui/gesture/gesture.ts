@@ -222,13 +222,15 @@ export class JSwipeDirective extends JPointerDirectiveBase {
   exportAs: 'jPan',
   host: {
     '[style.touch-action]':
-      "disabled() ? null : axis() === 'x' ? 'pan-y' : axis() === 'y' ? 'pan-x' : 'none'",
+      "disabled() ? null : touchAction() ?? (axis() === 'x' ? 'pan-y' : axis() === 'y' ? 'pan-x' : 'none')",
     '[style.user-select]': "preventTextSelection() && active ? 'none' : null",
   },
 })
 export class JPanDirective extends JPointerDirectiveBase {
   readonly disabled = input(false, { transform: booleanAttribute });
   readonly axis = input<'x' | 'y' | 'both'>('both');
+  readonly touchAction = input<string | null>(null);
+  readonly preventDefault = input(true, { transform: booleanAttribute });
   readonly preventTextSelection = input(true, { transform: booleanAttribute });
   readonly pan = output<JPanEvent>();
   readonly panStart = output<JPanEvent>();
@@ -266,7 +268,7 @@ export class JPanDirective extends JPointerDirectiveBase {
 
   private onPointerMove(event: PointerEvent): void {
     if (event.pointerId !== this.pointerId || !this.state) return;
-    if (event.cancelable) event.preventDefault();
+    if (this.preventDefault() && event.cancelable) event.preventDefault();
     this.publish('move', event);
     this.state.lastX = event.clientX;
     this.state.lastY = event.clientY;

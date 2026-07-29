@@ -4,20 +4,20 @@ Generated from the 0.1.1 canonical build declarations.
 
 | Metric                                   | Total |
 | ---------------------------------------- | ----: |
-| Total public components                  |   122 |
+| Total public components                  |   124 |
 | Total categories                         |    14 |
 | Uncategorized components                 |     0 |
 | Duplicate entries                        |     0 |
 | Removed components present               |     0 |
-| Components with documentation            |   122 |
-| Components with working preview          |   122 |
-| Components with API reference            |   122 |
-| Components with examples                 |   122 |
-| Components with direct tests             |   122 |
-| Components with accessibility validation |   122 |
-| Components with responsive examples      |    80 |
+| Components with documentation            |   124 |
+| Components with working preview          |   124 |
+| Components with API reference            |   124 |
+| Components with examples                 |   124 |
+| Components with direct tests             |   124 |
+| Components with accessibility validation |   124 |
+| Components with responsive examples      |    82 |
 | Responsive examples not applicable       |    42 |
-| Components with theme-token coverage     |   122 |
+| Components with theme-token coverage     |   124 |
 | Components remaining incomplete          |     0 |
 
 | Category  | Components |
@@ -33,7 +33,7 @@ Generated from the 0.1.1 canonical build declarations.
 | File      |          3 |
 | Chart     |          2 |
 | Layout    |         11 |
-| Misc      |         13 |
+| Misc      |         15 |
 | Utilities |          3 |
 | Pages     |          2 |
 
@@ -153,8 +153,10 @@ Generated from the 0.1.1 canonical build declarations.
 | Meter Group         | j-meter-group         | jrng-ui/meter-group         | Misc      | beta      | rendered | direct | validated     |
 | Progress Bar        | j-progress-bar        | jrng-ui/progress-bar        | Misc      | beta      | rendered | direct | validated     |
 | Progress Spinner    | j-progress-spinner    | jrng-ui/progress-spinner    | Misc      | beta      | rendered | direct | validated     |
+| Pull To Refresh     | j-pull-to-refresh     | jrng-ui/pull-to-refresh     | Misc      | beta      | rendered | direct | validated     |
 | Skeleton            | j-skeleton            | jrng-ui/skeleton            | Misc      | stable    | rendered | direct | validated     |
 | Status Chip         | j-status-chip         | jrng-ui/status-chip         | Misc      | beta      | rendered | direct | validated     |
+| Swipe Actions       | j-swipe-actions       | jrng-ui/swipe-actions       | Misc      | beta      | rendered | direct | validated     |
 | Tag                 | j-tag                 | jrng-ui/tag                 | Misc      | beta      | rendered | direct | validated     |
 | Diff Viewer         | j-diff-viewer         | jrng-ui/diff-viewer         | Utilities | beta      | rendered | direct | validated     |
 | Highlight           | j-highlight           | jrng-ui/highlight           | Utilities | beta      | rendered | direct | validated     |

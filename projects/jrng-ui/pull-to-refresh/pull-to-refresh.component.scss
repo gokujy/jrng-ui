@@ -1,0 +1,85 @@
+:host {
+  --j-pull-refresh-indicator-color: var(--j-color-primary, #2563eb);
+  --j-pull-refresh-surface: var(--j-surface, #fff);
+  position: relative;
+  display: block;
+  overflow: clip;
+  background: var(--j-pull-refresh-surface);
+}
+
+.j-pull-to-refresh__surface {
+  min-block-size: inherit;
+}
+
+.j-pull-to-refresh__content,
+.j-pull-to-refresh__indicator {
+  transition: transform var(--j-transition-normal, 180ms) ease;
+}
+
+.j-pull-to-refresh__indicator {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  z-index: 1;
+  display: flex;
+  min-block-size: 3rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: var(--j-pull-refresh-indicator-color);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.j-pull-to-refresh__indicator--visible {
+  opacity: 1;
+}
+
+.j-pull-to-refresh__glyph {
+  display: inline-grid;
+  place-items: center;
+}
+
+.j-pull-to-refresh__glyph--busy {
+  animation: j-pull-refresh-spin 800ms linear infinite;
+}
+
+.j-pull-to-refresh__live {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+:host(.j-pull-to-refresh--disabled) {
+  opacity: var(--j-disabled-opacity, 0.55);
+}
+
+:host(.j-pull-to-refresh--reduced-motion) .j-pull-to-refresh__content,
+:host(.j-pull-to-refresh--reduced-motion) .j-pull-to-refresh__indicator {
+  transition: none;
+}
+
+@keyframes j-pull-refresh-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .j-pull-to-refresh__content,
+  .j-pull-to-refresh__indicator {
+    transition: none;
+  }
+
+  .j-pull-to-refresh__glyph--busy {
+    animation: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .j-pull-to-refresh__indicator {
+    color: ButtonText;
+  }
+}

@@ -341,6 +341,167 @@ shortText = 'Ready to publish.';`,
 
 const detailedComponentDocs: readonly ComponentDoc[] = [
   {
+    slug: 'pull-to-refresh',
+    name: 'Pull To Refresh',
+    category: 'Misc',
+    icon: 'refresh-cw',
+    selector: 'j-pull-to-refresh',
+    importPath: 'jrng-ui/pull-to-refresh',
+    status: 'Beta',
+    description:
+      'A touch-first refresh surface with controlled and promise-based refresh flows, custom indicators, live announcements, and safe scroll coordination.',
+    whenToUse:
+      'Use Pull To Refresh as an optional mobile refresh gesture while retaining a visible keyboard-accessible refresh command.',
+    whenNotToUse: [
+      'Do not make pulling the only way to refresh essential data.',
+      'Do not wrap a surface whose scroll position cannot be identified reliably.',
+    ],
+    code: {
+      importCode: `import { JPullToRefreshComponent } from 'jrng-ui/pull-to-refresh';`,
+      basic: `<j-pull-to-refresh [refresh]="loadCustomers">
+  <app-customer-list />
+</j-pull-to-refresh>`,
+      variants: `<j-pull-to-refresh [scrollContainer]="list" [indicatorTemplate]="refreshIndicator">
+  <app-customer-list />
+</j-pull-to-refresh>`,
+      states: `<j-pull-to-refresh [refreshing]="refreshing()" disabled>
+  <app-customer-list />
+</j-pull-to-refresh>`,
+      angular: `readonly loadCustomers = async () => {
+  await this.customerService.reload();
+};`,
+    },
+    usage: [
+      'Supply refresh for an internally completed promise flow, or bind refreshing and call complete for a controlled flow.',
+    ],
+    variants: ['default indicator', 'custom indicator template', 'window or element scrolling'],
+    sizes: ['The projected content controls the responsive block size.'],
+    states: ['idle', 'pulling', 'ready', 'refreshing', 'completing', 'disabled', 'error'],
+    inputs: [
+      prop('refreshing', 'boolean', 'false', 'Controls an externally managed refresh.'),
+      prop('disabled', 'boolean', 'false', 'Disables gesture and programmatic refresh.'),
+      prop('threshold', 'number', '72', 'Pull distance required to enter ready state.'),
+      prop('maxPullDistance', 'number', '128', 'Maximum translated distance.'),
+      prop('resistance', 'number', '0.55', 'Resistance multiplier applied to pull distance.'),
+      prop('completeDelay', 'number', '240', 'Completion dwell time in milliseconds.'),
+      prop('scrollContainer', 'HTMLElement | null', 'null', 'Optional scrolling element.'),
+      prop('refresh', '(() => void | Promise<void>) | null', 'null', 'Optional refresh handler.'),
+      prop('indicatorTemplate', 'TemplateRef | null', 'null', 'Custom state indicator.'),
+    ],
+    outputs: [
+      event('refreshRequested', 'void', 'Emits once per accepted refresh.'),
+      event('pullProgressChange', 'number', 'Emits normalized progress from zero to one.'),
+      event('stateChange', 'JPullToRefreshStateChange', 'Emits state and distance changes.'),
+      event('refreshError', 'unknown', 'Emits a synchronous or asynchronous handler error.'),
+    ],
+    publicMethods: ['beginRefresh()', 'complete(message?)', 'reset()'],
+    templates: ['indicatorTemplate receives state, progress, and display text.'],
+    cssVariables: [
+      cssVar('--j-pull-refresh-indicator-color', 'var(--j-color-primary)', 'Indicator color.'),
+      cssVar('--j-pull-refresh-surface', 'var(--j-surface)', 'Content surface.'),
+    ],
+    accessibility: [
+      'A polite live region announces refreshing, completion, and failure.',
+      'Always provide a visible button or equivalent keyboard alternative.',
+    ],
+    keyboard: ['Use the documented refresh button to call beginRefresh().'],
+    responsive: [
+      'Works with window or custom-container scrolling and preserves normal vertical scrolling.',
+      'RTL does not change the vertical gesture.',
+    ],
+    limitations: [
+      'Touch and pointer behavior depends on the browser Pointer Events implementation.',
+    ],
+    relatedComponents: ['Button', 'Loader'],
+    testingNotes: [
+      'Test top-of-scroll gating, thresholds, cancellation, duplicate prevention, controlled state, rejected promises, reduced motion, cleanup, and SSR.',
+    ],
+    bestPractices: [
+      'Keep refresh idempotent and show the current data while a background refresh is running.',
+    ],
+  },
+  {
+    slug: 'swipe-actions',
+    name: 'Swipe Actions',
+    category: 'Misc',
+    icon: 'move-horizontal',
+    selector: 'j-swipe-actions',
+    importPath: 'jrng-ui/swipe-actions',
+    status: 'Beta',
+    description:
+      'A responsive action row with logical start/end actions, RTL mapping, group coordination, keyboard fallback, full-swipe activation, and async completion.',
+    whenToUse:
+      'Use Swipe Actions for compact customer rows where the same commands remain available to keyboard and desktop users.',
+    whenNotToUse: [
+      'Do not hide the only path to a critical action behind a gesture.',
+      'Avoid full swipe for destructive work unless confirmation is configured.',
+    ],
+    code: {
+      importCode: `import { JSwipeActionsComponent, JSwipeStartActionsDirective, JSwipeContentDirective, JSwipeEndActionsDirective } from 'jrng-ui/swipe-actions';`,
+      basic: `<j-swipe-actions ariaLabel="Actions for Aster Labs">
+  <ng-template jSwipeStartActions><j-button label="Activate" /></ng-template>
+  <ng-template jSwipeContent>Aster Labs</ng-template>
+  <ng-template jSwipeEndActions><j-button label="Archive" /></ng-template>
+</j-swipe-actions>`,
+      variants: `<j-swipe-actions group="customers" fullSwipe [actionWidth]="112">...</j-swipe-actions>`,
+      states: `<j-swipe-actions disabled>...</j-swipe-actions>
+<j-swipe-actions readOnly>...</j-swipe-actions>`,
+      angular: `await row.triggerAction('end', false, () => this.archiveCustomer(customer.id));`,
+    },
+    usage: [
+      'Project semantic JRNG buttons into the action templates and use the public methods for desktop fallbacks.',
+    ],
+    variants: ['start actions', 'end actions', 'full swipe', 'LTR and RTL'],
+    sizes: ['actionWidth configures each revealed logical action area.'],
+    states: ['closed', 'start open', 'end open', 'loading', 'disabled', 'read-only', 'error'],
+    inputs: [
+      prop('disabled', 'boolean', 'false', 'Blocks gesture, keyboard, and programmatic opening.'),
+      prop('readOnly', 'boolean', 'false', 'Allows reading content without action changes.'),
+      prop('group', 'string', "'default'", 'Coordinates one open row per group.'),
+      prop('direction', 'ltr | rtl', "'ltr'", 'Maps logical start and end to visual direction.'),
+      prop('openThreshold', 'number', '0.35', 'Fraction of action width needed to open.'),
+      prop('fullSwipeThreshold', 'number', '0.85', 'Fraction needed for full-swipe action.'),
+      prop('actionWidth', 'number', '96', 'Revealed action width in pixels.'),
+      prop('fullSwipe', 'boolean', 'false', 'Enables full-swipe activation.'),
+      prop(
+        'destructiveConfirmation',
+        '(side) => boolean | Promise<boolean>',
+        'null',
+        'Optional confirmation before action execution.',
+      ),
+    ],
+    outputs: [
+      event('openChange', 'JSwipeActionsChange', 'Emits open and close state.'),
+      event('actionTriggered', 'JSwipeActionEvent', 'Emits an accepted action.'),
+      event('actionCompleted', 'JSwipeActionEvent', 'Emits successful async completion.'),
+      event('actionError', 'unknown', 'Emits an async action error.'),
+    ],
+    publicMethods: ['open(side)', 'close(restoreFocus?)', 'reset()', 'triggerAction(...)'],
+    templates: ['jSwipeStartActions', 'jSwipeContent', 'jSwipeEndActions'],
+    cssVariables: [cssVar('--j-swipe-actions-width', '6rem', 'Logical action area width.')],
+    accessibility: [
+      'The content surface exposes its expanded state and a configurable accessible name.',
+      'Projected actions must use named semantic controls.',
+    ],
+    keyboard: [
+      'Left and Right Arrow reveal the corresponding logical action side.',
+      'Escape closes the row and restores focus.',
+      'Tab reaches projected action buttons when visible.',
+    ],
+    responsive: [
+      'Vertical scrolling remains available while the shared pan gesture locks horizontally.',
+      'RTL reverses physical translation while preserving start/end meaning.',
+    ],
+    limitations: ['Full swipe emits an action event; application code owns the domain operation.'],
+    relatedComponents: ['Button', 'Menu'],
+    testingNotes: [
+      'Test thresholds, vertical cancellation, RTL, groups, outside and scroll closing, focus restoration, confirmation, async success/error, cleanup, and disabled/read-only states.',
+    ],
+    bestPractices: [
+      'Use consistent action placement and confirm destructive full-swipe operations.',
+    ],
+  },
+  {
     slug: 'query-builder',
     name: 'Query Builder',
     category: 'Form',

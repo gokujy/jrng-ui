@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, signal } from '@angular/core';
 import {
   COMPONENT_PREVIEW_IMPORTS,
   ComponentDetailViewBase,
@@ -122,6 +122,44 @@ import {
       @case ('progress-spinner') {
         <j-progress-spinner label="Loading customers" />
       }
+      @case ('pull-to-refresh') {
+        <j-pull-to-refresh #refresh [refresh]="refreshCustomers" [completeDelay]="300">
+          <div class="j-preview-stack">
+            <strong>Customer directory</strong>
+            <span>{{ refreshCount() }} refresh requests completed</span>
+            <j-button
+              label="Keyboard refresh"
+              variant="outlined"
+              size="sm"
+              (onClick)="refresh.beginRefresh()"
+            />
+          </div>
+        </j-pull-to-refresh>
+      }
+      @case ('swipe-actions') {
+        <j-swipe-actions #actions ariaLabel="Actions for Aster Labs">
+          <ng-template jSwipeStartActions>
+            <j-button label="Activate" severity="success" />
+          </ng-template>
+          <ng-template jSwipeContent>
+            <div class="j-preview-stack">
+              <strong>Aster Labs</strong><span>Customer ID CUS-2048 · Active</span>
+            </div>
+          </ng-template>
+          <ng-template jSwipeEndActions>
+            <j-button label="Archive" severity="danger" />
+          </ng-template>
+        </j-swipe-actions>
+        <div class="j-preview-row">
+          <j-button label="Open start actions" size="sm" (onClick)="actions.open('start')" />
+          <j-button
+            label="Open end actions"
+            size="sm"
+            variant="outlined"
+            (onClick)="actions.open('end')"
+          />
+        </div>
+      }
       @case ('badge') {
         <j-badge value="12 active customers" />
       }
@@ -192,4 +230,9 @@ import {
 })
 export class MiscComponentPreviewComponent extends ComponentDetailViewBase {
   readonly previewExample = input.required<DetailFeatureExample>();
+  readonly refreshCount = signal(0);
+  readonly refreshCustomers = async (): Promise<void> => {
+    await new Promise((resolve) => setTimeout(resolve, 450));
+    this.refreshCount.update((value) => value + 1);
+  };
 }

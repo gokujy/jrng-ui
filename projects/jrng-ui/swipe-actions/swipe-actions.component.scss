@@ -1,0 +1,76 @@
+:host {
+  --j-swipe-actions-width: 6rem;
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: var(--j-radius-md, 0.5rem);
+  background: var(--j-surface-muted, #f1f5f9);
+}
+
+.j-swipe-actions__content {
+  position: relative;
+  z-index: 1;
+  min-inline-size: 0;
+  background: var(--j-surface, #fff);
+  transition: transform var(--j-transition-normal, 180ms) ease;
+  will-change: transform;
+}
+
+.j-swipe-actions__content:focus-visible {
+  outline: 2px solid var(--j-focus-ring-color, #2563eb);
+  outline-offset: -2px;
+}
+
+.j-swipe-actions__actions {
+  position: absolute;
+  inset-block: 0;
+  display: flex;
+  inline-size: var(--j-swipe-actions-width);
+  align-items: stretch;
+}
+
+.j-swipe-actions__actions--start {
+  inset-inline-start: 0;
+  justify-content: flex-start;
+}
+
+.j-swipe-actions__actions--end {
+  inset-inline-end: 0;
+  justify-content: flex-end;
+}
+
+.j-swipe-actions__actions :is(button, j-button) {
+  block-size: 100%;
+}
+
+.j-swipe-actions__loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--j-surface, #fff) 85%, transparent);
+}
+
+.j-swipe-actions__live {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+:host(.j-swipe-actions--disabled) {
+  opacity: var(--j-disabled-opacity, 0.55);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .j-swipe-actions__content {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  :host {
+    border: 1px solid CanvasText;
+  }
+}

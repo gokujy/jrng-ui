@@ -112,6 +112,8 @@ export * from 'jrng-ui/tooltip';
 export * from 'jrng-ui/topbar';
 export * from 'jrng-ui/tour';
 export * from 'jrng-ui/truncate';
+export * from 'jrng-ui/pull-to-refresh';
+export * from 'jrng-ui/swipe-actions';
 export * from 'jrng-ui/transfer-list';
 export * from 'jrng-ui/tree';
 export * from 'jrng-ui/tree-table';

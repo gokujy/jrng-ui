@@ -51,6 +51,7 @@ The final shared vocabularies are JComponentSize, JSeverity, JDensity, JOrientat
 | slider | error (1) | danger | Normalize and document |
 | splitter | readOnly (1) | readonly | Normalize and document |
 | stepper | readOnly (1) | readonly | Normalize and document |
+| swipe-actions | readOnly (1) | readonly | Normalize and document |
 | table | column (2) | vertical | Normalize and document |
 | table | error (1) | danger | Normalize and document |
 | table | error (9) | danger | Normalize and document |

@@ -1,17 +1,17 @@
 {
   "schemaVersion": 1,
-  "generatedOn": "2026-07-29T11:08:48.482Z",
+  "generatedOn": "2026-07-29T11:40:07.424Z",
   "package": "jrng-ui",
   "version": "0.1.1",
   "authority": "Built declaration files and canonical secondary-entrypoint source; projects/jrng-ui/src/lib is excluded.",
   "totals": {
-    "entrypoints": 134,
-    "artifacts": 797,
-    "component": 123,
-    "type": 441,
+    "entrypoints": 136,
+    "artifacts": 808,
+    "component": 125,
+    "type": 447,
     "class": 152,
     "service": 22,
-    "directive": 31,
+    "directive": 34,
     "token": 4,
     "function": 1,
     "pipe": 23
@@ -2509,6 +2509,30 @@
         "selector": null
       },
       {
+        "name": "JPullToRefreshComponent",
+        "kind": "component",
+        "entrypoint": "jrng-ui/pull-to-refresh",
+        "selector": "j-pull-to-refresh"
+      },
+      {
+        "name": "JPullToRefreshIndicatorContext",
+        "kind": "type",
+        "entrypoint": "jrng-ui/pull-to-refresh",
+        "selector": null
+      },
+      {
+        "name": "JPullToRefreshState",
+        "kind": "type",
+        "entrypoint": "jrng-ui/pull-to-refresh",
+        "selector": null
+      },
+      {
+        "name": "JPullToRefreshStateChange",
+        "kind": "type",
+        "entrypoint": "jrng-ui/pull-to-refresh",
+        "selector": null
+      },
+      {
         "name": "JQueryBuilderComponent",
         "kind": "component",
         "entrypoint": "jrng-ui/query-builder",
@@ -2752,6 +2776,48 @@
         "name": "JSplitterOrientation",
         "kind": "type",
         "entrypoint": "jrng-ui/splitter",
+        "selector": null
+      },
+      {
+        "name": "JSwipeActionsComponent",
+        "kind": "component",
+        "entrypoint": "jrng-ui/swipe-actions",
+        "selector": "j-swipe-actions"
+      },
+      {
+        "name": "JSwipeContentDirective",
+        "kind": "directive",
+        "entrypoint": "jrng-ui/swipe-actions",
+        "selector": "ng-template[jSwipeContent]"
+      },
+      {
+        "name": "JSwipeEndActionsDirective",
+        "kind": "directive",
+        "entrypoint": "jrng-ui/swipe-actions",
+        "selector": "ng-template[jSwipeEndActions]"
+      },
+      {
+        "name": "JSwipeStartActionsDirective",
+        "kind": "directive",
+        "entrypoint": "jrng-ui/swipe-actions",
+        "selector": "ng-template[jSwipeStartActions]"
+      },
+      {
+        "name": "JSwipeActionEvent",
+        "kind": "type",
+        "entrypoint": "jrng-ui/swipe-actions",
+        "selector": null
+      },
+      {
+        "name": "JSwipeActionSide",
+        "kind": "type",
+        "entrypoint": "jrng-ui/swipe-actions",
+        "selector": null
+      },
+      {
+        "name": "JSwipeActionsChange",
+        "kind": "type",
+        "entrypoint": "jrng-ui/swipe-actions",
         "selector": null
       },
       {
@@ -11377,6 +11443,7 @@
           "entrypoint": "jrng-ui/gesture",
           "selector": null,
           "exportAlias": false,
+          "tested": true,
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "not-applicable",
@@ -13221,6 +13288,75 @@
       ]
     },
     {
+      "importPath": "jrng-ui/pull-to-refresh",
+      "declaration": "types/jrng-ui-pull-to-refresh.d.ts",
+      "artifactCount": 4,
+      "optionalDependencies": [],
+      "artifacts": [
+        {
+          "name": "JPullToRefreshComponent",
+          "originalName": "JPullToRefreshComponent",
+          "kind": "component",
+          "entrypoint": "jrng-ui/pull-to-refresh",
+          "selector": "j-pull-to-refresh",
+          "exportAlias": false,
+          "tested": true,
+          "documented": true,
+          "accessibility": "validated",
+          "themeTokens": "css-custom-properties",
+          "browserApis": [
+            "matchMedia"
+          ],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JPullToRefreshIndicatorContext",
+          "originalName": "JPullToRefreshIndicatorContext",
+          "kind": "type",
+          "entrypoint": "jrng-ui/pull-to-refresh",
+          "selector": null,
+          "exportAlias": false,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": [
+            "matchMedia"
+          ],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JPullToRefreshState",
+          "originalName": "JPullToRefreshState",
+          "kind": "type",
+          "entrypoint": "jrng-ui/pull-to-refresh",
+          "selector": null,
+          "exportAlias": false,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": [
+            "matchMedia"
+          ],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JPullToRefreshStateChange",
+          "originalName": "JPullToRefreshStateChange",
+          "kind": "type",
+          "entrypoint": "jrng-ui/pull-to-refresh",
+          "selector": null,
+          "exportAlias": false,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": [
+            "matchMedia"
+          ],
+          "optionalDependencies": []
+        }
+      ]
+    },
+    {
       "importPath": "jrng-ui/query-builder",
       "declaration": "types/jrng-ui-query-builder.d.ts",
       "artifactCount": 27,
@@ -14366,6 +14502,123 @@
       "artifactCount": 0,
       "optionalDependencies": [],
       "artifacts": []
+    },
+    {
+      "importPath": "jrng-ui/swipe-actions",
+      "declaration": "types/jrng-ui-swipe-actions.d.ts",
+      "artifactCount": 7,
+      "optionalDependencies": [],
+      "artifacts": [
+        {
+          "name": "JSwipeActionsComponent",
+          "originalName": "JSwipeActionsComponent",
+          "kind": "component",
+          "entrypoint": "jrng-ui/swipe-actions",
+          "selector": "j-swipe-actions",
+          "exportAlias": false,
+          "tested": true,
+          "documented": true,
+          "accessibility": "validated",
+          "themeTokens": "css-custom-properties",
+          "browserApis": [
+            "document"
+          ],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JSwipeContentDirective",
+          "originalName": "JSwipeContentDirective",
+          "kind": "directive",
+          "entrypoint": "jrng-ui/swipe-actions",
+          "selector": "ng-template[jSwipeContent]",
+          "exportAlias": false,
+          "tested": true,
+          "documented": true,
+          "accessibility": "static-review",
+          "themeTokens": "css-custom-properties",
+          "browserApis": [
+            "document"
+          ],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JSwipeEndActionsDirective",
+          "originalName": "JSwipeEndActionsDirective",
+          "kind": "directive",
+          "entrypoint": "jrng-ui/swipe-actions",
+          "selector": "ng-template[jSwipeEndActions]",
+          "exportAlias": false,
+          "tested": true,
+          "documented": true,
+          "accessibility": "static-review",
+          "themeTokens": "css-custom-properties",
+          "browserApis": [
+            "document"
+          ],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JSwipeStartActionsDirective",
+          "originalName": "JSwipeStartActionsDirective",
+          "kind": "directive",
+          "entrypoint": "jrng-ui/swipe-actions",
+          "selector": "ng-template[jSwipeStartActions]",
+          "exportAlias": false,
+          "tested": true,
+          "documented": true,
+          "accessibility": "static-review",
+          "themeTokens": "css-custom-properties",
+          "browserApis": [
+            "document"
+          ],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JSwipeActionEvent",
+          "originalName": "JSwipeActionEvent",
+          "kind": "type",
+          "entrypoint": "jrng-ui/swipe-actions",
+          "selector": null,
+          "exportAlias": false,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": [
+            "document"
+          ],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JSwipeActionSide",
+          "originalName": "JSwipeActionSide",
+          "kind": "type",
+          "entrypoint": "jrng-ui/swipe-actions",
+          "selector": null,
+          "exportAlias": false,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": [
+            "document"
+          ],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JSwipeActionsChange",
+          "originalName": "JSwipeActionsChange",
+          "kind": "type",
+          "entrypoint": "jrng-ui/swipe-actions",
+          "selector": null,
+          "exportAlias": false,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": [
+            "document"
+          ],
+          "optionalDependencies": []
+        }
+      ]
     },
     {
       "importPath": "jrng-ui/switch",

@@ -109,6 +109,7 @@ import {
 } from 'jrng-ui/query-builder';
 import { JProgressBarComponent, JProgressBarVariant } from 'jrng-ui/progress-bar';
 import { JProgressSpinnerComponent } from 'jrng-ui/progress-spinner';
+import { JPullToRefreshComponent } from 'jrng-ui/pull-to-refresh';
 import { JRadioGroupComponent } from 'jrng-ui/radio-group';
 import { JRadioComponent } from 'jrng-ui/radio';
 import { JRatingComponent } from 'jrng-ui/rating';
@@ -125,6 +126,12 @@ import { JStatusChipComponent } from 'jrng-ui/status-chip';
 import { JStepperComponent } from 'jrng-ui/stepper';
 import { JSliderComponent } from 'jrng-ui/slider';
 import { JSwitchComponent } from 'jrng-ui/switch';
+import {
+  JSwipeActionsComponent,
+  JSwipeContentDirective,
+  JSwipeEndActionsDirective,
+  JSwipeStartActionsDirective,
+} from 'jrng-ui/swipe-actions';
 import { JTabComponent, JTabsComponent, JTabsVariant } from 'jrng-ui/tabs';
 import { JTagComponent } from 'jrng-ui/tag';
 import { JToggleButtonComponent } from 'jrng-ui/toggle-button';
@@ -1739,6 +1746,7 @@ export const COMPONENT_PREVIEW_IMPORTS = [
   JQueryBuilderComponent,
   JProgressBarComponent,
   JProgressSpinnerComponent,
+  JPullToRefreshComponent,
   JRadioGroupComponent,
   JRadioComponent,
   JRatingComponent,
@@ -1752,6 +1760,10 @@ export const COMPONENT_PREVIEW_IMPORTS = [
   JStatusChipComponent,
   JSliderComponent,
   JSwitchComponent,
+  JSwipeActionsComponent,
+  JSwipeContentDirective,
+  JSwipeEndActionsDirective,
+  JSwipeStartActionsDirective,
   JTabComponent,
   JTabsComponent,
   JTagComponent,

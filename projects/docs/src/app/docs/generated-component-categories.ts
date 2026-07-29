@@ -159,7 +159,7 @@ export const generatedComponentCategories = [
   },
   {
     name: 'Misc',
-    count: 13,
+    count: 15,
     selectors: [
       'j-avatar',
       'j-avatar-group',
@@ -171,8 +171,10 @@ export const generatedComponentCategories = [
       'j-meter-group',
       'j-progress-bar',
       'j-progress-spinner',
+      'j-pull-to-refresh',
       'j-skeleton',
       'j-status-chip',
+      'j-swipe-actions',
       'j-tag',
     ],
   },
@@ -189,4 +191,4 @@ export const generatedComponentCategories = [
 ] as const;
 
 export const generatedComponentCategoryOrder = generatedComponentCategories.map(({ name }) => name);
-export const generatedActiveComponentTotal = 122;
+export const generatedActiveComponentTotal = 124;

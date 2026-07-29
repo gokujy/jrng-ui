@@ -4,6 +4,8 @@
 
 ### Added
 
+- Added beta `jrng-ui/pull-to-refresh` and `jrng-ui/swipe-actions` entrypoints with shared gesture handling, async state management, accessibility fallbacks, live previews, and SSR-safe cleanup.
+
 - Added the beta `jrng-ui/portal`, `jrng-ui/gesture`, `jrng-ui/truncate`, and
   `jrng-ui/drag-drop` foundations with SSR-safe lifecycle cleanup, accessible keyboard
   alternatives, direct tests, and live documentation.

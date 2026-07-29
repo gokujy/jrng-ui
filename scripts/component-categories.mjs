@@ -149,8 +149,10 @@ export const COMPONENT_CATEGORIES = [
       'j-meter-group',
       'j-progress-bar',
       'j-progress-spinner',
+      'j-pull-to-refresh',
       'j-skeleton',
       'j-status-chip',
+      'j-swipe-actions',
       'j-tag',
     ],
   },
@@ -196,11 +198,11 @@ export const COMPONENT_CATEGORY_COUNTS = Object.freeze({
   File: 3,
   Chart: 2,
   Layout: 11,
-  Misc: 13,
+  Misc: 15,
   Utilities: 3,
   Pages: 2,
 });
-export const ACTIVE_COMPONENT_TOTAL = 122;
+export const ACTIVE_COMPONENT_TOTAL = 124;
 export const COMPONENT_CATEGORY_TOTAL = 14;
 export const REMOVED_COMPONENT_SELECTORS = new Set([
   'j-activity-feed',

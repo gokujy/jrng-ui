@@ -194,12 +194,42 @@ Generated from built public declarations. Each record is covered by the strict e
 - Errors: recoverable operations return/emit explicit failure state where applicable.
 - Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
 
+### JSwipeContentDirective
+
+- Import: import { JSwipeContentDirective } from 'jrng-ui/swipe-actions';
+- Selector: ng-template[jSwipeContent]
+- Test status: covered
+- SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
+- Accessibility/keyboard: semantic behavior is part of the directive/component contract
+- Errors: recoverable operations return/emit explicit failure state where applicable.
+- Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
+
 ### JSwipeDirective
 
 - Import: import { JSwipeDirective } from 'jrng-ui/gesture';
 - Selector: [jSwipe]
 - Test status: covered
 - SSR behavior: no detected browser-only API
+- Accessibility/keyboard: semantic behavior is part of the directive/component contract
+- Errors: recoverable operations return/emit explicit failure state where applicable.
+- Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
+
+### JSwipeEndActionsDirective
+
+- Import: import { JSwipeEndActionsDirective } from 'jrng-ui/swipe-actions';
+- Selector: ng-template[jSwipeEndActions]
+- Test status: covered
+- SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
+- Accessibility/keyboard: semantic behavior is part of the directive/component contract
+- Errors: recoverable operations return/emit explicit failure state where applicable.
+- Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
+
+### JSwipeStartActionsDirective
+
+- Import: import { JSwipeStartActionsDirective } from 'jrng-ui/swipe-actions';
+- Selector: ng-template[jSwipeStartActions]
+- Test status: covered
+- SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
 - Accessibility/keyboard: semantic behavior is part of the directive/component contract
 - Errors: recoverable operations return/emit explicit failure state where applicable.
 - Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
