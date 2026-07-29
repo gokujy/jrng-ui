@@ -385,8 +385,10 @@ export class JSignatureComponent implements ControlValueAccessor, Validator, OnD
     const probe = this.canvas().nativeElement;
     const variable = value.match(/var\((--[^,)]+)/)?.[1];
     return variable
-      ? probe.ownerDocument.defaultView?.getComputedStyle(probe).getPropertyValue(variable).trim() ||
-          '#111827'
+      ? probe.ownerDocument.defaultView
+          ?.getComputedStyle(probe)
+          .getPropertyValue(variable)
+          .trim() || '#111827'
       : value;
   }
 
