@@ -1,0 +1,32 @@
+:host {
+  position: relative;
+  display: inline-flex;
+}
+
+.j-split-button__group {
+  display: inline-flex;
+}
+
+:host ::ng-deep .j-split-button__primary {
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
+
+:host ::ng-deep .j-split-button__trigger {
+  min-inline-size: 2.5rem;
+  margin-inline-start: -1px;
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
+
+:host ::ng-deep .j-split-button__primary:focus-visible,
+:host ::ng-deep .j-split-button__trigger:focus-visible {
+  position: relative;
+  z-index: 1;
+}
+
+@media (forced-colors: active) {
+  :host ::ng-deep .j-split-button__trigger {
+    margin-inline-start: 0;
+  }
+}

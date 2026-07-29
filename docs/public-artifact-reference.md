@@ -14,6 +14,16 @@ Generated from built public declarations. Each record is covered by the strict e
 - Errors: recoverable operations return/emit explicit failure state where applicable.
 - Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
 
+### JCascaderOptionDirective
+
+- Import: import { JCascaderOptionDirective } from 'jrng-ui/cascader';
+- Selector: ng-template[jCascaderOption]
+- Test status: covered
+- SSR behavior: no detected browser-only API
+- Accessibility/keyboard: semantic behavior is part of the directive/component contract
+- Errors: recoverable operations return/emit explicit failure state where applicable.
+- Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
+
 ### JClickOutsideDirective
 
 - Import: import { JClickOutsideDirective } from 'jrng-ui/core';
@@ -144,6 +154,16 @@ Generated from built public declarations. Each record is covered by the strict e
 - Errors: recoverable operations return/emit explicit failure state where applicable.
 - Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
 
+### JMentionDirective
+
+- Import: import { JMentionDirective } from 'jrng-ui/mention';
+- Selector: [jMention]
+- Test status: covered
+- SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
+- Accessibility/keyboard: semantic behavior is part of the directive/component contract
+- Errors: recoverable operations return/emit explicit failure state where applicable.
+- Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
+
 ### JPanDirective
 
 - Import: import { JPanDirective } from 'jrng-ui/gesture';
@@ -188,6 +208,26 @@ Generated from built public declarations. Each record is covered by the strict e
 
 - Import: import { JRippleDirective } from 'jrng-ui/core';
 - Selector: [jRipple]
+- Test status: covered
+- SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
+- Accessibility/keyboard: semantic behavior is part of the directive/component contract
+- Errors: recoverable operations return/emit explicit failure state where applicable.
+- Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
+
+### JSelectCellDirective
+
+- Import: import { JSelectCellDirective } from 'jrng-ui/select';
+- Selector: ng-template[jSelectCell]
+- Test status: covered
+- SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
+- Accessibility/keyboard: semantic behavior is part of the directive/component contract
+- Errors: recoverable operations return/emit explicit failure state where applicable.
+- Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
+
+### JSplitButtonItemDirective
+
+- Import: import { JSplitButtonItemDirective } from 'jrng-ui/split-button';
+- Selector: ng-template[jSplitButtonItem]
 - Test status: covered
 - SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
 - Accessibility/keyboard: semantic behavior is part of the directive/component contract
@@ -308,6 +348,26 @@ Generated from built public declarations. Each record is covered by the strict e
 
 - Import: import { JTourStepDirective } from 'jrng-ui/tour';
 - Selector: [jTourStep]
+- Test status: covered
+- SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
+- Accessibility/keyboard: semantic behavior is part of the directive/component contract
+- Errors: recoverable operations return/emit explicit failure state where applicable.
+- Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
+
+### JTreeSelectNodeDirective
+
+- Import: import { JTreeSelectNodeDirective } from 'jrng-ui/tree-select';
+- Selector: ng-template[jTreeSelectNode]
+- Test status: covered
+- SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
+- Accessibility/keyboard: semantic behavior is part of the directive/component contract
+- Errors: recoverable operations return/emit explicit failure state where applicable.
+- Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
+
+### JTreeSelectValueDirective
+
+- Import: import { JTreeSelectValueDirective } from 'jrng-ui/tree-select';
+- Selector: ng-template[jTreeSelectValue]
 - Test status: covered
 - SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
 - Accessibility/keyboard: semantic behavior is part of the directive/component contract

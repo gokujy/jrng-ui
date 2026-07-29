@@ -4,6 +4,7 @@ export const COMPONENT_CATEGORIES = [
     selectors: [
       'j-autocomplete',
       'j-checkbox',
+      'j-cascader',
       'j-chips',
       'j-color-picker',
       'j-cron-expression',
@@ -32,9 +33,10 @@ export const COMPONENT_CATEGORIES = [
       'j-textarea',
       'j-time-picker',
       'j-toggle-button',
+      'j-tree-select',
     ],
   },
-  { name: 'Button', selectors: ['j-button', 'j-copy-button'] },
+  { name: 'Button', selectors: ['j-button', 'j-copy-button', 'j-split-button'] },
   {
     name: 'Data',
     selectors: [
@@ -187,8 +189,8 @@ export const COMPONENT_CATEGORY_ORDER = Object.freeze([
   'Pages',
 ]);
 export const COMPONENT_CATEGORY_COUNTS = Object.freeze({
-  Form: 30,
-  Button: 2,
+  Form: 32,
+  Button: 3,
   Data: 16,
   Panel: 15,
   Overlay: 8,
@@ -202,7 +204,7 @@ export const COMPONENT_CATEGORY_COUNTS = Object.freeze({
   Utilities: 3,
   Pages: 2,
 });
-export const ACTIVE_COMPONENT_TOTAL = 124;
+export const ACTIVE_COMPONENT_TOTAL = 127;
 export const COMPONENT_CATEGORY_TOTAL = 14;
 export const REMOVED_COMPONENT_SELECTORS = new Set([
   'j-activity-feed',

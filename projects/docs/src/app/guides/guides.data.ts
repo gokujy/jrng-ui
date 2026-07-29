@@ -346,6 +346,59 @@ export class CustomerToolsComponent {
     related: related('Button', 'Menu', 'Tooltip', 'Tree'),
   },
   {
+    slug: 'hierarchical-inputs',
+    title: 'Build hierarchical inputs, mentions, and split actions',
+    description:
+      'Compose customer workflows with Split Button, Tree Select, Cascader, Mention, and multi-column Select.',
+    problem:
+      'Hierarchical choices, caret suggestions, and related actions need distinct keyboard models while sharing form, overlay, theme, and accessibility foundations.',
+    implementation: [
+      'Import each feature from its modular jrng-ui entrypoint.',
+      'Bind Tree Select and Cascader through Angular Forms and use stable node or option values.',
+      'Configure Mention triggers and a synchronous or promise-based data source.',
+      'Pass columns to the existing Select only when structured option comparison is useful.',
+    ],
+    code: `import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { JCascaderComponent } from 'jrng-ui/cascader';
+import { JMentionDirective } from 'jrng-ui/mention';
+import { JSelectComponent } from 'jrng-ui/select';
+import { JSplitButtonComponent } from 'jrng-ui/split-button';
+import { JTreeSelectComponent } from 'jrng-ui/tree-select';
+
+@Component({
+  selector: 'app-customer-routing',
+  imports: [FormsModule, JCascaderComponent, JMentionDirective, JSelectComponent, JSplitButtonComponent, JTreeSelectComponent],
+  template: \`
+    <j-tree-select label="Customer segment" [nodes]="segments" [(ngModel)]="segment" />
+    <j-cascader label="Location" [options]="locations" [(ngModel)]="location" />
+    <textarea [jMention]="people" placeholder="Mention an account manager"></textarea>
+    <j-select label="Customer" [options]="customers" [columns]="columns" optionLabel="name" optionValue="id" />
+    <j-split-button label="Save customer" [model]="saveActions" (primaryAction)="save()" />
+  \`,
+})
+export class CustomerRoutingComponent {}`,
+    explanation: [
+      'Tree Select reuses JRNG Tree semantics while Cascader provides path-oriented columns.',
+      'Mention positions a listbox at the caret and discards stale asynchronous responses.',
+      'Multi-column Select is opt-in and preserves the existing flat Select API.',
+      'All panels restore focus and detach their overlay resources on close or destroy.',
+    ],
+    accessibility: [
+      'Every pointer interaction has a complete keyboard path and visible focus.',
+      'Loading and error states use live-region semantics.',
+      'Narrow layouts retain named controls and logical RTL positioning.',
+      'Disabled and read-only states block modification through every interaction path.',
+    ],
+    mistakes: [
+      'Using Cascader for multi-branch selection instead of Tree Select.',
+      'Making a gesture or caret suggestion the only way to complete an essential task.',
+      'Using unstable object identity for tree keys or final cascader values.',
+      'Adding another Select component instead of enabling columns on j-select.',
+    ],
+    related: related('Split Button', 'Tree Select', 'Cascader', 'Select'),
+  },
+  {
     slug: 'zoneless',
     title: 'Use JRNG UI with zoneless Angular',
     description:

@@ -118,9 +118,34 @@
           <j-button label="Retry" size="sm" variant="text" (onClick)="retryAsync()" />
         </div>
       }
+      @if (columns().length && !isLoading && !asyncState().error) {
+        <div
+          class="j-select__column-header"
+          role="presentation"
+          [style.grid-template-columns]="columnGridTemplate"
+        >
+          @for (column of columns(); track column.field) {
+            <button
+              type="button"
+              tabindex="-1"
+              [class.is-sortable]="sortable() || column.sortable"
+              [attr.aria-label]="'Sort by ' + column.header"
+              [attr.data-align]="column.align || 'start'"
+              (click)="sortColumn(column, $event)"
+            >
+              {{ column.header }}
+              @if (sortField() === column.field) {
+                <span aria-hidden="true">{{ sortDirection() === 1 ? '↑' : '↓' }}</span>
+              }
+            </button>
+          }
+        </div>
+      }
       <ng-template #optionTpl let-option let-index="index">
         <button
           class="j-select__option"
+          [class.j-select__option--columns]="columns().length"
+          [style.grid-template-columns]="columns().length ? columnGridTemplate : null"
           data-jc-section="option"
           type="button"
           role="option"
@@ -139,6 +164,23 @@
               [ngTemplateOutlet]="itemTemplate"
               [ngTemplateOutletContext]="itemContext(option, index)"
             ></ng-container>
+          } @else if (columns().length) {
+            @for (column of columns(); track column.field) {
+              <span
+                class="j-select__cell"
+                [attr.data-label]="column.header"
+                [attr.data-align]="column.align || 'start'"
+              >
+                @if (cellTemplate(column.field); as template) {
+                  <ng-container
+                    [ngTemplateOutlet]="template"
+                    [ngTemplateOutletContext]="cellContext(option, column)"
+                  />
+                } @else {
+                  {{ formattedCell(option, column) }}
+                }
+              </span>
+            }
           } @else {
             {{ option.label }}
           }

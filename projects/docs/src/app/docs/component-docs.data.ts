@@ -341,6 +341,220 @@ shortText = 'Ready to publish.';`,
 
 const detailedComponentDocs: readonly ComponentDoc[] = [
   {
+    slug: 'split-button',
+    name: 'Split Button',
+    category: 'Button',
+    icon: 'chevron-down',
+    selector: 'j-split-button',
+    importPath: 'jrng-ui/split-button',
+    status: 'Beta',
+    description:
+      'A connected primary command and JRNG Menu trigger with independent events, custom item templates, and focus restoration.',
+    whenToUse:
+      'Use Split Button when one action is the clear default and closely related alternatives must remain available.',
+    whenNotToUse: [
+      'Use a normal Button when there is only one action.',
+      'Use Menu when none of the actions should be presented as the default.',
+    ],
+    code: {
+      importCode: `import { JSplitButtonComponent, JSplitButtonItemDirective } from 'jrng-ui/split-button';`,
+      basic: `<j-split-button label="Save customer" [model]="saveActions"
+  (primaryAction)="saveCustomer()" (menuAction)="runAction($event)" />`,
+      variants: `<j-split-button label="Approve" icon="check" severity="success" variant="outlined"
+  [model]="approvalActions">
+  <ng-template jSplitButtonItem let-item>{{ item.label }}</ng-template>
+</j-split-button>`,
+      states: `<j-split-button label="Saving" loading [model]="actions" />
+<j-split-button label="Unavailable" disabled [model]="actions" />`,
+      angular: `readonly saveActions = [
+  { label: 'Save and notify', command: () => this.saveAndNotify() },
+  { separator: true },
+  { label: 'Save as draft', command: () => this.saveDraft() }
+];`,
+    },
+    usage: [
+      'Bind JMenuItem records through model and handle the primary and secondary actions separately.',
+    ],
+    variants: ['solid', 'outlined', 'soft', 'severity and size combinations'],
+    sizes: ['sm, md, and lg follow JButton sizing without changing the connected border.'],
+    states: ['default', 'open', 'loading', 'disabled'],
+    inputs: [
+      prop('label / icon', 'string', "''", 'Primary action content.'),
+      prop('model', 'readonly JMenuItem[]', '[]', 'Secondary actions and separators.'),
+      prop('severity / variant / size', 'JButton types', 'primary / solid / md', 'Shared style.'),
+      prop('loading', 'boolean', 'false', 'Blocks both actions and shows primary loading state.'),
+      prop('disabled', 'boolean', 'false', 'Disables both controls.'),
+    ],
+    outputs: [
+      event('primaryAction', 'MouseEvent', 'Emits only for the primary action.'),
+      event('menuAction', 'JMenu item event', 'Emits for a selected secondary item.'),
+      event('opened / closed', 'void', 'Emits menu visibility changes.'),
+    ],
+    publicMethods: ['focus()', 'openMenu()', 'closeMenu(restoreFocus?)', 'toggleMenu(event?)'],
+    templates: ['jSplitButtonItem receives the JMenu item context.'],
+    accessibility: [
+      'The two native buttons form a named group and the trigger exposes menu state.',
+      'Disabled menu items and separators retain JMenu semantics.',
+    ],
+    keyboard: [
+      'Enter or Space activates the focused button. Arrow Down opens the menu.',
+      'Escape closes the menu and restores focus to its trigger.',
+    ],
+    responsive: [
+      'The connected control keeps its intrinsic width and supports logical RTL borders.',
+    ],
+    limitations: ['Application code owns async menu action completion.'],
+    relatedComponents: ['Button', 'Menu'],
+    testingNotes: [
+      'Test independent events, disabled/loading states, separators, keyboard opening, Escape, and focus restoration.',
+    ],
+    bestPractices: ['Keep the primary action predictable and secondary labels concise.'],
+  },
+  {
+    slug: 'tree-select',
+    name: 'Tree Select',
+    category: 'Form',
+    icon: 'git-branch',
+    selector: 'j-tree-select',
+    importPath: 'jrng-ui/tree-select',
+    status: 'Beta',
+    description:
+      'A form-compatible hierarchical picker built on JRNG Tree, overlays, selection propagation, search, lazy loading, and virtual scrolling.',
+    whenToUse:
+      'Use Tree Select when customers choose one or more items from a hierarchy and the parent-child structure matters.',
+    whenNotToUse: [
+      'Use Select for a flat list.',
+      'Use Tree when selection does not belong in a form field.',
+    ],
+    code: {
+      importCode: `import { JTreeSelectComponent, JTreeSelectNodeDirective, JTreeSelectValueDirective } from 'jrng-ui/tree-select';`,
+      basic: `<j-tree-select label="Customer segment" [nodes]="segments"
+  searchable clearable [(ngModel)]="segment" />`,
+      variants: `<j-tree-select label="Segments" [nodes]="segments" selectionMode="checkbox"
+  propagation="both" virtualScroll [(ngModel)]="selectedSegments" />`,
+      states: `<j-tree-select label="Segments" [nodes]="[]" loading />
+<j-tree-select label="Segments" [nodes]="[]" errorState="Segments could not be loaded" />`,
+      angular: `readonly segments = [{ key: 'technology', label: 'Technology',
+  children: [{ key: 'aster', label: 'Aster Labs', leaf: true }] }];`,
+    },
+    usage: ['Bind with template-driven or reactive Angular Forms and choose a selectionMode.'],
+    variants: ['single', 'multiple', 'checkbox with parent-child propagation', 'virtualized'],
+    sizes: ['maxSelectedLabels controls chip overflow while scrollHeight controls the panel.'],
+    states: ['empty', 'loading', 'error', 'disabled', 'read-only', 'selected'],
+    inputs: [
+      prop('nodes', 'readonly JTreeNode[]', '[]', 'Hierarchical options.'),
+      prop('selectionMode', 'single | multiple | checkbox', "'single'", 'Selection behavior.'),
+      prop('propagation', 'none | down | up | both', "'none'", 'Checkbox propagation.'),
+      prop('searchable / lazy / virtualScroll', 'boolean', 'false', 'Large-tree capabilities.'),
+      prop('disabled / readonly / clearable', 'boolean', 'false', 'Form states and clearing.'),
+      prop('loading / errorState', 'boolean / string', 'false / empty', 'Async states.'),
+    ],
+    outputs: [
+      event('valueChange', 'JTreeSelectValue', 'Emits committed selection.'),
+      event('lazyLoad', 'JTreeLazyLoadEvent', 'Requests child loading.'),
+      event('opened / closed / cleared', 'void', 'Lifecycle events.'),
+    ],
+    publicMethods: ['open()', 'close(restoreFocus?)', 'toggle()', 'clearValue(event?)'],
+    templates: ['jTreeSelectNode customizes nodes; jTreeSelectValue customizes selected values.'],
+    accessibility: [
+      'The trigger exposes its controlled tree panel and JRNG Tree supplies tree roles and selection state.',
+      'Loading and errors use status and alert semantics.',
+    ],
+    keyboard: [
+      'Enter, Space, or Arrow Down opens the panel; Escape closes and restores focus.',
+      'JRNG Tree supplies arrow navigation, expansion, selection, and checkbox behavior.',
+    ],
+    responsive: [
+      'The overlay matches the trigger and becomes a mobile-friendly bounded panel on narrow screens.',
+      'Logical spacing and tree navigation support RTL.',
+    ],
+    limitations: [
+      'Virtual mode renders flattened visible records and does not render nested expand controls.',
+    ],
+    relatedComponents: ['Tree', 'Select', 'Virtual Scroller'],
+    testingNotes: [
+      'Test Forms, propagation, lazy events, chips, virtual mode, states, focus restoration, overlay cleanup, RTL, and SSR.',
+    ],
+    bestPractices: ['Use stable node keys and mark unavailable branches disabled.'],
+  },
+  {
+    slug: 'cascader',
+    name: 'Cascader',
+    category: 'Form',
+    icon: 'columns',
+    selector: 'j-cascader',
+    importPath: 'jrng-ui/cascader',
+    status: 'Beta',
+    description:
+      'A form-compatible parent-to-child picker with multi-column navigation, full-path search, lazy children, custom fields, and a mobile level view.',
+    whenToUse:
+      'Use Cascader for structured choices such as region, country, and customer location.',
+    whenNotToUse: [
+      'Use Select for flat choices.',
+      'Use Tree Select when selecting multiple branches.',
+    ],
+    code: {
+      importCode: `import { JCascaderComponent, JCascaderOptionDirective } from 'jrng-ui/cascader';`,
+      basic: `<j-cascader label="Customer location" [options]="locations"
+  searchable clearable [(ngModel)]="location" />`,
+      variants: `<j-cascader [options]="locations" expandTrigger="hover" displayMode="value"
+  [loadChildren]="loadCities">
+  <ng-template jCascaderOption let-option>{{ option.label }}</ng-template>
+</j-cascader>`,
+      states: `<j-cascader [options]="[]" loading />
+<j-cascader [options]="[]" loadError="Locations could not be loaded" />`,
+      angular: `readonly locations = [{ label: 'Americas', value: 'americas',
+  children: [{ label: 'United States', value: 'us', leaf: false }] }];`,
+    },
+    usage: [
+      'Bind a final leaf value through Angular Forms and observe pathChange when the full path is needed.',
+    ],
+    variants: [
+      'click or hover expansion',
+      'full-path or final-value display',
+      'custom field mapping',
+    ],
+    sizes: ['Columns have scroll bounds and collapse to one active level on mobile.'],
+    states: ['empty', 'loading', 'lazy loading', 'error', 'disabled', 'read-only'],
+    inputs: [
+      prop('options', 'readonly record[]', '[]', 'Root option records.'),
+      prop('fieldNames', 'JCascaderFieldNames', '{}', 'Custom record mapping.'),
+      prop('expandTrigger', 'click | hover', "'click'", 'Expansion interaction.'),
+      prop('displayMode', 'path | value', "'path'", 'Trigger label format.'),
+      prop('loadChildren', 'function | null', 'null', 'Promise-capable lazy child loader.'),
+      prop('searchable / disabled / readonly / loading', 'boolean', 'false', 'Behavior states.'),
+    ],
+    outputs: [
+      event('valueChange', 'unknown', 'Emits final leaf value.'),
+      event('pathChange', 'readonly record[]', 'Emits selected source path.'),
+      event('lazyLoad / loadFailed', 'event / unknown', 'Async loading lifecycle.'),
+      event('opened / closed', 'void', 'Panel lifecycle.'),
+    ],
+    publicMethods: ['open()', 'close(restoreFocus?)', 'toggle()', 'clear(event?)', 'back()'],
+    templates: ['jCascaderOption receives option, label, level, active, and loading.'],
+    accessibility: [
+      'Each column is a named listbox and each branch exposes selected and disabled state.',
+      'Loading and errors use live status semantics.',
+    ],
+    keyboard: [
+      'Arrow Up and Down move within a column; Arrow Right or Enter advances; Arrow Left returns.',
+      'Escape closes and restores focus.',
+    ],
+    responsive: [
+      'Narrow layouts show one level with a named back action; logical layout supports RTL.',
+    ],
+    limitations: [
+      'Search includes currently available paths; load lazy branches before expecting search matches.',
+    ],
+    relatedComponents: ['Select', 'Tree Select'],
+    testingNotes: [
+      'Test Forms, custom fields, search, lazy race prevention, keyboard columns, mobile view, cleanup, and SSR.',
+    ],
+    bestPractices: [
+      'Keep labels unique within a level and mark remote non-leaf records with leaf: false.',
+    ],
+  },
+  {
     slug: 'pull-to-refresh',
     name: 'Pull To Refresh',
     category: 'Misc',
@@ -1063,10 +1277,13 @@ email = new FormControl('');
     whenToUse:
       'Use Select when the user should choose one item and the available options are known.',
     code: {
-      importCode: `import { JSelectComponent } from 'jrng-ui/select';`,
+      importCode: `import { JSelectCellDirective, JSelectComponent, JSelectColumn } from 'jrng-ui/select';`,
       basic: `<j-select label="Status" [options]="statuses" placeholder="Choose status"></j-select>`,
       variants: `<j-select label="Searchable" searchable [options]="products"></j-select>
-<j-select label="Object options" [options]="teams" optionLabel="name" optionValue="id"></j-select>`,
+<j-select label="Customer" [options]="customers" [columns]="columns"
+  optionLabel="name" optionValue="id" searchable sortable>
+  <ng-template jSelectCell="status" let-value>{{ value }}</ng-template>
+</j-select>`,
       sizes: `<j-select label="Small" size="sm" [options]="statuses"></j-select>
 <j-select label="Large" size="lg" [options]="statuses"></j-select>`,
       states: `<j-select label="Loading" loading [options]="statuses"></j-select>
@@ -1086,6 +1303,7 @@ teams = [
       'primitive options',
       'object options with optionLabel and optionValue',
       'searchable lists',
+      'multi-column options with sortable headers and stacked mobile rows',
     ],
     sizes: ['sm for table filters', 'md for standard forms', 'lg for prominent selection flows'],
     states: ['default', 'open', 'disabled', 'readonly', 'loading', 'empty', 'invalid/error'],
@@ -1096,6 +1314,21 @@ teams = [
       prop('searchable', 'boolean', 'false', 'Shows a filter input in the panel.'),
       prop('clearable', 'boolean', 'false', 'Allows clearing the selected value.'),
       prop('loading', 'boolean', 'false', 'Shows a loading state.'),
+      prop('columns', 'readonly JSelectColumn[]', '[]', 'Enables structured multi-column rows.'),
+      prop('sortable', 'boolean', 'false', 'Enables sorting for columns marked sortable.'),
+    ],
+    templates: [
+      'jSelectCell="field" customizes a column cell while retaining the option row selection behavior.',
+    ],
+    keyboard: [
+      'Arrow keys move through rows, Enter selects, Escape closes, and sortable headers use native buttons.',
+    ],
+    responsive: [
+      'Multi-column rows use configured widths on larger screens and labelled stacked cells on narrow screens.',
+      'Logical alignment supports RTL without changing the option value model.',
+    ],
+    testingNotes: [
+      'Test legacy flat options, object options, custom cells, sorting, filtering, virtualization, keyboard selection, Forms, RTL, and SSR.',
     ],
     outputs: [
       event('valueChange', 'unknown', 'Emits the selected value.'),

@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { JButtonComponent } from 'jrng-ui/button';
 import { JDragDirective, JDragHandleDirective, JDropListDirective } from 'jrng-ui/drag-drop';
 import { JPanDirective, JSwipeDirective, JZoomDirective } from 'jrng-ui/gesture';
+import { JMentionDirective } from 'jrng-ui/mention';
 import { JPortalDirective, JPortalOutletDirective } from 'jrng-ui/portal';
 import { JTruncateMiddleDirective } from 'jrng-ui/truncate';
 import { CodeBlockComponent } from '../docs/code-block.component';
@@ -21,6 +22,7 @@ import { guides } from './guides.data';
     JPanDirective,
     JSwipeDirective,
     JZoomDirective,
+    JMentionDirective,
     JPortalDirective,
     JPortalOutletDirective,
     JTruncateMiddleDirective,
@@ -117,6 +119,23 @@ import { guides } from './guides.data';
             </div>
           </section>
         }
+        @if (item.slug === 'hierarchical-inputs') {
+          <section>
+            <h2>Live mention preview</h2>
+            <div class="j-preview-stack">
+              <label for="mention-preview">Customer note</label>
+              <textarea
+                id="mention-preview"
+                [jMention]="mentionPeople"
+                [debounce]="0"
+                placeholder="Type @ to mention an account manager"
+              ></textarea>
+              <p class="j-preview-note">
+                Type @, use Arrow keys to move, Enter to insert, or Escape to close.
+              </p>
+            </div>
+          </section>
+        }
         <section>
           <h2>Explanation</h2>
           <ul>
@@ -185,6 +204,10 @@ export class GuidesPageComponent {
   readonly allGuides = guides;
   readonly guide = computed(() => guides.find((item) => item.slug === this.slug()) ?? null);
   previewCustomers: unknown[] = ['Aster Labs', 'Northstar Goods', 'Cedar Systems'];
+  readonly mentionPeople = [
+    { label: 'Avery Reed', value: 'avery' },
+    { label: 'Morgan Kim', value: 'morgan' },
+  ];
   gestureStatus = 'Swipe, pan or pinch this surface';
 
   constructor() {

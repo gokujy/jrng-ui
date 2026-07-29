@@ -1,17 +1,17 @@
 {
   "schemaVersion": 1,
-  "generatedOn": "2026-07-29T11:40:07.424Z",
+  "generatedOn": "2026-07-29T12:07:16.425Z",
   "package": "jrng-ui",
   "version": "0.1.1",
   "authority": "Built declaration files and canonical secondary-entrypoint source; projects/jrng-ui/src/lib is excluded.",
   "totals": {
-    "entrypoints": 136,
-    "artifacts": 808,
-    "component": 125,
-    "type": 447,
+    "entrypoints": 140,
+    "artifacts": 832,
+    "component": 128,
+    "type": 462,
     "class": 152,
+    "directive": 40,
     "service": 22,
-    "directive": 34,
     "token": 4,
     "function": 1,
     "pipe": 23
@@ -2413,6 +2413,36 @@
         "selector": null
       },
       {
+        "name": "JMentionDirective",
+        "kind": "directive",
+        "entrypoint": "jrng-ui/mention",
+        "selector": "[jMention]"
+      },
+      {
+        "name": "JMentionQuery",
+        "kind": "type",
+        "entrypoint": "jrng-ui/mention",
+        "selector": null
+      },
+      {
+        "name": "JMentionSelection",
+        "kind": "type",
+        "entrypoint": "jrng-ui/mention",
+        "selector": null
+      },
+      {
+        "name": "JMentionSourceItem",
+        "kind": "type",
+        "entrypoint": "jrng-ui/mention",
+        "selector": null
+      },
+      {
+        "name": "JMentionTemplateContext",
+        "kind": "type",
+        "entrypoint": "jrng-ui/mention",
+        "selector": null
+      },
+      {
         "name": "JMenuComponent",
         "kind": "component",
         "entrypoint": "jrng-ui/menu",
@@ -2701,6 +2731,12 @@
         "selector": "j-responsive-sidebar"
       },
       {
+        "name": "JSelectCellDirective",
+        "kind": "directive",
+        "entrypoint": "jrng-ui/select",
+        "selector": "ng-template[jSelectCell]"
+      },
+      {
         "name": "JSelectComponent",
         "kind": "component",
         "entrypoint": "jrng-ui/select",
@@ -2708,6 +2744,24 @@
       },
       {
         "name": "JSelectAsyncQuery",
+        "kind": "type",
+        "entrypoint": "jrng-ui/select",
+        "selector": null
+      },
+      {
+        "name": "JSelectCellContext",
+        "kind": "type",
+        "entrypoint": "jrng-ui/select",
+        "selector": null
+      },
+      {
+        "name": "JSelectColumn",
+        "kind": "type",
+        "entrypoint": "jrng-ui/select",
+        "selector": null
+      },
+      {
+        "name": "JSelectColumnAlign",
         "kind": "type",
         "entrypoint": "jrng-ui/select",
         "selector": null
@@ -2759,6 +2813,18 @@
         "kind": "type",
         "entrypoint": "jrng-ui/select",
         "selector": null
+      },
+      {
+        "name": "JSplitButtonComponent",
+        "kind": "component",
+        "entrypoint": "jrng-ui/split-button",
+        "selector": "j-split-button"
+      },
+      {
+        "name": "JSplitButtonItemDirective",
+        "kind": "directive",
+        "entrypoint": "jrng-ui/split-button",
+        "selector": "ng-template[jSplitButtonItem]"
       },
       {
         "name": "JSplitterComponent",
@@ -3835,6 +3901,42 @@
         "selector": null
       },
       {
+        "name": "JTreeSelectComponent",
+        "kind": "component",
+        "entrypoint": "jrng-ui/tree-select",
+        "selector": "j-tree-select"
+      },
+      {
+        "name": "JTreeSelectNodeDirective",
+        "kind": "directive",
+        "entrypoint": "jrng-ui/tree-select",
+        "selector": "ng-template[jTreeSelectNode]"
+      },
+      {
+        "name": "JTreeSelectValueDirective",
+        "kind": "directive",
+        "entrypoint": "jrng-ui/tree-select",
+        "selector": "ng-template[jTreeSelectValue]"
+      },
+      {
+        "name": "JTreeSelectPropagation",
+        "kind": "type",
+        "entrypoint": "jrng-ui/tree-select",
+        "selector": null
+      },
+      {
+        "name": "JTreeSelectValue",
+        "kind": "type",
+        "entrypoint": "jrng-ui/tree-select",
+        "selector": null
+      },
+      {
+        "name": "JTreeSelectValueContext",
+        "kind": "type",
+        "entrypoint": "jrng-ui/tree-select",
+        "selector": null
+      },
+      {
         "name": "JTreeTableCellTemplateDirective",
         "kind": "directive",
         "entrypoint": "jrng-ui/tree-table",
@@ -3904,27 +4006,19 @@
     "optionalDependencyEntrypoints": [
       {
         "entrypoint": "jrng-ui/breadcrumb",
-        "dependencies": [
-          "@angular/router"
-        ]
+        "dependencies": ["@angular/router"]
       },
       {
         "entrypoint": "jrng-ui/chart",
-        "dependencies": [
-          "chart.js"
-        ]
+        "dependencies": ["chart.js"]
       },
       {
         "entrypoint": "jrng-ui/sidebar-nav",
-        "dependencies": [
-          "@angular/router"
-        ]
+        "dependencies": ["@angular/router"]
       },
       {
         "entrypoint": "jrng-ui/topbar",
-        "dependencies": [
-          "@angular/router"
-        ]
+        "dependencies": ["@angular/router"]
       }
     ]
   },
@@ -4044,9 +4138,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         }
       ]
@@ -4191,9 +4283,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -4206,9 +4296,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -4221,9 +4309,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         }
       ]
@@ -4329,10 +4415,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -4346,10 +4429,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -4363,10 +4443,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -4380,10 +4457,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -4397,10 +4471,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -4413,10 +4484,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -4429,10 +4497,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -4445,10 +4510,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -4461,10 +4523,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -4477,10 +4536,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         }
       ]
@@ -4511,9 +4567,7 @@
       "importPath": "jrng-ui/breadcrumb",
       "declaration": "types/jrng-ui-breadcrumb.d.ts",
       "artifactCount": 4,
-      "optionalDependencies": [
-        "@angular/router"
-      ],
+      "optionalDependencies": ["@angular/router"],
       "artifacts": [
         {
           "name": "JBreadcrumbComponent",
@@ -4527,9 +4581,7 @@
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
           "browserApis": [],
-          "optionalDependencies": [
-            "@angular/router"
-          ]
+          "optionalDependencies": ["@angular/router"]
         },
         {
           "name": "JBreadcrumbClickEvent",
@@ -4542,9 +4594,7 @@
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
           "browserApis": [],
-          "optionalDependencies": [
-            "@angular/router"
-          ]
+          "optionalDependencies": ["@angular/router"]
         },
         {
           "name": "JBreadcrumbItem",
@@ -4557,9 +4607,7 @@
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
           "browserApis": [],
-          "optionalDependencies": [
-            "@angular/router"
-          ]
+          "optionalDependencies": ["@angular/router"]
         },
         {
           "name": "JBreadcrumbVariant",
@@ -4572,9 +4620,7 @@
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
           "browserApis": [],
-          "optionalDependencies": [
-            "@angular/router"
-          ]
+          "optionalDependencies": ["@angular/router"]
         }
       ]
     },
@@ -4827,12 +4873,113 @@
       ]
     },
     {
+      "importPath": "jrng-ui/cascader",
+      "declaration": "types/jrng-ui-cascader.d.ts",
+      "artifactCount": 7,
+      "optionalDependencies": [],
+      "artifacts": [
+        {
+          "name": "JCascaderComponent",
+          "originalName": "JCascaderComponent",
+          "kind": "component",
+          "entrypoint": "jrng-ui/cascader",
+          "selector": "j-cascader",
+          "exportAlias": false,
+          "tested": true,
+          "documented": true,
+          "accessibility": "validated",
+          "themeTokens": "css-custom-properties",
+          "browserApis": [],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JCascaderOptionDirective",
+          "originalName": "JCascaderOptionDirective",
+          "kind": "directive",
+          "entrypoint": "jrng-ui/cascader",
+          "selector": "ng-template[jCascaderOption]",
+          "exportAlias": false,
+          "tested": true,
+          "documented": true,
+          "accessibility": "static-review",
+          "themeTokens": "css-custom-properties",
+          "browserApis": [],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JCascaderFieldNames",
+          "originalName": "JCascaderFieldNames",
+          "kind": "type",
+          "entrypoint": "jrng-ui/cascader",
+          "selector": null,
+          "exportAlias": false,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": [],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JCascaderLazyLoadEvent",
+          "originalName": "JCascaderLazyLoadEvent",
+          "kind": "type",
+          "entrypoint": "jrng-ui/cascader",
+          "selector": null,
+          "exportAlias": false,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": [],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JCascaderOption",
+          "originalName": "JCascaderOption",
+          "kind": "type",
+          "entrypoint": "jrng-ui/cascader",
+          "selector": null,
+          "exportAlias": false,
+          "tested": true,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": [],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JCascaderOptionContext",
+          "originalName": "JCascaderOptionContext",
+          "kind": "type",
+          "entrypoint": "jrng-ui/cascader",
+          "selector": null,
+          "exportAlias": false,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": [],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JCascaderOptionRecord",
+          "originalName": "JCascaderOptionRecord",
+          "kind": "type",
+          "entrypoint": "jrng-ui/cascader",
+          "selector": null,
+          "exportAlias": false,
+          "tested": true,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": [],
+          "optionalDependencies": []
+        }
+      ]
+    },
+    {
       "importPath": "jrng-ui/chart",
       "declaration": "types/jrng-ui-chart.d.ts",
       "artifactCount": 3,
-      "optionalDependencies": [
-        "chart.js"
-      ],
+      "optionalDependencies": ["chart.js"],
       "artifacts": [
         {
           "name": "JChartComponent",
@@ -4845,14 +4992,8 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "navigator",
-            "ResizeObserver",
-            "clipboard"
-          ],
-          "optionalDependencies": [
-            "chart.js"
-          ]
+          "browserApis": ["navigator", "ResizeObserver", "clipboard"],
+          "optionalDependencies": ["chart.js"]
         },
         {
           "name": "JChartInteractionEvent",
@@ -4864,14 +5005,8 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "navigator",
-            "ResizeObserver",
-            "clipboard"
-          ],
-          "optionalDependencies": [
-            "chart.js"
-          ]
+          "browserApis": ["navigator", "ResizeObserver", "clipboard"],
+          "optionalDependencies": ["chart.js"]
         },
         {
           "name": "JChartType",
@@ -4883,14 +5018,8 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "navigator",
-            "ResizeObserver",
-            "clipboard"
-          ],
-          "optionalDependencies": [
-            "chart.js"
-          ]
+          "browserApis": ["navigator", "ResizeObserver", "clipboard"],
+          "optionalDependencies": ["chart.js"]
         }
       ]
     },
@@ -4911,9 +5040,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         }
       ]
@@ -5034,9 +5161,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -5049,9 +5174,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         }
       ]
@@ -5073,9 +5196,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -5089,9 +5210,7 @@
           "documented": true,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -5104,9 +5223,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -5119,9 +5236,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         }
       ]
@@ -5143,9 +5258,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         }
       ]
@@ -5202,9 +5315,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "inherited-semantic-tokens",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         }
       ]
@@ -5226,9 +5337,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "clipboard"
-          ],
+          "browserApis": ["clipboard"],
           "optionalDependencies": []
         }
       ]
@@ -9002,10 +9111,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -9018,10 +9124,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -9034,10 +9137,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -9051,10 +9151,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -9068,10 +9165,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -9085,10 +9179,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -9102,10 +9193,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -9118,10 +9206,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -9134,10 +9219,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -9150,10 +9232,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -9166,10 +9245,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -9182,10 +9258,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         }
       ]
@@ -9417,9 +9490,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -9433,9 +9504,7 @@
           "documented": true,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -9448,9 +9517,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -9463,9 +9530,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -9478,9 +9543,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -9493,9 +9556,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -9508,9 +9569,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         }
       ]
@@ -9532,9 +9591,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "clipboard"
-          ],
+          "browserApis": ["clipboard"],
           "optionalDependencies": []
         },
         {
@@ -9548,9 +9605,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "clipboard"
-          ],
+          "browserApis": ["clipboard"],
           "optionalDependencies": []
         },
         {
@@ -9563,9 +9618,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "clipboard"
-          ],
+          "browserApis": ["clipboard"],
           "optionalDependencies": []
         },
         {
@@ -9578,9 +9631,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "clipboard"
-          ],
+          "browserApis": ["clipboard"],
           "optionalDependencies": []
         },
         {
@@ -9593,9 +9644,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "clipboard"
-          ],
+          "browserApis": ["clipboard"],
           "optionalDependencies": []
         }
       ]
@@ -9703,9 +9752,7 @@
           "documented": true,
           "accessibility": "static-review",
           "themeTokens": "not-applicable",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -9719,9 +9766,7 @@
           "documented": true,
           "accessibility": "static-review",
           "themeTokens": "not-applicable",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -9735,9 +9780,7 @@
           "documented": true,
           "accessibility": "static-review",
           "themeTokens": "not-applicable",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -9750,9 +9793,7 @@
           "documented": true,
           "accessibility": "static-review",
           "themeTokens": "not-applicable",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -9765,9 +9806,7 @@
           "documented": true,
           "accessibility": "static-review",
           "themeTokens": "not-applicable",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -9781,9 +9820,7 @@
           "documented": true,
           "accessibility": "static-review",
           "themeTokens": "not-applicable",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -9796,9 +9833,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "not-applicable",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -9812,9 +9847,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "not-applicable",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -9827,9 +9860,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "not-applicable",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -9842,9 +9873,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "not-applicable",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -9857,9 +9886,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "not-applicable",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -9872,9 +9899,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "not-applicable",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -9887,9 +9912,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "not-applicable",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         }
       ]
@@ -9911,9 +9934,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -9926,9 +9947,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -9941,9 +9960,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         }
       ]
@@ -9987,10 +10004,7 @@
           "documented": true,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -10004,10 +10018,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -10021,10 +10032,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -10038,10 +10046,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -10054,10 +10059,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -10070,10 +10072,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -10086,10 +10085,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -10102,10 +10098,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -10118,10 +10111,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         }
       ]
@@ -10448,9 +10438,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -10464,9 +10452,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -10480,9 +10466,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -10496,9 +10480,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -10511,9 +10493,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -10526,9 +10506,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -10541,9 +10519,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -10556,9 +10532,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         }
       ]
@@ -10794,9 +10768,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -10809,9 +10781,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         }
       ]
@@ -10833,10 +10803,7 @@
           "documented": true,
           "accessibility": "static-review",
           "themeTokens": "not-applicable",
-          "browserApis": [
-            "document",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -10850,10 +10817,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "not-applicable",
-          "browserApis": [
-            "document",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -10866,10 +10830,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "not-applicable",
-          "browserApis": [
-            "document",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "matchMedia"],
           "optionalDependencies": []
         }
       ]
@@ -11234,9 +11195,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -11249,9 +11208,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -11264,9 +11221,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -11279,9 +11234,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -11294,9 +11247,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         }
       ]
@@ -11720,11 +11671,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "clipboard",
-            "createObjectURL"
-          ],
+          "browserApis": ["document", "clipboard", "createObjectURL"],
           "optionalDependencies": []
         },
         {
@@ -11737,11 +11684,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "clipboard",
-            "createObjectURL"
-          ],
+          "browserApis": ["document", "clipboard", "createObjectURL"],
           "optionalDependencies": []
         },
         {
@@ -11754,11 +11697,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "clipboard",
-            "createObjectURL"
-          ],
+          "browserApis": ["document", "clipboard", "createObjectURL"],
           "optionalDependencies": []
         },
         {
@@ -11771,11 +11710,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "clipboard",
-            "createObjectURL"
-          ],
+          "browserApis": ["document", "clipboard", "createObjectURL"],
           "optionalDependencies": []
         }
       ]
@@ -11907,9 +11842,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -11923,9 +11856,7 @@
           "documented": false,
           "accessibility": "static-review",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         }
       ]
@@ -11947,9 +11878,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -11963,9 +11892,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -11978,9 +11905,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         }
       ]
@@ -12046,9 +11971,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -12061,9 +11984,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         }
       ]
@@ -12279,9 +12200,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "MutationObserver"
-          ],
+          "browserApis": ["MutationObserver"],
           "optionalDependencies": []
         },
         {
@@ -12294,9 +12213,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "MutationObserver"
-          ],
+          "browserApis": ["MutationObserver"],
           "optionalDependencies": []
         },
         {
@@ -12309,9 +12226,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "MutationObserver"
-          ],
+          "browserApis": ["MutationObserver"],
           "optionalDependencies": []
         },
         {
@@ -12324,9 +12239,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "MutationObserver"
-          ],
+          "browserApis": ["MutationObserver"],
           "optionalDependencies": []
         }
       ]
@@ -12467,9 +12380,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -12482,9 +12393,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -12498,9 +12407,81 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
+          "optionalDependencies": []
+        }
+      ]
+    },
+    {
+      "importPath": "jrng-ui/mention",
+      "declaration": "types/jrng-ui-mention.d.ts",
+      "artifactCount": 5,
+      "optionalDependencies": [],
+      "artifacts": [
+        {
+          "name": "JMentionDirective",
+          "originalName": "JMentionDirective",
+          "kind": "directive",
+          "entrypoint": "jrng-ui/mention",
+          "selector": "[jMention]",
+          "exportAlias": false,
+          "tested": true,
+          "documented": true,
+          "accessibility": "static-review",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["document"],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JMentionQuery",
+          "originalName": "JMentionQuery",
+          "kind": "type",
+          "entrypoint": "jrng-ui/mention",
+          "selector": null,
+          "exportAlias": false,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["document"],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JMentionSelection",
+          "originalName": "JMentionSelection",
+          "kind": "type",
+          "entrypoint": "jrng-ui/mention",
+          "selector": null,
+          "exportAlias": false,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["document"],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JMentionSourceItem",
+          "originalName": "JMentionSourceItem",
+          "kind": "type",
+          "entrypoint": "jrng-ui/mention",
+          "selector": null,
+          "exportAlias": false,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["document"],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JMentionTemplateContext",
+          "originalName": "JMentionTemplateContext",
+          "kind": "type",
+          "entrypoint": "jrng-ui/mention",
+          "selector": null,
+          "exportAlias": false,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["document"],
           "optionalDependencies": []
         }
       ]
@@ -12522,9 +12503,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -12538,9 +12517,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -12553,9 +12530,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         }
       ]
@@ -12744,9 +12719,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -12760,9 +12733,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         }
       ]
@@ -12832,9 +12803,7 @@
           "documented": false,
           "accessibility": "static-review",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         }
       ]
@@ -13071,10 +13040,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -13087,10 +13053,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         }
       ]
@@ -13112,9 +13075,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "not-applicable",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -13128,9 +13089,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "not-applicable",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -13143,9 +13102,7 @@
           "documented": true,
           "accessibility": "static-review",
           "themeTokens": "not-applicable",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -13159,9 +13116,7 @@
           "documented": true,
           "accessibility": "static-review",
           "themeTokens": "not-applicable",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -13175,9 +13130,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "not-applicable",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -13191,9 +13144,7 @@
           "documented": true,
           "accessibility": "not-applicable",
           "themeTokens": "not-applicable",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -13207,9 +13158,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "not-applicable",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -13223,9 +13172,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "not-applicable",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         }
       ]
@@ -13304,9 +13251,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "matchMedia"
-          ],
+          "browserApis": ["matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -13319,9 +13264,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "matchMedia"
-          ],
+          "browserApis": ["matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -13334,9 +13277,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "matchMedia"
-          ],
+          "browserApis": ["matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -13349,9 +13290,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "matchMedia"
-          ],
+          "browserApis": ["matchMedia"],
           "optionalDependencies": []
         }
       ]
@@ -13373,10 +13312,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -13390,10 +13326,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -13407,10 +13340,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -13424,10 +13354,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -13441,10 +13368,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -13457,10 +13381,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -13474,10 +13395,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -13491,10 +13409,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -13508,10 +13423,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -13525,10 +13437,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -13542,10 +13451,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -13558,10 +13464,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -13574,10 +13477,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -13590,10 +13490,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -13607,10 +13504,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -13623,10 +13517,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -13639,10 +13530,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -13656,10 +13544,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -13672,10 +13557,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -13688,10 +13570,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -13704,10 +13583,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -13720,10 +13596,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -13736,10 +13609,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -13752,10 +13622,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -13768,10 +13635,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -13784,10 +13648,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -13800,10 +13661,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         }
       ]
@@ -13934,9 +13792,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         }
       ]
@@ -14001,9 +13857,23 @@
     {
       "importPath": "jrng-ui/select",
       "declaration": "types/jrng-ui-select.d.ts",
-      "artifactCount": 10,
+      "artifactCount": 14,
       "optionalDependencies": [],
       "artifacts": [
+        {
+          "name": "JSelectCellDirective",
+          "originalName": "JSelectCellDirective",
+          "kind": "directive",
+          "entrypoint": "jrng-ui/select",
+          "selector": "ng-template[jSelectCell]",
+          "exportAlias": false,
+          "tested": true,
+          "documented": true,
+          "accessibility": "static-review",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["document"],
+          "optionalDependencies": []
+        },
         {
           "name": "JSelectComponent",
           "originalName": "JSelectComponent",
@@ -14015,9 +13885,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -14030,9 +13898,47 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JSelectCellContext",
+          "originalName": "JSelectCellContext",
+          "kind": "type",
+          "entrypoint": "jrng-ui/select",
+          "selector": null,
+          "exportAlias": false,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["document"],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JSelectColumn",
+          "originalName": "JSelectColumn",
+          "kind": "type",
+          "entrypoint": "jrng-ui/select",
+          "selector": null,
+          "exportAlias": false,
+          "tested": true,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["document"],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JSelectColumnAlign",
+          "originalName": "JSelectColumnAlign",
+          "kind": "type",
+          "entrypoint": "jrng-ui/select",
+          "selector": null,
+          "exportAlias": false,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -14045,9 +13951,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -14060,9 +13964,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -14075,9 +13977,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -14091,9 +13991,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -14106,9 +14004,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -14121,9 +14017,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -14137,9 +14031,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -14152,9 +14044,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         }
       ]
@@ -14185,9 +14075,7 @@
       "importPath": "jrng-ui/sidebar-nav",
       "declaration": "types/jrng-ui-sidebar-nav.d.ts",
       "artifactCount": 1,
-      "optionalDependencies": [
-        "@angular/router"
-      ],
+      "optionalDependencies": ["@angular/router"],
       "artifacts": [
         {
           "name": "JSidebarNavComponent",
@@ -14201,9 +14089,7 @@
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
           "browserApis": [],
-          "optionalDependencies": [
-            "@angular/router"
-          ]
+          "optionalDependencies": ["@angular/router"]
         }
       ]
     },
@@ -14339,6 +14225,42 @@
       ]
     },
     {
+      "importPath": "jrng-ui/split-button",
+      "declaration": "types/jrng-ui-split-button.d.ts",
+      "artifactCount": 2,
+      "optionalDependencies": [],
+      "artifacts": [
+        {
+          "name": "JSplitButtonComponent",
+          "originalName": "JSplitButtonComponent",
+          "kind": "component",
+          "entrypoint": "jrng-ui/split-button",
+          "selector": "j-split-button",
+          "exportAlias": false,
+          "tested": true,
+          "documented": true,
+          "accessibility": "validated",
+          "themeTokens": "inherited-semantic-tokens",
+          "browserApis": ["document"],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JSplitButtonItemDirective",
+          "originalName": "JSplitButtonItemDirective",
+          "kind": "directive",
+          "entrypoint": "jrng-ui/split-button",
+          "selector": "ng-template[jSplitButtonItem]",
+          "exportAlias": false,
+          "tested": true,
+          "documented": true,
+          "accessibility": "static-review",
+          "themeTokens": "not-applicable",
+          "browserApis": ["document"],
+          "optionalDependencies": []
+        }
+      ]
+    },
+    {
       "importPath": "jrng-ui/splitter",
       "declaration": "types/jrng-ui-splitter.d.ts",
       "artifactCount": 3,
@@ -14355,11 +14277,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document",
-            "localStorage"
-          ],
+          "browserApis": ["window", "document", "localStorage"],
           "optionalDependencies": []
         },
         {
@@ -14373,11 +14291,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document",
-            "localStorage"
-          ],
+          "browserApis": ["window", "document", "localStorage"],
           "optionalDependencies": []
         },
         {
@@ -14390,11 +14304,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document",
-            "localStorage"
-          ],
+          "browserApis": ["window", "document", "localStorage"],
           "optionalDependencies": []
         }
       ]
@@ -14520,9 +14430,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -14536,9 +14444,7 @@
           "documented": true,
           "accessibility": "static-review",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -14552,9 +14458,7 @@
           "documented": true,
           "accessibility": "static-review",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -14568,9 +14472,7 @@
           "documented": true,
           "accessibility": "static-review",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -14583,9 +14485,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -14598,9 +14498,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -14613,9 +14511,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         }
       ]
@@ -16538,10 +16434,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "ResizeObserver"
-          ],
+          "browserApis": ["document", "ResizeObserver"],
           "optionalDependencies": []
         },
         {
@@ -16554,10 +16447,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "ResizeObserver"
-          ],
+          "browserApis": ["document", "ResizeObserver"],
           "optionalDependencies": []
         }
       ]
@@ -16608,11 +16498,7 @@
           "documented": true,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -16626,11 +16512,7 @@
           "documented": true,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -16643,11 +16525,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -16660,11 +16538,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -16677,11 +16551,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -16695,11 +16565,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -16712,11 +16578,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -16729,11 +16591,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -16747,11 +16605,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -16764,11 +16618,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -16781,11 +16631,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -16798,11 +16644,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -16815,11 +16657,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -16833,11 +16671,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -16851,11 +16685,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -16869,11 +16699,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -16886,11 +16712,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -16904,11 +16726,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -16922,11 +16740,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -16940,11 +16754,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -16958,11 +16768,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -16976,11 +16782,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -16993,11 +16795,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -17010,11 +16808,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -17027,11 +16821,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -17044,11 +16834,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -17061,11 +16847,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -17078,11 +16860,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -17095,11 +16873,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -17112,11 +16886,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -17129,11 +16899,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -17146,11 +16912,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -17163,11 +16925,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -17180,11 +16938,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -17197,11 +16951,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -17214,11 +16964,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -17231,11 +16977,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -17248,11 +16990,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -17265,11 +17003,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -17283,11 +17017,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -17301,11 +17031,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -17318,11 +17044,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -17335,11 +17057,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -17352,11 +17070,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -17369,11 +17083,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -17386,11 +17096,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -17403,11 +17109,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -17420,11 +17122,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         },
         {
@@ -17437,11 +17135,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage",
-            "matchMedia"
-          ],
+          "browserApis": ["document", "localStorage", "matchMedia"],
           "optionalDependencies": []
         }
       ]
@@ -17485,9 +17179,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -17500,9 +17192,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         }
       ]
@@ -17770,10 +17460,7 @@
           "documented": true,
           "accessibility": "static-review",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         },
         {
@@ -17786,10 +17473,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window",
-            "document"
-          ],
+          "browserApis": ["window", "document"],
           "optionalDependencies": []
         }
       ]
@@ -17798,9 +17482,7 @@
       "importPath": "jrng-ui/topbar",
       "declaration": "types/jrng-ui-topbar.d.ts",
       "artifactCount": 1,
-      "optionalDependencies": [
-        "@angular/router"
-      ],
+      "optionalDependencies": ["@angular/router"],
       "artifacts": [
         {
           "name": "JTopbarComponent",
@@ -17814,9 +17496,7 @@
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
           "browserApis": [],
-          "optionalDependencies": [
-            "@angular/router"
-          ]
+          "optionalDependencies": ["@angular/router"]
         }
       ]
     },
@@ -17837,10 +17517,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage"
-          ],
+          "browserApis": ["document", "localStorage"],
           "optionalDependencies": []
         },
         {
@@ -17854,10 +17531,7 @@
           "documented": true,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage"
-          ],
+          "browserApis": ["document", "localStorage"],
           "optionalDependencies": []
         },
         {
@@ -17871,10 +17545,7 @@
           "documented": true,
           "accessibility": "static-review",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage"
-          ],
+          "browserApis": ["document", "localStorage"],
           "optionalDependencies": []
         },
         {
@@ -17887,10 +17558,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage"
-          ],
+          "browserApis": ["document", "localStorage"],
           "optionalDependencies": []
         },
         {
@@ -17903,10 +17571,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage"
-          ],
+          "browserApis": ["document", "localStorage"],
           "optionalDependencies": []
         },
         {
@@ -17919,10 +17584,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage"
-          ],
+          "browserApis": ["document", "localStorage"],
           "optionalDependencies": []
         },
         {
@@ -17935,10 +17597,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage"
-          ],
+          "browserApis": ["document", "localStorage"],
           "optionalDependencies": []
         },
         {
@@ -17952,10 +17611,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage"
-          ],
+          "browserApis": ["document", "localStorage"],
           "optionalDependencies": []
         },
         {
@@ -17968,10 +17624,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage"
-          ],
+          "browserApis": ["document", "localStorage"],
           "optionalDependencies": []
         },
         {
@@ -17984,10 +17637,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage"
-          ],
+          "browserApis": ["document", "localStorage"],
           "optionalDependencies": []
         },
         {
@@ -18001,10 +17651,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage"
-          ],
+          "browserApis": ["document", "localStorage"],
           "optionalDependencies": []
         },
         {
@@ -18017,10 +17664,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage"
-          ],
+          "browserApis": ["document", "localStorage"],
           "optionalDependencies": []
         },
         {
@@ -18033,10 +17677,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document",
-            "localStorage"
-          ],
+          "browserApis": ["document", "localStorage"],
           "optionalDependencies": []
         }
       ]
@@ -18058,9 +17699,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "ResizeObserver"
-          ],
+          "browserApis": ["ResizeObserver"],
           "optionalDependencies": []
         },
         {
@@ -18073,9 +17712,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "ResizeObserver"
-          ],
+          "browserApis": ["ResizeObserver"],
           "optionalDependencies": []
         }
       ]
@@ -18097,9 +17734,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -18112,9 +17747,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -18128,9 +17761,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -18143,9 +17774,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -18158,9 +17787,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -18174,9 +17801,97 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
+          "optionalDependencies": []
+        }
+      ]
+    },
+    {
+      "importPath": "jrng-ui/tree-select",
+      "declaration": "types/jrng-ui-tree-select.d.ts",
+      "artifactCount": 6,
+      "optionalDependencies": [],
+      "artifacts": [
+        {
+          "name": "JTreeSelectComponent",
+          "originalName": "JTreeSelectComponent",
+          "kind": "component",
+          "entrypoint": "jrng-ui/tree-select",
+          "selector": "j-tree-select",
+          "exportAlias": false,
+          "tested": true,
+          "documented": true,
+          "accessibility": "validated",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["document"],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JTreeSelectNodeDirective",
+          "originalName": "JTreeSelectNodeDirective",
+          "kind": "directive",
+          "entrypoint": "jrng-ui/tree-select",
+          "selector": "ng-template[jTreeSelectNode]",
+          "exportAlias": false,
+          "tested": true,
+          "documented": true,
+          "accessibility": "static-review",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["document"],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JTreeSelectValueDirective",
+          "originalName": "JTreeSelectValueDirective",
+          "kind": "directive",
+          "entrypoint": "jrng-ui/tree-select",
+          "selector": "ng-template[jTreeSelectValue]",
+          "exportAlias": false,
+          "tested": true,
+          "documented": true,
+          "accessibility": "static-review",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["document"],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JTreeSelectPropagation",
+          "originalName": "JTreeSelectPropagation",
+          "kind": "type",
+          "entrypoint": "jrng-ui/tree-select",
+          "selector": null,
+          "exportAlias": false,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["document"],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JTreeSelectValue",
+          "originalName": "JTreeSelectValue",
+          "kind": "type",
+          "entrypoint": "jrng-ui/tree-select",
+          "selector": null,
+          "exportAlias": false,
+          "tested": true,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["document"],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JTreeSelectValueContext",
+          "originalName": "JTreeSelectValueContext",
+          "kind": "type",
+          "entrypoint": "jrng-ui/tree-select",
+          "selector": null,
+          "exportAlias": false,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["document"],
           "optionalDependencies": []
         }
       ]
@@ -18198,9 +17913,7 @@
           "documented": true,
           "accessibility": "static-review",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -18214,9 +17927,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -18229,9 +17940,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -18244,9 +17953,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         },
         {
@@ -18259,9 +17966,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "document"
-          ],
+          "browserApis": ["document"],
           "optionalDependencies": []
         }
       ]
@@ -18283,11 +17988,7 @@
           "documented": true,
           "accessibility": "static-review",
           "themeTokens": "not-applicable",
-          "browserApis": [
-            "ResizeObserver",
-            "MutationObserver",
-            "requestAnimationFrame"
-          ],
+          "browserApis": ["ResizeObserver", "MutationObserver", "requestAnimationFrame"],
           "optionalDependencies": []
         },
         {
@@ -18300,11 +18001,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "not-applicable",
-          "browserApis": [
-            "ResizeObserver",
-            "MutationObserver",
-            "requestAnimationFrame"
-          ],
+          "browserApis": ["ResizeObserver", "MutationObserver", "requestAnimationFrame"],
           "optionalDependencies": []
         }
       ]
@@ -18899,9 +18596,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "clipboard"
-          ],
+          "browserApis": ["clipboard"],
           "optionalDependencies": []
         }
       ]
@@ -18923,9 +18618,7 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window"
-          ],
+          "browserApis": ["window"],
           "optionalDependencies": []
         },
         {
@@ -18938,9 +18631,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window"
-          ],
+          "browserApis": ["window"],
           "optionalDependencies": []
         },
         {
@@ -18953,9 +18644,7 @@
           "documented": false,
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
-          "browserApis": [
-            "window"
-          ],
+          "browserApis": ["window"],
           "optionalDependencies": []
         }
       ]

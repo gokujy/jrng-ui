@@ -4,26 +4,26 @@ Generated from the 0.1.1 canonical build declarations.
 
 | Metric                                   | Total |
 | ---------------------------------------- | ----: |
-| Total public components                  |   124 |
+| Total public components                  |   127 |
 | Total categories                         |    14 |
 | Uncategorized components                 |     0 |
 | Duplicate entries                        |     0 |
 | Removed components present               |     0 |
-| Components with documentation            |   124 |
-| Components with working preview          |   124 |
-| Components with API reference            |   124 |
-| Components with examples                 |   124 |
-| Components with direct tests             |   124 |
-| Components with accessibility validation |   124 |
-| Components with responsive examples      |    82 |
+| Components with documentation            |   127 |
+| Components with working preview          |   127 |
+| Components with API reference            |   127 |
+| Components with examples                 |   127 |
+| Components with direct tests             |   127 |
+| Components with accessibility validation |   127 |
+| Components with responsive examples      |    85 |
 | Responsive examples not applicable       |    42 |
-| Components with theme-token coverage     |   124 |
+| Components with theme-token coverage     |   127 |
 | Components remaining incomplete          |     0 |
 
 | Category  | Components |
 | --------- | ---------: |
-| Form      |         30 |
-| Button    |          2 |
+| Form      |         32 |
+| Button    |          3 |
 | Data      |         16 |
 | Panel     |         15 |
 | Overlay   |          8 |
@@ -41,6 +41,7 @@ Generated from the 0.1.1 canonical build declarations.
 | ------------------- | --------------------- | --------------------------- | --------- | --------- | -------- | ------ | ------------- |
 | Autocomplete        | j-autocomplete        | jrng-ui/autocomplete        | Form      | beta      | rendered | direct | validated     |
 | Checkbox            | j-checkbox            | jrng-ui/checkbox            | Form      | beta      | rendered | direct | validated     |
+| Cascader            | j-cascader            | jrng-ui/cascader            | Form      | beta      | rendered | direct | validated     |
 | Chips               | j-chips               | jrng-ui/chips               | Form      | beta      | rendered | direct | validated     |
 | Color Picker        | j-color-picker        | jrng-ui/color-picker        | Form      | beta      | rendered | direct | validated     |
 | Cron Expression     | j-cron-expression     | jrng-ui/cron-expression     | Form      | beta      | rendered | direct | validated     |
@@ -69,8 +70,10 @@ Generated from the 0.1.1 canonical build declarations.
 | Textarea            | j-textarea            | jrng-ui/textarea            | Form      | beta      | rendered | direct | validated     |
 | Time Picker         | j-time-picker         | jrng-ui/time-picker         | Form      | beta      | rendered | direct | validated     |
 | Toggle Button       | j-toggle-button       | jrng-ui/toggle-button       | Form      | beta      | rendered | direct | validated     |
+| Tree Select         | j-tree-select         | jrng-ui/tree-select         | Form      | beta      | rendered | direct | validated     |
 | Button              | j-button              | jrng-ui/button              | Button    | beta      | rendered | direct | validated     |
 | Copy Button         | j-copy-button         | jrng-ui/copy-button         | Button    | stable    | rendered | direct | validated     |
+| Split Button        | j-split-button        | jrng-ui/split-button        | Button    | beta      | rendered | direct | validated     |
 | Calendar Scheduler  | j-calendar-scheduler  | jrng-ui/calendar-scheduler  | Data      | beta      | rendered | direct | validated     |
 | Column Filter       | j-column-filter       | jrng-ui/table               | Data      | beta      | rendered | direct | validated     |
 | Data Display        | j-data-display        | jrng-ui/data-display        | Data      | beta      | rendered | direct | validated     |

@@ -29,6 +29,7 @@ import { JButtonComponent, JButtonVariant } from 'jrng-ui/button';
 import { JCalendarSchedulerComponent } from 'jrng-ui/calendar-scheduler';
 import { JCardComponent } from 'jrng-ui/card';
 import { JCarouselComponent } from 'jrng-ui/carousel';
+import { JCascaderComponent } from 'jrng-ui/cascader';
 import { JChartComponent } from 'jrng-ui/chart';
 import { JChipComponent } from 'jrng-ui/chip';
 import { JChipsComponent } from 'jrng-ui/chips';
@@ -113,7 +114,7 @@ import { JPullToRefreshComponent } from 'jrng-ui/pull-to-refresh';
 import { JRadioGroupComponent } from 'jrng-ui/radio-group';
 import { JRadioComponent } from 'jrng-ui/radio';
 import { JRatingComponent } from 'jrng-ui/rating';
-import { JSelectComponent } from 'jrng-ui/select';
+import { JSelectCellDirective, JSelectColumn, JSelectComponent } from 'jrng-ui/select';
 import { JSelectButtonComponent } from 'jrng-ui/select-button';
 import { JSectionFooterComponent } from 'jrng-ui/section-footer';
 import { JSectionHeaderComponent } from 'jrng-ui/section-header';
@@ -121,6 +122,7 @@ import { JSidebarNavComponent } from 'jrng-ui/sidebar-nav';
 import { JSkeletonComponent } from 'jrng-ui/skeleton';
 import { JSparklineComponent } from 'jrng-ui/sparkline';
 import { JSplitterComponent, JSplitterPanelComponent } from 'jrng-ui/splitter';
+import { JSplitButtonComponent, JSplitButtonItemDirective } from 'jrng-ui/split-button';
 import { JResponsiveSidebarComponent } from 'jrng-ui/responsive-sidebar';
 import { JStatusChipComponent } from 'jrng-ui/status-chip';
 import { JStepperComponent } from 'jrng-ui/stepper';
@@ -161,6 +163,11 @@ import { JTourGuideComponent, JTourService, JTourStepDirective } from 'jrng-ui/t
 import { JToastContainerComponent, JToastService } from 'jrng-ui/toast';
 import { JTransferListComponent } from 'jrng-ui/transfer-list';
 import { JTreeComponent } from 'jrng-ui/tree';
+import {
+  JTreeSelectComponent,
+  JTreeSelectNodeDirective,
+  JTreeSelectValueDirective,
+} from 'jrng-ui/tree-select';
 import { JTreeTableCellTemplateDirective, JTreeTableComponent } from 'jrng-ui/tree-table';
 import { JTreeNode } from 'jrng-ui/tree';
 import { JVideoPlayerComponent } from 'jrng-ui/video-player';
@@ -229,6 +236,7 @@ const FEATURE_VARIANT_KEYS: Readonly<Record<string, readonly string[]>> = {
   paginator: ['default', 'simple'],
   'page-header': ['default', 'stacked', 'centered'],
   'progress-bar': ['default', 'segmented', 'labeled'],
+  select: ['basic', 'multi-column'],
   stepper: ['default', 'rail', 'progress'],
   tabs: ['default', 'pills', 'segmented'],
   textarea: ['outlined', 'filled'],
@@ -1701,6 +1709,7 @@ export const COMPONENT_PREVIEW_IMPORTS = [
   JBreadcrumbComponent,
   JButtonComponent,
   JCardComponent,
+  JCascaderComponent,
   JChipComponent,
   JCheckboxComponent,
   JConfirmDialogComponent,
@@ -1751,6 +1760,7 @@ export const COMPONENT_PREVIEW_IMPORTS = [
   JRadioComponent,
   JRatingComponent,
   JSelectComponent,
+  JSelectCellDirective,
   JSelectButtonComponent,
   JSectionFooterComponent,
   JSectionHeaderComponent,
@@ -1812,12 +1822,17 @@ export const COMPONENT_PREVIEW_IMPORTS = [
   JSidebarNavComponent,
   JSplitterComponent,
   JSplitterPanelComponent,
+  JSplitButtonComponent,
+  JSplitButtonItemDirective,
   JStepperComponent,
   JTieredMenuComponent,
   JTimePickerComponent,
   JTopbarComponent,
   JTransferListComponent,
   JTreeComponent,
+  JTreeSelectComponent,
+  JTreeSelectNodeDirective,
+  JTreeSelectValueDirective,
   JTreeTableComponent,
   JTreeTableCellTemplateDirective,
   JVideoPlayerComponent,
@@ -1832,6 +1847,65 @@ export const COMPONENT_PREVIEW_IMPORTS = [
 
 @Directive()
 export class ComponentDetailViewBase {
+  readonly splitButtonItems: readonly JMenuItem[] = [
+    { label: 'Save and notify', icon: 'check', command: () => undefined },
+    { separator: true },
+    { label: 'Save as draft', icon: 'file', command: () => undefined },
+    { label: 'Delete customer', icon: 'trash', disabled: true },
+  ];
+  readonly customerTree: readonly JTreeNode[] = [
+    {
+      key: 'technology',
+      label: 'Technology',
+      children: [
+        { key: 'aster', label: 'Aster Labs', leaf: true },
+        { key: 'northstar', label: 'Northstar Systems', leaf: true },
+      ],
+    },
+    {
+      key: 'healthcare',
+      label: 'Healthcare',
+      children: [{ key: 'willow', label: 'Willow Health', leaf: true }],
+    },
+  ];
+  readonly customerLocations = [
+    {
+      label: 'Americas',
+      value: 'americas',
+      children: [
+        {
+          label: 'United States',
+          value: 'us',
+          children: [
+            { label: 'Austin', value: 'austin' },
+            { label: 'Seattle', value: 'seattle' },
+          ],
+        },
+      ],
+    },
+    {
+      label: 'Europe',
+      value: 'europe',
+      children: [
+        {
+          label: 'Germany',
+          value: 'de',
+          children: [{ label: 'Berlin', value: 'berlin' }],
+        },
+      ],
+    },
+  ];
+  readonly customerSelectOptions = [
+    { id: 'CUS-1001', name: 'Avery Reed', company: 'Aster Labs', status: 'Active' },
+    { id: 'CUS-1002', name: 'Morgan Kim', company: 'Northstar Systems', status: 'Review' },
+    { id: 'CUS-1003', name: 'Jordan Lee', company: 'Willow Health', status: 'Inactive' },
+  ];
+  readonly customerSelectColumns: readonly JSelectColumn[] = [
+    { field: 'id', header: 'Customer ID', width: '8rem', sortable: true },
+    { field: 'name', header: 'Customer Name', width: '11rem', sortable: true },
+    { field: 'company', header: 'Company', width: '12rem' },
+    { field: 'status', header: 'Status', width: '7rem' },
+  ];
   readonly cronPreviewFrom = new Date('2026-07-28T00:00:00Z');
   readonly queryBuilderFields: readonly JQueryField[] = [
     { key: 'customer', label: 'Customer', type: 'text' },

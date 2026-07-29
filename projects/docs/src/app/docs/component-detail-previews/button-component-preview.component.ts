@@ -111,6 +111,21 @@ import {
           <j-copy-button text="CUS-2048" label="Copy customer ID" />
         }
       }
+      @case ('split-button') {
+        <j-split-button
+          label="Save customer"
+          icon="save"
+          [model]="splitButtonItems"
+          groupAriaLabel="Customer save actions"
+          (primaryAction)="previewStatus = 'Customer saved'"
+          (menuAction)="previewStatus = $event.item.label + ' selected'"
+        >
+          <ng-template jSplitButtonItem let-item>
+            <span>{{ item.label }}</span>
+          </ng-template>
+        </j-split-button>
+        <p role="status">{{ previewStatus }}</p>
+      }
     }
   `,
   host: { style: 'display: contents' },
@@ -118,4 +133,5 @@ import {
 })
 export class ButtonComponentPreviewComponent extends ComponentDetailViewBase {
   readonly previewExample = input.required<DetailFeatureExample>();
+  previewStatus = 'Choose a save action';
 }

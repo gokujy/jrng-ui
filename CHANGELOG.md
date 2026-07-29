@@ -4,6 +4,9 @@
 
 ### Added
 
+- Added beta `jrng-ui/split-button`, `jrng-ui/tree-select`, `jrng-ui/cascader`, and `jrng-ui/mention` entrypoints with Forms, keyboard, async, responsive, accessibility, and SSR-safe behavior.
+- Added backwards-compatible multi-column, sortable, custom-cell, virtualized, and responsive stacked option rendering to `j-select`.
+
 - Added beta `jrng-ui/pull-to-refresh` and `jrng-ui/swipe-actions` entrypoints with shared gesture handling, async state management, accessibility fallbacks, live previews, and SSR-safe cleanup.
 
 - Added the beta `jrng-ui/portal`, `jrng-ui/gesture`, `jrng-ui/truncate`, and
