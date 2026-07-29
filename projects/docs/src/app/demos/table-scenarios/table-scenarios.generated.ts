@@ -1,5 +1,7 @@
 import { Component, input, Type } from '@angular/core';
 import { JButtonComponent } from 'jrng-ui/button';
+import { JAvatarComponent } from 'jrng-ui/avatar';
+import { JBadgeComponent } from 'jrng-ui/badge';
 import { JCardComponent } from 'jrng-ui/card';
 import { JCheckboxComponent } from 'jrng-ui/checkbox';
 import { JDatePickerComponent } from 'jrng-ui/date-picker';
@@ -53,13 +55,15 @@ const TABLE_DEMO_IMPORTS = {
   states: [JTableComponent, JTableEmptyTemplateDirective],
   export: [JTableComponent],
   stateful: [JButtonComponent, JTableComponent],
-  actions: [
+  actions: [JButtonComponent, JTableActionsTemplateDirective, JTableComponent, JTooltipDirective],
+  advanced: [
+    JAvatarComponent,
+    JBadgeComponent,
     JButtonComponent,
     JTableActionsTemplateDirective,
+    JTableCellTemplateDirective,
     JTableComponent,
-    JTooltipDirective,
   ],
-  advanced: [JTableComponent],
 };
 
 const TABLE_DEMO_STYLES = `
@@ -69,6 +73,11 @@ const TABLE_DEMO_STYLES = `
   .j-table-demo__detail { display: grid; gap: var(--j-spacing-2); padding: var(--j-spacing-3); }
   .j-table-demo__scroll-note { color: var(--j-color-muted-foreground); font-size: var(--j-font-size-sm); margin: 0 0 var(--j-spacing-3); }
   .j-table-demo__flex-scroll { display: flex; flex-direction: column; height: min(55vh, 28rem); min-height: 18rem; min-width: 0; }
+  .j-table-demo__customer { align-items: center; display: flex; gap: var(--j-spacing-2); min-width: 0; }
+  .j-table-demo__customer-copy { display: grid; min-width: 0; }
+  .j-table-demo__customer-copy strong { font-weight: var(--j-font-weight-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .j-table-demo__customer-copy small { color: var(--j-color-text-muted); font-size: var(--j-font-size-xs); }
+  .j-table-demo__row-actions { align-items: center; display: flex; gap: var(--j-spacing-2); }
   :host ::ng-deep .j-table-demo__needs-review td { background: color-mix(in srgb, var(--j-color-warning) 9%, var(--j-table-bg)); }
   :host ::ng-deep .j-table-demo__high-value { color: var(--j-color-success); font-weight: var(--j-font-weight-semibold); }
   @media (max-width: 640px) { .j-table-demo__controls j-button { flex: 1 1 auto; } }
@@ -254,15 +263,13 @@ export class ActionsTableScenariosComponent extends TableScenarioState {
   selector: 'app-advanced-table-scenarios',
   imports: TABLE_DEMO_IMPORTS.advanced,
   template:
-    '<j-table [title]="scenario()" description="A complete local business workflow." [value]="rows" [columns]="actionColumns" [paginator]="true" [rows]="5" filterDisplay="row" selectionMode="checkbox" [selection]="selection" (selectionChange)="onSelection($event)" (cellEditSave)="onCellEdit($event)" (rowEditSave)="onRowEdit($event)" (action)="onAction($event)" (export)="onExport($event)" [editMode]="scenario().includes(\'database-editor\') ? \'row\' : \'cell\'" responsiveMode="scroll" /><p class="j-table-demo__status" role="status" aria-live="polite">{{ eventMessage }}</p>',
+    '<j-table\n  title="Customer accounts"\n  description="Manage customer ownership, account status, and lifecycle."\n  [value]="enterpriseRows"\n  [columns]="enterpriseColumns"\n  [toolbarActions]="enterpriseToolbarActions"\n  scrollHeight="22rem"\n  [tableStyle]="{ \'min-width\': \'92rem\' }"\n  [pageSize]="5"\n  [pageSizeOptions]="[5, 10, 25, 50]"\n  selectionMode="none"\n  [showGlobalFilter]="false"\n  [showColumnManager]="false"\n  [showExport]="false"\n  [maximizable]="false"\n  (refresh)="eventMessage = \'Customer accounts refreshed.\'"\n>\n  <ng-template #jTableToolbar>\n    <j-button label="Add customer" icon="plus" size="sm" (onClick)="eventMessage = \'Add customer requested.\'" />\n  </ng-template>\n  <ng-template jTableCell="customer" let-row>\n    <span class="j-table-demo__customer">\n      <j-avatar [initials]="initials($any(row)[\'customer\'])" [ariaLabel]="$any(row)[\'customer\']" size="sm" />\n      <span class="j-table-demo__customer-copy">\n        <strong>{{ $any(row)[\'customer\'] }}</strong>\n        <small>{{ $any(row)[\'code\'] }}</small>\n      </span>\n    </span>\n  </ng-template>\n  <ng-template jTableCell="status" let-value="formattedValue">\n    <j-badge [value]="value" [severity]="statusSeverity(value)" variant="soft" size="md" />\n  </ng-template>\n  <ng-template jTableActions="actions" let-row>\n    <span class="j-table-demo__row-actions">\n      <j-button icon="eye" actionDisplay="icon" size="sm" variant="text" [ariaLabel]="\'View \' + $any(row)[\'customer\']" title="View customer" (onClick)="eventMessage = \'View \' + $any(row)[\'customer\']" />\n      <j-button icon="edit" actionDisplay="icon" size="sm" variant="text" [ariaLabel]="\'Edit \' + $any(row)[\'customer\']" title="Edit customer" (onClick)="eventMessage = \'Edit \' + $any(row)[\'customer\']" />\n      <j-button icon="delete" actionDisplay="icon" size="sm" variant="text" severity="danger" [ariaLabel]="\'Delete \' + $any(row)[\'customer\']" title="Delete customer" (onClick)="eventMessage = \'Delete \' + $any(row)[\'customer\']" />\n    </span>\n  </ng-template>\n</j-table><p class="j-table-demo__status" role="status" aria-live="polite">{{ eventMessage }}</p>',
   styles: [TABLE_DEMO_STYLES],
 })
 export class AdvancedTableScenariosComponent extends TableScenarioState {
   readonly scenario = input.required<string>();
 }
-export const TABLE_SCENARIO_COMPONENTS: Readonly<
-  Record<string, Type<unknown>>
-> = {
+export const TABLE_SCENARIO_COMPONENTS: Readonly<Record<string, Type<unknown>>> = {
   ...TABLE_FILTER_EXAMPLE_COMPONENTS,
   'basic-basic-table': BasicTableScenariosComponent,
   'basic-dynamic-columns': BasicTableScenariosComponent,
@@ -328,8 +335,7 @@ export const TABLE_SCENARIO_COMPONENTS: Readonly<
   'filtering-programmatic-filtering': FilteringTableScenariosComponent,
   'filtering-client-side-filtering': FilteringTableScenariosComponent,
   'filtering-server-side-filtering': FilteringTableScenariosComponent,
-  'filtering-filtering-with-sorting-and-pagination':
-    FilteringTableScenariosComponent,
+  'filtering-filtering-with-sorting-and-pagination': FilteringTableScenariosComponent,
   'selection-single-row-selection': SelectionTableScenariosComponent,
   'selection-multiple-row-selection': SelectionTableScenariosComponent,
   'selection-checkbox-selection': SelectionTableScenariosComponent,
@@ -339,8 +345,7 @@ export const TABLE_SCENARIO_COMPONENTS: Readonly<
   'selection-disabled-row-selection': SelectionTableScenariosComponent,
   'selection-conditional-row-selection': SelectionTableScenariosComponent,
   'selection-row-click-selection': SelectionTableScenariosComponent,
-  'selection-selection-using-a-dedicated-column':
-    SelectionTableScenariosComponent,
+  'selection-selection-using-a-dedicated-column': SelectionTableScenariosComponent,
   'selection-programmatic-selection': SelectionTableScenariosComponent,
   'selection-clear-selection': SelectionTableScenariosComponent,
   'selection-row-select-event': SelectionTableScenariosComponent,
@@ -355,8 +360,7 @@ export const TABLE_SCENARIO_COMPONENTS: Readonly<
   'expansion-programmatic-expansion': ExpansionTableScenariosComponent,
   'expansion-custom-expanded-row-template': ExpansionTableScenariosComponent,
   'expansion-nested-detail-section': ExpansionTableScenariosComponent,
-  'expansion-expanded-content-containing-other-jrng-components':
-    ExpansionTableScenariosComponent,
+  'expansion-expanded-content-containing-other-jrng-components': ExpansionTableScenariosComponent,
   'expansion-expansion-events': ExpansionTableScenariosComponent,
   'expansion-expansion-with-pagination': ExpansionTableScenariosComponent,
   'expansion-expansion-with-filtering': ExpansionTableScenariosComponent,
@@ -408,8 +412,7 @@ export const TABLE_SCENARIO_COMPONENTS: Readonly<
   'columns-grouped-columns-with-resizing': ColumnsTableScenariosComponent,
   'reorder-drag-and-drop-row-reordering': ReorderTableScenariosComponent,
   'reorder-reordering-using-a-drag-handle': ReorderTableScenariosComponent,
-  'reorder-disabled-reordering-for-specific-rows':
-    ReorderTableScenariosComponent,
+  'reorder-disabled-reordering-for-specific-rows': ReorderTableScenariosComponent,
   'reorder-reorder-events': ReorderTableScenariosComponent,
   'reorder-programmatic-row-updates': ReorderTableScenariosComponent,
   'reorder-reordering-with-selection': ReorderTableScenariosComponent,
@@ -429,15 +432,12 @@ export const TABLE_SCENARIO_COMPONENTS: Readonly<
   'scrolling-scrolling-with-column-resizing': ScrollingTableScenariosComponent,
   'scrolling-scrolling-with-grouped-columns': ScrollingTableScenariosComponent,
   'virtual-basic-virtual-scrolling': VirtualTableScenariosComponent,
-  'virtual-virtual-scrolling-with-preloaded-data':
-    VirtualTableScenariosComponent,
+  'virtual-virtual-scrolling-with-preloaded-data': VirtualTableScenariosComponent,
   'virtual-lazy-virtual-scrolling': VirtualTableScenariosComponent,
-  'virtual-virtual-scrolling-with-loading-placeholders':
-    VirtualTableScenariosComponent,
+  'virtual-virtual-scrolling-with-loading-placeholders': VirtualTableScenariosComponent,
   'virtual-virtual-scrolling-with-filtering': VirtualTableScenariosComponent,
   'virtual-virtual-scrolling-with-sorting': VirtualTableScenariosComponent,
-  'virtual-virtual-scrolling-with-row-selection':
-    VirtualTableScenariosComponent,
+  'virtual-virtual-scrolling-with-row-selection': VirtualTableScenariosComponent,
   'virtual-large-dataset-example': VirtualTableScenariosComponent,
   'states-loading-overlay': StatesTableScenariosComponent,
   'states-loading-skeleton-rows': StatesTableScenariosComponent,
@@ -573,7 +573,7 @@ const TABLE_SCENARIO_SOURCES = {
     scss: ':host { display: block; min-width: 0; }',
   },
   advanced: {
-    html: '<j-table [title]="scenario()" description="A complete local business workflow." [value]="rows" [columns]="actionColumns" [paginator]="true" [rows]="5" filterDisplay="row" selectionMode="checkbox" [selection]="selection" (selectionChange)="onSelection($event)" (cellEditSave)="onCellEdit($event)" (rowEditSave)="onRowEdit($event)" (action)="onAction($event)" (export)="onExport($event)" [editMode]="scenario().includes(\'database-editor\') ? \'row\' : \'cell\'" responsiveMode="scroll" /><p class="j-table-demo__status" role="status" aria-live="polite">{{ eventMessage }}</p>',
+    html: '<j-table\n  title="Customer accounts"\n  description="Manage customer ownership, account status, and lifecycle."\n  [value]="enterpriseRows"\n  [columns]="enterpriseColumns"\n  [toolbarActions]="enterpriseToolbarActions"\n  scrollHeight="22rem"\n  [tableStyle]="{ \'min-width\': \'92rem\' }"\n  [pageSize]="5"\n  [pageSizeOptions]="[5, 10, 25, 50]"\n  selectionMode="none"\n  [showGlobalFilter]="false"\n  [showColumnManager]="false"\n  [showExport]="false"\n  [maximizable]="false"\n  (refresh)="eventMessage = \'Customer accounts refreshed.\'"\n>\n  <ng-template #jTableToolbar>\n    <j-button label="Add customer" icon="plus" size="sm" (onClick)="eventMessage = \'Add customer requested.\'" />\n  </ng-template>\n  <ng-template jTableCell="customer" let-row>\n    <span class="j-table-demo__customer">\n      <j-avatar [initials]="initials($any(row)[\'customer\'])" [ariaLabel]="$any(row)[\'customer\']" size="sm" />\n      <span class="j-table-demo__customer-copy">\n        <strong>{{ $any(row)[\'customer\'] }}</strong>\n        <small>{{ $any(row)[\'code\'] }}</small>\n      </span>\n    </span>\n  </ng-template>\n  <ng-template jTableCell="status" let-value="formattedValue">\n    <j-badge [value]="value" [severity]="statusSeverity(value)" variant="soft" size="md" />\n  </ng-template>\n  <ng-template jTableActions="actions" let-row>\n    <span class="j-table-demo__row-actions">\n      <j-button icon="eye" actionDisplay="icon" size="sm" variant="text" [ariaLabel]="\'View \' + $any(row)[\'customer\']" title="View customer" (onClick)="eventMessage = \'View \' + $any(row)[\'customer\']" />\n      <j-button icon="edit" actionDisplay="icon" size="sm" variant="text" [ariaLabel]="\'Edit \' + $any(row)[\'customer\']" title="Edit customer" (onClick)="eventMessage = \'Edit \' + $any(row)[\'customer\']" />\n      <j-button icon="delete" actionDisplay="icon" size="sm" variant="text" severity="danger" [ariaLabel]="\'Delete \' + $any(row)[\'customer\']" title="Delete customer" (onClick)="eventMessage = \'Delete \' + $any(row)[\'customer\']" />\n    </span>\n  </ng-template>\n</j-table><p class="j-table-demo__status" role="status" aria-live="polite">{{ eventMessage }}</p>',
     ts: "@Component({\n  selector: 'app-advanced-table-scenarios',\n  imports: TABLE_DEMO_IMPORTS.advanced,\n  templateUrl: './advanced-table-scenarios.component.html',\n})\nexport class AdvancedTableScenariosComponent extends TableScenarioState {\n  readonly scenario = input.required<string>();\n}",
     scss: ':host { display: block; min-width: 0; }',
   },

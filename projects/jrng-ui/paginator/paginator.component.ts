@@ -107,13 +107,14 @@ export type JPaginatorVariant = 'standard' | 'simple';
     `
       .j-paginator {
         align-items: center;
-        background: var(--j-color-surface-muted);
+        background: var(--j-paginator-bg, var(--j-color-surface-muted));
         color: var(--j-color-text-muted);
         display: flex;
         flex-wrap: wrap;
         font-size: var(--j-font-size-sm, 0.875rem);
         gap: var(--j-spacing-md, 0.75rem);
         justify-content: space-between;
+        min-height: var(--j-paginator-height, 3rem);
         padding: var(--j-spacing-md, 0.75rem) var(--j-spacing-lg, 1rem);
       }
 
@@ -169,7 +170,7 @@ export type JPaginatorVariant = 'standard' | 'simple';
       }
 
       .j-paginator__button.is-active {
-        background: var(--j-color-primary);
+        background: var(--j-paginator-active-bg, var(--j-color-primary));
         border-color: var(--j-color-primary);
         color: var(--j-color-on-primary);
       }

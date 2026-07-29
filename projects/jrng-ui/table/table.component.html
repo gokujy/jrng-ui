@@ -7,16 +7,18 @@
   [attr.aria-busy]="loading()"
 >
   @if (
-    toolbarTemplate ||
-    title() ||
-    description() ||
-    showGlobalFilter ||
-    showColumnManager ||
-    showExport ||
-    showTableState ||
-    stateKey ||
-    maximizable ||
-    resolvedFilterDisplay === 'toolbar'
+    showToolbar &&
+    (toolbarTemplate ||
+      title() ||
+      description() ||
+      showGlobalFilter ||
+      showColumnManager ||
+      showExport ||
+      showTableState ||
+      stateKey ||
+      maximizable ||
+      resolvedFilterDisplay === 'toolbar' ||
+      toolbarActions().length)
   ) {
     <div class="j-table__toolbar" data-jc-section="toolbar">
       @if (title() || description()) {
@@ -45,8 +47,27 @@
             (input)="handleGlobalFilter($event)"
           />
         </label>
-        <j-button label="Apply filters" icon="filter" size="sm" (onClick)="applyFilters()" />
-        <j-button label="Reset filters" size="sm" variant="text" (onClick)="resetFilters()" />
+        <j-button
+          label="Apply filters"
+          icon="filter"
+          actionDisplay="icon"
+          ariaLabel="Apply filters"
+          title="Apply filters"
+          size="sm"
+          [badge]="activeFilterItems.length || null"
+          (onClick)="applyFilters()"
+        />
+        <j-button
+          label="Clear all filters"
+          icon="close"
+          actionDisplay="icon"
+          ariaLabel="Clear all filters"
+          title="Clear all filters"
+          size="sm"
+          variant="text"
+          [disabled]="activeFilterItems.length === 0 && !globalFilter"
+          (onClick)="resetFilters()"
+        />
       }
       @if (resolvedFilterDisplay === 'toolbar' && hasFilterableColumns) {
         <details class="j-table__advanced-filters" data-jc-section="advanced-filters">
@@ -69,7 +90,7 @@
                     [operators]="column.filter?.operators || []"
                     [options]="column.filter?.options || []"
                     display="toolbar"
-                    (filterChange)="handleFilterModelChange($event)"
+                    (filterChange)="handleColumnFilterChange($event)"
                   />
                 }
               }
@@ -77,9 +98,21 @@
           </div>
         </details>
       }
-      @if (showColumnManager) {
-        <details class="j-table__columns" data-jc-section="column-manager">
-          <summary>Column settings</summary>
+      @if (showColumnManager || hasToolbarAction('columns')) {
+        <details
+          class="j-table__columns"
+          data-jc-section="column-manager"
+          [open]="columnManagerOpen"
+          (toggle)="columnManagerOpen = $any($event.target).open"
+        >
+          <summary
+            aria-label="Column visibility"
+            jTooltip="Column visibility"
+            data-jc-section="column-manager-trigger"
+          >
+            <span aria-hidden="true">☷</span>
+            <span class="j-hidden-accessible">Column visibility</span>
+          </summary>
           <div class="j-table__columns-panel">
             @for (column of columnManagerColumns; track column.field) {
               <div class="j-table__column-config">
@@ -102,6 +135,9 @@
         <j-button
           label="Export CSV"
           icon="download"
+          actionDisplay="icon"
+          ariaLabel="Export CSV"
+          title="Export CSV"
           size="sm"
           variant="outlined"
           [disabled]="loading()"
@@ -112,6 +148,9 @@
         <j-button
           [label]="maximized ? 'Minimize' : 'Maximize'"
           icon="square"
+          actionDisplay="icon"
+          [ariaLabel]="maximized ? 'Exit fullscreen' : 'Enter fullscreen'"
+          [title]="maximized ? 'Exit fullscreen' : 'Enter fullscreen'"
           size="sm"
           variant="outlined"
           [ariaPressed]="maximized"
@@ -123,11 +162,33 @@
         <j-button label="Restore" size="sm" variant="text" (onClick)="restoreState()" />
         <j-button label="Reset state" size="sm" variant="text" (onClick)="resetTableState()" />
       }
+      @for (utility of toolbarActions(); track utility.key) {
+        <j-button
+          [label]="utility.label || utility.key"
+          [icon]="utility.icon || utility.key"
+          actionDisplay="icon"
+          [ariaLabel]="utility.label || utility.key"
+          [title]="utility.label || utility.key"
+          [severity]="utility.severity || (utility.key === 'export' ? 'success' : 'neutral')"
+          variant="text"
+          size="sm"
+          [disabled]="utility.disabled || false"
+          [loading]="utility.loading || false"
+          [badge]="
+            utility.key === 'filters' && activeFilterItems.length ? activeFilterItems.length : null
+          "
+          (onClick)="handleToolbarAction(utility)"
+        />
+      }
       <div class="j-table__toolbar-actions">
         <ng-content select="[jTableToolbarActions]" />
       </div>
     </div>
   }
+
+  <span class="j-hidden-accessible" aria-live="polite" aria-atomic="true">
+    {{ liveAnnouncement }}
+  </span>
 
   @if (bulkActions() && selectionCount > 0) {
     <div class="j-table__bulk-actions" data-jc-section="bulk-actions" role="status">
@@ -256,9 +317,29 @@
               (contextmenu)="handleHeaderContextMenu(column, columnIndex, $event)"
             >
               @if (headerTemplateFor(column); as headerTemplate) {
-                <ng-container
-                  *ngTemplateOutlet="headerTemplate; context: headerContext(column)"
-                ></ng-container>
+                @if (isColumnSortable(column)) {
+                  <button
+                    type="button"
+                    class="j-table__sort"
+                    data-jc-section="sort"
+                    [attr.data-j-active]="sortOrderFor(column) ? 'true' : null"
+                    (click)="toggleSort(column)"
+                  >
+                    <span>
+                      <ng-container
+                        *ngTemplateOutlet="headerTemplate; context: headerContext(column)"
+                      ></ng-container>
+                    </span>
+                    <j-sort-icon
+                      [order]="sortOrderFor(column)"
+                      [priority]="sortPriorityFor(column)"
+                    />
+                  </button>
+                } @else {
+                  <ng-container
+                    *ngTemplateOutlet="headerTemplate; context: headerContext(column)"
+                  ></ng-container>
+                }
               } @else {
                 <button
                   type="button"
@@ -271,7 +352,10 @@
                 >
                   <span>{{ column.header }}</span>
                   @if (isColumnSortable(column)) {
-                    <j-sort-icon [order]="sortOrderFor(column)" />
+                    <j-sort-icon
+                      [order]="sortOrderFor(column)"
+                      [priority]="sortPriorityFor(column)"
+                    />
                   }
                 </button>
               }
@@ -347,6 +431,12 @@
                 [style.width]="column.width || null"
                 [style.min-width]="column.minWidth || null"
                 [style.max-width]="column.maxWidth || null"
+                [style.inset-inline-start]="
+                  column.frozen && !isFrozenAtEnd(column) ? frozenColumnOffset(column) : null
+                "
+                [style.inset-inline-end]="
+                  column.frozen && isFrozenAtEnd(column) ? frozenColumnOffset(column) : null
+                "
                 [attr.aria-label]="isColumnFilterable(column) ? 'Filter ' + column.header : null"
               >
                 @if (isColumnFilterable(column)) {
@@ -380,7 +470,7 @@
                       [max]="column.filter?.max ?? null"
                       [step]="column.filter?.step ?? null"
                       display="row"
-                      (filterChange)="handleFilterModelChange($event)"
+                      (filterChange)="handleColumnFilterChange($event)"
                     />
                   }
                 }
@@ -718,7 +808,13 @@
                             </span>
                           }
                           @default {
-                            {{ formattedCellValue(row, column) }}
+                            <span
+                              class="j-table__cell-content"
+                              [jTooltip]="formattedCellValue(row, column)"
+                              tooltipPosition="top"
+                            >
+                              {{ formattedCellValue(row, column) }}
+                            </span>
                           }
                         }
                       }

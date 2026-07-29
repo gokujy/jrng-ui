@@ -35,6 +35,9 @@ export interface TableDemoRow extends Record<string, unknown> {
   readonly phone?: string;
   readonly lastUpdated?: string;
   readonly actions?: string;
+  readonly industry?: string;
+  readonly accountType?: string;
+  readonly accountManager?: string;
 }
 
 const TABLE_DEMO_ROWS: readonly TableDemoRow[] = [
@@ -353,6 +356,105 @@ export class TableScenarioState {
       ],
     },
   ];
+
+  readonly enterpriseRows: readonly TableDemoRow[] = this.rows.map((row, index) => ({
+    ...row,
+    company: ['Northwind Partners', 'Blue Cedar Group', 'Harborline Services', 'Summit Works'][
+      index % 4
+    ],
+    industry: ['Logistics', 'Technology', 'Professional Services', 'Manufacturing'][index % 4],
+    accountType: ['Enterprise', 'Growth', 'Standard'][index % 3],
+    accountManager: ['Jordan Lee', 'Avery Morgan', 'Taylor Reed'][index % 3],
+    actions: '',
+  }));
+
+  readonly enterpriseColumns: readonly JTableColumn<TableDemoRow>[] = [
+    { field: 'id', header: '#', width: '4rem', minWidth: '4rem', align: 'end', frozen: true },
+    {
+      field: 'customer',
+      header: 'Customer',
+      sortable: true,
+      filterable: true,
+      minWidth: '14rem',
+      frozen: true,
+    },
+    { field: 'company', header: 'Company', sortable: true, filterable: true, minWidth: '12rem' },
+    {
+      field: 'industry',
+      header: 'Industry',
+      sortable: true,
+      filterable: true,
+      minWidth: '10rem',
+    },
+    {
+      field: 'accountType',
+      header: 'Account type',
+      sortable: true,
+      filterable: true,
+      filter: {
+        type: 'select',
+        operator: 'equals',
+        options: [
+          { label: 'Enterprise', value: 'Enterprise' },
+          { label: 'Growth', value: 'Growth' },
+          { label: 'Standard', value: 'Standard' },
+        ],
+      },
+    },
+    {
+      field: 'date',
+      header: 'Joined date',
+      type: 'date',
+      sortable: true,
+      filterable: true,
+    },
+    {
+      field: 'accountManager',
+      header: 'Account manager',
+      sortable: true,
+      filterable: true,
+      minWidth: '11rem',
+    },
+    {
+      field: 'status',
+      header: 'Status',
+      type: 'status',
+      sortable: true,
+      filterable: true,
+      frozen: true,
+      frozenPosition: 'end',
+      filter: { type: 'select', operator: 'equals', options: this.statusOptions },
+    },
+    {
+      field: 'actions',
+      header: 'Actions',
+      type: 'actions',
+      width: '8.5rem',
+      minWidth: '8.5rem',
+      frozen: true,
+      frozenPosition: 'end',
+    },
+  ];
+
+  readonly enterpriseToolbarActions = [
+    { key: 'filters' as const, label: 'Toggle filter row', icon: 'filter' },
+    { key: 'clear-filters' as const, label: 'Clear all filters', icon: 'close' },
+    { key: 'refresh' as const, label: 'Refresh', icon: 'refresh' },
+    { key: 'export' as const, label: 'Export', icon: 'download', severity: 'success' as const },
+    { key: 'fullscreen' as const, label: 'Fullscreen', icon: 'square' },
+  ];
+
+  initials(value: string): string {
+    return value
+      .split(/\s+/)
+      .slice(0, 2)
+      .map((part) => part[0] ?? '')
+      .join('');
+  }
+
+  statusSeverity(value: string): 'success' | 'warning' | 'info' | 'neutral' {
+    return value === 'Approved' ? 'success' : value === 'Pending' ? 'warning' : 'info';
+  }
 
   readonly conditionalColumns: readonly JTableColumn<TableDemoRow>[] = this.columns.map((column) =>
     column.field === 'total'

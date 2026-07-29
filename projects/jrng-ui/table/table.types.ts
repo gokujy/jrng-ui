@@ -261,11 +261,15 @@ export interface JTableColumn<T extends object = JTableRow> {
   readonly maxWidth?: string;
   readonly align?: JTableColumnAlign;
   readonly headerAlign?: JTableColumnAlign;
+  /** Keeps long content on one line by default. Set to true to allow wrapping. */
+  readonly wrap?: boolean;
   readonly type?: JTableColumnType;
   readonly visible?: boolean;
   readonly hidden?: boolean;
   readonly frozen?: boolean;
   readonly frozenAlign?: 'start' | 'end' | 'left' | 'right';
+  /** Preferred alias for `frozenAlign`. */
+  readonly frozenPosition?: 'start' | 'end' | 'left' | 'right';
   readonly responsivePriority?: number;
   readonly templateKey?: string;
   readonly actions?: readonly JTableAction[];
@@ -274,6 +278,23 @@ export interface JTableColumn<T extends object = JTableRow> {
   valueGetter?(row: T, column: JTableColumn<T>): unknown;
   formatter?(value: unknown, row: T, column: JTableColumn<T>): string | number | null | undefined;
   sortComparator?(left: T, right: T, column: JTableColumn<T>): number;
+}
+
+export type JTableToolbarActionKey =
+  | 'columns'
+  | 'filters'
+  | 'clear-filters'
+  | 'refresh'
+  | 'export'
+  | 'fullscreen';
+
+export interface JTableToolbarAction {
+  readonly key: JTableToolbarActionKey;
+  readonly label?: string;
+  readonly icon?: string;
+  readonly disabled?: boolean;
+  readonly loading?: boolean;
+  readonly severity?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | 'neutral';
 }
 
 export interface JTableSkeletonColumn {

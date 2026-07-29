@@ -80,6 +80,7 @@ import {
   JTableSort,
   JTableState,
   JTableStateRestoreError,
+  JTableToolbarAction,
 } from './table.types';
 import { jCreateMemoryTableStorage, jMatchTableValue, jSerializeTableQuery } from './table-data';
 import {
@@ -92,6 +93,7 @@ import {
 } from './table-template.directive';
 import { JBodyScrollLockService, JTableSortOrder } from 'jrng-ui/core';
 import { JButtonComponent } from 'jrng-ui/button';
+import { JTooltipDirective } from 'jrng-ui/tooltip';
 
 export type JTableSortDirection = 'asc' | 'desc';
 
@@ -108,6 +110,7 @@ export type JTableSortDirection = 'asc' | 'desc';
     JTableEmptyStateComponent,
     JTableSkeletonComponent,
     JButtonComponent,
+    JTooltipDirective,
   ],
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss',
@@ -180,6 +183,7 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   readonly dataKey = input('');
   readonly scrollable = input(true, { transform: booleanAttribute });
   readonly scrollHeight = input('');
+  readonly maxScrollHeight = input('');
   readonly scrollLabel = input('Scrollable table');
   readonly tableStyle = input<Readonly<Record<string, string | number | null | undefined>> | null>(
     null,
@@ -214,7 +218,9 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   @Input() lockedRowKeys: readonly string[] = [];
   @Input() density: JTableDensity = 'comfortable';
   readonly variant = input<JTableVariant>('standard');
-  readonly filterDisplay = input<JTableFilterDisplay>('none');
+  readonly filterDisplay = input<JTableFilterDisplay>('row');
+  readonly showFilterRow = input(true, { transform: booleanAttribute });
+  readonly filterDebounce = input(300, { transform: numberAttribute });
   readonly dataMode = input<JTableDataMode>('client');
   readonly editMode = input<JTableEditMode>('none');
   readonly responsiveMode = input<JTableResponsiveMode>('scroll');
@@ -234,6 +240,8 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   readonly skeletonRows = input(5, { transform: numberAttribute });
   readonly skeletonColumns = input<readonly JTableSkeletonColumn[]>([]);
   @Input({ transform: booleanAttribute }) paginator = true;
+  @Input({ transform: booleanAttribute }) showToolbar = true;
+  @Input({ transform: booleanAttribute }) sortable = false;
   @Input({ transform: booleanAttribute }) hover = true;
   @Input({ transform: booleanAttribute }) resizableColumns = true;
   @Input() columnResizeMode: JTableColumnResizeMode = 'expand';
@@ -256,6 +264,7 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   @Input({ transform: booleanAttribute }) showCurrentPageReport = true;
   @Input() currentPageReportTemplate = 'Showing {first} to {last} of {totalRecords}';
   @Input({ transform: booleanAttribute }) showFirstLastPageButtons = true;
+  readonly toolbarActions = input<readonly JTableToolbarAction[]>([]);
 
   readonly lazyLoad = output<JTableLazyLoadEvent>();
   readonly sortChange = output<JTableSort>();
@@ -295,6 +304,8 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   readonly headerContextMenu = output<JTableHeaderContextMenuEvent>();
   readonly emptyAction = output<JTableEmptyActionEvent>();
   readonly rowGroupToggle = output<{ readonly value: unknown; readonly collapsed: boolean }>();
+  readonly refresh = output<void>();
+  readonly toolbarAction = output<JTableToolbarAction>();
 
   private pageRows = 25;
   hiddenColumnFields = new Set<string>();
@@ -314,11 +325,15 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   private internalLockedRowKeys = new Set<string>();
   private collapsedRowGroups = new Set<string>();
   private stopColumnResize: (() => void) | null = null;
+  private readonly filterTimers = new Map<string, ReturnType<typeof setTimeout>>();
   private resizingColumn = false;
   private selectionAnchorRow: JTableRow | null = null;
   private maximizedTableAttached = false;
   private readonly maximizeOwnerId = `j-table-maximized-${JTableComponent.nextMaximizeId++}`;
   maximized = false;
+  filterRowVisible = true;
+  columnManagerOpen = false;
+  liveAnnouncement = '';
   virtualStart = 0;
   virtualWindowSize = 20;
   focusedRowKey = '';
@@ -335,6 +350,8 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     this.destroyRef.onDestroy(() => {
       this.cleanupColumnResize();
       this.restoreMaximizedTable();
+      this.filterTimers.forEach((timer) => clearTimeout(timer));
+      this.filterTimers.clear();
     });
   }
 
@@ -347,6 +364,21 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     return this.pageRows;
   }
 
+  @Input({ alias: 'pageSize', transform: numberAttribute })
+  set pageSize(value: number) {
+    this.rows = value;
+  }
+
+  @Input({ alias: 'pageSizeOptions' })
+  set pageSizeOptions(value: readonly number[]) {
+    this.rowsPerPageOptions = value;
+  }
+
+  @Input({ alias: 'showPagination', transform: booleanAttribute })
+  set showPagination(value: boolean) {
+    this.paginator = value;
+  }
+
   get resolvedColumns(): readonly JTableColumn[] {
     const source = this.columns() as unknown as readonly JTableColumn[];
     return this.orderColumns(source)
@@ -354,6 +386,7 @@ export class JTableComponent implements AfterContentInit, OnChanges {
       .map((column) => ({
         ...column,
         width: this.columnWidths[column.field] ?? column.width,
+        minWidth: column.minWidth ?? this.defaultColumnMinWidth(column),
       }));
   }
 
@@ -626,7 +659,7 @@ export class JTableComponent implements AfterContentInit, OnChanges {
         : '',
       this.scrollable() ? 'j-table--scrollable' : 'j-table--not-scrollable',
       this.scrollHeight() === 'flex' ? 'j-table--flex-scroll' : '',
-      this.stickyHeader() || this.scrollHeight() ? 'j-table--sticky' : '',
+      this.stickyHeader() || this.scrollHeight() || this.maxScrollHeight() ? 'j-table--sticky' : '',
       this.expandableRows() ? 'j-table--expandable' : '',
       this.loading() ? 'is-loading' : '',
       this.resizingColumn ? 'is-resizing' : '',
@@ -636,7 +669,7 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   }
 
   get usesDedicatedFilterRow(): boolean {
-    return this.resolvedFilterDisplay === 'row';
+    return this.resolvedFilterDisplay === 'row' && this.showFilterRow() && this.filterRowVisible;
   }
 
   get resolvedFilterDisplay(): JTableFilterDisplay {
@@ -653,8 +686,13 @@ export class JTableComponent implements AfterContentInit, OnChanges {
 
   get scrollStyles(): Record<string, string> | null {
     const height = this.scrollHeight().trim();
-    if (!height) return null;
-    return height === 'flex' ? { height: '100%', 'max-height': 'none' } : { 'max-height': height };
+    const maxHeight = this.maxScrollHeight().trim();
+    if (!height && !maxHeight) return null;
+    if (height === 'flex') return { height: '100%', 'max-height': maxHeight || 'none' };
+    return {
+      ...(height ? { height } : {}),
+      ...(maxHeight ? { 'max-height': maxHeight } : {}),
+    };
   }
 
   get colspan(): number {
@@ -861,6 +899,8 @@ export class JTableComponent implements AfterContentInit, OnChanges {
       `j-table__cell--${align}`,
       column.frozen ? 'j-table__cell--frozen' : '',
       this.isFrozenAtEnd(column) ? 'j-table__cell--frozen-right' : '',
+      this.isFrozenBoundary(column) ? 'j-table__cell--frozen-edge' : '',
+      column.wrap ? 'j-table__cell--wrap' : '',
       column.responsivePriority
         ? `j-table__cell--priority-${Math.max(1, Math.min(5, column.responsivePriority))}`
         : '',
@@ -925,6 +965,21 @@ export class JTableComponent implements AfterContentInit, OnChanges {
 
   isFrozenAtEnd(column: JTableColumn): boolean {
     return this.frozenEdge(column) === 'end';
+  }
+
+  hasToolbarAction(key: JTableToolbarAction['key']): boolean {
+    return this.toolbarActions().some((action) => action.key === key);
+  }
+
+  isFrozenBoundary(column: JTableColumn): boolean {
+    if (!column.frozen) return false;
+    const edge = this.frozenEdge(column);
+    const frozen = this.resolvedColumns.filter(
+      (candidate) => candidate.frozen && this.frozenEdge(candidate) === edge,
+    );
+    return edge === 'start'
+      ? frozen.at(-1)?.field === column.field
+      : frozen[0]?.field === column.field;
   }
 
   triggerEmptyAction(): void {
@@ -1319,6 +1374,12 @@ export class JTableComponent implements AfterContentInit, OnChanges {
       order: nextOrder,
       direction: nextOrder === 1 ? 'asc' : nextOrder === -1 ? 'desc' : 'none',
     };
+    this.liveAnnouncement =
+      nextOrder === 1
+        ? `${column.header} sorted ascending.`
+        : nextOrder === -1
+          ? `${column.header} sorted descending.`
+          : `${column.header} sorting cleared.`;
     this.emitSort(sort);
     this.emitLazyLoad();
   }
@@ -1375,6 +1436,12 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     return this.sortField === column.field ? this.sortOrder : 0;
   }
 
+  sortPriorityFor(column: JTableColumn): number {
+    if (this.sortMode !== 'multiple') return 0;
+    const index = this.activeMultiSort.findIndex((sort) => sort.field === column.field);
+    return index < 0 ? 0 : index + 1;
+  }
+
   ariaSort(column: JTableColumn): 'ascending' | 'descending' | 'none' | null {
     const order = this.sortOrderFor(column);
     return order === 1
@@ -1403,6 +1470,9 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     }
     this.filterModel = { ...this.filterModel, items };
     this.first = 0;
+    this.liveAnnouncement = this.isEmptyFilter(change.value)
+      ? `${this.filterLabel(change.field)} filter cleared.`
+      : `${this.filterLabel(change.field)} filter applied.`;
     this.emitFilter({
       field: change.field,
       value: change.value,
@@ -1411,6 +1481,63 @@ export class JTableComponent implements AfterContentInit, OnChanges {
       filterModel: this.filterModel,
     });
     this.emitLazyLoad();
+  }
+
+  handleColumnFilterChange(change: JColumnFilterChange): void {
+    const column = (this.columns() as readonly JTableColumn[]).find(
+      (candidate) => candidate.field === change.field,
+    );
+    const debounce =
+      this.filterTypeFor(
+        column ?? ({ field: change.field, header: change.field } as JTableColumn),
+      ) === 'text'
+        ? Math.max(0, this.filterDebounce())
+        : 0;
+    const current = this.filterTimers.get(change.field);
+    if (current) clearTimeout(current);
+    if (debounce === 0) {
+      this.filterTimers.delete(change.field);
+      this.handleFilterModelChange(change);
+      return;
+    }
+    const timer = setTimeout(() => {
+      this.filterTimers.delete(change.field);
+      this.handleFilterModelChange(change);
+      this.changeDetectorRef.markForCheck();
+    }, debounce);
+    this.filterTimers.set(change.field, timer);
+  }
+
+  clearAllFilters(): void {
+    this.resetFilters();
+  }
+
+  handleToolbarAction(action: JTableToolbarAction): void {
+    if (action.disabled || action.loading) return;
+    this.toolbarAction.emit(action);
+    switch (action.key) {
+      case 'columns':
+        this.columnManagerOpen = !this.columnManagerOpen;
+        this.changeDetectorRef.markForCheck();
+        break;
+      case 'filters':
+        this.filterRowVisible = !this.filterRowVisible;
+        this.liveAnnouncement = this.filterRowVisible ? 'Filter row shown.' : 'Filter row hidden.';
+        this.changeDetectorRef.markForCheck();
+        break;
+      case 'clear-filters':
+        this.resetFilters();
+        break;
+      case 'refresh':
+        this.refresh.emit();
+        break;
+      case 'export':
+        this.exportCSV();
+        break;
+      case 'fullscreen':
+        this.setMaximized(!this.maximized);
+        break;
+    }
   }
 
   applyTemplateFilter(column: JTableColumn, value: unknown): void {
@@ -2377,7 +2504,8 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   isColumnSortable(column: JTableColumn): boolean {
     return (
       !this.isActionColumn(column) &&
-      (column.sortable === true || (this.config?.sortable === true && column.sortable !== false))
+      (column.sortable === true ||
+        ((this.sortable || this.config?.sortable === true) && column.sortable !== false))
     );
   }
 
@@ -2646,6 +2774,24 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     return column.type === 'actions';
   }
 
+  private defaultColumnMinWidth(column: JTableColumn): string {
+    const field = column.field.toLowerCase();
+    const header = column.header.toLowerCase();
+    if (column.type === 'actions') return 'var(--j-table-action-column-min-width, 6.875rem)';
+    if (column.type === 'number') return 'var(--j-table-number-column-min-width, 5.625rem)';
+    if (column.type === 'date') return 'var(--j-table-date-column-min-width, 9.375rem)';
+    if (column.type === 'status' || column.type === 'badge' || column.type === 'tag') {
+      return 'var(--j-table-status-column-min-width, 11.25rem)';
+    }
+    if (field === 'index' || field === 'id' || header === 'index' || header === '#') {
+      return 'var(--j-table-index-column-min-width, 3.75rem)';
+    }
+    if (header.includes('customer') || header.includes('employee') || header.includes('period')) {
+      return 'var(--j-table-long-column-min-width, 13.75rem)';
+    }
+    return 'var(--j-table-default-column-width, 10rem)';
+  }
+
   private valueMatchesFilter(value: unknown, filter: unknown): boolean {
     if (this.isEmptyFilter(filter)) {
       return true;
@@ -2755,7 +2901,8 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   }
 
   private frozenEdge(column: JTableColumn): 'start' | 'end' {
-    return column.frozenAlign === 'right' || column.frozenAlign === 'end' ? 'end' : 'start';
+    const position = column.frozenPosition ?? column.frozenAlign;
+    return position === 'right' || position === 'end' ? 'end' : 'start';
   }
 
   private rowsEqual(first: JTableRow, second: JTableRow): boolean {

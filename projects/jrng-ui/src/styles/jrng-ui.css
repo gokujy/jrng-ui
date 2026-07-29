@@ -200,7 +200,7 @@
 @layer j-theme {
   .j-dark,
   .j-theme-dark,
-  [data-j-theme=dark] {
+  [data-j-theme='dark'] {
     color-scheme: dark;
     --j-highlight-background: #854d0e;
     --j-color-background: #0c1220;
@@ -349,11 +349,28 @@
     --j-table-border-color: var(--j-color-border);
     --j-table-header-bg: var(--j-color-muted);
     --j-table-header-color: var(--j-color-muted-foreground);
+    --j-table-header-font-weight: var(--j-font-weight-medium);
+    --j-table-filter-row-bg: var(--j-color-surface-subtle);
+    --j-table-filter-control-bg: var(--j-color-surface);
+    --j-table-filter-control-border: var(--j-color-border);
+    --j-table-filter-icon-color: var(--j-color-text-muted);
+    --j-table-sort-icon-color: var(--j-color-text-soft);
+    --j-table-sort-active-color: var(--j-color-primary);
+    --j-table-frozen-bg: var(--j-color-card);
+    --j-table-frozen-shadow-start: 0.25rem 0 0.35rem -0.35rem rgb(0 0 0 / 28%);
+    --j-table-frozen-shadow-end: -0.25rem 0 0.35rem -0.35rem rgb(0 0 0 / 28%);
+    --j-table-pagination-bg: var(--j-color-card);
+    --j-table-pagination-active-bg: var(--j-color-primary);
     --j-table-row-hover-bg: color-mix(in srgb, var(--j-color-primary) 5%, transparent);
     --j-table-selected-bg: var(--j-color-selected-background);
-    --j-table-row-height: 3rem;
-    --j-table-cell-padding-x: var(--j-spacing-4);
-    --j-table-cell-padding-y: var(--j-spacing-3);
+    --j-table-header-height: 2.625rem;
+    --j-table-filter-row-height: 3rem;
+    --j-table-row-height: 2.875rem;
+    --j-table-filter-control-height: 2.25rem;
+    --j-table-toolbar-height: 3rem;
+    --j-table-pagination-height: 2.875rem;
+    --j-table-cell-padding-x: var(--j-spacing-3);
+    --j-table-cell-padding-y: var(--j-spacing-2);
     --j-select-bg: var(--j-control-bg);
     --j-select-color: var(--j-control-color);
     --j-select-border-color: var(--j-control-border-color);
@@ -397,7 +414,7 @@
   }
 }
 @layer j-theme, j-base, j-components, j-utilities;
-:root[data-j-density=compact] {
+:root[data-j-density='compact'] {
   --j-density-gap: var(--j-density-compact-gap);
   --j-density-padding: var(--j-density-compact-padding);
   --j-input-height-sm: 1.875rem;
@@ -405,7 +422,7 @@
   --j-input-height-lg: 2.75rem;
 }
 
-:root[data-j-density=spacious] {
+:root[data-j-density='spacious'] {
   --j-density-gap: var(--j-density-spacious-gap);
   --j-density-padding: var(--j-density-spacious-padding);
   --j-input-height-sm: 2.5rem;
@@ -453,7 +470,7 @@
   }
   @media (forced-colors: active) {
     .j-focus-ring:focus-visible,
-    :where(button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])):focus-visible {
+    :where(button, [href], input, select, textarea, [tabindex]:not([tabindex='-1'])):focus-visible {
       box-shadow: none;
       outline: 2px solid CanvasText;
       outline-offset: 2px;
@@ -529,7 +546,7 @@
   .j-ripple::after {
     background: var(--j-ripple-color, currentColor);
     border-radius: var(--j-radius-full);
-    content: "";
+    content: '';
     height: 0;
     left: var(--j-ripple-x, 50%);
     opacity: 0;

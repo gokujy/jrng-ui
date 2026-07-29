@@ -87,12 +87,12 @@ const DEFAULT_OPERATORS: Readonly<Record<JTableFilterType, readonly JTableFilter
               <select
                 class="j-column-filter__control"
                 [attr.aria-label]="resolvedAriaLabel()"
-                [value]="stringValue()"
-                (change)="handleInput($event)"
+                [value]="selectedOptionIndex()"
+                (change)="handleSelect($event)"
               >
-                <option value="">{{ placeholder() || 'All' }}</option>
-                @for (option of options(); track option.value) {
-                  <option [value]="option.value" [disabled]="option.disabled">
+                <option value="-1">{{ placeholder() || 'All' }}</option>
+                @for (option of options(); track $index) {
+                  <option [value]="$index" [disabled]="option.disabled">
                     {{ option.label }}
                   </option>
                 }
@@ -105,9 +105,9 @@ const DEFAULT_OPERATORS: Readonly<Record<JTableFilterType, readonly JTableFilter
                 [attr.aria-label]="resolvedAriaLabel()"
                 (change)="handleMultiSelect($event)"
               >
-                @for (option of options(); track option.value) {
+                @for (option of options(); track $index) {
                   <option
-                    [value]="option.value"
+                    [value]="$index"
                     [selected]="isOptionSelected(option.value)"
                     [disabled]="option.disabled"
                   >
@@ -189,6 +189,18 @@ const DEFAULT_OPERATORS: Readonly<Record<JTableFilterType, readonly JTableFilter
         margin: 0;
         position: relative;
       }
+      .j-column-filter--row::after {
+        color: var(--j-table-filter-icon-color, var(--j-color-text-muted));
+        content: '⌕';
+        font-size: var(--j-font-size-sm, 0.875rem);
+        inset-inline-end: 0.625rem;
+        pointer-events: none;
+        position: absolute;
+      }
+      .j-column-filter--row:has(select)::after,
+      .j-column-filter--row:has(.j-column-filter__match-menu)::after {
+        content: '';
+      }
       .j-column-filter--row .j-column-filter__control,
       .j-column-filter--row .j-column-filter__range {
         flex: 1;
@@ -260,12 +272,12 @@ const DEFAULT_OPERATORS: Readonly<Record<JTableFilterType, readonly JTableFilter
 
       .j-column-filter__control,
       .j-column-filter__operator {
-        background: var(--j-color-surface);
-        border: 1px solid var(--j-color-border);
+        background: var(--j-table-filter-control-bg, var(--j-color-surface));
+        border: 1px solid var(--j-table-filter-control-border, var(--j-color-border));
         border-radius: var(--j-radius-sm, 0.375rem);
         color: var(--j-color-text);
         font: inherit;
-        min-height: 2rem;
+        min-height: var(--j-table-filter-control-height, 2.25rem);
         padding: 0 var(--j-spacing-sm, 0.5rem);
         width: 100%;
       }
@@ -322,10 +334,9 @@ export class JColumnFilterComponent {
   readonly resolvedAriaLabel = computed(
     () => this.ariaLabel() || `Filter ${this.label() || this.field()}`,
   );
-  readonly selectedValues = computed(() => {
-    const value = this.value();
-    return Array.isArray(value) ? value.map(String) : [];
-  });
+  readonly selectedOptionIndex = computed(() =>
+    this.options().findIndex((option) => this.valuesEqual(option.value, this.value())),
+  );
   readonly rangeValue = computed<readonly [unknown, unknown]>(() => {
     const value = this.value();
     return Array.isArray(value) ? [value[0] ?? '', value[1] ?? ''] : ['', ''];
@@ -364,8 +375,14 @@ export class JColumnFilterComponent {
 
   handleMultiSelect(event: Event): void {
     this.emitValue(
-      Array.from((event.target as HTMLSelectElement).selectedOptions).map((option) => option.value),
+      Array.from((event.target as HTMLSelectElement).selectedOptions)
+        .map((option) => this.options()[Number(option.value)]?.value)
+        .filter((value) => value !== undefined),
     );
+  }
+  handleSelect(event: Event): void {
+    const index = Number((event.target as HTMLSelectElement).value);
+    this.emitValue(index < 0 ? '' : this.options()[index]?.value);
   }
   handleRangeInput(index: 0 | 1, event: Event): void {
     const next = [...this.rangeValue()];
@@ -400,10 +417,16 @@ export class JColumnFilterComponent {
   }
 
   isOptionSelected(value: unknown): boolean {
-    return this.selectedValues().includes(String(value));
+    const current = this.value();
+    const selected: readonly unknown[] = Array.isArray(current) ? current : [];
+    return selected.some((candidate) => this.valuesEqual(candidate, value));
   }
 
   private emitValue(value: unknown): void {
     this.filterChange.emit({ field: this.field(), operator: this.resolvedOperator(), value });
+  }
+
+  private valuesEqual(first: unknown, second: unknown): boolean {
+    return first === second || String(first) === String(second);
   }
 }
