@@ -47,6 +47,7 @@ export class JPortalRef<T = unknown> {
     readonly instance: T | null,
     private readonly detachCallback: () => void,
     private readonly destroyCallback: () => void = detachCallback,
+    readonly rootNodes: readonly Node[] = [],
   ) {}
 
   get isAttached(): boolean {
@@ -131,7 +132,12 @@ export class JPortalOutletDirective implements OnDestroy {
       portal.context,
       portal.injector ? { injector: portal.injector } : undefined,
     );
-    return new JPortalRef(view, () => view.destroy());
+    return new JPortalRef(
+      view,
+      () => view.destroy(),
+      () => view.destroy(),
+      view.rootNodes,
+    );
   }
 
   private attachComponent<T>(portal: JComponentPortal<T>): JPortalRef<T> {
@@ -140,7 +146,12 @@ export class JPortalOutletDirective implements OnDestroy {
       environmentInjector: portal.environmentInjector ?? this.environmentInjector,
       projectableNodes: portal.projectableNodes,
     });
-    return new JPortalRef(componentRef.instance, () => componentRef.destroy());
+    return new JPortalRef(
+      componentRef.instance,
+      () => componentRef.destroy(),
+      () => componentRef.destroy(),
+      [componentRef.location.nativeElement],
+    );
   }
 
   private attachDom(portal: JDomPortal): JPortalRef<HTMLElement> {
@@ -159,7 +170,7 @@ export class JPortalOutletDirective implements OnDestroy {
         parent.insertBefore(element, nextSibling);
       }
     };
-    return new JPortalRef(element, restore, restore);
+    return new JPortalRef(element, restore, restore, [element]);
   }
 }
 

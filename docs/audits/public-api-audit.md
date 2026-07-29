@@ -2,9 +2,9 @@
 
 Verdict: **PASS WITH DOCUMENTED LIMITATIONS**
 
-- Secondary entrypoints: 147
-- Public artifacts: 876
-- Components: 134; directives: 49; pipes: 23; services: 23; types/tokens/functions: 495
+- Secondary entrypoints: 148
+- Public artifacts: 888
+- Components: 135; directives: 49; pipes: 23; services: 24; types/tokens/functions: 504
 - Selector-prefix violations: 0
 - Unsupported entrypoints: 0 (strict consumer verification is a release gate)
 - Missing direct/entrypoint tests: 7

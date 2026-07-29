@@ -77,6 +77,7 @@ export * from 'jrng-ui/paginator';
 export * from 'jrng-ui/panel';
 export * from 'jrng-ui/password';
 export * from 'jrng-ui/portal';
+export * from 'jrng-ui/popout';
 export * from 'jrng-ui/popover';
 export * from 'jrng-ui/progress-bar';
 export * from 'jrng-ui/progress-spinner';

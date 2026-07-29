@@ -108,6 +108,7 @@ import { JPasswordComponent } from 'jrng-ui/password';
 import { JPanelComponent } from 'jrng-ui/panel';
 import { JPageHeaderComponent, JPageHeaderVariant } from 'jrng-ui/page-header';
 import { JPopoverComponent } from 'jrng-ui/popover';
+import { JPopoutComponent } from 'jrng-ui/popout';
 import {
   JQueryBuilderComponent,
   JQueryField,
@@ -1840,6 +1841,7 @@ export const COMPONENT_PREVIEW_IMPORTS = [
   JPanelComponent,
   JPageHeaderComponent,
   JPopoverComponent,
+  JPopoutComponent,
   JQueryBuilderComponent,
   JProgressBarComponent,
   JProgressSpinnerComponent,

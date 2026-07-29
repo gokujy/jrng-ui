@@ -4,20 +4,20 @@ Generated from the 0.1.1 canonical build declarations.
 
 | Metric                                   | Total |
 | ---------------------------------------- | ----: |
-| Total public components                  |   133 |
+| Total public components                  |   134 |
 | Total categories                         |    14 |
 | Uncategorized components                 |     0 |
 | Duplicate entries                        |     0 |
 | Removed components present               |     0 |
-| Components with documentation            |   133 |
-| Components with working preview          |   133 |
-| Components with API reference            |   133 |
-| Components with examples                 |   133 |
-| Components with direct tests             |   133 |
-| Components with accessibility validation |   133 |
-| Components with responsive examples      |    92 |
+| Components with documentation            |   134 |
+| Components with working preview          |   134 |
+| Components with API reference            |   134 |
+| Components with examples                 |   134 |
+| Components with direct tests             |   134 |
+| Components with accessibility validation |   134 |
+| Components with responsive examples      |    93 |
 | Responsive examples not applicable       |    41 |
-| Components with theme-token coverage     |   133 |
+| Components with theme-token coverage     |   134 |
 | Components remaining incomplete          |     0 |
 
 | Category  | Components |
@@ -26,7 +26,7 @@ Generated from the 0.1.1 canonical build declarations.
 | Button    |          5 |
 | Data      |         16 |
 | Panel     |         16 |
-| Overlay   |          8 |
+| Overlay   |          9 |
 | Menu      |         10 |
 | Messages  |          2 |
 | Media     |          6 |
@@ -117,6 +117,7 @@ Generated from the 0.1.1 canonical build declarations.
 | Dynamic Dialog        | j-dynamic-dialog        | jrng-ui/dynamic-dialog      | Overlay   | beta      | rendered | direct | validated     |
 | Notification Center   | j-notification-center   | jrng-ui/notification-center | Overlay   | beta      | rendered | direct | validated     |
 | Popover               | j-popover               | jrng-ui/popover             | Overlay   | beta      | rendered | direct | validated     |
+| Popout                | j-popout                | jrng-ui/popout              | Overlay   | beta      | rendered | direct | validated     |
 | Action Menu           | j-action-menu           | jrng-ui/table               | Menu      | beta      | rendered | direct | validated     |
 | Anchor                | j-anchor                | jrng-ui/anchor              | Menu      | beta      | rendered | direct | validated     |
 | Breadcrumb            | j-breadcrumb            | jrng-ui/breadcrumb          | Menu      | beta      | rendered | direct | validated     |

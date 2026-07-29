@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Added experimental `jrng-ui/popout` with Portal-based standard and Document
+  Picture-in-Picture windows, bidirectional communication, live theme/style
+  synchronization, focus restoration, cleanup, and popup-blocked fallbacks.
 - Added `jrng-ui/signature` with Angular Forms, pointer and pressure drawing,
   undo/redo, responsive high-DPI rendering, validation, import, and PNG, SVG,
   Blob, and Base64 exports.

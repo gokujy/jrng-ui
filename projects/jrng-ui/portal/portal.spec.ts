@@ -40,11 +40,13 @@ describe('portal utilities', () => {
     );
     fixture.detectChanges();
     expect(fixture.nativeElement.textContent).toContain('Customer detail');
+    expect(templateRef.rootNodes.length).toBeGreaterThan(0);
     const componentRef = fixture.componentInstance.outlet.replace(
       new JComponentPortal(PortalContentComponent),
     );
     fixture.detectChanges();
     expect(componentRef.instance).toBeInstanceOf(PortalContentComponent);
+    expect(componentRef.rootNodes).toHaveLength(1);
     expect(fixture.nativeElement.textContent).toContain('Dynamic customer toolbar');
     fixture.componentInstance.outlet.detach();
     expect(templateRef.isAttached).toBe(false);
@@ -72,6 +74,7 @@ describe('portal utilities', () => {
     const fixture = TestBed.createComponent(PortalHostComponent);
     fixture.detectChanges();
     const ref = fixture.componentInstance.outlet.attach(new JDomPortal(node));
+    expect(ref.rootNodes).toEqual([node]);
     expect(parent.contains(node)).toBe(false);
     ref.detach();
     ref.detach();

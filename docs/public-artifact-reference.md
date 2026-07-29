@@ -868,6 +868,16 @@ Generated from built public declarations. Each record is covered by the strict e
 - Errors: recoverable operations return/emit explicit failure state where applicable.
 - Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
 
+### JPopoutService
+
+- Import: import { JPopoutService } from 'jrng-ui/popout';
+- Provider: root or documented component provider
+- Test status: covered
+- SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
+- Accessibility/keyboard: not directly interactive
+- Errors: recoverable operations return/emit explicit failure state where applicable.
+- Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
+
 ### JPortalService
 
 - Import: import { JPortalService } from 'jrng-ui/portal';

@@ -10,6 +10,13 @@ import {
   imports: [COMPONENT_PREVIEW_IMPORTS],
   template: `
     @switch (doc().slug) {
+      @case ('popout') {
+        <j-popout inline ariaLabel="Customer detail fallback preview">
+          <j-card header="Avery Reed" subheader="Aster Labs · Active customer" variant="outlined">
+            <p>This inline surface is the popup-blocked fallback for the live preview.</p>
+          </j-card>
+        </j-popout>
+      }
       @case ('dialog') {
         <div class="j-preview-row">
           <j-button label="Open dialog" (onClick)="dialogOpen.set(true)" />
@@ -98,7 +105,11 @@ import {
       @case ('bottom-sheet') {
         <div class="j-preview-row">
           <j-button label="Open bottom sheet" (onClick)="bottomSheetVisible = true" />
-          <j-bottom-sheet header="Customer actions" [(visible)]="bottomSheetVisible" [modal]="false">
+          <j-bottom-sheet
+            header="Customer actions"
+            [(visible)]="bottomSheetVisible"
+            [modal]="false"
+          >
             <div class="j-preview-stack">
               <j-button label="Duplicate" variant="outlined" />
               <j-button label="Archive" variant="soft" />

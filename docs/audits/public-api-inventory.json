@@ -1,18 +1,18 @@
 {
   "schemaVersion": 1,
-  "generatedOn": "2026-07-29T13:09:44.303Z",
+  "generatedOn": "2026-07-29T13:21:02.991Z",
   "package": "jrng-ui",
   "version": "0.1.1",
   "authority": "Built declaration files and canonical secondary-entrypoint source; projects/jrng-ui/src/lib is excluded.",
   "totals": {
-    "entrypoints": 147,
-    "artifacts": 876,
-    "component": 134,
-    "type": 489,
+    "entrypoints": 148,
+    "artifacts": 888,
+    "component": 135,
+    "type": 496,
     "directive": 49,
-    "class": 152,
-    "service": 23,
-    "token": 5,
+    "class": 153,
+    "service": 24,
+    "token": 7,
     "function": 1,
     "pipe": 23
   },
@@ -2597,6 +2597,78 @@
         "kind": "class",
         "entrypoint": "jrng-ui/overlay-header",
         "selector": "j-overlay-header"
+      },
+      {
+        "name": "JPopoutComponent",
+        "kind": "component",
+        "entrypoint": "jrng-ui/popout",
+        "selector": "j-popout"
+      },
+      {
+        "name": "JPopoutRef",
+        "kind": "class",
+        "entrypoint": "jrng-ui/popout",
+        "selector": null
+      },
+      {
+        "name": "JPopoutService",
+        "kind": "service",
+        "entrypoint": "jrng-ui/popout",
+        "selector": null
+      },
+      {
+        "name": "J_POPOUT_REF",
+        "kind": "token",
+        "entrypoint": "jrng-ui/popout",
+        "selector": null
+      },
+      {
+        "name": "J_POPOUT_WINDOW_ADAPTER",
+        "kind": "token",
+        "entrypoint": "jrng-ui/popout",
+        "selector": null
+      },
+      {
+        "name": "JDocumentPictureInPictureLike",
+        "kind": "type",
+        "entrypoint": "jrng-ui/popout",
+        "selector": null
+      },
+      {
+        "name": "JPopoutConfig",
+        "kind": "type",
+        "entrypoint": "jrng-ui/popout",
+        "selector": null
+      },
+      {
+        "name": "JPopoutFallback",
+        "kind": "type",
+        "entrypoint": "jrng-ui/popout",
+        "selector": null
+      },
+      {
+        "name": "JPopoutMode",
+        "kind": "type",
+        "entrypoint": "jrng-ui/popout",
+        "selector": null
+      },
+      {
+        "name": "JPopoutPosition",
+        "kind": "type",
+        "entrypoint": "jrng-ui/popout",
+        "selector": null
+      },
+      {
+        "name": "JPopoutState",
+        "kind": "type",
+        "entrypoint": "jrng-ui/popout",
+        "selector": null
+      },
+      {
+        "name": "JPopoutWindowAdapter",
+        "kind": "type",
+        "entrypoint": "jrng-ui/popout",
+        "selector": null
       },
       {
         "name": "JPopoverComponent",
@@ -13919,6 +13991,224 @@
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
           "browserApis": [],
+          "optionalDependencies": []
+        }
+      ]
+    },
+    {
+      "importPath": "jrng-ui/popout",
+      "declaration": "types/jrng-ui-popout.d.ts",
+      "artifactCount": 12,
+      "optionalDependencies": [],
+      "artifacts": [
+        {
+          "name": "JPopoutComponent",
+          "originalName": "JPopoutComponent",
+          "kind": "component",
+          "entrypoint": "jrng-ui/popout",
+          "selector": "j-popout",
+          "exportAlias": false,
+          "tested": true,
+          "documented": true,
+          "accessibility": "validated",
+          "themeTokens": "css-custom-properties",
+          "browserApis": [
+            "window",
+            "document",
+            "MutationObserver"
+          ],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JPopoutRef",
+          "originalName": "JPopoutRef",
+          "kind": "class",
+          "entrypoint": "jrng-ui/popout",
+          "selector": null,
+          "exportAlias": false,
+          "tested": true,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": [
+            "window",
+            "document",
+            "MutationObserver"
+          ],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JPopoutService",
+          "originalName": "JPopoutService",
+          "kind": "service",
+          "entrypoint": "jrng-ui/popout",
+          "selector": null,
+          "exportAlias": false,
+          "tested": true,
+          "documented": true,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": [
+            "window",
+            "document",
+            "MutationObserver"
+          ],
+          "optionalDependencies": []
+        },
+        {
+          "name": "J_POPOUT_REF",
+          "originalName": "J_POPOUT_REF",
+          "kind": "token",
+          "entrypoint": "jrng-ui/popout",
+          "selector": null,
+          "exportAlias": false,
+          "tested": true,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": [
+            "window",
+            "document",
+            "MutationObserver"
+          ],
+          "optionalDependencies": []
+        },
+        {
+          "name": "J_POPOUT_WINDOW_ADAPTER",
+          "originalName": "J_POPOUT_WINDOW_ADAPTER",
+          "kind": "token",
+          "entrypoint": "jrng-ui/popout",
+          "selector": null,
+          "exportAlias": false,
+          "tested": true,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": [
+            "window",
+            "document",
+            "MutationObserver"
+          ],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JDocumentPictureInPictureLike",
+          "originalName": "JDocumentPictureInPictureLike",
+          "kind": "type",
+          "entrypoint": "jrng-ui/popout",
+          "selector": null,
+          "exportAlias": false,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": [
+            "window",
+            "document",
+            "MutationObserver"
+          ],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JPopoutConfig",
+          "originalName": "JPopoutConfig",
+          "kind": "type",
+          "entrypoint": "jrng-ui/popout",
+          "selector": null,
+          "exportAlias": false,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": [
+            "window",
+            "document",
+            "MutationObserver"
+          ],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JPopoutFallback",
+          "originalName": "JPopoutFallback",
+          "kind": "type",
+          "entrypoint": "jrng-ui/popout",
+          "selector": null,
+          "exportAlias": false,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": [
+            "window",
+            "document",
+            "MutationObserver"
+          ],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JPopoutMode",
+          "originalName": "JPopoutMode",
+          "kind": "type",
+          "entrypoint": "jrng-ui/popout",
+          "selector": null,
+          "exportAlias": false,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": [
+            "window",
+            "document",
+            "MutationObserver"
+          ],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JPopoutPosition",
+          "originalName": "JPopoutPosition",
+          "kind": "type",
+          "entrypoint": "jrng-ui/popout",
+          "selector": null,
+          "exportAlias": false,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": [
+            "window",
+            "document",
+            "MutationObserver"
+          ],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JPopoutState",
+          "originalName": "JPopoutState",
+          "kind": "type",
+          "entrypoint": "jrng-ui/popout",
+          "selector": null,
+          "exportAlias": false,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": [
+            "window",
+            "document",
+            "MutationObserver"
+          ],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JPopoutWindowAdapter",
+          "originalName": "JPopoutWindowAdapter",
+          "kind": "type",
+          "entrypoint": "jrng-ui/popout",
+          "selector": null,
+          "exportAlias": false,
+          "tested": true,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": [
+            "window",
+            "document",
+            "MutationObserver"
+          ],
           "optionalDependencies": []
         }
       ]

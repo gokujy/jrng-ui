@@ -96,7 +96,7 @@ export const generatedComponentCategories = [
   },
   {
     name: 'Overlay',
-    count: 8,
+    count: 9,
     selectors: [
       'j-bottom-sheet',
       'j-confirm-dialog',
@@ -106,6 +106,7 @@ export const generatedComponentCategories = [
       'j-dynamic-dialog',
       'j-notification-center',
       'j-popover',
+      'j-popout',
     ],
   },
   {
@@ -203,4 +204,4 @@ export const generatedComponentCategories = [
 ] as const;
 
 export const generatedComponentCategoryOrder = generatedComponentCategories.map(({ name }) => name);
-export const generatedActiveComponentTotal = 133;
+export const generatedActiveComponentTotal = 134;

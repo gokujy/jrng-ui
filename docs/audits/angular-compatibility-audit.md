@@ -6,18 +6,18 @@ Verdict: **PASS**
 - Standalone/OnPush canonical components: verified by production compilation and inventory.
 - SSR/hydration smoke build: required release gate.
 - Zoneless-safe explicit signal/state updates: covered by component tests and no mandatory NgZone dependency.
-- Browser API occurrences reviewed: 502.
+- Browser API occurrences reviewed: 542.
 
 | API | Static occurrences | Guard/cleanup policy |
 | --- | ---: | --- |
-| window | 31 | Platform guard, feature detection, and lifecycle cleanup required |
-| document | 340 | Platform guard, feature detection, and lifecycle cleanup required |
+| window | 48 | Platform guard, feature detection, and lifecycle cleanup required |
+| document | 362 | Platform guard, feature detection, and lifecycle cleanup required |
 | navigator | 4 | Platform guard, feature detection, and lifecycle cleanup required |
 | localStorage | 18 | Platform guard, feature detection, and lifecycle cleanup required |
 | sessionStorage | 2 | Platform guard, feature detection, and lifecycle cleanup required |
 | ResizeObserver | 40 | Platform guard, feature detection, and lifecycle cleanup required |
 | IntersectionObserver | 5 | Platform guard, feature detection, and lifecycle cleanup required |
-| MutationObserver | 9 | Platform guard, feature detection, and lifecycle cleanup required |
+| MutationObserver | 10 | Platform guard, feature detection, and lifecycle cleanup required |
 | requestAnimationFrame | 3 | Platform guard, feature detection, and lifecycle cleanup required |
 | matchMedia | 17 | Platform guard, feature detection, and lifecycle cleanup required |
 | clipboard | 25 | Platform guard, feature detection, and lifecycle cleanup required |
