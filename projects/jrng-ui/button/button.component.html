@@ -20,8 +20,25 @@
   [attr.aria-checked]="ariaChecked()"
   [attr.role]="ariaRole() || null"
   [attr.aria-haspopup]="ariaHasPopup() || null"
+  [attr.tabindex]="tabindex()"
   (click)="handleClick($event)"
 >
+  @if (normalizedProgress() !== null) {
+    <span
+      class="j-button__progress-fill"
+      aria-hidden="true"
+      [style.inline-size.%]="normalizedProgress()"
+    ></span>
+    <span
+      class="j-hidden-accessible"
+      role="progressbar"
+      [attr.aria-label]="label() ? label() + ' progress' : ariaLabel() + ' progress'"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      [attr.aria-valuenow]="normalizedProgress()"
+      [attr.aria-valuetext]="normalizedProgress() + '%'"
+    ></span>
+  }
   @if (loading()) {
     <span class="j-button__spinner" data-jc-section="loader" aria-hidden="true"></span>
     <span class="j-hidden-accessible">{{ loadingLabel() }}</span>
@@ -38,6 +55,9 @@
         {{ label() }}
       } @else {
         <ng-content></ng-content>
+      }
+      @if (progressLabel() && normalizedProgress() !== null) {
+        <span class="j-button__progress-label">{{ normalizedProgress() }}%</span>
       }
     </span>
   }

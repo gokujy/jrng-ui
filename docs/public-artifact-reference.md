@@ -134,6 +134,36 @@ Generated from built public declarations. Each record is covered by the strict e
 - Errors: recoverable operations return/emit explicit failure state where applicable.
 - Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
 
+### JGridLayoutDragHandleDirective
+
+- Import: import { JGridLayoutDragHandleDirective } from 'jrng-ui/grid-layout';
+- Selector: [jGridLayoutDragHandle]
+- Test status: missing
+- SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
+- Accessibility/keyboard: semantic behavior is part of the directive/component contract
+- Errors: recoverable operations return/emit explicit failure state where applicable.
+- Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
+
+### JGridLayoutItemTemplateDirective
+
+- Import: import { JGridLayoutItemTemplateDirective } from 'jrng-ui/grid-layout';
+- Selector: ng-template[jGridLayoutItem]
+- Test status: covered
+- SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
+- Accessibility/keyboard: semantic behavior is part of the directive/component contract
+- Errors: recoverable operations return/emit explicit failure state where applicable.
+- Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
+
+### JGridLayoutResizeHandleDirective
+
+- Import: import { JGridLayoutResizeHandleDirective } from 'jrng-ui/grid-layout';
+- Selector: [jGridLayoutResizeHandle]
+- Test status: missing
+- SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
+- Accessibility/keyboard: semantic behavior is part of the directive/component contract
+- Errors: recoverable operations return/emit explicit failure state where applicable.
+- Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
+
 ### JHotkeyDirective
 
 - Import: import { JHotkeyDirective } from 'jrng-ui/core';
@@ -259,6 +289,16 @@ Generated from built public declarations. Each record is covered by the strict e
 - Import: import { JSelectCellDirective } from 'jrng-ui/select';
 - Selector: ng-template[jSelectCell]
 - Test status: covered
+- SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
+- Accessibility/keyboard: semantic behavior is part of the directive/component contract
+- Errors: recoverable operations return/emit explicit failure state where applicable.
+- Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
+
+### JSpeedDialTriggerDirective
+
+- Import: import { JSpeedDialTriggerDirective } from 'jrng-ui/speed-dial';
+- Selector: ng-template[jSpeedDialTrigger]
+- Test status: missing
 - SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
 - Accessibility/keyboard: semantic behavior is part of the directive/component contract
 - Errors: recoverable operations return/emit explicit failure state where applicable.

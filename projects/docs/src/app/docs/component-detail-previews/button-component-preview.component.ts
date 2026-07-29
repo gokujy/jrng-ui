@@ -54,6 +54,14 @@ import {
           </div>
         } @else if (example.key === 'template') {
           <j-button><strong>Approve</strong><span jButtonSuffix>⌘ Enter</span></j-button>
+        } @else if (example.key === 'progress') {
+          <j-button label="Uploading" [progress]="64" progressState="running" progressLabel />
+        } @else if (example.key === 'progress-states') {
+          <div class="j-preview-row">
+            <j-button label="Uploaded" [progress]="100" progressState="success" />
+            <j-button label="Upload failed" [progress]="72" progressState="error" />
+            <j-button label="Cancelled" [progress]="38" progressState="cancelled" />
+          </div>
         } @else {
           <j-button
             [label]="buttonExampleLabel(example.key)"
@@ -125,6 +133,22 @@ import {
           </ng-template>
         </j-split-button>
         <p role="status">{{ previewStatus }}</p>
+      }
+      @case ('speed-dial') {
+        <div style="min-block-size: 12rem; display: grid; place-items: center">
+          <j-speed-dial
+            [actions]="customerQuickActions"
+            [type]="example.key === 'circle' ? 'circle' : 'linear'"
+            [mask]="example.key === 'fixed'"
+            [showLabels]="example.key === 'linear'"
+          >
+            @if (example.key === 'custom-trigger') {
+              <ng-template jSpeedDialTrigger let-dial>
+                <j-button label="Customer actions" (onClick)="dial.toggle()" />
+              </ng-template>
+            }
+          </j-speed-dial>
+        </div>
       }
     }
   `,

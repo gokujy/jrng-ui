@@ -68,7 +68,7 @@ import { JFormFieldComponent } from 'jrng-ui/form-field';
 import { JGalleryComponent } from 'jrng-ui/gallery';
 import { JGanttComponent } from 'jrng-ui/gantt';
 import { JGridColumnComponent, JGridComponent, JGridRowComponent } from 'jrng-ui/grid';
-import { JGridLayoutComponent } from 'jrng-ui/grid-layout';
+import { JGridLayoutComponent, JGridLayoutItemTemplateDirective } from 'jrng-ui/grid-layout';
 import { JHighlightComponent } from 'jrng-ui/highlight';
 import { JHtmlPreviewComponent } from 'jrng-ui/html-preview';
 import {
@@ -130,6 +130,11 @@ import { JSkeletonComponent } from 'jrng-ui/skeleton';
 import { JSparklineComponent } from 'jrng-ui/sparkline';
 import { JSplitterComponent, JSplitterPanelComponent } from 'jrng-ui/splitter';
 import { JSplitButtonComponent, JSplitButtonItemDirective } from 'jrng-ui/split-button';
+import {
+  JSpeedDialAction,
+  JSpeedDialComponent,
+  JSpeedDialTriggerDirective,
+} from 'jrng-ui/speed-dial';
 import { JResponsiveSidebarComponent } from 'jrng-ui/responsive-sidebar';
 import { JStatusChipComponent } from 'jrng-ui/status-chip';
 import { JStepperComponent } from 'jrng-ui/stepper';
@@ -627,6 +632,20 @@ const BUTTON_FEATURE_EXAMPLES = [
     html: `<j-button label="Saving" loading loadingLabel="Saving changes" />`,
   },
   {
+    key: 'progress',
+    name: 'Determinate progress',
+    details: 'Expose upload progress without changing the button width or accessible name.',
+    html: `<j-button label="Uploading" [progress]="64" progressState="running" progressLabel />`,
+  },
+  {
+    key: 'progress-states',
+    name: 'Progress outcomes',
+    details: 'Use semantic success, error, and cancelled states after a task finishes.',
+    html: `<j-button label="Uploaded" [progress]="100" progressState="success" />
+<j-button label="Upload failed" [progress]="72" progressState="error" />
+<j-button label="Cancelled" [progress]="38" progressState="cancelled" />`,
+  },
+  {
     key: 'disabled',
     name: 'Disabled buttons',
     details: 'Unavailable actions remain visible but cannot emit onClick.',
@@ -673,6 +692,37 @@ const BUTTON_FEATURE_EXAMPLES = [
     name: 'Custom content',
     details: 'Project concise content while retaining native button behavior.',
     html: `<j-button><strong>Approve</strong><span jButtonSuffix>⌘ Enter</span></j-button>`,
+  },
+] as const;
+
+const SPEED_DIAL_FEATURE_EXAMPLES = [
+  {
+    key: 'linear',
+    name: 'Customer quick actions',
+    details: 'Reveal related customer actions from one compact trigger.',
+    html: `<j-speed-dial [actions]="customerQuickActions" showLabels />`,
+  },
+  {
+    key: 'circle',
+    name: 'Circular actions',
+    details: 'Distribute actions around a container-relative trigger.',
+    html: `<j-speed-dial [actions]="customerQuickActions" type="circle" [radius]="82" />`,
+  },
+  {
+    key: 'fixed',
+    name: 'Fixed mobile action',
+    details: 'Pin the trigger to the logical bottom-end corner and optionally add a mask.',
+    html: `<j-speed-dial [actions]="customerQuickActions" fixed position="bottom-end" mask />`,
+  },
+  {
+    key: 'custom-trigger',
+    name: 'Custom trigger',
+    details: 'Project a JRNG button while retaining the Speed Dial state and methods.',
+    html: `<j-speed-dial [actions]="customerQuickActions">
+  <ng-template jSpeedDialTrigger let-speedDial>
+    <j-button label="Customer actions" (onClick)="speedDial.toggle()" />
+  </ng-template>
+</j-speed-dial>`,
   },
 ] as const;
 
@@ -1638,6 +1688,29 @@ const GRID_FEATURE_EXAMPLES: Readonly<
   <j-card header="Active users">...</j-card>
 </j-grid-layout>`,
     },
+    {
+      key: 'interactive',
+      name: 'Interactive dashboard',
+      details:
+        'Enable shared drag-drop reordering and constrained keyboard resizing only when needed.',
+      html: `<j-grid-layout
+  [(layout)]="customerDashboardLayout"
+  [columns]="4"
+  draggable
+  resizable
+  compact>
+  <ng-template jGridLayoutItem let-tile>{{ tile.title }}</ng-template>
+</j-grid-layout>`,
+    },
+    {
+      key: 'responsive',
+      name: 'Responsive layouts',
+      details: 'Apply named controlled layouts from the application breakpoint strategy.',
+      html: `<j-grid-layout
+  [(layout)]="customerDashboardLayout"
+  [responsiveLayouts]="customerResponsiveLayouts"
+  [columns]="4" />`,
+    },
   ],
   grid: [
     {
@@ -1824,6 +1897,9 @@ export const COMPONENT_PREVIEW_IMPORTS = [
   JGridRowComponent,
   JGridColumnComponent,
   JGridLayoutComponent,
+  JGridLayoutItemTemplateDirective,
+  JSpeedDialComponent,
+  JSpeedDialTriggerDirective,
   JImageComponent,
   JKanbanComponent,
   JKnobComponent,
@@ -1878,6 +1954,24 @@ export class ComponentDetailViewBase {
     { label: 'Save as draft', icon: 'file', command: () => undefined },
     { label: 'Delete customer', icon: 'trash', disabled: true },
   ];
+  readonly customerQuickActions: readonly JSpeedDialAction[] = [
+    { id: 'edit', label: 'Edit customer', icon: 'edit' },
+    { id: 'email', label: 'Email customer', icon: 'mail' },
+    { id: 'archive', label: 'Archive customer', icon: 'archive' },
+  ];
+  customerDashboardLayout = [
+    { id: 'profile', data: { title: 'Customer profile' }, column: 1, row: 1, columnSpan: 2 },
+    { id: 'activity', data: { title: 'Recent activity' }, column: 3, row: 1 },
+    { id: 'status', data: { title: 'Account status' }, column: 4, row: 1, locked: true },
+  ];
+  readonly customerResponsiveLayouts = {
+    mobile: this.customerDashboardLayout.map((item, index) => ({
+      ...item,
+      column: 1,
+      row: index + 1,
+      columnSpan: 1,
+    })),
+  };
   readonly customerTree: readonly JTreeNode[] = [
     {
       key: 'technology',
@@ -2032,6 +2126,12 @@ export class ComponentDetailViewBase {
             ? { ...example, index, ...demoSources['button-basic-demo'] }
             : { ...example, index },
         ),
+      );
+    }
+    if (doc.slug === 'speed-dial') {
+      return this.withApiCoverage(
+        doc,
+        SPEED_DIAL_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
       );
     }
     if (doc.slug === 'avatar') {

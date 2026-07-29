@@ -1692,7 +1692,17 @@ teams = [
     ],
     variants: ['solid', 'outlined', 'soft', 'text', 'link'],
     sizes: ['xs, sm, md, lg, xl'],
-    states: ['default', 'disabled', 'loading', 'full width', 'icon only'],
+    states: [
+      'default',
+      'disabled',
+      'loading',
+      'progress running',
+      'progress success',
+      'progress error',
+      'progress cancelled',
+      'full width',
+      'icon only',
+    ],
     inputs: [
       prop('label', 'string', "''", 'Text label.'),
       prop(
@@ -1715,6 +1725,26 @@ teams = [
       prop('disabled', 'boolean', 'false', 'Disables native activation and onClick.'),
       prop('loading', 'boolean', 'false', 'Shows a spinner and blocks clicks.'),
       prop('loadingLabel', 'string', "'Loading'", 'Screen-reader loading status.'),
+      prop('progress', 'number | null', 'null', 'Determinate value clamped from 0 through 100.'),
+      prop(
+        'progressLabel',
+        'boolean',
+        'false',
+        'Shows the rounded percentage without layout shift.',
+      ),
+      prop(
+        'progressState',
+        'idle | running | success | error | cancelled',
+        "'idle'",
+        'Semantic determinate-progress state.',
+      ),
+      prop('cancelable', 'boolean', 'false', 'Emits cancel when a running button is activated.'),
+      prop(
+        'blockWhileRunning',
+        'boolean',
+        'true',
+        'Prevents duplicate activation during non-cancelable running progress.',
+      ),
       prop('shape', 'square | rounded | pill | circle', "'rounded'", 'Button geometry.'),
       prop('width', 'auto | full', "'auto'", 'Inline width behavior.'),
       prop(
@@ -1734,9 +1764,15 @@ teams = [
       prop('styleClass', 'string', "''", 'Additional host button classes.'),
       prop('pt', 'JPassThrough | null', 'null', 'Pass-through styling hooks.'),
     ],
-    outputs: [event('onClick', 'MouseEvent', 'Emits when activated and not disabled or loading.')],
+    outputs: [
+      event('onClick', 'MouseEvent', 'Emits when activated and not disabled, loading, or blocked.'),
+      event('cancel', 'MouseEvent', 'Emits from an activated cancelable running operation.'),
+    ],
     cssVariables: buttonCssVariables,
-    accessibility: ['Icon-only buttons need ariaLabel. Loading buttons expose busy state.'],
+    accessibility: [
+      'Icon-only buttons need ariaLabel. Loading buttons expose busy state.',
+      'Determinate progress exposes progressbar semantics and the clamped current value.',
+    ],
     keyboard: [
       'Tab moves focus to the native button.',
       'Enter and Space activate it unless disabled or loading.',
@@ -1759,6 +1795,85 @@ teams = [
     bestPractices: [
       'Use destructive severity only for actions with destructive outcomes.',
       'Keep labels verb-first: Save, Create, Delete, Export.',
+    ],
+  },
+  {
+    slug: 'speed-dial',
+    name: 'Speed Dial',
+    category: 'Button',
+    icon: 'plus',
+    selector: 'j-speed-dial',
+    importPath: 'jrng-ui/speed-dial',
+    status: 'Beta',
+    description:
+      'A compact, keyboard-accessible launcher for related contextual actions in linear or radial layouts.',
+    whenToUse:
+      'Use Speed Dial for a small set of quick actions where a persistent toolbar would consume too much space.',
+    code: {
+      importCode: `import { JSpeedDialComponent, JSpeedDialAction } from 'jrng-ui/speed-dial';`,
+      basic: `<j-speed-dial [actions]="customerActions" showLabels />`,
+      variants: `<j-speed-dial [actions]="customerActions" direction="up" />
+<j-speed-dial [actions]="customerActions" type="circle" [radius]="82" />`,
+      states: `<j-speed-dial [actions]="customerActions" disabled />
+<j-speed-dial [actions]="customerActions" [open]="true" mask />`,
+    },
+    usage: [
+      'Keep action sets short, use verb-first labels, and provide a conventional toolbar fallback when actions are essential.',
+    ],
+    variants: ['linear', 'circle', 'semi-circle', 'fixed', 'container-relative'],
+    sizes: ['Configure radial or linear spacing with radius.'],
+    states: ['closed', 'open', 'disabled', 'action loading', 'action error', 'masked'],
+    inputs: [
+      prop('actions', 'readonly JSpeedDialAction[]', '[]', 'Actions, labels, icons, and commands.'),
+      prop('direction', 'up | down | left | right', "'up'", 'Linear direction and radial origin.'),
+      prop('type', 'linear | circle | semi-circle', "'linear'", 'Action distribution.'),
+      prop('radius', 'number', '72', 'Distance between the trigger and actions.'),
+      prop('fixed', 'boolean', 'false', 'Uses fixed viewport positioning.'),
+      prop(
+        'position',
+        'top-start | top-end | bottom-start | bottom-end | center',
+        "'bottom-end'",
+        'Logical fixed position.',
+      ),
+      prop('mask', 'boolean', 'false', 'Shows an interactive close mask while open.'),
+      prop('hover', 'boolean', 'false', 'Adds optional pointer-hover activation.'),
+      prop('disabled', 'boolean', 'false', 'Prevents opening and action activation.'),
+      prop('showLabels', 'boolean', 'false', 'Shows persistent visible action labels.'),
+      prop('icon / closeIcon', 'string', "'plus' / 'close'", 'Default trigger icons.'),
+      prop('ariaLabel', 'string', "'Open quick actions'", 'Accessible trigger name.'),
+      prop('open', 'boolean', 'false', 'Two-way controlled open state.'),
+    ],
+    outputs: [
+      event('actionClick', 'JSpeedDialActionEvent', 'Emits before an enabled action command.'),
+      event('actionComplete', 'JSpeedDialActionEvent', 'Emits after synchronous or async success.'),
+      event('actionError', 'unknown', 'Emits a rejected command error and leaves actions open.'),
+      event('opened / closed', 'void', 'Emits after open-state transitions.'),
+      event('openChange', 'boolean', 'Supports controlled two-way open state.'),
+    ],
+    publicMethods: ['show()', 'close(restoreFocus?)', 'toggle()', 'runAction(action, index)'],
+    templates: ['jSpeedDialTrigger provides the component instance and current open state.'],
+    accessibility: [
+      'The trigger exposes aria-expanded and aria-controls, and each icon action has an accessible name.',
+      'Focus moves into enabled actions and returns to the trigger when the dial closes.',
+    ],
+    keyboard: [
+      'Enter or Space activates the trigger and action buttons.',
+      'Arrow keys, Home, and End move between enabled actions; Escape closes.',
+    ],
+    responsive: [
+      'Use logical fixed positions on narrow screens and reserve enough space for radial layouts.',
+      'Horizontal direction mirrors in RTL and motion is removed for reduced-motion preferences.',
+    ],
+    limitations: [
+      'Hover activation is supplementary; essential actions need click and keyboard access.',
+      'Very large action sets should use Menu or Toolbar instead.',
+    ],
+    relatedComponents: ['Button', 'Split Button', 'Menu', 'Toolbar', 'Tooltip'],
+    testingNotes: [
+      'Test open control, async success/error, disabled items, outside and Escape close, arrow focus, restoration, RTL geometry, and destroy cleanup.',
+    ],
+    bestPractices: [
+      'Use no more than a small handful of actions and keep destructive actions clearly labeled.',
     ],
   },
   {

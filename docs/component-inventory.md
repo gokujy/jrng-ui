@@ -4,26 +4,26 @@ Generated from the 0.1.1 canonical build declarations.
 
 | Metric                                   | Total |
 | ---------------------------------------- | ----: |
-| Total public components                  |   130 |
+| Total public components                  |   131 |
 | Total categories                         |    14 |
 | Uncategorized components                 |     0 |
 | Duplicate entries                        |     0 |
 | Removed components present               |     0 |
-| Components with documentation            |   130 |
-| Components with working preview          |   130 |
-| Components with API reference            |   130 |
-| Components with examples                 |   130 |
-| Components with direct tests             |   130 |
-| Components with accessibility validation |   130 |
-| Components with responsive examples      |    88 |
-| Responsive examples not applicable       |    42 |
-| Components with theme-token coverage     |   130 |
+| Components with documentation            |   131 |
+| Components with working preview          |   131 |
+| Components with API reference            |   131 |
+| Components with examples                 |   131 |
+| Components with direct tests             |   131 |
+| Components with accessibility validation |   131 |
+| Components with responsive examples      |    90 |
+| Responsive examples not applicable       |    41 |
+| Components with theme-token coverage     |   131 |
 | Components remaining incomplete          |     0 |
 
 | Category  | Components |
 | --------- | ---------: |
 | Form      |         32 |
-| Button    |          3 |
+| Button    |          4 |
 | Data      |         16 |
 | Panel     |         16 |
 | Overlay   |          8 |
@@ -73,6 +73,7 @@ Generated from the 0.1.1 canonical build declarations.
 | Tree Select         | j-tree-select         | jrng-ui/tree-select         | Form      | beta      | rendered | direct | validated     |
 | Button              | j-button              | jrng-ui/button              | Button    | beta      | rendered | direct | validated     |
 | Copy Button         | j-copy-button         | jrng-ui/copy-button         | Button    | stable    | rendered | direct | validated     |
+| Speed Dial          | j-speed-dial          | jrng-ui/speed-dial          | Button    | beta      | rendered | direct | validated     |
 | Split Button        | j-split-button        | jrng-ui/split-button        | Button    | beta      | rendered | direct | validated     |
 | Calendar Scheduler  | j-calendar-scheduler  | jrng-ui/calendar-scheduler  | Data      | beta      | rendered | direct | validated     |
 | Column Filter       | j-column-filter       | jrng-ui/table               | Data      | beta      | rendered | direct | validated     |

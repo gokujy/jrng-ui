@@ -40,8 +40,8 @@ export const generatedComponentCategories = [
   },
   {
     name: 'Button',
-    count: 3,
-    selectors: ['j-button', 'j-copy-button', 'j-split-button'],
+    count: 4,
+    selectors: ['j-button', 'j-copy-button', 'j-speed-dial', 'j-split-button'],
   },
   {
     name: 'Data',
@@ -196,4 +196,4 @@ export const generatedComponentCategories = [
 ] as const;
 
 export const generatedComponentCategoryOrder = generatedComponentCategories.map(({ name }) => name);
-export const generatedActiveComponentTotal = 130;
+export const generatedActiveComponentTotal = 131;

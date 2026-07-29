@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- Added `jrng-ui/speed-dial` with linear, circular, fixed, async, keyboard, RTL,
+  mask, and custom-trigger support.
+- Added determinate progress, outcome states, accessible percentage reporting,
+  and cancellation to `j-button`.
+- Added opt-in controlled dragging, resizing, collision handling, compact
+  placement, responsive layouts, persistence, keyboard controls, and reset to
+  `j-grid-layout`.
+
+## Unreleased
+
 ### Added
 
 - Added beta `jrng-ui/inplace`, `jrng-ui/anchor`, `jrng-ui/affix`, and `jrng-ui/watermark` entrypoints with editable content, scroll spy, layout-preserving affix, print support, accessibility, and SSR-safe observer cleanup.

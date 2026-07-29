@@ -183,9 +183,13 @@
 }
 
 .j-button__label,
-.j-button__icon {
+.j-button__icon,
+.j-button__spinner,
+.j-button__badge {
   align-items: center;
   display: inline-flex;
+  position: relative;
+  z-index: 1;
 }
 
 .j-button__icon:empty {
@@ -216,6 +220,39 @@
   padding-inline: var(--j-spacing-xs);
 }
 
+.j-button__progress-fill {
+  position: absolute;
+  z-index: 0;
+  inset-block: 0;
+  inset-inline-start: 0;
+  background: color-mix(in srgb, currentColor 18%, transparent);
+  pointer-events: none;
+  transition: inline-size var(--j-transition-normal);
+}
+
+.j-button__progress-label {
+  min-inline-size: 3ch;
+  margin-inline-start: var(--j-spacing-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+.j-button--progress-success {
+  --j-button-color: var(--j-color-success);
+  --j-button-color-hover: var(--j-color-success);
+  --j-button-color-text: var(--j-color-success-foreground);
+}
+
+.j-button--progress-error {
+  --j-button-color: var(--j-color-danger);
+  --j-button-color-hover: var(--j-color-danger);
+  --j-button-color-text: var(--j-color-danger-foreground);
+}
+
+.j-button--progress-cancelled {
+  --j-button-color: var(--j-color-text-muted);
+  --j-button-color-hover: var(--j-color-text);
+}
+
 @keyframes j-button-spin {
   to {
     transform: rotate(360deg);
@@ -224,7 +261,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .j-button,
-  .j-button__spinner {
+  .j-button__spinner,
+  .j-button__progress-fill {
     animation: none;
     transition: none;
   }

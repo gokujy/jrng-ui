@@ -1,15 +1,15 @@
 {
   "schemaVersion": 1,
-  "generatedOn": "2026-07-29T12:28:20.900Z",
+  "generatedOn": "2026-07-29T12:50:33.598Z",
   "package": "jrng-ui",
   "version": "0.1.1",
   "authority": "Built declaration files and canonical secondary-entrypoint source; projects/jrng-ui/src/lib is excluded.",
   "totals": {
-    "entrypoints": 144,
-    "artifacts": 843,
-    "component": 131,
-    "type": 466,
-    "directive": 44,
+    "entrypoints": 145,
+    "artifacts": 858,
+    "component": 132,
+    "type": 476,
+    "directive": 48,
     "class": 152,
     "service": 22,
     "token": 4,
@@ -844,10 +844,28 @@
         "selector": "ng-template[jDragPreview]"
       },
       {
+        "name": "JGridLayoutDragHandleDirective",
+        "kind": "directive",
+        "entrypoint": "jrng-ui/grid-layout",
+        "selector": "[jGridLayoutDragHandle]"
+      },
+      {
+        "name": "JGridLayoutResizeHandleDirective",
+        "kind": "directive",
+        "entrypoint": "jrng-ui/grid-layout",
+        "selector": "[jGridLayoutResizeHandle]"
+      },
+      {
         "name": "JPortalDirective",
         "kind": "directive",
         "entrypoint": "jrng-ui/portal",
         "selector": "ng-template[jPortal]"
+      },
+      {
+        "name": "JSpeedDialTriggerDirective",
+        "kind": "directive",
+        "entrypoint": "jrng-ui/speed-dial",
+        "selector": "ng-template[jSpeedDialTrigger]"
       }
     ],
     "missingDocumentation": [],
@@ -2335,6 +2353,48 @@
         "selector": null
       },
       {
+        "name": "JGridLayoutComponent",
+        "kind": "component",
+        "entrypoint": "jrng-ui/grid-layout",
+        "selector": "j-grid-layout"
+      },
+      {
+        "name": "JGridLayoutDragHandleDirective",
+        "kind": "directive",
+        "entrypoint": "jrng-ui/grid-layout",
+        "selector": "[jGridLayoutDragHandle]"
+      },
+      {
+        "name": "JGridLayoutItemTemplateDirective",
+        "kind": "directive",
+        "entrypoint": "jrng-ui/grid-layout",
+        "selector": "ng-template[jGridLayoutItem]"
+      },
+      {
+        "name": "JGridLayoutResizeHandleDirective",
+        "kind": "directive",
+        "entrypoint": "jrng-ui/grid-layout",
+        "selector": "[jGridLayoutResizeHandle]"
+      },
+      {
+        "name": "JGridLayoutChange",
+        "kind": "type",
+        "entrypoint": "jrng-ui/grid-layout",
+        "selector": null
+      },
+      {
+        "name": "JGridLayoutItem",
+        "kind": "type",
+        "entrypoint": "jrng-ui/grid-layout",
+        "selector": null
+      },
+      {
+        "name": "JGridLayoutItemContext",
+        "kind": "type",
+        "entrypoint": "jrng-ui/grid-layout",
+        "selector": null
+      },
+      {
         "name": "JHtmlPreviewComponent",
         "kind": "component",
         "entrypoint": "jrng-ui/html-preview",
@@ -2872,6 +2932,54 @@
         "name": "JSelectPrimitive",
         "kind": "type",
         "entrypoint": "jrng-ui/select",
+        "selector": null
+      },
+      {
+        "name": "JSpeedDialComponent",
+        "kind": "component",
+        "entrypoint": "jrng-ui/speed-dial",
+        "selector": "j-speed-dial"
+      },
+      {
+        "name": "JSpeedDialTriggerDirective",
+        "kind": "directive",
+        "entrypoint": "jrng-ui/speed-dial",
+        "selector": "ng-template[jSpeedDialTrigger]"
+      },
+      {
+        "name": "JSpeedDialAction",
+        "kind": "type",
+        "entrypoint": "jrng-ui/speed-dial",
+        "selector": null
+      },
+      {
+        "name": "JSpeedDialActionEvent",
+        "kind": "type",
+        "entrypoint": "jrng-ui/speed-dial",
+        "selector": null
+      },
+      {
+        "name": "JSpeedDialDirection",
+        "kind": "type",
+        "entrypoint": "jrng-ui/speed-dial",
+        "selector": null
+      },
+      {
+        "name": "JSpeedDialPosition",
+        "kind": "type",
+        "entrypoint": "jrng-ui/speed-dial",
+        "selector": null
+      },
+      {
+        "name": "JSpeedDialTriggerContext",
+        "kind": "type",
+        "entrypoint": "jrng-ui/speed-dial",
+        "selector": null
+      },
+      {
+        "name": "JSpeedDialType",
+        "kind": "type",
+        "entrypoint": "jrng-ui/speed-dial",
         "selector": null
       },
       {
@@ -4771,7 +4879,7 @@
     {
       "importPath": "jrng-ui/button",
       "declaration": "types/jrng-ui-button.d.ts",
-      "artifactCount": 6,
+      "artifactCount": 7,
       "optionalDependencies": [],
       "artifacts": [
         {
@@ -4791,6 +4899,19 @@
         {
           "name": "JButtonIconPosition",
           "originalName": "JButtonIconPosition",
+          "kind": "type",
+          "entrypoint": "jrng-ui/button",
+          "selector": null,
+          "exportAlias": false,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": [],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JButtonProgressState",
+          "originalName": "JButtonProgressState",
           "kind": "type",
           "entrypoint": "jrng-ui/button",
           "selector": null,
@@ -11730,7 +11851,7 @@
     {
       "importPath": "jrng-ui/grid-layout",
       "declaration": "types/jrng-ui-grid-layout.d.ts",
-      "artifactCount": 1,
+      "artifactCount": 7,
       "optionalDependencies": [],
       "artifacts": [
         {
@@ -11744,7 +11865,88 @@
           "documented": true,
           "accessibility": "validated",
           "themeTokens": "css-custom-properties",
-          "browserApis": [],
+          "browserApis": ["document"],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JGridLayoutDragHandleDirective",
+          "originalName": "JGridLayoutDragHandleDirective",
+          "kind": "directive",
+          "entrypoint": "jrng-ui/grid-layout",
+          "selector": "[jGridLayoutDragHandle]",
+          "exportAlias": false,
+          "documented": true,
+          "accessibility": "static-review",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["document"],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JGridLayoutItemTemplateDirective",
+          "originalName": "JGridLayoutItemTemplateDirective",
+          "kind": "directive",
+          "entrypoint": "jrng-ui/grid-layout",
+          "selector": "ng-template[jGridLayoutItem]",
+          "exportAlias": false,
+          "tested": true,
+          "documented": true,
+          "accessibility": "static-review",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["document"],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JGridLayoutResizeHandleDirective",
+          "originalName": "JGridLayoutResizeHandleDirective",
+          "kind": "directive",
+          "entrypoint": "jrng-ui/grid-layout",
+          "selector": "[jGridLayoutResizeHandle]",
+          "exportAlias": false,
+          "documented": true,
+          "accessibility": "static-review",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["document"],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JGridLayoutChange",
+          "originalName": "JGridLayoutChange",
+          "kind": "type",
+          "entrypoint": "jrng-ui/grid-layout",
+          "selector": null,
+          "exportAlias": false,
+          "tested": true,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["document"],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JGridLayoutItem",
+          "originalName": "JGridLayoutItem",
+          "kind": "type",
+          "entrypoint": "jrng-ui/grid-layout",
+          "selector": null,
+          "exportAlias": false,
+          "tested": true,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["document"],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JGridLayoutItemContext",
+          "originalName": "JGridLayoutItemContext",
+          "kind": "type",
+          "entrypoint": "jrng-ui/grid-layout",
+          "selector": null,
+          "exportAlias": false,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["document"],
           "optionalDependencies": []
         }
       ]
@@ -14441,6 +14643,120 @@
           "accessibility": "not-applicable",
           "themeTokens": "css-custom-properties",
           "browserApis": [],
+          "optionalDependencies": []
+        }
+      ]
+    },
+    {
+      "importPath": "jrng-ui/speed-dial",
+      "declaration": "types/jrng-ui-speed-dial.d.ts",
+      "artifactCount": 8,
+      "optionalDependencies": [],
+      "artifacts": [
+        {
+          "name": "JSpeedDialComponent",
+          "originalName": "JSpeedDialComponent",
+          "kind": "component",
+          "entrypoint": "jrng-ui/speed-dial",
+          "selector": "j-speed-dial",
+          "exportAlias": false,
+          "tested": true,
+          "documented": true,
+          "accessibility": "validated",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["document"],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JSpeedDialTriggerDirective",
+          "originalName": "JSpeedDialTriggerDirective",
+          "kind": "directive",
+          "entrypoint": "jrng-ui/speed-dial",
+          "selector": "ng-template[jSpeedDialTrigger]",
+          "exportAlias": false,
+          "documented": true,
+          "accessibility": "static-review",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["document"],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JSpeedDialAction",
+          "originalName": "JSpeedDialAction",
+          "kind": "type",
+          "entrypoint": "jrng-ui/speed-dial",
+          "selector": null,
+          "exportAlias": false,
+          "tested": true,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["document"],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JSpeedDialActionEvent",
+          "originalName": "JSpeedDialActionEvent",
+          "kind": "type",
+          "entrypoint": "jrng-ui/speed-dial",
+          "selector": null,
+          "exportAlias": false,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["document"],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JSpeedDialDirection",
+          "originalName": "JSpeedDialDirection",
+          "kind": "type",
+          "entrypoint": "jrng-ui/speed-dial",
+          "selector": null,
+          "exportAlias": false,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["document"],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JSpeedDialPosition",
+          "originalName": "JSpeedDialPosition",
+          "kind": "type",
+          "entrypoint": "jrng-ui/speed-dial",
+          "selector": null,
+          "exportAlias": false,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["document"],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JSpeedDialTriggerContext",
+          "originalName": "JSpeedDialTriggerContext",
+          "kind": "type",
+          "entrypoint": "jrng-ui/speed-dial",
+          "selector": null,
+          "exportAlias": false,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["document"],
+          "optionalDependencies": []
+        },
+        {
+          "name": "JSpeedDialType",
+          "originalName": "JSpeedDialType",
+          "kind": "type",
+          "entrypoint": "jrng-ui/speed-dial",
+          "selector": null,
+          "exportAlias": false,
+          "documented": false,
+          "accessibility": "not-applicable",
+          "themeTokens": "css-custom-properties",
+          "browserApis": ["document"],
           "optionalDependencies": []
         }
       ]
