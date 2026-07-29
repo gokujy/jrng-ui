@@ -34,6 +34,66 @@ Generated from built public declarations. Each record is covered by the strict e
 - Errors: recoverable operations return/emit explicit failure state where applicable.
 - Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
 
+### JDragBoundaryDirective
+
+- Import: import { JDragBoundaryDirective } from 'jrng-ui/drag-drop';
+- Selector: [jDragBoundary]
+- Test status: missing
+- SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
+- Accessibility/keyboard: semantic behavior is part of the directive/component contract
+- Errors: recoverable operations return/emit explicit failure state where applicable.
+- Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
+
+### JDragDirective
+
+- Import: import { JDragDirective } from 'jrng-ui/drag-drop';
+- Selector: [jDrag]
+- Test status: covered
+- SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
+- Accessibility/keyboard: semantic behavior is part of the directive/component contract
+- Errors: recoverable operations return/emit explicit failure state where applicable.
+- Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
+
+### JDragHandleDirective
+
+- Import: import { JDragHandleDirective } from 'jrng-ui/drag-drop';
+- Selector: [jDragHandle]
+- Test status: covered
+- SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
+- Accessibility/keyboard: semantic behavior is part of the directive/component contract
+- Errors: recoverable operations return/emit explicit failure state where applicable.
+- Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
+
+### JDragPlaceholderDirective
+
+- Import: import { JDragPlaceholderDirective } from 'jrng-ui/drag-drop';
+- Selector: ng-template[jDragPlaceholder]
+- Test status: missing
+- SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
+- Accessibility/keyboard: semantic behavior is part of the directive/component contract
+- Errors: recoverable operations return/emit explicit failure state where applicable.
+- Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
+
+### JDragPreviewDirective
+
+- Import: import { JDragPreviewDirective } from 'jrng-ui/drag-drop';
+- Selector: ng-template[jDragPreview]
+- Test status: missing
+- SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
+- Accessibility/keyboard: semantic behavior is part of the directive/component contract
+- Errors: recoverable operations return/emit explicit failure state where applicable.
+- Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
+
+### JDropListDirective
+
+- Import: import { JDropListDirective } from 'jrng-ui/drag-drop';
+- Selector: [jDropList]
+- Test status: covered
+- SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
+- Accessibility/keyboard: semantic behavior is part of the directive/component contract
+- Errors: recoverable operations return/emit explicit failure state where applicable.
+- Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
+
 ### JFocusTrapDirective
 
 - Import: import { JFocusTrapDirective } from 'jrng-ui/core';
@@ -84,6 +144,36 @@ Generated from built public declarations. Each record is covered by the strict e
 - Errors: recoverable operations return/emit explicit failure state where applicable.
 - Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
 
+### JPanDirective
+
+- Import: import { JPanDirective } from 'jrng-ui/gesture';
+- Selector: [jPan]
+- Test status: covered
+- SSR behavior: no detected browser-only API
+- Accessibility/keyboard: semantic behavior is part of the directive/component contract
+- Errors: recoverable operations return/emit explicit failure state where applicable.
+- Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
+
+### JPortalDirective
+
+- Import: import { JPortalDirective } from 'jrng-ui/portal';
+- Selector: ng-template[jPortal]
+- Test status: missing
+- SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
+- Accessibility/keyboard: semantic behavior is part of the directive/component contract
+- Errors: recoverable operations return/emit explicit failure state where applicable.
+- Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
+
+### JPortalOutletDirective
+
+- Import: import { JPortalOutletDirective } from 'jrng-ui/portal';
+- Selector: [jPortalOutlet]
+- Test status: covered
+- SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
+- Accessibility/keyboard: semantic behavior is part of the directive/component contract
+- Errors: recoverable operations return/emit explicit failure state where applicable.
+- Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
+
 ### JResizeObserverDirective
 
 - Import: import { JResizeObserverDirective } from 'jrng-ui/core';
@@ -100,6 +190,16 @@ Generated from built public declarations. Each record is covered by the strict e
 - Selector: [jRipple]
 - Test status: covered
 - SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
+- Accessibility/keyboard: semantic behavior is part of the directive/component contract
+- Errors: recoverable operations return/emit explicit failure state where applicable.
+- Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
+
+### JSwipeDirective
+
+- Import: import { JSwipeDirective } from 'jrng-ui/gesture';
+- Selector: [jSwipe]
+- Test status: covered
+- SSR behavior: no detected browser-only API
 - Accessibility/keyboard: semantic behavior is part of the directive/component contract
 - Errors: recoverable operations return/emit explicit failure state where applicable.
 - Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
@@ -190,6 +290,26 @@ Generated from built public declarations. Each record is covered by the strict e
 - Selector: ng-template[jTreeTableCell]
 - Test status: covered
 - SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
+- Accessibility/keyboard: semantic behavior is part of the directive/component contract
+- Errors: recoverable operations return/emit explicit failure state where applicable.
+- Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
+
+### JTruncateMiddleDirective
+
+- Import: import { JTruncateMiddleDirective } from 'jrng-ui/truncate';
+- Selector: [jTruncateMiddle]
+- Test status: covered
+- SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
+- Accessibility/keyboard: semantic behavior is part of the directive/component contract
+- Errors: recoverable operations return/emit explicit failure state where applicable.
+- Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
+
+### JZoomDirective
+
+- Import: import { JZoomDirective } from 'jrng-ui/gesture';
+- Selector: [jZoom]
+- Test status: covered
+- SSR behavior: no detected browser-only API
 - Accessibility/keyboard: semantic behavior is part of the directive/component contract
 - Errors: recoverable operations return/emit explicit failure state where applicable.
 - Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
@@ -568,6 +688,16 @@ Generated from built public declarations. Each record is covered by the strict e
 - Errors: recoverable operations return/emit explicit failure state where applicable.
 - Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
 
+### JPortalService
+
+- Import: import { JPortalService } from 'jrng-ui/portal';
+- Provider: root or documented component provider
+- Test status: covered
+- SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
+- Accessibility/keyboard: not directly interactive
+- Errors: recoverable operations return/emit explicit failure state where applicable.
+- Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
+
 ### JPrintService
 
 - Import: import { JPrintService } from 'jrng-ui/core';
@@ -581,6 +711,16 @@ Generated from built public declarations. Each record is covered by the strict e
 ### JStorageService
 
 - Import: import { JStorageService } from 'jrng-ui/core';
+- Provider: root or documented component provider
+- Test status: covered
+- SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
+- Accessibility/keyboard: not directly interactive
+- Errors: recoverable operations return/emit explicit failure state where applicable.
+- Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
+
+### JThemePresetRegistry
+
+- Import: import { JThemePresetRegistry } from 'jrng-ui/theming';
 - Provider: root or documented component provider
 - Test status: covered
 - SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks

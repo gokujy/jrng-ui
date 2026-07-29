@@ -1,6 +1,6 @@
 # JRNG UI component inventory
 
-Generated from the 0.1.0 canonical build declarations.
+Generated from the 0.1.1 canonical build declarations.
 
 | Metric                                   | Total |
 | ---------------------------------------- | ----: |

@@ -1,12 +1,30 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
+import { JButtonComponent } from 'jrng-ui/button';
+import { JDragDirective, JDragHandleDirective, JDropListDirective } from 'jrng-ui/drag-drop';
+import { JPanDirective, JSwipeDirective, JZoomDirective } from 'jrng-ui/gesture';
+import { JPortalDirective, JPortalOutletDirective } from 'jrng-ui/portal';
+import { JTruncateMiddleDirective } from 'jrng-ui/truncate';
 import { CodeBlockComponent } from '../docs/code-block.component';
 import { guides } from './guides.data';
 
 @Component({
   selector: 'app-guides-page',
-  imports: [RouterLink, CodeBlockComponent],
+  imports: [
+    RouterLink,
+    CodeBlockComponent,
+    JButtonComponent,
+    JDragDirective,
+    JDragHandleDirective,
+    JDropListDirective,
+    JPanDirective,
+    JSwipeDirective,
+    JZoomDirective,
+    JPortalDirective,
+    JPortalOutletDirective,
+    JTruncateMiddleDirective,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `<div class="docs-container">
     @if (guide(); as item) {
@@ -35,6 +53,70 @@ import { guides } from './guides.data';
           <h2>Complete code</h2>
           <app-code-block label="Angular" language="ts" [code]="item.code" />
         </section>
+        @if (item.slug === 'interaction-foundations') {
+          <section>
+            <h2>Live preview</h2>
+            <div class="j-preview-stack">
+              <div class="j-preview-row">
+                <j-button label="Attach toolbar" (onClick)="portal.attach()" />
+                <j-button label="Detach toolbar" variant="outlined" (onClick)="outlet.detach()" />
+              </div>
+              <ng-template [jPortal]="outlet" #portal="jPortal">
+                <div
+                  class="j-doc-preview-card"
+                  role="toolbar"
+                  aria-label="Dynamic customer toolbar"
+                >
+                  Customer toolbar attached through a template portal
+                </div>
+              </ng-template>
+              <div jPortalOutlet #outlet="jPortalOutlet"></div>
+              <p
+                [jTruncateMiddle]="'customer-contract-renewal-approved-final.pdf'"
+                [maxCharacters]="28"
+                preserveExtension
+              ></p>
+              <div
+                class="j-doc-preview-card"
+                jSwipe
+                jPan
+                jZoom
+                tabindex="0"
+                aria-label="Gesture surface; use the buttons for keyboard alternatives"
+                (swipe)="gestureStatus = 'Swipe ' + $event.direction"
+                (panEnd)="gestureStatus = 'Pan completed'"
+                (zoom)="gestureStatus = 'Zoom ' + $event.scale.toFixed(2)"
+              >
+                {{ gestureStatus }}
+              </div>
+              <div class="j-preview-row" aria-label="Gesture keyboard alternatives">
+                <j-button
+                  label="Move left"
+                  variant="outlined"
+                  (onClick)="gestureStatus = 'Move left'"
+                />
+                <j-button
+                  label="Zoom in"
+                  variant="outlined"
+                  (onClick)="gestureStatus = 'Zoom 1.10'"
+                />
+              </div>
+              <div
+                class="j-doc-preview-card"
+                jDropList
+                [(data)]="previewCustomers"
+                aria-label="Customer ordering"
+              >
+                @for (customer of previewCustomers; track customer) {
+                  <div jDrag [data]="customer" [dragLabel]="customer">
+                    <button type="button" jDragHandle aria-label="Reorder customer">↕</button>
+                    {{ customer }}
+                  </div>
+                }
+              </div>
+            </div>
+          </section>
+        }
         <section>
           <h2>Explanation</h2>
           <ul>
@@ -102,6 +184,8 @@ export class GuidesPageComponent {
   readonly slug = input('');
   readonly allGuides = guides;
   readonly guide = computed(() => guides.find((item) => item.slug === this.slug()) ?? null);
+  previewCustomers: unknown[] = ['Aster Labs', 'Northstar Goods', 'Cedar Systems'];
+  gestureStatus = 'Swipe, pan or pinch this surface';
 
   constructor() {
     effect(() => {

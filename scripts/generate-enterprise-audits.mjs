@@ -480,6 +480,9 @@ function visualManifest() {
     'menu',
     'editor',
     'diff-viewer',
+    'timeline',
+    'stepper',
+    'empty',
   ];
   const states = [
     'default',

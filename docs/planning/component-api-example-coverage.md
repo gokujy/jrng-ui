@@ -1,6 +1,6 @@
 # Component API example coverage
 
-Generated on 2026-07-28 from built public declarations, implementation-backed registry metadata, component sources, and runnable documentation examples.
+Generated on 2026-07-29 from built public declarations, implementation-backed registry metadata, component sources, and runnable documentation examples.
 
 > Coverage rule: every meaningful public input, output, method, template, state, variant, and supported forms integration maps to at least one runnable example. Framework hooks and implementation helpers require a written exclusion reason.
 

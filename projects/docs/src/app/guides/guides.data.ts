@@ -286,6 +286,66 @@ export class SafeActionComponent { readonly browser = isPlatformBrowser(inject(P
     related: related('Core', 'Clipboard', 'Chart', 'Tour Guide'),
   },
   {
+    slug: 'interaction-foundations',
+    title: 'Use portals, gestures, middle truncation and drag-drop',
+    description:
+      'Compose dynamic Angular content and accessible pointer interactions with the JRNG UI foundations.',
+    problem:
+      'Dynamic content, touch gestures and reordering need consistent lifecycle, cancellation, SSR and keyboard behavior instead of repeated page-level listeners.',
+    implementation: [
+      'Import each foundation from its modular jrng-ui entrypoint.',
+      'Attach templates or components through a portal outlet and destroy the returned reference.',
+      'Consume structured gesture events and keep rendering state in the owning component.',
+      'Provide keyboard reorder commands and visible action alternatives for every essential pointer interaction.',
+    ],
+    code: `import { Component } from '@angular/core';
+import { JDragDirective, JDropListDirective } from 'jrng-ui/drag-drop';
+import { JPanDirective, JSwipeDirective, JZoomDirective } from 'jrng-ui/gesture';
+import { JPortalDirective, JPortalOutletDirective } from 'jrng-ui/portal';
+import { JTruncateMiddleDirective } from 'jrng-ui/truncate';
+
+@Component({
+  selector: 'app-customer-tools',
+  imports: [JDragDirective, JDropListDirective, JPanDirective, JSwipeDirective, JZoomDirective, JPortalDirective, JPortalOutletDirective, JTruncateMiddleDirective],
+  template: \`
+    <ng-template [jPortal]="outlet" #toolbar="jPortal">Customer toolbar</ng-template>
+    <div jPortalOutlet #outlet="jPortalOutlet"></div>
+    <span [jTruncateMiddle]="'customer-contract-final.pdf'" preserveExtension></span>
+    <div jSwipe jPan jZoom aria-label="Customer canvas"></div>
+    <div jDropList [(data)]="customers">
+      @for (customer of customers; track customer) {
+        <div jDrag [data]="customer" [dragLabel]="customer">{{ customer }}</div>
+      }
+    </div>
+  \`,
+})
+export class CustomerToolsComponent {
+  customers = ['Aster Labs', 'Northstar'];
+}`,
+    explanation: [
+      'JTemplatePortal and JComponentPortal preserve Angular injection and lifecycle; JDomPortal restores its original DOM position on detach.',
+      'Swipe, pan and zoom emit data without imposing transforms, which keeps application rendering and reduced-motion choices explicit.',
+      'Middle truncation can use a character budget or measured width and retains the full accessible value.',
+      'Connected drop lists emit previous and current containers and update two-way-bound data while Escape restores the original state.',
+      'Portal DOM movement and all observers are browser guarded; template and component portals remain safe during SSR.',
+      'Inputs update synchronously for zoneless Angular. Pointer listeners, observers, views and previews are removed on destroy.',
+    ],
+    accessibility: [
+      'Essential swipe, pan and zoom operations need named buttons or keyboard commands that perform the same action.',
+      'Drag items support Control plus Arrow keys, announce movement and restore focus after keyboard reorder.',
+      'Middle-truncated text retains the full value through aria-label and an optional title.',
+      'Disabled drag items and lists expose aria-disabled and do not begin pointer or keyboard movement.',
+      'Use semantic theme tokens for previews, placeholders and focus states; high-contrast mode must retain a visible outline.',
+    ],
+    mistakes: [
+      'Attaching one portal instance to multiple outlets at the same time.',
+      'Applying both touch and pointer listeners for the same interaction.',
+      'Starting a drag from a button, link, form field or text selection.',
+      'Using gesture-only controls without a keyboard-accessible alternative.',
+    ],
+    related: related('Button', 'Menu', 'Tooltip', 'Tree'),
+  },
+  {
     slug: 'zoneless',
     title: 'Use JRNG UI with zoneless Angular',
     description:

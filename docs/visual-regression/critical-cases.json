@@ -5,8 +5,21 @@
   "animations": "disabled",
   "timestamps": "fixed",
   "remoteAssets": false,
-  "themes": ["light", "dark", "high-contrast"],
-  "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+  "themes": [
+    "light",
+    "dark",
+    "high-contrast"
+  ],
+  "viewports": [
+    320,
+    375,
+    480,
+    768,
+    1024,
+    1280,
+    1440,
+    1920
+  ],
   "components": [
     {
       "component": "button",
@@ -22,7 +35,16 @@
         "long-content",
         "rtl"
       ],
-      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "viewports": [
+        320,
+        375,
+        480,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "baselineStatus": "candidate"
     },
     {
@@ -39,7 +61,16 @@
         "long-content",
         "rtl"
       ],
-      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "viewports": [
+        320,
+        375,
+        480,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "baselineStatus": "candidate"
     },
     {
@@ -56,7 +87,16 @@
         "long-content",
         "rtl"
       ],
-      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "viewports": [
+        320,
+        375,
+        480,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "baselineStatus": "candidate"
     },
     {
@@ -73,7 +113,16 @@
         "long-content",
         "rtl"
       ],
-      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "viewports": [
+        320,
+        375,
+        480,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "baselineStatus": "candidate"
     },
     {
@@ -90,7 +139,16 @@
         "long-content",
         "rtl"
       ],
-      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "viewports": [
+        320,
+        375,
+        480,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "baselineStatus": "candidate"
     },
     {
@@ -107,7 +165,16 @@
         "long-content",
         "rtl"
       ],
-      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "viewports": [
+        320,
+        375,
+        480,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "baselineStatus": "candidate"
     },
     {
@@ -124,7 +191,16 @@
         "long-content",
         "rtl"
       ],
-      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "viewports": [
+        320,
+        375,
+        480,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "baselineStatus": "candidate"
     },
     {
@@ -141,7 +217,16 @@
         "long-content",
         "rtl"
       ],
-      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "viewports": [
+        320,
+        375,
+        480,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "baselineStatus": "candidate"
     },
     {
@@ -158,7 +243,16 @@
         "long-content",
         "rtl"
       ],
-      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "viewports": [
+        320,
+        375,
+        480,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "baselineStatus": "candidate"
     },
     {
@@ -175,7 +269,16 @@
         "long-content",
         "rtl"
       ],
-      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "viewports": [
+        320,
+        375,
+        480,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "baselineStatus": "candidate"
     },
     {
@@ -192,7 +295,16 @@
         "long-content",
         "rtl"
       ],
-      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "viewports": [
+        320,
+        375,
+        480,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "baselineStatus": "candidate"
     },
     {
@@ -209,7 +321,16 @@
         "long-content",
         "rtl"
       ],
-      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "viewports": [
+        320,
+        375,
+        480,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "baselineStatus": "candidate"
     },
     {
@@ -226,7 +347,16 @@
         "long-content",
         "rtl"
       ],
-      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "viewports": [
+        320,
+        375,
+        480,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "baselineStatus": "candidate"
     },
     {
@@ -243,7 +373,16 @@
         "long-content",
         "rtl"
       ],
-      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "viewports": [
+        320,
+        375,
+        480,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "baselineStatus": "candidate"
     },
     {
@@ -260,7 +399,16 @@
         "long-content",
         "rtl"
       ],
-      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "viewports": [
+        320,
+        375,
+        480,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "baselineStatus": "candidate"
     },
     {
@@ -277,7 +425,16 @@
         "long-content",
         "rtl"
       ],
-      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "viewports": [
+        320,
+        375,
+        480,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "baselineStatus": "candidate"
     },
     {
@@ -294,7 +451,16 @@
         "long-content",
         "rtl"
       ],
-      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "viewports": [
+        320,
+        375,
+        480,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "baselineStatus": "candidate"
     },
     {
@@ -311,7 +477,16 @@
         "long-content",
         "rtl"
       ],
-      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "viewports": [
+        320,
+        375,
+        480,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "baselineStatus": "candidate"
     },
     {
@@ -328,7 +503,16 @@
         "long-content",
         "rtl"
       ],
-      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "viewports": [
+        320,
+        375,
+        480,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "baselineStatus": "candidate"
     },
     {
@@ -345,7 +529,16 @@
         "long-content",
         "rtl"
       ],
-      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "viewports": [
+        320,
+        375,
+        480,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "baselineStatus": "candidate"
     },
     {
@@ -362,7 +555,16 @@
         "long-content",
         "rtl"
       ],
-      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "viewports": [
+        320,
+        375,
+        480,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "baselineStatus": "candidate"
     },
     {
@@ -379,7 +581,16 @@
         "long-content",
         "rtl"
       ],
-      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "viewports": [
+        320,
+        375,
+        480,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "baselineStatus": "candidate"
     },
     {
@@ -396,7 +607,16 @@
         "long-content",
         "rtl"
       ],
-      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "viewports": [
+        320,
+        375,
+        480,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "baselineStatus": "candidate"
     },
     {
@@ -413,7 +633,16 @@
         "long-content",
         "rtl"
       ],
-      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "viewports": [
+        320,
+        375,
+        480,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "baselineStatus": "candidate"
     },
     {
@@ -430,7 +659,16 @@
         "long-content",
         "rtl"
       ],
-      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "viewports": [
+        320,
+        375,
+        480,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "baselineStatus": "candidate"
     },
     {
@@ -447,7 +685,16 @@
         "long-content",
         "rtl"
       ],
-      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "viewports": [
+        320,
+        375,
+        480,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "baselineStatus": "candidate"
     },
     {
@@ -464,7 +711,16 @@
         "long-content",
         "rtl"
       ],
-      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "viewports": [
+        320,
+        375,
+        480,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "baselineStatus": "candidate"
     },
     {
@@ -481,7 +737,16 @@
         "long-content",
         "rtl"
       ],
-      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "viewports": [
+        320,
+        375,
+        480,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "baselineStatus": "candidate"
     },
     {
@@ -498,7 +763,16 @@
         "long-content",
         "rtl"
       ],
-      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "viewports": [
+        320,
+        375,
+        480,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "baselineStatus": "candidate"
     },
     {
@@ -515,7 +789,16 @@
         "long-content",
         "rtl"
       ],
-      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "viewports": [
+        320,
+        375,
+        480,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "baselineStatus": "candidate"
     },
     {
@@ -532,7 +815,16 @@
         "long-content",
         "rtl"
       ],
-      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "viewports": [
+        320,
+        375,
+        480,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "baselineStatus": "candidate"
     },
     {
@@ -549,7 +841,16 @@
         "long-content",
         "rtl"
       ],
-      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "viewports": [
+        320,
+        375,
+        480,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "baselineStatus": "candidate"
     },
     {
@@ -566,7 +867,16 @@
         "long-content",
         "rtl"
       ],
-      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "viewports": [
+        320,
+        375,
+        480,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "baselineStatus": "candidate"
     },
     {
@@ -583,7 +893,16 @@
         "long-content",
         "rtl"
       ],
-      "viewports": [320, 375, 480, 768, 1024, 1280, 1440, 1920],
+      "viewports": [
+        320,
+        375,
+        480,
+        768,
+        1024,
+        1280,
+        1440,
+        1920
+      ],
       "baselineStatus": "candidate"
     }
   ]
