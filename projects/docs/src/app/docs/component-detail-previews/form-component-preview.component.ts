@@ -227,6 +227,13 @@ import {
           [(ngModel)]="selectedCustomerLocation"
         />
       }
+      @case ('signature') {
+        <j-signature
+          [(ngModel)]="customerSignature"
+          required
+          ariaLabel="Customer consent signature"
+        />
+      }
       @case ('checkbox') {
         <div class="j-preview-row">
           @switch (example.key) {

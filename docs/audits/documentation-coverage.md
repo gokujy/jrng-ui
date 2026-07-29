@@ -2,7 +2,7 @@
 
 Verdict: **PASS**
 
-- Public components documented: 130/130.
+- Public components documented: 133/133.
 - Public directives, pipes and services: generated reference records are present in [public-artifact-reference.md](../public-artifact-reference.md).
 - Missing public component records: 0.
 - Missing public directives/pipes/services in generated reference: 0.

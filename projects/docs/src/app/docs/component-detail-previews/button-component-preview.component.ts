@@ -150,6 +150,17 @@ import {
           </j-speed-dial>
         </div>
       }
+      @case ('speech-to-text-button') {
+        <div class="j-preview-row">
+          <j-input
+            jSpeechToText
+            #speech="jSpeechToText"
+            label="Customer note"
+            placeholder="Select dictate, then speak"
+          />
+          <j-speech-to-text-button [target]="speech" showLabel />
+        </div>
+      }
     }
   `,
   host: { style: 'display: contents' },

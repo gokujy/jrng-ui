@@ -28,6 +28,7 @@ export const COMPONENT_CATEGORIES = [
       'j-rating',
       'j-select',
       'j-select-button',
+      'j-signature',
       'j-slider',
       'j-switch',
       'j-textarea',
@@ -38,7 +39,13 @@ export const COMPONENT_CATEGORIES = [
   },
   {
     name: 'Button',
-    selectors: ['j-button', 'j-copy-button', 'j-speed-dial', 'j-split-button'],
+    selectors: [
+      'j-button',
+      'j-copy-button',
+      'j-speed-dial',
+      'j-speech-to-text-button',
+      'j-split-button',
+    ],
   },
   {
     name: 'Data',
@@ -195,8 +202,8 @@ export const COMPONENT_CATEGORY_ORDER = Object.freeze([
   'Pages',
 ]);
 export const COMPONENT_CATEGORY_COUNTS = Object.freeze({
-  Form: 32,
-  Button: 4,
+  Form: 33,
+  Button: 5,
   Data: 16,
   Panel: 16,
   Overlay: 8,
@@ -210,7 +217,7 @@ export const COMPONENT_CATEGORY_COUNTS = Object.freeze({
   Utilities: 3,
   Pages: 2,
 });
-export const ACTIVE_COMPONENT_TOTAL = 131;
+export const ACTIVE_COMPONENT_TOTAL = 133;
 export const COMPONENT_CATEGORY_TOTAL = 14;
 export const REMOVED_COMPONENT_SELECTORS = new Set([
   'j-activity-feed',

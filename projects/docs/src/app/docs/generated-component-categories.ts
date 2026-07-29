@@ -2,7 +2,7 @@
 export const generatedComponentCategories = [
   {
     name: 'Form',
-    count: 32,
+    count: 33,
     selectors: [
       'j-autocomplete',
       'j-checkbox',
@@ -30,6 +30,7 @@ export const generatedComponentCategories = [
       'j-rating',
       'j-select',
       'j-select-button',
+      'j-signature',
       'j-slider',
       'j-switch',
       'j-textarea',
@@ -40,8 +41,14 @@ export const generatedComponentCategories = [
   },
   {
     name: 'Button',
-    count: 4,
-    selectors: ['j-button', 'j-copy-button', 'j-speed-dial', 'j-split-button'],
+    count: 5,
+    selectors: [
+      'j-button',
+      'j-copy-button',
+      'j-speed-dial',
+      'j-speech-to-text-button',
+      'j-split-button',
+    ],
   },
   {
     name: 'Data',
@@ -196,4 +203,4 @@ export const generatedComponentCategories = [
 ] as const;
 
 export const generatedComponentCategoryOrder = generatedComponentCategories.map(({ name }) => name);
-export const generatedActiveComponentTotal = 131;
+export const generatedActiveComponentTotal = 133;

@@ -123,6 +123,8 @@ import { JRadioComponent } from 'jrng-ui/radio';
 import { JRatingComponent } from 'jrng-ui/rating';
 import { JSelectCellDirective, JSelectColumn, JSelectComponent } from 'jrng-ui/select';
 import { JSelectButtonComponent } from 'jrng-ui/select-button';
+import { JSignatureComponent, JSignatureValue } from 'jrng-ui/signature';
+import { JSpeechToTextButtonComponent, JSpeechToTextDirective } from 'jrng-ui/speech-to-text';
 import { JSectionFooterComponent } from 'jrng-ui/section-footer';
 import { JSectionHeaderComponent } from 'jrng-ui/section-header';
 import { JSidebarNavComponent } from 'jrng-ui/sidebar-nav';
@@ -1848,6 +1850,9 @@ export const COMPONENT_PREVIEW_IMPORTS = [
   JSelectComponent,
   JSelectCellDirective,
   JSelectButtonComponent,
+  JSignatureComponent,
+  JSpeechToTextButtonComponent,
+  JSpeechToTextDirective,
   JSectionFooterComponent,
   JSectionHeaderComponent,
   JSkeletonComponent,
@@ -1972,6 +1977,7 @@ export class ComponentDetailViewBase {
       columnSpan: 1,
     })),
   };
+  customerSignature: JSignatureValue | null = null;
   readonly customerTree: readonly JTreeNode[] = [
     {
       key: 'technology',

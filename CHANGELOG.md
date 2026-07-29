@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Added `jrng-ui/signature` with Angular Forms, pointer and pressure drawing,
+  undo/redo, responsive high-DPI rendering, validation, import, and PNG, SVG,
+  Blob, and Base64 exports.
+- Added `jrng-ui/speech-to-text` with an injectable SSR-safe recognition
+  service, caret-aware input directive, explicit-action button, interim/final
+  transcripts, and typed browser error states.
 - Added `jrng-ui/speed-dial` with linear, circular, fixed, async, keyboard, RTL,
   mask, and custom-trigger support.
 - Added determinate progress, outcome states, accessible percentage reporting,

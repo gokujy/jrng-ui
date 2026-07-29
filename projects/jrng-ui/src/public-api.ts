@@ -123,6 +123,8 @@ export * from 'jrng-ui/anchor';
 export * from 'jrng-ui/affix';
 export * from 'jrng-ui/watermark';
 export * from 'jrng-ui/speed-dial';
+export * from 'jrng-ui/signature';
+export * from 'jrng-ui/speech-to-text';
 export * from 'jrng-ui/transfer-list';
 export * from 'jrng-ui/tree';
 export * from 'jrng-ui/tree-table';

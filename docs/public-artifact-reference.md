@@ -294,6 +294,16 @@ Generated from built public declarations. Each record is covered by the strict e
 - Errors: recoverable operations return/emit explicit failure state where applicable.
 - Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
 
+### JSpeechToTextDirective
+
+- Import: import { JSpeechToTextDirective } from 'jrng-ui/speech-to-text';
+- Selector: input[jSpeechToText], textarea[jSpeechToText], j-input[jSpeechToText], j-textarea[jSpeechToText], j-editor[jSpeechToText]
+- Test status: covered
+- SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
+- Accessibility/keyboard: semantic behavior is part of the directive/component contract
+- Errors: recoverable operations return/emit explicit failure state where applicable.
+- Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
+
 ### JSpeedDialTriggerDirective
 
 - Import: import { JSpeedDialTriggerDirective } from 'jrng-ui/speed-dial';
@@ -871,6 +881,16 @@ Generated from built public declarations. Each record is covered by the strict e
 ### JPrintService
 
 - Import: import { JPrintService } from 'jrng-ui/core';
+- Provider: root or documented component provider
+- Test status: covered
+- SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
+- Accessibility/keyboard: not directly interactive
+- Errors: recoverable operations return/emit explicit failure state where applicable.
+- Example: import from the modular entrypoint and use the typed public API; see generated declarations for methods, inputs, outputs, null and locale behavior.
+
+### JSpeechRecognitionService
+
+- Import: import { JSpeechRecognitionService } from 'jrng-ui/speech-to-text';
 - Provider: root or documented component provider
 - Test status: covered
 - SSR behavior: feature-detected browser APIs; unsupported environments use safe fallbacks
