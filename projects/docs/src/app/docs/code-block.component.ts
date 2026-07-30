@@ -23,7 +23,11 @@ interface CodeToken {
   selector: 'app-code-block',
   imports: [JIconComponent],
   template: `
-    <div class="j-doc-code">
+    <div
+      class="j-doc-code"
+      [class.j-doc-code--collapsible]="collapsible()"
+      [class.is-expanded]="expanded()"
+    >
       <div class="j-doc-code__header">
         <div class="j-doc-code__meta">
           @if (fileName() || label()) {
@@ -33,10 +37,24 @@ interface CodeToken {
             <small>{{ languageLabel() }}</small>
           }
         </div>
-        <button type="button" (click)="copy()">
-          <j-icon [name]="copied() ? 'check-check' : 'copy'" />
-          {{ copied() ? 'Copied' : 'Copy' }}
-        </button>
+        <div class="j-doc-code__actions">
+          <button type="button" (click)="copy()">
+            <j-icon [name]="copied() ? 'check-check' : 'copy'" />
+            {{ copied() ? 'Copied' : 'Copy' }}
+          </button>
+          @if (collapsible()) {
+            <button
+              type="button"
+              [attr.aria-expanded]="expanded()"
+              [attr.aria-label]="expanded() ? 'Collapse code' : 'Expand code'"
+              [attr.title]="expanded() ? 'Collapse code' : 'Expand code'"
+              (click)="toggleExpanded()"
+            >
+              <j-icon [name]="expanded() ? 'minimize' : 'maximize'" />
+              {{ expanded() ? 'Collapse' : 'Expand' }}
+            </button>
+          }
+        </div>
       </div>
       <pre><code>@for (token of highlightedCode(); track $index) {<span [class]="'j-token j-token--' + token.kind">{{ token.text }}</span>}</code></pre>
     </div>
@@ -54,7 +72,9 @@ export class CodeBlockComponent {
   readonly label = input('');
   readonly language = input('');
   readonly fileName = input('');
+  readonly collapsible = input(false);
   readonly copied = signal(false);
+  readonly expanded = signal(false);
   readonly highlightedCode = computed(() => tokenizeCode(this.code()));
   readonly languageLabel = computed(() =>
     formatLanguage(this.language() || inferLanguage(this.label())),
@@ -79,6 +99,13 @@ export class CodeBlockComponent {
       this.copied.set(true);
       this.copyTimer = windowRef.setTimeout(() => this.copied.set(false), 1200);
     });
+  }
+
+  toggleExpanded(): void {
+    if (!this.collapsible()) {
+      return;
+    }
+    this.expanded.update((expanded) => !expanded);
   }
 }
 

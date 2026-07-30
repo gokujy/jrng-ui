@@ -59,7 +59,7 @@ class TableHostComponent {
   virtualScroll = false;
   sortField = '';
   page = 1;
-  variant: 'standard' | 'gridlines' = 'standard';
+  variant: 'standard' | 'gridlines' | 'enterprise' = 'standard';
   filterDisplay: 'none' | 'row' = 'none';
   columns: readonly JTableColumn[] = [
     { field: 'code', header: 'Code', sortable: true },
@@ -132,6 +132,15 @@ describe('JTableComponent', () => {
     expect(filterRow).toBeTruthy();
     expect(filterRow.query(By.css('[aria-label="Filter Name"]'))).toBeTruthy();
     expect(fixture.debugElement.query(By.css('thead tr:first-child j-column-filter'))).toBeNull();
+  });
+
+  it('renders the enterprise presentation as an additive visual variant', () => {
+    host.variant = 'enterprise';
+    host.filterDisplay = 'row';
+    detectHostChanges();
+
+    expect(fixture.debugElement.query(By.css('.j-table--enterprise'))).toBeTruthy();
+    expect(fixture.debugElement.query(By.css('.j-table__filter-row'))).toBeTruthy();
   });
 
   it('sorts sortable columns and emits sortChange', () => {
@@ -509,6 +518,7 @@ describe('JTableComponent', () => {
     const config: JTableConfig = {
       pagination: true,
       multiSort: true,
+      filterDisplay: 'menu',
       globalSearch: true,
       columnManager: true,
       exportable: true,
@@ -532,6 +542,7 @@ describe('JTableComponent', () => {
 
     expect(table.paginator).toBe(true);
     expect(table.sortMode).toBe('multiple');
+    expect(table.resolvedFilterDisplay).toBe('menu');
     expect(table.showGlobalFilter).toBe(true);
     expect(table.showColumnManager).toBe(true);
     expect(table.showExport).toBe(true);

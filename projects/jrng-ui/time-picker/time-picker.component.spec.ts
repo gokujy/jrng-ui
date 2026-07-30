@@ -16,6 +16,16 @@ describe('JTimePickerComponent', () => {
     expect(fixture.nativeElement.querySelector('.j-time-picker__icon svg path')).toBeTruthy();
   });
 
+  it('does not show a trigger cross by default but keeps it available as an opt-in', () => {
+    component.writeValue('10:15');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.j-time-picker__clear')).toBeNull();
+
+    fixture.componentRef.setInput('showClear', true);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.j-time-picker__clear')).toBeTruthy();
+  });
+
   it('does not open or emit changes while disabled', () => {
     const values: (string | null)[] = [];
     component.valueChange.subscribe((value) => values.push(value));

@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.1.1
+
+### Added
 
 - Added experimental `jrng-ui/popout` with Portal-based standard and Document
   Picture-in-Picture windows, bidirectional communication, live theme/style
@@ -18,10 +20,6 @@
 - Added opt-in controlled dragging, resizing, collision handling, compact
   placement, responsive layouts, persistence, keyboard controls, and reset to
   `j-grid-layout`.
-
-## Unreleased
-
-### Added
 
 - Added beta `jrng-ui/inplace`, `jrng-ui/anchor`, `jrng-ui/affix`, and `jrng-ui/watermark` entrypoints with editable content, scroll spy, layout-preserving affix, print support, accessibility, and SSR-safe observer cleanup.
 

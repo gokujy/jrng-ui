@@ -223,6 +223,7 @@ export interface DetailFeatureExample {
   readonly name: string;
   readonly details: string;
   readonly key: string;
+  readonly includeInContents?: boolean;
   readonly responsivePreview?: boolean;
   readonly index: number;
   readonly html: string;
@@ -2102,13 +2103,14 @@ export class ComponentDetailViewBase {
   readonly featureExamples = computed<readonly DetailFeatureExample[]>(() => {
     const doc = this.doc();
     if (doc.slug === 'table') {
-      return this.withApiCoverage(
-        doc,
-        [...TABLE_FEATURE_EXAMPLES, ...TABLE_SCENARIO_DOCS].map((example, index) => ({
+      return this.withApiCoverage(doc, [
+        ...TABLE_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
+        ...TABLE_SCENARIO_DOCS.map((example, offset) => ({
           ...example,
-          index,
+          index: TABLE_FEATURE_EXAMPLES.length + offset,
+          includeInContents: false,
         })),
-      );
+      ]);
     }
     if (doc.slug === 'tree-table') {
       return this.withApiCoverage(
@@ -2359,6 +2361,7 @@ export class ComponentDetailViewBase {
       .map((example, offset) => ({
         ...example,
         index: existing.length + offset,
+        includeInContents: false,
       }));
     return [...existing, ...additions];
   }
@@ -2367,11 +2370,13 @@ export class ComponentDetailViewBase {
       return [
         { id: 'component-overview', label: 'Overview', level: 0 },
         { id: 'component-import', label: 'Import', level: 0 },
-        ...this.featureExamples().map((example) => ({
-          id: `component-preview-${example.key}`,
-          label: example.name,
-          level: 0 as const,
-        })),
+        ...this.featureExamples()
+          .filter((example) => example.includeInContents !== false)
+          .map((example) => ({
+            id: `component-preview-${example.key}`,
+            label: example.name,
+            level: 0 as const,
+          })),
       ];
     }
 

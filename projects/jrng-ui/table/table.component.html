@@ -9,6 +9,7 @@
   @if (
     showToolbar &&
     (toolbarTemplate ||
+      captionTemplate ||
       title() ||
       description() ||
       showGlobalFilter ||
@@ -31,11 +32,13 @@
           }
         </div>
       }
-      @if (toolbarTemplate) {
-        <ng-container
-          [ngTemplateOutlet]="toolbarTemplate"
-          [ngTemplateOutletContext]="tableContext"
-        />
+      @if (captionTemplate || toolbarTemplate) {
+        <div class="j-table__caption j-table__toolbar-content" data-jc-section="caption-actions">
+          <ng-container
+            [ngTemplateOutlet]="captionTemplate || toolbarTemplate"
+            [ngTemplateOutletContext]="tableContext"
+          />
+        </div>
       }
       @if (showGlobalFilter || resolvedFilterDisplay === 'toolbar') {
         <label class="j-table__search">
@@ -98,9 +101,10 @@
           </div>
         </details>
       }
-      @if (showColumnManager || hasToolbarAction('columns')) {
+      @if (showColumnManager || hasToolbarAction('columns') || columnManagerOpen) {
         <details
           class="j-table__columns"
+          [class.j-table__columns--external]="!showColumnManager && !hasToolbarAction('columns')"
           data-jc-section="column-manager"
           [open]="columnManagerOpen"
           (toggle)="columnManagerOpen = $any($event.target).open"
@@ -110,7 +114,7 @@
             jTooltip="Column visibility"
             data-jc-section="column-manager-trigger"
           >
-            <span aria-hidden="true">☷</span>
+            <j-icon name="settings" size="1rem" aria-hidden="true" />
             <span class="j-hidden-accessible">Column visibility</span>
           </summary>
           <div class="j-table__columns-panel">
@@ -147,7 +151,7 @@
       @if (maximizable) {
         <j-button
           [label]="maximized ? 'Minimize' : 'Maximize'"
-          icon="square"
+          [icon]="maximized ? 'minimize' : 'maximize'"
           actionDisplay="icon"
           [ariaLabel]="maximized ? 'Exit fullscreen' : 'Enter fullscreen'"
           [title]="maximized ? 'Exit fullscreen' : 'Enter fullscreen'"
@@ -165,12 +169,12 @@
       @for (utility of toolbarActions(); track utility.key) {
         <j-button
           [label]="utility.label || utility.key"
-          [icon]="utility.icon || utility.key"
+          [icon]="toolbarIcon(utility)"
           actionDisplay="icon"
           [ariaLabel]="utility.label || utility.key"
           [title]="utility.label || utility.key"
           [severity]="utility.severity || (utility.key === 'export' ? 'success' : 'neutral')"
-          variant="text"
+          [variant]="variant() === 'enterprise' ? 'solid' : 'text'"
           size="sm"
           [disabled]="utility.disabled || false"
           [loading]="utility.loading || false"
@@ -364,7 +368,7 @@
                   #filterMenu
                   class="j-table__filter-menu"
                   tabindex="-1"
-                  [attr.data-j-active]="isFilterActive(column.field) ? 'true' : null"
+                  [attr.data-j-active]="isFilterActive(filterFieldFor(column)) ? 'true' : null"
                   (toggle)="handleFilterMenuToggle(filterMenu)"
                   (keydown)="handleFilterMenuKeydown($event, filterMenu)"
                 >
@@ -377,9 +381,9 @@
                       />
                     } @else {
                       <j-column-filter
-                        [field]="column.field"
+                        [field]="filterFieldFor(column)"
                         [label]="column.header"
-                        [value]="filterValue(column.field)"
+                        [value]="filterValue(filterFieldFor(column))"
                         [type]="filterTypeFor(column)"
                         [operator]="column.filter?.operator || 'contains'"
                         [operators]="column.filter?.operators || []"
@@ -387,7 +391,7 @@
                         display="menu"
                         [showActions]="true"
                         (filterChange)="handleFilterModelChange($event)"
-                        (clear)="clearFilter(column.field)"
+                        (clear)="clearFilter(filterFieldFor(column))"
                         (apply)="applyFilters(); closeFilterMenu(filterMenu)"
                       />
                     }
@@ -447,9 +451,9 @@
                     />
                   } @else {
                     <j-column-filter
-                      [field]="column.field"
+                      [field]="filterFieldFor(column)"
                       [label]="column.header"
-                      [value]="filterValue(column.field)"
+                      [value]="filterValue(filterFieldFor(column))"
                       [type]="
                         column.filter?.type ||
                         (column.type === 'number'

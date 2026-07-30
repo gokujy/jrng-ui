@@ -1,6 +1,6 @@
 # Component stability report
 
-Generated: jrng-ui 0.1.0
+Generated: jrng-ui 0.1.1
 
 Stability is derived from the canonical build inventory, rendered-preview registration, direct-test mapping, and accessibility validation. Beta status is retained where a component has not completed the full manual browser and visual baseline required for promotion.
 

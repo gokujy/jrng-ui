@@ -1,6 +1,22 @@
+import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { JTableComponent } from './table.component';
 import { JTableColumn } from './table.types';
+
+@Component({
+  imports: [JTableComponent],
+  template: `
+    <j-table [columns]="columns" [value]="rows" [paginator]="false">
+      <ng-template #jTableCaption let-table="table">
+        <button type="button" (click)="table.resetFilters()">Clear request filters</button>
+      </ng-template>
+    </j-table>
+  `,
+})
+class TableCaptionHostComponent {
+  readonly columns: readonly JTableColumn[] = [{ field: 'name', header: 'Name' }];
+  readonly rows = [{ name: 'Alpha' }];
+}
 
 describe('JTableComponent enterprise modes', () => {
   const columns: readonly JTableColumn[] = [
@@ -28,6 +44,40 @@ describe('JTableComponent enterprise modes', () => {
     const row = fixture.nativeElement.querySelector('.j-table__filter-row');
     expect(row).toBeTruthy();
     expect(row.querySelector('.j-column-filter__match-button')).toBeTruthy();
+  });
+
+  it('supports a caption template alias for table-level actions', () => {
+    const fixture = TestBed.createComponent(TableCaptionHostComponent);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.j-table__toolbar-content')).toBeTruthy();
+    expect(fixture.nativeElement.textContent).toContain('Clear request filters');
+  });
+
+  it('maps a displayed column filter to a different row or backend field', () => {
+    const fixture = TestBed.createComponent(JTableComponent);
+    const employeeColumn: JTableColumn = {
+      field: 'employeeName',
+      header: 'Employee',
+      filterable: true,
+      filter: { field: 'employeeId', type: 'select', operator: 'equals' },
+    };
+    fixture.componentRef.setInput('columns', [employeeColumn]);
+    fixture.componentRef.setInput('value', [
+      { employeeName: 'Alpha', employeeId: 1 },
+      { employeeName: 'Beta', employeeId: 2 },
+    ]);
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.filterFieldFor(employeeColumn)).toBe('employeeId');
+    fixture.componentInstance.handleColumnFilterChange({
+      field: 'employeeId',
+      operator: 'equals',
+      value: 2,
+    });
+    expect(fixture.componentInstance.visibleRows.map((row) => row['employeeName'])).toEqual([
+      'Beta',
+    ]);
   });
 
   it('renders menu filter buttons in headers and none mode renders no filter UI', () => {

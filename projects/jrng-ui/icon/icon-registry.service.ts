@@ -82,6 +82,8 @@ export type JIconName =
   | 'align-right'
   | 'undo'
   | 'redo'
+  | 'refresh'
+  | 'minimize'
   | 'maximize';
 
 export type JIconMap = Readonly<Record<string, string>>;
@@ -117,6 +119,8 @@ export const JRNG_DEFAULT_ICONS: JIconMap = {
   'align-right': 'M4 6h16M10 10h10M4 14h16M10 18h10',
   undo: 'M9 7 4 12l5 5M5 12h8a6 6 0 0 1 6 6',
   redo: 'm15 7 5 5-5 5M19 12h-8a6 6 0 0 0-6 6',
+  refresh: 'M20 11a8 8 0 1 0-2.34 5.66M20 4v7h-7',
+  minimize: 'M5 12h14',
   maximize: 'M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5',
   plus: 'M12 5v14M5 12h14',
   minus: 'M5 12h14',

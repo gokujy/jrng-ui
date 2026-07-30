@@ -19,7 +19,7 @@
     </label>
   }
 
-  <div class="j-select__control-wrapper">
+  <div class="j-select__control-wrapper" [class.has-clear]="canClear">
     <button
       #triggerButton
       class="j-select"
@@ -66,7 +66,7 @@
         [disabled]="isDisabled() || readonly()"
         (click)="clearValue($event)"
       >
-        x
+        <j-icon name="close" aria-hidden="true" />
       </button>
     }
   </div>

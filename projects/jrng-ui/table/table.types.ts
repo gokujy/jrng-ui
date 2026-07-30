@@ -41,7 +41,7 @@ export type JTableMatchMode =
   | 'dateAfter'
   | 'dateBetween';
 export type JTableDensity = JDensity;
-export type JTableVariant = 'standard' | 'gridlines' | 'striped' | 'minimal';
+export type JTableVariant = 'standard' | 'gridlines' | 'striped' | 'minimal' | 'enterprise';
 export type JTableLoadingVariant = 'skeleton' | 'spinner' | 'progress' | 'overlay';
 export type JTableEmptyState = 'no-data' | 'no-results' | 'error';
 export type JTableEmptyStateMode = 'auto' | JTableEmptyState;
@@ -205,6 +205,8 @@ export interface JTableFilterOption<T = unknown> {
 }
 
 export interface JTableColumnFilter {
+  /** Backend/row field used by this filter when it differs from the displayed column field. */
+  readonly field?: string;
   readonly type?: JTableFilterType;
   readonly operator?: JTableFilterOperator;
   readonly operators?: readonly JTableFilterOperator[];
@@ -281,12 +283,7 @@ export interface JTableColumn<T extends object = JTableRow> {
 }
 
 export type JTableToolbarActionKey =
-  | 'columns'
-  | 'filters'
-  | 'clear-filters'
-  | 'refresh'
-  | 'export'
-  | 'fullscreen';
+  'columns' | 'filters' | 'clear-filters' | 'refresh' | 'export' | 'fullscreen';
 
 export interface JTableToolbarAction {
   readonly key: JTableToolbarActionKey;
@@ -294,7 +291,8 @@ export interface JTableToolbarAction {
   readonly icon?: string;
   readonly disabled?: boolean;
   readonly loading?: boolean;
-  readonly severity?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | 'neutral';
+  readonly severity?:
+    'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | 'neutral';
 }
 
 export interface JTableSkeletonColumn {

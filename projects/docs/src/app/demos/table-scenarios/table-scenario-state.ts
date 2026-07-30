@@ -1,7 +1,9 @@
 import {
   JTableActionEvent,
+  JTableAction,
   JTableColumn,
   JTableColumnGroupRow,
+  JTableConfig,
   JTableEditEvent,
   JTableFilterModel,
   JTableLazyLoadEvent,
@@ -9,6 +11,8 @@ import {
   JTableReorderEvent,
   JTableSelection,
   JTableSort,
+  jTableActionsColumn,
+  jTableIndexColumn,
 } from 'jrng-ui/table';
 
 export interface TableDemoRow extends Record<string, unknown> {
@@ -38,6 +42,15 @@ export interface TableDemoRow extends Record<string, unknown> {
   readonly industry?: string;
   readonly accountType?: string;
   readonly accountManager?: string;
+  readonly requestedOn?: string;
+  readonly requesterName?: string;
+  readonly requesterCode?: string;
+  readonly requesterId?: number;
+  readonly requestType?: string;
+  readonly requestPeriod?: string;
+  readonly units?: number;
+  readonly reviewers?: string;
+  readonly reviewComment?: string;
 }
 
 const TABLE_DEMO_ROWS: readonly TableDemoRow[] = [
@@ -357,63 +370,117 @@ export class TableScenarioState {
     },
   ];
 
-  readonly enterpriseRows: readonly TableDemoRow[] = this.rows.map((row, index) => ({
-    ...row,
-    company: ['Northwind Partners', 'Blue Cedar Group', 'Harborline Services', 'Summit Works'][
-      index % 4
-    ],
-    industry: ['Logistics', 'Technology', 'Professional Services', 'Manufacturing'][index % 4],
-    accountType: ['Enterprise', 'Growth', 'Standard'][index % 3],
-    accountManager: ['Jordan Lee', 'Avery Morgan', 'Taylor Reed'][index % 3],
-    actions: '',
-  }));
+  readonly enterpriseRows: readonly TableDemoRow[] = this.rows.map((row, index) => {
+    const requesterNames = [
+      'Avery Stone',
+      'Morgan Reed',
+      'Jordan Blake',
+      'Taylor Quinn',
+      'Casey Brooks',
+    ];
+    const startDay = 8 + (index % 12);
+    const units = (index % 5) + 1;
+    const requesterName = requesterNames[index % requesterNames.length]!;
+    return {
+      ...row,
+      requesterName,
+      requesterCode: `REQ-${String(3101 + index).padStart(4, '0')}`,
+      requesterId: 3101 + index,
+      requestType: ['Resource booking', 'Schedule change', 'Access review', 'Service request'][
+        index % 4
+      ],
+      requestPeriod: `${String(startDay).padStart(2, '0')}/07/2026 to ${String(startDay + units - 1).padStart(2, '0')}/07/2026`,
+      units,
+      requestedOn: `2026-07-${String(Math.max(1, startDay - 2)).padStart(2, '0')}`,
+      reviewers: index % 3 === 0 ? 'Robin Lane, Sam Ellis' : 'Robin Lane',
+      reviewComment: index % 3 === 2 ? 'Requirements confirmed.' : '',
+      status: index % 4 === 3 ? 'Approved' : 'Pending',
+      actions: '',
+    };
+  });
 
   readonly enterpriseColumns: readonly JTableColumn<TableDemoRow>[] = [
-    { field: 'id', header: '#', width: '4rem', minWidth: '4rem', align: 'end', frozen: true },
+    jTableIndexColumn<TableDemoRow>('id'),
     {
-      field: 'customer',
-      header: 'Customer',
+      field: 'requesterName',
+      header: 'Requester',
       sortable: true,
       filterable: true,
-      minWidth: '14rem',
-      frozen: true,
-    },
-    { field: 'company', header: 'Company', sortable: true, filterable: true, minWidth: '12rem' },
-    {
-      field: 'industry',
-      header: 'Industry',
-      sortable: true,
-      filterable: true,
-      minWidth: '10rem',
-    },
-    {
-      field: 'accountType',
-      header: 'Account type',
-      sortable: true,
-      filterable: true,
+      width: '13.625rem',
+      minWidth: '13.625rem',
       filter: {
+        field: 'requesterId',
         type: 'select',
         operator: 'equals',
+        hideOperator: true,
         options: [
-          { label: 'Enterprise', value: 'Enterprise' },
-          { label: 'Growth', value: 'Growth' },
-          { label: 'Standard', value: 'Standard' },
+          { label: 'Avery Stone', value: 3101 },
+          { label: 'Morgan Reed', value: 3102 },
+          { label: 'Jordan Blake', value: 3103 },
         ],
       },
     },
     {
-      field: 'date',
-      header: 'Joined date',
+      field: 'requestType',
+      header: 'Request Type',
+      sortable: true,
+      filterable: true,
+      width: '11.875rem',
+      minWidth: '11.875rem',
+      filter: {
+        type: 'select',
+        operator: 'equals',
+        hideOperator: true,
+        options: [
+          { label: 'Resource booking', value: 'Resource booking' },
+          { label: 'Schedule change', value: 'Schedule change' },
+          { label: 'Access review', value: 'Access review' },
+          { label: 'Service request', value: 'Service request' },
+        ],
+      },
+    },
+    {
+      field: 'requestPeriod',
+      header: 'Request Period',
+      sortable: true,
+      filterable: true,
+      width: '12.5rem',
+      minWidth: '12.5rem',
+      filter: { type: 'date', operator: 'between' },
+    },
+    {
+      field: 'units',
+      header: 'Units',
+      type: 'number',
+      sortable: true,
+      filterable: true,
+      width: '6.375rem',
+      minWidth: '6.375rem',
+      filter: { type: 'number', operator: 'equals', hideOperator: true, min: 1 },
+    },
+    {
+      field: 'requestedOn',
+      header: 'Date of Requested',
       type: 'date',
       sortable: true,
       filterable: true,
+      width: '10.625rem',
+      minWidth: '10.625rem',
+      filter: { type: 'date', operator: 'equals' },
     },
     {
-      field: 'accountManager',
-      header: 'Account manager',
-      sortable: true,
-      filterable: true,
-      minWidth: '11rem',
+      field: 'reviewers',
+      header: 'Reviewers',
+      sortable: false,
+      width: '10.5rem',
+      minWidth: '10.5rem',
+    },
+    {
+      field: 'reviewComment',
+      header: 'Review comment',
+      sortable: false,
+      width: '20rem',
+      minWidth: '20rem',
     },
     {
       field: 'status',
@@ -423,26 +490,51 @@ export class TableScenarioState {
       filterable: true,
       frozen: true,
       frozenPosition: 'end',
-      filter: { type: 'select', operator: 'equals', options: this.statusOptions },
+      width: '12rem',
+      minWidth: '12rem',
+      filter: {
+        type: 'multi-select',
+        operator: 'in',
+        hideOperator: true,
+        options: [
+          { label: 'Pending', value: 'Pending' },
+          { label: 'Approved', value: 'Approved' },
+        ],
+      },
     },
-    {
-      field: 'actions',
-      header: 'Actions',
-      type: 'actions',
-      width: '8.5rem',
-      minWidth: '8.5rem',
-      frozen: true,
-      frozenPosition: 'end',
-    },
+    jTableActionsColumn<TableDemoRow>('actions'),
   ];
 
-  readonly enterpriseToolbarActions = [
-    { key: 'filters' as const, label: 'Toggle filter row', icon: 'filter' },
-    { key: 'clear-filters' as const, label: 'Clear all filters', icon: 'close' },
-    { key: 'refresh' as const, label: 'Refresh', icon: 'refresh' },
-    { key: 'export' as const, label: 'Export', icon: 'download', severity: 'success' as const },
-    { key: 'fullscreen' as const, label: 'Fullscreen', icon: 'square' },
-  ];
+  readonly enterpriseTableConfig: JTableConfig = {
+    pagination: true,
+    filterDisplay: 'row',
+    globalSearch: false,
+    reorderableColumns: true,
+    resizableColumns: true,
+    maximizable: false,
+    exportable: false,
+    columnManager: false,
+    density: 'compact',
+    pageSize: 10,
+    rowsPerPageOptions: [10, 25, 50],
+    selectionMode: 'none',
+  };
+
+  requestMenuActions(row: TableDemoRow): readonly JTableAction[] {
+    const actions: JTableAction[] = [
+      { key: 'view', label: 'View request', icon: 'eye' },
+      { key: 'review', label: 'Review request', icon: 'settings' },
+    ];
+    if (row.status !== 'Approved') {
+      actions.push({
+        key: 'delete',
+        label: 'Delete request',
+        icon: 'trash',
+        severity: 'danger',
+      });
+    }
+    return actions;
+  }
 
   initials(value: string): string {
     return value
@@ -453,7 +545,11 @@ export class TableScenarioState {
   }
 
   statusSeverity(value: string): 'success' | 'warning' | 'info' | 'neutral' {
-    return value === 'Approved' ? 'success' : value === 'Pending' ? 'warning' : 'info';
+    return value === 'Approved'
+      ? 'success'
+      : value.toLowerCase().includes('pending')
+        ? 'warning'
+        : 'info';
   }
 
   readonly conditionalColumns: readonly JTableColumn<TableDemoRow>[] = this.columns.map((column) =>

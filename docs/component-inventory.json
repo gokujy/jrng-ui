@@ -3190,6 +3190,7 @@
         "handleMultiSelect()",
         "handleOperator()",
         "handleRangeInput()",
+        "handleSelect()",
         "isOptionSelected()",
         "operatorLabel()",
         "selectOperator()"
@@ -3924,6 +3925,7 @@
         "exportWithAdapter()",
         "filter()",
         "filterContext()",
+        "filterFieldFor()",
         "filterLabel()",
         "filterTemplateFor()",
         "filterTypeFor()",
@@ -3950,6 +3952,7 @@
         "handleRowKeydown()",
         "handleToolbarAction()",
         "handleVirtualScroll()",
+        "hasToolbarAction()",
         "headerColumnClass()",
         "headerContext()",
         "headerTemplateFor()",
@@ -4003,6 +4006,7 @@
         "toggleRowLock()",
         "toggleSelection()",
         "toggleSort()",
+        "toolbarIcon()",
         "triggerEmptyAction()",
         "updateRowEditValue()"
       ],

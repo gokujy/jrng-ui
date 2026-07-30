@@ -382,6 +382,163 @@ columns: JTableColumn<OrderRow>[] = [
 <j-table [value]="rows" [columns]="columns" variant="gridlines" />
 <j-table [value]="rows" [columns]="columns" variant="minimal" />
 <j-table [value]="rows" [columns]="columns" variant="standard" density="spacious" />
+<j-table [value]="rows" [columns]="columns" variant="enterprise" [config]="enterpriseTableConfig" />
+```
+
+The `enterprise` variant provides the compact, fully bordered management-grid presentation:
+square utility controls, a dedicated inline filter row, status pills, horizontal and vertical
+scroll affordances, and a compact paginator. Combine it with typed cell templates for avatar
+identity cells and icon-only row actions.
+
+Use `#jTableCaption` for table-level actions. The caption receives the table instance, and a
+single flex container can align its utility buttons to the right without placeholder content.
+Actions can open column configuration, toggle the filter row, maximize, reset filters, refresh
+application data, or export.
+
+```html
+<j-table
+  [value]="requests"
+  [columns]="requestColumns"
+  [config]="enterpriseTableConfig"
+  variant="enterprise"
+>
+  <ng-template #jTableCaption let-table="table">
+    <div class="table-caption-actions">
+      <j-button
+        icon="settings"
+        actionDisplay="icon"
+        ariaLabel="Table configuration"
+        (onClick)="table.handleToolbarAction({ key: 'columns' })"
+      />
+      <j-button
+        icon="filter"
+        actionDisplay="icon"
+        ariaLabel="Toggle filters"
+        (onClick)="table.handleToolbarAction({ key: 'filters' })"
+      />
+      <j-button
+        icon="refresh"
+        actionDisplay="icon"
+        ariaLabel="Refresh"
+        (onClick)="reloadRequests()"
+      />
+    </div>
+  </ng-template>
+</j-table>
+```
+
+For a viewport-aware fixed table body, keep the height calculation on the scroll container. Frozen
+start/end columns remain sticky during horizontal scrolling. When maximized, the component moves
+the table to the document body, locks page scrolling, expands to the viewport, and lets the table
+body consume all space remaining between the caption and paginator. Escape or the minimize action
+restores the table to its original location.
+
+```html
+<j-table
+  [value]="requests"
+  [columns]="requestColumns"
+  [config]="enterpriseTableConfig"
+  variant="enterprise"
+  scrollHeight="clamp(
+    18rem,
+    calc(
+      100dvh -
+      var(--j-app-header-height, 4rem) -
+      var(--j-page-header-height, 3rem) -
+      var(--j-app-footer-height, 0rem) -
+      13.5rem
+    ),
+    34rem
+  )"
+  [tableStyle]="{ 'min-width': '92rem' }"
+/>
+```
+
+The action column can combine a direct, high-frequency action with an overflow menu. The popup is
+attached to `body`, so it is not clipped by horizontal or vertical table scrolling.
+
+```html
+<ng-template jTableActions="actions" let-row>
+  <span class="request-actions">
+    @if (row.status !== 'Approved') {
+    <j-button
+      icon="check"
+      actionDisplay="icon"
+      severity="success"
+      ariaLabel="Complete request"
+      (onClick)="completeRequest(row)"
+    />
+    }
+    <j-action-menu
+      popup
+      [actions]="requestMenuActions(row)"
+      [row]="row"
+      ariaLabel="Request actions"
+      triggerLabel="Open request actions"
+      (action)="handleRequestAction($event)"
+    />
+  </span>
+</ng-template>
+```
+
+```scss
+.table-caption-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  width: 100%;
+}
+```
+
+A single config object keeps table behavior out of the template:
+
+```ts
+import {
+  JTableConfig,
+  jTableActionsColumn,
+  jTableIndexColumn,
+} from 'jrng-ui/table';
+
+readonly enterpriseTableConfig: JTableConfig = {
+  pagination: true,
+  filterDisplay: 'row',
+  globalSearch: false,
+  reorderableColumns: true,
+  resizableColumns: true,
+  density: 'compact',
+  pageSize: 10,
+  rowsPerPageOptions: [10, 25, 50],
+  selectionMode: 'none',
+};
+
+readonly requestColumns = [
+  jTableIndexColumn<RequestRow>('id'),
+  {
+    field: 'requesterName',
+    header: 'Requester',
+    sortable: true,
+    filterable: true,
+  },
+  jTableActionsColumn<RequestRow>('actions'),
+];
+```
+
+A filter may target a different row or backend field than the displayed cell. This is useful for
+a requester-name cell that submits an internal requester ID.
+
+```ts
+{
+  field: 'requesterName',
+  header: 'Requester',
+  filterable: true,
+  filter: {
+    field: 'requesterId',
+    type: 'select',
+    operator: 'equals',
+    hideOperator: true,
+    options: requesterOptions,
+  },
+}
 ```
 
 ## Integrated Loading

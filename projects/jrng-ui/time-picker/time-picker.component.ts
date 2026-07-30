@@ -51,7 +51,7 @@ export type JTimePickerHourFormat = 12 | 24;
         </span>
       }
 
-      <div class="j-time-picker__control-wrapper">
+      <div class="j-time-picker__control-wrapper" [class.has-clear]="canClear">
         <button
           class="j-time-picker__control"
           type="button"
@@ -236,6 +236,10 @@ export type JTimePickerHourFormat = 12 | 24;
       }
 
       .j-time-picker__control-wrapper .j-time-picker__control {
+        padding-inline-end: 2.75rem;
+      }
+
+      .j-time-picker__control-wrapper.has-clear .j-time-picker__control {
         padding-inline-end: 4rem;
       }
 
@@ -436,7 +440,7 @@ export class JTimePickerComponent implements ControlValueAccessor {
   readonly invalid = input(false, { transform: booleanAttribute });
   readonly required = input(false, { transform: booleanAttribute });
   readonly showSeconds = input(false, { transform: booleanAttribute });
-  readonly showClear = input(true, { transform: booleanAttribute });
+  readonly showClear = input(false, { transform: booleanAttribute });
   readonly valueInput = input<string | null | undefined>(undefined);
   readonly minuteStep = input<number | string | undefined>(undefined);
   readonly visibleOptions = input(6, {

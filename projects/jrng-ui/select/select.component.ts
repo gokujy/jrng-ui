@@ -32,6 +32,7 @@ import { JFilterMatchMode, jMatchesFilter } from 'jrng-ui/core';
 import { JAppendTo, JOverlayHandle, JOverlayService } from 'jrng-ui/core';
 import { JComponentSize } from 'jrng-ui/core';
 import { JInputVariant } from 'jrng-ui/input';
+import { JIconComponent } from 'jrng-ui/icon';
 import { JVirtualScrollerComponent } from 'jrng-ui/virtual-scroller';
 
 export type JSelectPrimitive = string | number | boolean;
@@ -102,7 +103,13 @@ export class JSelectCellDirective {
 
 @Component({
   selector: 'j-select',
-  imports: [JButtonComponent, NgTemplateOutlet, JClickOutsideDirective, JVirtualScrollerComponent],
+  imports: [
+    JButtonComponent,
+    JIconComponent,
+    NgTemplateOutlet,
+    JClickOutsideDirective,
+    JVirtualScrollerComponent,
+  ],
   templateUrl: './select.component.html',
   styleUrl: './select.component.scss',
   providers: [

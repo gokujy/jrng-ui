@@ -1,11 +1,16 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { JTableSortOrder } from 'jrng-ui/core';
+import { JIconComponent } from 'jrng-ui/icon';
 
 @Component({
   selector: 'j-sort-icon',
+  imports: [JIconComponent],
   template: `
     <span class="j-sort-icon" [class.is-active]="order() !== 0" aria-hidden="true">
-      <span>{{ order() === -1 ? '↓' : order() === 1 ? '↑' : '↕' }}</span>
+      <j-icon
+        [name]="order() === -1 ? 'chevron-down' : order() === 1 ? 'chevron-up' : 'sort'"
+        size="0.875rem"
+      />
       @if (priority() > 0) {
         <small>{{ priority() }}</small>
       }
@@ -17,12 +22,11 @@ import { JTableSortOrder } from 'jrng-ui/core';
         align-items: center;
         color: var(--j-table-sort-icon-color, var(--j-color-text-soft));
         display: inline-flex;
-        font-size: var(--j-font-size-xs, 0.75rem);
         gap: 0.125rem;
+        justify-content: flex-end;
         line-height: 1;
         margin-inline-start: auto;
-        min-width: 1.5rem;
-        justify-content: flex-end;
+        min-width: 1.25rem;
       }
 
       .j-sort-icon.is-active {

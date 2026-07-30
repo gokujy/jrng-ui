@@ -93,6 +93,7 @@ import {
 } from './table-template.directive';
 import { JBodyScrollLockService, JTableSortOrder } from 'jrng-ui/core';
 import { JButtonComponent } from 'jrng-ui/button';
+import { JIconComponent } from 'jrng-ui/icon';
 import { JTooltipDirective } from 'jrng-ui/tooltip';
 
 export type JTableSortDirection = 'asc' | 'desc';
@@ -110,6 +111,7 @@ export type JTableSortDirection = 'asc' | 'desc';
     JTableEmptyStateComponent,
     JTableSkeletonComponent,
     JButtonComponent,
+    JIconComponent,
     JTooltipDirective,
   ],
   templateUrl: './table.component.html',
@@ -128,6 +130,7 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     rows: readonly JTableRow[];
   }>;
   @ContentChild('jTableToolbar') toolbarTemplate?: TemplateRef<{ table: JTableComponent }>;
+  @ContentChild('jTableCaption') captionTemplate?: TemplateRef<{ table: JTableComponent }>;
   @ContentChild('jTableGroupHeader') groupHeaderTemplate?: TemplateRef<{
     $implicit: unknown;
     value: unknown;
@@ -673,7 +676,7 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   }
 
   get resolvedFilterDisplay(): JTableFilterDisplay {
-    return this.filterDisplay();
+    return this.config?.filterDisplay ?? this.filterDisplay();
   }
 
   get activeFilterItems(): readonly JTableFilterItem[] {
@@ -887,7 +890,7 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     return {
       $implicit: column,
       column,
-      value: this.filterValue(column.field),
+      value: this.filterValue(this.filterFieldFor(column)),
       apply: (value: unknown) => this.applyTemplateFilter(column, value),
     };
   }
@@ -1485,7 +1488,7 @@ export class JTableComponent implements AfterContentInit, OnChanges {
 
   handleColumnFilterChange(change: JColumnFilterChange): void {
     const column = (this.columns() as readonly JTableColumn[]).find(
-      (candidate) => candidate.field === change.field,
+      (candidate) => this.filterFieldFor(candidate) === change.field,
     );
     const debounce =
       this.filterTypeFor(
@@ -1542,14 +1545,18 @@ export class JTableComponent implements AfterContentInit, OnChanges {
 
   applyTemplateFilter(column: JTableColumn, value: unknown): void {
     this.handleFilterModelChange({
-      field: column.field,
+      field: this.filterFieldFor(column),
       operator: column.filter?.operator ?? 'contains',
       value,
     });
   }
 
   filter(field: string, value: unknown, operator: JTableFilterItem['operator'] = 'contains'): void {
-    if (!(this.columns() as readonly JTableColumn[]).some((column) => column.field === field)) {
+    if (
+      !(this.columns() as readonly JTableColumn[]).some(
+        (column) => column.field === field || this.filterFieldFor(column) === field,
+      )
+    ) {
       return;
     }
     this.handleFilterModelChange({ field, value, operator });
@@ -1585,7 +1592,27 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   }
 
   filterLabel(field: string): string {
-    return this.columnManagerColumns.find((column) => column.field === field)?.header ?? field;
+    return (
+      this.columnManagerColumns.find(
+        (column) => column.field === field || this.filterFieldFor(column) === field,
+      )?.header ?? field
+    );
+  }
+
+  filterFieldFor(column: JTableColumn): string {
+    return column.filter?.field || column.field;
+  }
+
+  toolbarIcon(action: JTableToolbarAction): string {
+    if (action.icon) return action.icon;
+    return {
+      columns: 'settings',
+      filters: 'filter',
+      'clear-filters': 'close',
+      refresh: 'refresh',
+      export: 'download',
+      fullscreen: 'maximize',
+    }[action.key];
   }
 
   clearFilter(field: string): void {

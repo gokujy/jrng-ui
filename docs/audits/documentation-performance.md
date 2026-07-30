@@ -1,6 +1,6 @@
 # Documentation performance
 
-Generated: jrng-ui 0.1.0
+Generated: jrng-ui 0.1.1
 
 The component showcase is route-level lazy loaded. Angular deferred blocks split preview dependencies into additional chunks; optional chart and editor integrations remain outside the canonical root entrypoint.
 

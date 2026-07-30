@@ -1112,6 +1112,7 @@
         "selectAllVisible()",
         "setDisabledState()",
         "toggle()",
+        "toggleAllVisible()",
         "toggleOption()",
         "unselectAllVisible()",
         "writeValue()"
@@ -2759,6 +2760,7 @@
         "exportWithAdapter()",
         "filter()",
         "filterContext()",
+        "filterFieldFor()",
         "filterLabel()",
         "filterTemplateFor()",
         "filterTypeFor()",
@@ -2839,6 +2841,7 @@
         "toggleRowLock()",
         "toggleSelection()",
         "toggleSort()",
+        "toolbarIcon()",
         "triggerEmptyAction()",
         "updateRowEditValue()"
       ],

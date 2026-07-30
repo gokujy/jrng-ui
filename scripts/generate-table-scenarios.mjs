@@ -291,6 +291,7 @@ import { JInputComponent } from 'jrng-ui/input';
 import { JInputNumberComponent } from 'jrng-ui/input-number';
 import { JSelectComponent } from 'jrng-ui/select';
 import {
+  JActionMenuComponent,
   JTableActionsTemplateDirective,
   JTableCellTemplateDirective,
   JTableComponent,
@@ -323,7 +324,7 @@ const TABLE_DEMO_IMPORTS = {
   export: [JTableComponent],
   stateful: [JButtonComponent, JTableComponent],
   actions: [JButtonComponent, JTableActionsTemplateDirective, JTableComponent, JTooltipDirective],
-  advanced: [JAvatarComponent, JBadgeComponent, JButtonComponent, JTableActionsTemplateDirective, JTableCellTemplateDirective, JTableComponent],
+  advanced: [JActionMenuComponent, JAvatarComponent, JBadgeComponent, JButtonComponent, JTableActionsTemplateDirective, JTableCellTemplateDirective, JTableComponent],
 };
 
 const TABLE_DEMO_STYLES = \`
@@ -338,6 +339,8 @@ const TABLE_DEMO_STYLES = \`
   .j-table-demo__customer-copy strong { font-weight: var(--j-font-weight-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .j-table-demo__customer-copy small { color: var(--j-color-text-muted); font-size: var(--j-font-size-xs); }
   .j-table-demo__row-actions { align-items: center; display: flex; gap: var(--j-spacing-2); }
+  .j-table-demo__caption-actions { align-items: center; display: flex; flex-wrap: wrap; gap: var(--j-spacing-3); justify-content: flex-end; margin-inline-start: auto; width: 100%; }
+  .j-table-demo__approval { align-items: center; display: flex; gap: var(--j-spacing-1); }
   :host ::ng-deep .j-table-demo__needs-review td { background: color-mix(in srgb, var(--j-color-warning) 9%, var(--j-table-bg)); }
   :host ::ng-deep .j-table-demo__high-value { color: var(--j-color-success); font-weight: var(--j-font-weight-semibold); }
   @media (max-width: 640px) { .j-table-demo__controls j-button { flex: 1 1 auto; } }
@@ -763,32 +766,44 @@ ${status}`;
 
   if (family === 'advanced')
     return `<j-table
-  title="Customer accounts"
-  description="Manage customer ownership, account status, and lifecycle."
   [value]="enterpriseRows"
   [columns]="enterpriseColumns"
-  [toolbarActions]="enterpriseToolbarActions"
-  scrollHeight="22rem"
+  [config]="enterpriseTableConfig"
+  variant="enterprise"
+  scrollHeight="clamp(18rem, calc(100dvh - var(--j-app-header-height, 4rem) - var(--j-page-header-height, 3rem) - var(--j-app-footer-height, 0rem) - 13.5rem), 34rem)"
   [tableStyle]="{ 'min-width': '92rem' }"
-  [pageSize]="5"
-  [pageSizeOptions]="[5, 10, 25, 50]"
-  selectionMode="none"
-  [showGlobalFilter]="false"
-  [showColumnManager]="false"
-  [showExport]="false"
-  [maximizable]="false"
-  (refresh)="eventMessage = 'Customer accounts refreshed.'"
+  [hover]="true"
+  sortField="id"
+  [sortOrder]="-1"
+  (refresh)="eventMessage = 'Requests refreshed.'"
 >
-  <ng-template #jTableToolbar>
-    <j-button label="Add customer" icon="plus" size="sm" (onClick)="eventMessage = 'Add customer requested.'" />
+  <ng-template #jTableCaption let-table="table">
+    <span class="j-table-demo__caption-actions">
+      <j-button icon="settings" actionDisplay="icon" size="sm" severity="info" ariaLabel="Table config" title="Table config" (onClick)="table.handleToolbarAction({ key: 'columns' })" />
+      <j-button [icon]="table.maximized ? 'minimize' : 'maximize'" actionDisplay="icon" size="sm" severity="secondary" [ariaLabel]="table.maximized ? 'Minimize table' : 'Maximize table'" [title]="table.maximized ? 'Minimize table' : 'Maximize table'" [ariaPressed]="table.maximized" (onClick)="table.handleToolbarAction({ key: 'fullscreen' })" />
+      <j-button icon="filter" actionDisplay="icon" size="sm" severity="info" ariaLabel="Toggle filters" title="Toggle filters" (onClick)="table.handleToolbarAction({ key: 'filters' })" />
+      @if (table.activeFilterItems.length) {
+        <j-button icon="close" actionDisplay="icon" size="sm" severity="danger" ariaLabel="Clear filters" title="Clear filters" (onClick)="table.resetFilters()" />
+      }
+      <j-button icon="refresh" actionDisplay="icon" size="sm" severity="info" ariaLabel="Refresh table" title="Refresh table" (onClick)="eventMessage = 'Requests refreshed.'" />
+      <j-button icon="download" actionDisplay="icon" size="sm" severity="success" ariaLabel="Export table" title="Export table" (onClick)="table.exportCSV()" />
+    </span>
   </ng-template>
-  <ng-template jTableCell="customer" let-row>
+  <ng-template jTableCell="requesterName" let-row>
     <span class="j-table-demo__customer">
-      <j-avatar [initials]="initials($any(row)['customer'])" [ariaLabel]="$any(row)['customer']" size="sm" />
+      <j-avatar [initials]="initials($any(row)['requesterName'])" [ariaLabel]="$any(row)['requesterName']" size="sm" />
       <span class="j-table-demo__customer-copy">
-        <strong>{{ $any(row)['customer'] }}</strong>
-        <small>{{ $any(row)['code'] }}</small>
+        <strong>{{ $any(row)['requesterName'] }}</strong>
+        <small>{{ $any(row)['requesterCode'] }}</small>
       </span>
+    </span>
+  </ng-template>
+  <ng-template jTableCell="units" let-value="formattedValue"><j-badge [value]="value" variant="soft" size="md" /></ng-template>
+  <ng-template jTableCell="reviewers" let-row>
+    <span class="j-table-demo__approval">
+      @for (reviewer of $any(row)['reviewers'].split(', '); track reviewer) {
+        <j-avatar [initials]="initials(reviewer)" [ariaLabel]="reviewer" size="sm" />
+      }
     </span>
   </ng-template>
   <ng-template jTableCell="status" let-value="formattedValue">
@@ -796,9 +811,10 @@ ${status}`;
   </ng-template>
   <ng-template jTableActions="actions" let-row>
     <span class="j-table-demo__row-actions">
-      <j-button icon="eye" actionDisplay="icon" size="sm" variant="text" [ariaLabel]="'View ' + $any(row)['customer']" title="View customer" (onClick)="eventMessage = 'View ' + $any(row)['customer']" />
-      <j-button icon="edit" actionDisplay="icon" size="sm" variant="text" [ariaLabel]="'Edit ' + $any(row)['customer']" title="Edit customer" (onClick)="eventMessage = 'Edit ' + $any(row)['customer']" />
-      <j-button icon="delete" actionDisplay="icon" size="sm" variant="text" severity="danger" [ariaLabel]="'Delete ' + $any(row)['customer']" title="Delete customer" (onClick)="eventMessage = 'Delete ' + $any(row)['customer']" />
+      @if ($any(row)['status'] !== 'Approved') {
+        <j-button icon="check" actionDisplay="icon" size="sm" variant="text" severity="success" [ariaLabel]="'Complete ' + $any(row)['requesterName']" title="Complete request" (onClick)="eventMessage = 'Complete ' + $any(row)['requesterName']" />
+      }
+      <j-action-menu popup [actions]="requestMenuActions($any(row))" [row]="$any(row)" ariaLabel="Request actions" triggerLabel="Open request actions" (action)="onAction($event)" />
     </span>
   </ng-template>
 </j-table>${status}`;

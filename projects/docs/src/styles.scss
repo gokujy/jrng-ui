@@ -2133,13 +2133,16 @@ app-code-block {
 }
 
 .j-component-contents {
+  align-content: start;
   border-inline-start: 1px solid var(--j-color-border);
   display: grid;
   gap: var(--j-spacing-1);
   max-height: calc(100dvh - 8rem);
+  overscroll-behavior: contain;
   overflow-y: auto;
   padding-inline-start: var(--j-spacing-4);
   position: sticky;
+  scrollbar-gutter: stable;
   top: 5.5rem;
 }
 
@@ -2386,8 +2389,43 @@ app-code-block {
   width: 1.875rem;
 }
 
-.j-code-header .j-copy-button.j-copy-button--icon-only j-icon {
+.j-code-header .j-copy-button.j-copy-button--icon-only j-icon,
+.j-code-header .j-code-expand-button j-icon {
   font-size: 0.875rem;
+}
+
+.j-code-header .j-code-expand-button {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: var(--j-radius-sm);
+  color: #cbd5e1;
+  cursor: pointer;
+  display: inline-flex;
+  height: 1.875rem;
+  justify-content: center;
+  padding: 0;
+  width: 1.875rem;
+}
+
+.j-code-header .j-code-expand-button:hover {
+  background: color-mix(in srgb, var(--j-color-background) 14%, transparent);
+}
+
+.j-code-header .j-code-expand-button:focus-visible {
+  box-shadow: 0 0 0 2px var(--j-color-card);
+  outline: 2px solid var(--j-color-primary);
+  outline-offset: 1px;
+}
+
+.j-full-code .j-doc-code--collapsible pre {
+  box-sizing: border-box;
+  max-height: 320px;
+  overflow: auto;
+}
+
+.j-full-code.is-expanded .j-doc-code--collapsible pre {
+  max-height: none;
 }
 
 .j-table-doc-example {
@@ -3616,6 +3654,12 @@ app-code-block {
   font-size: var(--j-font-size-xs);
   font-weight: var(--j-font-weight-bold);
   padding: 0.125rem 0.375rem;
+}
+
+.j-doc-code__actions {
+  align-items: center;
+  display: inline-flex;
+  gap: var(--j-spacing-2);
 }
 
 .j-doc-code__header button {

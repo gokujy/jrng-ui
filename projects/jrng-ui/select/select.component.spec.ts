@@ -19,6 +19,7 @@ import {
       [options]="options"
       [error]="error"
       [searchable]="searchable"
+      [clearable]="clearable"
       [virtualScroll]="virtualScroll"
       [columns]="columns"
       sortable
@@ -35,6 +36,7 @@ class SelectHostComponent {
   control = new FormControl<string>('', { nonNullable: true });
   error = '';
   searchable = false;
+  clearable = false;
   virtualScroll = false;
   lastValue: unknown = '';
   lastFilter = '';
@@ -91,6 +93,23 @@ describe('JSelectComponent', () => {
     detectHostChanges();
 
     expect(trigger().textContent).toContain('Approved');
+  });
+
+  it('renders separate clear and dropdown icons when clearable', () => {
+    host.clearable = true;
+    host.control.setValue('approved');
+    detectHostChanges();
+
+    const wrapper = fixture.nativeElement.querySelector(
+      '.j-select__control-wrapper',
+    ) as HTMLElement;
+    const clear = wrapper.querySelector('.j-select__clear') as HTMLButtonElement;
+    const indicator = wrapper.querySelector('.j-select__indicator') as HTMLElement;
+
+    expect(wrapper.classList.contains('has-clear')).toBe(true);
+    expect(clear.querySelector('j-icon')).toBeTruthy();
+    expect(indicator).toBeTruthy();
+    expect(clear.getAttribute('aria-label')).toBe('Clear');
   });
 
   it('updates the form control and emits valueChange', () => {

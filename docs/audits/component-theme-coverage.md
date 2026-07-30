@@ -1,6 +1,6 @@
 # Component theme coverage
 
-Generated: jrng-ui 0.1.0
+Generated: jrng-ui 0.1.1
 
 Canonical public components: **122**
 

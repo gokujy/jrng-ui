@@ -25,8 +25,7 @@
   max-width: 100%;
   min-width: 0;
   min-height: var(--j-table-density-toolbar-height, var(--j-table-toolbar-height, 3rem));
-  padding: var(--j-table-toolbar-padding-y, 0.375rem)
-    var(--j-table-toolbar-padding-x, 0.75rem);
+  padding: var(--j-table-toolbar-padding-y, 0.375rem) var(--j-table-toolbar-padding-x, 0.75rem);
 }
 
 .j-table__heading {
@@ -47,7 +46,8 @@
 
 .j-table__toolbar-actions,
 .j-table__bulk-actions,
-.j-table__bulk-actions-content {
+.j-table__bulk-actions-content,
+.j-table__toolbar-content {
   align-items: center;
   display: flex;
   flex-wrap: wrap;
@@ -101,6 +101,10 @@
   min-height: 2rem;
   min-width: 2rem;
   padding: var(--j-spacing-xs, 0.25rem);
+}
+
+.j-table__columns--external summary {
+  display: none;
 }
 
 .j-table__columns-panel {
@@ -259,6 +263,89 @@ tbody tr:last-child td {
   background: var(--j-color-surface-muted);
 }
 
+.j-table--enterprise {
+  --j-table-border-color: color-mix(in srgb, var(--j-color-border) 88%, var(--j-color-text) 12%);
+  --j-table-cell-padding-x: 0.625rem;
+  --j-table-compact-cell-padding-y: 0.3125rem;
+  --j-table-compact-filter-control-height: 2.125rem;
+  --j-table-compact-filter-row-height: 2.875rem;
+  --j-table-compact-header-height: 2.25rem;
+  --j-table-compact-pagination-height: 3rem;
+  --j-table-compact-row-height: 2.75rem;
+  --j-table-compact-toolbar-height: 3.5rem;
+  --j-table-filter-control-bg: var(--j-color-surface);
+  --j-table-filter-row-bg: var(--j-color-card);
+  --j-table-frozen-bg: var(--j-color-card);
+  --j-table-header-bg: var(--j-color-card);
+  --j-table-row-hover-bg: color-mix(in srgb, var(--j-color-primary) 6%, var(--j-color-card));
+  border-radius: var(--j-table-enterprise-radius, 0.25rem);
+  box-shadow: var(--j-table-enterprise-shadow, 0 1px 3px rgb(15 23 42 / 8%));
+}
+
+.j-table--enterprise .j-table__toolbar {
+  background: var(--j-color-card);
+  min-height: var(--j-table-density-toolbar-height);
+  padding: 0.5rem 0.625rem;
+}
+
+.j-table--enterprise .j-table__toolbar-content {
+  flex: 1 1 100%;
+  margin: 0;
+  min-width: 0;
+  width: 100%;
+}
+
+.j-table--enterprise .j-table__toolbar > j-button {
+  --j-button-height-sm: 2.25rem;
+  --j-button-radius: 0.25rem;
+}
+
+.j-table--enterprise th,
+.j-table--enterprise td {
+  border-inline-end: 1px solid var(--j-table-border-color);
+  font-size: var(--j-table-enterprise-font-size, 0.8125rem);
+}
+
+.j-table--enterprise th {
+  letter-spacing: 0;
+}
+
+.j-table--enterprise tbody tr:last-child td {
+  border-bottom: 1px solid var(--j-table-border-color);
+}
+
+.j-table--enterprise .j-table__filter-row th {
+  border-top: 1px solid var(--j-table-border-color);
+  padding: 0.3125rem 0.5rem;
+}
+
+.j-table--enterprise .j-table__sort {
+  gap: 0.375rem;
+}
+
+.j-table--enterprise .j-table__image {
+  border-radius: 50%;
+}
+
+.j-table--enterprise .j-table__status,
+.j-table--enterprise .j-table__badge,
+.j-table--enterprise .j-table__tag {
+  border: 1px solid color-mix(in srgb, currentColor 24%, transparent);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  line-height: 1.15;
+  padding: 0.25rem 0.5rem;
+}
+
+.j-table--enterprise .j-table__scroll {
+  scrollbar-color: var(--j-color-primary) var(--j-color-surface-muted);
+  scrollbar-width: thin;
+}
+
+.j-table--enterprise .j-table__paginator {
+  --j-paginator-bg: var(--j-color-card);
+}
+
 .j-table__advanced-filters,
 .j-table__filter-menu {
   position: relative;
@@ -382,7 +469,10 @@ tbody tr.is-frozen td {
 }
 
 .j-table--density-comfortable {
-  --j-table-density-filter-control-height: var(--j-table-comfortable-filter-control-height, 2.25rem);
+  --j-table-density-filter-control-height: var(
+    --j-table-comfortable-filter-control-height,
+    2.25rem
+  );
   --j-table-density-filter-row-height: var(--j-table-comfortable-filter-row-height, 3rem);
   --j-table-density-header-height: var(--j-table-comfortable-header-height, 2.625rem);
   --j-table-density-pagination-height: var(--j-table-comfortable-pagination-height, 2.875rem);
@@ -426,6 +516,8 @@ tbody tr.is-frozen td {
 
 .j-table.is-maximized .j-table__scroll {
   flex: 1 1 auto;
+  height: auto !important;
+  max-height: none !important;
   min-height: 0;
 }
 

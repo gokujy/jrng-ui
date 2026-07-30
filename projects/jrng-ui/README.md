@@ -71,7 +71,7 @@ Only versions exercised by the project build and test workflow are listed.
 
 | JRNG UI version | Supported Angular versions |
 | --------------- | -------------------------- |
-| 0.1.0 (current) | Angular 21.2.x             |
+| 0.1.1 (current) | Angular 21.2.x             |
 
 Required runtime peers are Angular common, core, forms, and platform-browser. Router and Chart.js are optional peers for features that use them; Tour Guide is native JRNG UI.
 
