@@ -1111,6 +1111,7 @@ export const generatedComponentRegistry = [
       'selectAllVisible()',
       'setDisabledState()',
       'toggle()',
+      'toggleAllVisible()',
       'toggleOption()',
       'unselectAllVisible()',
       'writeValue()',

@@ -4,10 +4,16 @@ import process from 'node:process';
 
 const workspaceRoot = process.cwd();
 const packageDirectory = path.join(workspaceRoot, 'dist', 'jrng-ui');
+const registryFile = path.join('registry', 'registry.json');
 
 if (!fs.existsSync(path.join(packageDirectory, 'package.json'))) {
   throw new Error('The jrng-ui package has not been built.');
 }
+
+fs.copyFileSync(
+  path.join(workspaceRoot, 'projects', 'jrng-ui', registryFile),
+  path.join(packageDirectory, registryFile),
+);
 
 for (const fileName of ['LICENSE', 'CHANGELOG.md']) {
   fs.copyFileSync(path.join(workspaceRoot, fileName), path.join(packageDirectory, fileName));
