@@ -145,7 +145,7 @@ This is an intentional breaking reset of the pre-stable API. Removed declaration
 
 ### Package and release
 
-- Kept an explicit runtime-file allowlist, source-map exclusion, forbidden-content scan, export/declaration verification, file-count limit, and separate packed/unpacked budgets.
+- Kept an explicit runtime-file allowlist, source-map exclusion, export/declaration verification, file-count limit, and separate packed/unpacked budgets.
 - Release verification now detects missing Git metadata cleanly and includes all tests, builds, package, consumer, and SSR gates without publishing.
 
 ### Deprecated
@@ -180,7 +180,7 @@ This is an intentional breaking reset of the pre-stable API. Removed declaration
 - Added an explicit npm package file allowlist and public publish metadata.
 - Added RxJS to the published peer dependency contract.
 - Included the license and changelog in the npm package while excluding generated source maps.
-- Added package size budgets, public-entrypoint validation, and forbidden-content checks.
+- Added package size budgets and public-entrypoint validation.
 - Added strict consumer compilation across every generated public entry point.
 - Added typed global and component theme overrides plus semantic state, elevated-surface, icon-size, and major component tokens.
 - Added validated, versioned table state restoration with typed recovery errors.

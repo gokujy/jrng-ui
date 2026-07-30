@@ -38,7 +38,7 @@ for (const component of inventory.components) {
   );
 }
 
-const forbidden = [
+const placeholderPatterns = [
   /Coming soon/i,
   /Documentation planned/i,
   /Example pending/i,
@@ -53,11 +53,11 @@ const forbidden = [
   /no backing fields are required/i,
   /Static example/i,
 ];
-for (const pattern of forbidden) {
-  check(!pattern.test(previewSource), `Forbidden rendered documentation phrase: ${pattern.source}`);
+for (const pattern of placeholderPatterns) {
+  check(!pattern.test(previewSource), `Placeholder phrase found in rendered documentation: ${pattern.source}`);
   check(
     !pattern.test(registrySource),
-    `Forbidden generated documentation phrase: ${pattern.source}`,
+    `Placeholder phrase found in generated documentation: ${pattern.source}`,
   );
 }
 

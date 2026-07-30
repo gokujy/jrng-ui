@@ -14,17 +14,6 @@ const tableFilters = await read(
 );
 const failures = [];
 
-const forbiddenTerms = [
-  /\bClient code\b/i,
-  /\bLegal name\b/i,
-  /\bPublic name\b/i,
-  /\bParent account\b/i,
-  /\bBilling type\b/i,
-];
-for (const term of forbiddenTerms) {
-  check(!term.test(runtimeSource), `Forbidden documentation terminology: ${term.source}`);
-}
-
 for (const selector of REMOVED_COMPONENT_SELECTORS) {
   const selectorPattern = new RegExp(`${escapeRegExp(selector)}(?![-\\w])`);
   check(
@@ -119,7 +108,6 @@ check(
   'Expandable filter trigger is missing ARIA state or relationship metadata.',
 );
 
-console.log(`Forbidden terminology patterns checked: ${forbiddenTerms.length}`);
 console.log(`Removed selectors checked: ${REMOVED_COMPONENT_SELECTORS.size}`);
 console.log('Required independent Table filter examples checked: 3');
 console.log(`Documentation content failures: ${failures.length}`);

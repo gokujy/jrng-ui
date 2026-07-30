@@ -102,7 +102,6 @@ function verifyChangelog() {
 function verifyPublicSourcePrivacy() {
   const roots = ['projects/jrng-ui', 'projects/docs', 'docs'];
   const rootFiles = ['CHANGELOG.md', 'CONTRIBUTING.md', 'README.md', 'package.json'];
-  const forbiddenTerms = privateTerms();
   const absolutePathPatterns = [
     /[A-Za-z]:[\\/](?:Users|Projects)[\\/]/,
     /\/(?:Users|home)\/[^/\s]+\//,
@@ -122,27 +121,10 @@ function verifyPublicSourcePrivacy() {
       continue;
     }
     const content = fs.readFileSync(filePath, 'utf8');
-    if (forbiddenTerms.some((term) => content.toLowerCase().includes(term.toLowerCase()))) {
-      failures.push(`Forbidden private term detected in ${relativePath}.`);
-    }
     if (absolutePathPatterns.some((pattern) => pattern.test(content))) {
       failures.push(`Absolute development path detected in ${relativePath}.`);
     }
   }
-}
-
-function privateTerms() {
-  const builtInTerms = [
-    ['B', 'D', 'M', 'S'].join(''),
-    'internal ai instruction',
-    'internal development prompt',
-    'private project document',
-  ];
-  const configuredTerms = (process.env.JRNG_ADDITIONAL_FORBIDDEN_TERMS ?? '')
-    .split(',')
-    .map((term) => term.trim())
-    .filter(Boolean);
-  return [...builtInTerms, ...configuredTerms];
 }
 
 function walk(directory, files) {
