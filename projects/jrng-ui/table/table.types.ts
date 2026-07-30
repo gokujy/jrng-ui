@@ -41,7 +41,7 @@ export type JTableMatchMode =
   | 'dateAfter'
   | 'dateBetween';
 export type JTableDensity = JDensity;
-export type JTableVariant = 'standard' | 'gridlines' | 'striped' | 'minimal';
+export type JTableVariant = 'standard' | 'gridlines' | 'striped' | 'minimal' | 'enterprise';
 export type JTableLoadingVariant = 'skeleton' | 'spinner' | 'progress' | 'overlay';
 export type JTableEmptyState = 'no-data' | 'no-results' | 'error';
 export type JTableEmptyStateMode = 'auto' | JTableEmptyState;
@@ -205,6 +205,8 @@ export interface JTableFilterOption<T = unknown> {
 }
 
 export interface JTableColumnFilter {
+  /** Backend/row field used by this filter when it differs from the displayed column field. */
+  readonly field?: string;
   readonly type?: JTableFilterType;
   readonly operator?: JTableFilterOperator;
   readonly operators?: readonly JTableFilterOperator[];
@@ -261,11 +263,15 @@ export interface JTableColumn<T extends object = JTableRow> {
   readonly maxWidth?: string;
   readonly align?: JTableColumnAlign;
   readonly headerAlign?: JTableColumnAlign;
+  /** Keeps long content on one line by default. Set to true to allow wrapping. */
+  readonly wrap?: boolean;
   readonly type?: JTableColumnType;
   readonly visible?: boolean;
   readonly hidden?: boolean;
   readonly frozen?: boolean;
   readonly frozenAlign?: 'start' | 'end' | 'left' | 'right';
+  /** Preferred alias for `frozenAlign`. */
+  readonly frozenPosition?: 'start' | 'end' | 'left' | 'right';
   readonly responsivePriority?: number;
   readonly templateKey?: string;
   readonly actions?: readonly JTableAction[];
@@ -274,6 +280,19 @@ export interface JTableColumn<T extends object = JTableRow> {
   valueGetter?(row: T, column: JTableColumn<T>): unknown;
   formatter?(value: unknown, row: T, column: JTableColumn<T>): string | number | null | undefined;
   sortComparator?(left: T, right: T, column: JTableColumn<T>): number;
+}
+
+export type JTableToolbarActionKey =
+  'columns' | 'filters' | 'clear-filters' | 'refresh' | 'export' | 'fullscreen';
+
+export interface JTableToolbarAction {
+  readonly key: JTableToolbarActionKey;
+  readonly label?: string;
+  readonly icon?: string;
+  readonly disabled?: boolean;
+  readonly loading?: boolean;
+  readonly severity?:
+    'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | 'neutral';
 }
 
 export interface JTableSkeletonColumn {

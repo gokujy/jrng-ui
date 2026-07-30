@@ -1,0 +1,6 @@
+{
+  "name": "jrng-ui/speech-to-text",
+  "sideEffects": [
+    "*.scss"
+  ]
+}

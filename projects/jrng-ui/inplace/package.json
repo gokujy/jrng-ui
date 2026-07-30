@@ -1,0 +1,6 @@
+{
+  "name": "jrng-ui/inplace",
+  "sideEffects": [
+    "./inplace.component.scss"
+  ]
+}

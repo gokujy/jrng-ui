@@ -923,7 +923,7 @@ export class JDatePickerComponent implements ControlValueAccessor {
   readonly required = input(false, { transform: booleanAttribute });
   readonly showIcon = input(true, { transform: booleanAttribute });
   readonly showButtonBar = input(true, { transform: booleanAttribute });
-  readonly showClear = input(true, { transform: booleanAttribute });
+  readonly showClear = input(false, { transform: booleanAttribute });
   readonly disabledDates = input<readonly (Date | string)[]>([]);
   readonly presets = input<readonly JDatePickerPreset[]>([]);
   readonly showTime = input(false, { transform: booleanAttribute });

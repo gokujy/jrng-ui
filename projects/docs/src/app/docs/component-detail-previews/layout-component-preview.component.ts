@@ -64,25 +64,40 @@ import {
         </div>
       }
       @case ('grid-layout') {
-        <j-grid-layout
-          [columns]="example.key === 'dashboard' ? 2 : 3"
-          [minItemWidth]="example.key === 'dashboard' ? '16rem' : '12rem'"
-          [gap]="example.key === 'dashboard' ? 'var(--j-spacing-5)' : 'var(--j-spacing-3)'"
-        >
-          <j-card
-            [header]="example.key === 'dashboard' ? 'Revenue' : 'Design'"
-            subheader="Responsive tile"
-            variant="outlined"
-          />
-          <j-card
-            [header]="example.key === 'dashboard' ? 'Active users' : 'Build'"
-            subheader="Responsive tile"
-            variant="outlined"
-          />
-          @if (example.key !== 'dashboard') {
-            <j-card header="Ship" subheader="Responsive tile" variant="outlined" />
-          }
-        </j-grid-layout>
+        @if (example.key === 'interactive' || example.key === 'responsive') {
+          <j-grid-layout
+            [(layout)]="customerDashboardLayout"
+            [columns]="4"
+            [responsiveLayouts]="customerResponsiveLayouts"
+            [draggable]="example.key === 'interactive'"
+            [resizable]="example.key === 'interactive'"
+            compact
+          >
+            <ng-template jGridLayoutItem let-tile>
+              <j-card [header]="tile.title" subheader="Dashboard tile" variant="outlined" />
+            </ng-template>
+          </j-grid-layout>
+        } @else {
+          <j-grid-layout
+            [columns]="example.key === 'dashboard' ? 2 : 3"
+            [minItemWidth]="example.key === 'dashboard' ? '16rem' : '12rem'"
+            [gap]="example.key === 'dashboard' ? 'var(--j-spacing-5)' : 'var(--j-spacing-3)'"
+          >
+            <j-card
+              [header]="example.key === 'dashboard' ? 'Revenue' : 'Design'"
+              subheader="Responsive tile"
+              variant="outlined"
+            />
+            <j-card
+              [header]="example.key === 'dashboard' ? 'Active users' : 'Build'"
+              subheader="Responsive tile"
+              variant="outlined"
+            />
+            @if (example.key !== 'dashboard') {
+              <j-card header="Ship" subheader="Responsive tile" variant="outlined" />
+            }
+          </j-grid-layout>
+        }
       }
       @case ('grid') {
         <div class="j-doc-grid-demo">

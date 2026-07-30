@@ -153,4 +153,49 @@ describe('JButtonComponent', () => {
     expect(native.getAttribute('aria-expanded')).toBe('true');
     expect(native.getAttribute('aria-controls')).toBe('details-panel');
   });
+
+  it('clamps determinate progress and exposes accessible progress semantics', () => {
+    const direct = TestBed.createComponent(JButtonComponent);
+    direct.componentRef.setInput('label', 'Upload customers');
+    direct.componentRef.setInput('progress', 140);
+    direct.componentRef.setInput('progressLabel', true);
+    direct.componentRef.setInput('progressState', 'running');
+    direct.detectChanges();
+    const native = direct.nativeElement.querySelector('button') as HTMLButtonElement;
+    const progress = native.querySelector('[role="progressbar"]');
+    expect(progress?.getAttribute('aria-valuenow')).toBe('100');
+    expect(progress?.getAttribute('aria-valuetext')).toBe('100%');
+    expect(native.querySelector('.j-button__progress-fill')?.getAttribute('style')).toContain(
+      '100%',
+    );
+    expect(native.textContent).toContain('100%');
+    expect(native.disabled).toBe(true);
+  });
+
+  it('emits cancel instead of onClick for a cancelable running action', () => {
+    const direct = TestBed.createComponent(JButtonComponent);
+    let clicks = 0;
+    let cancellations = 0;
+    direct.componentInstance.onClick.subscribe(() => clicks++);
+    direct.componentInstance.cancel.subscribe(() => cancellations++);
+    direct.componentRef.setInput('progress', 42);
+    direct.componentRef.setInput('progressState', 'running');
+    direct.componentRef.setInput('cancelable', true);
+    direct.detectChanges();
+    (direct.nativeElement.querySelector('button') as HTMLButtonElement).click();
+    expect(clicks).toBe(0);
+    expect(cancellations).toBe(1);
+  });
+
+  it('applies success, error, and cancelled progress appearance without loading', () => {
+    const direct = TestBed.createComponent(JButtonComponent);
+    for (const state of ['success', 'error', 'cancelled'] as const) {
+      direct.componentRef.setInput('progressState', state);
+      direct.componentRef.setInput('progress', 100);
+      direct.detectChanges();
+      const native = direct.nativeElement.querySelector('button') as HTMLButtonElement;
+      expect(native.classList).toContain(`j-button--progress-${state}`);
+      expect(native.getAttribute('aria-busy')).toBe('false');
+    }
+  });
 });

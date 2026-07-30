@@ -1,5 +1,37 @@
 # Changelog
 
+## 0.1.1
+
+### Added
+
+- Added experimental `jrng-ui/popout` with Portal-based standard and Document
+  Picture-in-Picture windows, bidirectional communication, live theme/style
+  synchronization, focus restoration, cleanup, and popup-blocked fallbacks.
+- Added `jrng-ui/signature` with Angular Forms, pointer and pressure drawing,
+  undo/redo, responsive high-DPI rendering, validation, import, and PNG, SVG,
+  Blob, and Base64 exports.
+- Added `jrng-ui/speech-to-text` with an injectable SSR-safe recognition
+  service, caret-aware input directive, explicit-action button, interim/final
+  transcripts, and typed browser error states.
+- Added `jrng-ui/speed-dial` with linear, circular, fixed, async, keyboard, RTL,
+  mask, and custom-trigger support.
+- Added determinate progress, outcome states, accessible percentage reporting,
+  and cancellation to `j-button`.
+- Added opt-in controlled dragging, resizing, collision handling, compact
+  placement, responsive layouts, persistence, keyboard controls, and reset to
+  `j-grid-layout`.
+
+- Added beta `jrng-ui/inplace`, `jrng-ui/anchor`, `jrng-ui/affix`, and `jrng-ui/watermark` entrypoints with editable content, scroll spy, layout-preserving affix, print support, accessibility, and SSR-safe observer cleanup.
+
+- Added beta `jrng-ui/split-button`, `jrng-ui/tree-select`, `jrng-ui/cascader`, and `jrng-ui/mention` entrypoints with Forms, keyboard, async, responsive, accessibility, and SSR-safe behavior.
+- Added backwards-compatible multi-column, sortable, custom-cell, virtualized, and responsive stacked option rendering to `j-select`.
+
+- Added beta `jrng-ui/pull-to-refresh` and `jrng-ui/swipe-actions` entrypoints with shared gesture handling, async state management, accessibility fallbacks, live previews, and SSR-safe cleanup.
+
+- Added the beta `jrng-ui/portal`, `jrng-ui/gesture`, `jrng-ui/truncate`, and
+  `jrng-ui/drag-drop` foundations with SSR-safe lifecycle cleanup, accessible keyboard
+  alternatives, direct tests, and live documentation.
+
 ## 0.1.0
 
 ### Added
@@ -113,7 +145,7 @@ This is an intentional breaking reset of the pre-stable API. Removed declaration
 
 ### Package and release
 
-- Kept an explicit runtime-file allowlist, source-map exclusion, forbidden-content scan, export/declaration verification, file-count limit, and separate packed/unpacked budgets.
+- Kept an explicit runtime-file allowlist, source-map exclusion, export/declaration verification, file-count limit, and separate packed/unpacked budgets.
 - Release verification now detects missing Git metadata cleanly and includes all tests, builds, package, consumer, and SSR gates without publishing.
 
 ### Deprecated
@@ -148,7 +180,7 @@ This is an intentional breaking reset of the pre-stable API. Removed declaration
 - Added an explicit npm package file allowlist and public publish metadata.
 - Added RxJS to the published peer dependency contract.
 - Included the license and changelog in the npm package while excluding generated source maps.
-- Added package size budgets, public-entrypoint validation, and forbidden-content checks.
+- Added package size budgets and public-entrypoint validation.
 - Added strict consumer compilation across every generated public entry point.
 - Added typed global and component theme overrides plus semantic state, elevated-surface, icon-size, and major component tokens.
 - Added validated, versioned table state restoration with typed recovery errors.

@@ -67,7 +67,7 @@ interface FooterGroup {
           <div class="docs-home-hero__copy">
             <span class="docs-home-pill">
               <span aria-hidden="true"></span>
-              jrng-ui@0.1.0 · Angular 21
+              jrng-ui@0.1.1 · Angular 21
             </span>
 
             <h1>

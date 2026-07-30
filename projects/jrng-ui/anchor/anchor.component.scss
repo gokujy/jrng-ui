@@ -1,0 +1,71 @@
+:host {
+  display: block;
+}
+
+.j-anchor__nav {
+  display: flex;
+  flex-direction: column;
+  border-inline-start: 1px solid var(--j-color-border);
+}
+
+.j-anchor__link {
+  position: relative;
+  color: var(--j-color-text-muted);
+  padding: var(--j-spacing-2) var(--j-spacing-3);
+  padding-inline-start: calc(var(--j-spacing-3) + var(--j-anchor-level, 0) * 1rem);
+  text-decoration: none;
+}
+
+.j-anchor__link::before {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: -1px;
+  inline-size: 2px;
+  background: transparent;
+  content: '';
+}
+
+.j-anchor__link:hover,
+.j-anchor__link.is-active {
+  color: var(--j-color-primary);
+}
+
+.j-anchor__link.is-active::before {
+  background: var(--j-color-primary);
+}
+
+.j-anchor__link:focus-visible {
+  border-radius: var(--j-radius-sm);
+  outline: 2px solid var(--j-color-focus-ring);
+  outline-offset: 2px;
+}
+
+.j-anchor__link.is-disabled {
+  color: var(--j-color-text-disabled);
+  cursor: not-allowed;
+}
+
+:host(.j-anchor--horizontal) .j-anchor__nav {
+  flex-direction: row;
+  overflow-x: auto;
+  border-block-end: 1px solid var(--j-color-border);
+  border-inline-start: 0;
+}
+
+:host(.j-anchor--horizontal) .j-anchor__link {
+  flex: 0 0 auto;
+  padding-inline-start: var(--j-spacing-3);
+}
+
+:host(.j-anchor--horizontal) .j-anchor__link::before {
+  inset-block: auto -1px;
+  inset-inline: 0;
+  block-size: 2px;
+  inline-size: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .j-anchor__link {
+    scroll-behavior: auto;
+  }
+}

@@ -49,6 +49,17 @@ describe('JDatePickerComponent', () => {
       expect(icon?.getAttribute('d')).toContain('M8 2v4');
     });
 
+    it('does not show a trigger cross by default but keeps it available as an opt-in', () => {
+      const fixture = createPicker();
+      fixture.componentInstance.selectDate(new Date(2026, 0, 15));
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('.j-date-picker__clear')).toBeNull();
+
+      fixture.componentRef.setInput('showClear', true);
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('.j-date-picker__clear')).toBeTruthy();
+    });
+
     it('applies reusable presets in range selection mode', () => {
       const fixture = TestBed.createComponent(JDatePickerComponent);
       fixture.componentRef.setInput('selectionMode', 'range');

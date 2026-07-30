@@ -26,6 +26,7 @@ export type JButtonIconPosition = 'left' | 'right';
 export type JButtonVariant = JActionVariant;
 export type JButtonSeverity = JSeverity;
 export type JButtonSize = JComponentSize;
+export type JButtonProgressState = 'idle' | 'running' | 'success' | 'error' | 'cancelled';
 
 @Component({
   selector: 'j-button',
@@ -62,10 +63,27 @@ export class JButtonComponent {
   readonly badge = input<string | number | null>(null);
   readonly badgeAriaLabel = input('');
   readonly loadingLabel = input('Loading');
+  readonly tabindex = input<number | null>(null);
+  readonly progress = input<number | null>(null);
+  readonly progressLabel = input(false, { transform: booleanAttribute });
+  readonly progressState = input<JButtonProgressState>('idle');
+  readonly cancelable = input(false, { transform: booleanAttribute });
+  readonly blockWhileRunning = input(true, { transform: booleanAttribute });
 
   readonly onClick = output<MouseEvent>();
+  readonly cancel = output<MouseEvent>();
 
-  readonly isBlocked = computed(() => this.disabled() || this.loading());
+  readonly normalizedProgress = computed(() => {
+    const value = this.progress();
+    return value === null || !Number.isFinite(value) ? null : Math.max(0, Math.min(100, value));
+  });
+  readonly isProgressRunning = computed(() => this.progressState() === 'running');
+  readonly isBlocked = computed(
+    () =>
+      this.disabled() ||
+      this.loading() ||
+      (this.isProgressRunning() && this.blockWhileRunning() && !this.cancelable()),
+  );
 
   readonly buttonClasses = computed(() =>
     jMergePartClasses(
@@ -78,6 +96,8 @@ export class JButtonComponent {
         this.width() === 'full' ? 'j-button--full' : '',
         this.actionDisplay() === 'icon' ? 'j-button--icon-only' : '',
         this.loading() ? 'is-loading' : '',
+        this.normalizedProgress() !== null ? 'j-button--progress' : '',
+        `j-button--progress-${this.progressState()}`,
       ],
       this.styleClass(),
       this.pt(),
@@ -85,6 +105,10 @@ export class JButtonComponent {
   );
 
   handleClick(event: MouseEvent): void {
+    if (this.isProgressRunning() && this.cancelable() && !this.disabled() && !this.loading()) {
+      this.cancel.emit(event);
+      return;
+    }
     if (this.isBlocked()) {
       event.preventDefault();
       event.stopImmediatePropagation();

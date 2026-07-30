@@ -286,6 +286,170 @@ export class SafeActionComponent { readonly browser = isPlatformBrowser(inject(P
     related: related('Core', 'Clipboard', 'Chart', 'Tour Guide'),
   },
   {
+    slug: 'interaction-foundations',
+    title: 'Use portals, gestures, middle truncation and drag-drop',
+    description:
+      'Compose dynamic Angular content and accessible pointer interactions with the JRNG UI foundations.',
+    problem:
+      'Dynamic content, touch gestures and reordering need consistent lifecycle, cancellation, SSR and keyboard behavior instead of repeated page-level listeners.',
+    implementation: [
+      'Import each foundation from its modular jrng-ui entrypoint.',
+      'Attach templates or components through a portal outlet and destroy the returned reference.',
+      'Consume structured gesture events and keep rendering state in the owning component.',
+      'Provide keyboard reorder commands and visible action alternatives for every essential pointer interaction.',
+    ],
+    code: `import { Component } from '@angular/core';
+import { JDragDirective, JDropListDirective } from 'jrng-ui/drag-drop';
+import { JPanDirective, JSwipeDirective, JZoomDirective } from 'jrng-ui/gesture';
+import { JPortalDirective, JPortalOutletDirective } from 'jrng-ui/portal';
+import { JTruncateMiddleDirective } from 'jrng-ui/truncate';
+
+@Component({
+  selector: 'app-customer-tools',
+  imports: [JDragDirective, JDropListDirective, JPanDirective, JSwipeDirective, JZoomDirective, JPortalDirective, JPortalOutletDirective, JTruncateMiddleDirective],
+  template: \`
+    <ng-template [jPortal]="outlet" #toolbar="jPortal">Customer toolbar</ng-template>
+    <div jPortalOutlet #outlet="jPortalOutlet"></div>
+    <span [jTruncateMiddle]="'customer-contract-final.pdf'" preserveExtension></span>
+    <div jSwipe jPan jZoom aria-label="Customer canvas"></div>
+    <div jDropList [(data)]="customers">
+      @for (customer of customers; track customer) {
+        <div jDrag [data]="customer" [dragLabel]="customer">{{ customer }}</div>
+      }
+    </div>
+  \`,
+})
+export class CustomerToolsComponent {
+  customers = ['Aster Labs', 'Northstar'];
+}`,
+    explanation: [
+      'JTemplatePortal and JComponentPortal preserve Angular injection and lifecycle; JDomPortal restores its original DOM position on detach.',
+      'Swipe, pan and zoom emit data without imposing transforms, which keeps application rendering and reduced-motion choices explicit.',
+      'Middle truncation can use a character budget or measured width and retains the full accessible value.',
+      'Connected drop lists emit previous and current containers and update two-way-bound data while Escape restores the original state.',
+      'Portal DOM movement and all observers are browser guarded; template and component portals remain safe during SSR.',
+      'Inputs update synchronously for zoneless Angular. Pointer listeners, observers, views and previews are removed on destroy.',
+    ],
+    accessibility: [
+      'Essential swipe, pan and zoom operations need named buttons or keyboard commands that perform the same action.',
+      'Drag items support Control plus Arrow keys, announce movement and restore focus after keyboard reorder.',
+      'Middle-truncated text retains the full value through aria-label and an optional title.',
+      'Disabled drag items and lists expose aria-disabled and do not begin pointer or keyboard movement.',
+      'Use semantic theme tokens for previews, placeholders and focus states; high-contrast mode must retain a visible outline.',
+    ],
+    mistakes: [
+      'Attaching one portal instance to multiple outlets at the same time.',
+      'Applying both touch and pointer listeners for the same interaction.',
+      'Starting a drag from a button, link, form field or text selection.',
+      'Using gesture-only controls without a keyboard-accessible alternative.',
+    ],
+    related: related('Button', 'Menu', 'Tooltip', 'Tree'),
+  },
+  {
+    slug: 'hierarchical-inputs',
+    title: 'Build hierarchical inputs, mentions, and split actions',
+    description:
+      'Compose customer workflows with Split Button, Tree Select, Cascader, Mention, and multi-column Select.',
+    problem:
+      'Hierarchical choices, caret suggestions, and related actions need distinct keyboard models while sharing form, overlay, theme, and accessibility foundations.',
+    implementation: [
+      'Import each feature from its modular jrng-ui entrypoint.',
+      'Bind Tree Select and Cascader through Angular Forms and use stable node or option values.',
+      'Configure Mention triggers and a synchronous or promise-based data source.',
+      'Pass columns to the existing Select only when structured option comparison is useful.',
+    ],
+    code: `import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { JCascaderComponent } from 'jrng-ui/cascader';
+import { JMentionDirective } from 'jrng-ui/mention';
+import { JSelectComponent } from 'jrng-ui/select';
+import { JSplitButtonComponent } from 'jrng-ui/split-button';
+import { JTreeSelectComponent } from 'jrng-ui/tree-select';
+
+@Component({
+  selector: 'app-customer-routing',
+  imports: [FormsModule, JCascaderComponent, JMentionDirective, JSelectComponent, JSplitButtonComponent, JTreeSelectComponent],
+  template: \`
+    <j-tree-select label="Customer segment" [nodes]="segments" [(ngModel)]="segment" />
+    <j-cascader label="Location" [options]="locations" [(ngModel)]="location" />
+    <textarea [jMention]="people" placeholder="Mention an account manager"></textarea>
+    <j-select label="Customer" [options]="customers" [columns]="columns" optionLabel="name" optionValue="id" />
+    <j-split-button label="Save customer" [model]="saveActions" (primaryAction)="save()" />
+  \`,
+})
+export class CustomerRoutingComponent {}`,
+    explanation: [
+      'Tree Select reuses JRNG Tree semantics while Cascader provides path-oriented columns.',
+      'Mention positions a listbox at the caret and discards stale asynchronous responses.',
+      'Multi-column Select is opt-in and preserves the existing flat Select API.',
+      'All panels restore focus and detach their overlay resources on close or destroy.',
+    ],
+    accessibility: [
+      'Every pointer interaction has a complete keyboard path and visible focus.',
+      'Loading and error states use live-region semantics.',
+      'Narrow layouts retain named controls and logical RTL positioning.',
+      'Disabled and read-only states block modification through every interaction path.',
+    ],
+    mistakes: [
+      'Using Cascader for multi-branch selection instead of Tree Select.',
+      'Making a gesture or caret suggestion the only way to complete an essential task.',
+      'Using unstable object identity for tree keys or final cascader values.',
+      'Adding another Select component instead of enabling columns on j-select.',
+    ],
+    related: related('Split Button', 'Tree Select', 'Cascader', 'Select'),
+  },
+  {
+    slug: 'layout-behaviors',
+    title: 'Build editable, anchored, affixed, and watermarked surfaces',
+    description:
+      'Use Inplace, Anchor, Affix, and Watermark for focused customer-detail and document layouts.',
+    problem:
+      'Long business surfaces need compact editing, section navigation, persistent actions, and document classification without losing keyboard access, layout stability, or SSR safety.',
+    implementation: [
+      'Use Inplace templates for display, editor, and action modes.',
+      'Provide stable section ids to Anchor and configure any fixed-header offset.',
+      'Apply jAffix to an existing toolbar and identify its scroll and boundary containers.',
+      'Wrap content with Watermark and use a low-opacity text or image tile.',
+    ],
+    code: `import { Component } from '@angular/core';
+import { JAffixDirective } from 'jrng-ui/affix';
+import { JAnchorComponent } from 'jrng-ui/anchor';
+import { JInplaceComponent } from 'jrng-ui/inplace';
+import { JWatermarkComponent } from 'jrng-ui/watermark';
+
+@Component({
+  selector: 'app-customer-detail',
+  imports: [JAffixDirective, JAnchorComponent, JInplaceComponent, JWatermarkComponent],
+  template: \`
+    <j-anchor [links]="sections" [offset]="64" />
+    <div jAffix [offset]="64">Customer filters</div>
+    <j-watermark [text]="['INTERNAL', customer.company]">
+      <j-inplace>Customer details</j-inplace>
+    </j-watermark>
+  \`,
+})
+export class CustomerDetailComponent {}`,
+    explanation: [
+      'Inplace lazily creates editor content and restores focus after save or cancel.',
+      'Anchor observes sections only in the browser and retains direct fragment navigation as a fallback.',
+      'Affix inserts a measured placeholder so fixed positioning does not shift surrounding content.',
+      'Watermark is decorative, pointer-transparent, dynamically generated, and printable.',
+    ],
+    accessibility: [
+      'Every editable and navigation action is keyboard accessible with visible focus.',
+      'Affix does not reorder the document or add a focus stop.',
+      'Watermark is hidden from assistive technology and never blocks projected controls.',
+      'Reduced-motion preferences disable smooth Anchor scrolling.',
+    ],
+    mistakes: [
+      'Affixing content without a boundary in a long nested scroll surface.',
+      'Using duplicate or unstable section ids.',
+      'Using a watermark as an authorization mechanism.',
+      'Hiding save errors or allowing duplicate async saves.',
+    ],
+    related: related('Inplace', 'Anchor', 'Watermark', 'Button'),
+  },
+  {
     slug: 'zoneless',
     title: 'Use JRNG UI with zoneless Angular',
     description:

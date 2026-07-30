@@ -2,10 +2,11 @@
 export const generatedComponentCategories = [
   {
     name: 'Form',
-    count: 30,
+    count: 33,
     selectors: [
       'j-autocomplete',
       'j-checkbox',
+      'j-cascader',
       'j-chips',
       'j-color-picker',
       'j-cron-expression',
@@ -29,17 +30,25 @@ export const generatedComponentCategories = [
       'j-rating',
       'j-select',
       'j-select-button',
+      'j-signature',
       'j-slider',
       'j-switch',
       'j-textarea',
       'j-time-picker',
       'j-toggle-button',
+      'j-tree-select',
     ],
   },
   {
     name: 'Button',
-    count: 2,
-    selectors: ['j-button', 'j-copy-button'],
+    count: 5,
+    selectors: [
+      'j-button',
+      'j-copy-button',
+      'j-speed-dial',
+      'j-speech-to-text-button',
+      'j-split-button',
+    ],
   },
   {
     name: 'Data',
@@ -65,7 +74,7 @@ export const generatedComponentCategories = [
   },
   {
     name: 'Panel',
-    count: 15,
+    count: 16,
     selectors: [
       'j-accordion',
       'j-accordion-content',
@@ -74,6 +83,7 @@ export const generatedComponentCategories = [
       'j-card',
       'j-divider',
       'j-fieldset',
+      'j-inplace',
       'j-panel',
       'j-splitter',
       'j-splitter-panel',
@@ -86,7 +96,7 @@ export const generatedComponentCategories = [
   },
   {
     name: 'Overlay',
-    count: 8,
+    count: 9,
     selectors: [
       'j-bottom-sheet',
       'j-confirm-dialog',
@@ -96,13 +106,15 @@ export const generatedComponentCategories = [
       'j-dynamic-dialog',
       'j-notification-center',
       'j-popover',
+      'j-popout',
     ],
   },
   {
     name: 'Menu',
-    count: 9,
+    count: 10,
     selectors: [
       'j-action-menu',
+      'j-anchor',
       'j-breadcrumb',
       'j-command-palette',
       'j-context-menu',
@@ -159,7 +171,7 @@ export const generatedComponentCategories = [
   },
   {
     name: 'Misc',
-    count: 13,
+    count: 16,
     selectors: [
       'j-avatar',
       'j-avatar-group',
@@ -171,9 +183,12 @@ export const generatedComponentCategories = [
       'j-meter-group',
       'j-progress-bar',
       'j-progress-spinner',
+      'j-pull-to-refresh',
       'j-skeleton',
       'j-status-chip',
+      'j-swipe-actions',
       'j-tag',
+      'j-watermark',
     ],
   },
   {
@@ -189,4 +204,4 @@ export const generatedComponentCategories = [
 ] as const;
 
 export const generatedComponentCategoryOrder = generatedComponentCategories.map(({ name }) => name);
-export const generatedActiveComponentTotal = 122;
+export const generatedActiveComponentTotal = 134;

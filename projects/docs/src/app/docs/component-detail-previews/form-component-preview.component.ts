@@ -183,11 +183,55 @@ import {
         />
       }
       @case ('select') {
-        <j-select
-          label="Customer status"
-          [options]="statuses"
-          placeholder="Choose status"
+        @if (example.key === 'multi-column') {
+          <j-select
+            label="Customer"
+            [options]="customerSelectOptions"
+            [columns]="customerSelectColumns"
+            optionLabel="name"
+            optionValue="id"
+            searchable
+            sortable
+            placeholder="Choose customer"
+          >
+            <ng-template jSelectCell="status" let-value>
+              <j-status-chip [label]="$any(value)" />
+            </ng-template>
+          </j-select>
+        } @else {
+          <j-select
+            label="Customer status"
+            [options]="statuses"
+            placeholder="Choose status"
+            clearable
+          />
+        }
+      }
+      @case ('tree-select') {
+        <j-tree-select
+          label="Customer segments"
+          [nodes]="customerTree"
+          selectionMode="checkbox"
+          propagation="both"
+          searchable
           clearable
+          [(ngModel)]="selectedCustomerNodes"
+        />
+      }
+      @case ('cascader') {
+        <j-cascader
+          label="Customer location"
+          [options]="customerLocations"
+          searchable
+          clearable
+          [(ngModel)]="selectedCustomerLocation"
+        />
+      }
+      @case ('signature') {
+        <j-signature
+          [(ngModel)]="customerSignature"
+          required
+          ariaLabel="Customer consent signature"
         />
       }
       @case ('checkbox') {
@@ -400,4 +444,6 @@ import {
 })
 export class FormComponentPreviewComponent extends ComponentDetailViewBase {
   readonly previewExample = input.required<DetailFeatureExample>();
+  selectedCustomerNodes = [];
+  selectedCustomerLocation: unknown = null;
 }

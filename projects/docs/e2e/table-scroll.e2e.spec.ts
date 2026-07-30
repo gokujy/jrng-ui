@@ -5,6 +5,61 @@ const horizontalPreview = '#component-live-preview-scrolling-horizontal';
 test.describe('Table documentation scrolling', () => {
   test.describe.configure({ timeout: 120_000 });
 
+  test('renders the reference-style enterprise table controls and configuration', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    await page.goto('/docs/components#table');
+    const preview = page.locator('#component-live-preview-advanced-customer-management-table');
+    await preview.scrollIntoViewIfNeeded();
+
+    const table = preview.locator('.j-table--enterprise');
+    await expect(table).toBeVisible();
+    await expect(table.getByRole('button', { name: 'Apply Leave' })).toHaveCount(0);
+    await expect(table.getByRole('button', { name: 'Leave Trackers' })).toHaveCount(0);
+    await expect(table.getByRole('button', { name: 'Table config' })).toBeVisible();
+    await expect(table.getByRole('button', { name: 'Maximize table' })).toBeVisible();
+    await expect(table.getByRole('button', { name: 'Toggle filters' })).toBeVisible();
+    await expect(table.getByRole('button', { name: 'Refresh table' })).toBeVisible();
+    await expect(table.getByRole('button', { name: 'Export table' })).toBeVisible();
+
+    await expect(table.locator('.j-table__filter-row j-column-filter')).toHaveCount(6);
+    await expect(table.locator('th[data-jc-section="header-cell"]')).toContainText([
+      'Index',
+      'Requester',
+      'Request Type',
+      'Request Period',
+      'Units',
+      'Date of Requested',
+      'Reviewers',
+      'Review comment',
+      'Status',
+      'Actions',
+    ]);
+
+    const scroll = table.locator('.j-table__scroll');
+    await expect(scroll).toHaveCSS('overflow-x', 'auto');
+    const frozenCells = table.locator('tbody tr').first().locator('.j-table__cell--frozen');
+    await expect(frozenCells.first()).toHaveCSS('position', 'sticky');
+    await expect(frozenCells.last()).toHaveCSS('position', 'sticky');
+
+    await table.getByRole('button', { name: 'Open request actions' }).first().click();
+    await expect(page.locator('body > .j-action-menu__items--popup')).toBeVisible();
+    await expect(page.getByRole('menuitem', { name: 'View request' })).toBeVisible();
+    await page.keyboard.press('Escape');
+
+    await table.getByRole('button', { name: 'Maximize table' }).click();
+    const maximized = page.locator('body > .j-table.is-maximized');
+    await expect(maximized).toBeVisible();
+    await expect(maximized.getByRole('button', { name: 'Minimize table' })).toBeVisible();
+    const viewportHeight = await page.evaluate(() => window.innerHeight);
+    const maximizedBounds = await maximized.boundingBox();
+    expect(Math.abs((maximizedBounds?.height ?? 0) - viewportHeight)).toBeLessThanOrEqual(2);
+    await maximized.getByRole('button', { name: 'Minimize table' }).click();
+    await expect(preview.locator('.j-table--enterprise')).not.toHaveClass(/is-maximized/);
+    await expect(table.locator('j-paginator')).toBeVisible();
+  });
+
   for (const width of [320, 375, 768, 1024]) {
     test(`contains horizontal overflow at ${width}px`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });

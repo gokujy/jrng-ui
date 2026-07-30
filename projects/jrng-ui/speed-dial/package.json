@@ -1,0 +1,6 @@
+{
+  "name": "jrng-ui/speed-dial",
+  "sideEffects": [
+    "./speed-dial.component.scss"
+  ]
+}

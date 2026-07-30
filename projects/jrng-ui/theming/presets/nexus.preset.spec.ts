@@ -51,7 +51,7 @@ describe('Nexus enterprise theme preset', () => {
 
   it('does not add application layout responsibilities', () => {
     const serialized = JSON.stringify(nexusPreset);
-    for (const forbidden of [
+    for (const unsupportedProperty of [
       'menuMode',
       'staticMenu',
       'overlayMenu',
@@ -60,7 +60,7 @@ describe('Nexus enterprise theme preset', () => {
       'userPreferences',
       'localStorage',
     ]) {
-      expect(serialized).not.toContain(forbidden);
+      expect(serialized).not.toContain(unsupportedProperty);
     }
   });
 

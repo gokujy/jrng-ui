@@ -1,0 +1,17 @@
+:host {
+  display: inline-flex;
+}
+
+.j-speech-to-text-button__status {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :host {
+    scroll-behavior: auto;
+  }
+}

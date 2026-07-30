@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 const root = resolve(import.meta.dirname, '..');
 const inventory = JSON.parse(await readFile(resolve(root, 'docs/component-inventory.json')));
 const { components, summary } = inventory;
-const generated = 'jrng-ui 0.1.0';
+const generated = 'jrng-ui 0.1.1';
 
 await report('component-stability-report.md', stabilityReport());
 await report('component-test-coverage.md', coverageReport('Direct component tests', 'testStatus'));

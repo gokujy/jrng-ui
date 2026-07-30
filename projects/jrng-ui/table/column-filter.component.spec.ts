@@ -43,4 +43,20 @@ describe('JColumnFilterComponent', () => {
       value: [10, ''],
     });
   });
+
+  it('preserves object values selected from configured options', () => {
+    const selectFixture = TestBed.createComponent(JColumnFilterComponent);
+    const account = { id: 7, label: 'Enterprise' };
+    selectFixture.componentRef.setInput('field', 'account');
+    selectFixture.componentRef.setInput('type', 'select');
+    selectFixture.componentRef.setInput('options', [{ label: 'Enterprise', value: account }]);
+    selectFixture.detectChanges();
+    const filter = selectFixture.componentInstance;
+    const changes: JColumnFilterChange[] = [];
+    filter.filterChange.subscribe((change) => changes.push(change));
+
+    filter.handleSelect({ target: { value: '0' } } as unknown as Event);
+
+    expect(changes.at(-1)?.value).toBe(account);
+  });
 });

@@ -1,0 +1,6 @@
+{
+  "name": "jrng-ui/anchor",
+  "sideEffects": [
+    "./anchor.component.scss"
+  ]
+}

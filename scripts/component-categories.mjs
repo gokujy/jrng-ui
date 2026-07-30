@@ -4,6 +4,7 @@ export const COMPONENT_CATEGORIES = [
     selectors: [
       'j-autocomplete',
       'j-checkbox',
+      'j-cascader',
       'j-chips',
       'j-color-picker',
       'j-cron-expression',
@@ -27,14 +28,25 @@ export const COMPONENT_CATEGORIES = [
       'j-rating',
       'j-select',
       'j-select-button',
+      'j-signature',
       'j-slider',
       'j-switch',
       'j-textarea',
       'j-time-picker',
       'j-toggle-button',
+      'j-tree-select',
     ],
   },
-  { name: 'Button', selectors: ['j-button', 'j-copy-button'] },
+  {
+    name: 'Button',
+    selectors: [
+      'j-button',
+      'j-copy-button',
+      'j-speed-dial',
+      'j-speech-to-text-button',
+      'j-split-button',
+    ],
+  },
   {
     name: 'Data',
     selectors: [
@@ -66,6 +78,7 @@ export const COMPONENT_CATEGORIES = [
       'j-card',
       'j-divider',
       'j-fieldset',
+      'j-inplace',
       'j-panel',
       'j-splitter',
       'j-splitter-panel',
@@ -87,12 +100,14 @@ export const COMPONENT_CATEGORIES = [
       'j-dynamic-dialog',
       'j-notification-center',
       'j-popover',
+      'j-popout',
     ],
   },
   {
     name: 'Menu',
     selectors: [
       'j-action-menu',
+      'j-anchor',
       'j-breadcrumb',
       'j-command-palette',
       'j-context-menu',
@@ -149,9 +164,12 @@ export const COMPONENT_CATEGORIES = [
       'j-meter-group',
       'j-progress-bar',
       'j-progress-spinner',
+      'j-pull-to-refresh',
       'j-skeleton',
       'j-status-chip',
+      'j-swipe-actions',
       'j-tag',
+      'j-watermark',
     ],
   },
   {
@@ -185,22 +203,22 @@ export const COMPONENT_CATEGORY_ORDER = Object.freeze([
   'Pages',
 ]);
 export const COMPONENT_CATEGORY_COUNTS = Object.freeze({
-  Form: 30,
-  Button: 2,
+  Form: 33,
+  Button: 5,
   Data: 16,
-  Panel: 15,
-  Overlay: 8,
-  Menu: 9,
+  Panel: 16,
+  Overlay: 9,
+  Menu: 10,
   Messages: 2,
   Media: 6,
   File: 3,
   Chart: 2,
   Layout: 11,
-  Misc: 13,
+  Misc: 16,
   Utilities: 3,
   Pages: 2,
 });
-export const ACTIVE_COMPONENT_TOTAL = 122;
+export const ACTIVE_COMPONENT_TOTAL = 134;
 export const COMPONENT_CATEGORY_TOTAL = 14;
 export const REMOVED_COMPONENT_SELECTORS = new Set([
   'j-activity-feed',

@@ -2,10 +2,15 @@ import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { JSelectComponent, JSelectOptionSource } from './select.component';
+import {
+  JSelectCellDirective,
+  JSelectColumn,
+  JSelectComponent,
+  JSelectOptionSource,
+} from './select.component';
 
 @Component({
-  imports: [JSelectComponent, ReactiveFormsModule],
+  imports: [JSelectComponent, JSelectCellDirective, ReactiveFormsModule],
   template: `
     <j-select
       label="Status"
@@ -14,24 +19,39 @@ import { JSelectComponent, JSelectOptionSource } from './select.component';
       [options]="options"
       [error]="error"
       [searchable]="searchable"
+      [clearable]="clearable"
       [virtualScroll]="virtualScroll"
+      [columns]="columns"
+      sortable
       (valueChange)="lastValue = $event"
       (filterChange)="lastFilter = $event"
-    />
+    >
+      <ng-template jSelectCell="status" let-value>
+        <strong>{{ value }}</strong>
+      </ng-template>
+    </j-select>
   `,
 })
 class SelectHostComponent {
   control = new FormControl<string>('', { nonNullable: true });
   error = '';
   searchable = false;
+  clearable = false;
   virtualScroll = false;
   lastValue: unknown = '';
   lastFilter = '';
   options: readonly JSelectOptionSource[] = [
-    { label: 'Pending', value: 'pending' },
-    { label: 'Approved', value: 'approved' },
-    { label: 'Archived', value: 'archived', disabled: true },
+    { label: 'Pending', value: 'pending', customerId: 'CUS-20', status: 'Pending' },
+    { label: 'Approved', value: 'approved', customerId: 'CUS-10', status: 'Approved' },
+    {
+      label: 'Archived',
+      value: 'archived',
+      customerId: 'CUS-30',
+      status: 'Archived',
+      disabled: true,
+    },
   ];
+  columns: readonly JSelectColumn[] = [];
 }
 
 describe('JSelectComponent', () => {
@@ -73,6 +93,23 @@ describe('JSelectComponent', () => {
     detectHostChanges();
 
     expect(trigger().textContent).toContain('Approved');
+  });
+
+  it('renders separate clear and dropdown icons when clearable', () => {
+    host.clearable = true;
+    host.control.setValue('approved');
+    detectHostChanges();
+
+    const wrapper = fixture.nativeElement.querySelector(
+      '.j-select__control-wrapper',
+    ) as HTMLElement;
+    const clear = wrapper.querySelector('.j-select__clear') as HTMLButtonElement;
+    const indicator = wrapper.querySelector('.j-select__indicator') as HTMLElement;
+
+    expect(wrapper.classList.contains('has-clear')).toBe(true);
+    expect(clear.querySelector('j-icon')).toBeTruthy();
+    expect(indicator).toBeTruthy();
+    expect(clear.getAttribute('aria-label')).toBe('Clear');
   });
 
   it('updates the form control and emits valueChange', () => {
@@ -160,6 +197,27 @@ describe('JSelectComponent', () => {
     detectHostChanges();
     expect(select.isGrouped).toBe(true);
     expect(select.useVirtual).toBe(false); // grouped lists fall back to normal rendering
+  });
+
+  it('renders sortable multi-column rows and custom cells', () => {
+    host.columns = [
+      { field: 'customerId', header: 'Customer ID', sortable: true },
+      { field: 'status', header: 'Status' },
+    ];
+    detectHostChanges();
+    trigger().click();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelectorAll('.j-select__column-header button')).toHaveLength(
+      2,
+    );
+    expect(fixture.nativeElement.querySelector('.j-select__cell strong').textContent).toContain(
+      'Pending',
+    );
+
+    fixture.nativeElement.querySelector('.j-select__column-header button').click();
+    fixture.detectChanges();
+    const firstRow = fixture.nativeElement.querySelector('.j-select__option--columns');
+    expect(firstRow.textContent).toContain('CUS-10');
   });
 
   it('loads and appends async pages without complicating simple select usage', async () => {

@@ -1,0 +1,22 @@
+:host {
+  display: contents;
+}
+
+:host(.j-popout--inline) {
+  display: block;
+}
+
+.j-popout__surface--inline {
+  padding: var(--j-spacing-4);
+  border: 1px solid var(--j-color-border);
+  border-radius: var(--j-radius-lg);
+  background: var(--j-color-surface);
+  color: var(--j-color-text);
+  box-shadow: var(--j-shadow-md);
+}
+
+@media (forced-colors: active) {
+  .j-popout__surface--inline {
+    border-color: CanvasText;
+  }
+}

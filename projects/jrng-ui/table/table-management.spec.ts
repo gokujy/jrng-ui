@@ -220,10 +220,11 @@ describe('JTableComponent management surface', () => {
 
     const button = (label: string) =>
       Array.from(root.querySelectorAll<HTMLButtonElement>('button')).find(
-        (candidate) => candidate.textContent?.trim() === label,
+        (candidate) =>
+          candidate.textContent?.trim() === label || candidate.getAttribute('aria-label') === label,
       );
 
-    button('Reset filters')?.click();
+    button('Clear all filters')?.click();
     fixture.detectChanges();
     expect(search.value).toBe('');
     expect(table.visibleRows).toHaveLength(2);
@@ -231,7 +232,7 @@ describe('JTableComponent management surface', () => {
     button('Export CSV')?.click();
     expect(fixture.componentInstance.exportCount).toBe(1);
 
-    button('Maximize')?.click();
+    button('Enter fullscreen')?.click();
     fixture.detectChanges();
     const tableHost = root.querySelector('j-table') as HTMLElement;
     const maximizedTable = document.body.querySelector(
@@ -243,14 +244,14 @@ describe('JTableComponent management surface', () => {
 
     const minimize = Array.from(
       maximizedTable?.querySelectorAll<HTMLButtonElement>('button') ?? [],
-    ).find((candidate) => candidate.textContent?.trim() === 'Minimize');
+    ).find((candidate) => candidate.getAttribute('aria-label') === 'Exit fullscreen');
     minimize?.click();
     fixture.detectChanges();
     expect(table.maximized).toBe(false);
     expect(tableHost.querySelector(':scope > .j-table')).toBeTruthy();
     expect(document.body.style.overflow).toBe('');
 
-    button('Maximize')?.click();
+    button('Enter fullscreen')?.click();
     fixture.detectChanges();
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
     fixture.detectChanges();

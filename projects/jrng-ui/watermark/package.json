@@ -1,0 +1,6 @@
+{
+  "name": "jrng-ui/watermark",
+  "sideEffects": [
+    "./watermark.component.scss"
+  ]
+}

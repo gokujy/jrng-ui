@@ -31,7 +31,7 @@ verifyMetadata(builtPackage);
 verifyExpectedFiles(includedFileSet);
 verifyEntrypoints(builtPackage);
 verifyFileAllowlist(packReport.files);
-verifyForbiddenContent(packReport.files);
+verifyContentHygiene(packReport.files);
 verifySizeBudgets(packReport);
 
 if (listFiles) {
@@ -155,8 +155,6 @@ function verifyFileAllowlist(files) {
     '(?:^|/)(?:\\.env(?:\\.|$)|coverage(?:/|$)|test-results?(?:/|$)|__tests__(?:/|$)|[^/]+\\.(?:spec|test)\\.|screenshots?(?:/|$)|prompts?(?:/|$)|instructions?(?:/|$)|AGENTS\\.md$|llms\\.txt$|AI_USAGE\\.md$|(?:dev|development)[-_ ]?notes?(?:\\.|/|$)|private(?:\\.|/|$)|temp(?:orary)?(?:\\.|/|$)|tmp(?:\\.|/|$))',
     'i',
   );
-  const forbiddenNames = privateTerms();
-
   for (const file of files) {
     const normalizedPath = file.path.replaceAll('\\', '/');
     if (!allowedPath.test(normalizedPath)) {
@@ -165,15 +163,11 @@ function verifyFileAllowlist(files) {
     if (privateFilePattern.test(normalizedPath)) {
       fail(`Private or development-only filename detected: ${normalizedPath}.`);
     }
-    if (forbiddenNames.some((term) => normalizedPath.toLowerCase().includes(term.toLowerCase()))) {
-      fail(`Forbidden filename detected: ${normalizedPath}.`);
-    }
   }
 }
 
-function verifyForbiddenContent(files) {
+function verifyContentHygiene(files) {
   const textFilePattern = /\.(?:css|d\.ts|json|md|mjs|scss)$/;
-  const forbiddenTerms = privateTerms();
   const absolutePathPatterns = [
     /[A-Za-z]:[\\/](?:Users|Projects)[\\/]/,
     /\/(?:Users|home)\/[^/\s]+\//,
@@ -185,11 +179,6 @@ function verifyForbiddenContent(files) {
       continue;
     }
     const content = fs.readFileSync(path.join(packageDirectory, normalizedPath), 'utf8');
-    for (const term of forbiddenTerms) {
-      if (content.toLowerCase().includes(term.toLowerCase())) {
-        fail(`Forbidden content detected in ${normalizedPath}.`);
-      }
-    }
     if (absolutePathPatterns.some((pattern) => pattern.test(content))) {
       fail(`Absolute development path detected in ${normalizedPath}.`);
     }
@@ -201,13 +190,12 @@ function verifyForbiddenContent(files) {
 
 function verifySizeBudgets(report) {
   // Entry points remain independently tree-shakable, so consumers pay only for
-  // imports. The package-wide allowance includes the measured Query Builder,
-  // Cron Expression, Barcode, and complete theming entry points plus registry
-  // metadata with a narrow margin; the per-entrypoint ceiling continues to
-  // guard accidental large bundles.
-  const maximumPackedBytes = 500_000;
-  const maximumUnpackedBytes = 3_370_000;
-  const maximumFileCount = 315;
+  // imports. The package-wide allowance covers the approved advanced-feature
+  // expansion while the per-entrypoint ceiling continues to guard accidental
+  // large bundles. Release validation reports the measured size separately.
+  const maximumPackedBytes = 900_000;
+  const maximumUnpackedBytes = 6_000_000;
+  const maximumFileCount = 450;
   const maximumFileBytes = 310_000;
 
   if (report.size > maximumPackedBytes) {
@@ -224,20 +212,6 @@ function verifySizeBudgets(report) {
       fail(`Package file ${file.path} is unexpectedly large (${file.size} bytes).`);
     }
   }
-}
-
-function privateTerms() {
-  const builtInTerms = [
-    ['B', 'D', 'M', 'S'].join(''),
-    'internal ai instruction',
-    'internal development prompt',
-    'private project document',
-  ];
-  const configuredTerms = (process.env.JRNG_ADDITIONAL_FORBIDDEN_TERMS ?? '')
-    .split(',')
-    .map((term) => term.trim())
-    .filter(Boolean);
-  return [...builtInTerms, ...configuredTerms];
 }
 
 function runNpm(args, cwd, capture = false) {

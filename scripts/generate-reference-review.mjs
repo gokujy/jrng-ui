@@ -497,7 +497,7 @@ const attribution = `# Reference attribution
 
 - Local PrimeNG reference: \`${relative(workspace, references.PrimeNG.root).replaceAll('\\', '/')}\`, workspace package version 21.1.9.
 - Local Optimus UI reference: \`${relative(workspace, references['Optimus UI'].root).replaceAll('\\', '/')}\`, workspace package version 1.0.0-rc.1.
-- JRNG UI: current \`jrng-ui\` workspace, canonical registry version 0.1.0.
+- JRNG UI: current \`jrng-ui\` workspace, canonical registry version 0.1.1.
 
 ## Concepts studied
 

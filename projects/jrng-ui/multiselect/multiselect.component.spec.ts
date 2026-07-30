@@ -50,6 +50,42 @@ describe('JMultiselectComponent', () => {
     expect(component.useVirtual).toBe(false);
   });
 
+  it('renders one parent checkbox that toggles all visible options', () => {
+    component.open();
+    fixture.detectChanges();
+
+    const parentCheckbox = fixture.nativeElement.querySelector(
+      '.j-multiselect__toggle-all input',
+    ) as HTMLInputElement;
+    expect(parentCheckbox).toBeTruthy();
+    expect(parentCheckbox.checked).toBe(false);
+    expect(parentCheckbox.indeterminate).toBe(false);
+    expect(fixture.nativeElement.textContent).toContain('Toggle all');
+    expect(fixture.nativeElement.textContent).not.toContain('Select all');
+    expect(fixture.nativeElement.textContent).not.toContain('Unselect all');
+
+    parentCheckbox.click();
+    fixture.detectChanges();
+    expect(component.value).toEqual(['a', 'b', 'c']);
+
+    parentCheckbox.click();
+    fixture.detectChanges();
+    expect(component.value).toEqual([]);
+  });
+
+  it('shows the parent checkbox as indeterminate for partial visible selection', async () => {
+    component.writeValue(['a']);
+    component.open();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const parentCheckbox = fixture.nativeElement.querySelector(
+      '.j-multiselect__toggle-all input',
+    ) as HTMLInputElement;
+    expect(parentCheckbox.checked).toBe(false);
+    expect(parentCheckbox.indeterminate).toBe(true);
+  });
+
   it('renders severity-aware removable JRNG chips with overflow', () => {
     fixture.componentRef.setInput('options', [
       { label: 'Stable', value: 'stable', severity: 'success', icon: 'check' },

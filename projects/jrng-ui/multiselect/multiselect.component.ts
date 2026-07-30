@@ -20,6 +20,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import {
   JAsyncDataController,
   JAsyncDataSource,
@@ -40,6 +41,7 @@ import {
 import { JComponentSize } from 'jrng-ui/core';
 import { JSeverity } from 'jrng-ui/core';
 import { JChipComponent } from 'jrng-ui/chip';
+import { JCheckboxComponent } from 'jrng-ui/checkbox';
 import { JInputVariant } from 'jrng-ui/input';
 import { JTooltipDirective } from 'jrng-ui/tooltip';
 import { JVirtualScrollerComponent } from 'jrng-ui/virtual-scroller';
@@ -60,7 +62,9 @@ export interface JMultiselectItemContext {
   selector: 'j-multiselect',
   imports: [
     JChipComponent,
+    JCheckboxComponent,
     JClickOutsideDirective,
+    FormsModule,
     JTooltipDirective,
     NgTemplateOutlet,
     JVirtualScrollerComponent,
@@ -189,12 +193,15 @@ export interface JMultiselectItemContext {
           }
           @if (showSelectAll()) {
             <div class="j-multiselect__utilities" data-jc-section="utilities">
-              <button class="j-multiselect__utility" type="button" (click)="selectAllVisible()">
-                {{ selectAllLabel() }}
-              </button>
-              <button class="j-multiselect__utility" type="button" (click)="unselectAllVisible()">
-                {{ unselectAllLabel() }}
-              </button>
+              <j-checkbox
+                class="j-multiselect__toggle-all"
+                [label]="selectAllLabel()"
+                [disabled]="!selectableVisibleOptions.length"
+                [indeterminate]="someVisibleSelected"
+                [ngModel]="allVisibleSelected"
+                [ngModelOptions]="{ standalone: true }"
+                (ngModelChange)="toggleAllVisible($event)"
+              />
             </div>
           }
           @if (isLoading) {
@@ -381,7 +388,6 @@ export interface JMultiselectItemContext {
         z-index: var(--j-z-index-dropdown);
       }
       .j-multiselect__filter,
-      .j-multiselect__utility,
       .j-multiselect__option {
         font: inherit;
         width: 100%;
@@ -394,12 +400,9 @@ export interface JMultiselectItemContext {
         padding: 0 var(--j-spacing-sm);
       }
       .j-multiselect__utilities {
-        display: grid;
-        gap: var(--j-spacing-xs);
-        grid-template-columns: 1fr 1fr;
         margin-block: var(--j-spacing-xs);
+        padding: var(--j-spacing-sm) var(--j-spacing-md);
       }
-      .j-multiselect__utility,
       .j-multiselect__option {
         background: transparent;
         border: 0;
@@ -410,6 +413,9 @@ export interface JMultiselectItemContext {
         gap: var(--j-spacing-sm);
         padding: var(--j-spacing-sm) var(--j-spacing-md);
         text-align: left;
+      }
+      .j-multiselect__toggle-all {
+        display: block;
       }
       .j-multiselect__option:hover,
       .j-multiselect__option.is-active {
@@ -484,7 +490,7 @@ export class JMultiselectComponent implements ControlValueAccessor {
   readonly filterPlaceholder = input('Search');
   readonly emptyMessage = input('No options found');
   readonly loadingMessage = input('Loading...');
-  readonly selectAllLabel = input('Select all');
+  readonly selectAllLabel = input('Toggle all');
   readonly unselectAllLabel = input('Unselect all');
   readonly styleClass = input('');
   readonly size = input<JComponentSize>('md');
@@ -585,6 +591,22 @@ export class JMultiselectComponent implements ControlValueAccessor {
           jMatchesFilter(option.label, query, this.filterMatchMode()),
         )
       : this.normalizedOptions;
+  }
+
+  get selectableVisibleOptions(): readonly JNormalizedSelectionOption[] {
+    return this.visibleOptions.filter((option) => !option.disabled);
+  }
+
+  get allVisibleSelected(): boolean {
+    const options = this.selectableVisibleOptions;
+    return options.length > 0 && options.every((option) => this.isSelected(option));
+  }
+
+  get someVisibleSelected(): boolean {
+    return (
+      !this.allVisibleSelected &&
+      this.selectableVisibleOptions.some((option) => this.isSelected(option))
+    );
   }
 
   get appendToBody(): boolean {
@@ -841,6 +863,10 @@ export class JMultiselectComponent implements ControlValueAccessor {
         (value) => !visibleValues.some((visible) => jSameSelectionValue(visible, value)),
       ),
     );
+  }
+
+  toggleAllVisible(checked: boolean): void {
+    checked ? this.selectAllVisible() : this.unselectAllVisible();
   }
 
   clearAll(event?: Event): void {

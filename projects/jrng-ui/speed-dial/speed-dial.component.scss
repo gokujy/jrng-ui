@@ -1,0 +1,96 @@
+:host {
+  position: relative;
+  display: inline-block;
+  z-index: var(--j-speed-dial-z-index, 100);
+}
+
+:host(.j-speed-dial--fixed) {
+  position: fixed;
+}
+
+:host([data-j-position='top-start']) {
+  inset-block-start: var(--j-spacing-5);
+  inset-inline-start: var(--j-spacing-5);
+}
+
+:host([data-j-position='top-end']) {
+  inset-block-start: var(--j-spacing-5);
+  inset-inline-end: var(--j-spacing-5);
+}
+
+:host([data-j-position='bottom-start']) {
+  inset-block-end: var(--j-spacing-5);
+  inset-inline-start: var(--j-spacing-5);
+}
+
+:host([data-j-position='bottom-end']) {
+  inset-block-end: var(--j-spacing-5);
+  inset-inline-end: var(--j-spacing-5);
+}
+
+:host([data-j-position='center']) {
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+}
+
+.j-speed-dial__root,
+.j-speed-dial__actions {
+  position: relative;
+}
+
+.j-speed-dial__action {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  display: flex;
+  align-items: center;
+  gap: var(--j-spacing-2);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0.7);
+  transition:
+    transform var(--j-transition-normal),
+    opacity var(--j-transition-fast);
+  transition-delay: var(--j-speed-delay);
+}
+
+.j-speed-dial__action.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(calc(-50% + var(--j-speed-x)), calc(-50% + var(--j-speed-y))) scale(1);
+}
+
+.j-speed-dial__label {
+  position: absolute;
+  inset-inline-end: calc(100% + var(--j-spacing-2));
+  inline-size: max-content;
+  border-radius: var(--j-radius-sm);
+  background: var(--j-color-contrast);
+  color: var(--j-color-contrast-foreground);
+  padding: var(--j-spacing-1) var(--j-spacing-2);
+  font-size: var(--j-font-size-xs);
+}
+
+.j-speed-dial__trigger {
+  position: relative;
+  z-index: 2;
+}
+
+.j-speed-dial__mask {
+  position: fixed;
+  z-index: -1;
+  inset: 0;
+  border: 0;
+  background: color-mix(in srgb, var(--j-color-contrast) 35%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .j-speed-dial__action {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .j-speed-dial__action.is-visible {
+    outline: 1px solid CanvasText;
+  }
+}

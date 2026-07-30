@@ -1,5 +1,7 @@
 import { Component, input, Type } from '@angular/core';
 import { JButtonComponent } from 'jrng-ui/button';
+import { JAvatarComponent } from 'jrng-ui/avatar';
+import { JBadgeComponent } from 'jrng-ui/badge';
 import { JCardComponent } from 'jrng-ui/card';
 import { JCheckboxComponent } from 'jrng-ui/checkbox';
 import { JDatePickerComponent } from 'jrng-ui/date-picker';
@@ -7,6 +9,7 @@ import { JInputComponent } from 'jrng-ui/input';
 import { JInputNumberComponent } from 'jrng-ui/input-number';
 import { JSelectComponent } from 'jrng-ui/select';
 import {
+  JActionMenuComponent,
   JTableActionsTemplateDirective,
   JTableCellTemplateDirective,
   JTableComponent,
@@ -59,7 +62,15 @@ const TABLE_DEMO_IMPORTS = {
     JTableComponent,
     JTooltipDirective,
   ],
-  advanced: [JTableComponent],
+  advanced: [
+    JActionMenuComponent,
+    JAvatarComponent,
+    JBadgeComponent,
+    JButtonComponent,
+    JTableActionsTemplateDirective,
+    JTableCellTemplateDirective,
+    JTableComponent,
+  ],
 };
 
 const TABLE_DEMO_STYLES = `
@@ -69,6 +80,13 @@ const TABLE_DEMO_STYLES = `
   .j-table-demo__detail { display: grid; gap: var(--j-spacing-2); padding: var(--j-spacing-3); }
   .j-table-demo__scroll-note { color: var(--j-color-muted-foreground); font-size: var(--j-font-size-sm); margin: 0 0 var(--j-spacing-3); }
   .j-table-demo__flex-scroll { display: flex; flex-direction: column; height: min(55vh, 28rem); min-height: 18rem; min-width: 0; }
+  .j-table-demo__customer { align-items: center; display: flex; gap: var(--j-spacing-2); min-width: 0; }
+  .j-table-demo__customer-copy { display: grid; min-width: 0; }
+  .j-table-demo__customer-copy strong { font-weight: var(--j-font-weight-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .j-table-demo__customer-copy small { color: var(--j-color-text-muted); font-size: var(--j-font-size-xs); }
+  .j-table-demo__row-actions { align-items: center; display: flex; gap: var(--j-spacing-2); }
+  .j-table-demo__caption-actions { align-items: center; display: flex; flex-wrap: wrap; gap: var(--j-spacing-3); justify-content: flex-end; margin-inline-start: auto; width: 100%; }
+  .j-table-demo__approval { align-items: center; display: flex; gap: var(--j-spacing-1); }
   :host ::ng-deep .j-table-demo__needs-review td { background: color-mix(in srgb, var(--j-color-warning) 9%, var(--j-table-bg)); }
   :host ::ng-deep .j-table-demo__high-value { color: var(--j-color-success); font-weight: var(--j-font-weight-semibold); }
   @media (max-width: 640px) { .j-table-demo__controls j-button { flex: 1 1 auto; } }
@@ -254,7 +272,7 @@ export class ActionsTableScenariosComponent extends TableScenarioState {
   selector: 'app-advanced-table-scenarios',
   imports: TABLE_DEMO_IMPORTS.advanced,
   template:
-    '<j-table [title]="scenario()" description="A complete local business workflow." [value]="rows" [columns]="actionColumns" [paginator]="true" [rows]="5" filterDisplay="row" selectionMode="checkbox" [selection]="selection" (selectionChange)="onSelection($event)" (cellEditSave)="onCellEdit($event)" (rowEditSave)="onRowEdit($event)" (action)="onAction($event)" (export)="onExport($event)" [editMode]="scenario().includes(\'database-editor\') ? \'row\' : \'cell\'" responsiveMode="scroll" /><p class="j-table-demo__status" role="status" aria-live="polite">{{ eventMessage }}</p>',
+    '<j-table\n  [value]="enterpriseRows"\n  [columns]="enterpriseColumns"\n  [config]="enterpriseTableConfig"\n  variant="enterprise"\n  scrollHeight="clamp(18rem, calc(100dvh - var(--j-app-header-height, 4rem) - var(--j-page-header-height, 3rem) - var(--j-app-footer-height, 0rem) - 13.5rem), 34rem)"\n  [tableStyle]="{ \'min-width\': \'92rem\' }"\n  [hover]="true"\n  sortField="id"\n  [sortOrder]="-1"\n  (refresh)="eventMessage = \'Requests refreshed.\'"\n>\n  <ng-template #jTableCaption let-table="table">\n    <span class="j-table-demo__caption-actions">\n      <j-button icon="settings" actionDisplay="icon" size="sm" severity="info" ariaLabel="Table config" title="Table config" (onClick)="table.handleToolbarAction({ key: \'columns\' })" />\n      <j-button [icon]="table.maximized ? \'minimize\' : \'maximize\'" actionDisplay="icon" size="sm" severity="secondary" [ariaLabel]="table.maximized ? \'Minimize table\' : \'Maximize table\'" [title]="table.maximized ? \'Minimize table\' : \'Maximize table\'" [ariaPressed]="table.maximized" (onClick)="table.handleToolbarAction({ key: \'fullscreen\' })" />\n      <j-button icon="filter" actionDisplay="icon" size="sm" severity="info" ariaLabel="Toggle filters" title="Toggle filters" (onClick)="table.handleToolbarAction({ key: \'filters\' })" />\n      @if (table.activeFilterItems.length) {\n        <j-button icon="close" actionDisplay="icon" size="sm" severity="danger" ariaLabel="Clear filters" title="Clear filters" (onClick)="table.resetFilters()" />\n      }\n      <j-button icon="refresh" actionDisplay="icon" size="sm" severity="info" ariaLabel="Refresh table" title="Refresh table" (onClick)="eventMessage = \'Requests refreshed.\'" />\n      <j-button icon="download" actionDisplay="icon" size="sm" severity="success" ariaLabel="Export table" title="Export table" (onClick)="table.exportCSV()" />\n    </span>\n  </ng-template>\n  <ng-template jTableCell="requesterName" let-row>\n    <span class="j-table-demo__customer">\n      <j-avatar [initials]="initials($any(row)[\'requesterName\'])" [ariaLabel]="$any(row)[\'requesterName\']" size="sm" />\n      <span class="j-table-demo__customer-copy">\n        <strong>{{ $any(row)[\'requesterName\'] }}</strong>\n        <small>{{ $any(row)[\'requesterCode\'] }}</small>\n      </span>\n    </span>\n  </ng-template>\n  <ng-template jTableCell="units" let-value="formattedValue"><j-badge [value]="value" variant="soft" size="md" /></ng-template>\n  <ng-template jTableCell="reviewers" let-row>\n    <span class="j-table-demo__approval">\n      @for (reviewer of $any(row)[\'reviewers\'].split(\', \'); track reviewer) {\n        <j-avatar [initials]="initials(reviewer)" [ariaLabel]="reviewer" size="sm" />\n      }\n    </span>\n  </ng-template>\n  <ng-template jTableCell="status" let-value="formattedValue">\n    <j-badge [value]="value" [severity]="statusSeverity(value)" variant="soft" size="md" />\n  </ng-template>\n  <ng-template jTableActions="actions" let-row>\n    <span class="j-table-demo__row-actions">\n      @if ($any(row)[\'status\'] !== \'Approved\') {\n        <j-button icon="check" actionDisplay="icon" size="sm" variant="text" severity="success" [ariaLabel]="\'Complete \' + $any(row)[\'requesterName\']" title="Complete request" (onClick)="eventMessage = \'Complete \' + $any(row)[\'requesterName\']" />\n      }\n      <j-action-menu popup [actions]="requestMenuActions($any(row))" [row]="$any(row)" ariaLabel="Request actions" triggerLabel="Open request actions" (action)="onAction($event)" />\n    </span>\n  </ng-template>\n</j-table><p class="j-table-demo__status" role="status" aria-live="polite">{{ eventMessage }}</p>',
   styles: [TABLE_DEMO_STYLES],
 })
 export class AdvancedTableScenariosComponent extends TableScenarioState {
@@ -573,7 +591,7 @@ const TABLE_SCENARIO_SOURCES = {
     scss: ':host { display: block; min-width: 0; }',
   },
   advanced: {
-    html: '<j-table [title]="scenario()" description="A complete local business workflow." [value]="rows" [columns]="actionColumns" [paginator]="true" [rows]="5" filterDisplay="row" selectionMode="checkbox" [selection]="selection" (selectionChange)="onSelection($event)" (cellEditSave)="onCellEdit($event)" (rowEditSave)="onRowEdit($event)" (action)="onAction($event)" (export)="onExport($event)" [editMode]="scenario().includes(\'database-editor\') ? \'row\' : \'cell\'" responsiveMode="scroll" /><p class="j-table-demo__status" role="status" aria-live="polite">{{ eventMessage }}</p>',
+    html: '<j-table\n  [value]="enterpriseRows"\n  [columns]="enterpriseColumns"\n  [config]="enterpriseTableConfig"\n  variant="enterprise"\n  scrollHeight="clamp(18rem, calc(100dvh - var(--j-app-header-height, 4rem) - var(--j-page-header-height, 3rem) - var(--j-app-footer-height, 0rem) - 13.5rem), 34rem)"\n  [tableStyle]="{ \'min-width\': \'92rem\' }"\n  [hover]="true"\n  sortField="id"\n  [sortOrder]="-1"\n  (refresh)="eventMessage = \'Requests refreshed.\'"\n>\n  <ng-template #jTableCaption let-table="table">\n    <span class="j-table-demo__caption-actions">\n      <j-button icon="settings" actionDisplay="icon" size="sm" severity="info" ariaLabel="Table config" title="Table config" (onClick)="table.handleToolbarAction({ key: \'columns\' })" />\n      <j-button [icon]="table.maximized ? \'minimize\' : \'maximize\'" actionDisplay="icon" size="sm" severity="secondary" [ariaLabel]="table.maximized ? \'Minimize table\' : \'Maximize table\'" [title]="table.maximized ? \'Minimize table\' : \'Maximize table\'" [ariaPressed]="table.maximized" (onClick)="table.handleToolbarAction({ key: \'fullscreen\' })" />\n      <j-button icon="filter" actionDisplay="icon" size="sm" severity="info" ariaLabel="Toggle filters" title="Toggle filters" (onClick)="table.handleToolbarAction({ key: \'filters\' })" />\n      @if (table.activeFilterItems.length) {\n        <j-button icon="close" actionDisplay="icon" size="sm" severity="danger" ariaLabel="Clear filters" title="Clear filters" (onClick)="table.resetFilters()" />\n      }\n      <j-button icon="refresh" actionDisplay="icon" size="sm" severity="info" ariaLabel="Refresh table" title="Refresh table" (onClick)="eventMessage = \'Requests refreshed.\'" />\n      <j-button icon="download" actionDisplay="icon" size="sm" severity="success" ariaLabel="Export table" title="Export table" (onClick)="table.exportCSV()" />\n    </span>\n  </ng-template>\n  <ng-template jTableCell="requesterName" let-row>\n    <span class="j-table-demo__customer">\n      <j-avatar [initials]="initials($any(row)[\'requesterName\'])" [ariaLabel]="$any(row)[\'requesterName\']" size="sm" />\n      <span class="j-table-demo__customer-copy">\n        <strong>{{ $any(row)[\'requesterName\'] }}</strong>\n        <small>{{ $any(row)[\'requesterCode\'] }}</small>\n      </span>\n    </span>\n  </ng-template>\n  <ng-template jTableCell="units" let-value="formattedValue"><j-badge [value]="value" variant="soft" size="md" /></ng-template>\n  <ng-template jTableCell="reviewers" let-row>\n    <span class="j-table-demo__approval">\n      @for (reviewer of $any(row)[\'reviewers\'].split(\', \'); track reviewer) {\n        <j-avatar [initials]="initials(reviewer)" [ariaLabel]="reviewer" size="sm" />\n      }\n    </span>\n  </ng-template>\n  <ng-template jTableCell="status" let-value="formattedValue">\n    <j-badge [value]="value" [severity]="statusSeverity(value)" variant="soft" size="md" />\n  </ng-template>\n  <ng-template jTableActions="actions" let-row>\n    <span class="j-table-demo__row-actions">\n      @if ($any(row)[\'status\'] !== \'Approved\') {\n        <j-button icon="check" actionDisplay="icon" size="sm" variant="text" severity="success" [ariaLabel]="\'Complete \' + $any(row)[\'requesterName\']" title="Complete request" (onClick)="eventMessage = \'Complete \' + $any(row)[\'requesterName\']" />\n      }\n      <j-action-menu popup [actions]="requestMenuActions($any(row))" [row]="$any(row)" ariaLabel="Request actions" triggerLabel="Open request actions" (action)="onAction($event)" />\n    </span>\n  </ng-template>\n</j-table><p class="j-table-demo__status" role="status" aria-live="polite">{{ eventMessage }}</p>',
     ts: "@Component({\n  selector: 'app-advanced-table-scenarios',\n  imports: TABLE_DEMO_IMPORTS.advanced,\n  templateUrl: './advanced-table-scenarios.component.html',\n})\nexport class AdvancedTableScenariosComponent extends TableScenarioState {\n  readonly scenario = input.required<string>();\n}",
     scss: ':host { display: block; min-width: 0; }',
   },

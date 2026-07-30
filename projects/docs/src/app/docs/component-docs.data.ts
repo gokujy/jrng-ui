@@ -341,6 +341,581 @@ shortText = 'Ready to publish.';`,
 
 const detailedComponentDocs: readonly ComponentDoc[] = [
   {
+    slug: 'inplace',
+    name: 'Inplace',
+    category: 'Panel',
+    icon: 'text-cursor-input',
+    selector: 'j-inplace',
+    importPath: 'jrng-ui/inplace',
+    status: 'Beta',
+    description:
+      'An accessible display-to-edit surface with lazy content, controlled or local state, async save, cancellation, and focus restoration.',
+    whenToUse:
+      'Use Inplace for compact customer fields that are usually read but occasionally edited in context.',
+    whenNotToUse: [
+      'Use a normal form when several fields must be reviewed and submitted together.',
+    ],
+    code: {
+      importCode: `import { JInplaceComponent, JInplaceDisplayDirective, JInplaceContentDirective, JInplaceActionsDirective } from 'jrng-ui/inplace';`,
+      basic: `<j-inplace>
+  <ng-template jInplaceDisplay>Customer status: {{ status }}</ng-template>
+  <ng-template jInplaceContent><j-select [(ngModel)]="draft" [options]="statuses" /></ng-template>
+</j-inplace>`,
+      variants: `<j-inplace [(active)]="editing" autoFocus [saveHandler]="saveCustomer">
+  <ng-template jInplaceDisplay>{{ customer.name }}</ng-template>
+  <ng-template jInplaceContent><j-input [(ngModel)]="draftName" /></ng-template>
+  <ng-template jInplaceActions let-inplace>...</ng-template>
+</j-inplace>`,
+      states: `<j-inplace disabled>...</j-inplace>
+<j-inplace readonly>...</j-inplace>
+<j-inplace loading error="Customer could not be saved">...</j-inplace>`,
+      angular: `readonly saveCustomer = async () => this.customers.update(this.draft);`,
+    },
+    usage: [
+      'Project display, content, and optional action templates; content is created on activation.',
+    ],
+    variants: ['uncontrolled', 'two-way controlled active state', 'custom actions', 'async save'],
+    sizes: ['Projected controls determine the responsive editor size.'],
+    states: ['display', 'editing', 'loading', 'error', 'disabled', 'read-only'],
+    inputs: [
+      prop('active', 'boolean', 'false', 'Two-way controlled editing state.'),
+      prop('disabled / readonly', 'boolean', 'false', 'Blocks activation and modification.'),
+      prop('loading', 'boolean', 'false', 'Blocks save and cancel during external work.'),
+      prop('autoFocus', 'boolean', 'true', 'Focuses the first editable control.'),
+      prop('saveHandler', 'function | null', 'null', 'Promise-capable save operation.'),
+      prop('error', 'string', "''", 'Externally controlled error message.'),
+    ],
+    outputs: [
+      event('activeChange', 'boolean', 'Supports controlled state.'),
+      event('activated / deactivated', 'void', 'Reports mode changes.'),
+      event('saveRequested / saved / cancelled', 'void', 'Reports editing actions.'),
+      event('saveError', 'unknown', 'Reports a rejected save.'),
+    ],
+    publicMethods: ['activate()', 'deactivate(restoreFocus?)', 'save()', 'cancel()'],
+    templates: ['jInplaceDisplay', 'jInplaceContent', 'jInplaceActions'],
+    accessibility: [
+      'Display mode is a native button; edit mode links errors and exposes busy state.',
+      'Activation moves focus into the editor and save or cancel restores it.',
+    ],
+    keyboard: [
+      'Enter or Space activates; projected controls retain their native keyboard behavior.',
+    ],
+    responsive: ['Actions wrap on narrow screens; logical alignment supports RTL.'],
+    limitations: ['Application code owns field validation before resolving saveHandler.'],
+    relatedComponents: ['Input', 'Select', 'Date Picker'],
+    testingNotes: [
+      'Test controlled/local state, all templates, focus, async success/error, duplicate save prevention, states, RTL, and SSR.',
+    ],
+    bestPractices: [
+      'Provide explicit Save and Cancel actions when edits have domain consequences.',
+    ],
+  },
+  {
+    slug: 'anchor',
+    name: 'Anchor',
+    category: 'Menu',
+    icon: 'route',
+    selector: 'j-anchor',
+    importPath: 'jrng-ui/anchor',
+    status: 'Beta',
+    description:
+      'A vertical or horizontal section navigator with nested links, scroll spy, URL fragments, custom scroll roots, and reduced-motion behavior.',
+    whenToUse: 'Use Anchor to navigate and track sections in long customer details or forms.',
+    whenNotToUse: ['Use Tabs when content should not coexist in one scrolling document.'],
+    code: {
+      importCode: `import { JAnchorComponent, JAnchorLink } from 'jrng-ui/anchor';`,
+      basic: `<j-anchor [links]="sections" [offset]="72" />`,
+      variants: `<j-anchor orientation="horizontal" [links]="sections"
+  [scrollContainer]="detailsPanel" [(activeId)]="activeSection" />`,
+      states: `<j-anchor [links]="[{ id: 'summary', label: 'Summary' },
+  { id: 'billing', label: 'Billing', disabled: true }]" />`,
+      angular: `readonly sections = [
+  { id: 'overview', label: 'Overview' },
+  { id: 'account', label: 'Account', children: [{ id: 'history', label: 'History' }] }
+];`,
+    },
+    usage: ['Match every link id to a stable section id and configure offset for fixed headers.'],
+    variants: ['vertical', 'horizontal', 'nested', 'custom scroll container'],
+    sizes: ['Horizontal mode scrolls rather than clipping at narrow widths.'],
+    states: ['active', 'inactive', 'disabled link', 'observer fallback'],
+    inputs: [
+      prop('links', 'readonly JAnchorLink[]', '[]', 'Nested section links.'),
+      prop('orientation', 'vertical | horizontal', "'vertical'", 'Navigation layout.'),
+      prop('scrollContainer', 'HTMLElement | null', 'null', 'Optional observer and scroll root.'),
+      prop('offset', 'number', '0', 'Fixed-header offset.'),
+      prop('smooth / updateFragment', 'boolean', 'true', 'Scrolling and URL behavior.'),
+      prop('activeId', 'string', "''", 'Two-way active section.'),
+    ],
+    outputs: [
+      event('activeIdChange / activeSectionChange', 'string', 'Reports active section.'),
+      event('navigated', 'JAnchorNavigateEvent', 'Reports completed programmatic navigation.'),
+    ],
+    publicMethods: ['navigate(id, focus?)', 'refresh()'],
+    accessibility: [
+      'Uses a named navigation landmark, aria-current, and disabled link semantics.',
+      'Programmatic focus is optional so pointer scrolling does not unexpectedly move focus.',
+    ],
+    keyboard: [
+      'Arrow keys move between links; Home and End reach the bounds; Enter follows a link.',
+    ],
+    responsive: ['Horizontal links scroll on small screens; logical markers support RTL.'],
+    limitations: [
+      'Without IntersectionObserver, navigation still works and the URL fragment seeds state.',
+    ],
+    relatedComponents: ['Tabs', 'Menu'],
+    testingNotes: [
+      'Test scroll roots, offsets, fragment updates, observer fallback/cleanup, keyboard, disabled links, reduced motion, RTL, and SSR.',
+    ],
+    bestPractices: ['Keep section ids stable and call refresh after dynamically adding sections.'],
+  },
+  {
+    slug: 'watermark',
+    name: 'Watermark',
+    category: 'Misc',
+    icon: 'image',
+    selector: 'j-watermark',
+    importPath: 'jrng-ui/watermark',
+    status: 'Beta',
+    description:
+      'A non-interactive repeating text or image watermark for containers, full pages, and printed customer documents.',
+    whenToUse:
+      'Use Watermark to communicate document classification or ownership without blocking content.',
+    whenNotToUse: ['Do not use a watermark as the only security or authorization control.'],
+    code: {
+      importCode: `import { JWatermarkComponent } from 'jrng-ui/watermark';`,
+      basic: `<j-watermark text="CONFIDENTIAL"><app-customer-summary /></j-watermark>`,
+      variants: `<j-watermark [text]="['CONFIDENTIAL', customer.company]" [rotate]="-18" />
+<j-watermark image="/assets/company-mark.svg" [opacity]="0.1" fullPage />`,
+      states: `<j-watermark text="DRAFT" [opacity]="0.08" [zIndex]="2">...</j-watermark>`,
+      angular: `classification = ['INTERNAL', 'Aster Labs'];`,
+    },
+    usage: [
+      'Provide text lines or an image and tune tile dimensions, gaps, offsets, and rotation.',
+    ],
+    variants: ['single text', 'multiple lines', 'image/logo', 'container', 'full-page'],
+    sizes: [
+      'width and height size the mark; horizontalGap and verticalGap size the repeating tile.',
+    ],
+    states: ['container', 'full-page', 'screen', 'print', 'high contrast'],
+    inputs: [
+      prop('text', 'string | readonly string[]', "'JRNG UI'", 'Text lines.'),
+      prop('image', 'string', "''", 'Optional image URL.'),
+      prop('rotate / opacity', 'number', '-22 / 0.14', 'Mark presentation.'),
+      prop(
+        'fontFamily / fontSize / fontWeight / color',
+        'string / number',
+        'theme defaults',
+        'Text style.',
+      ),
+      prop(
+        'horizontalGap / verticalGap / offsetX / offsetY',
+        'number',
+        'configured',
+        'Tile spacing.',
+      ),
+      prop(
+        'width / height / zIndex / fullPage',
+        'number / boolean',
+        'configured',
+        'Geometry and scope.',
+      ),
+    ],
+    outputs: [],
+    publicMethods: [],
+    templates: ['Default projection remains fully interactive beneath the decorative layer.'],
+    accessibility: [
+      'The watermark layer is decorative and aria-hidden; underlying controls remain interactive.',
+      'Do not encode essential status only in the watermark.',
+    ],
+    keyboard: ['The watermark adds no focus stop and does not change projected keyboard behavior.'],
+    responsive: [
+      'Repeating tiles cover changing container dimensions; full-page mode follows the viewport.',
+    ],
+    limitations: ['Remote image printing depends on browser print and cross-origin image policy.'],
+    relatedComponents: ['Card', 'Image'],
+    testingNotes: [
+      'Test text escaping, image mode, dynamic updates, clamping, projected interaction, print styles, themes, and SSR.',
+    ],
+    bestPractices: [
+      'Use low opacity and retain readable semantic contrast for the content beneath.',
+    ],
+  },
+  {
+    slug: 'split-button',
+    name: 'Split Button',
+    category: 'Button',
+    icon: 'chevron-down',
+    selector: 'j-split-button',
+    importPath: 'jrng-ui/split-button',
+    status: 'Beta',
+    description:
+      'A connected primary command and JRNG Menu trigger with independent events, custom item templates, and focus restoration.',
+    whenToUse:
+      'Use Split Button when one action is the clear default and closely related alternatives must remain available.',
+    whenNotToUse: [
+      'Use a normal Button when there is only one action.',
+      'Use Menu when none of the actions should be presented as the default.',
+    ],
+    code: {
+      importCode: `import { JSplitButtonComponent, JSplitButtonItemDirective } from 'jrng-ui/split-button';`,
+      basic: `<j-split-button label="Save customer" [model]="saveActions"
+  (primaryAction)="saveCustomer()" (menuAction)="runAction($event)" />`,
+      variants: `<j-split-button label="Approve" icon="check" severity="success" variant="outlined"
+  [model]="approvalActions">
+  <ng-template jSplitButtonItem let-item>{{ item.label }}</ng-template>
+</j-split-button>`,
+      states: `<j-split-button label="Saving" loading [model]="actions" />
+<j-split-button label="Unavailable" disabled [model]="actions" />`,
+      angular: `readonly saveActions = [
+  { label: 'Save and notify', command: () => this.saveAndNotify() },
+  { separator: true },
+  { label: 'Save as draft', command: () => this.saveDraft() }
+];`,
+    },
+    usage: [
+      'Bind JMenuItem records through model and handle the primary and secondary actions separately.',
+    ],
+    variants: ['solid', 'outlined', 'soft', 'severity and size combinations'],
+    sizes: ['sm, md, and lg follow JButton sizing without changing the connected border.'],
+    states: ['default', 'open', 'loading', 'disabled'],
+    inputs: [
+      prop('label / icon', 'string', "''", 'Primary action content.'),
+      prop('model', 'readonly JMenuItem[]', '[]', 'Secondary actions and separators.'),
+      prop('severity / variant / size', 'JButton types', 'primary / solid / md', 'Shared style.'),
+      prop('loading', 'boolean', 'false', 'Blocks both actions and shows primary loading state.'),
+      prop('disabled', 'boolean', 'false', 'Disables both controls.'),
+    ],
+    outputs: [
+      event('primaryAction', 'MouseEvent', 'Emits only for the primary action.'),
+      event('menuAction', 'JMenu item event', 'Emits for a selected secondary item.'),
+      event('opened / closed', 'void', 'Emits menu visibility changes.'),
+    ],
+    publicMethods: ['focus()', 'openMenu()', 'closeMenu(restoreFocus?)', 'toggleMenu(event?)'],
+    templates: ['jSplitButtonItem receives the JMenu item context.'],
+    accessibility: [
+      'The two native buttons form a named group and the trigger exposes menu state.',
+      'Disabled menu items and separators retain JMenu semantics.',
+    ],
+    keyboard: [
+      'Enter or Space activates the focused button. Arrow Down opens the menu.',
+      'Escape closes the menu and restores focus to its trigger.',
+    ],
+    responsive: [
+      'The connected control keeps its intrinsic width and supports logical RTL borders.',
+    ],
+    limitations: ['Application code owns async menu action completion.'],
+    relatedComponents: ['Button', 'Menu'],
+    testingNotes: [
+      'Test independent events, disabled/loading states, separators, keyboard opening, Escape, and focus restoration.',
+    ],
+    bestPractices: ['Keep the primary action predictable and secondary labels concise.'],
+  },
+  {
+    slug: 'tree-select',
+    name: 'Tree Select',
+    category: 'Form',
+    icon: 'git-branch',
+    selector: 'j-tree-select',
+    importPath: 'jrng-ui/tree-select',
+    status: 'Beta',
+    description:
+      'A form-compatible hierarchical picker built on JRNG Tree, overlays, selection propagation, search, lazy loading, and virtual scrolling.',
+    whenToUse:
+      'Use Tree Select when customers choose one or more items from a hierarchy and the parent-child structure matters.',
+    whenNotToUse: [
+      'Use Select for a flat list.',
+      'Use Tree when selection does not belong in a form field.',
+    ],
+    code: {
+      importCode: `import { JTreeSelectComponent, JTreeSelectNodeDirective, JTreeSelectValueDirective } from 'jrng-ui/tree-select';`,
+      basic: `<j-tree-select label="Customer segment" [nodes]="segments"
+  searchable clearable [(ngModel)]="segment" />`,
+      variants: `<j-tree-select label="Segments" [nodes]="segments" selectionMode="checkbox"
+  propagation="both" virtualScroll [(ngModel)]="selectedSegments" />`,
+      states: `<j-tree-select label="Segments" [nodes]="[]" loading />
+<j-tree-select label="Segments" [nodes]="[]" errorState="Segments could not be loaded" />`,
+      angular: `readonly segments = [{ key: 'technology', label: 'Technology',
+  children: [{ key: 'aster', label: 'Aster Labs', leaf: true }] }];`,
+    },
+    usage: ['Bind with template-driven or reactive Angular Forms and choose a selectionMode.'],
+    variants: ['single', 'multiple', 'checkbox with parent-child propagation', 'virtualized'],
+    sizes: ['maxSelectedLabels controls chip overflow while scrollHeight controls the panel.'],
+    states: ['empty', 'loading', 'error', 'disabled', 'read-only', 'selected'],
+    inputs: [
+      prop('nodes', 'readonly JTreeNode[]', '[]', 'Hierarchical options.'),
+      prop('selectionMode', 'single | multiple | checkbox', "'single'", 'Selection behavior.'),
+      prop('propagation', 'none | down | up | both', "'none'", 'Checkbox propagation.'),
+      prop('searchable / lazy / virtualScroll', 'boolean', 'false', 'Large-tree capabilities.'),
+      prop('disabled / readonly / clearable', 'boolean', 'false', 'Form states and clearing.'),
+      prop('loading / errorState', 'boolean / string', 'false / empty', 'Async states.'),
+    ],
+    outputs: [
+      event('valueChange', 'JTreeSelectValue', 'Emits committed selection.'),
+      event('lazyLoad', 'JTreeLazyLoadEvent', 'Requests child loading.'),
+      event('opened / closed / cleared', 'void', 'Lifecycle events.'),
+    ],
+    publicMethods: ['open()', 'close(restoreFocus?)', 'toggle()', 'clearValue(event?)'],
+    templates: ['jTreeSelectNode customizes nodes; jTreeSelectValue customizes selected values.'],
+    accessibility: [
+      'The trigger exposes its controlled tree panel and JRNG Tree supplies tree roles and selection state.',
+      'Loading and errors use status and alert semantics.',
+    ],
+    keyboard: [
+      'Enter, Space, or Arrow Down opens the panel; Escape closes and restores focus.',
+      'JRNG Tree supplies arrow navigation, expansion, selection, and checkbox behavior.',
+    ],
+    responsive: [
+      'The overlay matches the trigger and becomes a mobile-friendly bounded panel on narrow screens.',
+      'Logical spacing and tree navigation support RTL.',
+    ],
+    limitations: [
+      'Virtual mode renders flattened visible records and does not render nested expand controls.',
+    ],
+    relatedComponents: ['Tree', 'Select', 'Virtual Scroller'],
+    testingNotes: [
+      'Test Forms, propagation, lazy events, chips, virtual mode, states, focus restoration, overlay cleanup, RTL, and SSR.',
+    ],
+    bestPractices: ['Use stable node keys and mark unavailable branches disabled.'],
+  },
+  {
+    slug: 'cascader',
+    name: 'Cascader',
+    category: 'Form',
+    icon: 'columns',
+    selector: 'j-cascader',
+    importPath: 'jrng-ui/cascader',
+    status: 'Beta',
+    description:
+      'A form-compatible parent-to-child picker with multi-column navigation, full-path search, lazy children, custom fields, and a mobile level view.',
+    whenToUse:
+      'Use Cascader for structured choices such as region, country, and customer location.',
+    whenNotToUse: [
+      'Use Select for flat choices.',
+      'Use Tree Select when selecting multiple branches.',
+    ],
+    code: {
+      importCode: `import { JCascaderComponent, JCascaderOptionDirective } from 'jrng-ui/cascader';`,
+      basic: `<j-cascader label="Customer location" [options]="locations"
+  searchable clearable [(ngModel)]="location" />`,
+      variants: `<j-cascader [options]="locations" expandTrigger="hover" displayMode="value"
+  [loadChildren]="loadCities">
+  <ng-template jCascaderOption let-option>{{ option.label }}</ng-template>
+</j-cascader>`,
+      states: `<j-cascader [options]="[]" loading />
+<j-cascader [options]="[]" loadError="Locations could not be loaded" />`,
+      angular: `readonly locations = [{ label: 'Americas', value: 'americas',
+  children: [{ label: 'United States', value: 'us', leaf: false }] }];`,
+    },
+    usage: [
+      'Bind a final leaf value through Angular Forms and observe pathChange when the full path is needed.',
+    ],
+    variants: [
+      'click or hover expansion',
+      'full-path or final-value display',
+      'custom field mapping',
+    ],
+    sizes: ['Columns have scroll bounds and collapse to one active level on mobile.'],
+    states: ['empty', 'loading', 'lazy loading', 'error', 'disabled', 'read-only'],
+    inputs: [
+      prop('options', 'readonly record[]', '[]', 'Root option records.'),
+      prop('fieldNames', 'JCascaderFieldNames', '{}', 'Custom record mapping.'),
+      prop('expandTrigger', 'click | hover', "'click'", 'Expansion interaction.'),
+      prop('displayMode', 'path | value', "'path'", 'Trigger label format.'),
+      prop('loadChildren', 'function | null', 'null', 'Promise-capable lazy child loader.'),
+      prop('searchable / disabled / readonly / loading', 'boolean', 'false', 'Behavior states.'),
+    ],
+    outputs: [
+      event('valueChange', 'unknown', 'Emits final leaf value.'),
+      event('pathChange', 'readonly record[]', 'Emits selected source path.'),
+      event('lazyLoad / loadFailed', 'event / unknown', 'Async loading lifecycle.'),
+      event('opened / closed', 'void', 'Panel lifecycle.'),
+    ],
+    publicMethods: ['open()', 'close(restoreFocus?)', 'toggle()', 'clear(event?)', 'back()'],
+    templates: ['jCascaderOption receives option, label, level, active, and loading.'],
+    accessibility: [
+      'Each column is a named listbox and each branch exposes selected and disabled state.',
+      'Loading and errors use live status semantics.',
+    ],
+    keyboard: [
+      'Arrow Up and Down move within a column; Arrow Right or Enter advances; Arrow Left returns.',
+      'Escape closes and restores focus.',
+    ],
+    responsive: [
+      'Narrow layouts show one level with a named back action; logical layout supports RTL.',
+    ],
+    limitations: [
+      'Search includes currently available paths; load lazy branches before expecting search matches.',
+    ],
+    relatedComponents: ['Select', 'Tree Select'],
+    testingNotes: [
+      'Test Forms, custom fields, search, lazy race prevention, keyboard columns, mobile view, cleanup, and SSR.',
+    ],
+    bestPractices: [
+      'Keep labels unique within a level and mark remote non-leaf records with leaf: false.',
+    ],
+  },
+  {
+    slug: 'pull-to-refresh',
+    name: 'Pull To Refresh',
+    category: 'Misc',
+    icon: 'refresh-cw',
+    selector: 'j-pull-to-refresh',
+    importPath: 'jrng-ui/pull-to-refresh',
+    status: 'Beta',
+    description:
+      'A touch-first refresh surface with controlled and promise-based refresh flows, custom indicators, live announcements, and safe scroll coordination.',
+    whenToUse:
+      'Use Pull To Refresh as an optional mobile refresh gesture while retaining a visible keyboard-accessible refresh command.',
+    whenNotToUse: [
+      'Do not make pulling the only way to refresh essential data.',
+      'Do not wrap a surface whose scroll position cannot be identified reliably.',
+    ],
+    code: {
+      importCode: `import { JPullToRefreshComponent } from 'jrng-ui/pull-to-refresh';`,
+      basic: `<j-pull-to-refresh [refresh]="loadCustomers">
+  <app-customer-list />
+</j-pull-to-refresh>`,
+      variants: `<j-pull-to-refresh [scrollContainer]="list" [indicatorTemplate]="refreshIndicator">
+  <app-customer-list />
+</j-pull-to-refresh>`,
+      states: `<j-pull-to-refresh [refreshing]="refreshing()" disabled>
+  <app-customer-list />
+</j-pull-to-refresh>`,
+      angular: `readonly loadCustomers = async () => {
+  await this.customerService.reload();
+};`,
+    },
+    usage: [
+      'Supply refresh for an internally completed promise flow, or bind refreshing and call complete for a controlled flow.',
+    ],
+    variants: ['default indicator', 'custom indicator template', 'window or element scrolling'],
+    sizes: ['The projected content controls the responsive block size.'],
+    states: ['idle', 'pulling', 'ready', 'refreshing', 'completing', 'disabled', 'error'],
+    inputs: [
+      prop('refreshing', 'boolean', 'false', 'Controls an externally managed refresh.'),
+      prop('disabled', 'boolean', 'false', 'Disables gesture and programmatic refresh.'),
+      prop('threshold', 'number', '72', 'Pull distance required to enter ready state.'),
+      prop('maxPullDistance', 'number', '128', 'Maximum translated distance.'),
+      prop('resistance', 'number', '0.55', 'Resistance multiplier applied to pull distance.'),
+      prop('completeDelay', 'number', '240', 'Completion dwell time in milliseconds.'),
+      prop('scrollContainer', 'HTMLElement | null', 'null', 'Optional scrolling element.'),
+      prop('refresh', '(() => void | Promise<void>) | null', 'null', 'Optional refresh handler.'),
+      prop('indicatorTemplate', 'TemplateRef | null', 'null', 'Custom state indicator.'),
+    ],
+    outputs: [
+      event('refreshRequested', 'void', 'Emits once per accepted refresh.'),
+      event('pullProgressChange', 'number', 'Emits normalized progress from zero to one.'),
+      event('stateChange', 'JPullToRefreshStateChange', 'Emits state and distance changes.'),
+      event('refreshError', 'unknown', 'Emits a synchronous or asynchronous handler error.'),
+    ],
+    publicMethods: ['beginRefresh()', 'complete(message?)', 'reset()'],
+    templates: ['indicatorTemplate receives state, progress, and display text.'],
+    cssVariables: [
+      cssVar('--j-pull-refresh-indicator-color', 'var(--j-color-primary)', 'Indicator color.'),
+      cssVar('--j-pull-refresh-surface', 'var(--j-surface)', 'Content surface.'),
+    ],
+    accessibility: [
+      'A polite live region announces refreshing, completion, and failure.',
+      'Always provide a visible button or equivalent keyboard alternative.',
+    ],
+    keyboard: ['Use the documented refresh button to call beginRefresh().'],
+    responsive: [
+      'Works with window or custom-container scrolling and preserves normal vertical scrolling.',
+      'RTL does not change the vertical gesture.',
+    ],
+    limitations: [
+      'Touch and pointer behavior depends on the browser Pointer Events implementation.',
+    ],
+    relatedComponents: ['Button', 'Loader'],
+    testingNotes: [
+      'Test top-of-scroll gating, thresholds, cancellation, duplicate prevention, controlled state, rejected promises, reduced motion, cleanup, and SSR.',
+    ],
+    bestPractices: [
+      'Keep refresh idempotent and show the current data while a background refresh is running.',
+    ],
+  },
+  {
+    slug: 'swipe-actions',
+    name: 'Swipe Actions',
+    category: 'Misc',
+    icon: 'move-horizontal',
+    selector: 'j-swipe-actions',
+    importPath: 'jrng-ui/swipe-actions',
+    status: 'Beta',
+    description:
+      'A responsive action row with logical start/end actions, RTL mapping, group coordination, keyboard fallback, full-swipe activation, and async completion.',
+    whenToUse:
+      'Use Swipe Actions for compact customer rows where the same commands remain available to keyboard and desktop users.',
+    whenNotToUse: [
+      'Do not hide the only path to a critical action behind a gesture.',
+      'Avoid full swipe for destructive work unless confirmation is configured.',
+    ],
+    code: {
+      importCode: `import { JSwipeActionsComponent, JSwipeStartActionsDirective, JSwipeContentDirective, JSwipeEndActionsDirective } from 'jrng-ui/swipe-actions';`,
+      basic: `<j-swipe-actions ariaLabel="Actions for Aster Labs">
+  <ng-template jSwipeStartActions><j-button label="Activate" /></ng-template>
+  <ng-template jSwipeContent>Aster Labs</ng-template>
+  <ng-template jSwipeEndActions><j-button label="Archive" /></ng-template>
+</j-swipe-actions>`,
+      variants: `<j-swipe-actions group="customers" fullSwipe [actionWidth]="112">...</j-swipe-actions>`,
+      states: `<j-swipe-actions disabled>...</j-swipe-actions>
+<j-swipe-actions readOnly>...</j-swipe-actions>`,
+      angular: `await row.triggerAction('end', false, () => this.archiveCustomer(customer.id));`,
+    },
+    usage: [
+      'Project semantic JRNG buttons into the action templates and use the public methods for desktop fallbacks.',
+    ],
+    variants: ['start actions', 'end actions', 'full swipe', 'LTR and RTL'],
+    sizes: ['actionWidth configures each revealed logical action area.'],
+    states: ['closed', 'start open', 'end open', 'loading', 'disabled', 'read-only', 'error'],
+    inputs: [
+      prop('disabled', 'boolean', 'false', 'Blocks gesture, keyboard, and programmatic opening.'),
+      prop('readOnly', 'boolean', 'false', 'Allows reading content without action changes.'),
+      prop('group', 'string', "'default'", 'Coordinates one open row per group.'),
+      prop('direction', 'ltr | rtl', "'ltr'", 'Maps logical start and end to visual direction.'),
+      prop('openThreshold', 'number', '0.35', 'Fraction of action width needed to open.'),
+      prop('fullSwipeThreshold', 'number', '0.85', 'Fraction needed for full-swipe action.'),
+      prop('actionWidth', 'number', '96', 'Revealed action width in pixels.'),
+      prop('fullSwipe', 'boolean', 'false', 'Enables full-swipe activation.'),
+      prop(
+        'destructiveConfirmation',
+        '(side) => boolean | Promise<boolean>',
+        'null',
+        'Optional confirmation before action execution.',
+      ),
+    ],
+    outputs: [
+      event('openChange', 'JSwipeActionsChange', 'Emits open and close state.'),
+      event('actionTriggered', 'JSwipeActionEvent', 'Emits an accepted action.'),
+      event('actionCompleted', 'JSwipeActionEvent', 'Emits successful async completion.'),
+      event('actionError', 'unknown', 'Emits an async action error.'),
+    ],
+    publicMethods: ['open(side)', 'close(restoreFocus?)', 'reset()', 'triggerAction(...)'],
+    templates: ['jSwipeStartActions', 'jSwipeContent', 'jSwipeEndActions'],
+    cssVariables: [cssVar('--j-swipe-actions-width', '6rem', 'Logical action area width.')],
+    accessibility: [
+      'The content surface exposes its expanded state and a configurable accessible name.',
+      'Projected actions must use named semantic controls.',
+    ],
+    keyboard: [
+      'Left and Right Arrow reveal the corresponding logical action side.',
+      'Escape closes the row and restores focus.',
+      'Tab reaches projected action buttons when visible.',
+    ],
+    responsive: [
+      'Vertical scrolling remains available while the shared pan gesture locks horizontally.',
+      'RTL reverses physical translation while preserving start/end meaning.',
+    ],
+    limitations: ['Full swipe emits an action event; application code owns the domain operation.'],
+    relatedComponents: ['Button', 'Menu'],
+    testingNotes: [
+      'Test thresholds, vertical cancellation, RTL, groups, outside and scroll closing, focus restoration, confirmation, async success/error, cleanup, and disabled/read-only states.',
+    ],
+    bestPractices: [
+      'Use consistent action placement and confirm destructive full-swipe operations.',
+    ],
+  },
+  {
     slug: 'query-builder',
     name: 'Query Builder',
     category: 'Form',
@@ -902,10 +1477,13 @@ email = new FormControl('');
     whenToUse:
       'Use Select when the user should choose one item and the available options are known.',
     code: {
-      importCode: `import { JSelectComponent } from 'jrng-ui/select';`,
+      importCode: `import { JSelectCellDirective, JSelectComponent, JSelectColumn } from 'jrng-ui/select';`,
       basic: `<j-select label="Status" [options]="statuses" placeholder="Choose status"></j-select>`,
       variants: `<j-select label="Searchable" searchable [options]="products"></j-select>
-<j-select label="Object options" [options]="teams" optionLabel="name" optionValue="id"></j-select>`,
+<j-select label="Customer" [options]="customers" [columns]="columns"
+  optionLabel="name" optionValue="id" searchable sortable>
+  <ng-template jSelectCell="status" let-value>{{ value }}</ng-template>
+</j-select>`,
       sizes: `<j-select label="Small" size="sm" [options]="statuses"></j-select>
 <j-select label="Large" size="lg" [options]="statuses"></j-select>`,
       states: `<j-select label="Loading" loading [options]="statuses"></j-select>
@@ -925,6 +1503,7 @@ teams = [
       'primitive options',
       'object options with optionLabel and optionValue',
       'searchable lists',
+      'multi-column options with sortable headers and stacked mobile rows',
     ],
     sizes: ['sm for table filters', 'md for standard forms', 'lg for prominent selection flows'],
     states: ['default', 'open', 'disabled', 'readonly', 'loading', 'empty', 'invalid/error'],
@@ -935,6 +1514,21 @@ teams = [
       prop('searchable', 'boolean', 'false', 'Shows a filter input in the panel.'),
       prop('clearable', 'boolean', 'false', 'Allows clearing the selected value.'),
       prop('loading', 'boolean', 'false', 'Shows a loading state.'),
+      prop('columns', 'readonly JSelectColumn[]', '[]', 'Enables structured multi-column rows.'),
+      prop('sortable', 'boolean', 'false', 'Enables sorting for columns marked sortable.'),
+    ],
+    templates: [
+      'jSelectCell="field" customizes a column cell while retaining the option row selection behavior.',
+    ],
+    keyboard: [
+      'Arrow keys move through rows, Enter selects, Escape closes, and sortable headers use native buttons.',
+    ],
+    responsive: [
+      'Multi-column rows use configured widths on larger screens and labelled stacked cells on narrow screens.',
+      'Logical alignment supports RTL without changing the option value model.',
+    ],
+    testingNotes: [
+      'Test legacy flat options, object options, custom cells, sorting, filtering, virtualization, keyboard selection, Forms, RTL, and SSR.',
     ],
     outputs: [
       event('valueChange', 'unknown', 'Emits the selected value.'),
@@ -1098,7 +1692,17 @@ teams = [
     ],
     variants: ['solid', 'outlined', 'soft', 'text', 'link'],
     sizes: ['xs, sm, md, lg, xl'],
-    states: ['default', 'disabled', 'loading', 'full width', 'icon only'],
+    states: [
+      'default',
+      'disabled',
+      'loading',
+      'progress running',
+      'progress success',
+      'progress error',
+      'progress cancelled',
+      'full width',
+      'icon only',
+    ],
     inputs: [
       prop('label', 'string', "''", 'Text label.'),
       prop(
@@ -1121,6 +1725,26 @@ teams = [
       prop('disabled', 'boolean', 'false', 'Disables native activation and onClick.'),
       prop('loading', 'boolean', 'false', 'Shows a spinner and blocks clicks.'),
       prop('loadingLabel', 'string', "'Loading'", 'Screen-reader loading status.'),
+      prop('progress', 'number | null', 'null', 'Determinate value clamped from 0 through 100.'),
+      prop(
+        'progressLabel',
+        'boolean',
+        'false',
+        'Shows the rounded percentage without layout shift.',
+      ),
+      prop(
+        'progressState',
+        'idle | running | success | error | cancelled',
+        "'idle'",
+        'Semantic determinate-progress state.',
+      ),
+      prop('cancelable', 'boolean', 'false', 'Emits cancel when a running button is activated.'),
+      prop(
+        'blockWhileRunning',
+        'boolean',
+        'true',
+        'Prevents duplicate activation during non-cancelable running progress.',
+      ),
       prop('shape', 'square | rounded | pill | circle', "'rounded'", 'Button geometry.'),
       prop('width', 'auto | full', "'auto'", 'Inline width behavior.'),
       prop(
@@ -1140,9 +1764,15 @@ teams = [
       prop('styleClass', 'string', "''", 'Additional host button classes.'),
       prop('pt', 'JPassThrough | null', 'null', 'Pass-through styling hooks.'),
     ],
-    outputs: [event('onClick', 'MouseEvent', 'Emits when activated and not disabled or loading.')],
+    outputs: [
+      event('onClick', 'MouseEvent', 'Emits when activated and not disabled, loading, or blocked.'),
+      event('cancel', 'MouseEvent', 'Emits from an activated cancelable running operation.'),
+    ],
     cssVariables: buttonCssVariables,
-    accessibility: ['Icon-only buttons need ariaLabel. Loading buttons expose busy state.'],
+    accessibility: [
+      'Icon-only buttons need ariaLabel. Loading buttons expose busy state.',
+      'Determinate progress exposes progressbar semantics and the clamped current value.',
+    ],
     keyboard: [
       'Tab moves focus to the native button.',
       'Enter and Space activate it unless disabled or loading.',
@@ -1165,6 +1795,85 @@ teams = [
     bestPractices: [
       'Use destructive severity only for actions with destructive outcomes.',
       'Keep labels verb-first: Save, Create, Delete, Export.',
+    ],
+  },
+  {
+    slug: 'speed-dial',
+    name: 'Speed Dial',
+    category: 'Button',
+    icon: 'plus',
+    selector: 'j-speed-dial',
+    importPath: 'jrng-ui/speed-dial',
+    status: 'Beta',
+    description:
+      'A compact, keyboard-accessible launcher for related contextual actions in linear or radial layouts.',
+    whenToUse:
+      'Use Speed Dial for a small set of quick actions where a persistent toolbar would consume too much space.',
+    code: {
+      importCode: `import { JSpeedDialComponent, JSpeedDialAction } from 'jrng-ui/speed-dial';`,
+      basic: `<j-speed-dial [actions]="customerActions" showLabels />`,
+      variants: `<j-speed-dial [actions]="customerActions" direction="up" />
+<j-speed-dial [actions]="customerActions" type="circle" [radius]="82" />`,
+      states: `<j-speed-dial [actions]="customerActions" disabled />
+<j-speed-dial [actions]="customerActions" [open]="true" mask />`,
+    },
+    usage: [
+      'Keep action sets short, use verb-first labels, and provide a conventional toolbar fallback when actions are essential.',
+    ],
+    variants: ['linear', 'circle', 'semi-circle', 'fixed', 'container-relative'],
+    sizes: ['Configure radial or linear spacing with radius.'],
+    states: ['closed', 'open', 'disabled', 'action loading', 'action error', 'masked'],
+    inputs: [
+      prop('actions', 'readonly JSpeedDialAction[]', '[]', 'Actions, labels, icons, and commands.'),
+      prop('direction', 'up | down | left | right', "'up'", 'Linear direction and radial origin.'),
+      prop('type', 'linear | circle | semi-circle', "'linear'", 'Action distribution.'),
+      prop('radius', 'number', '72', 'Distance between the trigger and actions.'),
+      prop('fixed', 'boolean', 'false', 'Uses fixed viewport positioning.'),
+      prop(
+        'position',
+        'top-start | top-end | bottom-start | bottom-end | center',
+        "'bottom-end'",
+        'Logical fixed position.',
+      ),
+      prop('mask', 'boolean', 'false', 'Shows an interactive close mask while open.'),
+      prop('hover', 'boolean', 'false', 'Adds optional pointer-hover activation.'),
+      prop('disabled', 'boolean', 'false', 'Prevents opening and action activation.'),
+      prop('showLabels', 'boolean', 'false', 'Shows persistent visible action labels.'),
+      prop('icon / closeIcon', 'string', "'plus' / 'close'", 'Default trigger icons.'),
+      prop('ariaLabel', 'string', "'Open quick actions'", 'Accessible trigger name.'),
+      prop('open', 'boolean', 'false', 'Two-way controlled open state.'),
+    ],
+    outputs: [
+      event('actionClick', 'JSpeedDialActionEvent', 'Emits before an enabled action command.'),
+      event('actionComplete', 'JSpeedDialActionEvent', 'Emits after synchronous or async success.'),
+      event('actionError', 'unknown', 'Emits a rejected command error and leaves actions open.'),
+      event('opened / closed', 'void', 'Emits after open-state transitions.'),
+      event('openChange', 'boolean', 'Supports controlled two-way open state.'),
+    ],
+    publicMethods: ['show()', 'close(restoreFocus?)', 'toggle()', 'runAction(action, index)'],
+    templates: ['jSpeedDialTrigger provides the component instance and current open state.'],
+    accessibility: [
+      'The trigger exposes aria-expanded and aria-controls, and each icon action has an accessible name.',
+      'Focus moves into enabled actions and returns to the trigger when the dial closes.',
+    ],
+    keyboard: [
+      'Enter or Space activates the trigger and action buttons.',
+      'Arrow keys, Home, and End move between enabled actions; Escape closes.',
+    ],
+    responsive: [
+      'Use logical fixed positions on narrow screens and reserve enough space for radial layouts.',
+      'Horizontal direction mirrors in RTL and motion is removed for reduced-motion preferences.',
+    ],
+    limitations: [
+      'Hover activation is supplementary; essential actions need click and keyboard access.',
+      'Very large action sets should use Menu or Toolbar instead.',
+    ],
+    relatedComponents: ['Button', 'Split Button', 'Menu', 'Toolbar', 'Tooltip'],
+    testingNotes: [
+      'Test open control, async success/error, disabled items, outside and Escape close, arrow focus, restoration, RTL geometry, and destroy cleanup.',
+    ],
+    bestPractices: [
+      'Use no more than a small handful of actions and keep destructive actions clearly labeled.',
     ],
   },
   {

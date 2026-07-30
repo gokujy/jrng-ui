@@ -106,7 +106,11 @@ import { JBreadcrumbComponent } from 'jrng-ui/breadcrumb';
                   }
                 </div>
               </div>
-              <div class="j-full-code" id="j-component-example-code">
+              <div
+                class="j-full-code"
+                [class.is-expanded]="featureCodeBlock.expanded()"
+                id="j-component-example-code"
+              >
                 <div class="j-code-header">
                   <div class="j-code-tabs" role="tablist" aria-label="Example source files">
                     @for (tab of codeTabsFor(example); track tab.value) {
@@ -136,9 +140,26 @@ import { JBreadcrumbComponent } from 'jrng-ui/breadcrumb';
                       icon="copy"
                       iconOnly
                     />
+                    <button
+                      class="j-code-expand-button"
+                      type="button"
+                      [attr.aria-expanded]="featureCodeBlock.expanded()"
+                      [attr.aria-label]="
+                        featureCodeBlock.expanded() ? 'Collapse code' : 'Expand code'
+                      "
+                      [attr.title]="featureCodeBlock.expanded() ? 'Collapse code' : 'Expand code'"
+                      (click)="featureCodeBlock.toggleExpanded()"
+                    >
+                      <j-icon
+                        [name]="featureCodeBlock.expanded() ? 'minimize' : 'maximize'"
+                        aria-hidden="true"
+                      />
+                    </button>
                   </div>
                 </div>
                 <app-code-block
+                  #featureCodeBlock
+                  [collapsible]="true"
                   [label]="activeCodeLabel(featureCodeTab(example))"
                   [language]="featureCodeTab(example) === 'html' ? 'html' : 'ts'"
                   [code]="activeFeatureCode(example)"

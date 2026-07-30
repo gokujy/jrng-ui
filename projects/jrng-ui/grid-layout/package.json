@@ -1,4 +1,7 @@
 {
+  "sideEffects": [
+    "./grid-layout.component.scss"
+  ],
   "ngPackage": {
     "lib": {
       "entryFile": "public-api.ts"

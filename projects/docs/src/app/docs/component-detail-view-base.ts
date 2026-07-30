@@ -18,6 +18,7 @@ import {
   JAccordionVariant,
 } from 'jrng-ui/accordion';
 import { JAppShellComponent } from 'jrng-ui/app-shell';
+import { JAnchorComponent, JAnchorLink } from 'jrng-ui/anchor';
 import { JAutocompleteComponent } from 'jrng-ui/autocomplete';
 import { JAvatarGroupComponent } from 'jrng-ui/avatar-group';
 import { JAvatarComponent } from 'jrng-ui/avatar';
@@ -29,6 +30,7 @@ import { JButtonComponent, JButtonVariant } from 'jrng-ui/button';
 import { JCalendarSchedulerComponent } from 'jrng-ui/calendar-scheduler';
 import { JCardComponent } from 'jrng-ui/card';
 import { JCarouselComponent } from 'jrng-ui/carousel';
+import { JCascaderComponent } from 'jrng-ui/cascader';
 import { JChartComponent } from 'jrng-ui/chart';
 import { JChipComponent } from 'jrng-ui/chip';
 import { JChipsComponent } from 'jrng-ui/chips';
@@ -66,7 +68,7 @@ import { JFormFieldComponent } from 'jrng-ui/form-field';
 import { JGalleryComponent } from 'jrng-ui/gallery';
 import { JGanttComponent } from 'jrng-ui/gantt';
 import { JGridColumnComponent, JGridComponent, JGridRowComponent } from 'jrng-ui/grid';
-import { JGridLayoutComponent } from 'jrng-ui/grid-layout';
+import { JGridLayoutComponent, JGridLayoutItemTemplateDirective } from 'jrng-ui/grid-layout';
 import { JHighlightComponent } from 'jrng-ui/highlight';
 import { JHtmlPreviewComponent } from 'jrng-ui/html-preview';
 import {
@@ -84,6 +86,12 @@ import { JInputMaskComponent } from 'jrng-ui/input-mask';
 import { JInputNumberComponent } from 'jrng-ui/input-number';
 import { JInputOtpComponent } from 'jrng-ui/input-otp';
 import { JInputComponent, JInputVariant } from 'jrng-ui/input';
+import {
+  JInplaceActionsDirective,
+  JInplaceComponent,
+  JInplaceContentDirective,
+  JInplaceDisplayDirective,
+} from 'jrng-ui/inplace';
 import { JListboxComponent } from 'jrng-ui/listbox';
 import { JLoaderComponent, JLoaderVariant } from 'jrng-ui/loader';
 import { JMaintenancePageComponent } from 'jrng-ui/maintenance-page';
@@ -100,6 +108,7 @@ import { JPasswordComponent } from 'jrng-ui/password';
 import { JPanelComponent } from 'jrng-ui/panel';
 import { JPageHeaderComponent, JPageHeaderVariant } from 'jrng-ui/page-header';
 import { JPopoverComponent } from 'jrng-ui/popover';
+import { JPopoutComponent } from 'jrng-ui/popout';
 import {
   JQueryBuilderComponent,
   JQueryField,
@@ -109,22 +118,37 @@ import {
 } from 'jrng-ui/query-builder';
 import { JProgressBarComponent, JProgressBarVariant } from 'jrng-ui/progress-bar';
 import { JProgressSpinnerComponent } from 'jrng-ui/progress-spinner';
+import { JPullToRefreshComponent } from 'jrng-ui/pull-to-refresh';
 import { JRadioGroupComponent } from 'jrng-ui/radio-group';
 import { JRadioComponent } from 'jrng-ui/radio';
 import { JRatingComponent } from 'jrng-ui/rating';
-import { JSelectComponent } from 'jrng-ui/select';
+import { JSelectCellDirective, JSelectColumn, JSelectComponent } from 'jrng-ui/select';
 import { JSelectButtonComponent } from 'jrng-ui/select-button';
+import { JSignatureComponent, JSignatureValue } from 'jrng-ui/signature';
+import { JSpeechToTextButtonComponent, JSpeechToTextDirective } from 'jrng-ui/speech-to-text';
 import { JSectionFooterComponent } from 'jrng-ui/section-footer';
 import { JSectionHeaderComponent } from 'jrng-ui/section-header';
 import { JSidebarNavComponent } from 'jrng-ui/sidebar-nav';
 import { JSkeletonComponent } from 'jrng-ui/skeleton';
 import { JSparklineComponent } from 'jrng-ui/sparkline';
 import { JSplitterComponent, JSplitterPanelComponent } from 'jrng-ui/splitter';
+import { JSplitButtonComponent, JSplitButtonItemDirective } from 'jrng-ui/split-button';
+import {
+  JSpeedDialAction,
+  JSpeedDialComponent,
+  JSpeedDialTriggerDirective,
+} from 'jrng-ui/speed-dial';
 import { JResponsiveSidebarComponent } from 'jrng-ui/responsive-sidebar';
 import { JStatusChipComponent } from 'jrng-ui/status-chip';
 import { JStepperComponent } from 'jrng-ui/stepper';
 import { JSliderComponent } from 'jrng-ui/slider';
 import { JSwitchComponent } from 'jrng-ui/switch';
+import {
+  JSwipeActionsComponent,
+  JSwipeContentDirective,
+  JSwipeEndActionsDirective,
+  JSwipeStartActionsDirective,
+} from 'jrng-ui/swipe-actions';
 import { JTabComponent, JTabsComponent, JTabsVariant } from 'jrng-ui/tabs';
 import { JTagComponent } from 'jrng-ui/tag';
 import { JToggleButtonComponent } from 'jrng-ui/toggle-button';
@@ -154,10 +178,16 @@ import { JTourGuideComponent, JTourService, JTourStepDirective } from 'jrng-ui/t
 import { JToastContainerComponent, JToastService } from 'jrng-ui/toast';
 import { JTransferListComponent } from 'jrng-ui/transfer-list';
 import { JTreeComponent } from 'jrng-ui/tree';
+import {
+  JTreeSelectComponent,
+  JTreeSelectNodeDirective,
+  JTreeSelectValueDirective,
+} from 'jrng-ui/tree-select';
 import { JTreeTableCellTemplateDirective, JTreeTableComponent } from 'jrng-ui/tree-table';
 import { JTreeNode } from 'jrng-ui/tree';
 import { JVideoPlayerComponent } from 'jrng-ui/video-player';
 import { JVirtualScrollerComponent } from 'jrng-ui/virtual-scroller';
+import { JWatermarkComponent } from 'jrng-ui/watermark';
 import { JValidationMessageComponent } from 'jrng-ui/validation-message';
 import {
   JKanbanCardEvent,
@@ -193,6 +223,7 @@ export interface DetailFeatureExample {
   readonly name: string;
   readonly details: string;
   readonly key: string;
+  readonly includeInContents?: boolean;
   readonly responsivePreview?: boolean;
   readonly index: number;
   readonly html: string;
@@ -222,6 +253,7 @@ const FEATURE_VARIANT_KEYS: Readonly<Record<string, readonly string[]>> = {
   paginator: ['default', 'simple'],
   'page-header': ['default', 'stacked', 'centered'],
   'progress-bar': ['default', 'segmented', 'labeled'],
+  select: ['basic', 'multi-column'],
   stepper: ['default', 'rail', 'progress'],
   tabs: ['default', 'pills', 'segmented'],
   textarea: ['outlined', 'filled'],
@@ -604,6 +636,20 @@ const BUTTON_FEATURE_EXAMPLES = [
     html: `<j-button label="Saving" loading loadingLabel="Saving changes" />`,
   },
   {
+    key: 'progress',
+    name: 'Determinate progress',
+    details: 'Expose upload progress without changing the button width or accessible name.',
+    html: `<j-button label="Uploading" [progress]="64" progressState="running" progressLabel />`,
+  },
+  {
+    key: 'progress-states',
+    name: 'Progress outcomes',
+    details: 'Use semantic success, error, and cancelled states after a task finishes.',
+    html: `<j-button label="Uploaded" [progress]="100" progressState="success" />
+<j-button label="Upload failed" [progress]="72" progressState="error" />
+<j-button label="Cancelled" [progress]="38" progressState="cancelled" />`,
+  },
+  {
     key: 'disabled',
     name: 'Disabled buttons',
     details: 'Unavailable actions remain visible but cannot emit onClick.',
@@ -650,6 +696,37 @@ const BUTTON_FEATURE_EXAMPLES = [
     name: 'Custom content',
     details: 'Project concise content while retaining native button behavior.',
     html: `<j-button><strong>Approve</strong><span jButtonSuffix>⌘ Enter</span></j-button>`,
+  },
+] as const;
+
+const SPEED_DIAL_FEATURE_EXAMPLES = [
+  {
+    key: 'linear',
+    name: 'Customer quick actions',
+    details: 'Reveal related customer actions from one compact trigger.',
+    html: `<j-speed-dial [actions]="customerQuickActions" showLabels />`,
+  },
+  {
+    key: 'circle',
+    name: 'Circular actions',
+    details: 'Distribute actions around a container-relative trigger.',
+    html: `<j-speed-dial [actions]="customerQuickActions" type="circle" [radius]="82" />`,
+  },
+  {
+    key: 'fixed',
+    name: 'Fixed mobile action',
+    details: 'Pin the trigger to the logical bottom-end corner and optionally add a mask.',
+    html: `<j-speed-dial [actions]="customerQuickActions" fixed position="bottom-end" mask />`,
+  },
+  {
+    key: 'custom-trigger',
+    name: 'Custom trigger',
+    details: 'Project a JRNG button while retaining the Speed Dial state and methods.',
+    html: `<j-speed-dial [actions]="customerQuickActions">
+  <ng-template jSpeedDialTrigger let-speedDial>
+    <j-button label="Customer actions" (onClick)="speedDial.toggle()" />
+  </ng-template>
+</j-speed-dial>`,
   },
 ] as const;
 
@@ -1615,6 +1692,29 @@ const GRID_FEATURE_EXAMPLES: Readonly<
   <j-card header="Active users">...</j-card>
 </j-grid-layout>`,
     },
+    {
+      key: 'interactive',
+      name: 'Interactive dashboard',
+      details:
+        'Enable shared drag-drop reordering and constrained keyboard resizing only when needed.',
+      html: `<j-grid-layout
+  [(layout)]="customerDashboardLayout"
+  [columns]="4"
+  draggable
+  resizable
+  compact>
+  <ng-template jGridLayoutItem let-tile>{{ tile.title }}</ng-template>
+</j-grid-layout>`,
+    },
+    {
+      key: 'responsive',
+      name: 'Responsive layouts',
+      details: 'Apply named controlled layouts from the application breakpoint strategy.',
+      html: `<j-grid-layout
+  [(layout)]="customerDashboardLayout"
+  [responsiveLayouts]="customerResponsiveLayouts"
+  [columns]="4" />`,
+    },
   ],
   grid: [
     {
@@ -1686,6 +1786,7 @@ export const COMPONENT_PREVIEW_IMPORTS = [
   JAccordionContentComponent,
   JAccordionHeaderComponent,
   JAccordionPanelComponent,
+  JAnchorComponent,
   JAutocompleteComponent,
   JAvatarGroupComponent,
   JAvatarComponent,
@@ -1694,6 +1795,7 @@ export const COMPONENT_PREVIEW_IMPORTS = [
   JBreadcrumbComponent,
   JButtonComponent,
   JCardComponent,
+  JCascaderComponent,
   JChipComponent,
   JCheckboxComponent,
   JConfirmDialogComponent,
@@ -1725,6 +1827,10 @@ export const COMPONENT_PREVIEW_IMPORTS = [
   JInputNumberComponent,
   JInputOtpComponent,
   JInputComponent,
+  JInplaceActionsDirective,
+  JInplaceComponent,
+  JInplaceContentDirective,
+  JInplaceDisplayDirective,
   JListboxComponent,
   JLoaderComponent,
   JMaintenancePageComponent,
@@ -1736,14 +1842,20 @@ export const COMPONENT_PREVIEW_IMPORTS = [
   JPanelComponent,
   JPageHeaderComponent,
   JPopoverComponent,
+  JPopoutComponent,
   JQueryBuilderComponent,
   JProgressBarComponent,
   JProgressSpinnerComponent,
+  JPullToRefreshComponent,
   JRadioGroupComponent,
   JRadioComponent,
   JRatingComponent,
   JSelectComponent,
+  JSelectCellDirective,
   JSelectButtonComponent,
+  JSignatureComponent,
+  JSpeechToTextButtonComponent,
+  JSpeechToTextDirective,
   JSectionFooterComponent,
   JSectionHeaderComponent,
   JSkeletonComponent,
@@ -1752,6 +1864,10 @@ export const COMPONENT_PREVIEW_IMPORTS = [
   JStatusChipComponent,
   JSliderComponent,
   JSwitchComponent,
+  JSwipeActionsComponent,
+  JSwipeContentDirective,
+  JSwipeEndActionsDirective,
+  JSwipeStartActionsDirective,
   JTabComponent,
   JTabsComponent,
   JTagComponent,
@@ -1789,6 +1905,9 @@ export const COMPONENT_PREVIEW_IMPORTS = [
   JGridRowComponent,
   JGridColumnComponent,
   JGridLayoutComponent,
+  JGridLayoutItemTemplateDirective,
+  JSpeedDialComponent,
+  JSpeedDialTriggerDirective,
   JImageComponent,
   JKanbanComponent,
   JKnobComponent,
@@ -1800,16 +1919,22 @@ export const COMPONENT_PREVIEW_IMPORTS = [
   JSidebarNavComponent,
   JSplitterComponent,
   JSplitterPanelComponent,
+  JSplitButtonComponent,
+  JSplitButtonItemDirective,
   JStepperComponent,
   JTieredMenuComponent,
   JTimePickerComponent,
   JTopbarComponent,
   JTransferListComponent,
   JTreeComponent,
+  JTreeSelectComponent,
+  JTreeSelectNodeDirective,
+  JTreeSelectValueDirective,
   JTreeTableComponent,
   JTreeTableCellTemplateDirective,
   JVideoPlayerComponent,
   JVirtualScrollerComponent,
+  JWatermarkComponent,
   JValidationMessageComponent,
   JCurrencyFormatPipe,
   JDateTimeFormatPipe,
@@ -1820,6 +1945,95 @@ export const COMPONENT_PREVIEW_IMPORTS = [
 
 @Directive()
 export class ComponentDetailViewBase {
+  readonly customerAnchorLinks: readonly JAnchorLink[] = [
+    { id: 'customer-overview-preview', label: 'Overview' },
+    { id: 'customer-contacts-preview', label: 'Contacts' },
+    {
+      id: 'customer-account-preview',
+      label: 'Account',
+      children: [{ id: 'customer-history-preview', label: 'History' }],
+    },
+  ];
+  customerInplaceStatus = 'Active';
+  customerInplaceDraft = 'Active';
+  readonly splitButtonItems: readonly JMenuItem[] = [
+    { label: 'Save and notify', icon: 'check', command: () => undefined },
+    { separator: true },
+    { label: 'Save as draft', icon: 'file', command: () => undefined },
+    { label: 'Delete customer', icon: 'trash', disabled: true },
+  ];
+  readonly customerQuickActions: readonly JSpeedDialAction[] = [
+    { id: 'edit', label: 'Edit customer', icon: 'edit' },
+    { id: 'email', label: 'Email customer', icon: 'mail' },
+    { id: 'archive', label: 'Archive customer', icon: 'archive' },
+  ];
+  customerDashboardLayout = [
+    { id: 'profile', data: { title: 'Customer profile' }, column: 1, row: 1, columnSpan: 2 },
+    { id: 'activity', data: { title: 'Recent activity' }, column: 3, row: 1 },
+    { id: 'status', data: { title: 'Account status' }, column: 4, row: 1, locked: true },
+  ];
+  readonly customerResponsiveLayouts = {
+    mobile: this.customerDashboardLayout.map((item, index) => ({
+      ...item,
+      column: 1,
+      row: index + 1,
+      columnSpan: 1,
+    })),
+  };
+  customerSignature: JSignatureValue | null = null;
+  readonly customerTree: readonly JTreeNode[] = [
+    {
+      key: 'technology',
+      label: 'Technology',
+      children: [
+        { key: 'aster', label: 'Aster Labs', leaf: true },
+        { key: 'northstar', label: 'Northstar Systems', leaf: true },
+      ],
+    },
+    {
+      key: 'healthcare',
+      label: 'Healthcare',
+      children: [{ key: 'willow', label: 'Willow Health', leaf: true }],
+    },
+  ];
+  readonly customerLocations = [
+    {
+      label: 'Americas',
+      value: 'americas',
+      children: [
+        {
+          label: 'United States',
+          value: 'us',
+          children: [
+            { label: 'Austin', value: 'austin' },
+            { label: 'Seattle', value: 'seattle' },
+          ],
+        },
+      ],
+    },
+    {
+      label: 'Europe',
+      value: 'europe',
+      children: [
+        {
+          label: 'Germany',
+          value: 'de',
+          children: [{ label: 'Berlin', value: 'berlin' }],
+        },
+      ],
+    },
+  ];
+  readonly customerSelectOptions = [
+    { id: 'CUS-1001', name: 'Avery Reed', company: 'Aster Labs', status: 'Active' },
+    { id: 'CUS-1002', name: 'Morgan Kim', company: 'Northstar Systems', status: 'Review' },
+    { id: 'CUS-1003', name: 'Jordan Lee', company: 'Willow Health', status: 'Inactive' },
+  ];
+  readonly customerSelectColumns: readonly JSelectColumn[] = [
+    { field: 'id', header: 'Customer ID', width: '8rem', sortable: true },
+    { field: 'name', header: 'Customer Name', width: '11rem', sortable: true },
+    { field: 'company', header: 'Company', width: '12rem' },
+    { field: 'status', header: 'Status', width: '7rem' },
+  ];
   readonly cronPreviewFrom = new Date('2026-07-28T00:00:00Z');
   readonly queryBuilderFields: readonly JQueryField[] = [
     { key: 'customer', label: 'Customer', type: 'text' },
@@ -1889,13 +2103,14 @@ export class ComponentDetailViewBase {
   readonly featureExamples = computed<readonly DetailFeatureExample[]>(() => {
     const doc = this.doc();
     if (doc.slug === 'table') {
-      return this.withApiCoverage(
-        doc,
-        [...TABLE_FEATURE_EXAMPLES, ...TABLE_SCENARIO_DOCS].map((example, index) => ({
+      return this.withApiCoverage(doc, [
+        ...TABLE_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
+        ...TABLE_SCENARIO_DOCS.map((example, offset) => ({
           ...example,
-          index,
+          index: TABLE_FEATURE_EXAMPLES.length + offset,
+          includeInContents: false,
         })),
-      );
+      ]);
     }
     if (doc.slug === 'tree-table') {
       return this.withApiCoverage(
@@ -1921,6 +2136,12 @@ export class ComponentDetailViewBase {
             ? { ...example, index, ...demoSources['button-basic-demo'] }
             : { ...example, index },
         ),
+      );
+    }
+    if (doc.slug === 'speed-dial') {
+      return this.withApiCoverage(
+        doc,
+        SPEED_DIAL_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
       );
     }
     if (doc.slug === 'avatar') {
@@ -2140,6 +2361,7 @@ export class ComponentDetailViewBase {
       .map((example, offset) => ({
         ...example,
         index: existing.length + offset,
+        includeInContents: false,
       }));
     return [...existing, ...additions];
   }
@@ -2148,11 +2370,13 @@ export class ComponentDetailViewBase {
       return [
         { id: 'component-overview', label: 'Overview', level: 0 },
         { id: 'component-import', label: 'Import', level: 0 },
-        ...this.featureExamples().map((example) => ({
-          id: `component-preview-${example.key}`,
-          label: example.name,
-          level: 0 as const,
-        })),
+        ...this.featureExamples()
+          .filter((example) => example.includeInContents !== false)
+          .map((example) => ({
+            id: `component-preview-${example.key}`,
+            label: example.name,
+            level: 0 as const,
+          })),
       ];
     }
 

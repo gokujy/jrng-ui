@@ -1,4 +1,5 @@
 import { readCoverageModel } from './doc-api-example-coverage.mjs';
+import { ACTIVE_COMPONENT_TOTAL } from './component-categories.mjs';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
@@ -138,8 +139,10 @@ for (const component of components) {
   }
 }
 
-if (!requestedCategory && coverage.summary.totalPublicComponents !== 122) {
-  failures.push(`Expected 122 public components; found ${coverage.summary.totalPublicComponents}.`);
+if (!requestedCategory && coverage.summary.totalPublicComponents !== ACTIVE_COMPONENT_TOTAL) {
+  failures.push(
+    `Expected ${ACTIVE_COMPONENT_TOTAL} public components; found ${coverage.summary.totalPublicComponents}.`,
+  );
 }
 if (
   !requestedCategory &&
