@@ -1,0 +1,144 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.j-scheduler {
+  background: var(--j-color-card);
+  border: 1px solid var(--j-color-border);
+  border-radius: var(--j-radius-xl);
+  color: var(--j-color-card-foreground);
+  display: flex;
+  flex-direction: column;
+  min-height: 18rem;
+  min-width: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.j-scheduler-toolbar {
+  align-items: center;
+  background: var(--j-color-card);
+  border-block-end: 1px solid var(--j-color-border);
+  display: grid;
+  flex: 0 0 auto;
+  gap: var(--j-spacing-3);
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  padding: var(--j-spacing-3);
+  position: relative;
+  z-index: 3;
+}
+
+.j-scheduler-toolbar__area {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--j-spacing-2);
+  min-width: 0;
+}
+
+.j-scheduler-toolbar__center {
+  justify-content: center;
+}
+
+.j-scheduler-toolbar__end {
+  justify-content: flex-end;
+}
+
+.j-scheduler-toolbar__title {
+  font-size: var(--j-font-size-lg);
+  margin: 0;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.j-scheduler-toolbar__timezone {
+  color: var(--j-color-muted-foreground);
+  font-size: var(--j-font-size-sm);
+}
+
+.j-scheduler__scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.j-scheduler__view {
+  min-height: 100%;
+}
+
+.j-scheduler__phase-placeholder {
+  align-items: center;
+  color: var(--j-color-muted-foreground);
+  display: flex;
+  flex-direction: column;
+  gap: var(--j-spacing-2);
+  justify-content: center;
+  min-height: 16rem;
+}
+
+.j-scheduler__phase-placeholder strong {
+  color: var(--j-color-card-foreground);
+}
+
+.j-scheduler__live {
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  position: absolute;
+  width: 1px;
+}
+
+.j-scheduler--disabled {
+  opacity: var(--j-disabled-opacity, 0.55);
+  pointer-events: none;
+}
+
+.j-scheduler--disabled ::ng-deep button,
+.j-scheduler--disabled ::ng-deep [tabindex] {
+  pointer-events: none;
+}
+
+.j-scheduler--rtl .j-scheduler-toolbar__start,
+.j-scheduler--rtl .j-scheduler-toolbar__end {
+  flex-direction: row-reverse;
+}
+
+@media (max-width: 48rem) {
+  .j-scheduler-toolbar {
+    align-items: stretch;
+    grid-template-columns: 1fr;
+  }
+
+  .j-scheduler-toolbar__area {
+    justify-content: center;
+  }
+
+  .j-scheduler-toolbar__center {
+    grid-row: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .j-scheduler,
+  .j-scheduler * {
+    scroll-behavior: auto !important;
+  }
+}
+
+@media print {
+  .j-scheduler-toolbar,
+  .j-scheduler__live {
+    display: none !important;
+  }
+
+  .j-scheduler,
+  .j-scheduler__scroll {
+    border: 0;
+    height: auto !important;
+    overflow: visible !important;
+  }
+}

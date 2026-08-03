@@ -51,6 +51,7 @@ export const COMPONENT_CATEGORIES = [
     name: 'Data',
     selectors: [
       'j-calendar-scheduler',
+      'j-scheduler',
       'j-column-filter',
       'j-data-display',
       'j-data-view',
@@ -200,7 +201,7 @@ export const COMPONENT_CATEGORY_ORDER = Object.freeze([
 export const COMPONENT_CATEGORY_COUNTS = Object.freeze({
   Form: 33,
   Button: 5,
-  Data: 16,
+  Data: 17,
   Panel: 16,
   Overlay: 9,
   Menu: 10,
@@ -213,7 +214,7 @@ export const COMPONENT_CATEGORY_COUNTS = Object.freeze({
   Utilities: 3,
   Pages: 2,
 });
-export const ACTIVE_COMPONENT_TOTAL = 129;
+export const ACTIVE_COMPONENT_TOTAL = 130;
 export const COMPONENT_CATEGORY_TOTAL = 14;
 export const REMOVED_COMPONENT_SELECTORS = new Set([
   'j-activity-feed',

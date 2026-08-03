@@ -1,0 +1,140 @@
+<section
+  class="j-scheduler"
+  [class.j-scheduler--disabled]="disabled()"
+  [class.j-scheduler--readonly]="readonly()"
+  [class.j-scheduler--rtl]="rtl()"
+  [class]="styleClass()"
+  [style.height]="rootStyle()"
+  [attr.aria-label]="ariaLabel()"
+  [attr.aria-disabled]="disabled()"
+  [attr.data-view]="view()"
+  [attr.dir]="rtl() ? 'rtl' : null"
+  data-j-slot="root"
+>
+  @if (headerToolbar() !== false) {
+    @if (toolbarTemplate) {
+      <ng-container [ngTemplateOutlet]="toolbarTemplate" />
+    } @else {
+      <header class="j-scheduler-toolbar" data-j-slot="toolbar">
+        <div
+          class="j-scheduler-toolbar__area j-scheduler-toolbar__start"
+          data-j-slot="toolbar-start"
+        >
+          @if (toolbarStartTemplate) {
+            <ng-container [ngTemplateOutlet]="toolbarStartTemplate" />
+          } @else {
+            @for (action of toolbar().start; track action) {
+              <ng-container
+                [ngTemplateOutlet]="toolbarAction"
+                [ngTemplateOutletContext]="{ $implicit: action }"
+              />
+            }
+          }
+        </div>
+        <div
+          class="j-scheduler-toolbar__area j-scheduler-toolbar__center"
+          data-j-slot="toolbar-center"
+        >
+          @if (toolbarCenterTemplate) {
+            <ng-container [ngTemplateOutlet]="toolbarCenterTemplate" />
+          } @else {
+            @for (action of toolbar().center; track action) {
+              <ng-container
+                [ngTemplateOutlet]="toolbarAction"
+                [ngTemplateOutletContext]="{ $implicit: action }"
+              />
+            }
+          }
+        </div>
+        <div class="j-scheduler-toolbar__area j-scheduler-toolbar__end" data-j-slot="toolbar-end">
+          @if (toolbarEndTemplate) {
+            <ng-container [ngTemplateOutlet]="toolbarEndTemplate" />
+          } @else {
+            @for (action of toolbar().end; track action) {
+              <ng-container
+                [ngTemplateOutlet]="toolbarAction"
+                [ngTemplateOutletContext]="{ $implicit: action }"
+              />
+            }
+          }
+        </div>
+      </header>
+    }
+  }
+
+  <div #scrollSurface class="j-scheduler__scroll" data-j-slot="scroll-surface">
+    <div
+      class="j-scheduler__view"
+      role="region"
+      [attr.aria-label]="viewLabel(view()) + ': ' + title()"
+      data-j-slot="view"
+    >
+      <div class="j-scheduler__phase-placeholder" data-j-slot="view-loading">
+        <strong>{{ viewLabel(view()) }}</strong>
+        <span>{{ visibleEvents().length }} events in {{ title() }}</span>
+      </div>
+    </div>
+  </div>
+
+  <p class="j-scheduler__live" aria-live="polite" aria-atomic="true"></p>
+</section>
+
+<ng-template #toolbarAction let-action>
+  @if (isToolbarActionVisible(action)) {
+    @switch (action) {
+      @case ('prev') {
+        <j-button
+          icon="chevron-left"
+          ariaLabel="Previous range"
+          [disabled]="disabled()"
+          jTooltip="Previous range"
+          (onClick)="previous()"
+        />
+      }
+      @case ('next') {
+        <j-button
+          icon="chevron-right"
+          ariaLabel="Next range"
+          [disabled]="disabled()"
+          jTooltip="Next range"
+          (onClick)="next()"
+        />
+      }
+      @case ('today') {
+        <j-button
+          label="Today"
+          variant="outlined"
+          [disabled]="disabled()"
+          jTooltip="Go to today"
+          (onClick)="today()"
+        />
+      }
+      @case ('title') {
+        <h2 class="j-scheduler-toolbar__title" aria-live="polite">{{ title() }}</h2>
+      }
+      @case ('timezone') {
+        <span class="j-scheduler-toolbar__timezone">{{ displayTimezone() }}</span>
+      }
+      @case ('addEvent') {
+        <j-button
+          label="Add event"
+          icon="plus"
+          [disabled]="disabled() || readonly() || !editable()"
+          jTooltip="Add event"
+        />
+      }
+      @default {
+        @if (isViewAction(action)) {
+          <j-button
+            [label]="viewLabel(action)"
+            [variant]="view() === action ? 'solid' : 'outlined'"
+            [disabled]="disabled()"
+            [attr.aria-pressed]="view() === action"
+            [jTooltip]="'Switch to ' + viewLabel(action) + ' view'"
+            (onClick)="changeView(action)"
+          />
+        }
+      }
+    }
+  }
+</ng-template>

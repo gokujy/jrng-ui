@@ -9,6 +9,7 @@ export * from 'jrng-ui/bottom-sheet';
 export * from 'jrng-ui/breadcrumb';
 export * from 'jrng-ui/button';
 export * from 'jrng-ui/calendar-scheduler';
+export * from 'jrng-ui/scheduler';
 export * from 'jrng-ui/card';
 export * from 'jrng-ui/carousel';
 export * from 'jrng-ui/chart';
