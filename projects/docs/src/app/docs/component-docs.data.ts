@@ -4264,6 +4264,12 @@ const generatedFallbackExamples: Readonly<Record<string, string>> = {
   <j-button label="Archive"></j-button>
 </j-bottom-sheet>`,
   'calendar-scheduler': `<j-calendar-scheduler [events]="events"></j-calendar-scheduler>`,
+  scheduler: `<j-scheduler
+  [events]="events"
+  [date]="date"
+  [view]="view"
+  (dateChange)="date = $event"
+  (viewChange)="view = $event" />`,
   'command-palette': `<j-command-palette [items]="commands" placeholder="Search commands"></j-command-palette>`,
   'confirm-popup': `<j-confirm-popup></j-confirm-popup>`,
   container: `<j-container>

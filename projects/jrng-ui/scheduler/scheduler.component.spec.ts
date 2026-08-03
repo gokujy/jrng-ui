@@ -59,6 +59,29 @@ describe('JSchedulerComponent', () => {
     expect(component.view()).toBe('month');
   });
 
+  it('removes disabled controls from keyboard interaction', () => {
+    fixture.componentRef.setInput('disabled', true);
+    fixture.detectChanges();
+    const root = fixture.nativeElement.querySelector('.j-scheduler') as HTMLElement;
+    expect(root.getAttribute('aria-disabled')).toBe('true');
+    const controls = [...fixture.nativeElement.querySelectorAll('button')] as HTMLButtonElement[];
+    expect(controls.length).toBeGreaterThan(0);
+    expect(controls.every((control) => control.disabled || control.tabIndex === -1)).toBe(true);
+  });
+
+  it('mirrors the scheduler root for RTL without changing event instants', () => {
+    const start = new Date(2026, 7, 5, 9);
+    fixture.componentRef.setInput('rtl', true);
+    fixture.componentRef.setInput('events', [
+      { id: 'rtl-event', title: 'Field visit', start, end: new Date(2026, 7, 5, 10) },
+    ]);
+    fixture.detectChanges();
+    const root = fixture.nativeElement.querySelector('.j-scheduler') as HTMLElement;
+    expect(root.dir).toBe('rtl');
+    expect(root.classList.contains('j-scheduler--rtl')).toBe(true);
+    expect(component.getEventById('rtl-event')?.start).toBe(start);
+  });
+
   it('emits event requests without mutating controlled events', () => {
     const event = {
       id: 'planning',

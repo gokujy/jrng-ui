@@ -1,7 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed, input, model, output } from '@angular/core';
 
+/** @deprecated Use `JSchedulerView` from `jrng-ui/scheduler`. */
 export type JCalendarSchedulerView = 'day' | 'week' | 'month' | 'agenda';
 
+/** @deprecated Use `JSchedulerEvent` from `jrng-ui/scheduler`. */
 export interface JCalendarSchedulerEvent {
   readonly id: string;
   readonly title: string;
@@ -34,6 +36,10 @@ interface JCalendarDay {
   readonly events: readonly JCalendarSchedulerEvent[];
 }
 
+/**
+ * @deprecated Compatibility scheduler retained for existing applications.
+ * New applications should use `JSchedulerComponent` from `jrng-ui/scheduler`.
+ */
 @Component({
   selector: 'j-calendar-scheduler',
   imports: [],

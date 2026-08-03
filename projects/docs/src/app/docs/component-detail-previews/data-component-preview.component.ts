@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import type { JTableSelection } from 'jrng-ui/table';
+import type { JSchedulerView } from 'jrng-ui/scheduler';
 import {
   COMPONENT_PREVIEW_IMPORTS,
   ComponentDetailViewBase,
@@ -212,6 +213,36 @@ import {
           ariaLabel="Customer meeting schedule"
         />
       }
+      @case ('scheduler') {
+        <div [attr.dir]="example.key === 'rtl' ? 'rtl' : null">
+          <j-scheduler
+            [events]="schedulerEvents"
+            [resources]="schedulerResources"
+            [categories]="schedulerCategories"
+            [blockedIntervals]="example.key === 'blocked' ? schedulerBlockedIntervals : []"
+            [appointmentSlots]="example.key === 'appointments' ? schedulerAppointmentSlots : []"
+            [date]="schedulerActiveDate"
+            [view]="example.key === 'basic' ? schedulerPreviewView : schedulerViewFor(example.key)"
+            [daysOfWeek]="example.key === 'working-days' ? [1, 2, 3, 4, 5] : []"
+            [maxEventsVisible]="example.key === 'more' ? 2 : 3"
+            [editable]="example.key === 'drag-drop' || example.key === 'resize'"
+            [readonly]="example.key === 'readonly'"
+            [disabled]="example.key === 'disabled'"
+            [rtl]="example.key === 'rtl'"
+            [quickInfo]="example.key === 'quick-info' || example.key === 'readonly'"
+            [eventPopover]="example.key === 'event-popover'"
+            [eventSelection]="example.key === 'event-selection'"
+            [timelineVirtualScroll]="example.key === 'virtualized'"
+            [adaptiveMode]="example.key === 'adaptive-resources' ? 'always' : 'auto'"
+            [locale]="example.key === 'locale' || example.key === 'time-format' ? 'en-GB' : 'en-US'"
+            [timezone]="example.key === 'timezone' ? 'UTC' : 'local'"
+            [displayTimezone]="example.key === 'timezone' ? 'Europe/London' : 'local'"
+            height="34rem"
+            ariaLabel="Operations schedule"
+            (viewChange)="schedulerPreviewView = $event"
+          />
+        </div>
+      }
       @case ('data-view') {
         <j-data-view
           [value]="dataViewItems"
@@ -320,4 +351,56 @@ import {
 export class DataComponentPreviewComponent extends ComponentDetailViewBase {
   readonly previewExample = input.required<DetailFeatureExample>();
   tableSelection: JTableSelection = [this.customerRows[1]];
+  schedulerPreviewView: JSchedulerView = 'month';
+  readonly schedulerResources = [
+    { id: 'operations', name: 'Operations', children: [{ id: 'room-a', name: 'Room A' }] },
+    { id: 'field-team', name: 'Field team', capacity: 2 },
+  ];
+  readonly schedulerCategories = [
+    { id: 'customer', label: 'Customer', color: '#4f46e5' },
+    { id: 'operations', label: 'Operations', color: '#0f766e' },
+  ];
+  readonly schedulerBlockedIntervals = [
+    {
+      id: 'maintenance',
+      start: new Date(2026, 6, 14, 12),
+      end: new Date(2026, 6, 14, 13),
+      label: 'Equipment maintenance',
+    },
+  ];
+  readonly schedulerAppointmentSlots = [
+    {
+      id: 'consultation',
+      start: new Date(2026, 6, 14, 11),
+      end: new Date(2026, 6, 14, 11, 30),
+      capacity: 2,
+      bookedCount: 1,
+      status: 'available' as const,
+    },
+  ];
+
+  schedulerViewFor(key: string): JSchedulerView {
+    if (
+      key === 'week' ||
+      ['working-days', 'business-hours', 'overlap', 'drag-drop'].includes(key)
+    ) {
+      return 'week';
+    }
+    if (['day', 'resize', 'appointments'].includes(key)) return 'day';
+    if (key === 'agenda' || key === 'data-operations') return 'agenda';
+    if (key === 'year') return 'year';
+    if (key.startsWith('timeline-')) {
+      return `timeline${key.slice(9, 10).toUpperCase()}${key.slice(10)}` as JSchedulerView;
+    }
+    if (['flat-resources', 'resource-week', 'capacity', 'adaptive-resources'].includes(key)) {
+      return 'resourceWeek';
+    }
+    if (['hierarchical-resources', 'resource-timeline'].includes(key)) {
+      return 'resourceTimelineWeek';
+    }
+    if (key === 'date-grouping') return 'dateWeek';
+    if (key === 'rtl') return 'timelineWeek';
+    if (key === 'virtualized') return 'timelineYear';
+    return 'month';
+  }
 }

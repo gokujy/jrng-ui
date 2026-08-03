@@ -96,7 +96,7 @@ import { JBreadcrumbComponent } from 'jrng-ui/breadcrumb';
                   [attr.inert]="example.key === 'disabled' ? '' : null"
                   [attr.aria-disabled]="example.key === 'disabled' ? 'true' : null"
                 >
-                  @defer {
+                  @defer (on viewport) {
                     <app-component-preview [doc]="doc()" [previewExample]="example" />
                   } @placeholder {
                     <div class="j-preview-stack" aria-label="Loading component preview">

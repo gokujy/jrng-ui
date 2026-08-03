@@ -27,6 +27,7 @@ import { JBottomSheetComponent } from 'jrng-ui/bottom-sheet';
 import { JBreadcrumbComponent, JBreadcrumbItem, JBreadcrumbVariant } from 'jrng-ui/breadcrumb';
 import { JButtonComponent, JButtonVariant } from 'jrng-ui/button';
 import { JCalendarSchedulerComponent } from 'jrng-ui/calendar-scheduler';
+import { JSchedulerComponent } from 'jrng-ui/scheduler';
 import { JCardComponent } from 'jrng-ui/card';
 import { JCarouselComponent } from 'jrng-ui/carousel';
 import { JCascaderComponent } from 'jrng-ui/cascader';
@@ -2221,6 +2222,273 @@ const CALENDAR_SCHEDULER_FEATURE_EXAMPLES = [
   },
 ] as const;
 
+const SCHEDULER_FEATURE_EXAMPLE_DEFINITIONS = [
+  [
+    'basic',
+    'Basic Scheduler',
+    'A controlled month schedule with application-owned events.',
+    'view="month"',
+  ],
+  ['month', 'Month View', 'Seven-column month planning with multi-day overflow.', 'view="month"'],
+  [
+    'week',
+    'Week View',
+    'A scrollable timed week with deterministic overlap placement.',
+    'view="week"',
+  ],
+  ['day', 'Day View', 'A focused timed day for dense appointment workflows.', 'view="day"'],
+  ['agenda', 'Agenda View', 'A responsive document-style list grouped by date.', 'view="agenda"'],
+  ['year', 'Year View', 'Twelve keyboard-accessible mini-months.', 'view="year"'],
+  ['timeline-day', 'Timeline Day', 'A horizontally scrollable day axis.', 'view="timelineDay"'],
+  ['timeline-week', 'Timeline Week', 'A virtualizable week axis.', 'view="timelineWeek"'],
+  ['timeline-month', 'Timeline Month', 'Long-running work across a month.', 'view="timelineMonth"'],
+  [
+    'timeline-year',
+    'Timeline Year',
+    'Operational planning across quarters and a year.',
+    'view="timelineYear"',
+  ],
+  [
+    'working-days',
+    'Working Days',
+    'Limit visible week columns to working days.',
+    'view="week" [daysOfWeek]="[1,2,3,4,5]"',
+  ],
+  [
+    'business-hours',
+    'Business Hours',
+    'Shade and optionally constrain business-hour ranges.',
+    'view="week" showBusinessHours',
+  ],
+  [
+    'all-day',
+    'All-Day Events',
+    'Display all-day commitments separately from timed work.',
+    'view="week"',
+  ],
+  ['multi-day', 'Multi-Day Events', 'Keep one visual span across adjacent dates.', 'view="month"'],
+  ['overlap', 'Overlapping Events', 'Place concurrent timed events side by side.', 'view="week"'],
+  [
+    'more',
+    'More Events Popover',
+    'Keep dense month cells readable with keyboard-reachable overflow.',
+    'view="month" [maxEventsVisible]="2" showMorePopover',
+  ],
+  [
+    'quick-info',
+    'Event Quick Info',
+    'Inspect and request edits without mutating controlled data.',
+    'quickInfo',
+  ],
+  [
+    'event-popover',
+    'Event Popover',
+    'Expose event details from click and keyboard activation.',
+    'eventPopover',
+  ],
+  [
+    'dialog-edit',
+    'Create and Edit Dialog',
+    'Connect range and event outputs to an application-owned JRNG Dialog and Reactive Form.',
+    'selectable selectionMode="timeRange"',
+  ],
+  [
+    'range-selection',
+    'Date Range Selection',
+    'Emit a typed range while the parent owns acceptance.',
+    'selectable selectionMode="range"',
+  ],
+  [
+    'drag-drop',
+    'Drag and Drop',
+    'Propose snapped immutable event changes.',
+    'view="week" editable',
+  ],
+  [
+    'resize',
+    'Resize Events',
+    'Resize duration with final persistence and a revert callback.',
+    'view="day" editable',
+  ],
+  [
+    'blocked',
+    'Blocked Intervals',
+    'Visualize unavailable time and reject invalid interactions.',
+    'view="week"',
+  ],
+  [
+    'recurring',
+    'Recurring Events',
+    'Expand recurrence only around the visible range.',
+    'view="month"',
+  ],
+  [
+    'recurrence-scope',
+    'Recurrence Edit Scope',
+    'Request occurrence, future, or whole-series scope.',
+    'recurrenceEdit',
+  ],
+  [
+    'categories',
+    'Event Categories',
+    'Combine named category cues with readable colors.',
+    'view="month"',
+  ],
+  [
+    'event-selection',
+    'Multi-Event Selection',
+    'Select stable event IDs for application-owned bulk actions.',
+    'eventSelection',
+  ],
+  [
+    'context-menu',
+    'Context Menu',
+    'Request contextual actions for events, dates, resources, and slots.',
+    'view="week"',
+  ],
+  [
+    'flat-resources',
+    'Flat Resources',
+    'Compare independent people, rooms, or equipment.',
+    'view="resourceWeek"',
+  ],
+  [
+    'hierarchical-resources',
+    'Hierarchical Resources',
+    'Expand parent and child resource rows.',
+    'view="resourceTimelineWeek" resourcesExpandable',
+  ],
+  [
+    'resource-week',
+    'Resource Week',
+    'Schedule resource columns across a working week.',
+    'view="resourceWeek"',
+  ],
+  [
+    'resource-timeline',
+    'Resource Timeline',
+    'Keep the resource rail aligned with virtual timeline lanes.',
+    'view="resourceTimelineWeek"',
+  ],
+  [
+    'date-grouping',
+    'Date Grouping',
+    'Compare capacity in date-first layouts.',
+    'view="dateWeek" groupByDate',
+  ],
+  [
+    'adaptive-resources',
+    'Adaptive Mobile Resources',
+    'Focus narrow screens on one valid resource.',
+    'view="resourceWeek" adaptiveMode="always"',
+  ],
+  [
+    'appointments',
+    'Appointment Booking',
+    'Render availability without committing bookings locally.',
+    'view="day"',
+  ],
+  [
+    'capacity',
+    'Capacity and Conflicts',
+    'Announce overlap and resource-capacity violations.',
+    'view="resourceWeek"',
+  ],
+  [
+    'event-template',
+    'Custom Event Template',
+    'Render domain content through a typed event template.',
+    'view="month"',
+  ],
+  [
+    'toolbar',
+    'Custom Toolbar',
+    'Replace toolbar regions while retaining named controls.',
+    'view="week"',
+  ],
+  [
+    'cells-headers',
+    'Custom Cells and Headers',
+    'Customize semantic cells and headers with typed contexts.',
+    'view="month"',
+  ],
+  ['locale', 'Locale', 'Format dates with a BCP 47 locale.', 'locale="en-GB"'],
+  [
+    'time-format',
+    'Time Format',
+    'Use locale-aware 12-hour or 24-hour labels.',
+    'locale="en-GB" view="week"',
+  ],
+  [
+    'timezone',
+    'Timezone',
+    'Display instants in an IANA timezone without mutating values.',
+    'timezone="UTC" displayTimezone="Europe/London"',
+  ],
+  [
+    'rtl',
+    'RTL',
+    'Mirror time geometry, resource rails, keyboard direction, and toolbar alignment.',
+    'rtl view="timelineWeek"',
+  ],
+  [
+    'data-operations',
+    'JSON/CSV/ICS Import and Export',
+    'Parse to a merge preview before the application accepts imported records.',
+    'view="agenda"',
+  ],
+  ['print', 'Print', 'Print supported standard views without transient controls.', 'view="week"'],
+  [
+    'controlled',
+    'Controlled State',
+    'Own date, view, events, resources, filters, and selections in the application.',
+    'view="week"',
+  ],
+  [
+    'readonly',
+    'Readonly',
+    'Allow navigation and inspection while preventing modifications.',
+    'readonly quickInfo',
+  ],
+  [
+    'disabled',
+    'Disabled',
+    'Remove interaction and focus reachability for disabled controls.',
+    'disabled',
+  ],
+  [
+    'responsive',
+    'Responsive Scrolling',
+    'Let the scheduler own the single interaction scroll surface.',
+    'view="week"',
+  ],
+  [
+    'virtualized',
+    'Virtualized Timeline',
+    'Render only the visible horizontal interval plus overscan.',
+    'view="timelineYear" timelineVirtualScroll',
+  ],
+] as const;
+
+const SCHEDULER_FEATURE_EXAMPLES = SCHEDULER_FEATURE_EXAMPLE_DEFINITIONS.map(
+  ([key, name, details, inputs]) => ({
+    key,
+    name,
+    details,
+    responsivePreview: key === 'adaptive-resources' || key === 'responsive',
+    html: `<j-scheduler
+  [events]="events"
+  [resources]="resources"
+  [categories]="categories"
+  [date]="date"
+  ${inputs}
+  (dateChange)="date = $event"
+  (viewChange)="view = $event"
+  (eventChange)="reviewEventChange($event)" />`,
+    ts: `date = new Date(2026, 6, 14);\nview: JSchedulerView = '${key.startsWith('timeline') ? `timeline${key.slice(8, 9).toUpperCase()}${key.slice(9)}` : key === 'basic' ? 'month' : key}';\nevents = createExampleEvents();\nresources = createExampleResources();\ncategories = createExampleCategories();`,
+  }),
+);
+
 const SIDEBAR_FEATURE_EXAMPLES = [
   {
     key: 'sidebar',
@@ -2504,6 +2772,7 @@ export const COMPONENT_PREVIEW_IMPORTS = [
   JAppShellComponent,
   JBottomSheetComponent,
   JCalendarSchedulerComponent,
+  JSchedulerComponent,
   JCarouselComponent,
   JChartComponent,
   JChipsComponent,
@@ -2991,6 +3260,9 @@ export class ComponentDetailViewBase {
     }
     if (doc.slug === 'calendar-scheduler') {
       return CALENDAR_SCHEDULER_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+    }
+    if (doc.slug === 'scheduler') {
+      return SCHEDULER_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
     }
     const gridExamples = GRID_FEATURE_EXAMPLES[doc.slug];
     if (gridExamples) {
