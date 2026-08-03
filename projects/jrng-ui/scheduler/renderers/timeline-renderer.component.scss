@@ -11,7 +11,7 @@
 }
 .j-scheduler-timeline__resource-heading {
   align-items: center;
-  background: var(--j-color-surface-subtle);
+  background: var(--j-scheduler-header-bg, var(--j-color-surface-subtle));
   border-block-end: 1px solid var(--j-color-border);
   border-inline-end: 1px solid var(--j-color-border);
   display: flex;
@@ -32,7 +32,7 @@
   position: relative;
 }
 .j-scheduler-timeline__header {
-  background: var(--j-color-surface-subtle);
+  background: var(--j-scheduler-header-bg, var(--j-color-surface-subtle));
   height: 3rem;
   position: sticky;
   top: 0;
@@ -54,6 +54,7 @@
   justify-content: center;
 }
 .j-scheduler-timeline__lane {
+  background: var(--j-scheduler-business-bg, var(--j-color-card));
   border-block-end: 1px solid var(--j-color-border);
   height: var(--j-scheduler-row-height, 3.25rem);
   position: relative;
@@ -82,6 +83,7 @@
   z-index: 2;
 }
 .j-scheduler-timeline__rail {
+  background: var(--j-scheduler-resource-rail-bg, var(--j-color-card));
   grid-column: 1;
   grid-row: 2;
   overflow: hidden;

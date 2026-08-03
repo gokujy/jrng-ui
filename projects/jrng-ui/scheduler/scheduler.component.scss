@@ -1,11 +1,12 @@
 :host {
+  container-type: inline-size;
   display: block;
   min-width: 0;
 }
 
 .j-scheduler {
-  background: var(--j-color-card);
-  border: 1px solid var(--j-color-border);
+  background: var(--j-scheduler-bg, var(--j-color-card));
+  border: 1px solid var(--j-scheduler-border-color, var(--j-color-border));
   border-radius: var(--j-radius-xl);
   color: var(--j-color-card-foreground);
   display: flex;
@@ -18,7 +19,7 @@
 
 .j-scheduler-toolbar {
   align-items: center;
-  background: var(--j-color-card);
+  background: var(--j-scheduler-bg, var(--j-color-card));
   border-block-end: 1px solid var(--j-color-border);
   display: grid;
   flex: 0 0 auto;
@@ -170,6 +171,21 @@
   }
 }
 
+@container (max-width: 48rem) {
+  .j-scheduler-toolbar {
+    align-items: stretch;
+    grid-template-columns: 1fr;
+  }
+
+  .j-scheduler-toolbar__area {
+    justify-content: center;
+  }
+
+  .j-scheduler-toolbar__center {
+    grid-row: 1;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .j-scheduler,
   .j-scheduler * {
@@ -188,5 +204,25 @@
     border: 0;
     height: auto !important;
     overflow: visible !important;
+  }
+
+  .j-scheduler {
+    break-inside: avoid;
+    color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .j-scheduler-event,
+  .j-scheduler-month-event,
+  .j-scheduler-time-event,
+  .j-scheduler-timeline-event {
+    break-inside: avoid;
+  }
+
+  .j-scheduler [data-dragging='true'],
+  .j-scheduler [data-resizing='true'],
+  .j-scheduler-time-event__resize,
+  .j-scheduler__adaptive-resource {
+    display: none !important;
   }
 }

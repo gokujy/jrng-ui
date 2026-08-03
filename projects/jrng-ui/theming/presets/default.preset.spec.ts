@@ -53,6 +53,9 @@ describe('Default theme preset', () => {
       '--j-tooltip-bg',
       '--j-progress-value-bg',
       '--j-skeleton-bg',
+      '--j-scheduler-bg',
+      '--j-scheduler-selection-bg',
+      '--j-scheduler-resource-rail-bg',
     ] as const) {
       expect(resolved.light[token]).toContain('var(--j-');
       expect(resolved.dark[token]).toContain('var(--j-');

@@ -177,6 +177,11 @@ export const nexusPreset: JThemePreset = {
       '--j-menu-item-padding-x': 'var(--j-spacing-2)',
       '--j-tabs-height': '2.25rem',
     },
+    scheduler: {
+      ...defaultPreset.components?.['scheduler'],
+      '--j-scheduler-row-height': '2.25rem',
+      '--j-scheduler-resource-rail-bg': 'var(--j-color-surface-subtle)',
+    },
     enterprise: {
       '--j-toolbar-height': '2.5rem',
       '--j-toolbar-padding': 'var(--j-spacing-2)',

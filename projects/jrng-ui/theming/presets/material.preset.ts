@@ -143,6 +143,11 @@ export const materialPreset: JThemePreset = {
       '--j-dialog-shadow': 'var(--j-shadow-lg)',
       '--j-dialog-padding': 'var(--j-spacing-5)',
     },
+    scheduler: {
+      ...defaultPreset.components?.['scheduler'],
+      '--j-scheduler-row-height': '3.5rem',
+      '--j-scheduler-drag-shadow': 'var(--j-shadow-md)',
+    },
     table: {
       ...defaultPreset.components?.['table'],
       '--j-table-header-bg': 'var(--j-color-surface-subtle)',

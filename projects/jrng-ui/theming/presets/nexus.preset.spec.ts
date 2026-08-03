@@ -36,6 +36,7 @@ describe('Nexus enterprise theme preset', () => {
     expect(tokens['--j-control-min-target']).toBe('1.5rem');
     expect(tokens['--j-table-row-height']).toBe('2.25rem');
     expect(tokens['--j-menu-item-height']).toBe('2rem');
+    expect(tokens['--j-scheduler-resource-rail-bg']).toBe('var(--j-color-surface-subtle)');
     for (const token of [
       '--j-toolbar-height',
       '--j-chip-height',

@@ -246,6 +246,23 @@ export const defaultPreset: JThemePreset = {
       '--j-dialog-shadow': 'var(--j-shadow-lg)',
       '--j-dialog-padding': 'var(--j-spacing-4)',
     },
+    scheduler: {
+      '--j-scheduler-bg': 'var(--j-color-card)',
+      '--j-scheduler-border-color': 'var(--j-color-border)',
+      '--j-scheduler-header-bg': 'var(--j-color-surface-subtle)',
+      '--j-scheduler-resource-rail-bg': 'var(--j-color-card)',
+      '--j-scheduler-today-bg':
+        'color-mix(in srgb, var(--j-color-primary) 7%, var(--j-color-card))',
+      '--j-scheduler-selection-bg': 'var(--j-color-selected-background)',
+      '--j-scheduler-business-bg': 'var(--j-color-card)',
+      '--j-scheduler-non-business-bg': 'var(--j-color-surface-subtle)',
+      '--j-scheduler-blocked-bg': 'var(--j-color-danger-soft)',
+      '--j-scheduler-now-color': 'var(--j-color-danger)',
+      '--j-scheduler-invalid-color': 'var(--j-color-danger)',
+      '--j-scheduler-drag-shadow': 'var(--j-shadow-lg)',
+      '--j-scheduler-row-height': '3.25rem',
+      '--j-scheduler-overlay-bg': 'var(--j-color-popover)',
+    },
     table: {
       '--j-table-bg': 'var(--j-color-card)',
       '--j-table-color': 'var(--j-color-card-foreground)',

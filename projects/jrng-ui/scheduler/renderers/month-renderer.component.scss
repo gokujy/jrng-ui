@@ -3,7 +3,7 @@
   min-width: 49rem;
 }
 .j-scheduler-month__weekdays {
-  background: var(--j-color-surface-subtle);
+  background: var(--j-scheduler-header-bg, var(--j-color-surface-subtle));
   display: grid;
   grid-template-columns: repeat(7, minmax(7rem, 1fr));
   position: sticky;
@@ -54,7 +54,10 @@
   color: var(--j-color-muted-foreground);
 }
 .j-scheduler-month__cell--today {
-  background: color-mix(in srgb, var(--j-color-primary) 7%, var(--j-color-card));
+  background: var(
+    --j-scheduler-today-bg,
+    color-mix(in srgb, var(--j-color-primary) 7%, var(--j-color-card))
+  );
 }
 .j-scheduler-month__date,
 .j-scheduler-month__more {

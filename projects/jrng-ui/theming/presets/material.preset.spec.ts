@@ -47,6 +47,7 @@ describe('Material theme preset', () => {
       '--j-dialog-shadow',
       '--j-overlay-radius',
       '--j-ripple-duration',
+      '--j-scheduler-row-height',
     ] as const) {
       expect(resolved[token]).toBeTruthy();
     }
