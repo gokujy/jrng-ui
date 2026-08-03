@@ -74,4 +74,44 @@ describe('JSchedulerComponent', () => {
     expect(change).toHaveBeenCalledOnce();
     expect(component.getEvents()[0]?.title).toBe('Team planning');
   });
+
+  it('emits a validated final drag proposal without committing controlled data', () => {
+    const event = {
+      id: 'support',
+      title: 'Support call',
+      start: new Date(2026, 7, 5, 9),
+      end: new Date(2026, 7, 5, 10),
+    };
+    fixture.componentRef.setInput('view', 'week');
+    fixture.componentRef.setInput('editable', true);
+    fixture.componentRef.setInput('events', [event]);
+    const drop = vi.fn();
+    component.eventDrop.subscribe(drop);
+    component.handleGestureStop(
+      {
+        event: {
+          source: event,
+          start: event.start,
+          end: event.end,
+          allDay: false,
+          occurrenceId: 'support',
+        },
+        start: new Date(2026, 7, 5, 11),
+        end: new Date(2026, 7, 5, 12),
+        nativeEvent: new PointerEvent('pointerup'),
+      },
+      false,
+    );
+    expect(drop).toHaveBeenCalledWith(expect.objectContaining({ valid: true }));
+    expect(component.getEventById('support')?.start).toEqual(new Date(2026, 7, 5, 9));
+  });
+
+  it('blocks time selection in readonly mode', () => {
+    fixture.componentRef.setInput('selectable', true);
+    fixture.componentRef.setInput('readonly', true);
+    const select = vi.fn();
+    component.dateSelect.subscribe(select);
+    component.handleSlotActivate({ date: new Date(2026, 7, 5), minutes: 9 * 60 });
+    expect(select).not.toHaveBeenCalled();
+  });
 });

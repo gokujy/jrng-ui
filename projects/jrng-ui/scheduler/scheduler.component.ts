@@ -23,9 +23,19 @@ import {
 } from './engine/date-engine';
 import { jSchedulerNormalizeEvents, jSchedulerValidateEvent } from './engine/event-engine';
 import { jSchedulerViewDefinition } from './engine/view-registry';
+import { jSchedulerParseTime } from './engine/layout-engine';
+import {
+  jSchedulerMoveEvent,
+  jSchedulerProposal,
+  jSchedulerResizeEvent,
+  jSchedulerValidateMove,
+} from './interaction/interaction-engine';
 import { JSchedulerAgendaRendererComponent } from './renderers/agenda-renderer.component';
 import { JSchedulerMonthRendererComponent } from './renderers/month-renderer.component';
-import { JSchedulerTimeGridRendererComponent } from './renderers/time-grid-renderer.component';
+import {
+  JSchedulerRendererGesture,
+  JSchedulerTimeGridRendererComponent,
+} from './renderers/time-grid-renderer.component';
 import { JSchedulerYearRendererComponent } from './renderers/year-renderer.component';
 import {
   JSchedulerAppointmentSlot,
@@ -35,13 +45,17 @@ import {
   JSchedulerDateRange,
   JSchedulerEvent,
   JSchedulerEventChangeRequest,
+  JSchedulerEventChangeGuard,
   JSchedulerEventInteraction,
+  JSchedulerEventMoveProposal,
+  JSchedulerEventResizeProposal,
   JSchedulerFilterState,
   JSchedulerHeight,
   JSchedulerId,
   JSchedulerPrintOptions,
   JSchedulerResource,
   JSchedulerSelection,
+  JSchedulerGestureProgress,
   JSchedulerSelectionMode,
   JSchedulerTimeZone,
   JSchedulerToolbarAction,
@@ -107,6 +121,10 @@ export class JSchedulerComponent {
   readonly slotMinTime = input('00:00');
   readonly slotMaxTime = input('24:00');
   readonly snapDuration = input('00:15');
+  readonly minimumEventDuration = input(15 * 60_000);
+  readonly maximumEventDuration = input(Number.POSITIVE_INFINITY);
+  readonly minimumDragDistance = input(5);
+  readonly eventChangeGuard = input<JSchedulerEventChangeGuard | null>(null);
   readonly businessHours = input<readonly JSchedulerBusinessHours[]>([]);
   readonly blockedIntervals = input<readonly JSchedulerBlockedInterval[]>([]);
   readonly appointmentSlots = input<readonly JSchedulerAppointmentSlot[]>([]);
@@ -148,6 +166,7 @@ export class JSchedulerComponent {
 
   readonly dateClick = output<Date>();
   readonly eventClick = output<JSchedulerEventInteraction>();
+  readonly eventDoubleClick = output<JSchedulerEventInteraction>();
   readonly eventAdd = output<JSchedulerEventChangeRequest>();
   readonly eventChange = output<JSchedulerEventChangeRequest>();
   readonly eventRemove = output<JSchedulerEventChangeRequest>();
@@ -155,6 +174,16 @@ export class JSchedulerComponent {
   readonly eventSelectionChange = output<readonly JSchedulerEvent[]>();
   readonly filtersChange = output<JSchedulerFilterState>();
   readonly expandedResourceIdsChange = output<readonly JSchedulerId[]>();
+  readonly dateSelect = output<JSchedulerSelection>();
+  readonly dateUnselect = output<void>();
+  readonly eventDragStart = output<JSchedulerGestureProgress>();
+  readonly eventDrag = output<JSchedulerGestureProgress>();
+  readonly eventDragStop = output<JSchedulerGestureProgress>();
+  readonly eventDrop = output<JSchedulerEventMoveProposal>();
+  readonly eventResizeStart = output<JSchedulerGestureProgress>();
+  readonly eventResize = output<JSchedulerGestureProgress>();
+  readonly eventResizeStop = output<JSchedulerGestureProgress>();
+  readonly conflictDetected = output<JSchedulerEventMoveProposal | JSchedulerEventResizeProposal>();
 
   readonly dateOptions = computed<JSchedulerDateEngineOptions>(() => ({
     firstDayOfWeek: this.firstDayOfWeek(),
@@ -234,7 +263,10 @@ export class JSchedulerComponent {
   }
 
   clearSelection(): void {
-    if (!this.disabled()) this.selectionChange.emit(null);
+    if (!this.disabled()) {
+      this.selectionChange.emit(null);
+      this.dateUnselect.emit();
+    }
   }
 
   getEvents(): readonly JSchedulerEvent[] {
@@ -357,6 +389,127 @@ export class JSchedulerComponent {
   handleEventActivate(event: JSchedulerVisibleEvent): void {
     if (!this.disabled())
       this.eventClick.emit({ event: event.source, occurrenceStart: event.start });
+  }
+
+  handleEventDoubleActivate(event: JSchedulerVisibleEvent): void {
+    if (!this.disabled())
+      this.eventDoubleClick.emit({ event: event.source, occurrenceStart: event.start });
+  }
+
+  handleSlotActivate(value: { readonly date: Date; readonly minutes: number }): void {
+    if (this.disabled() || this.readonly() || !this.selectable()) return;
+    const start = new Date(
+      value.date.getFullYear(),
+      value.date.getMonth(),
+      value.date.getDate(),
+      0,
+      value.minutes,
+    );
+    const end = new Date(start.getTime() + this.slotMinutes() * 60_000);
+    const selection: JSchedulerSelection = {
+      start,
+      end,
+      allDay: false,
+      view: this.view(),
+      resourceId: this.selectedResourceId() ?? undefined,
+    };
+    this.selectionChange.emit(selection);
+    this.dateSelect.emit(selection);
+  }
+
+  handleGestureStart(value: JSchedulerRendererGesture, resize: boolean): void {
+    const payload = this.gestureProgress(value, true);
+    resize ? this.eventResizeStart.emit(payload) : this.eventDragStart.emit(payload);
+  }
+
+  handleGestureProgress(value: JSchedulerRendererGesture, resize: boolean): void {
+    const payload = this.gestureProgress(value, this.validateGesture(value).valid);
+    resize ? this.eventResize.emit(payload) : this.eventDrag.emit(payload);
+  }
+
+  handleGestureStop(value: JSchedulerRendererGesture, resize: boolean): void {
+    if (this.cannotEdit()) return;
+    const updated = resize
+      ? jSchedulerResizeEvent(
+          value.event.source,
+          'end',
+          value.end,
+          this.minimumEventDuration(),
+          this.maximumEventDuration(),
+        )
+      : jSchedulerMoveEvent(value.event.source, value.start, value.end);
+    const validation = jSchedulerValidateMove(updated, this.events(), {
+      allowOverlap: this.eventOverlap(),
+      minDate: this.minDate(),
+      maxDate: this.maxDate(),
+    });
+    let valid = validation.valid;
+    let reason = validation.reason;
+    const base = jSchedulerProposal(
+      updated,
+      value.event.source,
+      this.view(),
+      valid,
+      () => undefined,
+      reason,
+      value.nativeEvent,
+    );
+    const guard = this.eventChangeGuard()?.(resize ? { ...base, edge: 'end' } : base);
+    if (guard === false || typeof guard === 'string') {
+      valid = false;
+      reason = typeof guard === 'string' ? guard : 'Change rejected.';
+    }
+    const proposal = jSchedulerProposal(
+      updated,
+      value.event.source,
+      this.view(),
+      valid,
+      () => undefined,
+      reason,
+      value.nativeEvent,
+    );
+    const progress = this.gestureProgress(value, valid);
+    if (resize) {
+      this.eventResizeStop.emit(progress);
+      const resizeProposal: JSchedulerEventResizeProposal = { ...proposal, edge: 'end' };
+      if (valid) this.eventChange.emit(this.changeRequest(updated, 'resize', value.event.source));
+      else this.conflictDetected.emit(resizeProposal);
+    } else {
+      this.eventDragStop.emit(progress);
+      this.eventDrop.emit(proposal);
+      if (valid) this.eventChange.emit(this.changeRequest(updated, 'drag', value.event.source));
+      else this.conflictDetected.emit(proposal);
+    }
+  }
+
+  slotMinutes(): number {
+    return Math.max(1, jSchedulerParseTime(this.slotDuration(), 30));
+  }
+
+  snapMinutes(): number {
+    return Math.max(1, jSchedulerParseTime(this.snapDuration(), 15));
+  }
+
+  private validateGesture(value: JSchedulerRendererGesture) {
+    return jSchedulerValidateMove(
+      jSchedulerMoveEvent(value.event.source, value.start, value.end),
+      this.events(),
+      { allowOverlap: this.eventOverlap(), minDate: this.minDate(), maxDate: this.maxDate() },
+    );
+  }
+
+  private gestureProgress(
+    value: JSchedulerRendererGesture,
+    valid: boolean,
+  ): JSchedulerGestureProgress {
+    return {
+      event: value.event.source,
+      start: value.start,
+      end: value.end,
+      view: this.view(),
+      valid,
+      nativeEvent: value.nativeEvent,
+    };
   }
 
   private validDate(): Date {

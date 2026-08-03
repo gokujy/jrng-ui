@@ -70,6 +70,7 @@
 }
 .j-scheduler-time-event {
   min-height: 1.5rem;
+  padding: 0;
   position: absolute;
   z-index: 2;
 }
@@ -88,7 +89,34 @@
   padding: var(--j-spacing-1);
   text-align: start;
 }
-.j-scheduler-event span {
+.j-scheduler-time-event__content {
+  background: transparent;
+  border: 0;
+  color: inherit;
+  cursor: grab;
+  display: grid;
+  height: 100%;
+  padding: var(--j-spacing-1);
+  text-align: start;
+  width: 100%;
+}
+.j-scheduler-time-event__content span {
   color: var(--j-color-muted-foreground);
   font-size: var(--j-font-size-xs);
+}
+.j-scheduler-time-event__resize {
+  background: color-mix(in srgb, var(--j-event-color, var(--j-color-primary)) 45%, transparent);
+  border: 0;
+  bottom: 0;
+  cursor: ns-resize;
+  height: 0.35rem;
+  inset-inline: 0;
+  position: absolute;
+  width: 100%;
+}
+.j-scheduler-time-event.is-dragging,
+.j-scheduler-time-event.is-resizing {
+  box-shadow: var(--j-shadow-lg);
+  opacity: 0.75;
+  z-index: 5;
 }

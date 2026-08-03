@@ -94,8 +94,20 @@
             [slotMinTime]="slotMinTime()"
             [slotMaxTime]="slotMaxTime()"
             [disabled]="disabled()"
+            [draggable]="editable() && !readonly() && eventStartEditable()"
+            [resizable]="editable() && !readonly() && eventDurationEditable()"
+            [snapMinutes]="snapMinutes()"
+            [minimumDragDistance]="minimumDragDistance()"
             (dateActivate)="handleDateActivate($event)"
             (eventActivate)="handleEventActivate($event)"
+            (eventDoubleActivate)="handleEventDoubleActivate($event)"
+            (slotActivate)="handleSlotActivate($event)"
+            (dragStart)="handleGestureStart($event, false)"
+            (dragProgress)="handleGestureProgress($event, false)"
+            (dragStop)="handleGestureStop($event, false)"
+            (resizeStart)="handleGestureStart($event, true)"
+            (resizeProgress)="handleGestureProgress($event, true)"
+            (resizeStop)="handleGestureStop($event, true)"
           />
         }
         @case ('agenda') {

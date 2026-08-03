@@ -187,6 +187,38 @@ export interface JSchedulerEventChangeRequest {
   readonly revert: () => void;
 }
 
+export interface JSchedulerEventMoveProposal {
+  readonly updatedEvent: JSchedulerEvent;
+  readonly previousEvent: JSchedulerEvent;
+  readonly start: Date;
+  readonly end: Date;
+  readonly allDay: boolean;
+  readonly previousResourceId?: JSchedulerId;
+  readonly resourceId?: JSchedulerId;
+  readonly view: JSchedulerView;
+  readonly valid: boolean;
+  readonly reason?: string;
+  readonly nativeEvent?: PointerEvent | KeyboardEvent;
+  readonly revert: () => void;
+}
+
+export interface JSchedulerEventResizeProposal extends JSchedulerEventMoveProposal {
+  readonly edge: 'start' | 'end';
+}
+
+export interface JSchedulerGestureProgress {
+  readonly event: JSchedulerEvent;
+  readonly start: Date;
+  readonly end: Date;
+  readonly view: JSchedulerView;
+  readonly valid: boolean;
+  readonly nativeEvent: PointerEvent | KeyboardEvent;
+}
+
+export type JSchedulerEventChangeGuard = (
+  proposal: JSchedulerEventMoveProposal | JSchedulerEventResizeProposal,
+) => boolean | string;
+
 export interface JSchedulerVisibleEvent extends JSchedulerDateRange {
   readonly source: JSchedulerEvent;
   readonly occurrenceId: string;
