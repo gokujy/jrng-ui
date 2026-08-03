@@ -11,7 +11,12 @@ import {
 import { JTooltipDirective } from 'jrng-ui/tooltip';
 import { jSchedulerDatesInRange } from '../engine/date-engine';
 import { jSchedulerLayoutTimedEvents, jSchedulerParseTime } from '../engine/layout-engine';
-import { JSchedulerDateRange, JSchedulerVisibleEvent } from '../scheduler.models';
+import {
+  JSchedulerAppointmentSlot,
+  JSchedulerBlockedInterval,
+  JSchedulerDateRange,
+  JSchedulerVisibleEvent,
+} from '../scheduler.models';
 
 export interface JSchedulerRendererGesture {
   readonly event: JSchedulerVisibleEvent;
@@ -96,6 +101,34 @@ interface JSchedulerActiveGesture {
                   (click)="slotActivate.emit({ date: day, minutes: slot })"
                 ></button>
               }
+              @for (block of blocksForDay(day); track block.id ?? $index) {
+                <div
+                  class="j-scheduler-time-grid__blocked"
+                  [style.top.%]="rangeTop(block.start)"
+                  [style.height.%]="rangeHeight(block.start, block.end)"
+                  [attr.aria-label]="block.reason || block.label || 'Blocked'"
+                  data-j-slot="blocked-interval"
+                >
+                  <span>{{ block.label || block.reason || 'Blocked' }}</span>
+                </div>
+              }
+              @for (slot of appointmentsForDay(day); track slot.id) {
+                <button
+                  type="button"
+                  class="j-scheduler-time-grid__appointment"
+                  [class.is-full]="slot.status === 'full'"
+                  [class.is-blocked]="slot.status === 'blocked'"
+                  [style.top.%]="rangeTop(slot.start)"
+                  [style.height.%]="rangeHeight(slot.start, slot.end)"
+                  [disabled]="disabled() || slot.status === 'blocked'"
+                  [attr.data-slot-id]="slot.id"
+                  [attr.aria-label]="slotLabel(slot)"
+                  [jTooltip]="slot.status || 'available'"
+                  (click)="appointmentActivate.emit(slot)"
+                >
+                  <span>{{ slot.status || 'available' }}</span>
+                </button>
+              }
               @for (placement of placementsForDay(day); track placement.event.occurrenceId) {
                 <div
                   class="j-scheduler-event j-scheduler-time-event"
@@ -166,6 +199,8 @@ export class JSchedulerTimeGridRendererComponent {
   readonly slotMinTime = input('00:00');
   readonly slotMaxTime = input('24:00');
   readonly disabled = input(false);
+  readonly blockedIntervals = input<readonly JSchedulerBlockedInterval[]>([]);
+  readonly appointmentSlots = input<readonly JSchedulerAppointmentSlot[]>([]);
   readonly draggable = input(false);
   readonly resizable = input(false);
   readonly snapMinutes = input(15);
@@ -174,6 +209,7 @@ export class JSchedulerTimeGridRendererComponent {
   readonly eventActivate = output<JSchedulerVisibleEvent>();
   readonly eventDoubleActivate = output<JSchedulerVisibleEvent>();
   readonly slotActivate = output<{ readonly date: Date; readonly minutes: number }>();
+  readonly appointmentActivate = output<JSchedulerAppointmentSlot>();
   readonly dragStart = output<JSchedulerRendererGesture>();
   readonly dragProgress = output<JSchedulerRendererGesture>();
   readonly dragStop = output<JSchedulerRendererGesture>();
@@ -200,6 +236,30 @@ export class JSchedulerTimeGridRendererComponent {
   allDayEvents(day: Date) {
     const end = new Date(day.getFullYear(), day.getMonth(), day.getDate() + 1);
     return this.events().filter((event) => event.allDay && event.start < end && event.end > day);
+  }
+  blocksForDay(day: Date) {
+    const end = new Date(day.getFullYear(), day.getMonth(), day.getDate() + 1);
+    return this.blockedIntervals().filter((block) => block.start < end && block.end > day);
+  }
+  appointmentsForDay(day: Date) {
+    const end = new Date(day.getFullYear(), day.getMonth(), day.getDate() + 1);
+    return this.appointmentSlots().filter((slot) => slot.start < end && slot.end > day);
+  }
+  rangeTop(start: Date) {
+    return (
+      ((start.getHours() * 60 + start.getMinutes() - this.minMinutes()) /
+        (this.maxMinutes() - this.minMinutes())) *
+      100
+    );
+  }
+  rangeHeight(start: Date, end: Date) {
+    return Math.max(
+      0.5,
+      ((end.getTime() - start.getTime()) / 60_000 / (this.maxMinutes() - this.minMinutes())) * 100,
+    );
+  }
+  slotLabel(slot: JSchedulerAppointmentSlot) {
+    return `Appointment slot, ${new Intl.DateTimeFormat(this.locale(), { hour: 'numeric', minute: '2-digit' }).formatRange(slot.start, slot.end)}, ${slot.status ?? 'available'}`;
   }
   slotTop(slot: number) {
     return ((slot - this.minMinutes()) / (this.maxMinutes() - this.minMinutes())) * 100;

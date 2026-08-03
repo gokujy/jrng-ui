@@ -25,6 +25,12 @@ import { jSchedulerNormalizeEvents, jSchedulerValidateEvent } from './engine/eve
 import { jSchedulerViewDefinition } from './engine/view-registry';
 import { jSchedulerParseTime } from './engine/layout-engine';
 import {
+  jSchedulerAppointmentAvailability,
+  jSchedulerBlockedConflict,
+  jSchedulerIsWithinBusinessHours,
+} from './engine/availability-engine';
+import { jSchedulerExpandRecurrence } from './engine/recurrence-engine';
+import {
   jSchedulerMoveEvent,
   jSchedulerProposal,
   jSchedulerResizeEvent,
@@ -131,6 +137,7 @@ export class JSchedulerComponent {
   readonly maxEventsVisible = input(3);
   readonly showMorePopover = input(true, { transform: booleanAttribute });
   readonly showBusinessHours = input(true, { transform: booleanAttribute });
+  readonly constrainToBusinessHours = input(false, { transform: booleanAttribute });
   readonly nowIndicator = input(true, { transform: booleanAttribute });
   readonly headerToolbar = input<boolean | JSchedulerToolbarConfig>(true);
   readonly height = input<JSchedulerHeight>('auto');
@@ -184,6 +191,10 @@ export class JSchedulerComponent {
   readonly eventResize = output<JSchedulerGestureProgress>();
   readonly eventResizeStop = output<JSchedulerGestureProgress>();
   readonly conflictDetected = output<JSchedulerEventMoveProposal | JSchedulerEventResizeProposal>();
+  readonly slotClick = output<JSchedulerAppointmentSlot>();
+  readonly slotBook = output<JSchedulerAppointmentSlot>();
+  readonly slotCancel = output<JSchedulerAppointmentSlot>();
+  readonly capacityExceeded = output<JSchedulerAppointmentSlot>();
 
   readonly dateOptions = computed<JSchedulerDateEngineOptions>(() => ({
     firstDayOfWeek: this.firstDayOfWeek(),
@@ -194,7 +205,10 @@ export class JSchedulerComponent {
     jSchedulerVisibleRange(this.validDate(), this.view(), this.dateOptions()),
   );
   readonly visibleEvents = computed(() =>
-    jSchedulerNormalizeEvents(this.events(), this.visibleRange()),
+    jSchedulerNormalizeEvents(
+      jSchedulerExpandRecurrence(this.events(), this.visibleRange()),
+      this.visibleRange(),
+    ),
   );
   readonly viewDefinition = computed(() => jSchedulerViewDefinition(this.view()));
   readonly title = computed(() => this.formatRangeTitle(this.visibleRange()));
@@ -406,6 +420,7 @@ export class JSchedulerComponent {
       value.minutes,
     );
     const end = new Date(start.getTime() + this.slotMinutes() * 60_000);
+    if (!this.isRangeAvailable({ start, end }, this.selectedResourceId() ?? undefined)) return;
     const selection: JSchedulerSelection = {
       start,
       end,
@@ -415,6 +430,19 @@ export class JSchedulerComponent {
     };
     this.selectionChange.emit(selection);
     this.dateSelect.emit(selection);
+  }
+
+  handleAppointment(slot: JSchedulerAppointmentSlot): void {
+    if (this.disabled()) return;
+    this.slotClick.emit(slot);
+    if (this.readonly()) return;
+    const capacity = jSchedulerAppointmentAvailability(slot, this.events());
+    const blocked = jSchedulerBlockedConflict(slot, this.blockedIntervals(), slot.resourceId);
+    if (capacity.full || blocked || slot.status === 'full' || slot.status === 'blocked') {
+      this.capacityExceeded.emit(slot);
+      return;
+    }
+    this.slotBook.emit(slot);
   }
 
   handleGestureStart(value: JSchedulerRendererGesture, resize: boolean): void {
@@ -445,6 +473,13 @@ export class JSchedulerComponent {
     });
     let valid = validation.valid;
     let reason = validation.reason;
+    if (
+      valid &&
+      !this.isRangeAvailable({ start: updated.start, end: updated.end! }, updated.resourceId)
+    ) {
+      valid = false;
+      reason = 'Time is unavailable.';
+    }
     const base = jSchedulerProposal(
       updated,
       value.event.source,
@@ -491,10 +526,25 @@ export class JSchedulerComponent {
   }
 
   private validateGesture(value: JSchedulerRendererGesture) {
-    return jSchedulerValidateMove(
+    const result = jSchedulerValidateMove(
       jSchedulerMoveEvent(value.event.source, value.start, value.end),
       this.events(),
       { allowOverlap: this.eventOverlap(), minDate: this.minDate(), maxDate: this.maxDate() },
+    );
+    if (!result.valid) return result;
+    return this.isRangeAvailable(
+      { start: value.start, end: value.end },
+      value.event.source.resourceId,
+    )
+      ? result
+      : { valid: false, reason: 'Time is unavailable.' };
+  }
+
+  private isRangeAvailable(range: JSchedulerDateRange, resourceId?: JSchedulerId): boolean {
+    if (jSchedulerBlockedConflict(range, this.blockedIntervals(), resourceId)) return false;
+    return (
+      !this.constrainToBusinessHours() ||
+      jSchedulerIsWithinBusinessHours(range, this.businessHours(), resourceId)
     );
   }
 

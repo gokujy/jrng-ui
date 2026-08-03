@@ -120,3 +120,33 @@
   opacity: 0.75;
   z-index: 5;
 }
+.j-scheduler-time-grid__blocked,
+.j-scheduler-time-grid__appointment {
+  inset-inline: 2px;
+  overflow: hidden;
+  position: absolute;
+}
+.j-scheduler-time-grid__blocked {
+  background: repeating-linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--j-color-danger) 12%, transparent) 0 6px,
+    color-mix(in srgb, var(--j-color-danger) 20%, transparent) 6px 12px
+  );
+  border: 1px solid color-mix(in srgb, var(--j-color-danger) 35%, var(--j-color-border));
+  color: var(--j-color-muted-foreground);
+  font-size: var(--j-font-size-xs);
+  pointer-events: none;
+  z-index: 1;
+}
+.j-scheduler-time-grid__appointment {
+  background: color-mix(in srgb, var(--j-color-success) 12%, var(--j-color-card));
+  border: 1px dashed var(--j-color-success);
+  border-radius: var(--j-radius-sm);
+  color: inherit;
+  z-index: 1;
+}
+.j-scheduler-time-grid__appointment.is-full,
+.j-scheduler-time-grid__appointment.is-blocked {
+  background: var(--j-color-muted);
+  border-color: var(--j-color-border);
+}
