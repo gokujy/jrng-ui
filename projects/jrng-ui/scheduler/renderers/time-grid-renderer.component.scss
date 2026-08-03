@@ -1,0 +1,94 @@
+:host {
+  display: block;
+  min-width: 42rem;
+}
+.j-scheduler-time-grid__header,
+.j-scheduler-time-grid__all-day {
+  display: grid;
+  grid-template-columns: 5rem repeat(var(--j-day-count, 7), minmax(8rem, 1fr));
+}
+.j-scheduler-time-grid__header {
+  background: var(--j-color-card);
+  border-block-end: 1px solid var(--j-color-border);
+  position: sticky;
+  top: 0;
+  z-index: 4;
+}
+.j-scheduler-time-grid__header button {
+  background: transparent;
+  border: 0;
+  border-inline-start: 1px solid var(--j-color-border);
+  color: inherit;
+  display: flex;
+  gap: var(--j-spacing-2);
+  justify-content: center;
+  padding: var(--j-spacing-2);
+}
+.j-scheduler-time-grid__all-day {
+  border-block-end: 1px solid var(--j-color-border);
+}
+.j-scheduler-time-grid__all-day > * {
+  border-inline-start: 1px solid var(--j-color-border);
+  min-height: 2.5rem;
+  padding: var(--j-spacing-1);
+}
+.j-scheduler-time-grid__body {
+  display: grid;
+  grid-template-columns: 5rem 1fr;
+  min-height: 60rem;
+  position: relative;
+}
+.j-scheduler-time-grid__labels {
+  border-inline-end: 1px solid var(--j-color-border);
+  position: relative;
+}
+.j-scheduler-time-grid__labels span {
+  color: var(--j-color-muted-foreground);
+  font-size: var(--j-font-size-xs);
+  inset-inline: 0 var(--j-spacing-2);
+  position: absolute;
+  text-align: end;
+  transform: translateY(-50%);
+}
+.j-scheduler-time-grid__columns {
+  display: grid;
+  grid-template-columns: repeat(var(--j-day-count), minmax(8rem, 1fr));
+}
+.j-scheduler-time-grid__day {
+  border-inline-end: 1px solid var(--j-color-border);
+  position: relative;
+}
+.j-scheduler-time-grid__slot {
+  background: transparent;
+  border: 0;
+  border-block-start: 1px solid var(--j-color-border);
+  height: 1px;
+  inset-inline: 0;
+  padding: 0;
+  position: absolute;
+  width: 100%;
+}
+.j-scheduler-time-event {
+  min-height: 1.5rem;
+  position: absolute;
+  z-index: 2;
+}
+.j-scheduler-event {
+  background: color-mix(
+    in srgb,
+    var(--j-event-color, var(--j-color-primary)) 18%,
+    var(--j-color-card)
+  );
+  border: 1px solid
+    color-mix(in srgb, var(--j-event-color, var(--j-color-primary)) 65%, var(--j-color-border));
+  border-radius: var(--j-radius-sm);
+  color: inherit;
+  display: grid;
+  overflow: hidden;
+  padding: var(--j-spacing-1);
+  text-align: start;
+}
+.j-scheduler-event span {
+  color: var(--j-color-muted-foreground);
+  font-size: var(--j-font-size-xs);
+}

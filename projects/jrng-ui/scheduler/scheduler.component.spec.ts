@@ -26,6 +26,20 @@ describe('JSchedulerComponent', () => {
     expect(root.getAttribute('aria-label')).toBe('Scheduler');
     expect(root.dataset['view']).toBe('month');
     expect(fixture.nativeElement.textContent).toContain('August 2026');
+    expect(fixture.nativeElement.querySelector('j-scheduler-month-renderer')).toBeTruthy();
+  });
+
+  it('switches between independent standard renderers', () => {
+    component.changeView('week');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('j-scheduler-time-grid-renderer')).toBeTruthy();
+    component.changeView('agenda');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('j-scheduler-agenda-renderer')).toBeTruthy();
+    fixture.componentRef.setInput('views', ['month', 'year']);
+    component.changeView('year');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('j-scheduler-year-renderer')).toBeTruthy();
   });
 
   it('emits immutable controlled navigation changes', () => {

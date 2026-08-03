@@ -69,10 +69,62 @@
       [attr.aria-label]="viewLabel(view()) + ': ' + title()"
       data-j-slot="view"
     >
-      <div class="j-scheduler__phase-placeholder" data-j-slot="view-loading">
-        <strong>{{ viewLabel(view()) }}</strong>
-        <span>{{ visibleEvents().length }} events in {{ title() }}</span>
-      </div>
+      @switch (viewDefinition().family) {
+        @case ('month') {
+          <j-scheduler-month-renderer
+            [activeDate]="date()"
+            [range]="visibleRange()"
+            [events]="visibleEvents()"
+            [locale]="locale()"
+            [firstDayOfWeek]="firstDayOfWeek()"
+            [maxEventsVisible]="maxEventsVisible()"
+            [weekNumbers]="weekNumbers()"
+            [disabled]="disabled()"
+            (dateActivate)="handleDateActivate($event)"
+            (eventActivate)="handleEventActivate($event)"
+          />
+        }
+        @case ('timeGrid') {
+          <j-scheduler-time-grid-renderer
+            [range]="visibleRange()"
+            [events]="visibleEvents()"
+            [daysOfWeek]="daysOfWeek()"
+            [locale]="locale()"
+            [slotDuration]="slotDuration()"
+            [slotMinTime]="slotMinTime()"
+            [slotMaxTime]="slotMaxTime()"
+            [disabled]="disabled()"
+            (dateActivate)="handleDateActivate($event)"
+            (eventActivate)="handleEventActivate($event)"
+          />
+        }
+        @case ('agenda') {
+          <j-scheduler-agenda-renderer
+            [range]="visibleRange()"
+            [events]="visibleEvents()"
+            [locale]="locale()"
+            [disabled]="disabled()"
+            (dateActivate)="handleDateActivate($event)"
+            (eventActivate)="handleEventActivate($event)"
+          />
+        }
+        @case ('year') {
+          <j-scheduler-year-renderer
+            [activeDate]="date()"
+            [events]="visibleEvents()"
+            [locale]="locale()"
+            [firstDayOfWeek]="firstDayOfWeek()"
+            [disabled]="disabled()"
+            (dateActivate)="handleDateActivate($event)"
+          />
+        }
+        @default {
+          <div class="j-scheduler__phase-placeholder" data-j-slot="view-loading">
+            <strong>{{ viewLabel(view()) }}</strong>
+            <span>{{ visibleEvents().length }} events in {{ title() }}</span>
+          </div>
+        }
+      }
     </div>
   </div>
 

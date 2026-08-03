@@ -23,6 +23,10 @@ import {
 } from './engine/date-engine';
 import { jSchedulerNormalizeEvents, jSchedulerValidateEvent } from './engine/event-engine';
 import { jSchedulerViewDefinition } from './engine/view-registry';
+import { JSchedulerAgendaRendererComponent } from './renderers/agenda-renderer.component';
+import { JSchedulerMonthRendererComponent } from './renderers/month-renderer.component';
+import { JSchedulerTimeGridRendererComponent } from './renderers/time-grid-renderer.component';
+import { JSchedulerYearRendererComponent } from './renderers/year-renderer.component';
 import {
   JSchedulerAppointmentSlot,
   JSchedulerBlockedInterval,
@@ -31,6 +35,7 @@ import {
   JSchedulerDateRange,
   JSchedulerEvent,
   JSchedulerEventChangeRequest,
+  JSchedulerEventInteraction,
   JSchedulerFilterState,
   JSchedulerHeight,
   JSchedulerId,
@@ -42,6 +47,7 @@ import {
   JSchedulerToolbarAction,
   JSchedulerToolbarConfig,
   JSchedulerView,
+  JSchedulerVisibleEvent,
 } from './scheduler.models';
 
 const DEFAULT_VIEWS: readonly JSchedulerView[] = ['month', 'week', 'day', 'agenda'];
@@ -53,7 +59,15 @@ const DEFAULT_TOOLBAR: Required<JSchedulerToolbarConfig> = {
 
 @Component({
   selector: 'j-scheduler',
-  imports: [JButtonComponent, JTooltipDirective, NgTemplateOutlet],
+  imports: [
+    JButtonComponent,
+    JTooltipDirective,
+    NgTemplateOutlet,
+    JSchedulerMonthRendererComponent,
+    JSchedulerTimeGridRendererComponent,
+    JSchedulerAgendaRendererComponent,
+    JSchedulerYearRendererComponent,
+  ],
   templateUrl: './scheduler.component.html',
   styleUrl: './scheduler.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -133,6 +147,7 @@ export class JSchedulerComponent {
   readonly agendaDays = input(30);
 
   readonly dateClick = output<Date>();
+  readonly eventClick = output<JSchedulerEventInteraction>();
   readonly eventAdd = output<JSchedulerEventChangeRequest>();
   readonly eventChange = output<JSchedulerEventChangeRequest>();
   readonly eventRemove = output<JSchedulerEventChangeRequest>();
@@ -333,6 +348,15 @@ export class JSchedulerComponent {
 
   viewLabel(view: JSchedulerView): string {
     return jSchedulerViewDefinition(view).label;
+  }
+
+  handleDateActivate(date: Date): void {
+    if (!this.disabled()) this.dateClick.emit(new Date(date));
+  }
+
+  handleEventActivate(event: JSchedulerVisibleEvent): void {
+    if (!this.disabled())
+      this.eventClick.emit({ event: event.source, occurrenceStart: event.start });
   }
 
   private validDate(): Date {
