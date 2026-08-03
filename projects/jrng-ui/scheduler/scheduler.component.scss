@@ -96,6 +96,46 @@
   position: absolute;
   width: 1px;
 }
+.j-scheduler-quick-info {
+  display: grid;
+  gap: var(--j-spacing-2);
+  max-width: 20rem;
+}
+.j-scheduler-quick-info h3,
+.j-scheduler-quick-info p {
+  margin: 0;
+}
+.j-scheduler-quick-info label {
+  display: grid;
+  gap: var(--j-spacing-1);
+}
+.j-scheduler-quick-info input {
+  background: var(--j-color-card);
+  border: 1px solid var(--j-color-border);
+  border-radius: var(--j-radius-md);
+  color: inherit;
+  padding: var(--j-spacing-2);
+}
+.j-scheduler-quick-info > div,
+.j-scheduler-quick-info label + div {
+  display: flex;
+  gap: var(--j-spacing-2);
+}
+.j-scheduler-more {
+  display: grid;
+  gap: var(--j-spacing-1);
+  max-height: 18rem;
+  min-width: 14rem;
+  overflow: auto;
+}
+.j-scheduler-more button {
+  background: var(--j-color-surface-subtle);
+  border: 1px solid var(--j-color-border);
+  border-radius: var(--j-radius-sm);
+  color: inherit;
+  padding: var(--j-spacing-2);
+  text-align: start;
+}
 
 .j-scheduler--disabled {
   opacity: var(--j-disabled-opacity, 0.55);

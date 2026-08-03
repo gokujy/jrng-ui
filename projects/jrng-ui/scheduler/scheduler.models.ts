@@ -247,6 +247,19 @@ export interface JSchedulerCellTemplateContext {
   readonly disabled: boolean;
 }
 
+export interface JSchedulerInlineEditEvent {
+  readonly event: JSchedulerEvent;
+  readonly value: string;
+}
+
+export interface JSchedulerContextMenuEvent {
+  readonly view: JSchedulerView;
+  readonly nativeEvent: MouseEvent;
+  readonly event?: JSchedulerEvent;
+  readonly date?: Date;
+  readonly resource?: JSchedulerResource;
+}
+
 export interface JSchedulerTemplates {
   readonly toolbar?: TemplateRef<unknown>;
   readonly event?: TemplateRef<JSchedulerEventTemplateContext>;

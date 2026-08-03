@@ -12,12 +12,14 @@ import {
   PLATFORM_ID,
   TemplateRef,
   ViewChild,
+  signal,
 } from '@angular/core';
 import { isPlatformBrowser, NgTemplateOutlet } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { JButtonComponent } from 'jrng-ui/button';
 import { JTooltipDirective } from 'jrng-ui/tooltip';
 import { JSelectComponent } from 'jrng-ui/select';
+import { JPopoverComponent } from 'jrng-ui/popover';
 import {
   jSchedulerNavigateDate,
   jSchedulerVisibleRange,
@@ -72,6 +74,8 @@ import {
   JSchedulerToolbarConfig,
   JSchedulerView,
   JSchedulerVisibleEvent,
+  JSchedulerInlineEditEvent,
+  JSchedulerContextMenuEvent,
 } from './scheduler.models';
 
 const DEFAULT_VIEWS: readonly JSchedulerView[] = ['month', 'week', 'day', 'agenda'];
@@ -89,6 +93,7 @@ const DEFAULT_TOOLBAR: Required<JSchedulerToolbarConfig> = {
     NgTemplateOutlet,
     FormsModule,
     JSelectComponent,
+    JPopoverComponent,
     JSchedulerMonthRendererComponent,
     JSchedulerTimeGridRendererComponent,
     JSchedulerAgendaRendererComponent,
@@ -106,7 +111,19 @@ export class JSchedulerComponent {
   @ContentChild('jSchedulerToolbarStart') toolbarStartTemplate?: TemplateRef<unknown>;
   @ContentChild('jSchedulerToolbarCenter') toolbarCenterTemplate?: TemplateRef<unknown>;
   @ContentChild('jSchedulerToolbarEnd') toolbarEndTemplate?: TemplateRef<unknown>;
+  @ContentChild('jSchedulerEvent') eventTemplate?: TemplateRef<unknown>;
+  @ContentChild('jSchedulerMonthEvent') monthEventTemplate?: TemplateRef<unknown>;
+  @ContentChild('jSchedulerTimeGridEvent') timeGridEventTemplate?: TemplateRef<unknown>;
+  @ContentChild('jSchedulerAllDayEvent') allDayEventTemplate?: TemplateRef<unknown>;
+  @ContentChild('jSchedulerTimelineEvent') timelineEventTemplate?: TemplateRef<unknown>;
+  @ContentChild('jSchedulerAgendaEvent') agendaEventTemplate?: TemplateRef<unknown>;
+  @ContentChild('jSchedulerMonthCell') monthCellTemplate?: TemplateRef<unknown>;
+  @ContentChild('jSchedulerTimeSlot') timeSlotTemplate?: TemplateRef<unknown>;
+  @ContentChild('jSchedulerResourceRow') resourceRowTemplate?: TemplateRef<unknown>;
+  @ContentChild('jSchedulerEmpty') emptyTemplate?: TemplateRef<unknown>;
   @ViewChild('scrollSurface') private scrollSurface?: ElementRef<HTMLElement>;
+  @ViewChild('quickInfoPopover') private quickInfoPopover?: JPopoverComponent;
+  @ViewChild('morePopover') private morePopover?: JPopoverComponent;
 
   readonly events = input<readonly JSchedulerEvent[]>([]);
   readonly resources = input<readonly JSchedulerResource[]>([]);
@@ -205,6 +222,14 @@ export class JSchedulerComponent {
   readonly resourceClick = output<JSchedulerResource>();
   readonly resourceExpand = output<JSchedulerResource>();
   readonly resourceCollapse = output<JSchedulerResource>();
+  readonly quickInfoShow = output<JSchedulerEvent>();
+  readonly quickInfoHide = output<JSchedulerEvent | null>();
+  readonly quickInfoEdit = output<JSchedulerEvent>();
+  readonly quickInfoDelete = output<JSchedulerEvent>();
+  readonly inlineEditStart = output<JSchedulerInlineEditEvent>();
+  readonly inlineEditSave = output<JSchedulerInlineEditEvent>();
+  readonly inlineEditCancel = output<JSchedulerInlineEditEvent>();
+  readonly contextMenuShow = output<JSchedulerContextMenuEvent>();
 
   readonly dateOptions = computed<JSchedulerDateEngineOptions>(() => ({
     firstDayOfWeek: this.firstDayOfWeek(),
@@ -247,7 +272,7 @@ export class JSchedulerComponent {
     const visit = (items: readonly JSchedulerResource[], depth: number): void => {
       for (const resource of items) {
         if (!resource.disabled)
-          result.push({ label: `${'— '.repeat(depth)}${resource.name}`, value: resource.id });
+          result.push({ label: `${'-- '.repeat(depth)}${resource.name}`, value: resource.id });
         if (resource.children) visit(resource.children, depth + 1);
       }
     };
@@ -259,6 +284,16 @@ export class JSchedulerComponent {
     if (selected == null) return this.resources();
     const resource = this.getResourceById(selected);
     return resource ? [resource] : this.resources();
+  });
+  readonly inspectedEvent = signal<JSchedulerEvent | null>(null);
+  readonly moreDate = signal<Date | null>(null);
+  readonly editingTitle = signal(false);
+  readonly titleDraft = signal('');
+  readonly moreEvents = computed(() => {
+    const date = this.moreDate();
+    if (!date) return [];
+    const end = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1);
+    return this.visibleEvents().filter((event) => event.start < end && event.end > date);
   });
 
   today(): void {
@@ -445,8 +480,73 @@ export class JSchedulerComponent {
   }
 
   handleEventActivate(event: JSchedulerVisibleEvent): void {
-    if (!this.disabled())
+    if (!this.disabled()) {
       this.eventClick.emit({ event: event.source, occurrenceStart: event.start });
+      if (this.quickInfo()) {
+        this.inspectedEvent.set(event.source);
+        this.quickInfoShow.emit(event.source);
+        queueMicrotask(() => this.quickInfoPopover?.show(this.scrollSurface?.nativeElement));
+      }
+    }
+  }
+
+  showMore(date: Date): void {
+    if (this.disabled() || !this.showMorePopover()) return;
+    this.moreDate.set(new Date(date));
+    queueMicrotask(() => this.morePopover?.show(this.scrollSurface?.nativeElement));
+  }
+
+  hideQuickInfo(): void {
+    const event = this.inspectedEvent();
+    this.quickInfoPopover?.hide();
+    this.quickInfoHide.emit(event);
+  }
+
+  requestQuickEdit(): void {
+    const event = this.inspectedEvent();
+    if (!event || this.disabled() || this.readonly()) return;
+    this.quickInfoEdit.emit(event);
+    if (this.inlineEdit()) {
+      this.editingTitle.set(true);
+      this.titleDraft.set(event.title);
+      this.inlineEditStart.emit({ event, value: event.title });
+    }
+  }
+
+  saveInlineTitle(): void {
+    const event = this.inspectedEvent();
+    const value = this.titleDraft().trim();
+    if (!event || !value) return;
+    this.inlineEditSave.emit({ event, value });
+    this.eventChange.emit(this.changeRequest({ ...event, title: value }, 'inline', event));
+    this.editingTitle.set(false);
+  }
+
+  cancelInlineTitle(): void {
+    const event = this.inspectedEvent();
+    if (event) this.inlineEditCancel.emit({ event, value: this.titleDraft() });
+    this.editingTitle.set(false);
+  }
+
+  requestQuickDelete(): void {
+    const event = this.inspectedEvent();
+    if (!event || this.disabled() || this.readonly()) return;
+    this.quickInfoDelete.emit(event);
+  }
+
+  handleInlineKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Enter') this.saveInlineTitle();
+    if (event.key === 'Escape') this.cancelInlineTitle();
+  }
+
+  updateTitleDraft(event: Event): void {
+    this.titleDraft.set((event.target as HTMLInputElement).value);
+  }
+
+  handleContextMenu(event: MouseEvent): void {
+    if (this.disabled()) return;
+    event.preventDefault();
+    this.contextMenuShow.emit({ view: this.view(), nativeEvent: event });
   }
 
   handleEventDoubleActivate(event: JSchedulerVisibleEvent): void {

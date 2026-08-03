@@ -10,6 +10,7 @@
   [attr.data-view]="view()"
   [attr.dir]="rtl() ? 'rtl' : null"
   data-j-slot="root"
+  (contextmenu)="handleContextMenu($event)"
 >
   @if (headerToolbar() !== false) {
     @if (toolbarTemplate) {
@@ -119,6 +120,7 @@
               [disabled]="disabled()"
               (dateActivate)="handleDateActivate($event)"
               (eventActivate)="handleEventActivate($event)"
+              (moreActivate)="showMore($event)"
             />
           }
           @case ('timeGrid') {
@@ -182,6 +184,76 @@
   </div>
 
   <p class="j-scheduler__live" aria-live="polite" aria-atomic="true"></p>
+
+  <j-popover
+    #quickInfoPopover
+    ariaLabel="Event quick information"
+    (closed)="quickInfoHide.emit(inspectedEvent())"
+  >
+    @if (inspectedEvent(); as event) {
+      <article
+        class="j-scheduler-quick-info"
+        data-j-slot="quick-info"
+        [attr.data-event-id]="event.id"
+      >
+        @if (editingTitle()) {
+          <label
+            >Event title<input
+              [value]="titleDraft()"
+              (input)="updateTitleDraft($event)"
+              (keydown)="handleInlineKeydown($event)"
+          /></label>
+          <div>
+            <j-button label="Save" size="sm" (onClick)="saveInlineTitle()" />
+            <j-button label="Cancel" variant="text" size="sm" (onClick)="cancelInlineTitle()" />
+          </div>
+        } @else {
+          <h3>{{ event.title }}</h3>
+          <p>{{ event.location || 'No location' }}</p>
+          @if (event.description) {
+            <p>{{ event.description }}</p>
+          }
+          @if (!readonly()) {
+            <div>
+              <j-button
+                label="Edit"
+                icon="pencil"
+                size="sm"
+                [disabled]="disabled()"
+                (onClick)="requestQuickEdit()"
+              />
+              <j-button
+                label="Delete"
+                icon="trash"
+                severity="danger"
+                variant="outlined"
+                size="sm"
+                [disabled]="disabled()"
+                (onClick)="requestQuickDelete()"
+              />
+            </div>
+          }
+        }
+      </article>
+    }
+  </j-popover>
+
+  <j-popover #morePopover ariaLabel="More events">
+    <div class="j-scheduler-more" data-j-slot="more-popover">
+      @for (event of moreEvents(); track event.occurrenceId) {
+        <button
+          type="button"
+          [disabled]="disabled() || event.source.disabled"
+          [attr.data-event-id]="event.source.id"
+          (click)="handleEventActivate(event)"
+        >
+          {{ event.source.title }}
+        </button>
+      } @empty {
+        <p>No events</p>
+      }
+    </div>
+  </j-popover>
 </section>
 
 <ng-template #toolbarAction let-action>
