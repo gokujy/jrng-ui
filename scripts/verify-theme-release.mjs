@@ -106,13 +106,19 @@ requirePattern(
 );
 
 const workspacePackage = JSON.parse(read(path.join(root, 'package.json')));
-const dependencyNames = Object.keys({
-  ...workspacePackage.dependencies,
-  ...workspacePackage.devDependencies,
-});
-for (const prohibitedDependency of ['@angular/material', 'primeng']) {
-  if (dependencyNames.includes(prohibitedDependency)) {
-    failures.push(`Prohibited theme runtime dependency found: ${prohibitedDependency}.`);
+const approvedRuntimeDependencies = new Set([
+  '@angular/common',
+  '@angular/compiler',
+  '@angular/core',
+  '@angular/forms',
+  '@angular/platform-browser',
+  '@angular/router',
+  'rxjs',
+  'tslib',
+]);
+for (const dependencyName of Object.keys(workspacePackage.dependencies ?? {})) {
+  if (!approvedRuntimeDependencies.has(dependencyName)) {
+    failures.push(`Unapproved runtime dependency found: ${dependencyName}.`);
   }
 }
 

@@ -32,7 +32,7 @@ if (
 ) {
   failures.push('API examples are not routed to the runnable API preview host.');
 }
-if (!apiPreviewSource.includes('host.createComponent(componentType)')) {
+if (!apiPreviewSource.includes('host.createComponent(componentType')) {
   failures.push('API preview host does not create the documented public component.');
 }
 

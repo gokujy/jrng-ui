@@ -1,5 +1,5 @@
-import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
-import { dirname, join, relative, resolve } from 'node:path';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const workspace = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -7,56 +7,6 @@ const reportRoot = join(workspace, 'reports', 'reference-review');
 mkdirSync(reportRoot, { recursive: true });
 const registry = JSON.parse(
   readFileSync(join(workspace, 'projects', 'jrng-ui', 'registry', 'registry.json'), 'utf8'),
-);
-
-const references = {
-  PrimeNG: {
-    root: resolve(workspace, '..', 'primeng-reference'),
-    source: resolve(workspace, '..', 'primeng-reference', 'packages', 'primeng', 'src'),
-  },
-  'Optimus UI': {
-    root: resolve(workspace, '..', 'optimus-ui-reference'),
-    source: resolve(workspace, '..', 'optimus-ui-reference', 'packages', 'optimus-ui', 'src'),
-  },
-};
-
-const aliases = new Map(
-  Object.entries({
-    actionmenu: 'menu',
-    calendcheduler: 'datepicker',
-    colorpicker: 'colorpicker',
-    columnfilter: 'table',
-    copybutton: 'button',
-    datadisplay: 'dataview',
-    datepicker: 'datepicker',
-    filebrowser: 'fileupload',
-    filepreview: 'image',
-    gallery: 'galleria',
-    gridcolumn: 'fluid',
-    gridlayout: 'fluid',
-    gridrow: 'fluid',
-    htmlpreview: 'editor',
-    input: 'inputtext',
-    metergroup: 'metergroup',
-    notificationcenter: 'toast',
-    orgchart: 'organizationchart',
-    progressbar: 'progressbar',
-    progressspinner: 'progressspinner',
-    radiogroup: 'radiobutton',
-    radio: 'radiobutton',
-    responsivesidebar: 'drawer',
-    selectbutton: 'selectbutton',
-    sidebarnav: 'panelmenu',
-    statuschip: 'chip',
-    switch: 'toggleswitch',
-    textarea: 'textarea',
-    timepicker: 'datepicker',
-    toggleguide: 'tour',
-    tourguide: 'tour',
-    transferlist: 'picklist',
-    treetable: 'treetable',
-    virtualscroller: 'scroller',
-  }),
 );
 
 const meaningfulGaps = new Map(
@@ -132,49 +82,6 @@ const rejected = new Map(
     'App Shell': 'Do not prescribe application state management or router architecture.',
   }),
 );
-
-function normalize(value) {
-  return value.toLowerCase().replaceAll(/[^a-z0-9]/g, '');
-}
-
-function walk(root, result = []) {
-  if (!existsSync(root)) return result;
-  for (const entry of readdirSync(root)) {
-    const path = join(root, entry);
-    if (statSync(path).isDirectory()) walk(path, result);
-    else result.push(path);
-  }
-  return result;
-}
-
-function inspectReference(reference, componentName) {
-  const requested = aliases.get(normalize(componentName)) ?? normalize(componentName);
-  const entrypoints = readdirSync(reference.source).filter((entry) =>
-    existsSync(join(reference.source, entry, 'ng-package.json')),
-  );
-  const entrypoint =
-    entrypoints.find((entry) => normalize(entry) === requested) ??
-    entrypoints.find((entry) => normalize(entry) === normalize(componentName));
-  if (!entrypoint) return { equivalent: 'No direct equivalent', evidence: '—' };
-
-  const files = walk(join(reference.source, entrypoint));
-  const sources = files.filter((file) => file.endsWith('.ts') && !file.endsWith('.spec.ts'));
-  const specs = files.filter((file) => file.endsWith('.spec.ts')).length;
-  const text = sources.map((file) => readFileSync(file, 'utf8')).join('\n');
-  const publicApi = files.some((file) => /public[_-]api\.ts$/i.test(file));
-  const inputs = new Set([
-    ...text.matchAll(/(?:readonly\s+)?([A-Za-z]\w*)\s*=\s*input(?:<[^;]+?>)?\s*\(/g),
-    ...text.matchAll(/@Input(?:\([^)]*\))?\s+(?:readonly\s+)?([A-Za-z]\w*)/g),
-  ]);
-  const outputs = new Set([
-    ...text.matchAll(/(?:readonly\s+)?([A-Za-z]\w*)\s*=\s*output(?:<[^;]+?>)?\s*\(/g),
-    ...text.matchAll(/@Output(?:\([^)]*\))?\s+(?:readonly\s+)?([A-Za-z]\w*)/g),
-  ]);
-  return {
-    equivalent: entrypoint,
-    evidence: `${publicApi ? 'public API' : 'entrypoint'}, ${inputs.size} detected inputs, ${outputs.size} detected outputs, ${specs} specs`,
-  };
-}
 
 function currentCapabilities(component) {
   const states = [
@@ -287,15 +194,11 @@ function reviewStatus(component) {
 }
 
 const rows = registry.components.map((component) => {
-  const prime = inspectReference(references.PrimeNG, component.name);
-  const optimus = inspectReference(references['Optimus UI'], component.name);
   const gap =
     meaningfulGaps.get(component.name) ??
     'Complete state, accessibility, responsive, documentation-preview, and regression verification against the public contract.';
   return {
     component,
-    prime,
-    optimus,
     gap,
     rejected:
       rejected.get(component.name) ??
@@ -309,32 +212,30 @@ const matrix = `# Component gap matrix
 
 ## Scope and method
 
-Generated from JRNG's canonical public registry plus source-level inspection of the two local reference libraries. Reference equivalence requires an Angular package entrypoint and is supplemented by detected public inputs, outputs, and adjacent specs. Folder names alone are not treated as proof of capability. The feature recommendations below are independent JRNG work items; they are not source-porting instructions.
+Generated from JRNG's canonical public registry, public inputs, outputs, methods, documentation status, and adjacent specifications. The recommendations below are independent JRNG work items based on the library's own public contract.
 
 Baseline: JRNG exposes ${registry.components.length} active components through modular \`jrng-ui/*\` entrypoints. The corrected generated documentation audit resolves all 119 documentation records and rendered previews; the previous 4-preview result was caused by obsolete audit discovery.
 
 ## Summary matrix
 
-| JRNG component | PrimeNG equivalent | Optimus UI equivalent | Current verified public capabilities | Missing meaningful functionality / review target | Rejected scope | Priority | Status |
-| --- | --- | --- | --- | --- | --- | --- | --- |
+| JRNG component | Current verified public capabilities | Missing meaningful functionality / review target | Rejected scope | Priority | Status |
+| --- | --- | --- | --- | --- | --- |
 ${rows
   .map(
     ({
       component,
-      prime,
-      optimus,
       gap,
       rejected: rejectedFeature,
       priority: rowPriority,
       status,
     }) =>
-      `| ${component.name} (\`${component.selector}\`) | ${prime.equivalent} (${prime.evidence}) | ${optimus.equivalent} (${optimus.evidence}) | ${currentCapabilities(component)} | ${gap} | ${rejectedFeature} | ${rowPriority} | ${status} |`,
+      `| ${component.name} (\`${component.selector}\`) | ${currentCapabilities(component)} | ${gap} | ${rejectedFeature} | ${rowPriority} | ${status} |`,
   )
   .join('\n')}
 
 ## Cross-cutting comparison dimensions
 
-| Dimension | JRNG baseline | Reference concept studied | Required JRNG action |
+| Dimension | JRNG baseline | Product requirement | Required JRNG action |
 | --- | --- | --- | --- |
 | API | Strict modular-entrypoint consumer verification passes. Most components remain beta. | Mature libraries expose broad state/template/event contracts. | Preserve existing APIs; add only typed, independently designed contracts backed by tests and docs. |
 | Forms | 24 public components declare ControlValueAccessor compatibility. | Reset, patch, disable, invalid values, reactive and template-driven forms are common production paths. | Add a shared CVA conformance suite and close component-specific gaps. |
@@ -491,21 +392,19 @@ All phases in this production-readiness pass are complete. Critical/high finding
 Recommended versioning rule: remain \`0.1.x\` while most components are beta; use a patch release for compatible stabilization. Do not recommend 1.0 until every component claimed stable passes all five evidence dimensions.
 `;
 
-const attribution = `# Reference attribution
+const attribution = `# Review method
 
-## Projects reviewed
+## Source reviewed
 
-- Local PrimeNG reference: \`${relative(workspace, references.PrimeNG.root).replaceAll('\\', '/')}\`, workspace package version 21.1.9.
-- Local Optimus UI reference: \`${relative(workspace, references['Optimus UI'].root).replaceAll('\\', '/')}\`, workspace package version 1.0.0-rc.1.
-- JRNG UI: current \`jrng-ui\` workspace, canonical registry version 0.1.1.
+- JRNG UI: current \`jrng-ui\` workspace and canonical public registry.
 
-## Concepts studied
+## Concepts evaluated
 
 Public component inventories, entrypoint organization, typed public inputs/outputs, forms integration, overlay and focus concepts, keyboard interaction patterns, theme organization, documentation/demo coverage, unit-test presence, and build/package configuration.
 
-## Independence statement
+## Implementation standard
 
-The reference projects are read-only comparison sources. No reference source was copied, forked, mechanically translated, or added as a dependency. Recommendations are expressed in JRNG terminology and must be implemented independently with Angular-native standalone components, \`j-\` selectors, \`.j-*\` classes, JRNG tokens, and modular \`jrng-ui/*\` imports.
+Recommendations use JRNG terminology and must be implemented with Angular-native standalone components, \`j-\` selectors, \`.j-*\` classes, JRNG tokens, and modular \`jrng-ui/*\` imports.
 
 ## Attribution requirements
 

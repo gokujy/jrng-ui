@@ -37,9 +37,65 @@
 }
 
 .j-preview-mini-nav span {
+  align-items: center;
   border-radius: var(--j-radius-md);
   color: var(--j-color-muted-foreground);
+  display: flex;
+  gap: var(--j-spacing-2);
   padding: var(--j-spacing-2) var(--j-spacing-3);
+}
+
+.j-doc-compact-shell.j-app-shell--collapsed .j-preview-mini-nav > span > span {
+  display: none;
+}
+
+.j-dashboard-tile-drag-handle {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: var(--j-color-muted-foreground);
+  cursor: grab;
+  display: inline-flex;
+  inset-block-start: var(--j-spacing-2);
+  inset-inline-end: var(--j-spacing-2);
+  justify-content: center;
+  min-height: 2rem;
+  min-width: 2rem;
+  position: absolute;
+}
+
+.j-dashboard-tile-drag-handle:focus-visible {
+  box-shadow: var(--j-focus-ring);
+  outline: none;
+}
+
+.j-sidebar-preview-frame {
+  background: var(--j-color-background);
+  border: 1px solid var(--j-color-border);
+  border-radius: var(--j-radius-lg);
+  display: flex;
+  min-height: 28rem;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.j-doc-sidebar-preview.j-sidebar-nav--overlay,
+.j-doc-sidebar-preview.j-sidebar-nav--offcanvas {
+  position: absolute;
+}
+
+.j-sidebar-preview-content {
+  display: grid;
+  flex: 1;
+  gap: var(--j-spacing-4);
+  padding: var(--j-spacing-4);
+}
+
+.j-sidebar-preview-content span {
+  background: var(--j-color-muted);
+  border-radius: var(--j-radius-lg);
+  min-height: 9rem;
 }
 
 .j-preview-mini-nav span.is-active {
@@ -2517,7 +2573,9 @@ app-code-block {
   display: grid;
   gap: var(--j-spacing-4);
   max-width: 100%;
-  min-height: 11rem;
+  /* Let each demo define its own height. Data-heavy previews such as Table and
+     Chart already provide an intrinsic or component-specific block size. */
+  min-height: 0;
   min-width: 0;
   padding: var(--j-spacing-5);
   place-items: center;
@@ -2584,7 +2642,9 @@ app-code-block {
 
 .j-preview-surface--overlay {
   align-content: start;
-  min-height: 29rem;
+  /* Overlays render outside normal flow, so reserving their open height here
+     leaves a large empty canvas while the control is closed. */
+  min-height: 0;
   overflow: visible;
   place-items: start stretch;
 }
@@ -2655,6 +2715,71 @@ app-code-block {
   width: 100%;
 }
 
+.j-badge-preview-anchor {
+  display: inline-flex;
+  position: relative;
+}
+
+.j-meter-group-doc-example,
+.j-progress-doc-example,
+.j-skeleton-doc-example {
+  display: grid;
+  gap: var(--j-spacing-3);
+  justify-self: stretch;
+  width: 100%;
+}
+
+.j-progress-doc-example > span {
+  color: var(--j-color-muted-foreground);
+  font-size: var(--j-font-size-sm);
+}
+
+.j-skeleton-doc-example.j-preview-row {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.j-swipe-actions-doc-example {
+  display: grid;
+  gap: var(--j-spacing-4);
+  max-width: 42rem;
+  width: 100%;
+}
+
+.j-swipe-actions-doc-row {
+  align-items: center;
+  display: grid;
+  gap: var(--j-spacing-3);
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  width: 100%;
+}
+
+.j-swipe-actions-doc-row > div {
+  display: grid;
+  gap: var(--j-spacing-1);
+}
+
+.j-swipe-actions-doc-row span {
+  color: var(--j-color-muted-foreground);
+  font-size: var(--j-font-size-sm);
+}
+
+.j-watermark-doc-surface {
+  background-color: var(--j-color-card);
+  border: 1px solid var(--j-color-border);
+  border-radius: var(--j-radius-lg);
+  display: grid;
+  gap: var(--j-spacing-3);
+  min-height: 14rem;
+  padding: var(--j-spacing-6);
+  width: 100%;
+}
+
+.j-watermark-doc-surface > span {
+  color: var(--j-color-muted-foreground);
+  font-size: var(--j-font-size-sm);
+}
+
 .j-preview-grid {
   display: grid;
   gap: var(--j-spacing-4);
@@ -2672,13 +2797,13 @@ app-code-block {
   align-content: start;
   display: grid;
   gap: var(--j-spacing-3);
-  min-height: 23rem;
+  min-height: 0;
   place-items: start stretch;
   width: 100%;
 }
 
 .j-overlay-form-preview--compact {
-  min-height: 18rem;
+  min-height: 0;
 }
 
 .j-action-menu-preview {
@@ -2845,7 +2970,7 @@ app-code-block {
 .j-file-preview-demo-grid {
   display: grid;
   gap: var(--j-spacing-3);
-  width: min(100%, 48rem);
+  width: 100%;
 }
 
 .j-preview-action-status {

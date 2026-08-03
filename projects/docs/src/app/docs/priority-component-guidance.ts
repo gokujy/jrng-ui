@@ -237,18 +237,6 @@ export const priorityComponentGuidance: Readonly<Record<string, PriorityComponen
       ],
     },
   ),
-  'responsive-sidebar': guidance(
-    `<j-responsive-sidebar [items]="navigation" [(collapsed)]="collapsed" />`,
-    'Provide desktop and mobile navigation for an admin workspace.',
-    {
-      templates: ['Header, navigation content, and footer account area.'],
-      keyboardBehaviour: [
-        'Toggle controls expose expanded state and navigation remains reachable in DOM order.',
-      ],
-      responsiveBehaviour:
-        'Collapse on constrained desktop widths and present an accessible modal navigation panel on mobile.',
-    },
-  ),
   tabs: guidance(
     `<j-tabs [(activeIndex)]="activeTab"><j-tab header="Details">...</j-tab></j-tabs>`,
     'Organize related record details without introducing separate routes.',
@@ -289,24 +277,6 @@ export const priorityComponentGuidance: Readonly<Record<string, PriorityComponen
       ],
       responsiveBehaviour:
         'Filters wrap into rows or a compact mobile disclosure without changing their values.',
-    },
-  ),
-  'status-chip': guidance(
-    `<j-status-chip status="approved" label="Approved" />`,
-    'Show a workflow status with text and color rather than color alone.',
-    {
-      keyboardBehaviour: [
-        'Status chips are informational unless explicitly rendered as an action.',
-      ],
-    },
-  ),
-  'page-header': guidance(
-    `<j-page-header title="Users" subtitle="Manage access and profiles" [breadcrumbs]="breadcrumbs"><j-button label="Create user" /></j-page-header>`,
-    'Orient users and expose the primary action for an admin page.',
-    {
-      templates: ['Breadcrumbs, title content, metadata, and trailing actions.'],
-      responsiveBehaviour:
-        'Actions wrap below the title on narrow screens while heading order remains unchanged.',
     },
   ),
   'tour-guide': guidance(

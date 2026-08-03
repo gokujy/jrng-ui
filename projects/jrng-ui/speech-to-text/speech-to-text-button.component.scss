@@ -1,5 +1,6 @@
 :host {
   display: inline-flex;
+  position: relative;
 }
 
 .j-speech-to-text-button__status {
@@ -8,6 +9,20 @@
   block-size: 1px;
   overflow: hidden;
   clip-path: inset(50%);
+}
+
+.j-speech-to-text-button__status.is-visible {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: calc(100% + var(--j-spacing-1, 0.25rem));
+  inset-inline-end: 0;
+  inline-size: max-content;
+  max-inline-size: min(18rem, 80vw);
+  block-size: auto;
+  overflow: visible;
+  clip-path: none;
+  color: var(--j-color-danger);
+  font-size: var(--j-font-size-xs);
 }
 
 @media (prefers-reduced-motion: reduce) {

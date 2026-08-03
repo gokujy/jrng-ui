@@ -108,6 +108,15 @@ describe('App', () => {
     ) as HTMLButtonElement;
     expect(trigger).toBeTruthy();
     expect(fixture.nativeElement.querySelectorAll('app-docs-theme-settings')).toHaveLength(1);
+    expect(trigger.closest('.docs-header__actions')).toBeTruthy();
+    expect(
+      fixture.nativeElement.querySelector('.docs-header__actions app-docs-theme-settings'),
+    ).toBeTruthy();
+    expect(
+      fixture.nativeElement
+        .querySelector('.docs-header__actions app-docs-theme-settings')
+        ?.nextElementSibling?.getAttribute('aria-label'),
+    ).toBe('GitHub repository');
   });
 
   it('updates canonical and social metadata for documentation routes', async () => {

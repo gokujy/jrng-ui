@@ -125,6 +125,7 @@ interface JTreeFlatEntry {
                   type="checkbox"
                   [disabled]="node.disabled || node.selectable === false"
                   [checked]="isSelected(node)"
+                  [indeterminate]="isPartiallySelected(node)"
                   [attr.aria-label]="'Select ' + node.label"
                   tabindex="-1"
                   (change)="toggleSelection(node, $event)"
@@ -412,6 +413,18 @@ export class JTreeComponent {
 
   isExpandedKey(key: string): boolean {
     return this.expandedKeys().has(key);
+  }
+
+  isPartiallySelected(node: JTreeNode): boolean {
+    if (this.selectionMode() !== 'checkbox' || !node.children?.length) return false;
+
+    const descendants = (current: JTreeNode): readonly JTreeNode[] =>
+      (current.children ?? []).flatMap((child) => [child, ...descendants(child)]);
+    const selectable = descendants(node).filter(
+      (child) => !child.disabled && child.selectable !== false,
+    );
+    const selectedCount = selectable.filter((child) => this.isSelected(child)).length;
+    return selectedCount > 0 && selectedCount < selectable.length;
   }
 
   isSelected(node: JTreeNode): boolean {

@@ -180,6 +180,15 @@ export class JFileBrowserComponent<T = unknown> {
             : true;
   }
 
+  actionIcon(action: JFileBrowserAction): string {
+    if (action.icon) return action.icon;
+    const defaultIcons: Readonly<Record<string, string>> = {
+      download: 'download',
+      delete: 'trash',
+    };
+    return defaultIcons[action.id] ?? 'more-horizontal';
+  }
+
   isSelected(item: JFileBrowserItem<T>): boolean {
     return this.selection().includes(item.id);
   }

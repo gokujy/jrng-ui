@@ -1,10 +1,18 @@
+import { isPlatformBrowser } from '@angular/common';
 import {
+  AfterViewInit,
+  afterRenderEffect,
   booleanAttribute,
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
+  ElementRef,
+  inject,
   input,
   output,
+  PLATFORM_ID,
+  signal,
 } from '@angular/core';
 import { JButtonComponent } from 'jrng-ui/button';
 import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
@@ -25,6 +33,8 @@ import { JIconComponent } from 'jrng-ui/icon';
       [attr.aria-readonly]="readonly()"
       [attr.aria-invalid]="invalid()"
       [attr.inert]="disabled() ? '' : null"
+      (input)="syncClearVisibility()"
+      (change)="syncClearVisibility()"
     >
       @if (prefixIcon()) {
         <span class="j-icon-field__icon" data-jc-section="prefix" aria-hidden="true">
@@ -43,7 +53,7 @@ import { JIconComponent } from 'jrng-ui/icon';
           <j-icon [name]="suffixIcon()" />
         </span>
       }
-      @if (clearable()) {
+      @if (showClear()) {
         <j-button
           actionDisplay="icon"
           icon="close"
@@ -130,7 +140,13 @@ import { JIconComponent } from 'jrng-ui/icon';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class JIconFieldComponent {
+export class JIconFieldComponent implements AfterViewInit {
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly browser = isPlatformBrowser(inject(PLATFORM_ID));
+  private readonly hasValue = signal(false);
+  private observer: MutationObserver | null = null;
+
   readonly prefixIcon = input('');
   readonly suffixIcon = input('');
   readonly ariaLabel = input('');
@@ -147,6 +163,7 @@ export class JIconFieldComponent {
 
   readonly clear = output<void>();
   readonly filter = output<void>();
+  readonly showClear = computed(() => this.clearable());
 
   readonly fieldClasses = computed(() =>
     jMergePartClasses(
@@ -162,4 +179,33 @@ export class JIconFieldComponent {
       this.pt(),
     ),
   );
+
+  constructor() {
+    afterRenderEffect(() => this.syncClearVisibility());
+    this.destroyRef.onDestroy(() => this.observer?.disconnect());
+  }
+
+  ngAfterViewInit(): void {
+    this.syncClearVisibility();
+    if (!this.browser || typeof MutationObserver === 'undefined') return;
+
+    this.observer = new MutationObserver(() => this.syncClearVisibility());
+    this.observer.observe(this.host.nativeElement, {
+      attributes: true,
+      childList: true,
+      subtree: true,
+      attributeFilter: ['value', 'data-j-active'],
+    });
+  }
+
+  protected syncClearVisibility(): void {
+    if (!this.browser) return;
+
+    const control = this.host.nativeElement.querySelector<HTMLElement>(
+      '.j-icon-field__content input, .j-icon-field__content textarea, .j-icon-field__content select, .j-icon-field__content [contenteditable="true"], .j-icon-field__content [data-j-active]',
+    );
+    const value =
+      control && 'value' in control ? String(control.value ?? '') : (control?.textContent ?? '');
+    this.hasValue.set(value.length > 0 || control?.getAttribute('data-j-active') === 'true');
+  }
 }

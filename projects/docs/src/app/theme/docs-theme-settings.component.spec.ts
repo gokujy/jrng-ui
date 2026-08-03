@@ -11,7 +11,7 @@ describe('DocsThemeSettingsComponent', () => {
     }).compileComponents();
   });
 
-  it('opens from one accessible fixed trigger and renders the settings drawer', () => {
+  it('opens from one accessible trigger and renders the settings drawer', () => {
     const fixture = TestBed.createComponent(DocsThemeSettingsComponent);
     fixture.detectChanges();
 

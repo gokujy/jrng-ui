@@ -45,8 +45,8 @@ const PRESET_DESCRIPTIONS: Readonly<Record<JThemePresetId, string>> = {
         styleClass="j-docs-theme-settings__trigger"
         icon="settings"
         actionDisplay="icon"
-        shape="circle"
-        variant="solid"
+        shape="square"
+        variant="outlined"
         ariaLabel="Open theme settings"
         title="Open theme settings"
         ariaHasPopup="dialog"
@@ -150,12 +150,26 @@ const PRESET_DESCRIPTIONS: Readonly<Record<JThemePresetId, string>> = {
   `,
   styles: [
     `
+      :host {
+        display: inline-flex;
+      }
+
       .j-docs-theme-settings {
-        position: fixed;
-        right: max(0.75rem, env(safe-area-inset-right));
-        top: 50%;
-        transform: translateY(-50%);
-        z-index: calc(var(--j-z-index-overlay, 1000) - 1);
+        display: inline-flex;
+      }
+
+      :host ::ng-deep .j-docs-theme-settings__trigger {
+        background: var(--j-color-card);
+        border-color: var(--j-color-border);
+        border-radius: var(--j-radius-md);
+        color: var(--j-color-foreground);
+        height: 2.25rem;
+        padding: 0;
+        width: 2.25rem;
+      }
+
+      :host ::ng-deep .j-docs-theme-settings__trigger:hover {
+        border-color: var(--j-color-primary);
       }
 
       :host ::ng-deep .j-docs-theme-settings__trigger .j-icon {
@@ -295,15 +309,6 @@ const PRESET_DESCRIPTIONS: Readonly<Record<JThemePresetId, string>> = {
       @keyframes j-docs-settings-turn {
         to {
           transform: rotate(360deg);
-        }
-      }
-
-      @media (max-width: 640px) {
-        .j-docs-theme-settings {
-          right: max(0.5rem, env(safe-area-inset-right));
-          top: auto;
-          bottom: max(1rem, env(safe-area-inset-bottom));
-          transform: none;
         }
       }
 

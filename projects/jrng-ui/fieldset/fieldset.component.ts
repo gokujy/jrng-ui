@@ -55,10 +55,19 @@ export type JFieldsetLegendPosition = 'start' | 'center' | 'end';
   `,
   styles: [
     `
+      :host {
+        display: block;
+        min-width: 0;
+        width: 100%;
+      }
+
       .j-fieldset {
         border: 1px solid var(--j-color-border);
         border-radius: var(--j-radius-md, 0.5rem);
+        box-sizing: border-box;
+        min-inline-size: 0;
         padding: var(--j-spacing-lg, 1rem);
+        width: 100%;
       }
       .j-fieldset--borderless {
         border: 0;

@@ -192,9 +192,23 @@ export class JSplitterPanelComponent implements OnDestroy {
   </div>`,
   styles: [
     `
+      :host {
+        align-self: stretch;
+        box-sizing: border-box;
+        display: block;
+        inline-size: 100%;
+        justify-self: stretch;
+        min-width: 0;
+        width: 100%;
+      }
+
       .j-splitter {
+        box-sizing: border-box;
         display: flex;
+        inline-size: 100%;
+        min-width: 0;
         overflow: hidden;
+        width: 100%;
       }
       .j-splitter--vertical {
         flex-direction: column;

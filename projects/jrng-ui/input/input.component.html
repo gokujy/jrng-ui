@@ -17,9 +17,9 @@
   [attr.data-j-active]="internalValue() ? 'true' : null"
 >
   @if (prefixIcon()) {
-    <span class="j-input__icon" data-jc-section="prefix" aria-hidden="true">{{
-      prefixIcon()
-    }}</span>
+    <span class="j-input__icon" data-jc-section="prefix" aria-hidden="true">
+      <j-icon [name]="prefixIcon()" />
+    </span>
   }
   <span class="j-input__icon" data-jc-section="prefix" aria-hidden="true"
     ><ng-content select="[jInputPrefix]"></ng-content
@@ -62,9 +62,9 @@
     ><ng-content select="[jInputSuffix]"></ng-content
   ></span>
   @if (suffixIcon()) {
-    <span class="j-input__icon" data-jc-section="suffix" aria-hidden="true">{{
-      suffixIcon()
-    }}</span>
+    <span class="j-input__icon" data-jc-section="suffix" aria-hidden="true">
+      <j-icon [name]="suffixIcon()" />
+    </span>
   }
 </div>
 

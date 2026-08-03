@@ -2,8 +2,32 @@
 
 ## 0.1.1
 
+### Removed
+
+- Removed the `jrng-ui/page-header` entrypoint and `JPageHeaderComponent`. Applications should
+  compose page titles and actions from their own layout or use `j-section-header` for section-level
+  headings.
+- Removed the `jrng-ui/responsive-sidebar`, `jrng-ui/topbar`, and `jrng-ui/avatar-group`
+  entrypoints. Use the expanded `j-sidebar-nav`, application-owned header composition, and
+  individual `j-avatar` components instead.
+- Removed the `jrng-ui/status-chip` entrypoint and component. Use `j-tag` or `j-chip` for
+  compact status labels.
+
 ### Added
 
+- Replaced the Barcode component's external QR runtime dependency with an independently
+  developed JRNG QR Model 2 encoder supporting UTF-8 byte data,
+  versions 1–40, all four error-correction levels, Reed–Solomon coding, automatic
+  mask selection, quiet zones, and the existing SVG output API.
+- Replaced the Editor image URL prompt with an accessible file-upload workflow,
+  configurable image type and size validation, safe raster data URLs, upload-adapter
+  support, typed error reporting, drag/drop and paste insertion, plus selected-image
+  resize, alignment, alternative-text, and removal tools. Added font, colour, line-height,
+  script, indent, link, video, table-editing, help, air-mode, toolbar-position, sizing,
+  spellcheck, and keyboard configuration while preserving the shared editor sanitizer.
+- Added shared `j-table` row, menu, and above-table toolbar filter displays with
+  typed metadata events, custom matchers/templates, controlled and lazy state,
+  persistence, accessible menu focus handling, and responsive filter controls.
 - Added experimental `jrng-ui/popout` with Portal-based standard and Document
   Picture-in-Picture windows, bidirectional communication, live theme/style
   synchronization, focus restoration, cleanup, and popup-blocked fallbacks.

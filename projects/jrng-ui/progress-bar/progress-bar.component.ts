@@ -14,6 +14,7 @@ export type JProgressBarVariant = 'default' | 'segmented' | 'labeled';
 @Component({
   selector: 'j-progress-bar',
   imports: [],
+  host: { style: 'display: block; width: 100%;' },
   template: `
     <div
       [class]="barClasses()"
@@ -43,8 +44,9 @@ export type JProgressBarVariant = 'default' | 'segmented' | 'labeled';
     `
       .j-progress-bar {
         background: var(--j-color-surface-subtle);
+        border: 1px solid var(--j-color-border);
         border-radius: var(--j-radius-full);
-        height: 0.5rem;
+        height: 0.625rem;
         overflow: hidden;
         width: 100%;
       }

@@ -10,6 +10,7 @@ import { JIconComponent } from 'jrng-ui/icon';
       <j-icon
         [name]="order() === -1 ? 'chevron-down' : order() === 1 ? 'chevron-up' : 'sort'"
         size="0.875rem"
+        [strokeWidth]="order() === 0 ? 2 : 3"
       />
       @if (priority() > 0) {
         <small>{{ priority() }}</small>

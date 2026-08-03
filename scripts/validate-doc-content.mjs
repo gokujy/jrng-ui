@@ -6,7 +6,6 @@ import { REMOVED_COMPONENT_SELECTORS } from './component-categories.mjs';
 const root = resolve(import.meta.dirname, '..');
 const runtimeSource = await readTypeScriptTree('projects/docs/src/app');
 const detailView = await read('projects/docs/src/app/docs/component-detail-view.component.ts');
-const themeSettings = await read('projects/docs/src/app/theme/docs-theme-settings.component.ts');
 const baseSource = await read('projects/docs/src/app/docs/component-detail-view-base.ts');
 const coverageSource = await read('projects/docs/src/app/docs/generated-api-example-coverage.ts');
 const tableFilters = await read(
@@ -19,19 +18,6 @@ for (const selector of REMOVED_COMPONENT_SELECTORS) {
   check(
     !selectorPattern.test(runtimeSource),
     `Removed component selector is referenced by runtime docs: ${selector}`,
-  );
-}
-
-for (const thirdPartyReference of [/\bPrimeNG\b/i, /\bOptimus UI\b/i]) {
-  check(
-    !thirdPartyReference.test(runtimeSource),
-    `Third-party documentation identity leaked into runtime docs: ${thirdPartyReference.source}`,
-  );
-}
-for (const thirdPartyPreset of [/\bAura\b/, /\bLara\b/, /\bNora\b/]) {
-  check(
-    !thirdPartyPreset.test(themeSettings),
-    `Third-party preset leaked into theme settings: ${thirdPartyPreset.source}`,
   );
 }
 

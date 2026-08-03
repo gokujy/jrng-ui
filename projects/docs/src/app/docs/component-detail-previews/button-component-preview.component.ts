@@ -135,10 +135,14 @@ import {
         <p role="status">{{ previewStatus }}</p>
       }
       @case ('speed-dial') {
-        <div style="min-block-size: 12rem; display: grid; place-items: center">
+        <div
+          class="j-speed-dial-preview"
+          [class.j-speed-dial-preview--linear]="example.key === 'linear'"
+        >
           <j-speed-dial
             [actions]="customerQuickActions"
             [type]="example.key === 'circle' ? 'circle' : 'linear'"
+            [radius]="example.key === 'circle' ? 58 : 48"
             [mask]="example.key === 'fixed'"
             [showLabels]="example.key === 'linear'"
           >
@@ -151,7 +155,7 @@ import {
         </div>
       }
       @case ('speech-to-text-button') {
-        <div class="j-preview-row">
+        <div class="j-preview-row j-speech-to-text-preview">
           <j-input
             jSpeechToText
             #speech="jSpeechToText"
@@ -163,6 +167,42 @@ import {
       }
     }
   `,
+  styles: [
+    `
+      .j-speed-dial-preview {
+        display: grid;
+        inline-size: 100%;
+        min-block-size: 12rem;
+        overflow: hidden;
+        place-items: center;
+      }
+
+      .j-speed-dial-preview--linear {
+        align-items: end;
+        min-block-size: 14rem;
+        padding-block-end: var(--j-spacing-4);
+      }
+
+      .j-speech-to-text-preview {
+        align-items: flex-end;
+        flex-wrap: nowrap;
+        gap: var(--j-spacing-2);
+        inline-size: min(100%, 32rem);
+      }
+
+      .j-speech-to-text-preview j-input {
+        flex: 1 1 auto;
+        min-inline-size: 0;
+      }
+
+      @media (max-width: 32rem) {
+        .j-speech-to-text-preview {
+          align-items: stretch;
+          flex-direction: column;
+        }
+      }
+    `,
+  ],
   host: { style: 'display: contents' },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

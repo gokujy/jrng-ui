@@ -59,4 +59,35 @@ describe('JColumnFilterComponent', () => {
 
     expect(changes.at(-1)?.value).toBe(account);
   });
+
+  it('renders the row match-mode action as a JRNG filter icon joined to the control', () => {
+    const rowFixture = TestBed.createComponent(JColumnFilterComponent);
+    rowFixture.componentRef.setInput('field', 'customer');
+    rowFixture.componentRef.setInput('label', 'Customer Name');
+    rowFixture.componentRef.setInput('display', 'row');
+    rowFixture.detectChanges();
+
+    const root = rowFixture.nativeElement.querySelector('.j-column-filter--row');
+    const matchButton = root.querySelector('.j-column-filter__match-button');
+    expect(root.querySelector('.j-column-filter__control')).toBeTruthy();
+    expect(matchButton.querySelector('j-icon')).toBeTruthy();
+    expect(matchButton.getAttribute('aria-label')).toContain('Customer Name');
+  });
+
+  it('groups toolbar values and match modes into one bordered field', () => {
+    const toolbarFixture = TestBed.createComponent(JColumnFilterComponent);
+    toolbarFixture.componentRef.setInput('field', 'customer');
+    toolbarFixture.componentRef.setInput('label', 'Customer Name');
+    toolbarFixture.componentRef.setInput('display', 'toolbar');
+    toolbarFixture.detectChanges();
+
+    const fields = toolbarFixture.nativeElement.querySelector('.j-column-filter__fields');
+    const children = Array.from(fields.children) as HTMLElement[];
+
+    expect(children.map((child) => child.className)).toEqual([
+      'j-column-filter__control',
+      'j-column-filter__operator',
+    ]);
+    expect(fields.closest('.j-column-filter--toolbar')).toBeTruthy();
+  });
 });

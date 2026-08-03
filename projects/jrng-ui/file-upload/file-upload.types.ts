@@ -41,6 +41,9 @@ export interface JFileRemoteItem<TRemote = unknown> {
   readonly size?: number;
   readonly type?: string;
   readonly url?: string;
+  /** Optional action-specific URLs. They take precedence over `url`. */
+  readonly previewUrl?: string;
+  readonly downloadUrl?: string;
   readonly metadata?: Readonly<Record<string, unknown>>;
   readonly source?: TRemote;
 }

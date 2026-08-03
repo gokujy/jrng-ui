@@ -195,7 +195,7 @@ export interface JMultiselectItemContext {
             <div class="j-multiselect__utilities" data-jc-section="utilities">
               <j-checkbox
                 class="j-multiselect__toggle-all"
-                [label]="selectAllLabel()"
+                [label]="allVisibleSelected ? unselectAllLabel() : selectAllLabel()"
                 [disabled]="!selectableVisibleOptions.length"
                 [indeterminate]="someVisibleSelected"
                 [ngModel]="allVisibleSelected"
@@ -491,7 +491,7 @@ export class JMultiselectComponent implements ControlValueAccessor {
   readonly emptyMessage = input('No options found');
   readonly loadingMessage = input('Loading...');
   readonly selectAllLabel = input('Toggle all');
-  readonly unselectAllLabel = input('Unselect all');
+  readonly unselectAllLabel = input('Toggle all');
   readonly styleClass = input('');
   readonly size = input<JComponentSize>('md');
   readonly variant = input<JInputVariant>('outlined');

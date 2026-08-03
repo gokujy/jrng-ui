@@ -113,8 +113,15 @@ export class JAccordionContentComponent {}
   `,
   styles: [
     `
+      :host {
+        display: block;
+        min-width: 0;
+        width: 100%;
+      }
+
       .j-accordion-panel {
         border-bottom: 1px solid var(--j-color-border);
+        width: 100%;
       }
 
       .j-accordion-panel:last-child {
@@ -224,6 +231,12 @@ export class JAccordionPanelComponent {
   </div>`,
   styles: [
     `
+      :host {
+        display: block;
+        min-width: 0;
+        width: 100%;
+      }
+
       .j-accordion {
         background: var(--j-color-surface);
         border: 1px solid var(--j-color-border);
@@ -231,6 +244,7 @@ export class JAccordionPanelComponent {
         box-shadow: var(--j-shadow-sm);
         color: var(--j-color-text);
         overflow: hidden;
+        width: 100%;
       }
 
       .j-accordion--separated {

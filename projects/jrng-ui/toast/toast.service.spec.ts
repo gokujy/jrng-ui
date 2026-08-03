@@ -17,6 +17,7 @@ describe('JToastService', () => {
     expect(service.toasts().length).toBe(1);
     expect(service.toasts()[0]).toEqual(toast);
     expect(service.toasts()[0]?.type).toBe('success');
+    expect(service.toasts()[0]?.variant).toBe('soft');
   });
 
   it('removes a toast by id', () => {
@@ -46,15 +47,24 @@ describe('JToastService', () => {
     expect(service.toasts().map((toast) => toast.type)).toEqual(['success', 'warning']);
   });
 
-  it('normalizes malformed runtime severity, position, and duration values', () => {
+  it('supports visual variants and normalizes malformed runtime values', () => {
+    const outlined = service.show({
+      severity: 'neutral',
+      variant: 'outlined',
+      detail: 'A neutral outlined notification.',
+      life: 0,
+    });
     const toast = service.show({
       severity: 'unknown',
       position: 'center',
+      variant: 'raised',
       life: Number.POSITIVE_INFINITY,
     } as never);
 
+    expect(outlined.variant).toBe('outlined');
     expect(toast.severity).toBe('info');
     expect(toast.position).toBe('top-right');
+    expect(toast.variant).toBe('soft');
     expect(toast.life).toBe(5000);
   });
 

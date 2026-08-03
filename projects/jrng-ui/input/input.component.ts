@@ -16,13 +16,14 @@ import { jAriaDescribedBy } from 'jrng-ui/core';
 import { jCreateId } from 'jrng-ui/core';
 import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
 import { JComponentSize, JComponentWidth } from 'jrng-ui/core';
+import { JIconComponent } from 'jrng-ui/icon';
 
 export type JInputType = 'text' | 'password' | 'search' | 'email' | 'number' | 'tel' | 'url';
 export type JInputVariant = 'outlined' | 'filled';
 
 @Component({
   selector: 'j-input',
-  imports: [],
+  imports: [JIconComponent],
   templateUrl: './input.component.html',
   styleUrl: './input.component.scss',
   providers: [

@@ -14,7 +14,7 @@
       description() ||
       showGlobalFilter ||
       showColumnManager ||
-      showExport ||
+      (showExport && exportOptions().length > 0) ||
       showTableState ||
       stateKey ||
       maximizable ||
@@ -40,154 +40,223 @@
           />
         </div>
       }
-      @if (showGlobalFilter || resolvedFilterDisplay === 'toolbar') {
-        <label class="j-table__search">
-          <span class="j-hidden-accessible">Search table</span>
-          <input
-            type="search"
-            [value]="globalFilter"
-            [placeholder]="searchPlaceholder()"
-            (input)="handleGlobalFilter($event)"
-          />
-        </label>
-        <j-button
-          label="Apply filters"
-          icon="filter"
-          actionDisplay="icon"
-          ariaLabel="Apply filters"
-          title="Apply filters"
-          size="sm"
-          [badge]="activeFilterItems.length || null"
-          (onClick)="applyFilters()"
-        />
-        <j-button
-          label="Clear all filters"
-          icon="close"
-          actionDisplay="icon"
-          ariaLabel="Clear all filters"
-          title="Clear all filters"
-          size="sm"
-          variant="text"
-          [disabled]="activeFilterItems.length === 0 && !globalFilter"
-          (onClick)="resetFilters()"
-        />
-      }
-      @if (resolvedFilterDisplay === 'toolbar' && hasFilterableColumns) {
-        <details class="j-table__advanced-filters" data-jc-section="advanced-filters">
-          <summary>Advanced filters</summary>
-          <div class="j-table__advanced-filter-panel">
-            @for (column of resolvedColumns; track column.field) {
-              @if (isColumnFilterable(column)) {
-                @if (filterTemplateFor(column); as filterTemplate) {
-                  <ng-container
-                    [ngTemplateOutlet]="filterTemplate"
-                    [ngTemplateOutletContext]="filterContext(column)"
-                  />
-                } @else {
-                  <j-column-filter
-                    [field]="column.field"
-                    [label]="column.header"
-                    [value]="filterValue(column.field)"
-                    [type]="filterTypeFor(column)"
-                    [operator]="column.filter?.operator || 'contains'"
-                    [operators]="column.filter?.operators || []"
-                    [options]="column.filter?.options || []"
-                    display="toolbar"
-                    (filterChange)="handleColumnFilterChange($event)"
-                  />
-                }
-              }
-            }
-          </div>
-        </details>
-      }
-      @if (showColumnManager || hasToolbarAction('columns') || columnManagerOpen) {
-        <details
-          class="j-table__columns"
-          [class.j-table__columns--external]="!showColumnManager && !hasToolbarAction('columns')"
-          data-jc-section="column-manager"
-          [open]="columnManagerOpen"
-          (toggle)="columnManagerOpen = $any($event.target).open"
-        >
-          <summary
-            aria-label="Column visibility"
-            jTooltip="Column visibility"
-            data-jc-section="column-manager-trigger"
-          >
-            <j-icon name="settings" size="1rem" aria-hidden="true" />
-            <span class="j-hidden-accessible">Column visibility</span>
-          </summary>
-          <div class="j-table__columns-panel">
-            @for (column of columnManagerColumns; track column.field) {
-              <div class="j-table__column-config">
-                <label>
-                  <input
-                    type="checkbox"
-                    [checked]="isColumnVisible(column)"
-                    (change)="toggleColumnVisibility(column, $event)"
-                  />
-                  <span>{{ column.header }}</span>
-                </label>
-                <small>{{ column.field }}</small>
-              </div>
-            }
-            <j-button label="Reset columns" size="sm" variant="text" (onClick)="resetColumns()" />
-          </div>
-        </details>
-      }
-      @if (showExport) {
-        <j-button
-          label="Export CSV"
-          icon="download"
-          actionDisplay="icon"
-          ariaLabel="Export CSV"
-          title="Export CSV"
-          size="sm"
-          variant="outlined"
-          [disabled]="loading()"
-          (onClick)="exportCSV()"
-        />
-      }
-      @if (maximizable) {
-        <j-button
-          [label]="maximized ? 'Minimize' : 'Maximize'"
-          [icon]="maximized ? 'minimize' : 'maximize'"
-          actionDisplay="icon"
-          [ariaLabel]="maximized ? 'Exit fullscreen' : 'Enter fullscreen'"
-          [title]="maximized ? 'Exit fullscreen' : 'Enter fullscreen'"
-          size="sm"
-          variant="outlined"
-          [ariaPressed]="maximized"
-          (onClick)="setMaximized(!maximized)"
-        />
-      }
-      @if (showTableState || stateKey) {
-        <j-button label="Save state" size="sm" variant="text" (onClick)="saveState()" />
-        <j-button label="Restore" size="sm" variant="text" (onClick)="restoreState()" />
-        <j-button label="Reset state" size="sm" variant="text" (onClick)="resetTableState()" />
-      }
-      @for (utility of toolbarActions(); track utility.key) {
-        <j-button
-          [label]="utility.label || utility.key"
-          [icon]="toolbarIcon(utility)"
-          actionDisplay="icon"
-          [ariaLabel]="utility.label || utility.key"
-          [title]="utility.label || utility.key"
-          [severity]="utility.severity || (utility.key === 'export' ? 'success' : 'neutral')"
-          [variant]="variant() === 'enterprise' ? 'solid' : 'text'"
-          size="sm"
-          [disabled]="utility.disabled || false"
-          [loading]="utility.loading || false"
-          [badge]="
-            utility.key === 'filters' && activeFilterItems.length ? activeFilterItems.length : null
-          "
-          (onClick)="handleToolbarAction(utility)"
-        />
-      }
       <div class="j-table__toolbar-actions">
+        @if (showGlobalFilter && resolvedFilterDisplay !== 'toolbar') {
+          <label class="j-table__search">
+            <span class="j-hidden-accessible">Search table</span>
+            <input
+              type="search"
+              [value]="globalFilter"
+              [placeholder]="searchPlaceholder()"
+              (input)="handleGlobalFilter($event)"
+            />
+          </label>
+          <j-button
+            label="Apply filters"
+            icon="filter"
+            actionDisplay="icon"
+            ariaLabel="Apply filters"
+            title="Apply filters"
+            size="sm"
+            [badge]="activeFilterItems.length || null"
+            (onClick)="applyFilters()"
+          />
+          <j-button
+            label="Clear all filters"
+            icon="close"
+            actionDisplay="icon"
+            ariaLabel="Clear all filters"
+            title="Clear all filters"
+            size="sm"
+            variant="text"
+            [disabled]="activeFilterItems.length === 0 && !globalFilter"
+            (onClick)="resetFilters()"
+          />
+        }
+        @if (showColumnManager || hasToolbarAction('columns') || columnManagerOpen) {
+          <details
+            class="j-table__columns"
+            [class.j-table__columns--external]="!showColumnManager && !hasToolbarAction('columns')"
+            data-jc-section="column-manager"
+            [open]="columnManagerOpen"
+            (toggle)="columnManagerOpen = $any($event.target).open"
+          >
+            <summary
+              aria-label="Column visibility"
+              jTooltip="Column visibility"
+              data-jc-section="column-manager-trigger"
+            >
+              <j-icon name="settings" size="1rem" aria-hidden="true" />
+              <span class="j-hidden-accessible">Column visibility</span>
+            </summary>
+            <div class="j-table__columns-panel">
+              @for (column of columnManagerColumns; track column.field) {
+                <div class="j-table__column-config">
+                  <label>
+                    <input
+                      type="checkbox"
+                      [checked]="isColumnVisible(column)"
+                      (change)="toggleColumnVisibility(column, $event)"
+                    />
+                    <span>{{ column.header }}</span>
+                  </label>
+                  <small>{{ column.field }}</small>
+                </div>
+              }
+              <j-button label="Reset columns" size="sm" variant="text" (onClick)="resetColumns()" />
+            </div>
+          </details>
+        }
+        @if (showExport && exportOptions().length === 1) {
+          @for (exportOption of exportOptions(); track exportOption.format) {
+            <j-button
+              [label]="exportOptionLabel(exportOption)"
+              [icon]="exportOptionIcon(exportOption)"
+              actionDisplay="icon"
+              [ariaLabel]="exportOptionLabel(exportOption)"
+              [title]="exportOptionLabel(exportOption)"
+              size="sm"
+              variant="outlined"
+              [disabled]="isExportOptionDisabled(exportOption)"
+              (onClick)="handleExportOption(exportOption)"
+            />
+          }
+        } @else if (showExport && exportOptions().length > 1) {
+          <details #exportMenu class="j-table__export" data-jc-section="export-menu">
+            <summary aria-label="Export options" jTooltip="Export options">
+              <j-icon name="download" size="1rem" aria-hidden="true" />
+              <span class="j-hidden-accessible">Export options</span>
+            </summary>
+            <div class="j-table__export-panel" role="menu" aria-label="Export options">
+              @for (exportOption of exportOptions(); track exportOption.format) {
+                <j-button
+                  [label]="exportOptionLabel(exportOption)"
+                  [icon]="exportOptionIcon(exportOption)"
+                  size="sm"
+                  variant="text"
+                  [disabled]="isExportOptionDisabled(exportOption)"
+                  ariaRole="menuitem"
+                  (onClick)="handleExportOption(exportOption, exportMenu)"
+                />
+              }
+            </div>
+          </details>
+        }
+        @if (maximizable) {
+          <j-button
+            [label]="maximized ? 'Minimize' : 'Maximize'"
+            [icon]="maximized ? 'minimize' : 'maximize'"
+            actionDisplay="icon"
+            [ariaLabel]="maximized ? 'Exit fullscreen' : 'Enter fullscreen'"
+            [title]="maximized ? 'Exit fullscreen' : 'Enter fullscreen'"
+            size="sm"
+            variant="outlined"
+            [ariaPressed]="maximized"
+            (onClick)="setMaximized(!maximized)"
+          />
+        }
+        @if (showTableState || stateKey) {
+          <j-button label="Save state" size="sm" variant="text" (onClick)="saveState()" />
+          <j-button label="Restore" size="sm" variant="text" (onClick)="restoreState()" />
+          <j-button label="Reset state" size="sm" variant="text" (onClick)="resetTableState()" />
+        }
+        @for (utility of toolbarActions(); track utility.key) {
+          <j-button
+            [label]="utility.label || utility.key"
+            [icon]="toolbarIcon(utility)"
+            actionDisplay="icon"
+            [ariaLabel]="utility.label || utility.key"
+            [title]="utility.label || utility.key"
+            [severity]="utility.severity || (utility.key === 'export' ? 'success' : 'neutral')"
+            [variant]="variant() === 'enterprise' ? 'solid' : 'text'"
+            size="sm"
+            [disabled]="utility.disabled || false"
+            [loading]="utility.loading || false"
+            [badge]="
+              utility.key === 'filters' && activeFilterItems.length
+                ? activeFilterItems.length
+                : null
+            "
+            (onClick)="handleToolbarAction(utility)"
+          />
+        }
         <ng-content select="[jTableToolbarActions]" />
       </div>
     </div>
+  }
+
+  @if (resolvedFilterDisplay === 'toolbar' && hasFilterableColumns && filterToolbarVisible()) {
+    <section
+      class="j-table__filter-toolbar j-table__advanced-filters"
+      aria-label="Table filters"
+      data-jc-section="filter-toolbar"
+    >
+      <div class="j-table__filter-toolbar-header">
+        <strong>Filters</strong>
+        @if (filterToolbarCollapsible()) {
+          <j-button
+            [label]="toolbarFiltersExpanded ? 'Collapse filters' : 'Expand filters'"
+            [icon]="toolbarFiltersExpanded ? 'chevron-up' : 'chevron-down'"
+            variant="outlined"
+            size="sm"
+            [ariaExpanded]="toolbarFiltersExpanded"
+            [ariaControls]="filterToolbarId"
+            (onClick)="toggleFilterToolbar()"
+          />
+        }
+      </div>
+      @if (toolbarFiltersExpanded || !filterToolbarCollapsible()) {
+        <div [id]="filterToolbarId" class="j-table__filter-toolbar-grid">
+          @if (showGlobalFilter) {
+            <label class="j-table__filter-toolbar-search">
+              <span>Search table</span>
+              <input
+                type="search"
+                [value]="globalFilter"
+                [placeholder]="searchPlaceholder()"
+                (input)="handleGlobalFilter($event)"
+              />
+            </label>
+          }
+          @for (column of resolvedColumns; track column.field) {
+            @if (isColumnFilterable(column)) {
+              @if (filterTemplateFor(column); as filterTemplate) {
+                <ng-container
+                  [ngTemplateOutlet]="filterTemplate"
+                  [ngTemplateOutletContext]="filterContext(column)"
+                />
+              } @else {
+                <j-column-filter
+                  [field]="filterFieldFor(column)"
+                  [label]="column.header"
+                  [value]="filterDraftValue(column)"
+                  [type]="filterTypeFor(column)"
+                  [operator]="filterDraftOperator(column)"
+                  [operators]="column.filter?.operators || []"
+                  [options]="column.filter?.options || []"
+                  [placeholder]="column.filter?.placeholder || ''"
+                  [disabled]="column.filter?.disabled || false"
+                  [readonly]="column.filter?.readonly || false"
+                  [invalid]="column.filter?.invalid || false"
+                  [error]="column.filter?.error || ''"
+                  display="toolbar"
+                  (filterChange)="handleFilterMenuDraft($event)"
+                />
+              }
+            }
+          }
+          <div class="j-table__filter-toolbar-actions">
+            <j-button
+              label="Clear Filters"
+              variant="outlined"
+              size="sm"
+              (onClick)="resetFilters()"
+            />
+            <j-button label="Apply Filters" size="sm" (onClick)="applyFilters()" />
+          </div>
+        </div>
+      }
+    </section>
   }
 
   <span class="j-hidden-accessible" aria-live="polite" aria-atomic="true">
@@ -369,11 +438,36 @@
                   class="j-table__filter-menu"
                   tabindex="-1"
                   [attr.data-j-active]="isFilterActive(filterFieldFor(column)) ? 'true' : null"
-                  (toggle)="handleFilterMenuToggle(filterMenu)"
-                  (keydown)="handleFilterMenuKeydown($event, filterMenu)"
+                  (toggle)="handleFilterMenuToggle(filterMenu, column)"
+                  (keydown)="handleFilterMenuKeydown($event, filterMenu, column)"
                 >
-                  <summary [attr.aria-label]="'Filter ' + column.header">&#9660;</summary>
-                  <div class="j-table__filter-menu-popup">
+                  <summary
+                    [id]="filterToolbarId + '-trigger-' + column.field"
+                    [attr.aria-label]="
+                      'Filter ' +
+                      column.header +
+                      (isFilterActive(filterFieldFor(column)) ? ', filter applied' : '')
+                    "
+                    [attr.aria-expanded]="filterMenu.open"
+                    [attr.aria-controls]="filterToolbarId + '-menu-' + column.field"
+                    jTooltip="Filter column"
+                  >
+                    <j-icon name="filter" size="1rem" aria-hidden="true" />
+                    <span class="j-hidden-accessible">
+                      {{
+                        isFilterActive(filterFieldFor(column))
+                          ? 'Filter applied'
+                          : 'No filter applied'
+                      }}
+                    </span>
+                  </summary>
+                  <div
+                    [id]="filterToolbarId + '-menu-' + column.field"
+                    class="j-table__filter-menu-popup"
+                    role="dialog"
+                    [attr.aria-label]="'Filter ' + column.header"
+                    [attr.aria-labelledby]="filterToolbarId + '-trigger-' + column.field"
+                  >
                     @if (filterTemplateFor(column); as filterTemplate) {
                       <ng-container
                         [ngTemplateOutlet]="filterTemplate"
@@ -383,16 +477,21 @@
                       <j-column-filter
                         [field]="filterFieldFor(column)"
                         [label]="column.header"
-                        [value]="filterValue(filterFieldFor(column))"
+                        [value]="filterDraftValue(column)"
                         [type]="filterTypeFor(column)"
-                        [operator]="column.filter?.operator || 'contains'"
+                        [operator]="filterDraftOperator(column)"
                         [operators]="column.filter?.operators || []"
                         [options]="column.filter?.options || []"
+                        [placeholder]="column.filter?.placeholder || ''"
+                        [disabled]="column.filter?.disabled || false"
+                        [readonly]="column.filter?.readonly || false"
+                        [invalid]="column.filter?.invalid || false"
+                        [error]="column.filter?.error || ''"
                         display="menu"
                         [showActions]="true"
-                        (filterChange)="handleFilterModelChange($event)"
-                        (clear)="clearFilter(filterFieldFor(column))"
-                        (apply)="applyFilters(); closeFilterMenu(filterMenu)"
+                        (filterChange)="handleFilterMenuDraft($event)"
+                        (clear)="clearFilter(filterFieldFor(column)); closeFilterMenu(filterMenu)"
+                        (apply)="applyFilterMenu(column, $event, filterMenu)"
                       />
                     }
                   </div>
@@ -432,6 +531,7 @@
             @for (column of resolvedColumns; track column.field) {
               <th
                 [class]="'j-table__filter-cell ' + columnClass(column)"
+                [attr.data-j-active]="isFilterActive(filterFieldFor(column)) ? 'true' : null"
                 [style.width]="column.width || null"
                 [style.min-width]="column.minWidth || null"
                 [style.max-width]="column.maxWidth || null"
@@ -464,7 +564,7 @@
                               ? 'boolean'
                               : 'text')
                       "
-                      [operator]="column.filter?.operator || 'contains'"
+                      [operator]="filterDraftOperator(column)"
                       [operators]="column.filter?.operators || []"
                       [options]="column.filter?.options || []"
                       [placeholder]="column.filter?.placeholder || ''"
@@ -473,6 +573,11 @@
                       [min]="column.filter?.min ?? null"
                       [max]="column.filter?.max ?? null"
                       [step]="column.filter?.step ?? null"
+                      [disabled]="column.filter?.disabled || false"
+                      [readonly]="column.filter?.readonly || false"
+                      [invalid]="column.filter?.invalid || false"
+                      [error]="column.filter?.error || ''"
+                      [active]="isFilterActive(filterFieldFor(column))"
                       display="row"
                       (filterChange)="handleColumnFilterChange($event)"
                     />
@@ -812,11 +917,7 @@
                             </span>
                           }
                           @default {
-                            <span
-                              class="j-table__cell-content"
-                              [jTooltip]="formattedCellValue(row, column)"
-                              tooltipPosition="top"
-                            >
+                            <span class="j-table__cell-content">
                               {{ formattedCellValue(row, column) }}
                             </span>
                           }

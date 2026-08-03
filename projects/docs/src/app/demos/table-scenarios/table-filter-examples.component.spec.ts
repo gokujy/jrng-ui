@@ -2,6 +2,7 @@ import {
   ExpandableFilterPanelTableComponent,
   FiltersAboveTableComponent,
   InlineColumnFiltersTableComponent,
+  PopupMenuFiltersTableComponent,
 } from './table-filter-examples.component';
 
 describe('table filtering documentation examples', () => {
@@ -40,6 +41,19 @@ describe('table filtering documentation examples', () => {
     example.panelOpen.set(false);
 
     expect(example.customer()).toBe('avery');
+  });
+
+  it('configures independent menu and toolbar examples with filterable customer columns', () => {
+    const menu = new PopupMenuFiltersTableComponent();
+    const toolbar = new FiltersAboveTableComponent();
+
+    expect(menu.filterColumns.some((column) => column.filterable)).toBe(true);
+    expect(toolbar.filterColumns.find((column) => column.field === 'status')?.filter?.type).toBe(
+      'multi-select',
+    );
+    toolbar.toolbarVisible.set(false);
+    expect(toolbar.toolbarVisible()).toBe(false);
+    expect(menu.rows).not.toBe(toolbar.rows);
   });
 
   it('owns loading and empty-result state in the inline example', () => {

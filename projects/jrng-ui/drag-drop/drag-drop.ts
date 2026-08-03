@@ -216,7 +216,7 @@ export class JDragDirective implements AfterContentInit, OnDestroy {
 
   handlePointerDown(event: PointerEvent): void {
     const target = event.target as Element;
-    const explicitHandle = target.closest('[jDragHandle]');
+    const explicitHandle = target.closest('[jDragHandle], .j-drag-handle');
     if (
       !this.isBrowser ||
       this.disabled() ||
@@ -226,7 +226,7 @@ export class JDragDirective implements AfterContentInit, OnDestroy {
     ) {
       return;
     }
-    const hasHandle = Boolean(this.element.querySelector('[jDragHandle]'));
+    const hasHandle = Boolean(this.element.querySelector('[jDragHandle], .j-drag-handle'));
     if (hasHandle && !explicitHandle) return;
     this.pointerId = event.pointerId;
     this.start = { x: event.clientX, y: event.clientY };

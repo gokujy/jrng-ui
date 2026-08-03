@@ -183,29 +183,12 @@ import {
         />
       }
       @case ('select') {
-        @if (example.key === 'multi-column') {
-          <j-select
-            label="Customer"
-            [options]="customerSelectOptions"
-            [columns]="customerSelectColumns"
-            optionLabel="name"
-            optionValue="id"
-            searchable
-            sortable
-            placeholder="Choose customer"
-          >
-            <ng-template jSelectCell="status" let-value>
-              <j-status-chip [label]="$any(value)" />
-            </ng-template>
-          </j-select>
-        } @else {
-          <j-select
-            label="Customer status"
-            [options]="statuses"
-            placeholder="Choose status"
-            clearable
-          />
-        }
+        <j-select
+          label="Customer status"
+          [options]="statuses"
+          placeholder="Choose status"
+          clearable
+        />
       }
       @case ('tree-select') {
         <j-tree-select
@@ -413,7 +396,16 @@ import {
         <j-chips label="Skills" placeholder="Add a skill" [(ngModel)]="tags" />
       }
       @case ('editor') {
-        @if (example.key === 'html') {
+        @if (example.key === 'media') {
+          <j-editor
+            label="Customer presentation"
+            imageAccept="image/png,image/jpeg,image/webp,image/gif"
+            [imageMaxFileSize]="5242880"
+            minHeight="14rem"
+            showSourceToggle
+            [(ngModel)]="editorMediaValue"
+          />
+        } @else if (example.key === 'html') {
           <j-editor
             label="Release notes"
             showSourceToggle
@@ -422,11 +414,13 @@ import {
           />
         } @else {
           <j-editor
-            label="Description"
-            placeholder="Write a short summary"
-            hint="Use the toolbar to format the document."
+            label="Customer summary"
+            placeholder="Write a customer summary"
+            hint="Use the toolbar to format the document or insert media."
             showWordCount
+            showCharacterCount
             showFullscreen
+            stickyToolbar
             [(ngModel)]="editorValue"
           />
         }

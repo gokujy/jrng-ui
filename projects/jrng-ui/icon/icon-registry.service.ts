@@ -66,9 +66,11 @@ export type JIconName =
   | 'image'
   | 'video'
   | 'archive'
+  | 'mic'
   | 'eye'
   | 'eye-off'
   | 'trash'
+  | 'pencil'
   | 'bold'
   | 'italic'
   | 'underline'
@@ -105,6 +107,7 @@ export const JRNG_DEFAULT_ICONS: JIconMap = {
   'eye-off':
     'm3 3 18 18M10.6 10.6a2 2 0 0 0 2.8 2.8M9.9 5.1A11 11 0 0 1 12 5c6.5 0 10 7 10 7a18 18 0 0 1-2.1 3M6.6 6.6C3.6 8.4 2 12 2 12s3.5 7 10 7c1.5 0 2.8-.4 4-.9',
   trash: 'M4 7h16M9 7V4h6v3m3 0-1 14H7L6 7m4 4v6m4-6v6',
+  pencil: 'M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z',
   bold: 'M6 4h7a4 4 0 0 1 0 8H6V4Zm0 8h8a4 4 0 0 1 0 8H6v-8Z',
   italic: 'M10 4h8M6 20h8M14 4 10 20',
   underline: 'M6 3v7a6 6 0 0 0 12 0V3M4 21h16',
@@ -186,6 +189,7 @@ export const JRNG_DEFAULT_ICONS: JIconMap = {
     'M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5ZM8.5 10a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM21 15l-5-5L5 21',
   video: 'm16 13 5 3V8l-5 3v2ZM3 6h13v12H3V6Z',
   archive: 'M3 5h18v4H3V5ZM5 9h14v12H5V9ZM10 13h4',
+  mic: 'M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3ZM5 10v2a7 7 0 0 0 14 0v-2M12 19v3M8 22h8',
 };
 
 @Injectable({ providedIn: 'root' })

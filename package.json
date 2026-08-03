@@ -108,7 +108,6 @@
     "@angular/forms": "^21.2.0",
     "@angular/platform-browser": "^21.2.0",
     "@angular/router": "^21.2.0",
-    "qrcode-generator": "^2.0.4",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
@@ -118,6 +117,7 @@
     "@angular/compiler-cli": "^21.2.0",
     "@angular/platform-server": "^21.2.17",
     "@angular/ssr": "^21.2.17",
+    "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.62.0",
     "@types/node": "^24.10.0",
     "@vitest/coverage-v8": "^4.1.10",

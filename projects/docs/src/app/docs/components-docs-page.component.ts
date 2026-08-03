@@ -12,29 +12,15 @@ import {
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Meta, Title } from '@angular/platform-browser';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { JIconComponent } from 'jrng-ui/icon';
+import { ActivatedRoute } from '@angular/router';
 import { componentDocs } from './component-docs.data';
 import { ComponentDetailViewComponent } from './component-detail-view.component';
 import { DocsAnalyticsService } from '../core/analytics.service';
 
 @Component({
   selector: 'app-components-docs-page',
-  imports: [RouterLink, JIconComponent, ComponentDetailViewComponent],
+  imports: [ComponentDetailViewComponent],
   template: `
-    <section class="j-page-hero j-page-hero--docs">
-      <span class="j-page-eyebrow">Components</span>
-      <h1>Component Documentation</h1>
-      <p>
-        Browse public JRNG components, rendered previews, code examples, API contracts, and design
-        tokens from one addressable documentation surface.
-      </p>
-      <div class="j-doc-hero-links">
-        <a routerLink="/docs/charts"><j-icon name="chart-no-axes-column" /> Charts</a>
-        <a routerLink="/docs"><j-icon name="book-open" /> Getting started</a>
-      </div>
-    </section>
-
     <section class="j-components-layout j-components-layout--detail">
       <main #content class="j-components-content">
         @if (selectedDoc(); as doc) {

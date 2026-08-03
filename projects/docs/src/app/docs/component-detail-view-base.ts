@@ -20,7 +20,6 @@ import {
 import { JAppShellComponent } from 'jrng-ui/app-shell';
 import { JAnchorComponent, JAnchorLink } from 'jrng-ui/anchor';
 import { JAutocompleteComponent } from 'jrng-ui/autocomplete';
-import { JAvatarGroupComponent } from 'jrng-ui/avatar-group';
 import { JAvatarComponent } from 'jrng-ui/avatar';
 import { JBadgeComponent } from 'jrng-ui/badge';
 import { JBarcodeComponent } from 'jrng-ui/barcode';
@@ -60,6 +59,8 @@ import {
   JFileBrowserActionEvent,
   JFileBrowserComponent,
   JFileBrowserItem,
+  JFileBrowserSortField,
+  JFileBrowserViewMode,
 } from 'jrng-ui/file-browser';
 import { JFilePreviewComponent } from 'jrng-ui/file-preview';
 import { JFileUploadComponent } from 'jrng-ui/file-upload';
@@ -68,7 +69,11 @@ import { JFormFieldComponent } from 'jrng-ui/form-field';
 import { JGalleryComponent } from 'jrng-ui/gallery';
 import { JGanttComponent } from 'jrng-ui/gantt';
 import { JGridColumnComponent, JGridComponent, JGridRowComponent } from 'jrng-ui/grid';
-import { JGridLayoutComponent, JGridLayoutItemTemplateDirective } from 'jrng-ui/grid-layout';
+import {
+  JGridLayoutComponent,
+  JGridLayoutDragHandleDirective,
+  JGridLayoutItemTemplateDirective,
+} from 'jrng-ui/grid-layout';
 import { JHighlightComponent } from 'jrng-ui/highlight';
 import { JHtmlPreviewComponent } from 'jrng-ui/html-preview';
 import {
@@ -106,7 +111,6 @@ import { JOrgChartComponent } from 'jrng-ui/org-chart';
 import { JPaginatorComponent, JPaginatorVariant } from 'jrng-ui/paginator';
 import { JPasswordComponent } from 'jrng-ui/password';
 import { JPanelComponent } from 'jrng-ui/panel';
-import { JPageHeaderComponent, JPageHeaderVariant } from 'jrng-ui/page-header';
 import { JPopoverComponent } from 'jrng-ui/popover';
 import { JPopoutComponent } from 'jrng-ui/popout';
 import {
@@ -116,13 +120,13 @@ import {
   jCreateQueryCondition,
   jCreateQueryGroup,
 } from 'jrng-ui/query-builder';
-import { JProgressBarComponent, JProgressBarVariant } from 'jrng-ui/progress-bar';
+import { JProgressBarComponent } from 'jrng-ui/progress-bar';
 import { JProgressSpinnerComponent } from 'jrng-ui/progress-spinner';
 import { JPullToRefreshComponent } from 'jrng-ui/pull-to-refresh';
 import { JRadioGroupComponent } from 'jrng-ui/radio-group';
 import { JRadioComponent } from 'jrng-ui/radio';
 import { JRatingComponent } from 'jrng-ui/rating';
-import { JSelectCellDirective, JSelectColumn, JSelectComponent } from 'jrng-ui/select';
+import { JSelectComponent } from 'jrng-ui/select';
 import { JSelectButtonComponent } from 'jrng-ui/select-button';
 import { JSignatureComponent, JSignatureValue } from 'jrng-ui/signature';
 import { JSpeechToTextButtonComponent, JSpeechToTextDirective } from 'jrng-ui/speech-to-text';
@@ -138,8 +142,6 @@ import {
   JSpeedDialComponent,
   JSpeedDialTriggerDirective,
 } from 'jrng-ui/speed-dial';
-import { JResponsiveSidebarComponent } from 'jrng-ui/responsive-sidebar';
-import { JStatusChipComponent } from 'jrng-ui/status-chip';
 import { JStepperComponent } from 'jrng-ui/stepper';
 import { JSliderComponent } from 'jrng-ui/slider';
 import { JSwitchComponent } from 'jrng-ui/switch';
@@ -172,10 +174,9 @@ import { JTextExpandComponent } from 'jrng-ui/text-expand';
 import { JTieredMenuComponent } from 'jrng-ui/tiered-menu';
 import { JTimePickerComponent } from 'jrng-ui/time-picker';
 import { JTimelineComponent, JTimelineItem } from 'jrng-ui/timeline';
-import { JTopbarComponent } from 'jrng-ui/topbar';
 import { JTooltipDirective } from 'jrng-ui/tooltip';
 import { JTourGuideComponent, JTourService, JTourStepDirective } from 'jrng-ui/tour';
-import { JToastContainerComponent, JToastService } from 'jrng-ui/toast';
+import { JToastContainerComponent, JToastService, JToastVariant } from 'jrng-ui/toast';
 import { JTransferListComponent } from 'jrng-ui/transfer-list';
 import { JTreeComponent } from 'jrng-ui/tree';
 import {
@@ -187,7 +188,7 @@ import { JTreeTableCellTemplateDirective, JTreeTableComponent } from 'jrng-ui/tr
 import { JTreeNode } from 'jrng-ui/tree';
 import { JVideoPlayerComponent } from 'jrng-ui/video-player';
 import { JVirtualScrollerComponent } from 'jrng-ui/virtual-scroller';
-import { JWatermarkComponent } from 'jrng-ui/watermark';
+import { JWatermarkComponent, JWatermarkDirective } from 'jrng-ui/watermark';
 import { JValidationMessageComponent } from 'jrng-ui/validation-message';
 import {
   JKanbanCardEvent,
@@ -223,7 +224,6 @@ export interface DetailFeatureExample {
   readonly name: string;
   readonly details: string;
   readonly key: string;
-  readonly includeInContents?: boolean;
   readonly responsivePreview?: boolean;
   readonly index: number;
   readonly html: string;
@@ -251,14 +251,64 @@ const FEATURE_VARIANT_KEYS: Readonly<Record<string, readonly string[]>> = {
   input: ['outlined', 'filled'],
   'icon-button': ['filled', 'ghost', 'outline'],
   paginator: ['default', 'simple'],
-  'page-header': ['default', 'stacked', 'centered'],
   'progress-bar': ['default', 'segmented', 'labeled'],
-  select: ['basic', 'multi-column'],
+  select: ['basic'],
   stepper: ['default', 'rail', 'progress'],
   tabs: ['default', 'pills', 'segmented'],
   textarea: ['outlined', 'filled'],
   timeline: ['default', 'activity', 'alternating'],
 };
+
+const TOAST_FEATURE_EXAMPLES = [
+  {
+    key: 'severities',
+    name: 'Message severities',
+    details: 'Match the semantic severity to the outcome being communicated.',
+    html: `<j-toast />
+<j-button label="Success" (onClick)="toast.success('Changes saved.', 'Saved')" />
+<j-button label="Error" (onClick)="toast.error('Try again in a moment.', 'Save failed')" />
+<j-button label="Warning" (onClick)="toast.warning('Two fields need review.', 'Review required')" />
+<j-button label="Info" (onClick)="toast.info('Your export is being prepared.', 'Export started')" />`,
+    ts: `readonly toast = inject(JToastService);`,
+  },
+  {
+    key: 'appearance',
+    name: 'Visual styles',
+    details: 'Use soft, outlined, or solid treatment without changing message semantics.',
+    html: `<j-button label="Soft" (onClick)="showStyle('soft')" />
+<j-button label="Outlined" (onClick)="showStyle('outlined')" />
+<j-button label="Solid" (onClick)="showStyle('solid')" />`,
+    ts: `showStyle(variant: JToastVariant): void {
+  this.toast.show({
+    severity: 'info',
+    variant,
+    summary: \`\${variant} toast\`,
+    detail: 'Appearance is independent from severity.'
+  });
+}`,
+  },
+  {
+    key: 'actions',
+    name: 'Actionable message',
+    details: 'Keep an actionable toast visible until the user chooses an action or dismisses it.',
+    html: `<j-button label="Archive project" severity="danger" (onClick)="archiveProject()" />`,
+    ts: `archiveProject(): void {
+  this.toast.show({
+    severity: 'neutral',
+    variant: 'outlined',
+    summary: 'Project archived',
+    detail: 'The project was moved to the archive.',
+    sticky: true,
+    actions: [{
+      label: 'Undo',
+      style: 'primary',
+      command: () => this.restoreProject()
+    }],
+    cancelAction: { label: 'Dismiss', command: () => undefined }
+  });
+}`,
+  },
+] as const;
 
 const TABLE_FEATURE_EXAMPLES = [
   {
@@ -330,9 +380,13 @@ const TABLE_FEATURE_EXAMPLES = [
   },
   {
     key: 'selection',
-    name: 'Selection',
-    details: 'Use the established row or checkbox selection behavior with any presentation.',
-    html: `<j-table [value]="customers" [columns]="columns" selectionMode="checkbox" />`,
+    name: 'Row selection',
+    details: 'Use a select-all checkbox in the header and one checkbox per selectable row.',
+    html: `<j-table
+  [value]="customers"
+  [columns]="columns"
+  selectionMode="checkbox"
+  [(selection)]="selectedCustomers" />`,
   },
   {
     key: 'pagination',
@@ -382,6 +436,17 @@ const TABLE_FEATURE_EXAMPLES = [
 </j-table>`,
   },
 ] as const;
+
+const IMPORTANT_TABLE_FEATURE_KEYS = new Set([
+  'basic',
+  'sorting',
+  'pagination',
+  'selection',
+  'filtering-inline-column-filters',
+  'filtering-popup-menu-filters',
+  'filtering-filters-above-table',
+  'actions-row-action-buttons',
+]);
 
 const TREE_TABLE_FEATURE_EXAMPLES = [
   {
@@ -710,7 +775,7 @@ const SPEED_DIAL_FEATURE_EXAMPLES = [
     key: 'circle',
     name: 'Circular actions',
     details: 'Distribute actions around a container-relative trigger.',
-    html: `<j-speed-dial [actions]="customerQuickActions" type="circle" [radius]="82" />`,
+    html: `<j-speed-dial [actions]="customerQuickActions" type="circle" [radius]="58" />`,
   },
   {
     key: 'fixed',
@@ -774,16 +839,6 @@ const AVATAR_FEATURE_EXAMPLES = [
     `<span class="avatar-badge"><j-avatar image="/assets/images/avatar-user-01.webp" label="Avery Reed" /><j-badge value="4" severity="danger" /></span>`,
   ],
   [
-    'group',
-    'Avatar group',
-    `<j-avatar-group [items]="avatarPeople" [max]="3" ariaLabel="Project team" />`,
-  ],
-  [
-    'overflow',
-    'Overflow count',
-    `<j-avatar-group [items]="avatarPeople" [max]="2" ariaLabel="Project team, three more members" />`,
-  ],
-  [
     'profile',
     'Profile header',
     `<div class="profile"><j-avatar image="/assets/images/avatar-user-01.webp" label="Avery Reed" size="lg" previewable /><div><strong>Avery Reed</strong><span>Product designer</span></div></div>`,
@@ -792,11 +847,6 @@ const AVATAR_FEATURE_EXAMPLES = [
     'comment',
     'Comment author',
     `<div class="comment"><j-avatar image="/assets/images/avatar-user-02.webp" label="Morgan Kim" /><div><strong>Morgan Kim</strong><span>Updated the release checklist.</span></div></div>`,
-  ],
-  [
-    'team',
-    'Assigned team',
-    `<j-avatar-group [items]="avatarPeople" [max]="4" ariaLabel="Assigned team" />`,
   ],
   [
     'fallback',
@@ -941,13 +991,16 @@ const EDITOR_FEATURE_EXAMPLES = [
   {
     key: 'basic',
     name: 'Rich text editor',
-    details: 'Format content with JRNG icon actions, word count, and fullscreen support.',
+    details:
+      'Format content with fonts, colour, lists, alignment, links, tables, media, word count, and fullscreen support.',
     html: `<j-editor
-  label="Description"
-  placeholder="Write a short summary"
-  hint="Use the toolbar to format the document."
+  label="Customer summary"
+  placeholder="Write a customer summary"
+  hint="Use the toolbar to format the document or insert media."
   showWordCount
+  showCharacterCount
   showFullscreen
+  stickyToolbar
   [(ngModel)]="editorValue"
 />`,
   },
@@ -960,6 +1013,20 @@ const EDITOR_FEATURE_EXAMPLES = [
   showSourceToggle
   showWordCount
   [(ngModel)]="editorHtmlValue"
+/>`,
+  },
+  {
+    key: 'media',
+    name: 'Image upload and editing',
+    details:
+      'Upload or drop raster images, then select an image to resize, align, describe, or remove it.',
+    html: `<j-editor
+  label="Customer presentation"
+  imageAccept="image/png,image/jpeg,image/webp,image/gif"
+  [imageMaxFileSize]="5242880"
+  minHeight="14rem"
+  showSourceToggle
+  [(ngModel)]="editorMediaValue"
 />`,
   },
 ] as const;
@@ -1656,16 +1723,565 @@ const CHART_FEATURE_EXAMPLES = [
     html: `<j-chart type="line" [data]="activeCustomers" ariaLabel="Daily active customers" />`,
   },
   {
+    key: 'pie',
+    name: 'Pie chart with outside labels',
+    details: 'Add optional formatted labels and connector lines to a part-to-whole chart.',
+    html: `<j-chart type="pie" [data]="customerSegments" [outsideLabels]="outsideLabelOptions" ariaLabel="Customer segments" />`,
+  },
+  {
     key: 'doughnut',
     name: 'Doughnut chart',
     details: 'Communicate a small part-to-whole comparison with clearly named segments.',
     html: `<j-chart type="doughnut" [data]="customerSegments" ariaLabel="Customer segments" />`,
   },
   {
+    key: 'radar',
+    name: 'Radar chart',
+    details: 'Compare profiles across a shared set of dimensions.',
+    html: `<j-chart type="radar" [data]="capabilityScores" ariaLabel="Capability comparison" />`,
+  },
+  {
+    key: 'polar-area',
+    name: 'Polar area chart',
+    details: 'Compare category magnitude with equal-angle radial segments.',
+    html: `<j-chart type="polarArea" [data]="channelOrders" ariaLabel="Orders by channel" />`,
+  },
+  {
+    key: 'scatter',
+    name: 'Scatter chart',
+    details: 'Plot two numeric dimensions to show correlation and outliers.',
+    html: `<j-chart type="scatter" [data]="campaignPoints" ariaLabel="Campaign cost and conversion" />`,
+  },
+  {
+    key: 'bubble',
+    name: 'Bubble chart',
+    details: 'Use radius to add a third numeric dimension to x/y points.',
+    html: `<j-chart type="bubble" [data]="campaignBubbles" ariaLabel="Campaign cost conversion and volume" />`,
+  },
+  {
     key: 'mixed',
     name: 'Mixed chart',
     details: 'Combine related volume and target series when they share the same horizontal scale.',
     html: `<j-chart type="mixed" [data]="revenueAndTarget" ariaLabel="Revenue and target" />`,
+  },
+] as const;
+
+const BADGE_FEATURE_EXAMPLES = [
+  {
+    key: 'basic',
+    name: 'Basic',
+    details: 'Use a badge as a compact count or status indicator.',
+    html: `<j-badge value="8" ariaLabel="8 unread messages" />`,
+  },
+  {
+    key: 'severity',
+    name: 'Severity',
+    details: 'Communicate semantic states with the available severity colors.',
+    html: `<j-badge value="Approved" severity="success" />
+<j-badge value="Pending" severity="info" />
+<j-badge value="Warning" severity="warning" />
+<j-badge value="Rejected" severity="danger" />`,
+  },
+  {
+    key: 'size',
+    name: 'Sizes',
+    details: 'Choose from extra-small through extra-large sizing.',
+    html: `<j-badge value="XS" size="xs" />
+<j-badge value="Small" size="sm" />
+<j-badge value="Default" />
+<j-badge value="Large" size="lg" />
+<j-badge value="XLarge" size="xl" />`,
+  },
+  {
+    key: 'overlay',
+    name: 'Overlay',
+    details: 'Position a count or dot on any relatively positioned element.',
+    html: `<span class="badge-anchor">
+  <j-button icon="message-square" actionDisplay="icon" ariaLabel="Notifications" />
+  <j-badge value="4" severity="danger" overlay ariaLabel="4 notifications" />
+</span>`,
+  },
+  {
+    key: 'variants',
+    name: 'Variants and icons',
+    details: 'Combine solid, soft, and outlined treatments with optional icons.',
+    html: `<j-badge value="Verified" icon="check" severity="success" />
+<j-badge value="Draft" variant="soft" severity="secondary" />
+<j-badge value="Review" variant="outlined" severity="warning" />`,
+  },
+  {
+    key: 'button',
+    name: 'Button badges',
+    details: 'Compose badges into actions for concise notification and message counts.',
+    html: `<j-button label="Emails" [badge]="8" badgeAriaLabel="8 unread emails" />
+<j-button label="Messages" icon="message-square" [badge]="2" badgeAriaLabel="2 unread messages" variant="outlined" />`,
+  },
+] as const;
+
+const CHIP_FEATURE_EXAMPLES = [
+  {
+    key: 'basic',
+    name: 'Basic',
+    details: 'Represent compact entities and selections with a concise label.',
+    html: `<j-chip label="Enterprise customer" />`,
+  },
+  {
+    key: 'icon',
+    name: 'Icons',
+    details: 'Place a contextual icon before the chip label.',
+    html: `<j-chip label="Technology" icon="settings" />
+<j-chip label="Verified" icon="check" severity="success" />`,
+  },
+  {
+    key: 'image',
+    name: 'Images',
+    details: 'Use an image to represent a person or other visual entity.',
+    html: `<j-chip label="Avery Reed" image="/assets/images/avatar-user-01.webp" imageAlt="" />`,
+  },
+  {
+    key: 'removable',
+    name: 'Removable',
+    details: 'Enable an accessible remove action with a customizable icon and label.',
+    html: `<j-chip label="Angular" removable removeAriaLabel="Remove Angular" (remove)="removeFilter('Angular')" />`,
+  },
+  {
+    key: 'custom',
+    name: 'Custom content',
+    details: 'Project custom content when a label and leading visual are not enough.',
+    html: `<j-chip ariaLabel="Priority: urgent" severity="danger">🔥 <strong>Urgent</strong></j-chip>`,
+  },
+] as const;
+
+const METER_GROUP_FEATURE_EXAMPLES = [
+  {
+    key: 'basic',
+    name: 'Full-width meter group',
+    details: 'Meter tracks occupy the full width available from their container.',
+    html: `<j-meter-group [value]="storageSegments" />`,
+  },
+] as const;
+
+const PROGRESS_BAR_FEATURE_EXAMPLES = [
+  {
+    key: 'basic',
+    name: 'Determinate',
+    details: 'Show measurable completion with a visible full-width track.',
+    html: `<j-progress-bar [value]="64" label="64% complete" />`,
+  },
+  {
+    key: 'labeled',
+    name: 'Labeled',
+    details: 'Display the percentage inside a taller progress track.',
+    html: `<j-progress-bar [value]="72" variant="labeled" label="72% uploaded" />`,
+  },
+  {
+    key: 'segmented',
+    name: 'Segmented',
+    details: 'Use segmented styling for milestones or staged workflows.',
+    html: `<j-progress-bar [value]="80" variant="segmented" severity="success" label="4 of 5 steps" />`,
+  },
+  {
+    key: 'indeterminate',
+    name: 'Indeterminate',
+    details: 'Indicate ongoing work when a completion value is unavailable.',
+    html: `<j-progress-bar indeterminate label="Preparing export" />`,
+  },
+] as const;
+
+const PROGRESS_SPINNER_FEATURE_EXAMPLES = [
+  {
+    key: 'basic',
+    name: 'Basic',
+    details: 'Use a status spinner for an operation with an unknown duration.',
+    html: `<j-progress-spinner label="Loading customers" />`,
+  },
+  {
+    key: 'sizes',
+    name: 'Sizes',
+    details: 'Scale the spinner to match inline, panel, and page loading contexts.',
+    html: `<j-progress-spinner [size]="20" label="Loading" />
+<j-progress-spinner [size]="40" label="Loading" />
+<j-progress-spinner [size]="64" label="Loading" />`,
+  },
+  {
+    key: 'stroke',
+    name: 'Stroke width',
+    details: 'Adjust the ring weight independently from its overall size.',
+    html: `<j-progress-spinner [size]="56" [strokeWidth]="2" label="Loading report" />
+<j-progress-spinner [size]="56" [strokeWidth]="6" label="Loading report" />`,
+  },
+] as const;
+
+const SKELETON_FEATURE_EXAMPLES = [
+  {
+    key: 'text',
+    name: 'Text',
+    details: 'Reserve space for headings and body copy to reduce layout shift.',
+    html: `<j-skeleton variant="text" width="45%" />
+<j-skeleton variant="text" />
+<j-skeleton variant="text" width="75%" />`,
+  },
+  {
+    key: 'shapes',
+    name: 'Shapes',
+    details: 'Use avatar, button, rounded, and rectangular placeholders.',
+    html: `<j-skeleton variant="avatar" />
+<j-skeleton variant="button" width="7rem" />
+<j-skeleton shape="rounded" width="8rem" height="4rem" />`,
+  },
+  {
+    key: 'card',
+    name: 'Card',
+    details: 'Build a representative card loading state from grouped lines.',
+    html: `<j-skeleton variant="card" />`,
+  },
+  {
+    key: 'table',
+    name: 'Table rows',
+    details: 'Reserve a stable region for a collection of loading rows.',
+    html: `<j-skeleton variant="table" [rows]="4" />`,
+  },
+  {
+    key: 'animation',
+    name: 'Animation',
+    details: 'Choose wave, pulse, or static rendering while respecting reduced motion.',
+    html: `<j-skeleton animation="wave" />
+<j-skeleton animation="pulse" />
+<j-skeleton [animated]="false" />`,
+  },
+] as const;
+
+const SWIPE_ACTIONS_FEATURE_EXAMPLES = [
+  {
+    key: 'basic',
+    name: 'Start and end actions',
+    details: 'Reveal contextual actions from either edge of a complete list-row surface.',
+    html: `<j-swipe-actions ariaLabel="Actions for Aster Labs">
+  <ng-template jSwipeStartActions><j-button label="Activate" icon="check" severity="success" width="full" /></ng-template>
+  <ng-template jSwipeContent>...</ng-template>
+  <ng-template jSwipeEndActions><j-button label="Archive" icon="archive" severity="danger" width="full" /></ng-template>
+</j-swipe-actions>`,
+  },
+  {
+    key: 'keyboard',
+    name: 'Keyboard control',
+    details: 'Focus the row, use Left or Right to reveal actions, and Escape to close them.',
+    html: `<j-swipe-actions ariaLabel="Keyboard actions for Aster Labs">...</j-swipe-actions>`,
+  },
+  {
+    key: 'disabled',
+    name: 'Disabled',
+    details: 'Disable gesture and keyboard activation while retaining readable row content.',
+    html: `<j-swipe-actions disabled ariaLabel="Actions unavailable for Aster Labs">...</j-swipe-actions>`,
+  },
+] as const;
+
+const TAG_FEATURE_EXAMPLES = [
+  {
+    key: 'basic',
+    name: 'Basic',
+    details: 'Display a short categorical label or state.',
+    html: `<j-tag label="Active" severity="success" />`,
+  },
+  {
+    key: 'severity',
+    name: 'Severity',
+    details: 'Use semantic colors while keeping a visible text label.',
+    html: `<j-tag label="Primary" severity="primary" />
+<j-tag label="Success" severity="success" />
+<j-tag label="Info" severity="info" />
+<j-tag label="Warning" severity="warning" />
+<j-tag label="Danger" severity="danger" />
+<j-tag label="Contrast" severity="contrast" />`,
+  },
+  {
+    key: 'size',
+    name: 'Sizes',
+    details: 'Scale tags from extra-small metadata to prominent labels.',
+    html: `<j-tag label="Extra small" size="xs" />
+<j-tag label="Small" size="sm" />
+<j-tag label="Default" />
+<j-tag label="Large" size="lg" />
+<j-tag label="Extra large" size="xl" />`,
+  },
+  {
+    key: 'rounded',
+    name: 'Rounded',
+    details: 'Use pill-shaped tags when they sit beside chips or compact filters.',
+    html: `<j-tag label="Featured" severity="info" rounded />`,
+  },
+  {
+    key: 'removable',
+    name: 'Removable',
+    details: 'Provide a specifically labelled remove action for editable tag collections.',
+    html: `<j-tag label="Design" removable removeLabel="Remove Design" (remove)="removeTag('Design')" />`,
+  },
+] as const;
+
+const WATERMARK_FEATURE_EXAMPLES = [
+  {
+    key: 'component',
+    name: 'Component',
+    details: 'Wrap a bounded content region with a non-interactive watermark layer.',
+    html: `<j-watermark [text]="['CONFIDENTIAL', 'Aster Labs']" [opacity]="0.12">
+  <j-card header="Customer summary">...</j-card>
+</j-watermark>`,
+  },
+  {
+    key: 'directive',
+    name: 'Directive',
+    details: 'Apply a repeating watermark directly to an existing surface without another wrapper.',
+    html: `<div
+  class="invoice-preview"
+  [jWatermark]="['DRAFT', 'INV-2048']"
+  [watermarkOpacity]="0.1">
+  <h3>Invoice preview</h3>
+  ...
+</div>`,
+  },
+] as const;
+
+const DIFF_VIEWER_FEATURE_EXAMPLES = [
+  {
+    key: 'object',
+    name: 'Object comparison',
+    details: 'Show unchanged, changed, added, and removed fields in one understandable comparison.',
+    html: `<j-diff-viewer
+  [before]="originalCustomer"
+  [after]="updatedCustomer"
+  ariaLabel="Customer record changes" />`,
+    ts: `originalCustomer = { name: 'Aster Labs', status: 'Pending', owner: 'Avery', legacyId: 'CUS-18' };
+updatedCustomer = { name: 'Aster Labs', status: 'Approved', owner: 'Morgan', region: 'West' };`,
+  },
+  {
+    key: 'inline',
+    name: 'Inline text',
+    details: 'Compare multiline text in a compact before-to-after layout.',
+    html: `<j-diff-viewer layout="inline" [before]="oldPolicy" [after]="newPolicy" ariaLabel="Policy text changes" />`,
+  },
+  {
+    key: 'collapsed',
+    name: 'Changed fields only',
+    details: 'Collapse unchanged rows when reviewers only need actionable differences.',
+    html: `<j-diff-viewer [before]="originalCustomer" [after]="updatedCustomer" collapseUnchanged />`,
+  },
+  {
+    key: 'accessibility',
+    name: 'Accessibility',
+    details:
+      'Give the comparison a specific accessible name; each row announces its field and state.',
+    html: `<j-diff-viewer
+  [before]="originalCustomer"
+  [after]="updatedCustomer"
+  ariaLabel="Changes to Aster Labs customer record" />`,
+  },
+] as const;
+
+const ERROR_PAGE_FEATURE_EXAMPLES = [
+  {
+    key: 'basic',
+    name: 'Full-width error page',
+    details: 'Fill the available page region with a clear recovery action.',
+    html: `<j-error-page code="500" title="Something went wrong" description="The page could not be loaded.">
+  <j-button label="Try again" />
+</j-error-page>`,
+  },
+  {
+    key: 'animated',
+    name: 'Animated error code',
+    details:
+      'Add a restrained bounce to the error code while respecting reduced-motion preferences.',
+    html: `<j-error-page code="404" animation="bounce" codeColor="var(--j-color-info)" title="Page not found" />`,
+  },
+  {
+    key: 'color',
+    name: 'Custom code color',
+    details: 'Match the error code emphasis to the context or product theme.',
+    html: `<j-error-page code="403" codeColor="#7c3aed" title="Access denied" />`,
+  },
+  {
+    key: 'split',
+    name: 'Split recovery page',
+    details: 'Use a split composition for high-emphasis server errors and recovery guidance.',
+    html: `<j-error-page
+  code="503"
+  layout="split"
+  animation="float"
+  eyebrow="Service unavailable"
+  title="We are reconnecting"
+  description="The service is temporarily unavailable. Try again shortly.">
+  <j-button label="Try again" />
+  <j-button label="System status" variant="outlined" />
+</j-error-page>`,
+  },
+  {
+    key: 'minimal',
+    name: 'Minimal not-found page',
+    details: 'Use the compact treatment inside an application content area.',
+    html: `<j-error-page
+  code="404"
+  layout="minimal"
+  eyebrow="Not found"
+  title="This page does not exist"
+  codeColor="var(--j-color-info)" />`,
+  },
+] as const;
+
+const MAINTENANCE_PAGE_FEATURE_EXAMPLES = [
+  {
+    key: 'default',
+    name: 'Scheduled maintenance',
+    details: 'A full-width branded maintenance view with an estimated recovery time.',
+    html: `<j-maintenance-page
+  title="Scheduled maintenance"
+  description="We are upgrading the workspace to improve reliability."
+  detail="Expected back at 04:30 UTC">
+  <j-button label="View system status" variant="outlined" />
+</j-maintenance-page>`,
+  },
+  {
+    key: 'progress',
+    name: 'Maintenance progress',
+    details: 'Show an indeterminate progress treatment when work is actively underway.',
+    html: `<j-maintenance-page
+  animation="orbit"
+  showProgress
+  progressLabel="Database migration is in progress"
+  detail="No action is required" />`,
+  },
+  {
+    key: 'minimal',
+    name: 'Minimal maintenance notice',
+    details: 'Use the centered compact layout for a single application area.',
+    html: `<j-maintenance-page
+  variant="minimal"
+  icon="↻"
+  badge="Quick update"
+  title="Back in a few minutes"
+  animation="pulse" />`,
+  },
+  {
+    key: 'status',
+    name: 'Service status view',
+    details: 'Use a low-height status panel with a custom operational color.',
+    html: `<j-maintenance-page
+  variant="status"
+  icon="●"
+  accentColor="#0ea5e9"
+  badge="Database maintenance"
+  title="Read-only mode"
+  description="Viewing remains available while updates are paused." />`,
+  },
+] as const;
+
+const CALENDAR_SCHEDULER_FEATURE_EXAMPLES = [
+  {
+    key: 'month',
+    name: 'Month view',
+    details: 'Review scheduled work with localized dates, spanning events, and overflow handling.',
+    html: `<j-calendar-scheduler
+  [events]="events"
+  [activeDate]="activeDate"
+  view="month"
+  [maxEventsPerDay]="2" />`,
+  },
+  {
+    key: 'week',
+    name: 'Working week',
+    details: 'Hide weekends and start the schedule on Monday for business workflows.',
+    html: `<j-calendar-scheduler
+  [events]="events"
+  [activeDate]="activeDate"
+  view="week"
+  [firstDayOfWeek]="1"
+  [showWeekends]="false" />`,
+  },
+  {
+    key: 'day',
+    name: 'Day view',
+    details: 'Focus on one day while retaining event time, title, and accessible details.',
+    html: `<j-calendar-scheduler [events]="events" [activeDate]="activeDate" view="day" />`,
+  },
+  {
+    key: 'agenda',
+    name: 'Agenda view',
+    details: 'Present events as a readable chronological list with locations and categories.',
+    html: `<j-calendar-scheduler [events]="events" [activeDate]="activeDate" view="agenda" />`,
+  },
+  {
+    key: 'locale',
+    name: 'Locale and 24-hour time',
+    details: 'Customize locale, first weekday, weekend visibility, and time convention.',
+    html: `<j-calendar-scheduler
+  [events]="events"
+  [activeDate]="activeDate"
+  locale="en-GB"
+  [firstDayOfWeek]="1"
+  [hour12]="false" />`,
+  },
+] as const;
+
+const SIDEBAR_FEATURE_EXAMPLES = [
+  {
+    key: 'sidebar',
+    name: 'Sidebar',
+    details: 'Use the standard persistent navigation surface with nested menu groups.',
+    html: `<j-sidebar-nav [model]="navigationItems" activeKey="overview" />`,
+  },
+  {
+    key: 'floating',
+    name: 'Floating sidebar',
+    details: 'Add an elevated rounded navigation surface inside spacious application layouts.',
+    html: `<j-sidebar-nav variant="floating" [model]="navigationItems" />`,
+  },
+  {
+    key: 'inset',
+    name: 'Inset sidebar',
+    details: 'Use a contained muted surface when navigation sits inside another layout panel.',
+    html: `<j-sidebar-nav variant="inset" [model]="navigationItems" />`,
+  },
+  {
+    key: 'icon',
+    name: 'Icon collapse and hover',
+    details: 'Collapse to an icon rail and optionally expand while the pointer is over it.',
+    html: `<j-sidebar-nav
+  [model]="navigationItems"
+  collapseMode="icon"
+  [collapsed]="true"
+  openOnHover />`,
+  },
+  {
+    key: 'offcanvas',
+    name: 'Offcanvas overlay',
+    details: 'Present dismissable navigation from either side with an optional backdrop.',
+    html: `<j-sidebar-nav
+  [model]="navigationItems"
+  collapseMode="offcanvas"
+  side="right"
+  overlay
+  backdrop
+  [(collapsed)]="sidebarClosed" />`,
+  },
+] as const;
+
+const SECTION_FOOTER_FEATURE_EXAMPLES = [
+  {
+    key: 'left',
+    name: 'Left aligned',
+    details: 'Align all projected footer content to the start of the section.',
+    html: `<j-section-footer align="left">...</j-section-footer>`,
+  },
+  {
+    key: 'center',
+    name: 'Center aligned',
+    details: 'Center related footer actions or supporting content.',
+    html: `<j-section-footer align="center">...</j-section-footer>`,
+  },
+  {
+    key: 'right',
+    name: 'Right aligned',
+    details: 'Align footer actions to the end of the section.',
+    html: `<j-section-footer align="right">...</j-section-footer>`,
   },
 ] as const;
 
@@ -1703,7 +2319,10 @@ const GRID_FEATURE_EXAMPLES: Readonly<
   draggable
   resizable
   compact>
-  <ng-template jGridLayoutItem let-tile>{{ tile.title }}</ng-template>
+  <ng-template jGridLayoutItem let-tile>
+    <button jGridLayoutDragHandle [attr.aria-label]="'Move ' + tile.title">Move</button>
+    {{ tile.title }}
+  </ng-template>
 </j-grid-layout>`,
     },
     {
@@ -1788,7 +2407,6 @@ export const COMPONENT_PREVIEW_IMPORTS = [
   JAccordionPanelComponent,
   JAnchorComponent,
   JAutocompleteComponent,
-  JAvatarGroupComponent,
   JAvatarComponent,
   JBadgeComponent,
   JBarcodeComponent,
@@ -1840,7 +2458,6 @@ export const COMPONENT_PREVIEW_IMPORTS = [
   JPaginatorComponent,
   JPasswordComponent,
   JPanelComponent,
-  JPageHeaderComponent,
   JPopoverComponent,
   JPopoutComponent,
   JQueryBuilderComponent,
@@ -1851,7 +2468,6 @@ export const COMPONENT_PREVIEW_IMPORTS = [
   JRadioComponent,
   JRatingComponent,
   JSelectComponent,
-  JSelectCellDirective,
   JSelectButtonComponent,
   JSignatureComponent,
   JSpeechToTextButtonComponent,
@@ -1860,8 +2476,6 @@ export const COMPONENT_PREVIEW_IMPORTS = [
   JSectionHeaderComponent,
   JSkeletonComponent,
   JSparklineComponent,
-  JResponsiveSidebarComponent,
-  JStatusChipComponent,
   JSliderComponent,
   JSwitchComponent,
   JSwipeActionsComponent,
@@ -1905,6 +2519,7 @@ export const COMPONENT_PREVIEW_IMPORTS = [
   JGridRowComponent,
   JGridColumnComponent,
   JGridLayoutComponent,
+  JGridLayoutDragHandleDirective,
   JGridLayoutItemTemplateDirective,
   JSpeedDialComponent,
   JSpeedDialTriggerDirective,
@@ -1924,7 +2539,6 @@ export const COMPONENT_PREVIEW_IMPORTS = [
   JStepperComponent,
   JTieredMenuComponent,
   JTimePickerComponent,
-  JTopbarComponent,
   JTransferListComponent,
   JTreeComponent,
   JTreeSelectComponent,
@@ -1935,6 +2549,7 @@ export const COMPONENT_PREVIEW_IMPORTS = [
   JVideoPlayerComponent,
   JVirtualScrollerComponent,
   JWatermarkComponent,
+  JWatermarkDirective,
   JValidationMessageComponent,
   JCurrencyFormatPipe,
   JDateTimeFormatPipe,
@@ -1963,8 +2578,8 @@ export class ComponentDetailViewBase {
     { label: 'Delete customer', icon: 'trash', disabled: true },
   ];
   readonly customerQuickActions: readonly JSpeedDialAction[] = [
-    { id: 'edit', label: 'Edit customer', icon: 'edit' },
-    { id: 'email', label: 'Email customer', icon: 'mail' },
+    { id: 'edit', label: 'Edit customer', icon: 'file-text' },
+    { id: 'email', label: 'Email customer', icon: 'message-square' },
     { id: 'archive', label: 'Archive customer', icon: 'archive' },
   ];
   customerDashboardLayout = [
@@ -2022,17 +2637,6 @@ export class ComponentDetailViewBase {
         },
       ],
     },
-  ];
-  readonly customerSelectOptions = [
-    { id: 'CUS-1001', name: 'Avery Reed', company: 'Aster Labs', status: 'Active' },
-    { id: 'CUS-1002', name: 'Morgan Kim', company: 'Northstar Systems', status: 'Review' },
-    { id: 'CUS-1003', name: 'Jordan Lee', company: 'Willow Health', status: 'Inactive' },
-  ];
-  readonly customerSelectColumns: readonly JSelectColumn[] = [
-    { field: 'id', header: 'Customer ID', width: '8rem', sortable: true },
-    { field: 'name', header: 'Customer Name', width: '11rem', sortable: true },
-    { field: 'company', header: 'Company', width: '12rem' },
-    { field: 'status', header: 'Status', width: '7rem' },
   ];
   readonly cronPreviewFrom = new Date('2026-07-28T00:00:00Z');
   readonly queryBuilderFields: readonly JQueryField[] = [
@@ -2102,15 +2706,16 @@ export class ComponentDetailViewBase {
   }
   readonly featureExamples = computed<readonly DetailFeatureExample[]>(() => {
     const doc = this.doc();
+    if (doc.slug === 'toast') {
+      return this.withApiCoverage(
+        doc,
+        TOAST_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
+      );
+    }
     if (doc.slug === 'table') {
-      return this.withApiCoverage(doc, [
-        ...TABLE_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
-        ...TABLE_SCENARIO_DOCS.map((example, offset) => ({
-          ...example,
-          index: TABLE_FEATURE_EXAMPLES.length + offset,
-          includeInContents: false,
-        })),
-      ]);
+      return [...TABLE_FEATURE_EXAMPLES, ...TABLE_SCENARIO_DOCS]
+        .filter((example) => IMPORTANT_TABLE_FEATURE_KEYS.has(example.key))
+        .map((example, index) => ({ ...example, index }));
     }
     if (doc.slug === 'tree-table') {
       return this.withApiCoverage(
@@ -2143,6 +2748,24 @@ export class ComponentDetailViewBase {
         doc,
         SPEED_DIAL_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
       );
+    }
+    if (doc.slug === 'speech-to-text-button') {
+      return this.withApiCoverage(doc, [
+        {
+          key: 'basic',
+          name: 'Basic',
+          details: 'Connect the dictation button to an editable JRNG input target.',
+          index: 0,
+          html: `<div class="j-preview-row">
+  <j-input
+    jSpeechToText
+    #speech="jSpeechToText"
+    label="Customer note"
+    placeholder="Select dictate, then speak" />
+  <j-speech-to-text-button [target]="speech" showLabel />
+</div>`,
+        },
+      ]);
     }
     if (doc.slug === 'avatar') {
       return this.withApiCoverage(
@@ -2300,6 +2923,75 @@ export class ComponentDetailViewBase {
         CHART_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
       );
     }
+    if (doc.slug === 'sidebar-nav') {
+      return this.withApiCoverage(
+        doc,
+        SIDEBAR_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
+      );
+    }
+    if (doc.slug === 'section-footer') {
+      return this.withApiCoverage(
+        doc,
+        SECTION_FOOTER_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
+      );
+    }
+    if (doc.slug === 'badge') {
+      return this.withApiCoverage(
+        doc,
+        BADGE_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
+      );
+    }
+    if (doc.slug === 'chip') {
+      return this.withApiCoverage(
+        doc,
+        CHIP_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
+      );
+    }
+    if (doc.slug === 'meter-group') {
+      return this.withApiCoverage(
+        doc,
+        METER_GROUP_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
+      );
+    }
+    if (doc.slug === 'progress-bar') {
+      return this.withApiCoverage(
+        doc,
+        PROGRESS_BAR_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
+      );
+    }
+    if (doc.slug === 'progress-spinner') {
+      return this.withApiCoverage(
+        doc,
+        PROGRESS_SPINNER_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
+      );
+    }
+    if (doc.slug === 'skeleton') {
+      return this.withApiCoverage(
+        doc,
+        SKELETON_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index })),
+      );
+    }
+    if (doc.slug === 'swipe-actions') {
+      return SWIPE_ACTIONS_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+    }
+    if (doc.slug === 'tag') {
+      return TAG_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+    }
+    if (doc.slug === 'watermark') {
+      return WATERMARK_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+    }
+    if (doc.slug === 'diff-viewer') {
+      return DIFF_VIEWER_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+    }
+    if (doc.slug === 'error-page') {
+      return ERROR_PAGE_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+    }
+    if (doc.slug === 'maintenance-page') {
+      return MAINTENANCE_PAGE_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+    }
+    if (doc.slug === 'calendar-scheduler') {
+      return CALENDAR_SCHEDULER_FEATURE_EXAMPLES.map((example, index) => ({ ...example, index }));
+    }
     const gridExamples = GRID_FEATURE_EXAMPLES[doc.slug];
     if (gridExamples) {
       return this.withApiCoverage(
@@ -2357,11 +3049,15 @@ export class ComponentDetailViewBase {
     if (!coverage) return existing;
     const keys = new Set(existing.map((example) => example.key));
     const additions = coverage.examples
-      .filter((example) => !keys.has(example.key))
+      .filter(
+        (example) =>
+          example.key !== 'api-appearance' &&
+          example.key !== 'api-configuration' &&
+          !keys.has(example.key),
+      )
       .map((example, offset) => ({
         ...example,
         index: existing.length + offset,
-        includeInContents: false,
       }));
     return [...existing, ...additions];
   }
@@ -2370,13 +3066,11 @@ export class ComponentDetailViewBase {
       return [
         { id: 'component-overview', label: 'Overview', level: 0 },
         { id: 'component-import', label: 'Import', level: 0 },
-        ...this.featureExamples()
-          .filter((example) => example.includeInContents !== false)
-          .map((example) => ({
-            id: `component-preview-${example.key}`,
-            label: example.name,
-            level: 0 as const,
-          })),
+        ...this.featureExamples().map((example) => ({
+          id: `component-preview-${example.key}`,
+          label: example.name,
+          level: 0 as const,
+        })),
       ];
     }
 
@@ -2495,6 +3189,8 @@ export class ComponentDetailViewBase {
     this.editorValue = '<p>Customer prefers quarterly account reviews and email updates.</p>';
     this.editorHtmlValue =
       '<h2>Customer note</h2><p>The renewal review is scheduled for August.</p>';
+    this.editorMediaValue =
+      '<h2>Customer presentation</h2><p>Upload, paste, or drop a customer image, then select it to open the image tools.</p>';
     this.meetingTime = '14:30';
     this.selectedCustomer = 'acme';
     this.tags = [
@@ -2504,7 +3200,10 @@ export class ComponentDetailViewBase {
     this.maskedPhone = '(555) 123-4567';
     this.employeeId = 'JR-2048';
     this.autocompleteSuggestions = [...this.customerSuggestions];
+    this.fileBrowserItems = this.createFileBrowserItems();
     this.fileBrowserSelection = ['report'];
+    this.fileBrowserSortField = 'name';
+    this.fileBrowserViewMode = 'list';
     this.fileBrowserActionMessage.set('');
     this.kanbanPreviewColumns = this.kanbanColumns;
   }
@@ -2545,8 +3244,27 @@ export class ComponentDetailViewBase {
       severity: 'info',
     },
   ] as const;
-  readonly diffBefore = { name: 'Item A', status: 'Pending', amount: 100 };
-  readonly diffAfter = { name: 'Item A', status: 'Approved', amount: 125 };
+  readonly diffBefore = {
+    name: 'Aster Labs',
+    status: 'Pending',
+    owner: 'Avery Reed',
+    plan: 'Enterprise',
+    legacyId: 'CUS-18',
+  };
+  readonly diffAfter = {
+    name: 'Aster Labs',
+    status: 'Approved',
+    owner: 'Morgan Kim',
+    plan: 'Enterprise',
+    region: 'West',
+  };
+  readonly diffTextBefore = `Notifications: weekly
+Exports: CSV
+Retention: 30 days`;
+  readonly diffTextAfter = `Notifications: daily
+Exports: CSV
+Retention: 90 days
+Audit log: enabled`;
   readonly previewHtml =
     '<!doctype html><html><body><main><h1>Preview</h1><p>Sanitized local HTML.</p></main></body></html>';
   readonly tableDensities = ['compact', 'comfortable', 'spacious'] as const;
@@ -2630,15 +3348,6 @@ export class ComponentDetailViewBase {
     'soft',
     'link',
   ];
-  readonly avatarPeople = [
-    { label: 'Avery Reed', image: '/assets/images/avatar-user-01.webp' },
-    { label: 'Morgan Kim', image: '/assets/images/avatar-user-02.webp' },
-    { label: 'Jordan Lee', image: '/assets/images/avatar-user-03.webp' },
-    { label: 'Sam Rivera', image: '/assets/images/avatar-user-04.webp' },
-    { label: 'Sam Rivera' },
-    { label: 'Taylor Brooks' },
-  ] as const;
-
   buttonExampleLabel(key: string): string {
     const labels: Record<string, string> = {
       basic: 'Apply updates',
@@ -2691,14 +3400,8 @@ export class ComponentDetailViewBase {
   }
   readonly inputVariants: readonly JInputVariant[] = ['outlined', 'filled'];
   readonly paginatorVariants: readonly JPaginatorVariant[] = ['standard', 'simple'];
-  readonly progressBarVariants: readonly JProgressBarVariant[] = [
-    'default',
-    'segmented',
-    'labeled',
-  ];
   readonly breadcrumbVariants: readonly JBreadcrumbVariant[] = ['default', 'contained', 'steps'];
   readonly emptyStateVariants: readonly JEmptyStateVariant[] = ['default', 'inline', 'panel'];
-  readonly pageHeaderVariants: readonly JPageHeaderVariant[] = ['standard', 'stacked', 'centered'];
   readonly tabsVariants: readonly JTabsVariant[] = ['default', 'pills', 'segmented'];
   readonly dialogOpen = signal(false);
   readonly drawerOpen = signal(false);
@@ -2776,6 +3479,8 @@ export class ComponentDetailViewBase {
   dateRange: readonly string[] = ['2026-07-12', '2026-07-19'];
   editorValue = '<p>Customer prefers quarterly account reviews and email updates.</p>';
   editorHtmlValue = '<h2>Customer note</h2><p>The renewal review is scheduled for August.</p>';
+  editorMediaValue =
+    '<h2>Customer presentation</h2><p>Upload, paste, or drop a customer image, then select it to open the image tools.</p>';
   meetingTime = '14:30';
   selectedCustomer = 'acme';
   tags = [
@@ -2810,12 +3515,6 @@ export class ComponentDetailViewBase {
     { label: 'Accessibility', value: 'accessibility' },
     { label: 'Testing', value: 'testing' },
   ] as const;
-  readonly avatarGroupItems = [
-    { label: 'Avery Reed' },
-    { label: 'Morgan Kim' },
-    { label: 'Jordan Lee' },
-    { label: 'Taylor Smith' },
-  ] as const;
   readonly radioGroupOptions = [
     { label: 'Starter', value: 'starter' },
     { label: 'Pro', value: 'pro' },
@@ -2833,6 +3532,7 @@ export class ComponentDetailViewBase {
   ] as const;
   readonly sparklineValues = [12, 18, 16, 24, 30, 28, 36, 42] as const;
   readonly previewImage = '/assets/images/product-laptop.webp';
+  readonly schedulerActiveDate = new Date(2026, 6, 14, 9);
   readonly schedulerEvents = [
     {
       id: 'planning',
@@ -2840,6 +3540,8 @@ export class ComponentDetailViewBase {
       start: new Date(2026, 6, 12, 10),
       end: new Date(2026, 6, 12, 11),
       color: '#6366f1',
+      location: 'Meeting room A',
+      category: 'Customer',
     },
     {
       id: 'review',
@@ -2847,6 +3549,33 @@ export class ComponentDetailViewBase {
       start: new Date(2026, 6, 14, 14),
       end: new Date(2026, 6, 14, 15),
       color: '#0ea5e9',
+      location: 'Video call',
+      category: 'Review',
+    },
+    {
+      id: 'launch',
+      title: 'Release window',
+      start: new Date(2026, 6, 14, 16),
+      end: new Date(2026, 6, 16, 17),
+      color: '#16a34a',
+      category: 'Release',
+    },
+    {
+      id: 'quarterly-planning',
+      title: 'Quarterly planning',
+      start: new Date(2026, 6, 14, 9),
+      color: '#d97706',
+      location: 'Studio 2',
+      category: 'Internal',
+    },
+    {
+      id: 'offsite',
+      title: 'Team offsite',
+      start: new Date(2026, 6, 17),
+      allDay: true,
+      color: '#9333ea',
+      location: 'Harbor campus',
+      category: 'Team',
     },
   ] as const;
   readonly carouselItems = [
@@ -2890,6 +3619,48 @@ export class ComponentDetailViewBase {
     labels: ['Enterprise', 'Growth', 'Starter'],
     datasets: [{ label: 'Customer segments', data: [46, 34, 20] }],
   };
+  readonly radarChartData = {
+    labels: ['Speed', 'Reliability', 'Support', 'Security', 'Ease of use'],
+    datasets: [
+      { label: 'Current', data: [82, 74, 88, 91, 78] },
+      { label: 'Previous', data: [68, 70, 75, 84, 72] },
+    ],
+  };
+  readonly polarChartData = {
+    labels: ['Web', 'Mobile', 'Partner', 'Retail', 'Direct'],
+    datasets: [{ label: 'Orders', data: [38, 27, 18, 22, 31] }],
+  };
+  readonly scatterChartData = {
+    datasets: [
+      {
+        label: 'Campaigns',
+        data: [
+          { x: 12, y: 22 },
+          { x: 24, y: 35 },
+          { x: 38, y: 48 },
+          { x: 52, y: 61 },
+        ],
+      },
+    ],
+  };
+  readonly bubbleChartData = {
+    datasets: [
+      {
+        label: 'Campaigns',
+        data: [
+          { x: 12, y: 22, r: 8 },
+          { x: 24, y: 35, r: 13 },
+          { x: 38, y: 48, r: 10 },
+          { x: 52, y: 61, r: 16 },
+        ],
+      },
+    ],
+  };
+  readonly outsideLabelOptions = {
+    connectorLength: 20,
+    formatter: ({ label, percentage }: { label: string; percentage: number }) =>
+      `${label} ${percentage.toFixed(0)}%`,
+  };
   readonly mixedChartData = {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
     datasets: [
@@ -2923,34 +3694,19 @@ export class ComponentDetailViewBase {
     { field: 'category', label: 'Category' },
     { field: 'owner', label: 'Owner' },
   ];
-  readonly fileBrowserItems: readonly JFileBrowserItem[] = [
-    { id: 'invoices', name: 'Invoices', kind: 'folder', modifiedAt: '2026-07-14' },
-    {
-      id: 'report',
-      name: 'Quarterly report.xlsx',
-      kind: 'file',
-      size: 245760,
-      modifiedAt: '2026-07-12',
-    },
-    {
-      id: 'agreement',
-      name: 'Signed agreement.pdf',
-      kind: 'file',
-      size: 845120,
-      modifiedAt: '2026-07-10',
-    },
-    { id: 'logo', name: 'Brand mark.png', kind: 'file', size: 56320, modifiedAt: '2026-07-08' },
-  ];
+  fileBrowserItems: readonly JFileBrowserItem[] = this.createFileBrowserItems();
   readonly fileBrowserBreadcrumbs = [
     { id: 'home', label: 'Home' },
     { id: 'customers', label: 'Customers' },
     { id: 'acme', label: 'Acme Pty Ltd' },
   ] as const;
   readonly fileBrowserActions = [
-    { id: 'download', label: 'Download', selection: 'any' as const },
-    { id: 'delete', label: 'Delete', selection: 'any' as const },
+    { id: 'download', label: 'Download', icon: 'download', selection: 'any' as const },
+    { id: 'delete', label: 'Delete', icon: 'trash', selection: 'any' as const },
   ];
   fileBrowserSelection: readonly string[] = ['report'];
+  fileBrowserSortField: JFileBrowserSortField = 'name';
+  fileBrowserViewMode: JFileBrowserViewMode = 'list';
   readonly fileBrowserActionMessage = signal('');
 
   handleFileBrowserAction(event: JFileBrowserActionEvent): void {
@@ -2958,8 +3714,66 @@ export class ComponentDetailViewBase {
     this.fileBrowserActionMessage.set(`${event.action.label}: ${names}`);
     if (event.action.id === 'delete') {
       const removed = new Set(event.items.map((item) => item.id));
+      this.fileBrowserItems = this.fileBrowserItems.filter((item) => !removed.has(item.id));
       this.fileBrowserSelection = this.fileBrowserSelection.filter((id) => !removed.has(id));
     }
+  }
+
+  handleFileBrowserCreateFolder(): void {
+    if (!this.fileBrowserItems.some((item) => item.id === 'new-folder')) {
+      this.fileBrowserItems = [
+        { id: 'new-folder', name: 'New customer folder', kind: 'folder', modifiedAt: '2026-08-03' },
+        ...this.fileBrowserItems,
+      ];
+    }
+    this.fileBrowserActionMessage.set('New folder created.');
+  }
+
+  handleFileBrowserUpload(): void {
+    if (!this.fileBrowserItems.some((item) => item.id === 'uploaded-file')) {
+      this.fileBrowserItems = [
+        ...this.fileBrowserItems,
+        {
+          id: 'uploaded-file',
+          name: 'Customer brief.pdf',
+          kind: 'file',
+          size: 128000,
+          modifiedAt: '2026-08-03',
+        },
+      ];
+    }
+    this.fileBrowserActionMessage.set('Customer brief.pdf uploaded.');
+  }
+
+  handleFileBrowserRefresh(): void {
+    this.fileBrowserActionMessage.set('File list refreshed.');
+  }
+
+  private createFileBrowserItems(): readonly JFileBrowserItem[] {
+    return [
+      { id: 'invoices', name: 'Invoices', kind: 'folder', modifiedAt: '2026-07-14' },
+      {
+        id: 'report',
+        name: 'Quarterly report.xlsx',
+        kind: 'file',
+        size: 245760,
+        modifiedAt: '2026-07-12',
+      },
+      {
+        id: 'agreement',
+        name: 'Signed agreement.pdf',
+        kind: 'file',
+        size: 845120,
+        modifiedAt: '2026-07-10',
+      },
+      {
+        id: 'logo',
+        name: 'Brand mark.png',
+        kind: 'file',
+        size: 56320,
+        modifiedAt: '2026-07-08',
+      },
+    ];
   }
   readonly galleryItems = [
     {
@@ -3337,12 +4151,6 @@ export class ComponentDetailViewBase {
   readonly sampleDate = new Date(2026, 6, 5, 14, 30);
   readonly longText = 'Quarterly operations report with regional summaries and exception details';
 
-  readonly pageHeaderBreadcrumbs = [
-    { label: 'Home', url: '/' },
-    { label: 'Operations', url: '/docs' },
-    { label: 'Orders' },
-  ] as const;
-
   readonly menuItems: readonly JMenuItem[] = [
     { label: 'Open', icon: 'file' },
     { label: 'Duplicate', icon: 'copy', badge: 'New' },
@@ -3355,6 +4163,22 @@ export class ComponentDetailViewBase {
         { label: 'Settings', icon: 'settings', disabled: true },
       ],
     },
+  ];
+  readonly sidebarMenuItems: readonly JMenuItem[] = [
+    { id: 'overview', label: 'Overview', icon: 'layout-dashboard', badge: 3 },
+    { id: 'inbox', label: 'Inbox', icon: 'message-square', badge: 12 },
+    { id: 'search', label: 'Search', icon: 'search' },
+    { separator: true },
+    {
+      id: 'projects',
+      label: 'Projects',
+      icon: 'folder-code',
+      items: [
+        { id: 'analytics', label: 'Analytics', icon: 'chart-no-axes-column' },
+        { id: 'reports', label: 'Reports', icon: 'file-text' },
+      ],
+    },
+    { id: 'settings', label: 'Settings', icon: 'settings' },
   ];
   readonly menubarItems: readonly JMenuItem[] = [
     {
@@ -3374,19 +4198,49 @@ export class ComponentDetailViewBase {
       ],
     },
   ];
-  showToast(severity: 'success' | 'error' | 'warning'): void {
+  showToast(severity: 'success' | 'error' | 'warning' | 'info'): void {
     if (severity === 'success') {
-      this.toast.success('The project was saved.', 'Saved', { position: 'bottom-right' });
+      this.toast.success('The project was saved.', 'Saved');
       return;
     }
     if (severity === 'error') {
-      this.toast.error('Check the required fields and try again.', 'Could not save', {
-        position: 'bottom-right',
-      });
+      this.toast.error('Check the required fields and try again.', 'Could not save');
       return;
     }
-    this.toast.warning('Some changes still need review.', 'Review required', {
-      position: 'bottom-right',
+    if (severity === 'warning') {
+      this.toast.warning('Some changes still need review.', 'Review required');
+      return;
+    }
+    this.toast.info('Your export is being prepared.', 'Export started');
+  }
+
+  showToastStyle(variant: JToastVariant): void {
+    this.toast.show({
+      severity: 'info',
+      variant,
+      summary: `${variant.charAt(0).toUpperCase()}${variant.slice(1)} toast`,
+      detail: 'Appearance is independent from severity.',
+    });
+  }
+
+  showActionToast(): void {
+    this.toast.show({
+      severity: 'neutral',
+      variant: 'outlined',
+      summary: 'Project archived',
+      detail: 'The project was moved to the archive.',
+      sticky: true,
+      actions: [
+        {
+          label: 'Undo',
+          style: 'primary',
+          command: () =>
+            this.toast.success('The project is active again.', 'Archive undone', {
+              variant: 'soft',
+            }),
+        },
+      ],
+      cancelAction: { label: 'Dismiss', command: () => undefined },
     });
   }
 

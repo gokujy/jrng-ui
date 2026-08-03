@@ -14,22 +14,42 @@
     @if (showToolbar()) {
       <div class="j-file-browser__toolbar" aria-label="File browser actions">
         @if (showCreateFolder()) {
-          <button type="button" [disabled]="disabled()" (click)="createFolder.emit()">
-            {{ createFolderLabel() }}
+          <button
+            class="j-file-browser__icon-button"
+            type="button"
+            [disabled]="disabled() || loading()"
+            [attr.aria-label]="createFolderLabel()"
+            [attr.title]="createFolderLabel()"
+            (click)="createFolder.emit()"
+          >
+            <j-icon name="plus" size="1rem" aria-hidden="true" />
+            <span class="j-file-browser__visually-hidden">{{ createFolderLabel() }}</span>
           </button>
         }
         @if (showUpload()) {
-          <button type="button" [disabled]="disabled()" (click)="upload.emit()">
-            {{ uploadLabel() }}
+          <button
+            class="j-file-browser__icon-button"
+            type="button"
+            [disabled]="disabled() || loading()"
+            [attr.aria-label]="uploadLabel()"
+            [attr.title]="uploadLabel()"
+            (click)="upload.emit()"
+          >
+            <j-icon name="upload" size="1rem" aria-hidden="true" />
+            <span class="j-file-browser__visually-hidden">{{ uploadLabel() }}</span>
           </button>
         }
         @for (itemAction of actions(); track itemAction.id) {
           <button
             type="button"
+            class="j-file-browser__icon-button"
             [disabled]="!actionAvailable(itemAction)"
+            [attr.aria-label]="itemAction.label"
+            [attr.title]="itemAction.label"
             (click)="emitAction(itemAction, $event)"
           >
-            {{ itemAction.label }}
+            <j-icon [name]="actionIcon(itemAction)" size="1rem" aria-hidden="true" />
+            <span class="j-file-browser__visually-hidden">{{ itemAction.label }}</span>
           </button>
         }
         <label class="j-file-browser__select"
@@ -46,16 +66,33 @@
           </select>
         </label>
         <button
+          class="j-file-browser__icon-button"
           type="button"
           [disabled]="disabled() || loading()"
           [attr.aria-label]="viewMode() === 'list' ? 'Use grid view' : 'Use list view'"
+          [attr.title]="viewMode() === 'list' ? 'Use grid view' : 'Use list view'"
           (click)="changeViewMode()"
         >
-          {{ viewMode() === 'list' ? 'Grid' : 'List' }}
+          <j-icon
+            [name]="viewMode() === 'list' ? 'layout-dashboard' : 'list'"
+            size="1rem"
+            aria-hidden="true"
+          />
+          <span class="j-file-browser__visually-hidden">
+            {{ viewMode() === 'list' ? 'Use grid view' : 'Use list view' }}
+          </span>
         </button>
         @if (showRefresh()) {
-          <button type="button" [disabled]="disabled() || loading()" (click)="refresh.emit()">
-            {{ refreshLabel() }}
+          <button
+            class="j-file-browser__icon-button"
+            type="button"
+            [disabled]="disabled() || loading()"
+            [attr.aria-label]="refreshLabel()"
+            [attr.title]="refreshLabel()"
+            (click)="refresh.emit()"
+          >
+            <j-icon name="refresh" size="1rem" aria-hidden="true" />
+            <span class="j-file-browser__visually-hidden">{{ refreshLabel() }}</span>
           </button>
         }
       </div>

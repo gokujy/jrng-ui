@@ -9,13 +9,39 @@ import {
   selector: 'app-messages-component-preview',
   imports: [COMPONENT_PREVIEW_IMPORTS],
   template: `
+    @let example = previewExample();
     @switch (doc().slug) {
       @case ('toast') {
         <div class="j-preview-stack">
-          <div class="j-preview-row">
-            <j-button label="Show success" (onClick)="showToast('success')" />
-          </div>
-          <j-toast position="bottom-right" />
+          @switch (example.key) {
+            @case ('appearance') {
+              <div class="j-preview-row">
+                <j-button label="Soft" variant="soft" (onClick)="showToastStyle('soft')" />
+                <j-button
+                  label="Outlined"
+                  variant="outlined"
+                  (onClick)="showToastStyle('outlined')"
+                />
+                <j-button label="Solid" (onClick)="showToastStyle('solid')" />
+              </div>
+            }
+            @case ('actions') {
+              <j-button
+                label="Archive project"
+                severity="danger"
+                variant="outlined"
+                (onClick)="showActionToast()"
+              />
+            }
+            @default {
+              <div class="j-preview-row">
+                <j-button label="Success" severity="success" (onClick)="showToast('success')" />
+                <j-button label="Error" severity="danger" (onClick)="showToast('error')" />
+                <j-button label="Warning" severity="warning" (onClick)="showToast('warning')" />
+                <j-button label="Info" severity="info" (onClick)="showToast('info')" />
+              </div>
+            }
+          }
         </div>
       }
       @case ('validation-message') {

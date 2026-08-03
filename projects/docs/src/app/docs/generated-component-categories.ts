@@ -154,7 +154,7 @@ export const generatedComponentCategories = [
   },
   {
     name: 'Layout',
-    count: 11,
+    count: 8,
     selectors: [
       'j-app-shell',
       'j-container',
@@ -162,19 +162,15 @@ export const generatedComponentCategories = [
       'j-col',
       'j-grid-layout',
       'j-row',
-      'j-page-header',
-      'j-responsive-sidebar',
       'j-section-footer',
       'j-section-header',
-      'j-topbar',
     ],
   },
   {
     name: 'Misc',
-    count: 16,
+    count: 14,
     selectors: [
       'j-avatar',
-      'j-avatar-group',
       'j-badge',
       'j-chip',
       'j-empty',
@@ -185,7 +181,6 @@ export const generatedComponentCategories = [
       'j-progress-spinner',
       'j-pull-to-refresh',
       'j-skeleton',
-      'j-status-chip',
       'j-swipe-actions',
       'j-tag',
       'j-watermark',
@@ -204,4 +199,4 @@ export const generatedComponentCategories = [
 ] as const;
 
 export const generatedComponentCategoryOrder = generatedComponentCategories.map(({ name }) => name);
-export const generatedActiveComponentTotal = 134;
+export const generatedActiveComponentTotal = 129;

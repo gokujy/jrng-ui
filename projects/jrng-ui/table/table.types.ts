@@ -13,7 +13,8 @@ export type JTableColumnType =
   | 'tag'
   | 'actions'
   | 'custom';
-export type JTableFilterDisplay = 'toolbar' | 'row' | 'menu' | 'none';
+/** Where column filtering controls are rendered. `none` is retained as a compatibility escape hatch. */
+export type JTableFilterDisplay = 'row' | 'menu' | 'toolbar' | 'none';
 export type JTableSelectionMode = 'none' | 'single' | 'multiple' | 'checkbox' | 'radio';
 export type JTableExpansionMode = 'single' | 'multiple';
 export type JTableEditMode = 'none' | 'cell' | 'row';
@@ -46,10 +47,31 @@ export type JTableLoadingVariant = 'skeleton' | 'spinner' | 'progress' | 'overla
 export type JTableEmptyState = 'no-data' | 'no-results' | 'error';
 export type JTableEmptyStateMode = 'auto' | JTableEmptyState;
 export type JTableExportRows = 'all' | 'filtered' | 'page' | 'selected' | 'visible';
+export type JTableExportFormat = 'csv' | 'excel' | 'pdf' | (string & Record<never, never>);
 export type JTableRow = Readonly<Record<string, unknown>>;
 export type JTableColumnField<T extends object = JTableRow> = Extract<keyof T, string>;
 export type JTableFilterType =
-  'text' | 'number' | 'date' | 'date-time' | 'time' | 'boolean' | 'select' | 'multi-select';
+  | 'text'
+  | 'number'
+  | 'date'
+  | 'date-range'
+  | 'date-time'
+  | 'time'
+  | 'boolean'
+  | 'enum'
+  | 'select'
+  | 'multi-select'
+  | 'custom';
+export type JTableFilterDataType = JTableFilterType;
+export type JTableFilterValue =
+  | string
+  | number
+  | boolean
+  | Date
+  | null
+  | undefined
+  | readonly unknown[]
+  | Readonly<Record<string, unknown>>;
 export type JTableFilterOperator =
   | 'contains'
   | 'notContains'
@@ -74,6 +96,26 @@ export type JTableFilterOperator =
 export type JTableConstraintOperator = 'and' | 'or';
 export type JTableStateStorage = 'local' | 'session' | 'memory' | 'custom';
 
+export type JTableCustomFilterMatcher<TRow extends object = JTableRow> = (
+  cellValue: unknown,
+  filterValue: JTableFilterValue,
+  constraint: JTableFilterConstraint,
+  row: TRow,
+  field: string,
+) => boolean;
+
+export interface JTableFilterField<TValue extends JTableFilterValue = JTableFilterValue> {
+  readonly field: string;
+  readonly label: string;
+  readonly dataType: JTableFilterDataType;
+  readonly operator?: JTableFilterOperator;
+  readonly operators?: readonly JTableFilterOperator[];
+  readonly value?: TValue;
+  readonly placeholder?: string;
+  readonly options?: readonly JTableFilterOption[];
+  readonly matcher?: JTableCustomFilterMatcher;
+}
+
 export interface JTablePagination {
   readonly pageIndex: number;
   readonly pageSize: number;
@@ -81,9 +123,23 @@ export interface JTablePagination {
 }
 
 export interface JTableFilterConstraint<TValue = unknown> {
+  readonly id?: string;
   readonly value: TValue;
   readonly matchMode: JTableMatchMode | JTableFilterOperator;
   readonly operator?: JTableConstraintOperator;
+}
+
+export interface JTableFilterMetadata<TValue = unknown> {
+  readonly field?: string;
+  readonly operator?: JTableConstraintOperator;
+  readonly constraints: readonly JTableFilterConstraint<TValue>[];
+}
+
+export interface JTableActiveFilterMetadata<TValue = unknown> extends JTableFilterMetadata<TValue> {
+  readonly field: string;
+  readonly label: string;
+  readonly dataType: JTableFilterDataType;
+  readonly active: true;
 }
 
 export interface JTableFieldFilter<TValue = unknown> {
@@ -217,6 +273,11 @@ export interface JTableColumnFilter {
   readonly min?: number | string;
   readonly max?: number | string;
   readonly step?: number;
+  readonly disabled?: boolean;
+  readonly readonly?: boolean;
+  readonly invalid?: boolean;
+  readonly error?: string;
+  readonly matcher?: JTableCustomFilterMatcher;
 }
 
 export interface JTableFilterItem {
@@ -329,6 +390,14 @@ export interface JTableExportOptions {
   readonly serverExport?: (query: unknown) => void | Promise<void>;
 }
 
+/** An export format displayed in the table toolbar. Omit a format to hide it. */
+export interface JTableExportFormatOption {
+  readonly format: JTableExportFormat;
+  readonly label?: string;
+  readonly icon?: string;
+  readonly disabled?: boolean;
+}
+
 export interface JTableConfig {
   readonly pagination?: boolean;
   readonly sortable?: boolean;
@@ -379,15 +448,37 @@ export interface JTableLazyLoadEvent {
   readonly multiSortMeta?: readonly JTableSort[];
   readonly filters?: Record<string, unknown>;
   readonly filterModel?: JTableFilterModel;
+  readonly filterMetadata?: Record<string, JTableFilterMetadata>;
   readonly globalFilter?: string;
+}
+
+export interface JTableFilterEvent {
+  readonly filters: Record<string, JTableFilterMetadata>;
+  readonly filteredValue?: readonly unknown[];
+  readonly first: number;
+  readonly rows: number;
+  readonly sortField?: string;
+  readonly sortOrder?: 1 | -1;
+  readonly multiSortMeta?: readonly JTableSort[];
+  readonly filterModel: JTableFilterModel;
 }
 
 export interface JTableFilterChange {
   readonly field: string;
   readonly value: unknown;
+  /** Compatibility flat value map. Prefer `JTableFilterEvent.filters` for new integrations. */
   readonly filters: Record<string, unknown>;
+  readonly metadata: Record<string, JTableFilterMetadata>;
   readonly filterItem?: JTableFilterItem;
-  readonly filterModel?: JTableFilterModel;
+  readonly filterModel: JTableFilterModel;
+  readonly first: number;
+  readonly rows: number;
+  readonly filteredValue?: readonly unknown[];
+}
+
+export interface JTableLazyFilterRequest extends JTableFilterEvent {
+  readonly filteredValue?: undefined;
+  readonly globalFilter?: string;
 }
 
 export interface JTableRowClickEvent {
@@ -475,6 +566,7 @@ export interface JTableState {
   readonly sortOrder: JTableSortOrder;
   readonly multiSortMeta: readonly JTableSort[];
   readonly filters: Record<string, unknown>;
+  readonly filterModel?: JTableFilterModel;
   readonly globalFilter: string;
   readonly hiddenColumns: readonly string[];
   readonly columnOrder: readonly string[];
@@ -515,7 +607,13 @@ export interface JTableHeaderContext<T extends object = JTableRow> {
 
 export interface JTableFilterContext<T extends object = JTableRow> extends JTableHeaderContext<T> {
   readonly value: unknown;
-  readonly apply: (value: unknown) => void;
+  readonly operator: JTableFilterOperator;
+  readonly updateValue: (value: unknown) => void;
+  readonly updateOperator: (operator: JTableFilterOperator) => void;
+  readonly apply: (value?: unknown) => void;
+  readonly clear: () => void;
+  readonly close: () => void;
+  readonly active: boolean;
 }
 
 export type JTableSelection = JTableRow | readonly JTableRow[] | null;

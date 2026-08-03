@@ -15,6 +15,7 @@ export type JSkeletonVariant = 'rectangle' | 'text' | 'avatar' | 'button' | 'car
 @Component({
   selector: 'j-skeleton',
   imports: [],
+  host: { style: 'display: block;' },
   template: `
     @switch (variant()) {
       @case ('card') {

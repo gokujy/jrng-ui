@@ -11,32 +11,10 @@ import {
   template: `
     @let example = previewExample();
     @switch (doc().slug) {
-      @case ('page-header') {
-        <j-page-header
-          [variant]="pageHeaderVariants[example.index]"
-          title="Orders"
-          subtitle="Review fulfillment, exceptions, and exportable operational data that may wrap on narrow screens."
-          [breadcrumbs]="pageHeaderBreadcrumbs"
-        >
-          <j-button jPageActions label="Export" variant="outlined" />
-          <j-button jPageActions label="Create order" />
-        </j-page-header>
-      }
-      @case ('responsive-sidebar') {
-        <div class="j-sidebar-demo">
-          <j-responsive-sidebar title="Customers" [open]="true">
-            <nav class="j-sidebar-demo__nav" aria-label="Preview sidebar">
-              <a>Dashboard</a>
-              <a class="is-active">Customers</a>
-              <a>Settings</a>
-            </nav>
-          </j-responsive-sidebar>
-        </div>
-      }
       @case ('container') {
         <j-container>
-          <j-card header="Contained content" subheader="Max-width layout helper" variant="outlined">
-            <p>Container keeps page content aligned with consistent horizontal rhythm.</p>
+          <j-card header="Fluid content" subheader="Full width by default" variant="outlined">
+            <p>Set size or maxWidth only when the page needs a narrower content measure.</p>
           </j-card>
         </j-container>
       }
@@ -46,7 +24,7 @@ import {
         </j-section-header>
       }
       @case ('section-footer') {
-        <j-section-footer>
+        <j-section-footer [align]="$any(example.key)">
           <j-button label="Cancel" variant="soft" />
           <j-button label="Apply updates" />
         </j-section-footer>
@@ -56,7 +34,9 @@ import {
           <j-app-shell styleClass="j-doc-compact-shell">
             <strong jShellHeader>Customer workspace</strong>
             <nav jShellSidebar class="j-preview-mini-nav">
-              <span class="is-active">Overview</span><span>Customers</span><span>Settings</span>
+              <span class="is-active"><j-icon name="layout-dashboard" /><span>Overview</span></span>
+              <span><j-icon name="boxes" /><span>Customers</span></span>
+              <span><j-icon name="settings" /><span>Settings</span></span>
             </nav>
             <j-card header="Dashboard" subheader="Application shell content" variant="outlined" />
             <small jShellFooter>JRNG customer workspace</small>
@@ -74,7 +54,18 @@ import {
             compact
           >
             <ng-template jGridLayoutItem let-tile>
-              <j-card [header]="tile.title" subheader="Dashboard tile" variant="outlined" />
+              <j-card [header]="tile.title" subheader="Dashboard tile" variant="outlined">
+                @if (example.key === 'interactive') {
+                  <button
+                    type="button"
+                    jGridLayoutDragHandle
+                    class="j-dashboard-tile-drag-handle"
+                    [attr.aria-label]="'Move ' + tile.title"
+                  >
+                    <j-icon name="more-vertical" />
+                  </button>
+                }
+              </j-card>
             </ng-template>
           </j-grid-layout>
         } @else {
@@ -172,11 +163,6 @@ import {
             </j-row>
           </j-grid>
         </div>
-      }
-      @case ('topbar') {
-        <j-topbar [model]="menuItems" activeKey="Open">
-          <strong jTopbarBrand>JRNG UI</strong>
-        </j-topbar>
       }
     }
   `,

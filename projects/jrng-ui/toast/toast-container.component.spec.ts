@@ -41,4 +41,19 @@ describe('JToastContainerComponent', () => {
 
     expect(stack.classList).toContain('j-toast-stack--bottom-left');
   });
+
+  it('applies severity and visual variant classes to each message', () => {
+    service.show({
+      severity: 'warning',
+      variant: 'solid',
+      summary: 'Review required',
+      life: 0,
+    });
+    fixture.detectChanges();
+
+    const toast = fixture.debugElement.query(By.css('.j-toast')).nativeElement as HTMLElement;
+
+    expect(toast.classList).toContain('j-toast--warning');
+    expect(toast.classList).toContain('j-toast--solid');
+  });
 });

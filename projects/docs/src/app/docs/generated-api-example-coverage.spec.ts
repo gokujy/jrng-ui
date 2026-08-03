@@ -44,4 +44,25 @@ describe('generated API example coverage', () => {
 
     expect(new Set(ids).size).toBe(ids.length);
   });
+
+  it('seeds every generated preview with visible content or representative data', () => {
+    const contentInput = /^(?:ariaLabel|label|title|header|caption|description|hint|placeholder)$/;
+
+    for (const component of generatedComponentRegistry) {
+      const supportedSeeds = new Set<string>(
+        component.inputs.filter((input) => contentInput.test(input)),
+      );
+      if (!supportedSeeds.size) continue;
+
+      const coverage = generatedApiExampleCoverage.components.find(
+        (candidate) => candidate.selector === component.selector,
+      );
+      for (const example of coverage?.examples ?? []) {
+        expect(
+          example.inputs.some((input) => supportedSeeds.has(input)),
+          `${component.selector}:${example.key} should include visible preview content`,
+        ).toBe(true);
+      }
+    }
+  });
 });

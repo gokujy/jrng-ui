@@ -85,7 +85,26 @@ import {
         <j-menubar [model]="menubarItems" ariaLabel="Application menu" />
       }
       @case ('sidebar-nav') {
-        <j-sidebar-nav [model]="menuItems" activeKey="Open" />
+        <div class="j-sidebar-preview-frame">
+          <j-sidebar-nav
+            styleClass="j-doc-sidebar-preview"
+            [model]="sidebarMenuItems"
+            activeKey="overview"
+            [variant]="
+              $any(example.key === 'icon' || example.key === 'offcanvas' ? 'sidebar' : example.key)
+            "
+            [collapseMode]="$any(example.key === 'offcanvas' ? 'offcanvas' : 'icon')"
+            [side]="$any(example.key === 'offcanvas' ? 'right' : 'left')"
+            [overlay]="example.key === 'offcanvas'"
+            [collapsed]="example.key === 'icon'"
+            [openOnHover]="example.key === 'icon'"
+            [responsive]="false"
+          >
+            <strong jSidebarBrand>Acme Inc</strong>
+            <small jSidebarFooter>Jordan Lee</small>
+          </j-sidebar-nav>
+          <div class="j-sidebar-preview-content" aria-hidden="true"><span></span><span></span></div>
+        </div>
       }
       @case ('tiered-menu') {
         <j-tiered-menu [model]="menuItems" />

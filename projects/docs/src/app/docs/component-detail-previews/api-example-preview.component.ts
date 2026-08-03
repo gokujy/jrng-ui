@@ -1,3 +1,4 @@
+import { DOCUMENT } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -5,6 +6,7 @@ import {
   Type,
   ViewContainerRef,
   effect,
+  inject,
   input,
   signal,
   untracked,
@@ -42,7 +44,7 @@ import { ComponentDoc } from '../docs-types';
     JSplitterPanelComponent,
   ],
   template: `
-    <div class="j-preview-stack">
+    <div class="j-preview-stack j-api-example-preview">
       @if (previewExample().key === 'api-templates' && doc().selector === 'j-table') {
         <j-table [value]="templateRows" [columns]="templateColumns">
           <ng-template jTableHeader="name" let-column> {{ column.header }} / owner </ng-template>
@@ -119,6 +121,7 @@ import { ComponentDoc } from '../docs-types';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ApiExamplePreviewComponent {
+  private readonly documentRef = inject(DOCUMENT);
   readonly doc = input.required<ComponentDoc>();
   readonly previewExample = input.required<DetailFeatureExample>();
   readonly lastEvent = signal('');
@@ -161,7 +164,13 @@ export class ApiExamplePreviewComponent {
           return;
         }
 
-        this.componentRef = host.createComponent(componentType);
+        const projectedExample = this.documentRef.createTextNode('Fictional customer example');
+        this.componentRef = host.createComponent(componentType, {
+          projectableNodes: [[projectedExample]],
+        });
+        for (const [api, value] of Object.entries(requiredPreviewInputs(doc.selector))) {
+          this.componentRef.setInput(api, value);
+        }
         for (const api of example.inputs ?? []) {
           const value = apiExampleValue(doc.selector, api, example.key);
           if (value !== undefined) this.componentRef.setInput(api, value);
@@ -182,7 +191,7 @@ export class ApiExamplePreviewComponent {
       return;
     }
     try {
-      const result = method.call(instance, methodArgument(name));
+      const result = method.call(instance, methodArgument(this.doc().selector, name));
       this.lastEvent.set(`${name}() called${result === undefined ? '' : `: ${stringify(result)}`}`);
       this.componentRef?.changeDetectorRef.detectChanges();
     } catch (error) {
@@ -263,6 +272,16 @@ function componentTypeFor(selector: string): Type<unknown> | null {
 }
 
 function apiExampleValue(selector: string, api: string, exampleKey: string): unknown {
+  if (selector === 'j-image') {
+    if (api === 'src') return '/assets/images/product-laptop.webp';
+    if (api === 'fallback') return '/assets/images/product-headphones.webp';
+    if (api === 'loading') return 'eager';
+  }
+  if (selector === 'j-gallery' && api === 'value') return galleryPreviewItems();
+  if (api === 'value') {
+    const value = controlExampleValue(selector);
+    if (value !== undefined) return value;
+  }
   if (['j-notification-center', 'j-popover'].includes(selector) && api === 'visible') {
     return false;
   }
@@ -272,6 +291,33 @@ function apiExampleValue(selector: string, api: string, exampleKey: string): unk
   ) {
     return undefined;
   }
+  if (selector === 'j-editor') {
+    if (api === 'airMode' || api === 'stickyToolbar' || api === 'tabMovesFocus') return false;
+    if (api === 'fontFamilies') return ['Arial', 'Georgia', 'Verdana'];
+    if (api === 'fontSizes') return [10, 12, 14, 18, 24];
+    if (api === 'height') return '14rem';
+    if (api === 'imageAccept') return 'image/png,image/jpeg,image/webp,image/gif';
+    if (api === 'imageMaxFileSize') return 5 * 1024 * 1024;
+    if (api === 'lineHeights') return [1, 1.4, 1.6, 2];
+    if (api === 'minHeight') return '10rem';
+    if (api === 'outputFormat') return 'html';
+    if (api === 'resizable' || api === 'spellcheck') return true;
+    if (api === 'tabSize') return 4;
+    if (api === 'toolbar') return 'full';
+    if (api === 'toolbarLabel') return 'Customer notes editor toolbar';
+    if (api === 'toolbarPosition') return 'top';
+    if (api === 'imageAdapter' || api === 'sanitizerAdapter') return null;
+  }
+  if (api === 'appendTo') return 'body';
+  if (api === 'asyncPageSize') return 20;
+  if (api === 'delay') return 250;
+  if (api === 'minLength') return 1;
+  if (api === 'size') return 'md';
+  if (api === 'groupOptions') return 'items';
+  if (api === 'optionLabel') return 'label';
+  if (api === 'optionValue') return 'value';
+  if (api === 'optionDisabled') return 'disabled';
+  if (selector === 'j-autocomplete' && api === 'dataSource') return null;
   if (
     exampleKey === 'api-states' &&
     /^(?:disabled|readonly|readOnly|loading|invalid|required|error|empty|indeterminate|selected|expanded|checked|active|visible|open|errorState|loadingVariant|skeletonRows)$/.test(
@@ -315,6 +361,12 @@ function apiExampleValue(selector: string, api: string, exampleKey: string): unk
     }
     if (['expandedRowKeys', 'lockedRowKeys'].includes(api)) return new Set();
     if (api === 'selection') return null;
+    if (api === 'value') {
+      return [
+        { id: 'CUS-1042', name: 'Northwind Harbor', status: 'Active' },
+        { id: 'CUS-1087', name: 'Willow & Pine', status: 'Review' },
+      ];
+    }
     if (
       [
         'queryMapper',
@@ -329,6 +381,7 @@ function apiExampleValue(selector: string, api: string, exampleKey: string): unk
     }
   }
   if (selector === 'j-chart') {
+    if (api === 'type') return 'bar';
     if (api === 'width') return 480;
     if (api === 'height') return 260;
     if (api === 'options') return {};
@@ -366,12 +419,71 @@ function apiExampleValue(selector: string, api: string, exampleKey: string): unk
   }
   if (selector === 'j-data-view') {
     if (api === 'rowsPerPageOptions') return [3, 6, 12];
+    if (api === 'sortField') return 'name';
     if (api === 'sortOptions') {
       return [
-        { label: 'Name ascending', value: 'name' },
-        { label: 'Name descending', value: '!name' },
+        { label: 'Name', field: 'name' },
+        { label: 'Category', field: 'category' },
+        { label: 'Owner', field: 'owner' },
       ];
     }
+    if (api === 'value') {
+      return [
+        { id: 1, name: 'Northwind Harbor', category: 'Technology', owner: 'Avery Reed' },
+        { id: 2, name: 'Willow & Pine', category: 'Retail', owner: 'Morgan Lee' },
+      ];
+    }
+  }
+  if (selector === 'j-meter-group' && api === 'value') {
+    return [
+      { label: 'Active', value: 64 },
+      { label: 'Review', value: 24 },
+    ];
+  }
+  if (['j-tree', 'j-tree-table', 'j-org-chart'].includes(selector) && api === 'value') {
+    return [
+      {
+        key: 'customers',
+        label: 'Customers',
+        data: { name: 'Customers', status: 'Active' },
+        children: [],
+      },
+    ];
+  }
+  if (selector === 'j-timeline' && api === 'value') {
+    return [
+      {
+        title: 'Account created',
+        description: 'Customer profile was created.',
+        date: '2026-07-12',
+      },
+      {
+        title: 'Review completed',
+        description: 'Account details were verified.',
+        date: '2026-07-18',
+      },
+    ];
+  }
+  if (selector === 'j-gantt' && api === 'tasks') {
+    return [
+      {
+        id: 'discovery',
+        label: 'Customer discovery',
+        start: '2026-07-06',
+        end: '2026-07-12',
+        progress: 100,
+      },
+      {
+        id: 'launch',
+        label: 'Customer launch',
+        start: '2026-07-13',
+        end: '2026-07-24',
+        progress: 45,
+      },
+    ];
+  }
+  if (selector === 'j-virtual-scroller' && api === 'items') {
+    return Array.from({ length: 24 }, (_, index) => `Customer record ${index + 1}`);
   }
   if (selector === 'j-kanban' && api === 'value') {
     return [
@@ -392,13 +504,19 @@ function apiExampleValue(selector: string, api: string, exampleKey: string): unk
   }
   if (/^(?:options|suggestions|statuses|items|source|target|value|model)$/.test(api)) {
     return [
-      { id: 1, key: 'design', label: 'Design review', name: 'Design review', value: 'design' },
+      {
+        id: 1,
+        key: 'northwind',
+        label: 'Northwind Harbor',
+        name: 'Northwind Harbor',
+        value: 'northwind',
+      },
       {
         id: 2,
-        key: 'release',
-        label: 'Release approval',
-        name: 'Release approval',
-        value: 'release',
+        key: 'willow',
+        label: 'Willow & Pine',
+        name: 'Willow & Pine',
+        value: 'willow',
       },
     ];
   }
@@ -474,21 +592,109 @@ function apiExampleValue(selector: string, api: string, exampleKey: string): unk
 }
 
 function formExampleValue(selector: string): unknown {
-  if (selector === 'j-date-picker') return new Date('2026-07-28T09:30:00');
-  if (
-    ['j-checkbox', 'j-radio', 'j-rating', 'j-slider', 'j-switch', 'j-toggle-button'].includes(
-      selector,
-    )
-  ) {
-    return selector === 'j-rating' || selector === 'j-slider' ? 3 : true;
-  }
-  if (selector === 'j-query-builder') {
-    return { id: 'docs-query', type: 'group', join: 'and', children: [] };
-  }
-  return 'Quarterly review';
+  return controlExampleValue(selector) ?? 'Customer review';
 }
 
-function methodArgument(name: string): unknown {
+function controlExampleValue(selector: string): unknown {
+  switch (selector) {
+    case 'j-autocomplete':
+    case 'j-cascader':
+    case 'j-listbox':
+    case 'j-radio-group':
+    case 'j-select':
+    case 'j-select-button':
+      return 'northwind';
+    case 'j-multiselect':
+      return ['northwind'];
+    case 'j-chips':
+      return [
+        { label: 'Priority customer', severity: 'info' },
+        { label: 'Review due', severity: 'warning' },
+      ];
+    case 'j-checkbox':
+    case 'j-switch':
+    case 'j-toggle-button':
+      return true;
+    case 'j-input-number':
+    case 'j-knob':
+    case 'j-rating':
+    case 'j-slider':
+      return 3;
+    case 'j-date-picker':
+      return new Date('2026-07-28T09:30:00');
+    case 'j-time-picker':
+      return '09:30';
+    case 'j-color-picker':
+      return '#0f766e';
+    case 'j-cron-expression':
+      return '0 9 * * 1-5';
+    case 'j-input-otp':
+      return '482731';
+    case 'j-input-mask':
+      return '5551234567';
+    case 'j-query-builder':
+      return { id: 'docs-query', type: 'group', join: 'and', children: [] };
+    case 'j-radio':
+      return 'customer-review';
+    case 'j-signature':
+      return {
+        width: 320,
+        height: 120,
+        strokes: [
+          {
+            color: '#0f766e',
+            width: 2,
+            points: [
+              { x: 48, y: 72, pressure: 0.5 },
+              { x: 96, y: 42, pressure: 0.6 },
+              { x: 154, y: 74, pressure: 0.5 },
+            ],
+          },
+        ],
+      };
+    case 'j-tree-select':
+      return { key: 'operations', label: 'Operations', children: [] };
+    case 'j-editor':
+      return '<p>Customer review notes are ready.</p>';
+    case 'j-input':
+    case 'j-password':
+    case 'j-textarea':
+      return 'Customer review';
+    default:
+      return undefined;
+  }
+}
+
+function requiredPreviewInputs(selector: string): Readonly<Record<string, unknown>> {
+  if (selector === 'j-image') {
+    return {
+      src: '/assets/images/product-laptop.webp',
+      alt: 'Laptop on a desk in a bright workspace',
+    };
+  }
+  if (selector === 'j-gallery') return { value: galleryPreviewItems() };
+  return {};
+}
+
+function galleryPreviewItems(): readonly Readonly<Record<string, string>>[] {
+  return [
+    {
+      src: '/assets/gallery/alpine-dawn.png',
+      thumbnail: '/assets/gallery/alpine-dawn.png',
+      alt: 'Sunrise over an alpine valley',
+      caption: 'Alpine dawn',
+    },
+    {
+      src: '/assets/gallery/coastal-light.png',
+      thumbnail: '/assets/gallery/coastal-light.png',
+      alt: 'Sunlit coastline and blue water',
+      caption: 'Coastal light',
+    },
+  ];
+}
+
+function methodArgument(selector: string, name: string): unknown {
+  if (selector === 'j-gallery' && name === 'select') return 0;
   if (/scroll|index/i.test(name)) return 0;
   if (/zoom/i.test(name)) return 1;
   if (/select|add|remove|move/i.test(name)) {

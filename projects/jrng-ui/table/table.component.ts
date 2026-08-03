@@ -47,17 +47,23 @@ import {
   JTableEmptyStateMode,
   JTableExpansionMode,
   JTableExportEvent,
+  JTableExportFormatOption,
   JTableExportOptions,
   JTableExportRows,
   JTableFilterChange,
+  JTableFilterEvent,
   JTableFilterDisplay,
+  JTableFilterMetadata,
   JTableFieldFilter,
   JTableFilterItem,
   JTableFilterModel,
+  JTableFilterOperator,
+  JTableFilterValue,
   JTableFilterType,
   JTableHeaderContext,
   JTableHeaderContextMenuEvent,
   JTableLazyLoadEvent,
+  JTableLazyFilterRequest,
   JTableLoadingContext,
   JTableLoadingVariant,
   JTablePageChange,
@@ -171,7 +177,7 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   readonly searchPlaceholder = input('Search');
   @Input() sortField = '';
   @Input() sortOrder: JTableSortOrder = 0;
-  @Input() sortMode: 'single' | 'multiple' = 'multiple';
+  @Input() sortMode: 'single' | 'multiple' = 'single';
   @Input() multiSortMeta: readonly JTableSort[] = [];
   @Input() filters: Record<string, unknown> = {};
   @Input() filterModel: JTableFilterModel = { items: [], logicOperator: 'and' };
@@ -218,12 +224,18 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   @Input() config: JTableConfig | null = null;
   @Input() exportConfig: JTableExportOptions = {};
   readonly exportAdapters = input<Readonly<Record<string, JTableExportAdapter>>>({});
+  /** Export entries shown in the toolbar. Use an empty array to render no export control. */
+  readonly exportOptions = input<readonly JTableExportFormatOption[]>([{ format: 'csv' }]);
   @Input() lockedRowKeys: readonly string[] = [];
   @Input() density: JTableDensity = 'comfortable';
   readonly variant = input<JTableVariant>('standard');
   readonly filterDisplay = input<JTableFilterDisplay>('row');
   readonly showFilterRow = input(true, { transform: booleanAttribute });
   readonly filterDebounce = input(300, { transform: numberAttribute });
+  readonly resetPageOnFilter = input(true, { transform: booleanAttribute });
+  readonly filterToolbarVisible = input(true, { transform: booleanAttribute });
+  readonly filterToolbarCollapsible = input(true, { transform: booleanAttribute });
+  readonly filterToolbarExpanded = input(true, { transform: booleanAttribute });
   readonly dataMode = input<JTableDataMode>('client');
   readonly editMode = input<JTableEditMode>('none');
   readonly responsiveMode = input<JTableResponsiveMode>('scroll');
@@ -270,9 +282,15 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   readonly toolbarActions = input<readonly JTableToolbarAction[]>([]);
 
   readonly lazyLoad = output<JTableLazyLoadEvent>();
+  readonly lazyFilter = output<JTableLazyFilterRequest>();
   readonly sortChange = output<JTableSort>();
   readonly pageChange = output<JTablePageChange>();
   readonly filterChange = output<JTableFilterChange>();
+  /** Normalized event shared by row, menu, toolbar, and programmatic filtering. */
+  readonly filterEvent = output<JTableFilterEvent>();
+  readonly filtersChange = output<Record<string, unknown>>();
+  readonly filterModelChange = output<JTableFilterModel>();
+  readonly filterToolbarExpandedChange = output<boolean>();
   readonly globalFilterChange = output<string>();
   readonly rowClick = output<JTableRowClickEvent>();
   readonly rowDoubleClick = output<JTableRowClickEvent>();
@@ -329,10 +347,13 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   private collapsedRowGroups = new Set<string>();
   private stopColumnResize: (() => void) | null = null;
   private readonly filterTimers = new Map<string, ReturnType<typeof setTimeout>>();
+  private readonly filterMenuDrafts = new Map<string, JTableFilterItem>();
+  toolbarFiltersExpanded = true;
   private resizingColumn = false;
   private selectionAnchorRow: JTableRow | null = null;
   private maximizedTableAttached = false;
   private readonly maximizeOwnerId = `j-table-maximized-${JTableComponent.nextMaximizeId++}`;
+  readonly filterToolbarId = `${this.maximizeOwnerId}-filters`;
   maximized = false;
   filterRowVisible = true;
   columnManagerOpen = false;
@@ -350,6 +371,7 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   private readonly memoryStorage = jCreateMemoryTableStorage();
 
   constructor() {
+    this.toolbarFiltersExpanded = this.filterToolbarExpanded();
     this.destroyRef.onDestroy(() => {
       this.cleanupColumnResize();
       this.restoreMaximizedTable();
@@ -428,7 +450,7 @@ export class JTableComponent implements AfterContentInit, OnChanges {
         this.valueMatchesFilter(this.fieldValue(row, field), value),
       );
       const modelMatches = activeModelFilters.map((item) =>
-        this.valueMatchesOperator(this.fieldValue(row, item.field), item),
+        this.valueMatchesOperator(this.fieldValue(row, item.field), item, row),
       );
       const groupMatches = activeFilterGroups.map((group) => {
         const matches = group.constraints.map((constraint) =>
@@ -755,6 +777,7 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   }
 
   ngAfterContentInit(): void {
+    this.toolbarFiltersExpanded = this.filterToolbarExpanded();
     this.applyConfig();
     this.syncLockedRows();
     this.emitLazyLoad();
@@ -795,6 +818,20 @@ export class JTableComponent implements AfterContentInit, OnChanges {
       event.preventDefault();
       this.setMaximized(false);
     }
+  }
+
+  @HostListener('document:click', ['$event'])
+  handleDocumentClick(event: MouseEvent): void {
+    const target = event.target as Node | null;
+    for (const menu of this.openFilterMenus()) {
+      if (target && menu.contains(target)) continue;
+      this.closeFilterMenu(menu, false);
+    }
+  }
+
+  @HostListener('window:resize')
+  handleWindowResize(): void {
+    for (const menu of this.openFilterMenus()) this.positionFilterMenu(menu);
   }
 
   trackByColumn = (index: number, column: JTableColumn): string => {
@@ -881,22 +918,32 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     return { $implicit: column, column };
   }
 
-  filterContext(column: JTableColumn): {
-    $implicit: JTableColumn;
-    column: JTableColumn;
-    value: unknown;
-    apply: (value: unknown) => void;
-  } {
+  filterContext(column: JTableColumn) {
+    const field = this.filterFieldFor(column);
     return {
       $implicit: column,
       column,
-      value: this.filterValue(this.filterFieldFor(column)),
-      apply: (value: unknown) => this.applyTemplateFilter(column, value),
+      value: this.filterDraftValue(column),
+      operator: this.filterDraftOperator(column),
+      updateValue: (value: unknown) =>
+        this.handleFilterMenuDraft({ field, value, operator: this.filterDraftOperator(column) }),
+      updateOperator: (operator: JTableFilterOperator) =>
+        this.handleFilterMenuDraft({ field, value: this.filterDraftValue(column), operator }),
+      apply: (value?: unknown) =>
+        this.applyTemplateFilter(
+          column,
+          value === undefined ? this.filterDraftValue(column) : value,
+        ),
+      clear: () => this.clearFilter(field),
+      close: () => this.closeOpenFilterMenu(),
+      active: this.isFilterActive(field),
     };
   }
 
   columnClass(column: JTableColumn): string {
-    const align = this.normalizeAlign(column.align);
+    const align = this.normalizeAlign(
+      column.align ?? (column.type === 'actions' ? 'end' : undefined),
+    );
     return [
       'j-table__cell',
       `j-table__cell--${align}`,
@@ -962,7 +1009,9 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   }
 
   headerColumnClass(column: JTableColumn): string {
-    const align = this.normalizeAlign(column.headerAlign ?? column.align);
+    const align = this.normalizeAlign(
+      column.headerAlign ?? column.align ?? (column.type === 'actions' ? 'end' : undefined),
+    );
     return `${this.columnClass(column)} j-table__header--${align}`;
   }
 
@@ -1472,7 +1521,7 @@ export class JTableComponent implements AfterContentInit, OnChanges {
       items.push(change);
     }
     this.filterModel = { ...this.filterModel, items };
-    this.first = 0;
+    if (this.resetPageOnFilter()) this.first = 0;
     this.liveAnnouncement = this.isEmptyFilter(change.value)
       ? `${this.filterLabel(change.field)} filter cleared.`
       : `${this.filterLabel(change.field)} filter applied.`;
@@ -1509,6 +1558,22 @@ export class JTableComponent implements AfterContentInit, OnChanges {
       this.changeDetectorRef.markForCheck();
     }, debounce);
     this.filterTimers.set(change.field, timer);
+  }
+
+  handleFilterMenuDraft(change: JColumnFilterChange): void {
+    this.filterMenuDrafts.set(change.field, change);
+    this.changeDetectorRef.markForCheck();
+  }
+
+  applyFilterMenu(
+    column: JTableColumn,
+    change: JColumnFilterChange,
+    menu: HTMLDetailsElement,
+  ): void {
+    const field = this.filterFieldFor(column);
+    const draft = this.filterMenuDrafts.get(field) ?? change;
+    this.handleFilterModelChange(draft);
+    this.closeFilterMenu(menu);
   }
 
   clearAllFilters(): void {
@@ -1551,6 +1616,25 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     });
   }
 
+  filterOperator(field: string): JTableFilterOperator {
+    return this.filterModel.items.find((item) => item.field === field)?.operator ?? 'contains';
+  }
+
+  filterDraftValue(column: JTableColumn): unknown {
+    const field = this.filterFieldFor(column);
+    return this.filterMenuDrafts.get(field)?.value ?? this.filterValue(field);
+  }
+
+  filterDraftOperator(column: JTableColumn): JTableFilterOperator {
+    const field = this.filterFieldFor(column);
+    return (
+      this.filterMenuDrafts.get(field)?.operator ??
+      this.filterModel.items.find((item) => item.field === field)?.operator ??
+      column.filter?.operator ??
+      this.defaultFilterOperator(column)
+    );
+  }
+
   filter(field: string, value: unknown, operator: JTableFilterItem['operator'] = 'contains'): void {
     if (
       !(this.columns() as readonly JTableColumn[]).some(
@@ -1563,7 +1647,11 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   }
 
   filterValue(field: string): unknown {
-    return this.filters[field] ?? '';
+    return (
+      this.filters[field] ??
+      this.filterModel.items.find((item) => item.field === field)?.value ??
+      ''
+    );
   }
 
   filterTypeFor(column: JTableColumn): JTableFilterType {
@@ -1616,6 +1704,7 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   }
 
   clearFilter(field: string): void {
+    this.filterMenuDrafts.delete(field);
     const filters = { ...this.filters };
     delete filters[field];
     this.filters = filters;
@@ -1624,6 +1713,7 @@ export class JTableComponent implements AfterContentInit, OnChanges {
       items: this.filterModel.items.filter((item) => item.field !== field),
       groups: this.filterModel.groups?.filter((group) => group.field !== field),
     };
+    if (this.resetPageOnFilter()) this.first = 0;
     this.emitFilter({ field, value: '', filters, filterModel: this.filterModel });
     this.emitLazyLoad();
   }
@@ -1708,6 +1798,7 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   }
 
   resetFilters(): void {
+    this.filterMenuDrafts.clear();
     this.filters = {};
     this.filterModel = { items: [], logicOperator: this.filterModel.logicOperator ?? 'and' };
     this.globalFilter = '';
@@ -1718,24 +1809,138 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   }
 
   applyFilters(): void {
+    if (this.filterMenuDrafts.size) {
+      const filters = { ...this.filters };
+      const draftFields = new Set(this.filterMenuDrafts.keys());
+      const items = this.filterModel.items.filter((item) => !draftFields.has(item.field));
+      for (const draft of this.filterMenuDrafts.values()) {
+        if (this.isEmptyFilter(draft.value)) delete filters[draft.field];
+        else filters[draft.field] = draft.value;
+        if (!this.isEmptyFilterItem(draft)) items.push(draft);
+      }
+      this.filters = filters;
+      this.filterModel = { ...this.filterModel, items };
+      if (this.resetPageOnFilter()) this.first = 0;
+    }
     this.emitFilter({ field: '*', value: this.globalFilter, filters: this.filters });
     this.emitLazyLoad();
   }
 
-  closeFilterMenu(menu: HTMLDetailsElement): void {
+  defaultFilterOperator(column: JTableColumn): JTableFilterOperator {
+    const type = this.filterTypeFor(column);
+    if (type === 'number' || type === 'date' || type === 'date-time' || type === 'time') {
+      return 'equals';
+    }
+    if (type === 'date-range') return 'between';
+    if (type === 'boolean' || type === 'enum' || type === 'select') return 'equals';
+    if (type === 'multi-select') return 'in';
+    return 'contains';
+  }
+
+  setFilterModel(model: JTableFilterModel): void {
+    this.filterModel = {
+      items: [...(model.items ?? [])],
+      logicOperator: model.logicOperator ?? 'and',
+      groups: model.groups ? [...model.groups] : undefined,
+    };
+    this.filters = Object.fromEntries(
+      this.filterModel.items
+        .filter((item) => !this.isEmptyFilterItem(item))
+        .map((item) => [item.field, item.value]),
+    );
+    if (this.resetPageOnFilter()) this.first = 0;
+    this.emitFilter({
+      field: '*',
+      value: this.filters,
+      filters: this.filters,
+      filterModel: this.filterModel,
+    });
+    this.emitLazyLoad();
+  }
+
+  setFilters(filters: Record<string, unknown>): void {
+    this.filters = { ...filters };
+    const existing = new Map(this.filterModel.items.map((item) => [item.field, item]));
+    this.filterModel = {
+      ...this.filterModel,
+      items: Object.entries(filters).map(([field, value]) => ({
+        field,
+        value,
+        operator: existing.get(field)?.operator ?? 'contains',
+      })),
+    };
+    if (this.resetPageOnFilter()) this.first = 0;
+    this.emitFilter({
+      field: '*',
+      value: filters,
+      filters: this.filters,
+      filterModel: this.filterModel,
+    });
+    this.emitLazyLoad();
+  }
+
+  toggleFilterToolbar(): void {
+    if (!this.filterToolbarCollapsible()) return;
+    this.toolbarFiltersExpanded = !this.toolbarFiltersExpanded;
+    this.filterToolbarExpandedChange.emit(this.toolbarFiltersExpanded);
+    this.changeDetectorRef.markForCheck();
+  }
+
+  closeFilterMenu(menu: HTMLDetailsElement, restoreFocus = true): void {
     menu.open = false;
-    queueMicrotask(() => menu.querySelector<HTMLElement>('summary')?.focus());
+    if (restoreFocus) queueMicrotask(() => menu.querySelector<HTMLElement>('summary')?.focus());
   }
 
-  handleFilterMenuToggle(menu: HTMLDetailsElement): void {
-    if (!menu.open) return;
-    queueMicrotask(() => this.filterMenuFocusables(menu)[0]?.focus());
+  closeOpenFilterMenu(): void {
+    const menu = this.openFilterMenus()[0];
+    if (menu) this.closeFilterMenu(menu);
   }
 
-  handleFilterMenuKeydown(event: KeyboardEvent, menu: HTMLDetailsElement): void {
+  handleFilterMenuToggle(menu: HTMLDetailsElement, column?: JTableColumn): void {
+    if (!menu.open) {
+      if (column) this.filterMenuDrafts.delete(this.filterFieldFor(column));
+      return;
+    }
+    for (const other of this.openFilterMenus()) {
+      if (other !== menu) this.closeFilterMenu(other, false);
+    }
+    if (column) {
+      const field = this.filterFieldFor(column);
+      this.filterMenuDrafts.set(field, {
+        field,
+        operator: this.filterDraftOperator(column),
+        value: this.filterValue(field),
+      });
+    }
+    queueMicrotask(() => {
+      this.positionFilterMenu(menu);
+      this.filterMenuFocusables(menu)[0]?.focus();
+      this.changeDetectorRef.markForCheck();
+    });
+  }
+
+  handleFilterMenuKeydown(
+    event: KeyboardEvent,
+    menu: HTMLDetailsElement,
+    column?: JTableColumn,
+  ): void {
     if (event.key === 'Escape') {
       event.preventDefault();
       event.stopPropagation();
+      this.closeFilterMenu(menu);
+      return;
+    }
+    if (event.key === 'Enter' && menu.open && column) {
+      const target = event.target as HTMLElement | null;
+      if (target?.tagName === 'BUTTON' || target?.tagName === 'SUMMARY') return;
+      event.preventDefault();
+      const field = this.filterFieldFor(column);
+      const draft = this.filterMenuDrafts.get(field) ?? {
+        field,
+        operator: this.filterDraftOperator(column),
+        value: this.filterDraftValue(column),
+      };
+      this.handleFilterModelChange(draft);
       this.closeFilterMenu(menu);
       return;
     }
@@ -2289,7 +2494,9 @@ export class JTableComponent implements AfterContentInit, OnChanges {
       this.emitStateError({ key: this.stateKey, reason: 'invalid-shape' });
       return;
     }
-    const fields = new Set(this.columns().map((column) => column.field));
+    const fields = new Set(
+      this.columns().flatMap((column) => [column.field, this.filterFieldFor(column)]),
+    );
     const rows =
       typeof state.rows === 'number' && state.rows > 0 ? Math.trunc(state.rows) : this.pageRows;
     const maxFirst = Math.max(
@@ -2318,6 +2525,23 @@ export class JTableComponent implements AfterContentInit, OnChanges {
       state.filters && typeof state.filters === 'object' && !Array.isArray(state.filters)
         ? Object.fromEntries(Object.entries(state.filters).filter(([field]) => fields.has(field)))
         : this.filters;
+    if (state.filterModel && Array.isArray(state.filterModel.items)) {
+      this.filterModel = {
+        items: state.filterModel.items.filter(
+          (item) =>
+            !!item &&
+            typeof item.field === 'string' &&
+            fields.has(item.field) &&
+            typeof item.operator === 'string',
+        ),
+        logicOperator: state.filterModel.logicOperator === 'or' ? 'or' : 'and',
+        groups: Array.isArray(state.filterModel.groups)
+          ? state.filterModel.groups.filter(
+              (group) => !!group && typeof group.field === 'string' && fields.has(group.field),
+            )
+          : undefined,
+      };
+    }
     this.globalFilter =
       typeof state.globalFilter === 'string' ? state.globalFilter : this.globalFilter;
     this.hiddenColumnFields = new Set(
@@ -2376,6 +2600,8 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     }
     const restored = this.currentState();
     this.stateRestore.emit(restored);
+    this.filtersChange.emit({ ...this.filters });
+    this.filterModelChange.emit(this.filterModel);
   }
 
   exportCSV(): string {
@@ -2457,6 +2683,35 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     } finally {
       this.exportProgress.emit({ format, active: false });
     }
+  }
+
+  async handleExportOption(
+    option: JTableExportFormatOption,
+    menu?: HTMLDetailsElement,
+  ): Promise<void> {
+    if (this.isExportOptionDisabled(option)) return;
+    if (menu) menu.open = false;
+    if (option.format.toLowerCase() === 'csv') {
+      this.exportCSV();
+      return;
+    }
+    await this.exportWithAdapter(option.format);
+  }
+
+  exportOptionLabel(option: JTableExportFormatOption): string {
+    return option.label || `Export ${option.format.toUpperCase()}`;
+  }
+
+  exportOptionIcon(option: JTableExportFormatOption): string {
+    return option.icon || 'download';
+  }
+
+  isExportOptionDisabled(option: JTableExportFormatOption): boolean {
+    return (
+      this.loading() ||
+      !!option.disabled ||
+      (option.format.toLowerCase() !== 'csv' && !this.exportAdapters()[option.format])
+    );
   }
 
   setMaximized(value: boolean): void {
@@ -2627,7 +2882,9 @@ export class JTableComponent implements AfterContentInit, OnChanges {
       return;
     }
     this.paginator = config.pagination ?? this.paginator;
-    this.sortMode = config.multiSort ? 'multiple' : this.sortMode;
+    if (config.multiSort !== undefined) {
+      this.sortMode = config.multiSort ? 'multiple' : 'single';
+    }
     this.showGlobalFilter = config.globalSearch ?? this.showGlobalFilter;
     this.reorderableRows = config.reorderableRows ?? this.reorderableRows;
     this.lockableRows = config.lockableRows ?? this.lockableRows;
@@ -2652,8 +2909,71 @@ export class JTableComponent implements AfterContentInit, OnChanges {
     this.sortChange.emit(event);
   }
 
-  private emitFilter(event: JTableFilterChange): void {
-    this.filterChange.emit(event);
+  private emitFilter(
+    event: Pick<JTableFilterChange, 'field' | 'value' | 'filters' | 'filterItem'> & {
+      readonly filterModel?: JTableFilterModel;
+    },
+  ): void {
+    const model = event.filterModel ?? this.filterModel;
+    const metadata = this.normalizedFilterMetadata(model, event.filters);
+    const filteredValue = this.dataMode() === 'lazy' ? undefined : this.filteredRows;
+    const normalized: JTableFilterEvent = {
+      filters: metadata,
+      filteredValue,
+      first: this.first,
+      rows: this.pageRows,
+      sortField: this.sortField || undefined,
+      sortOrder: this.sortOrder || undefined,
+      multiSortMeta: this.multiSortMeta,
+      filterModel: model,
+    };
+    this.filterChange.emit({
+      ...event,
+      metadata,
+      filterModel: model,
+      first: normalized.first,
+      rows: normalized.rows,
+      filteredValue,
+    });
+    this.filterEvent.emit(normalized);
+    this.filtersChange.emit({ ...event.filters });
+    this.filterModelChange.emit(model);
+  }
+
+  private normalizedFilterMetadata(
+    model: JTableFilterModel,
+    values: Record<string, unknown>,
+  ): Record<string, JTableFilterMetadata> {
+    const metadata: Record<string, JTableFilterMetadata> = {};
+    for (const group of model.groups ?? []) {
+      if (!group.constraints.length) continue;
+      metadata[group.field] = {
+        field: group.field,
+        operator: group.operator ?? 'and',
+        constraints: [...group.constraints],
+      };
+    }
+    for (const item of model.items) {
+      if (this.isEmptyFilterItem(item)) continue;
+      const current = metadata[item.field];
+      metadata[item.field] = {
+        field: item.field,
+        operator: current?.operator ?? model.logicOperator ?? 'and',
+        constraints: [
+          ...(current?.constraints ?? []),
+          { value: item.value, matchMode: item.operator },
+        ],
+      };
+    }
+    for (const [field, value] of Object.entries(values)) {
+      if (metadata[field] || this.isEmptyFilter(value)) continue;
+      metadata[field] = {
+        field,
+        operator: 'and',
+        constraints: [{ value, matchMode: 'contains' }],
+      };
+    }
+    return metadata;
   }
 
   private exportRows(mode: JTableExportRows): readonly JTableRow[] {
@@ -2681,6 +3001,7 @@ export class JTableComponent implements AfterContentInit, OnChanges {
       sortOrder: this.sortOrder,
       multiSortMeta: this.multiSortMeta,
       filters: this.filters,
+      filterModel: this.filterModel,
       globalFilter: this.globalFilter,
       hiddenColumns: this.columnManagerColumns
         .filter((column) => !this.isColumnVisible(column))
@@ -2763,6 +3084,7 @@ export class JTableComponent implements AfterContentInit, OnChanges {
       return;
     }
 
+    const filterMetadata = this.normalizedFilterMetadata(this.filterModel, this.filters);
     this.lazyLoad.emit({
       first,
       rows,
@@ -2772,6 +3094,17 @@ export class JTableComponent implements AfterContentInit, OnChanges {
       sortOrder: this.sortOrder,
       multiSortMeta: this.multiSortMeta,
       filters: this.filters,
+      filterModel: this.filterModel,
+      filterMetadata,
+      globalFilter: this.globalFilter || undefined,
+    });
+    this.lazyFilter.emit({
+      filters: filterMetadata,
+      first,
+      rows,
+      sortField: this.sortField || undefined,
+      sortOrder: this.sortOrder || undefined,
+      multiSortMeta: this.multiSortMeta,
       filterModel: this.filterModel,
       globalFilter: this.globalFilter || undefined,
     });
@@ -2787,6 +3120,41 @@ export class JTableComponent implements AfterContentInit, OnChanges {
           '.j-table__filter-menu-popup [tabindex]:not([tabindex="-1"])',
       ),
     );
+  }
+
+  private openFilterMenus(): HTMLDetailsElement[] {
+    return Array.from(
+      this.elementRef.nativeElement.querySelectorAll<HTMLDetailsElement>(
+        '.j-table__filter-menu[open]',
+      ),
+    );
+  }
+
+  private positionFilterMenu(menu: HTMLDetailsElement): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const trigger = menu.querySelector<HTMLElement>('summary');
+    const popup = menu.querySelector<HTMLElement>('.j-table__filter-menu-popup');
+    const view = this.documentRef.defaultView;
+    if (!trigger || !popup || !view) return;
+    const gutter = 8;
+    const triggerRect = trigger.getBoundingClientRect();
+    const popupRect = popup.getBoundingClientRect();
+    const width = Math.min(Math.max(popupRect.width, 240), view.innerWidth - gutter * 2);
+    const direction = view.getComputedStyle(menu).direction;
+    const preferredLeft = direction === 'rtl' ? triggerRect.left : triggerRect.right - width;
+    const left = Math.min(
+      Math.max(gutter, preferredLeft),
+      Math.max(gutter, view.innerWidth - width - gutter),
+    );
+    const spaceBelow = view.innerHeight - triggerRect.bottom - gutter;
+    const placeAbove = popupRect.height > spaceBelow && triggerRect.top > spaceBelow;
+    const top = placeAbove
+      ? Math.max(gutter, triggerRect.top - popupRect.height - gutter)
+      : Math.min(triggerRect.bottom + gutter, view.innerHeight - gutter);
+    popup.style.setProperty('--j-table-filter-menu-left', `${left}px`);
+    popup.style.setProperty('--j-table-filter-menu-top', `${top}px`);
+    popup.style.setProperty('--j-table-filter-menu-width', `${width}px`);
+    popup.style.maxHeight = `${Math.max(120, (placeAbove ? triggerRect.top : spaceBelow) - gutter)}px`;
   }
 
   private columnsShareReorderZone(
@@ -2829,7 +3197,20 @@ export class JTableComponent implements AfterContentInit, OnChanges {
       .includes(String(filter).toLowerCase());
   }
 
-  private valueMatchesOperator(value: unknown, item: JTableFilterItem): boolean {
+  private valueMatchesOperator(value: unknown, item: JTableFilterItem, row: JTableRow): boolean {
+    const column = (this.columns() as readonly JTableColumn[]).find(
+      (candidate) => this.filterFieldFor(candidate) === item.field,
+    );
+    const matcher = column?.filter?.matcher;
+    if (matcher) {
+      return matcher(
+        value,
+        item.value as JTableFilterValue,
+        { value: item.value, matchMode: item.operator },
+        row,
+        item.field,
+      );
+    }
     const filter = item.value;
     const left = String(value ?? '').toLocaleLowerCase();
     const right = String(filter ?? '').toLocaleLowerCase();
@@ -2885,7 +3266,9 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   private isEmptyFilterItem(item: JTableFilterItem): boolean {
     return (
       !['isEmpty', 'isNotEmpty', 'isTrue', 'isFalse'].includes(item.operator) &&
-      (Array.isArray(item.value) ? item.value.length === 0 : this.isEmptyFilter(item.value))
+      (Array.isArray(item.value)
+        ? item.value.length === 0 || item.value.every((value) => this.isEmptyFilter(value))
+        : this.isEmptyFilter(item.value))
     );
   }
 
@@ -2895,7 +3278,12 @@ export class JTableComponent implements AfterContentInit, OnChanges {
   }
 
   private isEmptyFilter(value: unknown): boolean {
-    return value == null || String(value).trim() === '';
+    return (
+      value == null ||
+      (Array.isArray(value)
+        ? value.length === 0 || value.every((item) => this.isEmptyFilter(item))
+        : String(value).trim() === '')
+    );
   }
 
   private compareValues(first: unknown, second: unknown): number {

@@ -10,6 +10,7 @@ import { JComponentSize, JPassThrough, JSeverity, jMergePartClasses } from 'jrng
 import { JIconComponent } from 'jrng-ui/icon';
 
 export type JBadgeVariant = 'solid' | 'soft' | 'outlined';
+export type JBadgePosition = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
 
 @Component({
   selector: 'j-badge',
@@ -21,7 +22,8 @@ export type JBadgeVariant = 'solid' | 'soft' | 'outlined';
       data-jc-section="root"
       [attr.data-j-active]="active() ? 'true' : null"
       [attr.aria-label]="ariaLabel() || null"
-      [attr.aria-disabled]="disabled()"
+      [attr.aria-disabled]="disabled() ? 'true' : null"
+      [attr.aria-live]="ariaLive() === 'off' ? null : ariaLive()"
     >
       @if (dot()) {
         <span class="j-hidden-accessible">{{ ariaLabel() || 'Status' }}</span>
@@ -66,6 +68,12 @@ export type JBadgeVariant = 'solid' | 'soft' | 'outlined';
         min-height: 1rem;
         padding: 0 var(--j-spacing-xs);
       }
+      .j-badge--xs {
+        font-size: 0.625rem;
+        min-height: 0.875rem;
+        min-width: 0.875rem;
+        padding: 0 0.2rem;
+      }
       .j-badge--md {
         font-size: var(--j-font-size-xs);
         min-height: 1.25rem;
@@ -76,6 +84,12 @@ export type JBadgeVariant = 'solid' | 'soft' | 'outlined';
         min-height: 1.5rem;
         padding: 0 var(--j-spacing-md);
       }
+      .j-badge--xl {
+        font-size: var(--j-font-size-base);
+        min-height: 2rem;
+        min-width: 2rem;
+        padding: 0 var(--j-spacing-3);
+      }
       .j-badge--rounded {
         border-radius: var(--j-radius-full);
       }
@@ -85,6 +99,30 @@ export type JBadgeVariant = 'solid' | 'soft' | 'outlined';
         min-width: 0.5rem;
         padding: 0;
         width: 0.5rem;
+      }
+      .j-badge--overlay {
+        position: absolute;
+        z-index: 1;
+      }
+      .j-badge--top-right {
+        inset-inline-end: 0;
+        top: 0;
+        transform: translate(50%, -50%);
+      }
+      .j-badge--top-left {
+        inset-inline-start: 0;
+        top: 0;
+        transform: translate(-50%, -50%);
+      }
+      .j-badge--bottom-right {
+        bottom: 0;
+        inset-inline-end: 0;
+        transform: translate(50%, 50%);
+      }
+      .j-badge--bottom-left {
+        bottom: 0;
+        inset-inline-start: 0;
+        transform: translate(-50%, 50%);
       }
       .j-badge--secondary {
         --j-badge-accent: var(--j-color-secondary);
@@ -132,6 +170,7 @@ export class JBadgeComponent {
   readonly size = input<JComponentSize>('md');
   readonly icon = input('');
   readonly ariaLabel = input('');
+  readonly ariaLive = input<'off' | 'polite' | 'assertive'>('off');
   readonly styleClass = input('');
   readonly pt = input<JPassThrough | null>(null);
   readonly rounded = input(true, { transform: booleanAttribute });
@@ -139,6 +178,8 @@ export class JBadgeComponent {
   readonly dot = input(false, { transform: booleanAttribute });
   readonly muted = input(false, { transform: booleanAttribute });
   readonly disabled = input(false, { transform: booleanAttribute });
+  readonly overlay = input(false, { transform: booleanAttribute });
+  readonly position = input<JBadgePosition>('top-right');
 
   readonly displayValue = computed(() => {
     const value = this.value();
@@ -155,6 +196,8 @@ export class JBadgeComponent {
         `j-badge--${this.size()}`,
         this.rounded() ? 'j-badge--rounded' : '',
         this.dot() ? 'j-badge--dot' : '',
+        this.overlay() ? 'j-badge--overlay' : '',
+        this.overlay() ? `j-badge--${this.position()}` : '',
         this.muted() ? 'is-muted' : '',
         this.disabled() ? 'is-disabled' : '',
       ],

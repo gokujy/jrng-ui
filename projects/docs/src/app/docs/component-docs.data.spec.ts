@@ -52,7 +52,6 @@ describe('componentDocs', () => {
     expect(componentDocs.some((doc) => doc.slug === 'progress')).toBe(false);
     expect(componentDocs.some((doc) => doc.slug === 'sidebar')).toBe(false);
     expect(componentDocs.some((doc) => doc.slug === 'progress-bar')).toBe(true);
-    expect(componentDocs.some((doc) => doc.slug === 'responsive-sidebar')).toBe(true);
   });
 
   it('omits filler TypeScript for examples that require no backing state', () => {

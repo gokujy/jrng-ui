@@ -122,6 +122,49 @@ describe('JTableComponent', () => {
     expect(fixture.debugElement.query(By.css('j-column-filter'))).toBeNull();
   });
 
+  it('uses single-column sorting by default', () => {
+    const table = fixture.debugElement.query(By.directive(JTableComponent))
+      .componentInstance as JTableComponent;
+
+    expect(table.sortMode).toBe('single');
+
+    table.toggleSort(host.columns[0] as JTableColumn);
+    table.toggleSort(host.columns[2] as JTableColumn);
+
+    expect(table.sortField).toBe('amount');
+    expect(table.multiSortMeta).toEqual([]);
+  });
+
+  it('visibly marks the active sorted header without adding data-cell tooltips', () => {
+    const table = fixture.debugElement.query(By.directive(JTableComponent))
+      .componentInstance as JTableComponent;
+
+    table.toggleSort(host.columns[0] as JTableColumn);
+    fixture.detectChanges();
+
+    const sortedHeader = fixture.nativeElement.querySelector('th[aria-sort="ascending"]');
+    const dataCell = fixture.nativeElement.querySelector('tbody .j-table__cell-content');
+    expect(sortedHeader.querySelector('.j-table__sort').getAttribute('data-j-active')).toBe('true');
+    expect(dataCell.getAttribute('title')).toBeNull();
+    expect(dataCell.hasAttribute('jtooltip')).toBe(false);
+  });
+
+  it('right-aligns action columns unless an alignment is provided', () => {
+    const table = fixture.debugElement.query(By.directive(JTableComponent))
+      .componentInstance as JTableComponent;
+    const actions: JTableColumn = { field: 'actions', header: 'Actions', type: 'actions' };
+    const centeredActions: JTableColumn = {
+      field: 'actions',
+      header: 'Actions',
+      type: 'actions',
+      align: 'center',
+    };
+
+    expect(table.columnClass(actions)).toContain('j-table__cell--end');
+    expect(table.headerColumnClass(actions)).toContain('j-table__header--end');
+    expect(table.columnClass(centeredActions)).toContain('j-table__cell--center');
+  });
+
   it('renders a dedicated accessible filter row when configured', () => {
     host.variant = 'gridlines';
     host.filterDisplay = 'row';
@@ -549,6 +592,25 @@ describe('JTableComponent', () => {
     expect(table.showTableState).toBe(true);
     expect(table.lockableRows).toBe(true);
     expect(table.maximizable).toBe(true);
+  });
+
+  it('honors an explicit single-sort table configuration', () => {
+    const table = fixture.debugElement.query(By.directive(JTableComponent))
+      .componentInstance as JTableComponent;
+    table.sortMode = 'multiple';
+    const config: JTableConfig = { multiSort: false };
+
+    table.config = config;
+    table.ngOnChanges({
+      config: {
+        currentValue: config,
+        previousValue: null,
+        firstChange: false,
+        isFirstChange: () => false,
+      },
+    });
+
+    expect(table.sortMode).toBe('single');
   });
 
   it('emits rowLock once', () => {

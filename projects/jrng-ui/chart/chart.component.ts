@@ -26,6 +26,26 @@ export interface JChartInteractionEvent {
   readonly chart: unknown;
 }
 
+export interface JChartOutsideLabelContext {
+  readonly label: string;
+  readonly value: unknown;
+  readonly percentage: number;
+  readonly dataIndex: number;
+  readonly datasetIndex: number;
+}
+
+export interface JChartOutsideLabelsOptions {
+  readonly enabled?: boolean;
+  readonly color?: string;
+  readonly lineColor?: string;
+  readonly lineWidth?: number;
+  readonly offset?: number;
+  readonly connectorLength?: number;
+  readonly padding?: number;
+  readonly font?: string;
+  readonly formatter?: (context: JChartOutsideLabelContext) => string;
+}
+
 type JChartRecord = Record<string, unknown>;
 
 interface JChartRuntimeConfig {
@@ -40,6 +60,34 @@ interface JChartInstance {
   resize(): void;
   update(mode?: string): void;
   toBase64Image?(type?: string, quality?: number): string;
+}
+
+interface JChartArcElement {
+  readonly x: number;
+  readonly y: number;
+  readonly outerRadius: number;
+  readonly startAngle: number;
+  readonly endAngle: number;
+}
+
+interface JChartRuntimeInstance {
+  readonly ctx: CanvasRenderingContext2D;
+  readonly data: {
+    readonly labels?: readonly unknown[];
+    readonly datasets?: readonly JChartRecord[];
+  };
+  getDatasetMeta(index: number): { readonly data?: readonly unknown[] };
+}
+
+interface JResolvedOutsideLabelsOptions {
+  readonly color: string;
+  readonly lineColor: string;
+  readonly lineWidth: number;
+  readonly offset: number;
+  readonly connectorLength: number;
+  readonly padding: number;
+  readonly font: string;
+  readonly formatter?: (context: JChartOutsideLabelContext) => string;
 }
 
 type JChartConstructor = new (
@@ -166,6 +214,7 @@ export class JChartComponent {
   readonly tooltipFormatter = input<((context: unknown) => string | readonly string[]) | null>(
     null,
   );
+  readonly outsideLabels = input<boolean | JChartOutsideLabelsOptions>(false);
 
   readonly chartClick = output<JChartInteractionEvent>();
   readonly chartHover = output<JChartInteractionEvent>();
@@ -208,6 +257,7 @@ export class JChartComponent {
       this.data();
       this.options();
       this.plugins();
+      this.outsideLabels();
       this.responsive();
       this.loading();
 
@@ -284,8 +334,8 @@ export class JChartComponent {
       this.chart = new ChartConstructor(canvas, {
         type: this.resolvedType(),
         data: this.themedData(canvas),
-        options: this.mergedOptions(),
-        plugins: this.plugins(),
+        options: this.mergedOptions(canvas),
+        plugins: this.mergedPlugins(canvas),
       });
       this.loadError.set('');
     } catch {
@@ -326,11 +376,13 @@ export class JChartComponent {
     return this.type() === 'mixed' ? 'bar' : this.type();
   }
 
-  private mergedOptions(): JChartRecord {
+  private mergedOptions(canvas: HTMLCanvasElement): JChartRecord {
     const userOptions = this.options() ?? {};
     const userPlugins = isRecord(userOptions['plugins']) ? userOptions['plugins'] : {};
     const userLegend = isRecord(userPlugins['legend']) ? userPlugins['legend'] : {};
     const userTooltip = isRecord(userPlugins['tooltip']) ? userPlugins['tooltip'] : {};
+    const userLayout = isRecord(userOptions['layout']) ? userOptions['layout'] : {};
+    const outsideLabels = this.resolvedOutsideLabels(canvas);
     // Spread user options FIRST, then apply the built-in plugin defaults and
     // event handlers so they win. The plugins block is deep-merged (per-plugin)
     // so user plugin options extend the legend/tooltip defaults instead of
@@ -339,6 +391,14 @@ export class JChartComponent {
       responsive: this.responsive(),
       maintainAspectRatio: this.height() === 0,
       ...userOptions,
+      ...(outsideLabels
+        ? {
+            layout: {
+              ...userLayout,
+              padding: userLayout['padding'] ?? outsideLabels.padding,
+            },
+          }
+        : {}),
       plugins: {
         ...userPlugins,
         legend: {
@@ -368,6 +428,113 @@ export class JChartComponent {
       onHover: (event: Event, elements: readonly unknown[], chart: unknown) => {
         this.chartHover.emit({ nativeEvent: event, elements, chart });
       },
+    };
+  }
+
+  private mergedPlugins(canvas: HTMLCanvasElement): readonly unknown[] {
+    const outsideLabelsPlugin = this.outsideLabelsPlugin(canvas);
+    return outsideLabelsPlugin ? [...this.plugins(), outsideLabelsPlugin] : this.plugins();
+  }
+
+  private outsideLabelsPlugin(canvas: HTMLCanvasElement): unknown | null {
+    const options = this.resolvedOutsideLabels(canvas);
+    if (!options) return null;
+
+    return {
+      id: 'jrng-outside-labels',
+      afterDatasetsDraw: (chartValue: unknown) => {
+        const chart = chartValue as JChartRuntimeInstance;
+        const labels = chart.data.labels ?? [];
+        const datasets = chart.data.datasets ?? [];
+        const context = chart.ctx;
+
+        context.save();
+        context.font = options.font;
+        context.textBaseline = 'middle';
+        context.lineWidth = options.lineWidth;
+        context.strokeStyle = options.lineColor;
+        context.fillStyle = options.color;
+
+        datasets.forEach((dataset, datasetIndex) => {
+          const values = Array.isArray(dataset['data']) ? dataset['data'] : [];
+          const total = values.reduce<number>((sum, value) => {
+            const numericValue = Number(value);
+            return Number.isFinite(numericValue) ? sum + numericValue : sum;
+          }, 0);
+          const elements = chart.getDatasetMeta(datasetIndex).data ?? [];
+
+          elements.forEach((elementValue, dataIndex) => {
+            if (!isArcElement(elementValue)) return;
+            const angle = (elementValue.startAngle + elementValue.endAngle) / 2;
+            const directionX = Math.cos(angle);
+            const directionY = Math.sin(angle);
+            const edgeX = elementValue.x + directionX * elementValue.outerRadius;
+            const edgeY = elementValue.y + directionY * elementValue.outerRadius;
+            const bendX = edgeX + directionX * options.offset;
+            const bendY = edgeY + directionY * options.offset;
+            const endX =
+              bendX + (directionX >= 0 ? options.connectorLength : -options.connectorLength);
+            const rawValue = values[dataIndex];
+            const numericValue = Number(rawValue);
+            const labelContext: JChartOutsideLabelContext = {
+              label: String(labels[dataIndex] ?? ''),
+              value: rawValue,
+              percentage:
+                total > 0 && Number.isFinite(numericValue) ? (numericValue / total) * 100 : 0,
+              dataIndex,
+              datasetIndex,
+            };
+            const label = options.formatter
+              ? options.formatter(labelContext)
+              : `${labelContext.label}: ${String(rawValue ?? '')}`;
+            if (!label) return;
+
+            context.beginPath();
+            context.moveTo(edgeX, edgeY);
+            context.lineTo(bendX, bendY);
+            context.lineTo(endX, bendY);
+            context.stroke();
+            context.textAlign = directionX >= 0 ? 'left' : 'right';
+            context.fillText(label, endX + (directionX >= 0 ? 4 : -4), bendY);
+          });
+        });
+        context.restore();
+      },
+    };
+  }
+
+  private resolvedOutsideLabels(canvas: HTMLCanvasElement): JResolvedOutsideLabelsOptions | null {
+    if (!['pie', 'doughnut'].includes(this.type())) return null;
+    const value = this.outsideLabels();
+    if (value === false || (isRecord(value) && value['enabled'] === false)) return null;
+    const options = value === true ? {} : value;
+    if (!isRecord(options)) return null;
+    const view = canvas.ownerDocument.defaultView;
+    const styles = view?.getComputedStyle(canvas);
+    const token = (name: string, fallback: string) =>
+      styles?.getPropertyValue(name).trim() || fallback;
+
+    return {
+      color:
+        typeof options['color'] === 'string'
+          ? options['color']
+          : token('--j-color-foreground', '#111827'),
+      lineColor:
+        typeof options['lineColor'] === 'string'
+          ? options['lineColor']
+          : token('--j-color-border', '#cbd5e1'),
+      lineWidth: finiteNumber(options['lineWidth'], 1),
+      offset: finiteNumber(options['offset'], 10),
+      connectorLength: finiteNumber(options['connectorLength'], 18),
+      padding: finiteNumber(options['padding'], 64),
+      font:
+        typeof options['font'] === 'string'
+          ? options['font']
+          : `500 12px ${token('--j-font-family-sans', 'sans-serif')}`,
+      formatter:
+        typeof options['formatter'] === 'function'
+          ? (options['formatter'] as (context: JChartOutsideLabelContext) => string)
+          : undefined,
     };
   }
 
@@ -434,6 +601,17 @@ export class JChartComponent {
 
 function isRecord(value: unknown): value is JChartRecord {
   return typeof value === 'object' && value != null && !Array.isArray(value);
+}
+
+function isArcElement(value: unknown): value is JChartArcElement {
+  if (!isRecord(value)) return false;
+  return ['x', 'y', 'outerRadius', 'startAngle', 'endAngle'].every(
+    (key) => typeof value[key] === 'number' && Number.isFinite(value[key]),
+  );
+}
+
+function finiteNumber(value: unknown, fallback: number): number {
+  return typeof value === 'number' && Number.isFinite(value) ? value : fallback;
 }
 
 function withAlpha(color: string, alpha: number): string {

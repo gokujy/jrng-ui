@@ -44,6 +44,10 @@
 }
 
 .j-toast {
+  --j-toast-accent: var(--j-color-info);
+  --j-toast-accent-soft: var(--j-color-info-soft);
+  --j-toast-accent-foreground: var(--j-color-info-foreground);
+
   align-items: flex-start;
   background: var(--j-color-card);
   border: 1px solid var(--j-color-border);
@@ -61,32 +65,79 @@
 }
 
 .j-toast__mark {
-  background: currentColor;
+  align-items: center;
+  background: var(--j-toast-accent);
   border-radius: var(--j-radius-full);
-  box-shadow: 0 0 0 0.3rem color-mix(in srgb, currentColor 14%, transparent);
-  height: 0.625rem;
-  margin: 0.35rem 0.15rem 0;
-  width: 0.625rem;
+  box-shadow: 0 0 0 0.3rem color-mix(in srgb, var(--j-toast-accent) 14%, transparent);
+  color: var(--j-toast-accent-foreground);
+  display: inline-flex;
+  font-size: var(--j-font-size-xs);
+  font-weight: var(--j-font-weight-bold);
+  height: 1.5rem;
+  justify-content: center;
+  line-height: 1;
+  width: 1.5rem;
 }
 
-.j-toast--success .j-toast__mark {
-  color: var(--j-color-success);
+.j-toast--success {
+  --j-toast-accent: var(--j-color-success);
+  --j-toast-accent-soft: var(--j-color-success-soft);
+  --j-toast-accent-foreground: var(--j-color-success-foreground);
 }
 
-.j-toast--error .j-toast__mark {
-  color: var(--j-color-danger);
+.j-toast--error {
+  --j-toast-accent: var(--j-color-danger);
+  --j-toast-accent-soft: var(--j-color-danger-soft);
+  --j-toast-accent-foreground: var(--j-color-danger-foreground);
 }
 
-.j-toast--warning .j-toast__mark {
-  color: var(--j-color-warning);
+.j-toast--warning {
+  --j-toast-accent: var(--j-color-warning);
+  --j-toast-accent-soft: var(--j-color-warning-soft);
+  --j-toast-accent-foreground: var(--j-color-warning-foreground);
 }
 
-.j-toast--info .j-toast__mark {
-  color: var(--j-color-info);
+.j-toast--neutral {
+  --j-toast-accent: var(--j-color-neutral);
+  --j-toast-accent-soft: var(--j-color-neutral-soft);
+  --j-toast-accent-foreground: var(--j-color-neutral-foreground);
 }
 
-.j-toast--neutral .j-toast__mark {
-  color: var(--j-color-muted-foreground);
+.j-toast--soft {
+  background: var(--j-toast-accent-soft);
+  border-color: color-mix(in srgb, var(--j-toast-accent) 35%, transparent);
+}
+
+.j-toast--outlined {
+  border-color: var(--j-toast-accent);
+  border-inline-start-width: 0.25rem;
+}
+
+.j-toast--solid {
+  background: var(--j-toast-accent);
+  border-color: var(--j-toast-accent);
+  color: var(--j-toast-accent-foreground);
+}
+
+.j-toast--solid .j-toast__mark {
+  background: color-mix(in srgb, currentColor 18%, transparent);
+  box-shadow: 0 0 0 0.3rem color-mix(in srgb, currentColor 18%, transparent);
+  color: currentColor;
+}
+
+.j-toast--solid .j-toast__message,
+.j-toast--solid .j-toast__close {
+  color: currentColor;
+}
+
+.j-toast--solid .j-toast__action {
+  border-color: color-mix(in srgb, currentColor 55%, transparent);
+}
+
+.j-toast--solid .j-toast__action--secondary,
+.j-toast--solid .j-toast__action--ghost {
+  background: color-mix(in srgb, currentColor 12%, transparent);
+  color: currentColor;
 }
 
 .j-toast__title {

@@ -10,6 +10,7 @@ import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
 @Component({
   selector: 'j-progress-spinner',
   imports: [],
+  host: { style: 'display: inline-flex;' },
   template: `<span
     [class]="spinnerClasses()"
     data-jc-name="progress-spinner"
@@ -35,6 +36,12 @@ import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
       @keyframes j-progress-spinner-spin {
         to {
           transform: rotate(360deg);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .j-progress-spinner {
+          animation-duration: 1.6s;
         }
       }
     `,

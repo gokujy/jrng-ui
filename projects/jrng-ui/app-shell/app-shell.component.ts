@@ -1,10 +1,14 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   ElementRef,
   booleanAttribute,
+  computed,
+  inject,
   input,
   model,
+  signal,
   viewChild,
 } from '@angular/core';
 import { jCreateId } from 'jrng-ui/core';
@@ -30,11 +34,11 @@ import { jCreateId } from 'jrng-ui/core';
           #sidebarToggle
           class="j-app-shell__toggle"
           type="button"
-          [attr.aria-expanded]="sidebarOpen()"
+          [attr.aria-expanded]="sidebarExpanded()"
           [attr.aria-controls]="sidebarId"
           (click)="toggleSidebar()"
         >
-          {{ sidebarOpen() ? 'Close' : 'Menu' }}
+          {{ sidebarToggleLabel() }}
         </button>
         <ng-content select="[jShellHeader]" />
       </header>
@@ -184,16 +188,44 @@ import { jCreateId } from 'jrng-ui/core';
 })
 export class JAppShellComponent {
   protected readonly sidebarId = jCreateId('j-app-shell-sidebar');
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
+  private readonly destroyRef = inject(DestroyRef);
   private readonly sidebarToggle = viewChild<ElementRef<HTMLButtonElement>>('sidebarToggle');
+  private readonly overlayMode = signal(false);
 
   readonly sidebarCollapsed = model(false);
   readonly sidebarOpen = model(false);
   readonly sidebarLabel = input('Primary navigation');
   readonly footer = input(true, { transform: booleanAttribute });
   readonly styleClass = input('');
+  readonly sidebarExpanded = computed(() =>
+    this.overlayMode() ? this.sidebarOpen() : !this.sidebarCollapsed(),
+  );
+  readonly sidebarToggleLabel = computed(() => {
+    if (this.overlayMode()) return this.sidebarOpen() ? 'Close menu' : 'Open menu';
+    return this.sidebarCollapsed() ? 'Expand menu' : 'Collapse menu';
+  });
+
+  constructor() {
+    const view = this.host.ownerDocument.defaultView;
+    if (!view || typeof view.matchMedia !== 'function') return;
+    const mediaQuery = view.matchMedia('(max-width: 768px)');
+    const updateMode = (matches: boolean): void => {
+      this.overlayMode.set(matches);
+      if (!matches) this.sidebarOpen.set(false);
+    };
+    updateMode(mediaQuery.matches);
+    const onChange = (event: MediaQueryListEvent): void => updateMode(event.matches);
+    mediaQuery.addEventListener('change', onChange);
+    this.destroyRef.onDestroy(() => mediaQuery.removeEventListener('change', onChange));
+  }
 
   toggleSidebar(): void {
-    this.sidebarOpen.set(!this.sidebarOpen());
+    if (this.overlayMode()) {
+      this.sidebarOpen.update((open) => !open);
+      return;
+    }
+    this.sidebarCollapsed.update((collapsed) => !collapsed);
   }
 
   protected closeSidebar(restoreFocus = false): void {

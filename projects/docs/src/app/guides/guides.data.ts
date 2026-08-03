@@ -349,7 +349,7 @@ export class CustomerToolsComponent {
     slug: 'hierarchical-inputs',
     title: 'Build hierarchical inputs, mentions, and split actions',
     description:
-      'Compose customer workflows with Split Button, Tree Select, Cascader, Mention, and multi-column Select.',
+      'Compose customer workflows with Split Button, Tree Select, Cascader, Mention, and Table row selection.',
     problem:
       'Hierarchical choices, caret suggestions, and related actions need distinct keyboard models while sharing form, overlay, theme, and accessibility foundations.',
     implementation: [

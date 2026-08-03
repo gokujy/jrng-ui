@@ -1127,13 +1127,6 @@ import { JSelectComponent } from 'jrng-ui/select';`,
           'ready',
         ),
         summary(
-          'Page Header',
-          'j-page-header',
-          'jrng-ui/page-header',
-          'Title, description, breadcrumbs, and actions.',
-          'ready',
-        ),
-        summary(
           'Container',
           'j-container',
           'jrng-ui/container',
@@ -1477,29 +1470,28 @@ readonly products = [
         'Toast displays short feedback messages such as saved, failed, loading, or completed states.',
         'Place one j-toast near the application root and use the toast service from actions or workflows.',
       ],
-      importCode: `import { JToastContainerComponent, ToastService } from 'jrng-ui/toast';`,
-      basicUsage: `<j-toast position="top-right"></j-toast>`,
-      variants: `toast.success('Update complete');
-toast.error('Could not save');
-toast.info('Export started');
-toast.warning('Review required');`,
+      importCode: `import { JToastContainerComponent, JToastService } from 'jrng-ui/toast';`,
+      basicUsage: `<j-toast position="top-right" />`,
+      variants: `toast.show({ severity: 'success', variant: 'soft', summary: 'Update complete' });
+toast.show({ severity: 'info', variant: 'outlined', summary: 'Export started' });
+toast.show({ severity: 'error', variant: 'solid', summary: 'Could not save' });`,
       states: `toast.show({
-  severity: 'success',
-  summary: 'Saved',
-  detail: 'The order was updated.',
-  life: 3000
+  severity: 'neutral',
+  variant: 'outlined',
+  summary: 'Order archived',
+  detail: 'The order was moved to the archive.',
+  sticky: true,
+  actions: [{ label: 'Undo', command: () => restoreOrder() }]
 });
 
 toast.clear();`,
       inputs: [
         api(
           'position',
-          'top-right | top-left | bottom-right | bottom-left',
+          'top-right | top-left | bottom-right | bottom-left | top-center | bottom-center',
           "'top-right'",
           'Toast stack position.',
         ),
-        api('duration', 'number', '3000', 'Default message duration.'),
-        api('styleClass', 'string', "''", 'Adds a custom class to the container.'),
       ],
       outputs: [],
       tokens: tokens('toast', [
@@ -1508,9 +1500,12 @@ toast.clear();`,
         '--j-color-info',
         '--j-color-warning',
       ]),
-      stylingHtml: `<j-toast styleClass="my-toast-stack"></j-toast>`,
-      stylingCss: `.my-toast-stack {
-  --j-toast-radius: var(--j-radius-lg);
+      stylingHtml: `<div class="notification-region">
+  <j-toast />
+</div>`,
+      stylingCss: `.notification-region {
+  --j-color-info: #075985;
+  --j-color-info-soft: #e0f2fe;
 }`,
       accessibility: [
         'Use concise messages.',

@@ -49,6 +49,7 @@ export type JTransferListResponsiveMode = 'auto' | 'stack' | 'none';
               [attr.aria-selected]="isSourceSelected(item)"
               [attr.aria-disabled]="item.disabled || null"
               (click)="toggleSource(item)"
+              (dblclick)="moveSourceItemOnDoubleClick(item)"
             >
               {{ item.label }}
             </button>
@@ -113,6 +114,7 @@ export type JTransferListResponsiveMode = 'auto' | 'stack' | 'none';
               [attr.aria-selected]="isTargetSelected(item)"
               [attr.aria-disabled]="item.disabled || null"
               (click)="toggleTarget(item)"
+              (dblclick)="moveTargetItemOnDoubleClick(item)"
             >
               {{ item.label }}
             </button>
@@ -237,6 +239,7 @@ export class JTransferListComponent {
   readonly targetAriaLabel = input('Selected items');
   readonly filterPlaceholder = input('Search');
   readonly filter = input(false, { transform: booleanAttribute });
+  readonly moveOnDoubleClick = input(false, { transform: booleanAttribute });
   readonly responsiveMode = input<JTransferListResponsiveMode>('auto');
   readonly breakpoint = input('768px');
   readonly stacked = signal(false);
@@ -340,6 +343,16 @@ export class JTransferListComponent {
         .filter((item) => !item.disabled)
         .map((item) => item.value),
     );
+  }
+
+  moveSourceItemOnDoubleClick(item: JNormalizedSelectionOption): void {
+    if (!this.moveOnDoubleClick() || item.disabled) return;
+    this.moveToTarget([item.value]);
+  }
+
+  moveTargetItemOnDoubleClick(item: JNormalizedSelectionOption): void {
+    if (!this.moveOnDoubleClick() || item.disabled) return;
+    this.moveToSource([item.value]);
   }
 
   hasMovableSource(): boolean {

@@ -209,9 +209,13 @@ export type JListboxOption = JSelectionOptionSource;
         width: 100%;
       }
 
-      .j-listbox__option:hover,
-      .j-listbox__option.is-active {
+      .j-listbox__option:hover {
         background: var(--j-color-surface-muted);
+      }
+
+      .j-listbox:focus-visible .j-listbox__option.is-active {
+        outline: 2px solid var(--j-color-primary);
+        outline-offset: -2px;
       }
 
       .j-listbox__option.is-selected {

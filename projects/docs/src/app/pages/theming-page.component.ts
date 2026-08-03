@@ -171,12 +171,32 @@ interface PresetOption {
             <div class="j-theme-guide__table-wrap">
               <table>
                 <thead>
-                  <tr><th>Account</th><th>Status</th><th>Owner</th><th>Value</th></tr>
+                  <tr>
+                    <th>Account</th>
+                    <th>Status</th>
+                    <th>Owner</th>
+                    <th>Value</th>
+                  </tr>
                 </thead>
                 <tbody>
-                  <tr><td>Northstar</td><td>Active</td><td>R. Shah</td><td>$32,400</td></tr>
-                  <tr><td>Harbor Labs</td><td>Review</td><td>M. Chen</td><td>$18,750</td></tr>
-                  <tr><td>Canopy</td><td>Active</td><td>A. Patel</td><td>$11,920</td></tr>
+                  <tr>
+                    <td>Northstar</td>
+                    <td>Active</td>
+                    <td>R. Shah</td>
+                    <td>$32,400</td>
+                  </tr>
+                  <tr>
+                    <td>Harbor Labs</td>
+                    <td>Review</td>
+                    <td>M. Chen</td>
+                    <td>$18,750</td>
+                  </tr>
+                  <tr>
+                    <td>Canopy</td>
+                    <td>Active</td>
+                    <td>A. Patel</td>
+                    <td>$11,920</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -250,8 +270,8 @@ export const appConfig: ApplicationConfig = &#123;
           <h3>Accessibility</h3>
           <p>
             Every preset provides visible focus, semantic disabled states, RTL-safe spacing,
-            reduced-motion behavior, and forced-colour support. Applications remain responsible
-            for accessible names and contrast when overriding tokens.
+            reduced-motion behavior, and forced-colour support. Applications remain responsible for
+            accessible names and contrast when overriding tokens.
           </p>
         </article>
         <article>
@@ -265,7 +285,9 @@ export const appConfig: ApplicationConfig = &#123;
     </div>
   `,
   styles: `
-    .j-theme-guide { padding-block-end: var(--j-spacing-8, 3rem); }
+    .j-theme-guide {
+      padding-block-end: var(--j-spacing-8, 3rem);
+    }
     .j-theme-guide__preset-grid,
     .j-theme-guide__metrics,
     .j-theme-guide__reference {
@@ -282,10 +304,16 @@ export const appConfig: ApplicationConfig = &#123;
       gap: var(--j-spacing-3);
       padding: var(--j-spacing-5);
     }
-    .j-theme-guide__preset-name { font-size: var(--j-font-size-lg); font-weight: 700; }
+    .j-theme-guide__preset-name {
+      font-size: var(--j-font-size-lg);
+      font-weight: 700;
+    }
     .j-theme-guide__preset-card p,
     .j-theme-guide__panel p,
-    .j-theme-guide__reference p { color: var(--j-color-muted-foreground); line-height: 1.6; }
+    .j-theme-guide__reference p {
+      color: var(--j-color-muted-foreground);
+      line-height: 1.6;
+    }
     .j-theme-guide__controls {
       align-items: end;
       background: var(--j-color-card);
@@ -296,8 +324,14 @@ export const appConfig: ApplicationConfig = &#123;
       grid-template-columns: repeat(4, minmax(8rem, 1fr)) auto;
       padding: var(--j-spacing-4);
     }
-    .j-theme-guide__controls label { display: grid; gap: var(--j-spacing-2); }
-    .j-theme-guide__controls label > span { font-size: var(--j-font-size-sm); font-weight: 600; }
+    .j-theme-guide__controls label {
+      display: grid;
+      gap: var(--j-spacing-2);
+    }
+    .j-theme-guide__controls label > span {
+      font-size: var(--j-font-size-sm);
+      font-weight: 600;
+    }
     .j-theme-guide__controls select {
       background: var(--j-input-bg, var(--j-color-card));
       border: 1px solid var(--j-input-border-color, var(--j-color-border));
@@ -307,7 +341,10 @@ export const appConfig: ApplicationConfig = &#123;
       min-height: var(--j-input-height-md, 2.5rem);
       padding-inline: var(--j-spacing-3);
     }
-    .j-theme-guide__controls select:focus-visible { outline: var(--j-focus-ring); outline-offset: 2px; }
+    .j-theme-guide__controls select:focus-visible {
+      outline: var(--j-focus-ring);
+      outline-offset: 2px;
+    }
     .j-theme-guide__preview {
       background: var(--j-color-background);
       border: 1px solid var(--j-color-border);
@@ -328,7 +365,11 @@ export const appConfig: ApplicationConfig = &#123;
       gap: var(--j-spacing-3);
       justify-content: space-between;
     }
-    .j-theme-guide__preview-header nav { display: flex; flex-wrap: wrap; gap: var(--j-spacing-2); }
+    .j-theme-guide__preview-header nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--j-spacing-2);
+    }
     .j-theme-guide__preview-header a {
       border-radius: var(--j-radius-md);
       color: var(--j-color-muted-foreground);
@@ -338,14 +379,23 @@ export const appConfig: ApplicationConfig = &#123;
       background: var(--j-color-selection);
       color: var(--j-color-primary);
     }
-    .j-theme-guide__metric { display: block; font-size: var(--j-font-size-2xl, 1.75rem); }
+    .j-theme-guide__metric {
+      display: block;
+      font-size: var(--j-font-size-2xl, 1.75rem);
+    }
     .j-theme-guide__form {
       display: grid;
       gap: var(--j-spacing-4);
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-    .j-theme-guide__table-wrap { overflow-x: auto; }
-    .j-theme-guide__table-wrap table { border-collapse: collapse; min-width: 38rem; width: 100%; }
+    .j-theme-guide__table-wrap {
+      overflow-x: auto;
+    }
+    .j-theme-guide__table-wrap table {
+      border-collapse: collapse;
+      min-width: 38rem;
+      width: 100%;
+    }
     .j-theme-guide__table-wrap th,
     .j-theme-guide__table-wrap td {
       border-bottom: 1px solid var(--j-table-border-color, var(--j-color-border));
@@ -374,26 +424,43 @@ export const appConfig: ApplicationConfig = &#123;
       overflow-x: auto;
       padding: var(--j-spacing-5);
     }
-    .j-theme-guide__reference { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .j-theme-guide__reference article { display: grid; gap: var(--j-spacing-2); }
+    .j-theme-guide__reference {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .j-theme-guide__reference article {
+      display: grid;
+      gap: var(--j-spacing-2);
+    }
     @media (max-width: 860px) {
-      .j-theme-guide__controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .j-theme-guide__controls {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
       .j-theme-guide__preset-grid,
-      .j-theme-guide__metrics { grid-template-columns: 1fr; }
+      .j-theme-guide__metrics {
+        grid-template-columns: 1fr;
+      }
     }
     @media (max-width: 560px) {
       .j-theme-guide__controls,
       .j-theme-guide__form,
-      .j-theme-guide__reference { grid-template-columns: 1fr; }
-      .j-theme-guide__preview { padding: var(--j-spacing-3); }
+      .j-theme-guide__reference {
+        grid-template-columns: 1fr;
+      }
+      .j-theme-guide__preview {
+        padding: var(--j-spacing-3);
+      }
     }
     @media (prefers-reduced-motion: reduce) {
-      .j-theme-guide__preview * { scroll-behavior: auto !important; }
+      .j-theme-guide__preview * {
+        scroll-behavior: auto !important;
+      }
     }
     @media (forced-colors: active) {
       .j-theme-guide__preview,
       .j-theme-guide__panel,
-      .j-theme-guide__overlay { border-color: CanvasText; }
+      .j-theme-guide__overlay {
+        border-color: CanvasText;
+      }
     }
   `,
 })

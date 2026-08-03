@@ -3,8 +3,11 @@
   position: relative;
   display: block;
   overflow: hidden;
-  border-radius: var(--j-radius-md, 0.5rem);
-  background: var(--j-surface-muted, #f1f5f9);
+  border: 1px solid var(--j-color-border);
+  border-radius: var(--j-radius-lg, 0.75rem);
+  background: var(--j-color-surface-subtle, #f1f5f9);
+  box-shadow: var(--j-shadow-sm);
+  inline-size: 100%;
 }
 
 .j-swipe-actions__content {
@@ -12,6 +15,8 @@
   z-index: 1;
   min-inline-size: 0;
   background: var(--j-surface, #fff);
+  min-block-size: 4.75rem;
+  padding: var(--j-spacing-4);
   transition: transform var(--j-transition-normal, 180ms) ease;
   will-change: transform;
 }
@@ -27,6 +32,7 @@
   display: flex;
   inline-size: var(--j-swipe-actions-width);
   align-items: stretch;
+  overflow: hidden;
 }
 
 .j-swipe-actions__actions--start {
@@ -41,6 +47,19 @@
 
 .j-swipe-actions__actions :is(button, j-button) {
   block-size: 100%;
+  inline-size: 100%;
+}
+
+.j-swipe-actions__actions--start {
+  background: var(--j-color-success-soft);
+}
+
+.j-swipe-actions__actions--end {
+  background: var(--j-color-danger-soft);
+}
+
+:host(.j-swipe-actions--open) .j-swipe-actions__content {
+  box-shadow: var(--j-shadow-md);
 }
 
 .j-swipe-actions__loading {

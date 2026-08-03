@@ -6,8 +6,6 @@ import {
   Component,
   computed,
   ContentChild,
-  contentChildren,
-  Directive,
   DestroyRef,
   effect,
   ElementRef,
@@ -74,31 +72,6 @@ export interface JSelectItemContext {
   readonly value: unknown;
   readonly selected: boolean;
   readonly disabled: boolean;
-}
-
-export type JSelectColumnAlign = 'start' | 'center' | 'end';
-
-export interface JSelectColumn {
-  readonly field: string;
-  readonly header: string;
-  readonly width?: string;
-  readonly align?: JSelectColumnAlign;
-  readonly sortable?: boolean;
-  readonly formatter?: (value: unknown, option: JSelectOptionSource) => string;
-}
-
-export interface JSelectCellContext {
-  readonly $implicit: unknown;
-  readonly value: unknown;
-  readonly option: JSelectOptionSource;
-  readonly column: JSelectColumn;
-  readonly selected: boolean;
-}
-
-@Directive({ selector: 'ng-template[jSelectCell]' })
-export class JSelectCellDirective {
-  readonly field = input.required<string>({ alias: 'jSelectCell' });
-  readonly templateRef = inject<TemplateRef<JSelectCellContext>>(TemplateRef);
 }
 
 @Component({
@@ -178,8 +151,6 @@ export class JSelectComponent implements ControlValueAccessor {
   readonly virtualScrollItemSize = input(40, { transform: numberAttribute });
   readonly scrollHeight = input('15rem');
   readonly disabled = input(false, { transform: booleanAttribute });
-  readonly columns = input<readonly JSelectColumn[]>([]);
-  readonly sortable = input(false, { transform: booleanAttribute });
 
   readonly valueChange = output<unknown>();
   readonly selectionChange = output<JSelectOption | null>();
@@ -193,7 +164,6 @@ export class JSelectComponent implements ControlValueAccessor {
   readonly errorId = jCreateId('j-select-error');
   readonly listboxId = jCreateId('j-select-listbox');
   readonly filterId = jCreateId('j-select-filter');
-  readonly cellTemplates = contentChildren(JSelectCellDirective);
 
   value: unknown = null;
   private readonly formDisabled = signal(false);
@@ -207,8 +177,6 @@ export class JSelectComponent implements ControlValueAccessor {
 
   filterText = '';
   activeIndex = -1;
-  readonly sortField = signal('');
-  readonly sortDirection = signal<1 | -1>(1);
   private readonly typeahead = jCreateTypeahead<JSelectOption>();
   private asyncController?: JAsyncDataController<JSelectOptionSource, JSelectAsyncQuery>;
   private searchTimer?: ReturnType<typeof setTimeout>;
@@ -264,17 +232,7 @@ export class JSelectComponent implements ControlValueAccessor {
           jMatchesFilter(option.label, query, this.filterMatchMode()),
         )
       : this.normalizedOptions;
-    const field = this.sortField();
-    if (!field) return filtered;
-    const direction = this.sortDirection();
-    return [...filtered].sort(
-      (left, right) =>
-        String(this.columnValue(left.source, field)).localeCompare(
-          String(this.columnValue(right.source, field)),
-          undefined,
-          { numeric: true, sensitivity: 'base' },
-        ) * direction,
-    );
+    return filtered;
   }
 
   get visibleItems(): readonly JSelectListItem[] {
@@ -300,48 +258,6 @@ export class JSelectComponent implements ControlValueAccessor {
   /** Virtual scrolling applies only to flat (ungrouped) lists. */
   get useVirtual(): boolean {
     return this.virtualScroll() && !this.isGrouped && !this.isLoading;
-  }
-
-  get columnGridTemplate(): string {
-    return this.columns()
-      .map((column) => column.width || 'minmax(8rem, 1fr)')
-      .join(' ');
-  }
-
-  sortColumn(column: JSelectColumn, event: Event): void {
-    event.stopPropagation();
-    if (!this.sortable() && !column.sortable) return;
-    if (this.sortField() === column.field) {
-      this.sortDirection.update((direction) => (direction === 1 ? -1 : 1));
-    } else {
-      this.sortField.set(column.field);
-      this.sortDirection.set(1);
-    }
-    this.activeIndex = this.firstEnabledIndex();
-  }
-
-  columnValue(option: JSelectOptionSource, field: string): unknown {
-    return typeof option === 'object' && option !== null ? option[field] : option;
-  }
-
-  formattedCell(option: JSelectOption, column: JSelectColumn): string {
-    const value = this.columnValue(option.source, column.field);
-    return column.formatter ? column.formatter(value, option.source) : String(value ?? '');
-  }
-
-  cellTemplate(field: string): TemplateRef<JSelectCellContext> | null {
-    return this.cellTemplates().find((template) => template.field() === field)?.templateRef ?? null;
-  }
-
-  cellContext(option: JSelectOption, column: JSelectColumn): JSelectCellContext {
-    const value = this.columnValue(option.source, column.field);
-    return {
-      $implicit: value,
-      value,
-      option: option.source,
-      column,
-      selected: this.isSelected(option),
-    };
   }
 
   private scrollActiveIntoView(): void {

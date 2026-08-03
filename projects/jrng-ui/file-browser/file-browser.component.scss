@@ -10,7 +10,13 @@
   display: flex;
   gap: var(--j-spacing-4);
   justify-content: space-between;
-  padding: var(--j-spacing-4);
+  min-height: 3.5rem;
+  padding: var(--j-spacing-2) var(--j-spacing-3);
+}
+.j-file-browser__header h2 {
+  font-size: var(--j-font-size-lg, 1.125rem);
+  line-height: 1.2;
+  white-space: nowrap;
 }
 .j-file-browser__header h2,
 .j-file-browser__header p,
@@ -30,6 +36,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--j-spacing-2);
+  justify-content: flex-end;
+  margin-inline-start: auto;
 }
 .j-file-browser button,
 .j-file-browser select {
@@ -53,6 +61,22 @@
 .j-file-browser button:disabled,
 .j-file-browser.is-disabled {
   opacity: var(--j-disabled-opacity);
+}
+.j-file-browser .j-file-browser__icon-button {
+  align-items: center;
+  display: inline-flex;
+  justify-content: center;
+  min-width: 2.5rem;
+  padding-inline: var(--j-spacing-2);
+}
+.j-file-browser__visually-hidden {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
 }
 .j-file-browser__select {
   display: grid;

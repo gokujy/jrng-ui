@@ -18,7 +18,6 @@ import { JFileUploadComponent } from 'jrng-ui/file-upload';
 import { JCardComponent } from 'jrng-ui/card';
 import { JTabComponent, JTabsComponent } from 'jrng-ui/tabs';
 import { JMenuComponent } from 'jrng-ui/menu';
-import { JPageHeaderComponent } from 'jrng-ui/page-header';
 import { JTooltipDirective } from 'jrng-ui/tooltip';
 import { JEditorComponent } from 'jrng-ui/editor';
 
@@ -45,12 +44,10 @@ import { JEditorComponent } from 'jrng-ui/editor';
     JTabsComponent,
     JTabComponent,
     JMenuComponent,
-    JPageHeaderComponent,
     JTooltipDirective,
     JEditorComponent,
   ],
   template: `
-    <j-page-header title="Compatibility fixture" />
     <j-card>
       <j-button label="Save" (onClick)="activated = true" />
       <j-input name="name" [(ngModel)]="name" />

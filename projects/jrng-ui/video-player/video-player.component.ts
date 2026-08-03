@@ -52,20 +52,29 @@ import { DomSanitizer } from '@angular/platform-browser';
   `,
   styles: [
     `
+      :host {
+        display: block;
+        width: 100%;
+      }
+
       .j-video-player {
-        background: var(--j-color-card);
-        border: 1px solid var(--j-color-border);
+        background: #000;
+        border: 1px solid color-mix(in srgb, white 16%, transparent);
         border-radius: var(--j-radius-lg);
         display: grid;
-        gap: var(--j-spacing-2);
+        box-shadow: var(--j-shadow-lg);
         margin: 0;
+        max-width: 100%;
         overflow: hidden;
+        width: 100%;
       }
 
       .j-video-player__media {
         aspect-ratio: 16 / 9;
         background: black;
         display: block;
+        max-height: min(75vh, 50rem);
+        object-fit: contain;
         width: 100%;
       }
 
@@ -74,8 +83,9 @@ import { DomSanitizer } from '@angular/platform-browser';
       }
 
       .j-video-player figcaption {
-        color: var(--j-color-muted-foreground);
-        padding: 0 var(--j-spacing-3) var(--j-spacing-3);
+        background: linear-gradient(90deg, #111 0%, #1a1a1a 100%);
+        color: #fff;
+        padding: var(--j-spacing-2) var(--j-spacing-3);
       }
     `,
   ],

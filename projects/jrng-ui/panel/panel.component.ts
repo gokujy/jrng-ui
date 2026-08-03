@@ -76,12 +76,21 @@ export type JPanelVariant = 'bordered' | 'borderless' | 'filled' | 'elevated';
   `,
   styles: [
     `
+      :host {
+        display: block;
+        min-width: 0;
+        width: 100%;
+      }
+
       .j-panel {
         background: var(--j-color-surface);
         border: 1px solid var(--j-color-border);
         border-radius: var(--j-radius-md, 0.5rem);
+        box-sizing: border-box;
         color: var(--j-color-text);
+        min-width: 0;
         overflow: hidden;
+        width: 100%;
       }
       .j-panel--borderless {
         border: 0;

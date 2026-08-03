@@ -43,6 +43,13 @@
   gap: var(--j-spacing-1, 0.25rem);
 }
 
+.j-tree-select__indicator {
+  align-items: center;
+  display: inline-flex;
+  flex: 0 0 auto;
+  justify-content: center;
+}
+
 .j-tree-select__chip,
 .j-tree-select__overflow {
   border-radius: var(--j-radius-sm, 0.25rem);
@@ -61,12 +68,34 @@
 }
 
 .j-tree-select__clear {
+  align-items: center;
+  display: inline-flex;
+  justify-content: center;
   position: absolute;
-  inset-block-start: 1.75rem;
-  inset-inline-end: 2rem;
+  inset-block-start: 2.75rem;
+  inset-inline-end: 2.25rem;
+  block-size: 1.75rem;
+  inline-size: 1.75rem;
+  transform: translateY(-50%);
   border: 0;
+  border-radius: var(--j-radius-sm, 0.25rem);
   background: transparent;
   color: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+.j-tree-select:not(:has(> .j-tree-select__label)) > .j-tree-select__clear {
+  inset-block-start: 1.25rem;
+}
+
+.j-tree-select__clear:hover {
+  background: var(--j-color-muted, #e2e8f0);
+}
+
+.j-tree-select__clear:focus-visible {
+  outline: 2px solid var(--j-color-primary, #2563eb);
+  outline-offset: 1px;
 }
 
 .j-tree-select__panel {

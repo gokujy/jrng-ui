@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, signal } from '@angular/core';
+import { JFileRemoteItem } from 'jrng-ui/file-upload';
 import {
   COMPONENT_PREVIEW_IMPORTS,
   ComponentDetailViewBase,
@@ -15,14 +16,23 @@ import {
           <j-file-upload
             title="Add files"
             description="Drag files here or choose from your device."
+            [existingFiles]="uploadedFileExamples"
+            previewBaseUrl="/assets/images"
+            downloadBaseUrl="/assets/images"
+            showRename
             multiple
+            (renameFile)="fileActionMessage.set('Renamed selected file to ' + $event.name)"
+            (renameExistingFile)="fileActionMessage.set('Renamed uploaded file to ' + $event.name)"
+            (previewFile)="
+              fileActionMessage.set('Previewing ' + ($event.displayName || $event.file.name))
+            "
+            (downloadFile)="
+              fileActionMessage.set('Downloading ' + ($event.displayName || $event.file.name))
+            "
           />
-          <j-file-preview
-            fileName="customer-summary.pdf"
-            [fileSize]="245760"
-            description="Uploaded 2 minutes ago"
-            url="#"
-          />
+          @if (fileActionMessage()) {
+            <p class="j-preview-action-status" role="status">{{ fileActionMessage() }}</p>
+          }
         </div>
       }
       @case ('file-browser') {
@@ -33,8 +43,15 @@ import {
           [selection]="fileBrowserSelection"
           selectionMode="multiple"
           [actions]="fileBrowserActions"
+          [sortField]="fileBrowserSortField"
+          [viewMode]="fileBrowserViewMode"
           (selectionChange)="fileBrowserSelection = $event"
           (action)="handleFileBrowserAction($event)"
+          (createFolder)="handleFileBrowserCreateFolder()"
+          (upload)="handleFileBrowserUpload()"
+          (refresh)="handleFileBrowserRefresh()"
+          (sortChange)="fileBrowserSortField = $event.field"
+          (viewModeChange)="fileBrowserViewMode = $event"
         />
         @if (fileBrowserActionMessage()) {
           <p class="j-preview-action-status" role="status">{{ fileBrowserActionMessage() }}</p>
@@ -43,20 +60,31 @@ import {
       @case ('file-preview') {
         <div class="j-file-preview-demo-grid">
           <j-file-preview
-            fileName="customer-summary.pdf"
-            [fileSize]="245760"
-            description="Customer summary uploaded 2 minutes ago"
-            url="#"
+            fileName="product-laptop.webp"
+            [fileSize]="3792"
+            description="Relative stored value resolved against separate action base paths"
+            url="product-laptop.webp"
+            previewBaseUrl="/assets/images"
+            downloadBaseUrl="/assets/images"
+            showRename
             actionDisplay="icon-label"
+            (rename)="fileActionMessage.set('Renamed file to ' + $event)"
           />
           <j-file-preview
-            fileName="customer-avatar.png"
-            [fileSize]="56320"
-            description="Image asset"
+            fileName="product-headphones.webp"
+            [fileSize]="7734"
+            description="Already uploaded file using a complete application URL"
+            previewUrl="/assets/images/product-headphones.webp"
+            downloadUrl="/assets/images/product-headphones.webp"
             showTypeLabel
-            typeLabel="PNG"
+            typeLabel="WEBP"
+            showRename
             actionDisplay="icon-label"
+            (rename)="fileActionMessage.set('Renamed file to ' + $event)"
           />
+          @if (fileActionMessage()) {
+            <p class="j-preview-action-status" role="status">{{ fileActionMessage() }}</p>
+          }
         </div>
       }
     }
@@ -66,4 +94,22 @@ import {
 })
 export class FileComponentPreviewComponent extends ComponentDetailViewBase {
   readonly previewExample = input.required<DetailFeatureExample>();
+  readonly fileActionMessage = signal('');
+  readonly uploadedFileExamples: readonly JFileRemoteItem[] = [
+    {
+      id: 'relative-image',
+      name: 'product-laptop.webp',
+      size: 3792,
+      type: 'image/webp',
+      url: 'product-laptop.webp',
+    },
+    {
+      id: 'absolute-image',
+      name: 'product-headphones.webp',
+      size: 7734,
+      type: 'image/webp',
+      previewUrl: '/assets/images/product-headphones.webp',
+      downloadUrl: '/assets/images/product-headphones.webp',
+    },
+  ];
 }

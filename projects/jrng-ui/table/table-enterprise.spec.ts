@@ -169,6 +169,7 @@ describe('JTableComponent enterprise modes', () => {
       },
     ]);
     fixture.componentRef.setInput('value', [{ name: 'Alpha', amount: 10, status: 'Active' }]);
+    fixture.componentRef.setInput('sortMode', 'multiple');
     fixture.componentInstance.sortBy('name', 1);
     fixture.componentInstance.sortBy('amount', -1);
     fixture.detectChanges();

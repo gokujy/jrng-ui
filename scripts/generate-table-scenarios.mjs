@@ -770,7 +770,7 @@ ${status}`;
   [columns]="enterpriseColumns"
   [config]="enterpriseTableConfig"
   variant="enterprise"
-  scrollHeight="clamp(18rem, calc(100dvh - var(--j-app-header-height, 4rem) - var(--j-page-header-height, 3rem) - var(--j-app-footer-height, 0rem) - 13.5rem), 34rem)"
+  scrollHeight="clamp(18rem, calc(100dvh - var(--j-app-header-height, 4rem) - var(--j-app-footer-height, 0rem) - 13.5rem), 34rem)"
   [tableStyle]="{ 'min-width': '92rem' }"
   [hover]="true"
   sortField="id"

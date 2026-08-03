@@ -134,12 +134,14 @@ export type JStepperVariant = 'default' | 'rail' | 'progress';
         align-items: center;
         background: var(--j-color-surface-subtle);
         border-radius: var(--j-radius-full, 999px);
+        box-sizing: border-box;
         display: inline-flex;
         flex: 0 0 2rem;
         font-size: var(--j-font-size-sm);
         font-weight: var(--j-font-weight-semibold);
         height: 2rem;
         justify-content: center;
+        width: 2rem;
         transition:
           background-color 160ms ease,
           color 160ms ease;
@@ -254,6 +256,11 @@ export type JStepperVariant = 'default' | 'rail' | 'progress';
         flex-basis: 0.375rem;
         font-size: 0;
         height: 1.75rem;
+        width: 0.375rem;
+      }
+
+      .j-stepper--progress .j-stepper__check {
+        display: none;
       }
 
       .j-stepper--progress .j-stepper__step.is-active .j-stepper__marker,

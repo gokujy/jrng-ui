@@ -76,26 +76,42 @@ export interface JHtmlPreviewExportAdapter {
   </section>`,
   styles: [
     `
+      :host {
+        display: block;
+        max-width: 100%;
+        min-width: 0;
+        width: 100%;
+      }
+
       .j-html-preview {
+        box-sizing: border-box;
         display: grid;
         gap: var(--j-spacing-3);
-        overflow: auto;
+        max-width: 100%;
+        min-width: 0;
+        overflow: hidden;
+        width: 100%;
       }
       .j-html-preview__toolbar {
         display: flex;
         flex-wrap: wrap;
         gap: var(--j-spacing-2);
+        min-width: 0;
       }
       .j-html-preview__surface {
         background: white;
         border: 1px solid var(--j-color-border);
+        box-sizing: border-box;
         max-width: 100%;
+        min-width: 0;
         overflow: auto;
         transform-origin: top left;
       }
       iframe {
         border: 0;
+        display: block;
         height: 100%;
+        max-width: 100%;
         width: 100%;
       }
       .j-html-preview__inline {
@@ -189,12 +205,37 @@ export class JHtmlPreviewComponent {
   }
   printPreview(): void {
     if (!this.browser) return;
-    const frame = this.surface()?.nativeElement.querySelector('iframe');
-    if (frame?.contentWindow) {
-      frame.contentWindow.print();
-    } else {
-      this.documentRef.defaultView?.print();
-    }
+    const frame = this.documentRef.createElement('iframe');
+    frame.title = 'HTML preview print document';
+    frame.setAttribute('aria-hidden', 'true');
+    frame.style.cssText = 'position:fixed;width:0;height:0;border:0;opacity:0;pointer-events:none;';
+
+    let cleanupTimer: number | undefined;
+    const cleanup = () => {
+      if (cleanupTimer !== undefined) {
+        this.documentRef.defaultView?.clearTimeout(cleanupTimer);
+      }
+      frame.remove();
+    };
+
+    frame.addEventListener(
+      'load',
+      () => {
+        const printWindow = frame.contentWindow;
+        if (!printWindow) {
+          cleanup();
+          return;
+        }
+        printWindow.addEventListener('afterprint', cleanup, { once: true });
+        printWindow.focus();
+        printWindow.print();
+        cleanupTimer = this.documentRef.defaultView?.setTimeout(cleanup, 60_000);
+      },
+      { once: true },
+    );
+
+    frame.srcdoc = this.safeHtml();
+    this.documentRef.body.appendChild(frame);
     this.print.emit();
   }
   async exportPreview(): Promise<void> {

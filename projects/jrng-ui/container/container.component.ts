@@ -5,7 +5,12 @@ export type JContainerSize = 'sm' | 'md' | 'lg' | 'xl' | 'full';
 @Component({
   selector: 'j-container',
   imports: [],
-  template: `<div [class]="classes()" data-jc-name="container" data-jc-section="root">
+  template: `<div
+    [class]="classes()"
+    [style.--j-container-max-width]="maxWidth() || null"
+    data-jc-name="container"
+    data-jc-section="root"
+  >
     <ng-content />
   </div>`,
   styles: [
@@ -37,7 +42,8 @@ export type JContainerSize = 'sm' | 'md' | 'lg' | 'xl' | 'full';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JContainerComponent {
-  readonly size = input<JContainerSize>('lg');
+  readonly size = input<JContainerSize>('full');
+  readonly maxWidth = input('');
   readonly styleClass = input('');
 
   classes(): string {

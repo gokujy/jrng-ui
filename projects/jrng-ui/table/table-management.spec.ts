@@ -82,12 +82,16 @@ describe('JTableComponent management surface', () => {
 
   it('renders the heading and projected toolbar and bulk actions', () => {
     const text = fixture.nativeElement.textContent as string;
+    const actionGroup = fixture.debugElement.query(By.css('.j-table__toolbar-actions'));
 
     expect(text).toContain('Products');
     expect(text).toContain('Manage the product catalogue.');
     expect(text).toContain('Create product');
     expect(text).toContain('1 selected');
     expect(text).toContain('Archive selected');
+    expect(actionGroup).toBeTruthy();
+    expect(actionGroup.query(By.css('[jTableToolbarActions]'))).toBeTruthy();
+    expect(actionGroup.query(By.css('.j-table__search'))).toBeTruthy();
   });
 
   it('uses the shared data-management defaults without an API dependency', () => {
@@ -97,7 +101,7 @@ describe('JTableComponent management surface', () => {
     expect(table.rows).toBe(25);
     expect(table.rowsPerPageOptions).toEqual([5, 10, 25, 50, 100]);
     expect(table.paginator).toBe(true);
-    expect(table.sortMode).toBe('multiple');
+    expect(table.sortMode).toBe('single');
     expect(table.selectionMode).toBe('checkbox');
     expect(table.resizableColumns).toBe(true);
     expect(table.reorderableColumns).toBe(true);

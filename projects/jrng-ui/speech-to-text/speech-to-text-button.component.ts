@@ -29,7 +29,16 @@ import { JSpeechToTextDirective } from './speech-to-text.directive';
       [ariaPressed]="service.state() === 'listening'"
       (onClick)="toggle()"
     />
-    <span class="j-speech-to-text-button__status" aria-live="polite">{{ statusText() }}</span>
+    <span
+      class="j-speech-to-text-button__status"
+      [class.is-visible]="
+        service.state() === 'error' ||
+        service.state() === 'permission-denied' ||
+        service.state() === 'unsupported'
+      "
+      aria-live="polite"
+      >{{ statusText() }}</span
+    >
   `,
   styleUrl: './speech-to-text-button.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

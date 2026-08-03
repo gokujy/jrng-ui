@@ -2,6 +2,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { DestroyRef, Injectable, PLATFORM_ID, inject, signal } from '@angular/core';
 
 export type JToastSeverity = 'success' | 'error' | 'warning' | 'info' | 'neutral';
+export type JToastVariant = 'soft' | 'outlined' | 'solid';
 export type JToastPosition =
   'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' | 'top-center' | 'bottom-center';
 
@@ -15,6 +16,7 @@ export interface JToast {
   readonly id: string;
   readonly severity: JToastSeverity;
   readonly type: JToastSeverity;
+  readonly variant: JToastVariant;
   readonly summary: string;
   readonly title: string;
   readonly detail: string;
@@ -32,6 +34,7 @@ export interface JToast {
 export interface JToastOptions {
   readonly severity?: JToastSeverity;
   readonly type?: JToastSeverity;
+  readonly variant?: JToastVariant;
   readonly summary?: string;
   readonly title?: string;
   readonly detail?: string;
@@ -97,10 +100,15 @@ export class JToastService {
     ].includes(requestedPosition)
       ? requestedPosition
       : 'top-right';
+    const requestedVariant = options.variant ?? 'soft';
+    const variant: JToastVariant = ['soft', 'outlined', 'solid'].includes(requestedVariant)
+      ? requestedVariant
+      : 'soft';
     const toast: JToast = {
       id: `j-toast-${++this.nextId}`,
       severity,
       type: severity,
+      variant,
       summary: options.summary ?? options.title ?? this.defaultTitle(severity),
       title: options.summary ?? options.title ?? this.defaultTitle(severity),
       detail: options.detail ?? options.message ?? '',

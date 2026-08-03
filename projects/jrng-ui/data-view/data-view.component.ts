@@ -66,7 +66,7 @@ export interface JDataViewItemContext<T> {
               [ngTemplateOutletContext]="itemContext(item, resolvedFirst + index)"
             />
           } @else {
-            <article class="j-data-view__item">{{ item }}</article>
+            <article class="j-data-view__item">{{ displayItem(item) }}</article>
           }
         } @empty {
           <p class="j-data-view__empty">{{ emptyMessage() }}</p>
@@ -86,6 +86,12 @@ export interface JDataViewItemContext<T> {
   `,
   styles: [
     `
+      :host {
+        display: block;
+        inline-size: 100%;
+        min-inline-size: 0;
+      }
+
       .j-data-view {
         display: grid;
         gap: var(--j-spacing-3);
@@ -218,6 +224,21 @@ export class JDataViewComponent<T = unknown> {
 
   trackItem(item: T, index: number): unknown {
     return this.readField(item, 'id') ?? index;
+  }
+
+  displayItem(item: T): string {
+    if (item == null) return '';
+    if (typeof item !== 'object') return String(item);
+
+    const record = item as Record<string, unknown>;
+    const displayValue = record['label'] ?? record['name'] ?? record['title'] ?? record['value'];
+    if (displayValue != null && typeof displayValue !== 'object') return String(displayValue);
+
+    try {
+      return JSON.stringify(item);
+    } catch {
+      return 'Item';
+    }
   }
 
   private readField(item: T, field: string): unknown {

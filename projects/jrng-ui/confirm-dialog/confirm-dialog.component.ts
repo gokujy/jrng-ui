@@ -1,16 +1,22 @@
-import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { DOCUMENT, NgTemplateOutlet, isPlatformBrowser } from '@angular/common';
 import {
+  booleanAttribute,
   ChangeDetectionStrategy,
   Component,
+  Directive,
   DestroyRef,
   ElementRef,
   PLATFORM_ID,
+  TemplateRef,
   ViewChild,
+  contentChild,
   computed,
   effect,
   inject,
+  input,
 } from '@angular/core';
 import { JConfirmationService } from './confirmation.service';
+import type { JConfirmationRequest } from './confirmation.service';
 import {
   JBodyScrollLockService,
   JFocusTrapDirective,
@@ -20,24 +26,44 @@ import {
 } from 'jrng-ui/core';
 import { JButtonComponent } from 'jrng-ui/button';
 
+export interface JConfirmDialogTemplateContext {
+  readonly $implicit: JConfirmationRequest;
+  readonly confirmation: JConfirmationRequest;
+  readonly accept: () => void;
+  readonly reject: () => void;
+}
+
+@Directive({ selector: 'ng-template[jConfirmDialogHeader]' })
+export class JConfirmDialogHeaderTemplateDirective {
+  readonly template = inject(TemplateRef<JConfirmDialogTemplateContext>);
+}
+
+@Directive({ selector: 'ng-template[jConfirmDialogIcon]' })
+export class JConfirmDialogIconTemplateDirective {
+  readonly template = inject(TemplateRef<JConfirmDialogTemplateContext>);
+}
+
+@Directive({ selector: 'ng-template[jConfirmDialogMessage]' })
+export class JConfirmDialogMessageTemplateDirective {
+  readonly template = inject(TemplateRef<JConfirmDialogTemplateContext>);
+}
+
+@Directive({ selector: 'ng-template[jConfirmDialogFooter]' })
+export class JConfirmDialogFooterTemplateDirective {
+  readonly template = inject(TemplateRef<JConfirmDialogTemplateContext>);
+}
+
 @Component({
   selector: 'j-confirm-dialog',
-  imports: [JFocusTrapDirective, JButtonComponent],
+  imports: [JFocusTrapDirective, JButtonComponent, NgTemplateOutlet],
   template: `
     @if (dialogConfirmation(); as confirmation) {
-      <div
-        class="j-confirm-dialog__backdrop"
-        [class]="
-          'j-confirm-dialog__backdrop j-confirm-dialog__backdrop--' +
-          (confirmation.severity || 'info')
-        "
-        (mousedown)="handleOverlayMouseDown($event)"
-      >
+      <div [class]="backdropClasses(confirmation)" (mousedown)="handleOverlayMouseDown($event)">
         <section
           #dialogPanel
           jFocusTrap
-          class="j-confirm-dialog"
-          [class]="'j-confirm-dialog j-confirm-dialog--' + (confirmation.severity || 'info')"
+          [class]="dialogClasses(confirmation)"
+          [style.max-width]="maxWidth()"
           role="alertdialog"
           aria-modal="true"
           [attr.aria-labelledby]="titleId"
@@ -46,35 +72,71 @@ import { JButtonComponent } from 'jrng-ui/button';
           (mousedown)="$event.stopPropagation()"
         >
           <header class="j-confirm-dialog__header">
-            @if (confirmation.icon) {
-              <span class="j-confirm-dialog__icon" aria-hidden="true">{{ confirmation.icon }}</span>
-            } @else {
-              <span class="j-confirm-dialog__icon" aria-hidden="true">{{
-                severityIcon(confirmation.severity)
-              }}</span>
+            @if (showIcon()) {
+              <span class="j-confirm-dialog__icon" aria-hidden="true">
+                @if (iconTemplate(); as template) {
+                  <ng-container
+                    [ngTemplateOutlet]="template.template"
+                    [ngTemplateOutletContext]="templateContext(confirmation)"
+                  />
+                } @else {
+                  {{ confirmation.icon || severityIcon(confirmation.severity) }}
+                }
+              </span>
             }
             <h2 [id]="titleId">
-              {{ confirmation.title || confirmation.header || 'Confirm' }}
+              @if (headerTemplate(); as template) {
+                <ng-container
+                  [ngTemplateOutlet]="template.template"
+                  [ngTemplateOutletContext]="templateContext(confirmation)"
+                />
+              } @else {
+                {{ confirmation.title || confirmation.header || 'Confirm' }}
+              }
             </h2>
           </header>
-          <p class="j-confirm-dialog__message" [id]="messageId">{{ confirmation.message }}</p>
-          <footer class="j-confirm-dialog__footer">
-            <j-button
-              #cancelButton
-              styleClass="j-confirm-dialog__button j-confirm-dialog__button--reject"
-              variant="outlined"
-              [severity]="confirmation.rejectButtonSeverity || 'secondary'"
-              [label]="confirmation.cancelText || confirmation.rejectLabel || 'Cancel'"
-              (onClick)="reject()"
-            />
-            <j-button
-              #acceptButton
-              styleClass="j-confirm-dialog__button j-confirm-dialog__button--accept"
-              [severity]="confirmation.acceptButtonSeverity || confirmation.severity || 'primary'"
-              [label]="confirmation.confirmText || confirmation.acceptLabel || 'OK'"
-              (onClick)="accept()"
-            />
-          </footer>
+          <div class="j-confirm-dialog__message" [id]="messageId">
+            @if (messageTemplate(); as template) {
+              <ng-container
+                [ngTemplateOutlet]="template.template"
+                [ngTemplateOutletContext]="templateContext(confirmation)"
+              />
+            } @else {
+              {{ confirmation.message }}
+            }
+          </div>
+          @if (footerTemplate() || showRejectButton() || showAcceptButton()) {
+            <footer class="j-confirm-dialog__footer">
+              @if (footerTemplate(); as template) {
+                <ng-container
+                  [ngTemplateOutlet]="template.template"
+                  [ngTemplateOutletContext]="templateContext(confirmation)"
+                />
+              } @else {
+                @if (showRejectButton()) {
+                  <j-button
+                    #cancelButton
+                    styleClass="j-confirm-dialog__button j-confirm-dialog__button--reject"
+                    variant="outlined"
+                    [severity]="confirmation.rejectButtonSeverity || 'secondary'"
+                    [label]="confirmation.cancelText || confirmation.rejectLabel || 'Cancel'"
+                    (onClick)="reject()"
+                  />
+                }
+                @if (showAcceptButton()) {
+                  <j-button
+                    #acceptButton
+                    styleClass="j-confirm-dialog__button j-confirm-dialog__button--accept"
+                    [severity]="
+                      confirmation.acceptButtonSeverity || confirmation.severity || 'primary'
+                    "
+                    [label]="confirmation.confirmText || confirmation.acceptLabel || 'OK'"
+                    (onClick)="accept()"
+                  />
+                }
+              }
+            </footer>
+          }
         </section>
       </div>
     }
@@ -189,6 +251,16 @@ import { JButtonComponent } from 'jrng-ui/button';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JConfirmDialogComponent {
+  readonly styleClass = input('');
+  readonly maskStyleClass = input('');
+  readonly maxWidth = input('28rem');
+  readonly showIcon = input(true, { transform: booleanAttribute });
+  readonly showRejectButton = input(true, { transform: booleanAttribute });
+  readonly showAcceptButton = input(true, { transform: booleanAttribute });
+  readonly headerTemplate = contentChild(JConfirmDialogHeaderTemplateDirective);
+  readonly iconTemplate = contentChild(JConfirmDialogIconTemplateDirective);
+  readonly messageTemplate = contentChild(JConfirmDialogMessageTemplateDirective);
+  readonly footerTemplate = contentChild(JConfirmDialogFooterTemplateDirective);
   readonly confirmationService = inject(JConfirmationService);
   readonly dialogConfirmation = computed(() => {
     const confirmation = this.confirmationService.confirmation();
@@ -204,6 +276,7 @@ export class JConfirmDialogComponent {
 
   @ViewChild('dialogPanel') private dialogPanel?: ElementRef<HTMLElement>;
   @ViewChild('acceptButton') private acceptButton?: JButtonComponent;
+  @ViewChild('cancelButton') private cancelButton?: JButtonComponent;
 
   readonly titleId = jCreateId('j-confirm-title');
   readonly messageId = jCreateId('j-confirm-message');
@@ -267,6 +340,35 @@ export class JConfirmDialogComponent {
     }
   }
 
+  backdropClasses(confirmation: JConfirmationRequest): string {
+    return [
+      'j-confirm-dialog__backdrop',
+      `j-confirm-dialog__backdrop--${confirmation.severity || 'info'}`,
+      this.maskStyleClass(),
+    ]
+      .filter(Boolean)
+      .join(' ');
+  }
+
+  dialogClasses(confirmation: JConfirmationRequest): string {
+    return [
+      'j-confirm-dialog',
+      `j-confirm-dialog--${confirmation.severity || 'info'}`,
+      this.styleClass(),
+    ]
+      .filter(Boolean)
+      .join(' ');
+  }
+
+  templateContext(confirmation: JConfirmationRequest): JConfirmDialogTemplateContext {
+    return {
+      $implicit: confirmation,
+      confirmation,
+      accept: () => this.accept(),
+      reject: () => this.reject(),
+    };
+  }
+
   private handleOpened(): void {
     if (!this.isBrowser) {
       return;
@@ -279,6 +381,7 @@ export class JConfirmDialogComponent {
     queueMicrotask(() => {
       const panel = this.dialogPanel?.nativeElement;
       if (this.acceptButton) this.acceptButton.focus();
+      else if (this.cancelButton) this.cancelButton.focus();
       else panel?.focus();
     });
   }

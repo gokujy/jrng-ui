@@ -39,6 +39,16 @@ const formNotes = [
 
 const noOutputs = [] as const;
 
+const uniqueBy = <T>(items: readonly T[], keyOf: (item: T) => string): readonly T[] => {
+  const seen = new Set<string>();
+  return items.filter((item) => {
+    const key = keyOf(item).trim().toLocaleLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+};
+
 const formCssVariables = [
   cssVar('--j-input-bg', 'var(--j-color-card, #ffffff)', 'Input surface background.'),
   cssVar('--j-input-text-color', 'var(--j-color-foreground, #111827)', 'Typed text color.'),
@@ -1340,7 +1350,7 @@ onSvgExport(svg: string) {
     limitations: [
       'Only QR Code byte mode, Code 128 B printable ASCII, and EAN-13 are supported.',
       'PNG export and scanning/camera APIs are intentionally excluded.',
-      'QR encoding uses the MIT qrcode-generator dependency; linear encoders and SVG rendering are JRNG-owned.',
+      'QR, linear barcode, validation, and SVG rendering are implemented internally by JRNG UI without a runtime barcode dependency.',
       'FAQ: scanner success depends on the printer, substrate, contrast, module size, and reader.',
     ],
     relatedComponents: ['Image', 'File Preview', 'Copy Button'],
@@ -1477,13 +1487,10 @@ email = new FormControl('');
     whenToUse:
       'Use Select when the user should choose one item and the available options are known.',
     code: {
-      importCode: `import { JSelectCellDirective, JSelectComponent, JSelectColumn } from 'jrng-ui/select';`,
+      importCode: `import { JSelectComponent } from 'jrng-ui/select';`,
       basic: `<j-select label="Status" [options]="statuses" placeholder="Choose status"></j-select>`,
       variants: `<j-select label="Searchable" searchable [options]="products"></j-select>
-<j-select label="Customer" [options]="customers" [columns]="columns"
-  optionLabel="name" optionValue="id" searchable sortable>
-  <ng-template jSelectCell="status" let-value>{{ value }}</ng-template>
-</j-select>`,
+<j-select label="Customer" [options]="customers" optionLabel="name" optionValue="id"></j-select>`,
       sizes: `<j-select label="Small" size="sm" [options]="statuses"></j-select>
 <j-select label="Large" size="lg" [options]="statuses"></j-select>`,
       states: `<j-select label="Loading" loading [options]="statuses"></j-select>
@@ -1503,7 +1510,6 @@ teams = [
       'primitive options',
       'object options with optionLabel and optionValue',
       'searchable lists',
-      'multi-column options with sortable headers and stacked mobile rows',
     ],
     sizes: ['sm for table filters', 'md for standard forms', 'lg for prominent selection flows'],
     states: ['default', 'open', 'disabled', 'readonly', 'loading', 'empty', 'invalid/error'],
@@ -1514,21 +1520,11 @@ teams = [
       prop('searchable', 'boolean', 'false', 'Shows a filter input in the panel.'),
       prop('clearable', 'boolean', 'false', 'Allows clearing the selected value.'),
       prop('loading', 'boolean', 'false', 'Shows a loading state.'),
-      prop('columns', 'readonly JSelectColumn[]', '[]', 'Enables structured multi-column rows.'),
-      prop('sortable', 'boolean', 'false', 'Enables sorting for columns marked sortable.'),
     ],
-    templates: [
-      'jSelectCell="field" customizes a column cell while retaining the option row selection behavior.',
-    ],
-    keyboard: [
-      'Arrow keys move through rows, Enter selects, Escape closes, and sortable headers use native buttons.',
-    ],
-    responsive: [
-      'Multi-column rows use configured widths on larger screens and labelled stacked cells on narrow screens.',
-      'Logical alignment supports RTL without changing the option value model.',
-    ],
+    keyboard: ['Arrow keys move through options, Enter selects, and Escape closes the panel.'],
+    responsive: ['The option panel remains usable at narrow widths and supports RTL layouts.'],
     testingNotes: [
-      'Test legacy flat options, object options, custom cells, sorting, filtering, virtualization, keyboard selection, Forms, RTL, and SSR.',
+      'Test flat options, object options, filtering, virtualization, keyboard selection, Forms, RTL, and SSR.',
     ],
     outputs: [
       event('valueChange', 'unknown', 'Emits the selected value.'),
@@ -2057,8 +2053,16 @@ teams = [
   sourceHeader="Fields to add"
   targetHeader="Report columns"
   filter
+  moveOnDoubleClick
+  responsiveMode="none"
 />`,
-      variants: `<j-transfer-list [(source)]="availableFields" [(target)]="selectedFields" responsiveMode="auto" breakpoint="768px" />`,
+      variants: `<j-transfer-list
+  [(source)]="availableFields"
+  [(target)]="selectedFields"
+  moveOnDoubleClick
+  responsiveMode="auto"
+  breakpoint="768px"
+/>`,
       angular: `availableFields = [
   { label: 'Customer', value: 'customer' },
   { label: 'Status', value: 'status' },
@@ -2087,6 +2091,18 @@ selectedFields = [
       ),
       prop('sourceHeader / targetHeader', 'string', 'descriptive defaults', 'Panel headings.'),
       prop('filter', 'boolean', 'false', 'Shows the available-item search field.'),
+      prop(
+        'moveOnDoubleClick',
+        'boolean',
+        'false',
+        'Moves an enabled item to the opposite list when it is double-clicked.',
+      ),
+      prop(
+        'responsiveMode',
+        "'auto' | 'stack' | 'none'",
+        "'auto'",
+        'Controls automatic stacking, forced stacking, or a horizontal layout.',
+      ),
       prop('addLabel / addAllLabel', 'string', "'Add' / 'Add all'", 'Default add action text.'),
       prop(
         'removeLabel / clearLabel',
@@ -2999,95 +3015,6 @@ row = {
     ],
   },
   {
-    slug: 'status-chip',
-    name: 'Status Chip',
-    category: 'Misc',
-    icon: 'badge-check',
-    selector: 'j-status-chip',
-    importPath: 'jrng-ui/status-chip',
-    status: 'Stable',
-    description: 'A compact business status label with a dot and severity color.',
-    whenToUse:
-      'Use Status Chip for workflow states such as Ready, Review, Blocked, Queued, or Archived.',
-    code: {
-      importCode: `import { JStatusChipComponent } from 'jrng-ui/status-chip';`,
-      basic: `<j-status-chip status="active"></j-status-chip>`,
-      variants: `<j-status-chip status="pending"></j-status-chip>
-<j-status-chip status="approved"></j-status-chip>
-<j-status-chip status="rejected"></j-status-chip>
-<j-status-chip status="overdue"></j-status-chip>
-<j-status-chip label="Custom" [colorMap]="colors" status="custom"></j-status-chip>`,
-    },
-    usage: ['Use in tables, detail headers, cards, timeline items, and workflow summaries.'],
-    variants: [
-      'active',
-      'inactive',
-      'pending',
-      'approved',
-      'rejected',
-      'draft',
-      'paid',
-      'unpaid',
-      'overdue',
-      'completed',
-      'failed',
-      'custom color map',
-    ],
-    sizes: ['sm, md, lg'],
-    states: ['static status display'],
-    inputs: [
-      prop('label', 'string', "''", 'Visible status text override.'),
-      prop('status', 'JBusinessStatus | string', "''", 'Business status alias.'),
-      prop('severity', 'JSeverity', "'neutral'", 'Fallback status intent.'),
-      prop('colorMap', 'Record<string, JStatusChipColor>', '{}', 'Custom status colors.'),
-      prop('size', 'sm | md | lg', "'md'", 'Chip density.'),
-    ],
-    outputs: noOutputs,
-    accessibility: ['Use readable label text; color only supports the label.'],
-    bestPractices: ['Keep labels short and consistent with workflow terminology.'],
-  },
-  {
-    slug: 'page-header',
-    name: 'Page Header',
-    category: 'Layout',
-    icon: 'panel-top',
-    selector: 'j-page-header',
-    importPath: 'jrng-ui/page-header',
-    status: 'Stable',
-    description:
-      'A page title block with breadcrumbs, description, actions, and optional tabs slot.',
-    whenToUse: 'Use Page Header at the top of admin pages, record details, and settings views.',
-    code: {
-      importCode: `import { JPageHeaderComponent } from 'jrng-ui/page-header';`,
-      basic: `<j-page-header title="Orders" subtitle="Review fulfillment and exceptions" showBack (back)="goBack()">
-  <j-button jPageSecondaryActions label="Export" variant="outlined"></j-button>
-  <j-button jPagePrimaryAction label="Create order"></j-button>
-</j-page-header>`,
-      variants: `<j-page-header variant="standard" title="Orders">...</j-page-header>
-<j-page-header variant="stacked" title="Orders">...</j-page-header>
-<j-page-header variant="centered" title="Welcome">...</j-page-header>`,
-    },
-    usage: ['Use to standardize title, context, and actions across business app pages.'],
-    variants: [
-      'standard for ordinary application pages',
-      'stacked when actions need a full row',
-      'centered for onboarding and focused landing views',
-    ],
-    sizes: ['Responsive layout collapses actions below the title on narrow screens.'],
-    states: ['with breadcrumbs', 'with actions', 'with tabs'],
-    inputs: [
-      prop('title', 'string', "''", 'Page title.'),
-      prop('subtitle', 'string', "''", 'Supporting text.'),
-      prop('breadcrumbs', 'readonly JPageHeaderBreadcrumb[]', '[]', 'Breadcrumb path.'),
-      prop('showBack', 'boolean', 'false', 'Shows a back button.'),
-      prop('variant', 'standard | stacked | centered | hero', "'standard'", 'Header presentation.'),
-      prop('styleClass', 'string', "''", 'Custom class.'),
-    ],
-    outputs: [event('back', 'void', 'Emits when the back button is activated.')],
-    accessibility: ['Breadcrumbs use nav semantics and current page marking.'],
-    bestPractices: ['Keep one primary action visible and group secondary actions separately.'],
-  },
-  {
     slug: 'empty',
     name: 'Empty',
     category: 'Misc',
@@ -3139,25 +3066,48 @@ row = {
     selector: 'j-toast',
     importPath: 'jrng-ui/toast',
     status: 'Stable',
-    description: 'A temporary message stack for success, error, warning, and info feedback.',
+    description:
+      'A temporary message stack with semantic severities, visual styles, and optional actions.',
     whenToUse:
       'Use Toast after background actions such as saving, deleting, uploading, or exporting.',
     code: {
       importCode: `import { JToastContainerComponent, JToastService } from 'jrng-ui/toast';`,
-      basic: `<j-toast position="top-right"></j-toast>`,
-      variants: `toast.success('Order saved');
-toast.error('Could not save order');
-toast.warning('Review required');
-toast.info('Export started');`,
-      states: `toast.show({
+      basic: `<j-toast position="top-right" />`,
+      variants: `toast.show({
   severity: 'success',
-  summary: 'Saved',
-  detail: 'The order was updated.',
-  life: 3000
+  variant: 'soft',
+  summary: 'Order saved',
+  detail: 'Order #1048 is ready for fulfillment.'
+});
+
+toast.show({
+  severity: 'warning',
+  variant: 'outlined',
+  summary: 'Review required',
+  detail: 'Two shipping fields are incomplete.'
+});
+
+toast.show({
+  severity: 'error',
+  variant: 'solid',
+  summary: 'Could not save',
+  detail: 'Try again in a moment.'
+});`,
+      states: `toast.show({
+  severity: 'neutral',
+  variant: 'outlined',
+  summary: 'Order archived',
+  detail: 'The order was moved to the archive.',
+  sticky: true,
+  actions: [{ label: 'Undo', command: () => restoreOrder() }],
+  cancelAction: { label: 'Dismiss', command: () => undefined }
 });`,
     },
     usage: ['Place one toast container near the app root and call the service from workflows.'],
-    variants: ['success', 'error', 'warning', 'info', 'neutral'],
+    variants: [
+      'Severity: success, error, warning, info, neutral',
+      'Appearance: soft, outlined, solid',
+    ],
     sizes: ['Toast size is content-based. Keep content concise.'],
     states: ['visible', 'dismissed', 'sticky', 'with actions'],
     inputs: [prop('position', 'JToastPosition', "'top-right'", 'Stack position.')],
@@ -3166,6 +3116,8 @@ toast.info('Export started');`,
       'Messages use live-region semantics. Keep error messages clear and actionable.',
     ],
     bestPractices: [
+      'Use severity to convey meaning and variant only to adjust visual emphasis.',
+      'Make actionable toasts sticky so the controls do not disappear while being used.',
       'Do not use toast for critical confirmation that blocks the user; use Dialog instead.',
     ],
   },
@@ -3426,36 +3378,6 @@ items = [
     bestPractices: ['Use concise item labels and separators for distinct command groups.'],
   },
   {
-    slug: 'responsive-sidebar',
-    name: 'Responsive Sidebar',
-    category: 'Layout',
-    icon: 'panel-left-open',
-    selector: 'j-responsive-sidebar',
-    importPath: 'jrng-ui/responsive-sidebar',
-    status: 'Stable',
-    description:
-      'A responsive side navigation container that becomes an overlay on smaller screens.',
-    whenToUse: 'Use Sidebar for persistent secondary navigation or filters.',
-    code: {
-      importCode: `import { JResponsiveSidebarComponent } from 'jrng-ui/responsive-sidebar';`,
-      basic: `<j-responsive-sidebar title="Workspace" [(open)]="sidebarOpen">
-  <a routerLink="/docs">Docs</a>
-</j-responsive-sidebar>`,
-    },
-    usage: ['Use for app sections, settings navigation, and responsive filter panels.'],
-    variants: ['desktop aside', 'mobile overlay with mask'],
-    sizes: ['Width is controlled by layout and responsive styles.'],
-    states: ['open', 'closed', 'mobile overlay'],
-    inputs: [
-      prop('open', 'boolean', 'false', 'Controls visibility on mobile.'),
-      prop('title', 'string', "'Navigation'", 'Header title.'),
-      prop('styleClass', 'string', "''", 'Custom root class.'),
-    ],
-    outputs: [event('openChange', 'boolean', 'Emits when the model changes.')],
-    accessibility: ['Provide clear navigation labels inside the sidebar.'],
-    bestPractices: ['Keep sidebar navigation scannable and grouped.'],
-  },
-  {
     slug: 'dialog',
     name: 'Dialog',
     category: 'Overlay',
@@ -3504,9 +3426,28 @@ items = [
     description: 'A service-backed confirmation dialog for blocking accept or reject decisions.',
     whenToUse: 'Use Confirm Dialog before destructive or hard-to-undo actions.',
     code: {
-      importCode: `import { JConfirmDialogComponent, JConfirmationService } from 'jrng-ui/confirm-dialog';`,
+      importCode: `import {
+  JConfirmDialogComponent,
+  JConfirmDialogFooterTemplateDirective,
+  JConfirmDialogHeaderTemplateDirective,
+  JConfirmDialogIconTemplateDirective,
+  JConfirmDialogMessageTemplateDirective,
+  JConfirmationService
+} from 'jrng-ui/confirm-dialog';`,
       basic: `<j-confirm-dialog></j-confirm-dialog>
 <j-button label="Delete" severity="danger" (onClick)="confirmDelete()"></j-button>`,
+      variants: `<j-confirm-dialog
+  styleClass="account-confirmation"
+  maskStyleClass="account-confirmation-mask"
+  maxWidth="36rem">
+  <ng-template jConfirmDialogIcon let-confirmation>{{ confirmation.icon }}</ng-template>
+  <ng-template jConfirmDialogHeader let-confirmation>{{ confirmation.title }}</ng-template>
+  <ng-template jConfirmDialogMessage let-confirmation>{{ confirmation.message }}</ng-template>
+  <ng-template jConfirmDialogFooter let-accept="accept" let-reject="reject">
+    <j-button label="Keep editing" variant="outlined" (onClick)="reject()"></j-button>
+    <j-button label="Discard changes" severity="warning" (onClick)="accept()"></j-button>
+  </ng-template>
+</j-confirm-dialog>`,
       angular: `constructor(private readonly confirmation: JConfirmationService) {}
 
 confirmDelete(): void {
@@ -3542,8 +3483,20 @@ confirmDelete(): void {
       prop('severity', 'info | warning | danger | success', "'info'", 'Confirmation intent.'),
       prop('closeOnOverlayClick', 'boolean', 'true', 'Allows backdrop click close.'),
       prop('closeOnEscape', 'boolean', 'true', 'Allows Escape close.'),
+      prop('styleClass', 'string', "''", 'Additional class for the dialog panel.'),
+      prop('maskStyleClass', 'string', "''", 'Additional class for the backdrop.'),
+      prop('maxWidth', 'string', "'28rem'", 'Maximum dialog width.'),
+      prop('showIcon', 'boolean', 'true', 'Shows the default or templated icon region.'),
+      prop('showRejectButton', 'boolean', 'true', 'Shows the default reject action.'),
+      prop('showAcceptButton', 'boolean', 'true', 'Shows the default accept action.'),
     ],
     outputs: [],
+    templates: [
+      'jConfirmDialogHeader customizes the heading.',
+      'jConfirmDialogIcon customizes the icon region.',
+      'jConfirmDialogMessage customizes the message body.',
+      'jConfirmDialogFooter replaces the default actions and receives accept and reject callbacks.',
+    ],
     cssVariables: [
       cssVar('--j-overlay-backdrop-bg', 'rgb(15 23 42 / 56%)', 'Confirmation backdrop color.'),
       ...surfaceCssVariables,
@@ -4041,7 +3994,16 @@ selectedIds: string[] = ['file-2'];`,
     code: {
       importCode: `import { JFileUploadComponent } from 'jrng-ui/file-upload';
 import { JFilePreviewComponent } from 'jrng-ui/file-preview';`,
-      basic: `<j-file-upload multiple accept=".csv,.xlsx" (upload)="uploadFiles($event)"></j-file-upload>`,
+      basic: `<j-file-upload
+  multiple
+  accept=".csv,.xlsx"
+  [existingFiles]="uploadedFiles"
+  previewBaseUrl="/api/files/preview"
+  downloadBaseUrl="/api/files/download"
+  showRename
+  (upload)="uploadFiles($event)"
+  (renameFile)="renameSelectedFile($event)"
+  (renameExistingFile)="renameUploadedFile($event)" />`,
       states: `<j-file-upload mode="basic" chooseLabel="Choose file"></j-file-upload>
 <j-file-upload [maxFileSize]="5000000"></j-file-upload>
 <j-file-preview fileName="statement.pdf" [fileSize]="245760" url="/files/statement.pdf"></j-file-preview>`,
@@ -4066,6 +4028,38 @@ import { JFilePreviewComponent } from 'jrng-ui/file-preview';`,
       prop('multiple', 'boolean', 'false', 'Allows more than one file.'),
       prop('accept', 'string', "''", 'Accepted file types.'),
       prop('maxFileSize', 'number', '0', 'Maximum file size in bytes.'),
+      prop(
+        'previewBaseUrl',
+        'string',
+        "''",
+        'Base path joined to relative preview URLs; absolute URLs pass through unchanged.',
+      ),
+      prop(
+        'downloadBaseUrl',
+        'string',
+        "''",
+        'Base path joined to relative download URLs; absolute URLs pass through unchanged.',
+      ),
+      prop('showPreviewButton', 'boolean', 'true', 'Shows per-file preview actions.'),
+      prop('showDownloadButton', 'boolean', 'true', 'Shows per-file download actions.'),
+      prop(
+        'showRename',
+        'boolean',
+        'false',
+        'Shows inline rename with confirm and cancel actions.',
+      ),
+      prop(
+        'previewUrlResolver',
+        'JFileUploadUrlResolver | null',
+        'null',
+        'Builds a custom preview URL from a queued or existing file.',
+      ),
+      prop(
+        'downloadUrlResolver',
+        'JFileUploadUrlResolver | null',
+        'null',
+        'Builds a custom download URL from a queued or existing file.',
+      ),
     ],
     outputs: [
       event('filesChange', 'readonly File[]', 'Emits current files.'),
@@ -4077,6 +4071,16 @@ import { JFilePreviewComponent } from 'jrng-ui/file-preview';`,
         'Emits file preview and download actions.',
       ),
       event('cancelUpload / retryUpload', 'JFileUploadItemEvent', 'Emits queue item actions.'),
+      event(
+        'previewExistingFile / downloadExistingFile',
+        'JFileRemoteItem',
+        'Emits actions for files that were uploaded previously.',
+      ),
+      event(
+        'renameFile / renameExistingFile',
+        'JFileUploadRenameEvent',
+        'Emits a confirmed inline filename change.',
+      ),
     ],
     cssVariables: surfaceCssVariables,
     accessibility: ['Use clear title and description text so the upload constraints are visible.'],
@@ -4165,6 +4169,11 @@ const generatedBasicExamples: Readonly<Record<string, string>> = {
   [(ngModel)]="dateRange">
 </j-date-picker>`,
   divider: `<j-divider text="Account settings" icon="settings" position="start" lineStyle="dashed"></j-divider>`,
+  'diff-viewer': `<j-diff-viewer
+  [before]="diffBefore"
+  [after]="diffAfter"
+  ariaLabel="Customer record changes">
+</j-diff-viewer>`,
   icon: `<j-icon name="search" ariaLabel="Search" size="24"></j-icon>`,
   'input-mask': `<j-input-mask label="Phone" mask="(999) 999-9999" placeholder="(555) 123-4567"></j-input-mask>`,
   'input-number': `<j-input-number label="Quantity" [min]="1" [max]="100" [(ngModel)]="quantity"></j-input-number>`,
@@ -4188,13 +4197,20 @@ const generatedBasicExamples: Readonly<Record<string, string>> = {
   [(ngModel)]="rating">
 </j-rating>`,
   slider: `<j-slider label="Completion" [min]="0" [max]="100" [step]="5" tooltip [(ngModel)]="completion"></j-slider>`,
-  'avatar-group': `<j-avatar-group [items]="teamMembers" [max]="3" ariaLabel="Project team"></j-avatar-group>`,
   carousel: `<j-carousel [value]="featuredItems" [visibleItems]="2"></j-carousel>`,
   chart: `<j-chart type="bar" [data]="ordersChartData" ariaLabel="Monthly orders"></j-chart>`,
   chips: `<j-chips label="Tags" placeholder="Type a tag and press Enter" [(ngModel)]="tags"></j-chips>`,
   'data-view': `<j-data-view [value]="products" layout="grid" [rows]="6"></j-data-view>`,
   editor: `<j-editor label="Description" placeholder="Write a short product summary" [(ngModel)]="description"></j-editor>`,
-  'file-preview': `<j-file-preview fileName="statement.pdf" [fileSize]="245760"></j-file-preview>`,
+  'file-preview': `<j-file-preview
+  fileName="product-laptop.webp"
+  url="product-laptop.webp"
+  previewBaseUrl="/assets/images"
+  downloadBaseUrl="/assets/images"
+  showRename
+  actionDisplay="icon-label"
+  (rename)="saveFileName($event)">
+</j-file-preview>`,
   fieldset: `<j-fieldset legend="Billing address" icon="map-pin" badge="Required" variant="elevated" toggleable>
   <j-input label="Street"></j-input>
   <j-input label="City"></j-input>
@@ -4221,8 +4237,8 @@ const generatedBasicExamples: Readonly<Record<string, string>> = {
   toolbar: `<j-toolbar>
   <j-button label="New"></j-button>
   <j-button label="Export" variant="outlined"></j-button>
+  <j-button label="Archive" variant="soft"></j-button>
 </j-toolbar>`,
-  topbar: `<j-topbar [model]="navigationItems" activeKey="Projects"></j-topbar>`,
   'transfer-list': `<j-transfer-list
   [source]="availableTasks"
   [target]="assignedTasks"
@@ -4243,7 +4259,8 @@ const generatedFallbackExamples: Readonly<Record<string, string>> = {
   'app-shell': `<j-app-shell>
   <main>Application content</main>
 </j-app-shell>`,
-  'bottom-sheet': `<j-bottom-sheet header="Actions" [visible]="true">
+  'bottom-sheet': `<j-button label="Open bottom sheet" (onClick)="bottomSheetVisible = true"></j-button>
+<j-bottom-sheet header="Actions" [(visible)]="bottomSheetVisible">
   <j-button label="Archive"></j-button>
 </j-bottom-sheet>`,
   'calendar-scheduler': `<j-calendar-scheduler [events]="events"></j-calendar-scheduler>`,
@@ -4255,8 +4272,14 @@ const generatedFallbackExamples: Readonly<Record<string, string>> = {
 </j-container>`,
   'context-menu': `<j-context-menu [model]="menuItems"></j-context-menu>`,
   'dynamic-dialog': `<j-dynamic-dialog></j-dynamic-dialog>`,
-  'error-page': `<j-error-page title="Something went wrong" statusCode="500"></j-error-page>`,
-  'file-preview': `<j-file-preview fileName="report.pdf" [fileSize]="245760" description="Uploaded recently"></j-file-preview>`,
+  'error-page': `<j-error-page code="500" title="Something went wrong"></j-error-page>`,
+  'file-preview': `<j-file-preview
+  fileName="product-headphones.webp"
+  previewUrl="/assets/images/product-headphones.webp"
+  downloadUrl="/assets/images/product-headphones.webp"
+  description="Already uploaded file"
+  showRename>
+</j-file-preview>`,
   'form-field': `<j-form-field label="Email" hint="Use a monitored inbox.">
   <j-input type="email"></j-input>
 </j-form-field>`,
@@ -4281,12 +4304,12 @@ const generatedFallbackExamples: Readonly<Record<string, string>> = {
   menubar: `<j-menubar [model]="menuItems"></j-menubar>`,
   'notification-center': `<j-notification-center [items]="notifications"></j-notification-center>`,
   'radio-group': `<j-radio-group label="Plan" [options]="plans" [(ngModel)]="plan"></j-radio-group>`,
-  'section-footer': `<j-section-footer>
+  'section-footer': `<j-section-footer align="right">
   <j-button label="Cancel" variant="soft"></j-button>
   <j-button label="Save"></j-button>
 </j-section-footer>`,
   'section-header': `<j-section-header title="Projects" subtitle="Track active work."></j-section-header>`,
-  'sidebar-nav': `<j-sidebar-nav [items]="navigationItems"></j-sidebar-nav>`,
+  'sidebar-nav': `<j-sidebar-nav [model]="navigationItems" collapseMode="icon"></j-sidebar-nav>`,
   sparkline: `<j-sparkline [value]="[12, 18, 16, 24, 30]"></j-sparkline>`,
   splitter: `<j-splitter>
   <j-splitter-panel [size]="35">Navigation panel</j-splitter-panel>
@@ -4374,6 +4397,12 @@ const generatedInputDocs: Readonly<Record<string, readonly DocsApiRow[]>> = {
     prop('icon', 'JIconName | string', "''", 'Overrides the inferred file-type icon.'),
     prop('showTypeLabel', 'boolean', 'false', 'Shows an optional type label beside the icon.'),
     prop('typeLabel', 'string', "''", 'Custom label used when showTypeLabel is enabled.'),
+    prop('url', 'string', "''", 'Shared relative or absolute URL for preview and download.'),
+    prop('previewUrl', 'string', "''", 'Action-specific preview URL overriding url.'),
+    prop('downloadUrl', 'string', "''", 'Action-specific download URL overriding url.'),
+    prop('previewBaseUrl', 'string', "''", 'Base path joined only to relative preview values.'),
+    prop('downloadBaseUrl', 'string', "''", 'Base path joined only to relative download values.'),
+    prop('showRename', 'boolean', 'false', 'Enables inline rename with check and cancel controls.'),
   ],
   gallery: [
     prop(
@@ -4394,6 +4423,20 @@ const generatedInputDocs: Readonly<Record<string, readonly DocsApiRow[]>> = {
 };
 
 const exampleValueOverrides: Readonly<Record<string, string>> = {
+  diffBefore: `{
+  name: 'Aster Labs',
+  status: 'Pending',
+  owner: 'Avery Reed',
+  plan: 'Enterprise',
+  legacyId: 'CUS-18'
+}`,
+  diffAfter: `{
+  name: 'Aster Labs',
+  status: 'Approved',
+  owner: 'Morgan Kim',
+  plan: 'Enterprise',
+  region: 'West'
+}`,
   availableItems: `[
   { label: 'Customer', value: 'customer' },
   { label: 'Status', value: 'status' },
@@ -4574,7 +4617,10 @@ const mergedComponentDocs: readonly ComponentDoc[] = [
       description: record.description,
       whenToUse: record.description,
       code: {
-        importCode: `import { ${record.className} } from '${record.importPath}';`,
+        importCode:
+          record.slug === 'watermark'
+            ? `import { JWatermarkComponent, JWatermarkDirective } from 'jrng-ui/watermark';`
+            : `import { ${record.className} } from '${record.importPath}';`,
         basic: createGeneratedBasicExample(record),
       },
       usage: [`Import ${record.className} from the public ${record.importPath} entry point.`],
@@ -4654,47 +4700,56 @@ export const componentDocs: readonly ComponentDoc[] = mergedComponentDocs
             `Import ${registryRecord.className} from the public ${registryRecord.importPath} entry point.`,
           ]
         : doc.usage,
-      inputs: [
-        ...doc.inputs,
-        ...(registryRecord?.inputs ?? [])
-          .filter(
-            (name) =>
-              ![...documentedInputs].some((documented) =>
-                documented.split(/\s*\/\s*/).includes(name),
+      inputs: uniqueBy(
+        [
+          ...doc.inputs,
+          ...(registryRecord?.inputs ?? [])
+            .filter(
+              (name) =>
+                ![...documentedInputs].some((documented) =>
+                  documented.split(/\s*\/\s*/).includes(name),
+                ),
+            )
+            .map((name) =>
+              prop(
+                name,
+                'See exported declaration',
+                'Component default',
+                `Public ${name} input. See the exported declaration for its exact contract.`,
               ),
-          )
-          .map((name) =>
-            prop(
-              name,
-              'See exported declaration',
-              'Component default',
-              `Public ${name} input. See the exported declaration for its exact contract.`,
             ),
-          ),
-      ],
-      outputs: [
-        ...doc.outputs,
-        ...(registryRecord?.outputs ?? [])
-          .filter(
-            (name) =>
-              ![...documentedOutputs].some((documented) =>
-                documented.split(/\s*\/\s*/).includes(name),
+        ],
+        (row) => row.name,
+      ),
+      outputs: uniqueBy(
+        [
+          ...doc.outputs,
+          ...(registryRecord?.outputs ?? [])
+            .filter(
+              (name) =>
+                ![...documentedOutputs].some((documented) =>
+                  documented.split(/\s*\/\s*/).includes(name),
+                ),
+            )
+            .map((name) =>
+              event(
+                name,
+                'See exported declaration',
+                `Emits when ${name} changes or its interaction occurs.`,
               ),
-          )
-          .map((name) =>
-            event(
-              name,
-              'See exported declaration',
-              `Emits when ${name} changes or its interaction occurs.`,
             ),
-          ),
-      ],
+        ],
+        (row) => row.event,
+      ),
       whenNotToUse: [],
       publicMethods: [
-        ...(doc.publicMethods ?? []),
-        ...(registryRecord?.methods ?? []).filter(
-          (method) => !(doc.publicMethods ?? []).some((documented) => documented.includes(method)),
-        ),
+        ...new Set([
+          ...(doc.publicMethods ?? []),
+          ...(registryRecord?.methods ?? []).filter(
+            (method) =>
+              !(doc.publicMethods ?? []).some((documented) => documented.includes(method)),
+          ),
+        ]),
       ],
       templates: doc.templates ?? [
         'Use documented content projection or template directives; do not target internal markup.',

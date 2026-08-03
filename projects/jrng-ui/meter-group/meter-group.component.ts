@@ -21,6 +21,7 @@ interface JMeterGroupViewItem extends JMeterGroupItem {
 @Component({
   selector: 'j-meter-group',
   imports: [],
+  host: { style: 'display: block; width: 100%;' },
   template: `
     <div
       class="j-meter-group"
@@ -57,6 +58,7 @@ interface JMeterGroupViewItem extends JMeterGroupItem {
       .j-meter-group {
         display: grid;
         gap: var(--j-spacing-3);
+        width: 100%;
       }
 
       .j-meter-group__item {

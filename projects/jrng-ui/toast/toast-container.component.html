@@ -9,7 +9,7 @@
   @for (toast of visibleToasts(); track toast.id) {
     <article
       class="j-toast"
-      [class]="'j-toast j-toast--' + toast.severity"
+      [class]="'j-toast j-toast--' + toast.severity + ' j-toast--' + toast.variant"
       data-jc-name="toast"
       data-jc-section="item"
       data-j-active="true"
@@ -25,7 +25,25 @@
           [ngTemplateOutletContext]="templateContext(toast)"
         />
       } @else {
-        <div class="j-toast__mark" data-jc-section="mark" aria-hidden="true"></div>
+        <div class="j-toast__mark" data-jc-section="mark" aria-hidden="true">
+          @switch (toast.severity) {
+            @case ('success') {
+              <span>✓</span>
+            }
+            @case ('error') {
+              <span>×</span>
+            }
+            @case ('warning') {
+              <span>!</span>
+            }
+            @case ('info') {
+              <span>i</span>
+            }
+            @default {
+              <span>•</span>
+            }
+          }
+        </div>
         <div class="j-toast__content" data-jc-section="content">
           <strong class="j-toast__title" data-jc-section="title">{{ toast.summary }}</strong>
           @if (toast.detail) {

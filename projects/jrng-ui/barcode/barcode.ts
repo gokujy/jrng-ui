@@ -1,4 +1,4 @@
-import qrcode from 'qrcode-generator';
+import { jEncodeQrMatrix } from './qr-encoder';
 
 export type JBarcodeSymbology = 'qr' | 'code128' | 'ean13';
 export type JQrErrorCorrection = 'L' | 'M' | 'Q' | 'H';
@@ -219,15 +219,13 @@ export function jEncodeBarcode(options: JBarcodeEncodeOptions): JBarcodeGraphic 
 
   try {
     if (options.symbology === 'qr') {
-      const qr = qrcode(0, options.errorCorrection ?? 'M');
-      qr.addData(value, 'Byte');
-      qr.make();
-      const count = qr.getModuleCount();
+      const qr = jEncodeQrMatrix(value, options.errorCorrection ?? 'M');
+      const count = qr.size;
       let path = '';
       for (let row = 0; row < count; row += 1) {
         let start = -1;
         for (let column = 0; column <= count; column += 1) {
-          const dark = column < count && qr.isDark(row, column);
+          const dark = column < count && qr.modules[row][column];
           if (dark && start < 0) start = column;
           if (!dark && start >= 0) {
             path += `M${start + quietZone} ${row + quietZone}h${column - start}v1h-${column - start}z`;

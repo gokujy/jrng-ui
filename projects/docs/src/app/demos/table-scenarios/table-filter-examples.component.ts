@@ -10,7 +10,6 @@ import { FormsModule } from '@angular/forms';
 import { JAvatarComponent } from 'jrng-ui/avatar';
 import { JBadgeComponent } from 'jrng-ui/badge';
 import { JButtonComponent } from 'jrng-ui/button';
-import { JChipComponent } from 'jrng-ui/chip';
 import { JDatePickerComponent, JDatePickerValue } from 'jrng-ui/date-picker';
 import { JInputComponent } from 'jrng-ui/input';
 import { JInputNumberComponent } from 'jrng-ui/input-number';
@@ -77,6 +76,15 @@ const TABLE_FILTER_COMMON_IMPORTS = [
   JDatePickerComponent,
   JInputComponent,
   JSelectComponent,
+  JTableCellTemplateDirective,
+  JTableComponent,
+  JTooltipDirective,
+];
+
+const TABLE_FILTER_DISPLAY_IMPORTS = [
+  JAvatarComponent,
+  JBadgeComponent,
+  JButtonComponent,
   JTableCellTemplateDirective,
   JTableComponent,
   JTooltipDirective,
@@ -248,6 +256,84 @@ const TOOLBAR_FILTERS_TEMPLATE = `
     [value]="forceEmpty() ? [] : visibleRows()"
     [columns]="toolbarColumns"
     [loading]="loading()"
+    [paginator]="true"
+    [rows]="5"
+    [scrollable]="true"
+    [tableStyle]="{ 'min-width': '82rem' }"
+    [showCurrentPageReport]="true"
+    [showGlobalFilter]="false"
+    [showColumnManager]="false"
+    [showExport]="false"
+    [maximizable]="false"
+    noResultsTitle="No matching customers"
+  >
+    <ng-template jTableCell="customerName" let-row>
+      <span class="j-docs-table-customer">
+        <j-avatar [initials]="initials($any(row)['customerName'])" [ariaLabel]="$any(row)['customerName']" size="sm" />
+        <strong>{{ $any(row)['customerName'] }}</strong>
+      </span>
+    </ng-template>
+    <ng-template jTableCell="status" let-value="value">
+      <j-badge [value]="$any(value)" [severity]="value === 'Active' ? 'success' : 'warning'" variant="soft" />
+    </ng-template>
+    <ng-template jTableCell="actions" let-row>
+      <j-button icon="eye" actionDisplay="icon" [ariaLabel]="'View ' + $any(row)['customerName']" jTooltip="View customer" />
+    </ng-template>
+  </j-table>
+`;
+
+const NATIVE_TOOLBAR_FILTERS_TEMPLATE = `
+  <div class="j-docs-table-filter-actions">
+    <p class="j-docs-table-filter-result" role="status">
+      Use the labelled filter bar to narrow the fictional customer list.
+    </p>
+    <div class="j-docs-table-filter-buttons">
+      <j-button label="Show or hide filters" variant="outlined" (onClick)="toolbarVisible.set(!toolbarVisible())" />
+      <j-button label="Loading state" variant="text" (onClick)="loading.set(!loading())" />
+    </div>
+  </div>
+  <j-table
+    caption="Customers with above-table toolbar filters"
+    [value]="rows"
+    [columns]="filterColumns"
+    filterDisplay="toolbar"
+    [filterToolbarVisible]="toolbarVisible()"
+    [loading]="loading()"
+    [paginator]="true"
+    [rows]="5"
+    [scrollable]="true"
+    [tableStyle]="{ 'min-width': '82rem' }"
+    [showCurrentPageReport]="true"
+    [showGlobalFilter]="false"
+    [showColumnManager]="false"
+    [showExport]="false"
+    [maximizable]="false"
+    noResultsTitle="No matching customers"
+  >
+    <ng-template jTableCell="customerName" let-row>
+      <span class="j-docs-table-customer">
+        <j-avatar [initials]="initials($any(row)['customerName'])" [ariaLabel]="$any(row)['customerName']" size="sm" />
+        <strong>{{ $any(row)['customerName'] }}</strong>
+      </span>
+    </ng-template>
+    <ng-template jTableCell="status" let-value="value">
+      <j-badge [value]="$any(value)" [severity]="value === 'Active' ? 'success' : 'warning'" variant="soft" />
+    </ng-template>
+    <ng-template jTableCell="actions" let-row>
+      <j-button icon="eye" actionDisplay="icon" [ariaLabel]="'View ' + $any(row)['customerName']" jTooltip="View customer" />
+    </ng-template>
+  </j-table>
+`;
+
+const MENU_FILTERS_TEMPLATE = `
+  <p class="j-docs-table-filter-result" role="status">
+    Activate a filter icon to choose an operator and value, then apply it.
+  </p>
+  <j-table
+    caption="Customers with popup menu filters"
+    [value]="rows"
+    [columns]="filterColumns"
+    filterDisplay="menu"
     [paginator]="true"
     [rows]="5"
     [scrollable]="true"
@@ -456,35 +542,44 @@ export class InlineColumnFiltersTableComponent extends CustomerFilterExampleBase
 
 @Component({
   selector: 'app-filters-above-table',
-  imports: [...TABLE_FILTER_COMMON_IMPORTS, JChipComponent],
-  template: TOOLBAR_FILTERS_TEMPLATE,
+  imports: TABLE_FILTER_DISPLAY_IMPORTS,
+  template: NATIVE_TOOLBAR_FILTERS_TEMPLATE,
   styles: [TABLE_FILTER_STYLES],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FiltersAboveTableComponent extends CustomerFilterExampleBase {}
+export class FiltersAboveTableComponent extends CustomerFilterExampleBase {
+  readonly filterColumns = createColumns(true);
+  readonly toolbarVisible = signal(true);
+}
 
 @Component({
-  selector: 'app-expandable-filter-panel-table',
-  imports: [...TABLE_FILTER_COMMON_IMPORTS, JChipComponent],
-  template: EXPANDABLE_FILTERS_TEMPLATE,
+  selector: 'app-popup-menu-filters-table',
+  imports: TABLE_FILTER_DISPLAY_IMPORTS,
+  template: MENU_FILTERS_TEMPLATE,
   styles: [TABLE_FILTER_STYLES],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ExpandableFilterPanelTableComponent extends CustomerFilterExampleBase {
+export class PopupMenuFiltersTableComponent extends CustomerFilterExampleBase {
+  readonly filterColumns = createColumns(true);
+}
+
+/** @deprecated Kept so existing documentation links continue to resolve. */
+export class ExpandableFilterPanelTableComponent extends PopupMenuFiltersTableComponent {
   readonly panelOpen = signal(false);
 }
 
 export const TABLE_FILTER_EXAMPLE_COMPONENTS: Readonly<Record<string, Type<unknown>>> = {
   'filtering-inline-column-filters': InlineColumnFiltersTableComponent,
   'filtering-filters-above-table': FiltersAboveTableComponent,
-  'filtering-expandable-filter-panel': ExpandableFilterPanelTableComponent,
+  'filtering-popup-menu-filters': PopupMenuFiltersTableComponent,
+  'filtering-expandable-filter-panel': PopupMenuFiltersTableComponent,
 };
 
 export const TABLE_FILTER_EXAMPLE_DOCS = [
   {
     key: 'filtering-inline-column-filters',
     family: 'filtering',
-    name: 'Inline Column Filters',
+    name: 'Inline Row Filters',
     details: 'Display filter controls directly below each column header for quick data filtering.',
     html: INLINE_FILTERS_TEMPLATE.trim(),
     ts: `export class InlineColumnFiltersTableComponent extends CustomerFilterExampleBase {
@@ -496,22 +591,24 @@ export const TABLE_FILTER_EXAMPLE_DOCS = [
   {
     key: 'filtering-filters-above-table',
     family: 'filtering',
-    name: 'Filters Above Table',
+    name: 'Above-table Toolbar Filters',
     details:
       'Use a dedicated filter toolbar above the table for advanced and responsive filtering.',
-    html: TOOLBAR_FILTERS_TEMPLATE.trim(),
-    ts: `export class FiltersAboveTableComponent extends CustomerFilterExampleBase {}`,
+    html: NATIVE_TOOLBAR_FILTERS_TEMPLATE.trim(),
+    ts: `export class FiltersAboveTableComponent extends CustomerFilterExampleBase {
+  readonly filterColumns = createColumns(true);
+  readonly toolbarVisible = signal(true);
+}`,
     scss: TABLE_FILTER_STYLES.trim(),
   },
   {
-    key: 'filtering-expandable-filter-panel',
+    key: 'filtering-popup-menu-filters',
     family: 'filtering',
-    name: 'Expandable Filter Panel',
-    details:
-      'Open an advanced filter panel above the table only when filtering controls are needed.',
-    html: EXPANDABLE_FILTERS_TEMPLATE.trim(),
-    ts: `export class ExpandableFilterPanelTableComponent extends CustomerFilterExampleBase {
-  readonly panelOpen = signal(false);
+    name: 'Popup Menu Filters',
+    details: 'Open a complete operator-and-value filter panel from each filterable column header.',
+    html: MENU_FILTERS_TEMPLATE.trim(),
+    ts: `export class PopupMenuFiltersTableComponent extends CustomerFilterExampleBase {
+  readonly filterColumns = createColumns(true);
 }`,
     scss: TABLE_FILTER_STYLES.trim(),
   },
@@ -529,13 +626,42 @@ function createColumns(inline: boolean): readonly JTableColumn<CustomerFilterRow
       minWidth: '13rem',
     },
     { field: 'company', header: 'Company', sortable: true, filterable, minWidth: '13rem' },
+    { field: 'email', header: 'Email', sortable: true, filterable, minWidth: '15rem' },
+    {
+      field: 'industry',
+      header: 'Industry',
+      sortable: true,
+      filterable,
+      minWidth: '11rem',
+      filter: {
+        type: 'select',
+        operator: 'equals',
+        options: options('Technology', 'Retail', 'Healthcare', 'Logistics'),
+      },
+    },
+    {
+      field: 'subscription',
+      header: 'Account Type',
+      sortable: true,
+      filterable,
+      minWidth: '11rem',
+      filter: {
+        type: 'select',
+        operator: 'equals',
+        options: options('Starter', 'Growth', 'Enterprise'),
+      },
+    },
     {
       field: 'accountManager',
       header: 'Account Manager',
       sortable: true,
       filterable,
       minWidth: '12rem',
-      filter: { type: 'select', operator: 'equals' },
+      filter: {
+        type: 'select',
+        operator: 'equals',
+        options: options('Avery Reed', 'Morgan Kim', 'Jordan Lee'),
+      },
     },
     {
       field: 'status',
@@ -543,7 +669,11 @@ function createColumns(inline: boolean): readonly JTableColumn<CustomerFilterRow
       sortable: true,
       filterable,
       width: '9rem',
-      filter: { type: 'select', operator: 'equals' },
+      filter: {
+        type: 'multi-select',
+        operator: 'in',
+        options: options('Active', 'Onboarding', 'Paused'),
+      },
     },
     {
       field: 'joinedDate',
@@ -552,6 +682,7 @@ function createColumns(inline: boolean): readonly JTableColumn<CustomerFilterRow
       sortable: true,
       filterable,
       width: '11rem',
+      filter: { type: 'date-range', operator: 'between' },
     },
     {
       field: 'outstandingBalance',

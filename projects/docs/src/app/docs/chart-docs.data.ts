@@ -34,7 +34,12 @@ export const chartTypeDocs: readonly ChartTypeDoc[] = [
       'Avoid pie charts for many categories.',
       'Avoid when users need precise comparison between similar values.',
     ],
-    code: `<j-chart type="pie" [data]="segmentData" ariaLabel="Plan share"></j-chart>`,
+    code: `<j-chart
+  type="pie"
+  [data]="segmentData"
+  [outsideLabels]="outsideLabelOptions"
+  ariaLabel="Plan share"
+></j-chart>`,
   },
   {
     type: 'doughnut',
@@ -125,6 +130,13 @@ export const chartInputs: readonly DocsApiRow[] = [
     description: 'Optional Chart.js plugins.',
   },
   {
+    name: 'outsideLabels',
+    type: 'boolean | JChartOutsideLabelsOptions',
+    defaultValue: 'false',
+    description:
+      'Shows labels with connector lines outside pie or doughnut segments. Accepts colors, font, spacing, layout padding, and a formatter.',
+  },
+  {
     name: 'width / height',
     type: 'number',
     defaultValue: '0',
@@ -205,4 +217,14 @@ export const chartOptionsCode = `lineOptions = {
     x: { ticks: { maxRotation: 0, autoSkip: true } },
     y: { beginAtZero: true }
   }
+};
+
+outsideLabelOptions = {
+  lineColor: '#64748b',
+  lineWidth: 1,
+  offset: 10,
+  connectorLength: 20,
+  padding: 64,
+  formatter: ({ label, percentage }) =>
+    \`\${label} \${percentage.toFixed(0)}%\`
 };`;

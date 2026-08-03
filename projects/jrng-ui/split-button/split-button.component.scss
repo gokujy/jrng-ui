@@ -25,6 +25,11 @@
   z-index: 1;
 }
 
+:host ::ng-deep .j-split-button__primary:not(:disabled):hover,
+:host ::ng-deep .j-split-button__trigger:not(:disabled):hover {
+  transform: none;
+}
+
 @media (forced-colors: active) {
   :host ::ng-deep .j-split-button__trigger {
     margin-inline-start: 0;

@@ -419,7 +419,7 @@ function addInputExample(examples, component, key, name, details, inputs) {
 }
 
 function createExample(component, definition) {
-  const inputs = definition.inputs ?? [];
+  const inputs = [...new Set([...previewBaselineInputs(component), ...(definition.inputs ?? [])])];
   const outputs = definition.outputs ?? [];
   const methods = definition.methods ?? [];
   const templates = definition.templates ?? [];
@@ -507,11 +507,70 @@ disableForm(): void {
   };
 }
 
+function previewBaselineInputs(component) {
+  const available = new Set(component.inputs ?? []);
+  const visibleInputs = [
+    'ariaLabel',
+    'label',
+    'title',
+    'header',
+    'caption',
+    'description',
+    'hint',
+    'placeholder',
+  ];
+  const dataInputs =
+    {
+      'j-autocomplete': ['suggestions'],
+      'j-calendar-scheduler': ['events'],
+      'j-cascader': ['options'],
+      'j-chart': ['data'],
+      'j-data-view': ['value'],
+      'j-gantt': ['tasks'],
+      'j-gallery': ['value'],
+      'j-image': ['src'],
+      'j-kanban': ['value'],
+      'j-listbox': ['options'],
+      'j-menu': ['model'],
+      'j-meter-group': ['value'],
+      'j-multiselect': ['options'],
+      'j-order-list': ['value'],
+      'j-org-chart': ['value'],
+      'j-paginator': ['totalRecords'],
+      'j-select': ['options'],
+      'j-select-button': ['options'],
+      'j-table': ['value', 'columns'],
+      'j-tiered-menu': ['model'],
+      'j-timeline': ['value'],
+      'j-transfer-list': ['source', 'target'],
+      'j-tree': ['value'],
+      'j-tree-select': ['nodes'],
+      'j-tree-table': ['value', 'columns'],
+      'j-virtual-scroller': ['items'],
+    }[component.selector] ?? [];
+  return [...visibleInputs, ...dataInputs].filter((input) => available.has(input));
+}
+
 function examplePropertyAccess(api) {
   return /^[A-Za-z_$][\w$]*$/.test(api) ? `apiValues.${api}` : `apiValues[${JSON.stringify(api)}]`;
 }
 
 function sourceExampleValue(selector, api, exampleKey) {
+  if (selector === 'j-image') {
+    if (api === 'src') return `'/assets/images/product-laptop.webp'`;
+    if (api === 'fallback') return `'/assets/images/product-headphones.webp'`;
+    if (api === 'loading') return `'eager'`;
+  }
+  if (selector === 'j-gallery' && api === 'value') {
+    return `[
+    { src: '/assets/gallery/alpine-dawn.png', thumbnail: '/assets/gallery/alpine-dawn.png', alt: 'Sunrise over an alpine valley', caption: 'Alpine dawn' },
+    { src: '/assets/gallery/coastal-light.png', thumbnail: '/assets/gallery/coastal-light.png', alt: 'Sunlit coastline and blue water', caption: 'Coastal light' }
+  ]`;
+  }
+  if (api === 'value') {
+    const value = controlSourceValue(selector);
+    if (value !== null) return value;
+  }
   if (
     exampleKey === 'api-states' &&
     /^(?:disabled|readonly|readOnly|loading|invalid|required|indeterminate|selected|expanded|checked|active|visible|open)$/.test(
@@ -521,10 +580,83 @@ function sourceExampleValue(selector, api, exampleKey) {
     return 'true';
   }
   if (/^(?:error|errorState)$/.test(api)) return `'Review the highlighted field.'`;
+  if (selector === 'j-editor') {
+    if (api === 'airMode' || api === 'stickyToolbar' || api === 'tabMovesFocus') return 'false';
+    if (api === 'fontFamilies') return "['Arial', 'Georgia', 'Verdana']";
+    if (api === 'fontSizes') return '[10, 12, 14, 18, 24]';
+    if (api === 'height') return "'14rem'";
+    if (api === 'imageAccept') return `'image/png,image/jpeg,image/webp,image/gif'`;
+    if (api === 'imageMaxFileSize') return '5 * 1024 * 1024';
+    if (api === 'lineHeights') return '[1, 1.4, 1.6, 2]';
+    if (api === 'minHeight') return "'10rem'";
+    if (api === 'outputFormat') return `'html'`;
+    if (api === 'resizable' || api === 'spellcheck') return 'true';
+    if (api === 'tabSize') return '4';
+    if (api === 'toolbar') return `'full'`;
+    if (api === 'toolbarLabel') return `'Customer notes editor toolbar'`;
+    if (api === 'toolbarPosition') return `'top'`;
+    if (api === 'imageAdapter' || api === 'sanitizerAdapter') return 'null';
+  }
+  if (api === 'appendTo') return `'body'`;
+  if (api === 'asyncPageSize') return '20';
+  if (api === 'delay') return '250';
+  if (api === 'minLength') return '1';
+  if (api === 'size') return `'md'`;
+  if (api === 'groupOptions') return `'items'`;
+  if (api === 'optionLabel') return `'label'`;
+  if (api === 'optionValue') return `'value'`;
+  if (api === 'optionDisabled') return `'disabled'`;
+  if (selector === 'j-autocomplete' && api === 'dataSource') return 'null';
   if (/^(?:aria|label|title|caption|description|hint|placeholder|alt)/i.test(api)) {
     return `'Customer example'`;
   }
   if (/date/i.test(api)) return `new Date('2026-07-28T09:30:00')`;
+  if (selector === 'j-table' && api === 'value') {
+    return `[
+    { id: 'CUS-1042', name: 'Northwind Harbor', status: 'Active' },
+    { id: 'CUS-1087', name: 'Willow & Pine', status: 'Review' }
+  ]`;
+  }
+  if (selector === 'j-data-view' && api === 'value') {
+    return `[
+    { id: 1, name: 'Northwind Harbor', category: 'Technology', owner: 'Avery Reed' },
+    { id: 2, name: 'Willow & Pine', category: 'Retail', owner: 'Morgan Lee' }
+  ]`;
+  }
+  if (selector === 'j-data-view' && api === 'sortField') return `'name'`;
+  if (selector === 'j-data-view' && api === 'sortOptions') {
+    return `[
+    { label: 'Name', field: 'name' },
+    { label: 'Category', field: 'category' },
+    { label: 'Owner', field: 'owner' }
+  ]`;
+  }
+  if (selector === 'j-meter-group' && api === 'value') {
+    return `[
+    { label: 'Active', value: 64 },
+    { label: 'Review', value: 24 }
+  ]`;
+  }
+  if (['j-tree', 'j-tree-table', 'j-org-chart'].includes(selector) && api === 'value') {
+    return `[
+    { key: 'customers', label: 'Customers', data: { name: 'Customers', status: 'Active' }, children: [] }
+  ]`;
+  }
+  if (selector === 'j-timeline' && api === 'value') {
+    return `[
+    { title: 'Account created', description: 'Customer profile was created.', date: '2026-07-12' },
+    { title: 'Review completed', description: 'Account details were verified.', date: '2026-07-18' }
+  ]`;
+  }
+  if (selector === 'j-gantt' && api === 'tasks') {
+    return `[
+    { id: 'discovery', label: 'Customer discovery', start: '2026-07-06', end: '2026-07-12', progress: 100 },
+    { id: 'launch', label: 'Customer launch', start: '2026-07-13', end: '2026-07-24', progress: 45 }
+  ]`;
+  }
+  if (selector === 'j-virtual-scroller' && api === 'items') {
+    return `Array.from({ length: 24 }, (_, index) => \`Customer record \${index + 1}\`)`;
+  }
   if (/columns/i.test(api)) {
     return `[
     { field: 'name', header: 'Customer Name' },
@@ -538,6 +670,11 @@ function sourceExampleValue(selector, api, exampleKey) {
   ]`;
   }
   if (/Options$/.test(api)) return '[]';
+  if (/nodes|tree/i.test(api)) {
+    return `[
+    { key: 'operations', label: 'Operations', children: [] }
+  ]`;
+  }
   if (/data/i.test(api)) {
     return `{ labels: ['Apr', 'May', 'Jun'], datasets: [{ label: 'Customers', data: [42, 58, 71] }] }`;
   }
@@ -567,15 +704,62 @@ function sourceExampleValue(selector, api, exampleKey) {
 }
 
 function formSourceValue(selector) {
+  return controlSourceValue(selector) ?? `'Customer review'`;
+}
+
+function controlSourceValue(selector) {
+  if (
+    [
+      'j-autocomplete',
+      'j-cascader',
+      'j-listbox',
+      'j-radio-group',
+      'j-select',
+      'j-select-button',
+    ].includes(selector)
+  ) {
+    return `'northwind'`;
+  }
+  if (selector === 'j-multiselect') return `['northwind']`;
+  if (selector === 'j-chips') {
+    return `[
+    { label: 'Priority customer', severity: 'info' },
+    { label: 'Review due', severity: 'warning' }
+  ]`;
+  }
+  if (['j-checkbox', 'j-switch', 'j-toggle-button'].includes(selector)) return 'true';
+  if (['j-input-number', 'j-knob', 'j-rating', 'j-slider'].includes(selector)) return '3';
   if (selector === 'j-date-picker') return `new Date('2026-07-28T09:30:00')`;
+  if (selector === 'j-time-picker') return `'09:30'`;
+  if (selector === 'j-color-picker') return `'#0f766e'`;
+  if (selector === 'j-cron-expression') return `'0 9 * * 1-5'`;
+  if (selector === 'j-input-otp') return `'482731'`;
+  if (selector === 'j-input-mask') return `'5551234567'`;
   if (selector === 'j-query-builder') {
     return `{ id: 'docs-query', type: 'group', join: 'and', children: [] }`;
   }
-  if (['j-rating', 'j-slider'].includes(selector)) return '3';
-  if (['j-checkbox', 'j-radio', 'j-switch', 'j-toggle-button'].includes(selector)) {
-    return 'true';
+  if (selector === 'j-radio') return `'customer-review'`;
+  if (selector === 'j-signature') {
+    return `{
+    width: 320,
+    height: 120,
+    strokes: [{
+      color: '#0f766e',
+      width: 2,
+      points: [
+        { x: 48, y: 72, pressure: 0.5 },
+        { x: 96, y: 42, pressure: 0.6 },
+        { x: 154, y: 74, pressure: 0.5 }
+      ]
+    }]
+  }`;
   }
-  return `'Customer review'`;
+  if (selector === 'j-tree-select') {
+    return `{ key: 'operations', label: 'Operations', children: [] }`;
+  }
+  if (selector === 'j-editor') return `'<p>Customer review notes are ready.</p>'`;
+  if (['j-input', 'j-password', 'j-textarea'].includes(selector)) return `'Customer review'`;
+  return null;
 }
 
 function templateSnippet(selector) {

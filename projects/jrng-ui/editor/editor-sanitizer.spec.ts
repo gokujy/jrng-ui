@@ -15,6 +15,31 @@ describe('editor sanitization', () => {
     expect(html).not.toMatch(/script|iframe|svg|onclick|onerror|style=|javascript:|data:/i);
   });
 
+  it('allows raster image data URLs and rejects executable image data', () => {
+    expect(
+      jSanitizeEditorHtml(
+        '<img src="data:image/png;base64,aGVsbG8=" alt="Customer logo">' +
+          '<img src="data:image/svg+xml;base64,PHN2Zz48L3N2Zz4=">',
+        document,
+      ),
+    ).toBe('<img src="data:image/png;base64,aGVsbG8=" alt="Customer logo"><img>');
+  });
+
+  it('preserves safe rich-text media attributes and constrained inline styles', () => {
+    expect(
+      jSanitizeEditorHtml(
+        '<p style="line-height: 1.6; background-image: url(javascript:bad())">Text</p>' +
+          '<img src="https://example.com/customer.png" style="width: 50%; position: fixed" data-j-align="right">' +
+          '<video src="https://example.com/demo.mp4" controls></video>',
+        document,
+      ),
+    ).toBe(
+      '<p style="line-height: 1.6">Text</p>' +
+        '<img src="https://example.com/customer.png" style="width: 50%" data-j-align="right">' +
+        '<video src="https://example.com/demo.mp4" controls=""></video>',
+    );
+  });
+
   it('preserves supported formatting and secures new-window links', () => {
     const html = jSanitizeEditorHtml(
       `<h2>Title</h2><p><strong>Important</strong> <a href="https://example.com" target="_blank">details</a></p>`,

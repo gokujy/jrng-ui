@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import type { JTableSelection } from 'jrng-ui/table';
 import {
   COMPONENT_PREVIEW_IMPORTS,
   ComponentDetailViewBase,
@@ -125,6 +126,8 @@ import {
                       ? 'checkbox'
                       : 'none'
                   "
+                  [selection]="example.key === 'selection' ? tableSelection : null"
+                  (selectionChange)="tableSelection = $event"
                   [paginator]="example.key === 'pagination'"
                   [rows]="3"
                   [filterDisplay]="example.key === 'filtering' ? 'row' : 'none'"
@@ -189,7 +192,25 @@ import {
         />
       }
       @case ('calendar-scheduler') {
-        <j-calendar-scheduler [events]="schedulerEvents" ariaLabel="Customer meeting schedule" />
+        <j-calendar-scheduler
+          [events]="schedulerEvents"
+          [activeDate]="schedulerActiveDate"
+          [view]="
+            example.key === 'agenda'
+              ? 'agenda'
+              : example.key === 'week'
+                ? 'week'
+                : example.key === 'day'
+                  ? 'day'
+                  : 'month'
+          "
+          [locale]="example.key === 'locale' ? 'en-GB' : 'en-US'"
+          [firstDayOfWeek]="example.key === 'week' || example.key === 'locale' ? 1 : 0"
+          [showWeekends]="example.key !== 'week'"
+          [hour12]="example.key !== 'locale'"
+          [maxEventsPerDay]="2"
+          ariaLabel="Customer meeting schedule"
+        />
       }
       @case ('data-view') {
         <j-data-view
@@ -233,6 +254,8 @@ import {
           sourceHeader="Fields to add"
           targetHeader="Visible fields"
           filter
+          moveOnDoubleClick
+          responsiveMode="none"
         />
       }
       @case ('tree') {
@@ -296,4 +319,5 @@ import {
 })
 export class DataComponentPreviewComponent extends ComponentDetailViewBase {
   readonly previewExample = input.required<DetailFeatureExample>();
+  tableSelection: JTableSelection = [this.customerRows[1]];
 }

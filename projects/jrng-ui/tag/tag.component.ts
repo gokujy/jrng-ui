@@ -8,10 +8,11 @@ import {
 } from '@angular/core';
 import { JPassThrough, jMergePartClasses } from 'jrng-ui/core';
 import { JSeverity, JComponentSize } from 'jrng-ui/core';
+import { JIconComponent } from 'jrng-ui/icon';
 
 @Component({
   selector: 'j-tag',
-  imports: [],
+  imports: [JIconComponent],
   template: `
     <span [class]="tagClasses()" data-jc-name="tag" data-jc-section="root" data-jc-extend="remove">
       <span class="j-tag__label" data-jc-section="label"
@@ -25,7 +26,7 @@ import { JSeverity, JComponentSize } from 'jrng-ui/core';
           [attr.aria-label]="removeLabel()"
           (click)="remove.emit($event)"
         >
-          x
+          <j-icon name="close" aria-hidden="true" />
         </button>
       }
     </span>
@@ -50,6 +51,12 @@ import { JSeverity, JComponentSize } from 'jrng-ui/core';
         padding: 0 var(--j-spacing-sm);
       }
 
+      .j-tag--xs {
+        font-size: 0.6875rem;
+        min-height: 1.125rem;
+        padding: 0 var(--j-spacing-xs);
+      }
+
       .j-tag--md {
         font-size: var(--j-font-size-sm);
         min-height: 1.75rem;
@@ -60,6 +67,12 @@ import { JSeverity, JComponentSize } from 'jrng-ui/core';
         font-size: var(--j-font-size-md);
         min-height: 2.125rem;
         padding: 0 var(--j-spacing-lg);
+      }
+
+      .j-tag--xl {
+        font-size: var(--j-font-size-lg);
+        min-height: 2.5rem;
+        padding: 0 var(--j-spacing-xl);
       }
 
       .j-tag--rounded {
@@ -126,6 +139,12 @@ import { JSeverity, JComponentSize } from 'jrng-ui/core';
         --j-tag-bg: var(--j-color-surface-subtle);
         --j-tag-border: var(--j-color-border);
         --j-tag-color: var(--j-color-text);
+      }
+
+      .j-tag--contrast {
+        --j-tag-bg: var(--j-color-contrast);
+        --j-tag-border: transparent;
+        --j-tag-color: var(--j-color-contrast-foreground);
       }
     `,
   ],

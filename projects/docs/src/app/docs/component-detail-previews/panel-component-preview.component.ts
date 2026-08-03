@@ -238,15 +238,29 @@ import {
         </j-tabs>
       }
       @case ('fieldset') {
-        <j-fieldset legend="Billing address" toggleable>
+        <j-fieldset
+          legend="Billing address"
+          icon="route"
+          badge="Required"
+          variant="elevated"
+          toggleable
+        >
           <div class="j-preview-grid">
-            <j-input label="Street" placeholder="123 Market St" />
-            <j-input label="City" placeholder="San Francisco" />
+            <j-input label="Street" />
+            <j-input label="City" />
           </div>
         </j-fieldset>
       }
       @case ('panel') {
-        <j-panel header="Customer health" toggleable>
+        <j-panel
+          header="Project health"
+          subtitle="Deployment readiness"
+          icon="chart-no-axes-column"
+          badge="Healthy"
+          badgeSeverity="success"
+          variant="elevated"
+          toggleable
+        >
           The latest build passed and documentation coverage is improving.
         </j-panel>
       }

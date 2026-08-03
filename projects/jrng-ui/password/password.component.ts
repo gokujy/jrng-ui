@@ -110,10 +110,20 @@ export function jEvaluatePassword(
       }
     </div>
     @if (feedback() && value) {
-      <div class="j-password__meter" data-jc-section="meter" aria-hidden="true">
+      <div
+        class="j-password__meter"
+        data-jc-section="meter"
+        [attr.data-strength]="strengthLevel"
+        aria-hidden="true"
+      >
         <span [style.width.%]="strength"></span>
       </div>
-      <p class="j-password__message" data-jc-section="feedback" aria-live="polite">
+      <p
+        class="j-password__message j-password__strength-label"
+        data-jc-section="feedback"
+        [attr.data-strength]="strengthLevel"
+        aria-live="polite"
+      >
         {{ strengthLabel }}
       </p>
       @if (showRules()) {
@@ -214,9 +224,34 @@ export function jEvaluatePassword(
       }
 
       .j-password__meter span {
-        background: var(--j-color-primary);
         display: block;
         height: 100%;
+      }
+
+      .j-password__meter[data-strength='weak'] span {
+        background: var(--j-color-danger);
+      }
+
+      .j-password__meter[data-strength='medium'] span {
+        background: var(--j-color-warning);
+      }
+
+      .j-password__meter[data-strength='strong'] span,
+      .j-password__meter[data-strength='very-strong'] span {
+        background: var(--j-color-success);
+      }
+
+      .j-password__strength-label[data-strength='weak'] {
+        color: var(--j-color-danger);
+      }
+
+      .j-password__strength-label[data-strength='medium'] {
+        color: var(--j-color-warning);
+      }
+
+      .j-password__strength-label[data-strength='strong'],
+      .j-password__strength-label[data-strength='very-strong'] {
+        color: var(--j-color-success);
       }
 
       .j-password__message {

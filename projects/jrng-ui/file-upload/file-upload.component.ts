@@ -3,6 +3,7 @@ import {
   Component,
   DestroyRef,
   ElementRef,
+  PLATFORM_ID,
   booleanAttribute,
   computed,
   inject,
@@ -12,7 +13,10 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { JRNG_LOCALE } from 'jrng-ui/core';
+import { JIconComponent } from 'jrng-ui/icon';
+import { resolveFileActionUrl } from 'jrng-ui/file-preview';
 import { isObservable } from 'rxjs';
 import { JFileChunkUploadAdapter, JFileRemoteItem, JFileUploadAdapter } from './file-upload.types';
 
@@ -44,9 +48,19 @@ export interface JFileUploadItemEvent {
   readonly item: JFileUploadItem;
 }
 
+export interface JFileUploadRenameEvent<TItem = JFileUploadItem | JFileRemoteItem> {
+  readonly item: TItem;
+  readonly name: string;
+}
+
+export type JFileUploadUrlResolver = (
+  item: JFileUploadItem | JFileRemoteItem,
+  action: 'preview' | 'download',
+) => string | null | undefined;
+
 @Component({
   selector: 'j-file-upload',
-  imports: [],
+  imports: [JIconComponent],
   template: `
     <section
       class="j-file-upload"
@@ -125,7 +139,36 @@ export interface JFileUploadItemEvent {
                 {{ filePreviewLabel(item.file) }}
               </div>
               <div class="j-file-upload__meta">
-                <span>{{ item.displayName || item.file.name }}</span>
+                @if (renamingKey() === 'queue:' + item.id) {
+                  <div class="j-file-upload__rename">
+                    <input
+                      type="text"
+                      [value]="renameDraft()"
+                      [attr.aria-label]="'Rename ' + (item.displayName || item.file.name)"
+                      (input)="renameDraft.set($any($event.target).value)"
+                      (keydown.enter)="confirmQueuedRename(item)"
+                      (keydown.escape)="cancelRename()"
+                    />
+                    <button
+                      type="button"
+                      aria-label="Confirm rename"
+                      title="Confirm rename"
+                      (click)="confirmQueuedRename(item)"
+                    >
+                      <j-icon name="check" aria-hidden="true" />
+                    </button>
+                    <button
+                      type="button"
+                      aria-label="Cancel rename"
+                      title="Cancel rename"
+                      (click)="cancelRename()"
+                    >
+                      <j-icon name="close" aria-hidden="true" />
+                    </button>
+                  </div>
+                } @else {
+                  <span>{{ item.displayName || item.file.name }}</span>
+                }
                 <small>{{ formatSize(item.file.size) }} - {{ item.status }}</small>
                 <span
                   class="j-file-upload__progress"
@@ -151,12 +194,27 @@ export interface JFileUploadItemEvent {
                     {{ locale.cancel }}
                   </button>
                 }
-                <button type="button" [disabled]="disabled()" (click)="previewFile.emit(item)">
-                  {{ locale.preview }}
-                </button>
-                <button type="button" [disabled]="disabled()" (click)="downloadFile.emit(item)">
-                  {{ locale.download }}
-                </button>
+                @if (showPreviewButton()) {
+                  <button type="button" [disabled]="disabled()" (click)="previewQueued(item)">
+                    {{ locale.preview }}
+                  </button>
+                }
+                @if (showDownloadButton()) {
+                  <button type="button" [disabled]="disabled()" (click)="downloadQueued(item)">
+                    {{ locale.download }}
+                  </button>
+                }
+                @if (showRename()) {
+                  <button
+                    type="button"
+                    [disabled]="disabled()"
+                    aria-label="Rename file"
+                    title="Rename file"
+                    (click)="startRename('queue:' + item.id, item.displayName || item.file.name)"
+                  >
+                    <j-icon name="pencil" aria-hidden="true" />
+                  </button>
+                }
                 <button type="button" [disabled]="disabled()" (click)="removeItem(item)">
                   {{ locale.remove }}
                 </button>
@@ -170,9 +228,64 @@ export interface JFileUploadItemEvent {
         <ul class="j-file-upload__list" data-jc-section="remote-files">
           @for (item of existingFiles(); track item.id) {
             <li>
+              <div class="j-file-upload__preview" aria-hidden="true">
+                {{ remotePreviewLabel(item) }}
+              </div>
               <div class="j-file-upload__meta">
-                <span>{{ item.name }}</span
-                ><small>Existing file</small>
+                @if (renamingKey() === 'remote:' + item.id) {
+                  <div class="j-file-upload__rename">
+                    <input
+                      type="text"
+                      [value]="renameDraft()"
+                      [attr.aria-label]="'Rename ' + existingFileName(item)"
+                      (input)="renameDraft.set($any($event.target).value)"
+                      (keydown.enter)="confirmExistingRename(item)"
+                      (keydown.escape)="cancelRename()"
+                    />
+                    <button
+                      type="button"
+                      aria-label="Confirm rename"
+                      title="Confirm rename"
+                      (click)="confirmExistingRename(item)"
+                    >
+                      <j-icon name="check" aria-hidden="true" />
+                    </button>
+                    <button
+                      type="button"
+                      aria-label="Cancel rename"
+                      title="Cancel rename"
+                      (click)="cancelRename()"
+                    >
+                      <j-icon name="close" aria-hidden="true" />
+                    </button>
+                  </div>
+                } @else {
+                  <span>{{ existingFileName(item) }}</span>
+                }
+                <small>{{ item.size ? formatSize(item.size) + ' - ' : '' }}Existing file</small>
+              </div>
+              <div class="j-file-upload__row-actions">
+                @if (showPreviewButton() && hasRemoteUrl(item, 'preview')) {
+                  <button type="button" [disabled]="disabled()" (click)="previewExisting(item)">
+                    {{ locale.preview }}
+                  </button>
+                }
+                @if (showDownloadButton() && hasRemoteUrl(item, 'download')) {
+                  <button type="button" [disabled]="disabled()" (click)="downloadExisting(item)">
+                    {{ locale.download }}
+                  </button>
+                }
+                @if (showRename()) {
+                  <button
+                    type="button"
+                    [disabled]="disabled()"
+                    aria-label="Rename file"
+                    title="Rename file"
+                    (click)="startRename('remote:' + item.id, existingFileName(item))"
+                  >
+                    <j-icon name="pencil" aria-hidden="true" />
+                  </button>
+                }
               </div>
             </li>
           }
@@ -194,10 +307,18 @@ export interface JFileUploadItemEvent {
         background: var(--j-file-upload-bg, var(--j-color-card));
         border: 1px dashed var(--j-file-upload-border-color, var(--j-color-border));
         border-radius: var(--j-radius-lg);
+        box-sizing: border-box;
         color: var(--j-file-upload-color, var(--j-color-card-foreground));
         display: grid;
         gap: var(--j-spacing-4);
         padding: var(--j-spacing-4);
+        width: 100%;
+      }
+
+      :host {
+        display: block;
+        max-width: 100%;
+        width: 100%;
       }
 
       .j-file-upload--basic {
@@ -299,6 +420,39 @@ export interface JFileUploadItemEvent {
         gap: var(--j-spacing-1);
       }
 
+      .j-file-upload__rename {
+        align-items: center;
+        display: flex;
+        gap: var(--j-spacing-1);
+        min-width: 0;
+      }
+
+      .j-file-upload__rename input {
+        background: var(--j-color-card);
+        border: 1px solid var(--j-color-border);
+        border-radius: var(--j-radius-sm);
+        color: inherit;
+        font: inherit;
+        min-height: 2.25rem;
+        min-width: 0;
+        padding-inline: var(--j-spacing-2);
+        width: 100%;
+      }
+
+      .j-file-upload__rename button {
+        align-items: center;
+        display: inline-flex;
+        justify-content: center;
+        min-width: 2.25rem;
+        padding: 0;
+      }
+
+      .j-file-upload__rename input:focus-visible,
+      .j-file-upload__rename button:focus-visible {
+        box-shadow: var(--j-focus-ring);
+        outline: none;
+      }
+
       .j-file-upload__meta small {
         color: var(--j-color-muted-foreground);
       }
@@ -340,6 +494,8 @@ export interface JFileUploadItemEvent {
 export class JFileUploadComponent {
   readonly locale = inject(JRNG_LOCALE);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly documentRef = inject(DOCUMENT);
+  private readonly browser = isPlatformBrowser(inject(PLATFORM_ID));
   readonly fileInput = viewChild<ElementRef<HTMLInputElement>>('fileInput');
 
   readonly mode = input<JFileUploadMode>('advanced');
@@ -358,6 +514,13 @@ export class JFileUploadComponent {
   readonly uploadAdapter = input<JFileUploadAdapter | null>(null);
   readonly chunkUploadAdapter = input<JFileChunkUploadAdapter | null>(null);
   readonly existingFiles = input<readonly JFileRemoteItem[]>([]);
+  readonly previewBaseUrl = input('');
+  readonly downloadBaseUrl = input('');
+  readonly previewUrlResolver = input<JFileUploadUrlResolver | null>(null);
+  readonly downloadUrlResolver = input<JFileUploadUrlResolver | null>(null);
+  readonly showPreviewButton = input(true, { transform: booleanAttribute });
+  readonly showDownloadButton = input(true, { transform: booleanAttribute });
+  readonly showRename = input(false, { transform: booleanAttribute });
   readonly allowPaste = input(true, { transform: booleanAttribute });
   readonly metadata = input<Readonly<Record<string, unknown>>>({});
   readonly disabled = input(false, { transform: booleanAttribute });
@@ -370,10 +533,17 @@ export class JFileUploadComponent {
   readonly retryUpload = output<JFileUploadItemEvent>();
   readonly previewFile = output<JFileUploadItem>();
   readonly downloadFile = output<JFileUploadItem>();
+  readonly previewExistingFile = output<JFileRemoteItem>();
+  readonly downloadExistingFile = output<JFileRemoteItem>();
+  readonly renameFile = output<JFileUploadRenameEvent<JFileUploadItem>>();
+  readonly renameExistingFile = output<JFileUploadRenameEvent<JFileRemoteItem>>();
 
   readonly queue = signal<readonly JFileUploadItem[]>([]);
   readonly errors = signal<readonly JFileUploadError[]>([]);
   readonly dragover = signal(false);
+  readonly renamingKey = signal('');
+  readonly renameDraft = signal('');
+  readonly existingFileNames = signal<Readonly<Record<string, string>>>({});
   readonly uploading = computed(() => this.queue().some((item) => item.status === 'uploading'));
   private readonly uploadTasks = new Map<string, AbortController>();
 
@@ -483,6 +653,66 @@ export class JFileUploadComponent {
     if (safeName) this.updateItem(item.id, { displayName: safeName });
   }
 
+  startRename(key: string, name: string): void {
+    this.renamingKey.set(key);
+    this.renameDraft.set(name);
+  }
+
+  cancelRename(): void {
+    this.renamingKey.set('');
+    this.renameDraft.set('');
+  }
+
+  confirmQueuedRename(item: JFileUploadItem): void {
+    const name = this.renameDraft().trim();
+    if (!name) return;
+    this.rename(item, name);
+    this.renameFile.emit({ item, name });
+    this.cancelRename();
+  }
+
+  confirmExistingRename(item: JFileRemoteItem): void {
+    const name = this.renameDraft().trim();
+    if (!name) return;
+    this.existingFileNames.update((names) => ({ ...names, [item.id]: name }));
+    this.renameExistingFile.emit({ item, name });
+    this.cancelRename();
+  }
+
+  existingFileName(item: JFileRemoteItem): string {
+    return this.existingFileNames()[item.id] || item.name;
+  }
+
+  remotePreviewLabel(item: JFileRemoteItem): string {
+    return item.type?.startsWith('image/')
+      ? 'IMG'
+      : this.existingFileName(item).split('.').pop()?.slice(0, 4).toUpperCase() || 'FILE';
+  }
+
+  previewQueued(item: JFileUploadItem): void {
+    this.previewFile.emit(item);
+    this.openFileUrl(this.queuedUrl(item, 'preview'), item.file, false, item.displayName);
+  }
+
+  downloadQueued(item: JFileUploadItem): void {
+    this.downloadFile.emit(item);
+    this.openFileUrl(this.queuedUrl(item, 'download'), item.file, true, item.displayName);
+  }
+
+  previewExisting(item: JFileRemoteItem): void {
+    this.previewExistingFile.emit(item);
+    this.openFileUrl(this.existingUrl(item, 'preview'), null, false, this.existingFileName(item));
+  }
+
+  downloadExisting(item: JFileRemoteItem): void {
+    this.downloadExistingFile.emit(item);
+    this.openFileUrl(this.existingUrl(item, 'download'), null, true, this.existingFileName(item));
+  }
+
+  hasRemoteUrl(item: JFileRemoteItem, action: 'preview' | 'download'): boolean {
+    return Boolean(this.existingUrl(item, action));
+  }
+
   setMetadata(item: JFileUploadItem, metadata: Readonly<Record<string, unknown>>): void {
     this.updateItem(item.id, { metadata });
   }
@@ -577,6 +807,65 @@ export class JFileUploadComponent {
 
   private updateItem(itemId: string, patch: Partial<JFileUploadItem>): void {
     this.queue.set(this.queue().map((item) => (item.id === itemId ? { ...item, ...patch } : item)));
+  }
+
+  private queuedUrl(item: JFileUploadItem, action: 'preview' | 'download'): string {
+    const resolver = action === 'preview' ? this.previewUrlResolver() : this.downloadUrlResolver();
+    const resolved = resolver?.(item, action);
+    if (resolved) return this.resolveConfiguredUrl(resolved, action);
+    const remote = item.remote;
+    if (typeof remote === 'string') return this.resolveConfiguredUrl(remote, action);
+    if (remote && typeof remote === 'object') {
+      const record = remote as Readonly<Record<string, unknown>>;
+      const value = record[action === 'preview' ? 'previewUrl' : 'downloadUrl'] ?? record['url'];
+      if (typeof value === 'string') return this.resolveConfiguredUrl(value, action);
+    }
+    return '';
+  }
+
+  private existingUrl(item: JFileRemoteItem, action: 'preview' | 'download'): string {
+    const resolver = action === 'preview' ? this.previewUrlResolver() : this.downloadUrlResolver();
+    const resolved = resolver?.(item, action);
+    const value =
+      resolved || (action === 'preview' ? item.previewUrl : item.downloadUrl) || item.url || '';
+    return this.resolveConfiguredUrl(value, action);
+  }
+
+  private resolveConfiguredUrl(value: string, action: 'preview' | 'download'): string {
+    return resolveFileActionUrl(
+      value,
+      action === 'preview' ? this.previewBaseUrl() : this.downloadBaseUrl(),
+    );
+  }
+
+  private openFileUrl(
+    configuredUrl: string,
+    file: File | null,
+    download: boolean,
+    displayName?: string,
+  ): void {
+    if (!this.browser) return;
+    let url = configuredUrl;
+    let objectUrl = '';
+    if (!url && file) {
+      objectUrl = this.documentRef.defaultView?.URL.createObjectURL(file) ?? '';
+      url = objectUrl;
+    }
+    if (!url) return;
+    if (download) {
+      const anchor = this.documentRef.createElement('a');
+      anchor.href = url;
+      anchor.download = displayName || file?.name || 'download';
+      anchor.click();
+    } else {
+      this.documentRef.defaultView?.open(url, '_blank', 'noopener,noreferrer');
+    }
+    if (objectUrl) {
+      this.documentRef.defaultView?.setTimeout(
+        () => this.documentRef.defaultView?.URL.revokeObjectURL(objectUrl),
+        60_000,
+      );
+    }
   }
 
   private async startUpload(item: JFileUploadItem): Promise<void> {

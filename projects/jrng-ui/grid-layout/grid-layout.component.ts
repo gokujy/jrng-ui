@@ -214,14 +214,25 @@ export class JGridLayoutComponent implements OnDestroy {
   }
 
   resizeItem(id: string, columnDelta: number, rowDelta: number): void {
-    const current = this.layout().find((item) => item.id === id);
-    if (!current || current.locked) return;
+    const next = this.resizedLayout(this.layout(), id, columnDelta, rowDelta);
+    if (!next) return;
+    this.commit(this.resolveCollisions(next, id), 'resize');
+  }
+
+  private resizedLayout(
+    source: readonly JGridLayoutItem[],
+    id: string,
+    columnDelta: number,
+    rowDelta: number,
+  ): readonly JGridLayoutItem[] | null {
+    const current = source.find((item) => item.id === id);
+    if (!current || current.locked) return null;
     const normalized = this.normalized(current);
     const maxColumns = Math.min(
       current.maxColumnSpan ?? this.columnCount(),
       this.columnCount() - normalized.column + 1,
     );
-    const next = this.layout().map((item) =>
+    const next = source.map((item) =>
       item.id === id
         ? {
             ...item,
@@ -238,7 +249,7 @@ export class JGridLayoutComponent implements OnDestroy {
           }
         : item,
     );
-    this.commit(this.resolveCollisions(next, id), 'resize');
+    return next;
   }
 
   startResize(event: PointerEvent, item: JGridLayoutItem): void {
@@ -253,7 +264,8 @@ export class JGridLayoutComponent implements OnDestroy {
       const columnWidth = gridWidth / this.columnCount();
       const columnDelta = Math.round((moveEvent.clientX - start.x) / Math.max(1, columnWidth));
       const rowDelta = Math.round((moveEvent.clientY - start.y) / Math.max(1, this.rowHeight()));
-      this.resizeItem(item.id, columnDelta, rowDelta);
+      const next = this.resizedLayout(original, item.id, columnDelta, rowDelta);
+      if (next) this.commit(this.resolveCollisions(next, item.id), 'resize');
     };
     const end = (): void => {
       this.cancelResize();
@@ -298,13 +310,7 @@ export class JGridLayoutComponent implements OnDestroy {
       )
       .filter((item): item is JGridLayoutItem => Boolean(item));
     if (reordered.length !== this.layout().length) return;
-    const next = this.compact()
-      ? reordered.map((item, index) => ({
-          ...item,
-          column: (index % this.columnCount()) + 1,
-          row: Math.floor(index / this.columnCount()) + 1,
-        }))
-      : reordered;
+    const next = this.compact() ? this.compactLayout(reordered) : reordered;
     this.commit(next, 'drop');
   }
 
@@ -366,6 +372,61 @@ export class JGridLayoutComponent implements OnDestroy {
       left.row + left.rowSpan <= right.row ||
       right.row + right.rowSpan <= left.row
     );
+  }
+
+  private compactLayout(source: readonly JGridLayoutItem[]): readonly JGridLayoutItem[] {
+    const occupied = new Set<string>();
+    const result = new Map<string, JGridLayoutItem>();
+    const occupy = (item: JGridLayoutItem): void => {
+      const normalized = this.normalized(item);
+      for (let row = normalized.row; row < normalized.row + normalized.rowSpan; row += 1) {
+        for (
+          let column = normalized.column;
+          column < normalized.column + normalized.columnSpan;
+          column += 1
+        ) {
+          occupied.add(`${column}:${row}`);
+        }
+      }
+    };
+
+    source
+      .filter((item) => item.locked)
+      .forEach((item) => {
+        const normalized = this.normalized(item);
+        const locked = { ...item, ...normalized };
+        result.set(item.id, locked);
+        occupy(locked);
+      });
+
+    source
+      .filter((item) => !item.locked)
+      .forEach((item) => {
+        const normalized = this.normalized(item);
+        const columnSpan = Math.min(normalized.columnSpan, this.columnCount());
+        let row = 1;
+        let column = 1;
+        let placed = false;
+
+        while (!placed) {
+          for (column = 1; column <= this.columnCount() - columnSpan + 1; column += 1) {
+            placed = true;
+            for (let nextRow = row; nextRow < row + normalized.rowSpan; nextRow += 1) {
+              for (let nextColumn = column; nextColumn < column + columnSpan; nextColumn += 1) {
+                if (occupied.has(`${nextColumn}:${nextRow}`)) placed = false;
+              }
+            }
+            if (placed) break;
+          }
+          if (!placed) row += 1;
+        }
+
+        const compacted = { ...item, column, row, columnSpan, rowSpan: normalized.rowSpan };
+        result.set(item.id, compacted);
+        occupy(compacted);
+      });
+
+    return source.map((item) => result.get(item.id) ?? item);
   }
 
   private clampSpan(value: number, minimum: number, maximum: number): number {

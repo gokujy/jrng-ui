@@ -9,13 +9,19 @@ import {
   selector: 'app-utilities-component-preview',
   imports: [COMPONENT_PREVIEW_IMPORTS],
   template: `
+    @let example = previewExample();
     @switch (doc().slug) {
       @case ('diff-viewer') {
         <j-diff-viewer
-          mode="object"
-          layout="side-by-side"
-          [before]="diffBefore"
-          [after]="diffAfter"
+          [layout]="example.key === 'inline' ? 'inline' : 'side-by-side'"
+          [before]="example.key === 'inline' ? diffTextBefore : diffBefore"
+          [after]="example.key === 'inline' ? diffTextAfter : diffAfter"
+          [collapseUnchanged]="example.key === 'collapsed'"
+          [ariaLabel]="
+            example.key === 'accessibility'
+              ? 'Changes to Aster Labs customer record'
+              : 'Customer record changes'
+          "
         />
       }
       @case ('ripple') {

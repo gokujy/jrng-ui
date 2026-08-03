@@ -32,6 +32,7 @@ import {
   JTreeNodeContext,
   JTreeSelectionMode,
 } from 'jrng-ui/tree';
+import { JIconComponent } from 'jrng-ui/icon';
 import { JVirtualScrollerComponent } from 'jrng-ui/virtual-scroller';
 
 export type JTreeSelectPropagation = 'none' | 'down' | 'up' | 'both';
@@ -60,7 +61,13 @@ interface JTreeSelectFlatNode {
 
 @Component({
   selector: 'j-tree-select',
-  imports: [JTreeComponent, JVirtualScrollerComponent, JClickOutsideDirective, NgTemplateOutlet],
+  imports: [
+    JTreeComponent,
+    JIconComponent,
+    JVirtualScrollerComponent,
+    JClickOutsideDirective,
+    NgTemplateOutlet,
+  ],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -104,7 +111,9 @@ interface JTreeSelectFlatNode {
         } @else {
           <span class="j-tree-select__placeholder">{{ placeholder() }}</span>
         }
-        <span aria-hidden="true">⌄</span>
+        <span class="j-tree-select__indicator" aria-hidden="true">
+          <j-icon [name]="openState() ? 'chevron-up' : 'chevron-down'" />
+        </span>
       </button>
       @if (clearable() && selectedNodes().length && !isDisabled()) {
         <button
@@ -113,7 +122,7 @@ interface JTreeSelectFlatNode {
           aria-label="Clear selection"
           (click)="clearValue($event)"
         >
-          ×
+          <j-icon name="close" />
         </button>
       }
       @if (hint() && !error()) {

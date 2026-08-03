@@ -21,13 +21,17 @@ export interface JChipItem<T = unknown> {
     <span
       [class]="chipClasses"
       [attr.data-j-severity]="severity()"
-      [attr.aria-disabled]="disabled()"
+      [attr.aria-label]="ariaLabel() || label() || null"
+      [attr.aria-disabled]="disabled() ? 'true' : null"
       data-jc-name="chip"
       data-jc-section="root"
       data-jc-extend="remove"
     >
       @if (icon()) {
         <j-icon [name]="icon()" aria-hidden="true" />
+      }
+      @if (image()) {
+        <img class="j-chip__image" [src]="image()" [alt]="imageAlt()" />
       }
       <ng-content></ng-content>
       @if (label()) {
@@ -40,8 +44,9 @@ export interface JChipItem<T = unknown> {
           variant="text"
           severity="neutral"
           actionDisplay="icon"
-          icon="close"
+          [icon]="removeIcon()"
           [ariaLabel]="removeAriaLabel()"
+          (keydown.backspace)="removeWithKeyboard($event)"
           (onClick)="remove.emit()"
         />
       }
@@ -70,8 +75,33 @@ export interface JChipItem<T = unknown> {
         min-height: 1.5rem;
       }
 
+      .j-chip--xs {
+        font-size: 0.6875rem;
+        min-height: 1.25rem;
+      }
+
       .j-chip--lg {
         min-height: 2rem;
+      }
+
+      .j-chip--xl {
+        font-size: var(--j-font-size-base);
+        min-height: 2.5rem;
+        padding-inline: var(--j-spacing-3);
+      }
+
+      .j-chip__image {
+        block-size: 1.5rem;
+        border-radius: var(--j-radius-full);
+        inline-size: 1.5rem;
+        margin-inline-start: calc(var(--j-spacing-sm) * -1);
+        object-fit: cover;
+      }
+
+      .j-chip--lg .j-chip__image,
+      .j-chip--xl .j-chip__image {
+        block-size: 1.75rem;
+        inline-size: 1.75rem;
       }
 
       .j-chip--primary {
@@ -145,12 +175,21 @@ export class JChipComponent {
   readonly variant = input<JChipVariant>('soft');
   readonly size = input<JComponentSize>('md');
   readonly icon = input('');
+  readonly image = input('');
+  readonly imageAlt = input('');
+  readonly ariaLabel = input('');
   readonly styleClass = input('');
   readonly removeAriaLabel = input('Remove');
+  readonly removeIcon = input('close');
   readonly removable = input(false, { transform: booleanAttribute });
   readonly disabled = input(false, { transform: booleanAttribute });
 
   readonly remove = output<void>();
+
+  protected removeWithKeyboard(event: Event): void {
+    event.preventDefault();
+    this.remove.emit();
+  }
 
   get chipClasses(): string {
     return [

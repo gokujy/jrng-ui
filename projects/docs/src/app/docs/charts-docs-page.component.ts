@@ -113,11 +113,12 @@ import {
               </article>
               <article class="j-chart-example">
                 <header><h3>Pie chart</h3></header>
-                <p>Use sparingly for simple part-to-whole data.</p>
+                <p>Shows customizable outside labels with connector lines.</p>
                 <j-chart
                   type="pie"
                   [data]="segmentData"
                   [options]="segmentOptions"
+                  [outsideLabels]="outsideLabelOptions"
                   ariaLabel="Plan share"
                 />
               </article>
@@ -149,6 +150,46 @@ import {
                   [data]="scatterData"
                   [options]="scatterOptions"
                   ariaLabel="Cost and conversion scatter"
+                />
+              </article>
+              <article class="j-chart-example">
+                <header><h3>Radar chart</h3></header>
+                <p>Compares profiles across the same dimensions.</p>
+                <j-chart
+                  type="radar"
+                  [data]="radarData"
+                  [options]="radialOptions"
+                  ariaLabel="Product capability comparison"
+                />
+              </article>
+              <article class="j-chart-example">
+                <header><h3>Polar area chart</h3></header>
+                <p>Compares category magnitude with equal-angle segments.</p>
+                <j-chart
+                  type="polarArea"
+                  [data]="polarData"
+                  [options]="radialOptions"
+                  ariaLabel="Orders by channel"
+                />
+              </article>
+              <article class="j-chart-example">
+                <header><h3>Bubble chart</h3></header>
+                <p>Adds bubble radius as a third numeric dimension.</p>
+                <j-chart
+                  type="bubble"
+                  [data]="bubbleData"
+                  [options]="scatterOptions"
+                  ariaLabel="Cost conversion and volume"
+                />
+              </article>
+              <article class="j-chart-example">
+                <header><h3>Mixed chart</h3></header>
+                <p>Combines dataset-level chart types on shared axes.</p>
+                <j-chart
+                  type="mixed"
+                  [data]="mixedData"
+                  [options]="barOptions"
+                  ariaLabel="Orders and revenue trend"
                 />
               </article>
             </div>
@@ -383,6 +424,41 @@ export class ChartsDocsPageComponent {
     ],
   };
 
+  readonly radarData = {
+    labels: ['Speed', 'Reliability', 'Support', 'Security', 'Ease of use'],
+    datasets: [
+      { label: 'Current', data: [82, 74, 88, 91, 78] },
+      { label: 'Previous', data: [68, 70, 75, 84, 72] },
+    ],
+  };
+
+  readonly polarData = {
+    labels: ['Web', 'Mobile', 'Partner', 'Retail', 'Direct'],
+    datasets: [{ label: 'Orders', data: [38, 27, 18, 22, 31] }],
+  };
+
+  readonly bubbleData = {
+    datasets: [
+      {
+        label: 'Campaigns',
+        data: [
+          { x: 12, y: 22, r: 8 },
+          { x: 24, y: 35, r: 13 },
+          { x: 38, y: 48, r: 10 },
+          { x: 52, y: 61, r: 16 },
+        ],
+      },
+    ],
+  };
+
+  readonly mixedData = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+    datasets: [
+      { type: 'bar', label: 'Orders', data: [42, 48, 53, 61, 68] },
+      { type: 'line', label: 'Revenue', data: [45, 47, 52, 58, 64], tension: 0.3 },
+    ],
+  };
+
   readonly emptyChartData = { labels: [], datasets: [] };
 
   readonly barOptions = {
@@ -402,7 +478,19 @@ export class ChartsDocsPageComponent {
   };
 
   readonly segmentOptions = {
+    plugins: { legend: { display: false } },
+  };
+
+  readonly outsideLabelOptions = {
+    lineColor: '#64748b',
+    connectorLength: 20,
+    formatter: ({ label, percentage }: { label: string; percentage: number }) =>
+      `${label} ${percentage.toFixed(0)}%`,
+  };
+
+  readonly radialOptions = {
     plugins: { legend: { position: 'bottom' } },
+    scales: { r: { beginAtZero: true } },
   };
 
   readonly scatterOptions = {
