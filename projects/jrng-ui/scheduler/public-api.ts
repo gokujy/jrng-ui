@@ -5,5 +5,7 @@ export * from './engine/event-engine';
 export * from './engine/layout-engine';
 export * from './engine/recurrence-engine';
 export * from './engine/availability-engine';
+export * from './engine/resource-engine';
+export * from './engine/timeline-engine';
 export * from './engine/view-registry';
 export * from './interaction/interaction-engine';

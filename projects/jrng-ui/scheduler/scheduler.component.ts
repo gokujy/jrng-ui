@@ -14,8 +14,10 @@ import {
   ViewChild,
 } from '@angular/core';
 import { isPlatformBrowser, NgTemplateOutlet } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { JButtonComponent } from 'jrng-ui/button';
 import { JTooltipDirective } from 'jrng-ui/tooltip';
+import { JSelectComponent } from 'jrng-ui/select';
 import {
   jSchedulerNavigateDate,
   jSchedulerVisibleRange,
@@ -43,6 +45,8 @@ import {
   JSchedulerTimeGridRendererComponent,
 } from './renderers/time-grid-renderer.component';
 import { JSchedulerYearRendererComponent } from './renderers/year-renderer.component';
+import { JSchedulerTimelineRendererComponent } from './renderers/timeline-renderer.component';
+import { JSchedulerResourceRow } from './engine/resource-engine';
 import {
   JSchedulerAppointmentSlot,
   JSchedulerBlockedInterval,
@@ -83,10 +87,13 @@ const DEFAULT_TOOLBAR: Required<JSchedulerToolbarConfig> = {
     JButtonComponent,
     JTooltipDirective,
     NgTemplateOutlet,
+    FormsModule,
+    JSelectComponent,
     JSchedulerMonthRendererComponent,
     JSchedulerTimeGridRendererComponent,
     JSchedulerAgendaRendererComponent,
     JSchedulerYearRendererComponent,
+    JSchedulerTimelineRendererComponent,
   ],
   templateUrl: './scheduler.component.html',
   styleUrl: './scheduler.component.scss',
@@ -195,6 +202,9 @@ export class JSchedulerComponent {
   readonly slotBook = output<JSchedulerAppointmentSlot>();
   readonly slotCancel = output<JSchedulerAppointmentSlot>();
   readonly capacityExceeded = output<JSchedulerAppointmentSlot>();
+  readonly resourceClick = output<JSchedulerResource>();
+  readonly resourceExpand = output<JSchedulerResource>();
+  readonly resourceCollapse = output<JSchedulerResource>();
 
   readonly dateOptions = computed<JSchedulerDateEngineOptions>(() => ({
     firstDayOfWeek: this.firstDayOfWeek(),
@@ -231,6 +241,24 @@ export class JSchedulerComponent {
   readonly selectedEvents = computed(() => {
     const ids = new Set(this.selectedEventIds().map(String));
     return this.events().filter((event) => ids.has(String(event.id)));
+  });
+  readonly resourceOptions = computed(() => {
+    const result: { readonly label: string; readonly value: JSchedulerId }[] = [];
+    const visit = (items: readonly JSchedulerResource[], depth: number): void => {
+      for (const resource of items) {
+        if (!resource.disabled)
+          result.push({ label: `${'— '.repeat(depth)}${resource.name}`, value: resource.id });
+        if (resource.children) visit(resource.children, depth + 1);
+      }
+    };
+    visit(this.resources(), 0);
+    return result;
+  });
+  readonly focusedResources = computed(() => {
+    const selected = this.selectedResourceId();
+    if (selected == null) return this.resources();
+    const resource = this.getResourceById(selected);
+    return resource ? [resource] : this.resources();
   });
 
   today(): void {
@@ -343,6 +371,22 @@ export class JSchedulerComponent {
     this.expandedResourceIdsChange.emit(
       this.expandedResourceIds().filter((value) => String(value) !== String(id)),
     );
+  }
+
+  handleResourceToggle(row: JSchedulerResourceRow): void {
+    if (row.expanded) {
+      this.collapseResource(row.resource.id);
+      this.resourceCollapse.emit(row.resource);
+    } else {
+      this.expandResource(row.resource.id);
+      this.resourceExpand.emit(row.resource);
+    }
+  }
+
+  selectResource(value: unknown): void {
+    if (this.disabled()) return;
+    const option = this.resourceOptions().find((item) => String(item.value) === String(value));
+    if (option) this.selectedResourceId.set(option.value);
   }
 
   scrollToTime(time: string): void {

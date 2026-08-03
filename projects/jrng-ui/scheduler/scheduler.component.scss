@@ -69,6 +69,11 @@
 .j-scheduler__view {
   min-height: 100%;
 }
+.j-scheduler__adaptive-resource {
+  display: none;
+  padding: var(--j-spacing-2);
+  border-block-end: 1px solid var(--j-color-border);
+}
 
 .j-scheduler__phase-placeholder {
   align-items: center;
@@ -108,6 +113,9 @@
 }
 
 @media (max-width: 48rem) {
+  .j-scheduler__adaptive-resource {
+    display: block;
+  }
   .j-scheduler-toolbar {
     align-items: stretch;
     grid-template-columns: 1fr;

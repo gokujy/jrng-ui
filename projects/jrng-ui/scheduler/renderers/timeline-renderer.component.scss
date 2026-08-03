@@ -1,0 +1,115 @@
+:host {
+  display: block;
+  min-height: 18rem;
+}
+.j-scheduler-timeline {
+  display: grid;
+  grid-template-columns: var(--j-resource-width) minmax(0, 1fr);
+  grid-template-rows: 3rem auto;
+  min-width: 0;
+  position: relative;
+}
+.j-scheduler-timeline__resource-heading {
+  align-items: center;
+  background: var(--j-color-surface-subtle);
+  border-block-end: 1px solid var(--j-color-border);
+  border-inline-end: 1px solid var(--j-color-border);
+  display: flex;
+  font-weight: var(--j-font-weight-semibold);
+  padding: var(--j-spacing-3);
+  position: sticky;
+  inset-inline-start: 0;
+  top: 0;
+  z-index: 6;
+}
+.j-scheduler-timeline__viewport {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  overflow: auto;
+}
+.j-scheduler-timeline__canvas {
+  min-width: 100%;
+  position: relative;
+}
+.j-scheduler-timeline__header {
+  background: var(--j-color-surface-subtle);
+  height: 3rem;
+  position: sticky;
+  top: 0;
+  z-index: 4;
+}
+.j-scheduler-timeline__header-cell,
+.j-scheduler-timeline__cell {
+  border: 0;
+  border-block-end: 1px solid var(--j-color-border);
+  border-inline-end: 1px solid var(--j-color-border);
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+}
+.j-scheduler-timeline__header-cell {
+  align-items: center;
+  display: flex;
+  height: 3rem;
+  justify-content: center;
+}
+.j-scheduler-timeline__lane {
+  border-block-end: 1px solid var(--j-color-border);
+  height: var(--j-scheduler-row-height, 3.25rem);
+  position: relative;
+}
+.j-scheduler-timeline__cell {
+  background: transparent;
+  height: 100%;
+}
+.j-scheduler-timeline-event {
+  background: color-mix(
+    in srgb,
+    var(--j-event-color, var(--j-color-primary)) 18%,
+    var(--j-color-card)
+  );
+  border: 1px solid var(--j-event-color, var(--j-color-primary));
+  border-radius: var(--j-radius-sm);
+  color: inherit;
+  inset-block-start: 0.45rem;
+  min-height: 2.25rem;
+  overflow: hidden;
+  padding: var(--j-spacing-1) var(--j-spacing-2);
+  position: absolute;
+  text-align: start;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  z-index: 2;
+}
+.j-scheduler-timeline__rail {
+  grid-column: 1;
+  grid-row: 2;
+  overflow: hidden;
+  position: sticky;
+  inset-inline-start: 0;
+  z-index: 5;
+}
+.j-scheduler-timeline__resource {
+  align-items: center;
+  border-block-end: 1px solid var(--j-color-border);
+  border-inline-end: 1px solid var(--j-color-border);
+  display: flex;
+  gap: var(--j-spacing-1);
+  height: var(--j-scheduler-row-height, 3.25rem);
+  padding-inline-end: var(--j-spacing-2);
+}
+.j-scheduler-timeline__resource-name {
+  background: transparent;
+  border: 0;
+  color: inherit;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-align: start;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.j-scheduler-timeline__resource > span {
+  color: var(--j-color-muted-foreground);
+  font-size: var(--j-font-size-xs);
+}

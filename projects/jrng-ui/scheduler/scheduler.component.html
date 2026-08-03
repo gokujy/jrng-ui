@@ -63,81 +63,119 @@
   }
 
   <div #scrollSurface class="j-scheduler__scroll" data-j-slot="scroll-surface">
+    @if (viewDefinition().supportsResources && adaptiveMode() !== 'never') {
+      <div class="j-scheduler__adaptive-resource" data-j-slot="adaptive-resource-selector">
+        <j-select
+          label="Resource"
+          [options]="resourceOptions()"
+          optionLabel="label"
+          optionValue="value"
+          [disabled]="disabled()"
+          [ngModel]="selectedResourceId()"
+          (ngModelChange)="selectResource($event)"
+        />
+      </div>
+    }
     <div
       class="j-scheduler__view"
       role="region"
       [attr.aria-label]="viewLabel(view()) + ': ' + title()"
       data-j-slot="view"
     >
-      @switch (viewDefinition().family) {
-        @case ('month') {
-          <j-scheduler-month-renderer
-            [activeDate]="date()"
-            [range]="visibleRange()"
-            [events]="visibleEvents()"
-            [locale]="locale()"
-            [firstDayOfWeek]="firstDayOfWeek()"
-            [maxEventsVisible]="maxEventsVisible()"
-            [weekNumbers]="weekNumbers()"
-            [disabled]="disabled()"
-            (dateActivate)="handleDateActivate($event)"
-            (eventActivate)="handleEventActivate($event)"
-          />
-        }
-        @case ('timeGrid') {
-          <j-scheduler-time-grid-renderer
-            [range]="visibleRange()"
-            [events]="visibleEvents()"
-            [daysOfWeek]="daysOfWeek()"
-            [locale]="locale()"
-            [slotDuration]="slotDuration()"
-            [slotMinTime]="slotMinTime()"
-            [slotMaxTime]="slotMaxTime()"
-            [disabled]="disabled()"
-            [blockedIntervals]="blockedIntervals()"
-            [appointmentSlots]="appointmentSlots()"
-            [draggable]="editable() && !readonly() && eventStartEditable()"
-            [resizable]="editable() && !readonly() && eventDurationEditable()"
-            [snapMinutes]="snapMinutes()"
-            [minimumDragDistance]="minimumDragDistance()"
-            (dateActivate)="handleDateActivate($event)"
-            (eventActivate)="handleEventActivate($event)"
-            (eventDoubleActivate)="handleEventDoubleActivate($event)"
-            (slotActivate)="handleSlotActivate($event)"
-            (appointmentActivate)="handleAppointment($event)"
-            (dragStart)="handleGestureStart($event, false)"
-            (dragProgress)="handleGestureProgress($event, false)"
-            (dragStop)="handleGestureStop($event, false)"
-            (resizeStart)="handleGestureStart($event, true)"
-            (resizeProgress)="handleGestureProgress($event, true)"
-            (resizeStop)="handleGestureStop($event, true)"
-          />
-        }
-        @case ('agenda') {
-          <j-scheduler-agenda-renderer
-            [range]="visibleRange()"
-            [events]="visibleEvents()"
-            [locale]="locale()"
-            [disabled]="disabled()"
-            (dateActivate)="handleDateActivate($event)"
-            (eventActivate)="handleEventActivate($event)"
-          />
-        }
-        @case ('year') {
-          <j-scheduler-year-renderer
-            [activeDate]="date()"
-            [events]="visibleEvents()"
-            [locale]="locale()"
-            [firstDayOfWeek]="firstDayOfWeek()"
-            [disabled]="disabled()"
-            (dateActivate)="handleDateActivate($event)"
-          />
-        }
-        @default {
-          <div class="j-scheduler__phase-placeholder" data-j-slot="view-loading">
-            <strong>{{ viewLabel(view()) }}</strong>
-            <span>{{ visibleEvents().length }} events in {{ title() }}</span>
-          </div>
+      @if (viewDefinition().timeline || viewDefinition().supportsResources) {
+        <j-scheduler-timeline-renderer
+          [view]="view()"
+          [range]="visibleRange()"
+          [events]="visibleEvents()"
+          [resources]="selectedResourceId() !== null ? focusedResources() : resources()"
+          [expandedIds]="
+            expandedResourceIds().length ? expandedResourceIds() : resourcesInitiallyExpanded()
+          "
+          [resourceAreaWidth]="resourceAreaWidth()"
+          [expandable]="resourcesExpandable()"
+          [slotWidth]="timelineSlotWidth()"
+          [durationMinutes]="snapMinutes()"
+          [virtual]="timelineVirtualScroll()"
+          [virtualThreshold]="timelineVirtualThreshold()"
+          [overscan]="timelineVirtualOverscan()"
+          [locale]="locale()"
+          [disabled]="disabled()"
+          (eventActivate)="eventClick.emit($event)"
+          (resourceActivate)="resourceClick.emit($event)"
+          (toggle)="handleResourceToggle($event)"
+          (cellActivate)="handleDateActivate($event.date)"
+        />
+      } @else {
+        @switch (viewDefinition().family) {
+          @case ('month') {
+            <j-scheduler-month-renderer
+              [activeDate]="date()"
+              [range]="visibleRange()"
+              [events]="visibleEvents()"
+              [locale]="locale()"
+              [firstDayOfWeek]="firstDayOfWeek()"
+              [maxEventsVisible]="maxEventsVisible()"
+              [weekNumbers]="weekNumbers()"
+              [disabled]="disabled()"
+              (dateActivate)="handleDateActivate($event)"
+              (eventActivate)="handleEventActivate($event)"
+            />
+          }
+          @case ('timeGrid') {
+            <j-scheduler-time-grid-renderer
+              [range]="visibleRange()"
+              [events]="visibleEvents()"
+              [daysOfWeek]="daysOfWeek()"
+              [locale]="locale()"
+              [slotDuration]="slotDuration()"
+              [slotMinTime]="slotMinTime()"
+              [slotMaxTime]="slotMaxTime()"
+              [disabled]="disabled()"
+              [blockedIntervals]="blockedIntervals()"
+              [appointmentSlots]="appointmentSlots()"
+              [draggable]="editable() && !readonly() && eventStartEditable()"
+              [resizable]="editable() && !readonly() && eventDurationEditable()"
+              [snapMinutes]="snapMinutes()"
+              [minimumDragDistance]="minimumDragDistance()"
+              (dateActivate)="handleDateActivate($event)"
+              (eventActivate)="handleEventActivate($event)"
+              (eventDoubleActivate)="handleEventDoubleActivate($event)"
+              (slotActivate)="handleSlotActivate($event)"
+              (appointmentActivate)="handleAppointment($event)"
+              (dragStart)="handleGestureStart($event, false)"
+              (dragProgress)="handleGestureProgress($event, false)"
+              (dragStop)="handleGestureStop($event, false)"
+              (resizeStart)="handleGestureStart($event, true)"
+              (resizeProgress)="handleGestureProgress($event, true)"
+              (resizeStop)="handleGestureStop($event, true)"
+            />
+          }
+          @case ('agenda') {
+            <j-scheduler-agenda-renderer
+              [range]="visibleRange()"
+              [events]="visibleEvents()"
+              [locale]="locale()"
+              [disabled]="disabled()"
+              (dateActivate)="handleDateActivate($event)"
+              (eventActivate)="handleEventActivate($event)"
+            />
+          }
+          @case ('year') {
+            <j-scheduler-year-renderer
+              [activeDate]="date()"
+              [events]="visibleEvents()"
+              [locale]="locale()"
+              [firstDayOfWeek]="firstDayOfWeek()"
+              [disabled]="disabled()"
+              (dateActivate)="handleDateActivate($event)"
+            />
+          }
+          @default {
+            <div class="j-scheduler__phase-placeholder" data-j-slot="view-loading">
+              <strong>{{ viewLabel(view()) }}</strong>
+              <span>{{ visibleEvents().length }} events in {{ title() }}</span>
+            </div>
+          }
         }
       }
     </div>
