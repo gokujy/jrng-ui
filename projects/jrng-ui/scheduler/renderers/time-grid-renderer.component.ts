@@ -199,6 +199,7 @@ export class JSchedulerTimeGridRendererComponent {
   readonly slotMinTime = input('00:00');
   readonly slotMaxTime = input('24:00');
   readonly disabled = input(false);
+  readonly rtl = input(false);
   readonly blockedIntervals = input<readonly JSchedulerBlockedInterval[]>([]);
   readonly appointmentSlots = input<readonly JSchedulerAppointmentSlot[]>([]);
   readonly draggable = input(false);
@@ -377,7 +378,8 @@ export class JSchedulerTimeGridRendererComponent {
     }
     const rect = columns.getBoundingClientRect();
     const dayWidth = rect.width / Math.max(1, this.days().length);
-    const dayDelta = Math.round((nativeEvent.clientX - gesture.originX) / dayWidth);
+    const dayDelta =
+      Math.round((nativeEvent.clientX - gesture.originX) / dayWidth) * (this.rtl() ? -1 : 1);
     const minuteDelta = Math.round(
       ((nativeEvent.clientY - gesture.originY) / Math.max(1, rect.height)) *
         (this.maxMinutes() - this.minMinutes()),

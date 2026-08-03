@@ -7,5 +7,7 @@ export * from './engine/recurrence-engine';
 export * from './engine/availability-engine';
 export * from './engine/resource-engine';
 export * from './engine/timeline-engine';
+export * from './engine/timezone-engine';
+export * from './serialization/scheduler-serialization';
 export * from './engine/view-registry';
 export * from './interaction/interaction-engine';
