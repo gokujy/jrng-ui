@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.2
+
+### Changed
+
+- Updated the package release version to 0.1.2.
+
 ## 0.1.1
 
 ### Removed
