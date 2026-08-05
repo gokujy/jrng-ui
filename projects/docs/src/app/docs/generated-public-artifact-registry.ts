@@ -61,7 +61,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/core',
     kind: 'Service',
     stability: 'Stable',
-    description: 'Body Scroll Lock coordinates library operations with SSR-safe fallbacks.',
+    description:
+      'Body Scroll Lock coordinates library operations with SSR-safe fallbacks.',
     signatures: [
       'lock(): void;',
       'unlock(): void;',
@@ -80,7 +81,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/formatting',
     kind: 'Pipe',
     stability: 'Stable',
-    description: 'Boolean Label transforms nullable display values through a pure Angular pipe.',
+    description:
+      'Boolean Label transforms nullable display values through a pure Angular pipe.',
     signatures: [
       'transform(value: boolean | null | undefined, trueLabel?: string, falseLabel?: string, emptyLabel?: string): string;',
     ],
@@ -94,8 +96,11 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/formatting',
     kind: 'Pipe',
     stability: 'Stable',
-    description: 'Bytes transforms nullable display values through a pure Angular pipe.',
-    signatures: ['transform(value: NumberInput, fractionDigits?: number): string;'],
+    description:
+      'Bytes transforms nullable display values through a pure Angular pipe.',
+    signatures: [
+      'transform(value: NumberInput, fractionDigits?: number): string;',
+    ],
     ssr: 'SSR compatible.',
     cleanup: 'No browser resource cleanup required.',
   },
@@ -106,7 +111,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/cascader',
     kind: 'Directive',
     stability: 'Stable',
-    description: 'Cascader Option adds typed host behavior through ng-template[jCascaderOption].',
+    description:
+      'Cascader Option adds typed host behavior through ng-template[jCascaderOption].',
     signatures: ['readonly templateRef: TemplateRef<JCascaderOptionContext>;'],
     ssr: 'SSR compatible.',
     cleanup: 'No browser resource cleanup required.',
@@ -118,7 +124,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/core',
     kind: 'Directive',
     stability: 'Stable',
-    description: 'Click Outside adds typed host behavior through [jClickOutside].',
+    description:
+      'Click Outside adds typed host behavior through [jClickOutside].',
     signatures: [
       'readonly jClickOutside: i0.OutputEmitterRef<MouseEvent | TouchEvent>;',
       'constructor();',
@@ -134,7 +141,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/core',
     kind: 'Service',
     stability: 'Stable',
-    description: 'Clipboard coordinates library operations with SSR-safe fallbacks.',
+    description:
+      'Clipboard coordinates library operations with SSR-safe fallbacks.',
     signatures: [
       'copyText(text: string): Promise<JClipboardResult>;',
       'copyStructured(value: unknown, spacing?: number): Promise<JClipboardResult>;',
@@ -152,7 +160,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/formatting',
     kind: 'Pipe',
     stability: 'Stable',
-    description: 'Compact Number transforms nullable display values through a pure Angular pipe.',
+    description:
+      'Compact Number transforms nullable display values through a pure Angular pipe.',
     signatures: [
       'transform(value: NumberInput, locale?: string, options?: Intl.NumberFormatOptions): string;',
     ],
@@ -218,7 +227,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/confirm-dialog',
     kind: 'Service',
     stability: 'Stable',
-    description: 'Confirmation coordinates library operations with SSR-safe fallbacks.',
+    description:
+      'Confirmation coordinates library operations with SSR-safe fallbacks.',
     signatures: [
       'readonly confirmation: _angular_core.Signal<JConfirmationRequest | null>;',
       'confirm(options: JConfirmationOptions): JConfirmationRequest;',
@@ -243,7 +253,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/core',
     kind: 'Directive',
     stability: 'Stable',
-    description: 'Copy To Clipboard adds typed host behavior through [jCopyToClipboard].',
+    description:
+      'Copy To Clipboard adds typed host behavior through [jCopyToClipboard].',
     signatures: [
       'readonly jCopyToClipboard: i0.InputSignal<string>;',
       'readonly jCopyDisabled: i0.InputSignal<boolean>;',
@@ -261,7 +272,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/formatting',
     kind: 'Pipe',
     stability: 'Stable',
-    description: 'Currency Format transforms nullable display values through a pure Angular pipe.',
+    description:
+      'Currency Format transforms nullable display values through a pure Angular pipe.',
     signatures: [
       'transform(value: NumberInput, currency?: string, locale?: string, options?: Intl.NumberFormatOptions): string;',
     ],
@@ -275,7 +287,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/formatting',
     kind: 'Pipe',
     stability: 'Stable',
-    description: 'Date Format transforms nullable display values through a pure Angular pipe.',
+    description:
+      'Date Format transforms nullable display values through a pure Angular pipe.',
     signatures: [
       'transform(value: DateInput, locale?: string, options?: Intl.DateTimeFormatOptions): string;',
     ],
@@ -289,7 +302,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/formatting',
     kind: 'Pipe',
     stability: 'Stable',
-    description: 'Date Time Format transforms nullable display values through a pure Angular pipe.',
+    description:
+      'Date Time Format transforms nullable display values through a pure Angular pipe.',
     signatures: [
       'transform(value: DateInput, locale?: string, options?: Intl.DateTimeFormatOptions): string;',
     ],
@@ -303,7 +317,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/formatting',
     kind: 'Pipe',
     stability: 'Stable',
-    description: 'Default Text transforms nullable display values through a pure Angular pipe.',
+    description:
+      'Default Text transforms nullable display values through a pure Angular pipe.',
     signatures: ['transform(value: unknown, fallback?: string): unknown;'],
     ssr: 'SSR compatible.',
     cleanup: 'No browser resource cleanup required.',
@@ -315,7 +330,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/dialog',
     kind: 'Service',
     stability: 'Stable',
-    description: 'Dialog coordinates library operations with SSR-safe fallbacks.',
+    description:
+      'Dialog coordinates library operations with SSR-safe fallbacks.',
     signatures: [
       'readonly dialog: _angular_core.Signal<JDialogRequest | null>;',
       'open(options: JDialogOpenOptions): JDialogRequest;',
@@ -331,7 +347,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/core',
     kind: 'Service',
     stability: 'Stable',
-    description: 'Download coordinates library operations with SSR-safe fallbacks.',
+    description:
+      'Download coordinates library operations with SSR-safe fallbacks.',
     signatures: [
       'downloadBlob(blob: Blob, filename: string): JDownloadResult;',
       'downloadText(text: string, filename: string, type?: string): JDownloadResult;',
@@ -378,7 +395,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/drag-drop',
     kind: 'Directive',
     stability: 'Stable',
-    description: 'Drag Boundary adds typed host behavior through [jDragBoundary].',
+    description:
+      'Drag Boundary adds typed host behavior through [jDragBoundary].',
     signatures: ['readonly element: HTMLElement;'],
     ssr: 'Feature-detected browser integration.',
     cleanup: 'Lifecycle cleanup is required and covered by canonical tests.',
@@ -402,7 +420,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/drag-drop',
     kind: 'Directive',
     stability: 'Stable',
-    description: 'Drag Placeholder adds typed host behavior through ng-template[jDragPlaceholder].',
+    description:
+      'Drag Placeholder adds typed host behavior through ng-template[jDragPlaceholder].',
     signatures: ['readonly templateRef: TemplateRef<JDragTemplateContext>;'],
     ssr: 'Feature-detected browser integration.',
     cleanup: 'Lifecycle cleanup is required and covered by canonical tests.',
@@ -414,7 +433,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/drag-drop',
     kind: 'Directive',
     stability: 'Stable',
-    description: 'Drag Preview adds typed host behavior through ng-template[jDragPreview].',
+    description:
+      'Drag Preview adds typed host behavior through ng-template[jDragPreview].',
     signatures: ['readonly templateRef: TemplateRef<JDragTemplateContext>;'],
     ssr: 'Feature-detected browser integration.',
     cleanup: 'Lifecycle cleanup is required and covered by canonical tests.',
@@ -458,7 +478,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/formatting',
     kind: 'Pipe',
     stability: 'Stable',
-    description: 'Duration transforms nullable display values through a pure Angular pipe.',
+    description:
+      'Duration transforms nullable display values through a pure Angular pipe.',
     signatures: ['transform(value: number | null | undefined): string;'],
     ssr: 'SSR compatible.',
     cleanup: 'No browser resource cleanup required.',
@@ -470,7 +491,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/editor',
     kind: 'Service',
     stability: 'Stable',
-    description: 'Editor Command coordinates library operations with SSR-safe fallbacks.',
+    description:
+      'Editor Command coordinates library operations with SSR-safe fallbacks.',
     signatures: ['execute(command: string, value?: string): boolean;'],
     ssr: 'Feature-detected browser integration.',
     cleanup: 'Lifecycle cleanup is required and covered by canonical tests.',
@@ -482,7 +504,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/formatting',
     kind: 'Pipe',
     stability: 'Stable',
-    description: 'File Extension transforms nullable display values through a pure Angular pipe.',
+    description:
+      'File Extension transforms nullable display values through a pure Angular pipe.',
     signatures: ['transform(value: string | null | undefined): string;'],
     ssr: 'SSR compatible.',
     cleanup: 'No browser resource cleanup required.',
@@ -494,8 +517,11 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/formatting',
     kind: 'Pipe',
     stability: 'Stable',
-    description: 'File Size Format transforms nullable display values through a pure Angular pipe.',
-    signatures: ['transform(value: NumberInput, fractionDigits?: number): string;'],
+    description:
+      'File Size Format transforms nullable display values through a pure Angular pipe.',
+    signatures: [
+      'transform(value: NumberInput, fractionDigits?: number): string;',
+    ],
     ssr: 'SSR compatible.',
     cleanup: 'No browser resource cleanup required.',
   },
@@ -518,7 +544,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/form-submit',
     kind: 'Directive',
     stability: 'Stable',
-    description: 'Form Submit adds typed host behavior through form[jFormSubmit].',
+    description:
+      'Form Submit adds typed host behavior through form[jFormSubmit].',
     signatures: [
       'readonly submitting: _angular_core.InputSignalWithTransform<boolean, unknown>;',
       'readonly focusInvalid: _angular_core.InputSignalWithTransform<boolean, unknown>;',
@@ -542,7 +569,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/core',
     kind: 'Service',
     stability: 'Stable',
-    description: 'Fullscreen coordinates library operations with SSR-safe fallbacks.',
+    description:
+      'Fullscreen coordinates library operations with SSR-safe fallbacks.',
     signatures: [
       'readonly active: i0.WritableSignal<boolean>;',
       'readonly supported: i0.WritableSignal<boolean>;',
@@ -576,7 +604,9 @@ export const generatedPublicArtifactRegistry = [
     stability: 'Stable',
     description:
       'Grid Layout Item Template adds typed host behavior through ng-template[jGridLayoutItem].',
-    signatures: ['readonly templateRef: TemplateRef<JGridLayoutItemContext<unknown>>;'],
+    signatures: [
+      'readonly templateRef: TemplateRef<JGridLayoutItemContext<unknown>>;',
+    ],
     ssr: 'Feature-detected browser integration.',
     cleanup: 'Lifecycle cleanup is required and covered by canonical tests.',
   },
@@ -619,7 +649,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/icon',
     kind: 'Service',
     stability: 'Stable',
-    description: 'Icon Registry coordinates library operations with SSR-safe fallbacks.',
+    description:
+      'Icon Registry coordinates library operations with SSR-safe fallbacks.',
     signatures: [
       'register(name: string, svg: string): void;',
       'registerIcon(name: string, svg: string): void;',
@@ -637,7 +668,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/core',
     kind: 'Service',
     stability: 'Stable',
-    description: 'Id Generator coordinates library operations with SSR-safe fallbacks.',
+    description:
+      'Id Generator coordinates library operations with SSR-safe fallbacks.',
     signatures: ['create(prefix?: string): string;'],
     ssr: 'Feature-detected browser integration.',
     cleanup: 'Lifecycle cleanup is required and covered by canonical tests.',
@@ -649,8 +681,11 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/formatting',
     kind: 'Pipe',
     stability: 'Stable',
-    description: 'Initials transforms nullable display values through a pure Angular pipe.',
-    signatures: ['transform(value: string | null | undefined, maxParts?: number): string;'],
+    description:
+      'Initials transforms nullable display values through a pure Angular pipe.',
+    signatures: [
+      'transform(value: string | null | undefined, maxParts?: number): string;',
+    ],
     ssr: 'SSR compatible.',
     cleanup: 'No browser resource cleanup required.',
   },
@@ -661,7 +696,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/inplace',
     kind: 'Directive',
     stability: 'Stable',
-    description: 'Inplace Actions adds typed host behavior through ng-template[jInplaceActions].',
+    description:
+      'Inplace Actions adds typed host behavior through ng-template[jInplaceActions].',
     signatures: ['readonly templateRef: TemplateRef<JInplaceTemplateContext>;'],
     ssr: 'Feature-detected browser integration.',
     cleanup: 'Lifecycle cleanup is required and covered by canonical tests.',
@@ -673,7 +709,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/inplace',
     kind: 'Directive',
     stability: 'Stable',
-    description: 'Inplace Content adds typed host behavior through ng-template[jInplaceContent].',
+    description:
+      'Inplace Content adds typed host behavior through ng-template[jInplaceContent].',
     signatures: ['readonly templateRef: TemplateRef<JInplaceTemplateContext>;'],
     ssr: 'Feature-detected browser integration.',
     cleanup: 'Lifecycle cleanup is required and covered by canonical tests.',
@@ -685,7 +722,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/inplace',
     kind: 'Directive',
     stability: 'Stable',
-    description: 'Inplace Display adds typed host behavior through ng-template[jInplaceDisplay].',
+    description:
+      'Inplace Display adds typed host behavior through ng-template[jInplaceDisplay].',
     signatures: ['readonly templateRef: TemplateRef<JInplaceTemplateContext>;'],
     ssr: 'Feature-detected browser integration.',
     cleanup: 'Lifecycle cleanup is required and covered by canonical tests.',
@@ -697,7 +735,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/core',
     kind: 'Directive',
     stability: 'Stable',
-    description: 'Intersection Observer adds typed host behavior through [jIntersectionObserver].',
+    description:
+      'Intersection Observer adds typed host behavior through [jIntersectionObserver].',
     signatures: [
       'readonly jIntersect: i0.OutputEmitterRef<IntersectionObserverEntry>;',
       'ngOnInit(): void;',
@@ -715,7 +754,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/formatting',
     kind: 'Pipe',
     stability: 'Stable',
-    description: 'Join Values transforms nullable display values through a pure Angular pipe.',
+    description:
+      'Join Values transforms nullable display values through a pure Angular pipe.',
     signatures: [
       'transform(value: readonly unknown[] | null | undefined, separator?: string): string;',
     ],
@@ -729,7 +769,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/formatting',
     kind: 'Pipe',
     stability: 'Stable',
-    description: 'Json Display transforms nullable display values through a pure Angular pipe.',
+    description:
+      'Json Display transforms nullable display values through a pure Angular pipe.',
     signatures: ['transform(value: unknown, spaces?: number): string;'],
     ssr: 'SSR compatible.',
     cleanup: 'No browser resource cleanup required.',
@@ -757,7 +798,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/core',
     kind: 'Service',
     stability: 'Stable',
-    description: 'Keyboard Shortcuts coordinates library operations with SSR-safe fallbacks.',
+    description:
+      'Keyboard Shortcuts coordinates library operations with SSR-safe fallbacks.',
     signatures: [
       'register(shortcut: string | JKeyboardShortcut, handler: JKeyboardShortcutHandler, options?: JKeyboardShortcutOptions): JKeyboardShortcutCleanup;',
     ],
@@ -771,7 +813,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/core',
     kind: 'Service',
     stability: 'Stable',
-    description: 'Live Announcer coordinates library operations with SSR-safe fallbacks.',
+    description:
+      'Live Announcer coordinates library operations with SSR-safe fallbacks.',
     signatures: [
       'announce(message: string, politeness?: JLiveAnnouncerPoliteness): void;',
       'clear(delayMs?: number): void;',
@@ -787,7 +830,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/formatting',
     kind: 'Pipe',
     stability: 'Stable',
-    description: 'Masked Email transforms nullable display values through a pure Angular pipe.',
+    description:
+      'Masked Email transforms nullable display values through a pure Angular pipe.',
     signatures: ['transform(value: string | null | undefined): string;'],
     ssr: 'SSR compatible.',
     cleanup: 'No browser resource cleanup required.',
@@ -799,8 +843,11 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/formatting',
     kind: 'Pipe',
     stability: 'Stable',
-    description: 'Masked Phone transforms nullable display values through a pure Angular pipe.',
-    signatures: ['transform(value: string | null | undefined, visibleDigits?: number): string;'],
+    description:
+      'Masked Phone transforms nullable display values through a pure Angular pipe.',
+    signatures: [
+      'transform(value: string | null | undefined, visibleDigits?: number): string;',
+    ],
     ssr: 'SSR compatible.',
     cleanup: 'No browser resource cleanup required.',
   },
@@ -811,7 +858,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/core',
     kind: 'Service',
     stability: 'Stable',
-    description: 'Media Query coordinates library operations with SSR-safe fallbacks.',
+    description:
+      'Media Query coordinates library operations with SSR-safe fallbacks.',
     signatures: [
       'observe(query: string): Observable<JMediaQueryState>;',
       'observeBreakpoint(breakpoint: JBreakpoint): Observable<JMediaQueryState>;',
@@ -862,7 +910,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/formatting',
     kind: 'Pipe',
     stability: 'Stable',
-    description: 'Number Format transforms nullable display values through a pure Angular pipe.',
+    description:
+      'Number Format transforms nullable display values through a pure Angular pipe.',
     signatures: [
       'transform(value: NumberInput, locale?: string, options?: Intl.NumberFormatOptions): string;',
     ],
@@ -876,7 +925,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/core',
     kind: 'Service',
     stability: 'Stable',
-    description: 'Overlay coordinates library operations with SSR-safe fallbacks.',
+    description:
+      'Overlay coordinates library operations with SSR-safe fallbacks.',
     signatures: [
       'attach(trigger: HTMLElement, panel: HTMLElement, options?: JOverlayAttachOptions): JOverlayHandle;',
       'portal(panel: HTMLElement, appendTo?: JAppendTo): JOverlayHandle;',
@@ -892,7 +942,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/core',
     kind: 'Service',
     stability: 'Stable',
-    description: 'Overlay Stack coordinates library operations with SSR-safe fallbacks.',
+    description:
+      'Overlay Stack coordinates library operations with SSR-safe fallbacks.',
     signatures: [
       'push(ref: object): void;',
       'remove(ref: object): void;',
@@ -939,7 +990,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/formatting',
     kind: 'Pipe',
     stability: 'Stable',
-    description: 'Percent Format transforms nullable display values through a pure Angular pipe.',
+    description:
+      'Percent Format transforms nullable display values through a pure Angular pipe.',
     signatures: [
       'transform(value: NumberInput, locale?: string, options?: Intl.NumberFormatOptions): string;',
     ],
@@ -953,7 +1005,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/formatting',
     kind: 'Pipe',
     stability: 'Stable',
-    description: 'Pluralize transforms nullable display values through a pure Angular pipe.',
+    description:
+      'Pluralize transforms nullable display values through a pure Angular pipe.',
     signatures: [
       'transform(count: number, singular: string, plural?: string, includeCount?: boolean): string;',
       'readonly text: string;',
@@ -969,7 +1022,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/popout',
     kind: 'Service',
     stability: 'Stable',
-    description: 'Popout coordinates library operations with SSR-safe fallbacks.',
+    description:
+      'Popout coordinates library operations with SSR-safe fallbacks.',
     signatures: [
       'readonly supported: boolean;',
       'readonly pictureInPictureSupported: boolean;',
@@ -997,7 +1051,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/popout',
     kind: 'Token',
     stability: 'Stable',
-    description: 'POPOUT WINDOW ADAPTER configures a public JRNG provider contract.',
+    description:
+      'POPOUT WINDOW ADAPTER configures a public JRNG provider contract.',
     signatures: [],
     ssr: 'Feature-detected browser integration.',
     cleanup: 'Lifecycle cleanup is required and covered by canonical tests.',
@@ -1009,7 +1064,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/portal',
     kind: 'Directive',
     stability: 'Stable',
-    description: 'Portal adds typed host behavior through ng-template[jPortal].',
+    description:
+      'Portal adds typed host behavior through ng-template[jPortal].',
     signatures: [
       'readonly jPortal: i0.InputSignal<JPortalOutletDirective | null>;',
       'readonly jPortalContext: i0.InputSignal<T | undefined>;',
@@ -1027,7 +1083,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/portal',
     kind: 'Service',
     stability: 'Stable',
-    description: 'Portal coordinates library operations with SSR-safe fallbacks.',
+    description:
+      'Portal coordinates library operations with SSR-safe fallbacks.',
     signatures: [
       'attach(outlet: JPortalOutletDirective, portal: JPortal): JPortalRef | null;',
       'replace(outlet: JPortalOutletDirective, portal: JPortal): JPortalRef | null;',
@@ -1043,7 +1100,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/portal',
     kind: 'Directive',
     stability: 'Stable',
-    description: 'Portal Outlet adds typed host behavior through [jPortalOutlet].',
+    description:
+      'Portal Outlet adds typed host behavior through [jPortalOutlet].',
     signatures: [
       'readonly attached: i0.OutputEmitterRef<JPortalRef<unknown>>;',
       'readonly detached: i0.OutputEmitterRef<void>;',
@@ -1063,7 +1121,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/core',
     kind: 'Service',
     stability: 'Stable',
-    description: 'Print coordinates library operations with SSR-safe fallbacks.',
+    description:
+      'Print coordinates library operations with SSR-safe fallbacks.',
     signatures: [
       'printElement(element: HTMLElement, options?: JPrintOptions): boolean;',
       'printHtml(html: string, options?: JPrintOptions): boolean;',
@@ -1092,8 +1151,11 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/formatting',
     kind: 'Pipe',
     stability: 'Stable',
-    description: 'Relative Time transforms nullable display values through a pure Angular pipe.',
-    signatures: ['transform(value: DateInput, locale?: string, now?: DateInput): string;'],
+    description:
+      'Relative Time transforms nullable display values through a pure Angular pipe.',
+    signatures: [
+      'transform(value: DateInput, locale?: string, now?: DateInput): string;',
+    ],
     ssr: 'SSR compatible.',
     cleanup: 'No browser resource cleanup required.',
   },
@@ -1104,7 +1166,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/core',
     kind: 'Directive',
     stability: 'Stable',
-    description: 'Resize Observer adds typed host behavior through [jResizeObserver].',
+    description:
+      'Resize Observer adds typed host behavior through [jResizeObserver].',
     signatures: [
       'readonly jResize: i0.OutputEmitterRef<ResizeObserverEntry>;',
       'ngOnInit(): void;',
@@ -1165,7 +1228,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/formatting',
     kind: 'Pipe',
     stability: 'Stable',
-    description: 'Search Highlight transforms nullable display values through a pure Angular pipe.',
+    description:
+      'Search Highlight transforms nullable display values through a pure Angular pipe.',
     signatures: [
       'transform(value: string | null | undefined, query: string | null | undefined): JHighlightSegment[];',
     ],
@@ -1179,7 +1243,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/speech-to-text',
     kind: 'Service',
     stability: 'Stable',
-    description: 'Speech Recognition coordinates library operations with SSR-safe fallbacks.',
+    description:
+      'Speech Recognition coordinates library operations with SSR-safe fallbacks.',
     signatures: [
       'readonly state: _angular_core.WritableSignal<JSpeechRecognitionState>;',
       'readonly interimTranscript: _angular_core.WritableSignal<string>;',
@@ -1204,7 +1269,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/speech-to-text',
     kind: 'Token',
     stability: 'Stable',
-    description: 'SPEECH RECOGNITION FACTORY configures a public JRNG provider contract.',
+    description:
+      'SPEECH RECOGNITION FACTORY configures a public JRNG provider contract.',
     signatures: [],
     ssr: 'Feature-detected browser integration.',
     cleanup: 'Lifecycle cleanup is required and covered by canonical tests.',
@@ -1252,7 +1318,9 @@ export const generatedPublicArtifactRegistry = [
     stability: 'Stable',
     description:
       'Speed Dial Trigger adds typed host behavior through ng-template[jSpeedDialTrigger].',
-    signatures: ['readonly templateRef: TemplateRef<JSpeedDialTriggerContext>;'],
+    signatures: [
+      'readonly templateRef: TemplateRef<JSpeedDialTriggerContext>;',
+    ],
     ssr: 'Feature-detected browser integration.',
     cleanup: 'Lifecycle cleanup is required and covered by canonical tests.',
   },
@@ -1265,7 +1333,9 @@ export const generatedPublicArtifactRegistry = [
     stability: 'Stable',
     description:
       'Split Button Item adds typed host behavior through ng-template[jSplitButtonItem].',
-    signatures: ['readonly templateRef: TemplateRef<JMenuItemTemplateContext>;'],
+    signatures: [
+      'readonly templateRef: TemplateRef<JMenuItemTemplateContext>;',
+    ],
     ssr: 'Feature-detected browser integration.',
     cleanup: 'Lifecycle cleanup is required and covered by canonical tests.',
   },
@@ -1276,7 +1346,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/core',
     kind: 'Service',
     stability: 'Stable',
-    description: 'Storage coordinates library operations with SSR-safe fallbacks.',
+    description:
+      'Storage coordinates library operations with SSR-safe fallbacks.',
     signatures: [
       'remove(key: string, options?: JStorageOptions): boolean;',
       'cancel(): void;',
@@ -1312,7 +1383,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/swipe-actions',
     kind: 'Directive',
     stability: 'Stable',
-    description: 'Swipe Content adds typed host behavior through ng-template[jSwipeContent].',
+    description:
+      'Swipe Content adds typed host behavior through ng-template[jSwipeContent].',
     signatures: ['readonly templateRef: TemplateRef<unknown>;'],
     ssr: 'Feature-detected browser integration.',
     cleanup: 'Lifecycle cleanup is required and covered by canonical tests.',
@@ -1367,7 +1439,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/table',
     kind: 'Directive',
     stability: 'Stable',
-    description: 'Table Cell Template adds typed host behavior through ng-template[jTableCell].',
+    description:
+      'Table Cell Template adds typed host behavior through ng-template[jTableCell].',
     signatures: [
       'readonly templateRef: TemplateRef<JTableCellContext<T>>;',
       'readonly key: _angular_core.InputSignal<JTableTemplateKey<T>>;',
@@ -1383,7 +1456,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/table',
     kind: 'Directive',
     stability: 'Stable',
-    description: 'Table Empty Template adds typed host behavior through ng-template[jTableEmpty].',
+    description:
+      'Table Empty Template adds typed host behavior through ng-template[jTableEmpty].',
     signatures: ['readonly templateRef: TemplateRef<JTableEmptyContext>;'],
     ssr: 'Feature-detected browser integration.',
     cleanup: 'Lifecycle cleanup is required and covered by canonical tests.',
@@ -1442,7 +1516,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/formatting',
     kind: 'Pipe',
     stability: 'Stable',
-    description: 'Text Truncate transforms nullable display values through a pure Angular pipe.',
+    description:
+      'Text Truncate transforms nullable display values through a pure Angular pipe.',
     signatures: [
       'transform(value: string | null | undefined, maxLength?: number, suffix?: string): string;',
     ],
@@ -1456,7 +1531,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/theming',
     kind: 'Service',
     stability: 'Stable',
-    description: 'Theme coordinates library operations with SSR-safe fallbacks.',
+    description:
+      'Theme coordinates library operations with SSR-safe fallbacks.',
     signatures: [
       'readonly darkClass: string;',
       'readonly colorScheme: _angular_core.WritableSignal<JThemeColorScheme>;',
@@ -1500,7 +1576,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/theming',
     kind: 'Service',
     stability: 'Stable',
-    description: 'Theme Preset Registry coordinates library operations with SSR-safe fallbacks.',
+    description:
+      'Theme Preset Registry coordinates library operations with SSR-safe fallbacks.',
     signatures: [
       'register(preset: JThemePreset): () => void;',
       'get(id: string): JThemePreset | undefined;',
@@ -1518,7 +1595,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/formatting',
     kind: 'Pipe',
     stability: 'Stable',
-    description: 'Time Format transforms nullable display values through a pure Angular pipe.',
+    description:
+      'Time Format transforms nullable display values through a pure Angular pipe.',
     signatures: [
       'transform(value: DateInput, locale?: string, options?: Intl.DateTimeFormatOptions): string;',
     ],
@@ -1532,7 +1610,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/toast',
     kind: 'Service',
     stability: 'Stable',
-    description: 'Toast coordinates library operations with SSR-safe fallbacks.',
+    description:
+      'Toast coordinates library operations with SSR-safe fallbacks.',
     signatures: [
       'readonly toasts: i0.Signal<readonly JToast[]>;',
       'constructor();',
@@ -1641,7 +1720,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/tree-select',
     kind: 'Directive',
     stability: 'Stable',
-    description: 'Tree Select Node adds typed host behavior through ng-template[jTreeSelectNode].',
+    description:
+      'Tree Select Node adds typed host behavior through ng-template[jTreeSelectNode].',
     signatures: ['readonly templateRef: TemplateRef<JTreeNodeContext>;'],
     ssr: 'Feature-detected browser integration.',
     cleanup: 'Lifecycle cleanup is required and covered by canonical tests.',
@@ -1694,7 +1774,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/truncate',
     kind: 'Directive',
     stability: 'Stable',
-    description: 'Truncate Middle adds typed host behavior through [jTruncateMiddle].',
+    description:
+      'Truncate Middle adds typed host behavior through [jTruncateMiddle].',
     signatures: [
       'readonly jTruncateMiddle: _angular_core.InputSignal<string | null | undefined>;',
       'readonly mode: _angular_core.InputSignal<JTruncateMiddleMode>;',
@@ -1720,7 +1801,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/validation-message',
     kind: 'Token',
     stability: 'Stable',
-    description: 'VALIDATION MESSAGES configures a public JRNG provider contract.',
+    description:
+      'VALIDATION MESSAGES configures a public JRNG provider contract.',
     signatures: [],
     ssr: 'SSR compatible.',
     cleanup: 'No browser resource cleanup required.',
@@ -1760,7 +1842,8 @@ export const generatedPublicArtifactRegistry = [
     importPath: 'jrng-ui/core',
     kind: 'Service',
     stability: 'Stable',
-    description: 'ZIndex Manager coordinates library operations with SSR-safe fallbacks.',
+    description:
+      'ZIndex Manager coordinates library operations with SSR-safe fallbacks.',
     signatures: ['next(base?: number): number;', 'reset(): void;'],
     ssr: 'Feature-detected browser integration.',
     cleanup: 'Lifecycle cleanup is required and covered by canonical tests.',
