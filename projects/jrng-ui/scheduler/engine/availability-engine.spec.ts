@@ -3,6 +3,7 @@ import {
   jSchedulerAppointmentAvailability,
   jSchedulerBlockedConflict,
   jSchedulerIsWithinBusinessHours,
+  jSchedulerIsWithinAvailability,
 } from './availability-engine';
 
 describe('JRNG scheduler availability engine', () => {
@@ -35,5 +36,30 @@ describe('JRNG scheduler availability engine', () => {
       { id: 'booking', title: 'Booking', start: slot.start, end: slot.end },
     ]);
     expect(availability).toMatchObject({ booked: 1, available: 0, full: true });
+  });
+  it('evaluates recurring resource availability with date exceptions', () => {
+    const rules = [
+      {
+        resourceId: 'room-a',
+        daysOfWeek: [1],
+        startTime: '09:00',
+        endTime: '17:00',
+        excludedDates: [new Date(2026, 7, 10)],
+      },
+    ];
+    expect(
+      jSchedulerIsWithinAvailability(
+        { start: new Date(2026, 7, 3, 10), end: new Date(2026, 7, 3, 11) },
+        rules,
+        'room-a',
+      ),
+    ).toBe(true);
+    expect(
+      jSchedulerIsWithinAvailability(
+        { start: new Date(2026, 7, 10, 10), end: new Date(2026, 7, 10, 11) },
+        rules,
+        'room-a',
+      ),
+    ).toBe(false);
   });
 });

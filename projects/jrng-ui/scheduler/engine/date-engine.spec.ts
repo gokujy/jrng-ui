@@ -39,6 +39,14 @@ describe('JRNG scheduler date engine', () => {
       start: new Date(2026, 0, 1),
       end: new Date(2027, 0, 1),
     });
+    expect(jSchedulerVisibleRange(active, 'timelineQuarter')).toEqual({
+      start: new Date(2026, 6, 1),
+      end: new Date(2026, 9, 1),
+    });
+    expect(jSchedulerVisibleRange(active, 'workWeek', { firstDayOfWeek: 1 })).toEqual({
+      start: new Date(2026, 7, 3),
+      end: new Date(2026, 7, 10),
+    });
   });
 
   it('navigates by the active view unit', () => {

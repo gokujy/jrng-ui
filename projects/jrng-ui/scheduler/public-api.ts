@@ -1,4 +1,6 @@
 export * from './scheduler.component';
+export * from './recurrence-editor.component';
+export * from './event-editor.component';
 export * from './scheduler.models';
 export * from './engine/date-engine';
 export * from './engine/event-engine';
@@ -10,4 +12,8 @@ export * from './engine/timeline-engine';
 export * from './engine/timezone-engine';
 export * from './serialization/scheduler-serialization';
 export * from './engine/view-registry';
+export * from './engine/conflict-engine';
 export * from './interaction/interaction-engine';
+export * from './interaction/clipboard-engine';
+export * from './interaction/external-drag-engine';
+export * from './remote/range-controller';

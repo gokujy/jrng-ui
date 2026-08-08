@@ -30,12 +30,24 @@
   z-index: 3;
 }
 
+.j-scheduler-toolbar--footer {
+  border-block-end: 0;
+  border-block-start: 1px solid var(--j-color-border);
+}
+
 .j-scheduler-toolbar__area {
   align-items: center;
   display: flex;
   flex-wrap: wrap;
   gap: var(--j-spacing-2);
   min-width: 0;
+}
+.j-scheduler-toolbar__button-group {
+  display: inline-flex;
+  gap: 1px;
+}
+.j-scheduler-toolbar__button-group > j-button:not(:first-child) {
+  margin-inline-start: -1px;
 }
 
 .j-scheduler-toolbar__center {
@@ -69,6 +81,17 @@
 
 .j-scheduler__view {
   min-height: 100%;
+}
+.j-scheduler__status {
+  align-items: center;
+  background: var(--j-color-surface-subtle);
+  display: flex;
+  gap: var(--j-spacing-2);
+  justify-content: center;
+  padding: var(--j-spacing-2) var(--j-spacing-3);
+}
+.j-scheduler__status--error {
+  color: var(--j-color-danger, #b42318);
 }
 .j-scheduler__adaptive-resource {
   display: none;
@@ -138,6 +161,30 @@
   text-align: start;
 }
 
+.j-scheduler-more__event {
+  align-items: center;
+  display: grid;
+  gap: var(--j-spacing-1);
+  grid-template-columns: minmax(0, 1fr) auto auto;
+}
+
+.j-scheduler-more__event > button:first-child {
+  display: grid;
+  gap: 0.125rem;
+}
+
+.j-scheduler-move-dialog {
+  display: grid;
+  gap: var(--j-spacing-4);
+}
+
+.j-scheduler-move-dialog footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--j-spacing-2);
+  justify-content: flex-end;
+}
+
 .j-scheduler--disabled {
   opacity: var(--j-disabled-opacity, 0.55);
   pointer-events: none;
@@ -151,6 +198,11 @@
 .j-scheduler--rtl .j-scheduler-toolbar__start,
 .j-scheduler--rtl .j-scheduler-toolbar__end {
   flex-direction: row-reverse;
+}
+
+.j-scheduler-print-header,
+.j-scheduler-print-footer {
+  display: none;
 }
 
 @media (max-width: 48rem) {
@@ -207,9 +259,40 @@
   }
 
   .j-scheduler {
-    break-inside: avoid;
+    break-inside: auto;
     color-adjust: exact;
     print-color-adjust: exact;
+  }
+
+  .j-scheduler-print-header {
+    display: block;
+    break-after: avoid;
+    padding-block-end: 0.75rem;
+  }
+
+  .j-scheduler-print-header h1,
+  .j-scheduler-print-header p {
+    margin: 0 0 0.25rem;
+  }
+
+  .j-scheduler-print-footer {
+    bottom: 0;
+    display: block;
+    font-size: 0.75rem;
+    position: fixed;
+    inset-inline-end: 0;
+  }
+
+  .j-scheduler-time-grid__header,
+  .j-scheduler-timeline__header,
+  .j-scheduler-timeline__resource-heading {
+    position: static !important;
+  }
+
+  .j-scheduler-time-grid__day,
+  .j-scheduler-timeline__lane,
+  .j-scheduler-agenda__day {
+    break-inside: avoid;
   }
 
   .j-scheduler-event,

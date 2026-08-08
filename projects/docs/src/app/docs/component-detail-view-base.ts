@@ -27,7 +27,7 @@ import { JBottomSheetComponent } from 'jrng-ui/bottom-sheet';
 import { JBreadcrumbComponent, JBreadcrumbItem, JBreadcrumbVariant } from 'jrng-ui/breadcrumb';
 import { JButtonComponent, JButtonVariant } from 'jrng-ui/button';
 import { JCalendarSchedulerComponent } from 'jrng-ui/calendar-scheduler';
-import { JSchedulerComponent } from 'jrng-ui/scheduler';
+import { JRecurrenceEditorComponent, JSchedulerComponent } from 'jrng-ui/scheduler';
 import { JCardComponent } from 'jrng-ui/card';
 import { JCarouselComponent } from 'jrng-ui/carousel';
 import { JCascaderComponent } from 'jrng-ui/cascader';
@@ -2231,22 +2231,76 @@ const SCHEDULER_FEATURE_EXAMPLE_DEFINITIONS = [
   ],
   ['month', 'Month View', 'Seven-column month planning with multi-day overflow.', 'view="month"'],
   [
+    'month-drag',
+    'Month Drag and Drop',
+    'Move an event to another date through an immutable controlled proposal.',
+    'view="month" editable',
+  ],
+  [
+    'multi-month',
+    'Multi-Month Year',
+    'Scan twelve responsive mini-months beginning at the active month.',
+    'view="multiMonth"',
+  ],
+  [
     'week',
     'Week View',
     'A scrollable timed week with deterministic overlap placement.',
     'view="week"',
   ],
   ['day', 'Day View', 'A focused timed day for dense appointment workflows.', 'view="day"'],
+  [
+    'work-week',
+    'Work Week',
+    'Show Monday through Friday while retaining the complete configured time range.',
+    'view="workWeek"',
+  ],
+  [
+    'thirty-minute-slots',
+    'Thirty-Minute Slots',
+    'Render the complete day with one selectable row per thirty-minute interval.',
+    'view="week" slotDuration="00:30"',
+  ],
+  [
+    'custom-three-day',
+    'Custom Three-Day View',
+    'Register an application-defined three-day time-grid range.',
+    'view="custom" [customViews]="customViews" customViewId="three-day"',
+  ],
+  [
+    'custom-resource-timeline',
+    'Custom Resource Timeline',
+    'Register a two-day resource timeline with forty-five-minute slots without changing the root view registry.',
+    'view="custom" [customViews]="customViews" customViewId="operations-window"',
+  ],
   ['agenda', 'Agenda View', 'A responsive document-style list grouped by date.', 'view="agenda"'],
+  [
+    'month-agenda',
+    'Month Agenda',
+    'List the active month in date-grouped document flow.',
+    'view="monthAgenda"',
+  ],
   ['year', 'Year View', 'Twelve keyboard-accessible mini-months.', 'view="year"'],
   ['timeline-day', 'Timeline Day', 'A horizontally scrollable day axis.', 'view="timelineDay"'],
   ['timeline-week', 'Timeline Week', 'A virtualizable week axis.', 'view="timelineWeek"'],
+  [
+    'timeline-interactions',
+    'Timeline Drag and Resize',
+    'Move or resize timeline events with pointer gestures or Alt+Arrow keyboard controls and change horizontal zoom.',
+    'view="timelineWeek" editable [(timelineZoom)]="zoom"',
+  ],
   ['timeline-month', 'Timeline Month', 'Long-running work across a month.', 'view="timelineMonth"'],
   [
     'timeline-year',
     'Timeline Year',
     'Operational planning across quarters and a year.',
     'view="timelineYear"',
+  ],
+  [
+    'timeline-quarter',
+    'Timeline Quarter',
+    'Plan across the active calendar quarter with the shared timeline renderer.',
+    'view="timelineQuarter"',
   ],
   [
     'working-days',
@@ -2257,8 +2311,8 @@ const SCHEDULER_FEATURE_EXAMPLE_DEFINITIONS = [
   [
     'business-hours',
     'Business Hours',
-    'Shade and optionally constrain business-hour ranges.',
-    'view="week" showBusinessHours',
+    'Shade global and resource-specific working and availability windows, and constrain them when configured.',
+    'view="resourceWeek" [businessHours]="hours" [availability]="availability" showBusinessHours',
   ],
   [
     'all-day',
@@ -2267,12 +2321,24 @@ const SCHEDULER_FEATURE_EXAMPLE_DEFINITIONS = [
     'view="week"',
   ],
   ['multi-day', 'Multi-Day Events', 'Keep one visual span across adjacent dates.', 'view="month"'],
+  [
+    'background-events',
+    'Background Events',
+    'Render availability and inverse-background ranges behind interactive events.',
+    'view="week"',
+  ],
   ['overlap', 'Overlapping Events', 'Place concurrent timed events side by side.', 'view="week"'],
   [
     'more',
     'More Events Popover',
-    'Keep dense month cells readable with keyboard-reachable overflow.',
-    'view="month" [maxEventsVisible]="2" showMorePopover',
+    'Measure available row height automatically and keep dense month cells readable with keyboard-reachable overflow.',
+    'view="month" maxEventsVisible="auto" showMorePopover',
+  ],
+  [
+    'overflow-modes',
+    'Month Overflow Modes',
+    'Open dense dates in a popover, dialog, drawer, or expand the complete week inline.',
+    'view="month" [maxEventsVisible]="2" [moreEventsMode]="overflowMode"',
   ],
   [
     'quick-info',
@@ -2287,16 +2353,22 @@ const SCHEDULER_FEATURE_EXAMPLE_DEFINITIONS = [
     'eventPopover',
   ],
   [
+    'move-dialog',
+    'Non-Drag Move Dialog',
+    'Move one or many events by date, time and resource without requiring pointer drag.',
+    'editable quickInfo',
+  ],
+  [
     'dialog-edit',
     'Create and Edit Dialog',
-    'Connect range and event outputs to an application-owned JRNG Dialog and Reactive Form.',
-    'selectable selectionMode="timeRange"',
+    'Use the optional JRNG Dialog and Reactive Forms editor, or replace it with an app-owned editor.',
+    'editable builtInEditor',
   ],
   [
     'range-selection',
     'Date Range Selection',
-    'Emit a typed range while the parent owns acceptance.',
-    'selectable selectionMode="range"',
+    'Select by Shift+click, pointer drag, keyboard activation, or methods while the parent owns the typed range.',
+    'selectable dateSelectionMode="dateRange" [(selectedRange)]="selectedRange"',
   ],
   [
     'drag-drop',
@@ -2305,10 +2377,22 @@ const SCHEDULER_FEATURE_EXAMPLE_DEFINITIONS = [
     'view="week" editable',
   ],
   [
+    'cross-scheduler',
+    'Drag Between Schedulers',
+    'Transfer a validated event payload between independently controlled Scheduler instances.',
+    'view="week" editable externalDrag externalDropEnabled',
+  ],
+  [
+    'external-drop',
+    'External Event Drop',
+    'Convert external application data into a controlled Scheduler drop proposal.',
+    'view="week" editable externalDropEnabled',
+  ],
+  [
     'resize',
     'Resize Events',
-    'Resize duration with final persistence and a revert callback.',
-    'view="day" editable',
+    'Resize either edge with pointer or keyboard controls, final persistence, validation, and a revert callback.',
+    'view="day" [editableSettings]="{ resize: true, resizeFromStart: true }"',
   ],
   [
     'blocked',
@@ -2329,6 +2413,24 @@ const SCHEDULER_FEATURE_EXAMPLE_DEFINITIONS = [
     'recurrenceEdit',
   ],
   [
+    'recurrence-exceptions',
+    'Recurrence Exceptions',
+    'Exclude or modify one occurrence while preserving the source recurrence rule.',
+    'view="month" recurrenceEdit',
+  ],
+  [
+    'edit-occurrence',
+    'Edit One Occurrence',
+    'Create one immutable recurrence exception from the optional editor workflow.',
+    'view="month" recurrenceEdit',
+  ],
+  [
+    'edit-future',
+    'Edit Future Occurrences',
+    'Split a recurring series at a selected occurrence without materializing its history.',
+    'view="month" recurrenceEdit',
+  ],
+  [
     'categories',
     'Event Categories',
     'Combine named category cues with readable colors.',
@@ -2339,6 +2441,18 @@ const SCHEDULER_FEATURE_EXAMPLE_DEFINITIONS = [
     'Multi-Event Selection',
     'Select stable event IDs for application-owned bulk actions.',
     'eventSelection',
+  ],
+  [
+    'clipboard',
+    'Clipboard and Multi-Event Paste',
+    'Copy or cut selected events and paste them while preserving their relative offsets.',
+    'view="week" editable clipboardEnabled',
+  ],
+  [
+    'undo-redo',
+    'Undo and Redo',
+    'Emit inverse controlled requests for accepted create, update, delete, move, resize, and paste operations.',
+    'view="week" editable historyEnabled',
   ],
   [
     'context-menu',
@@ -2365,16 +2479,52 @@ const SCHEDULER_FEATURE_EXAMPLE_DEFINITIONS = [
     'view="resourceWeek"',
   ],
   [
+    'multiple-resources',
+    'Multiple Resource Assignment',
+    'Render one shared event in every assigned resource lane.',
+    'view="resourceWeek"',
+  ],
+  [
+    'resource-dimensions',
+    'Multiple Resource Dimensions',
+    'Compose independent department and room dimensions into stable scheduling lanes.',
+    'view="resourceWeek" [resourceDimensions]="dimensions"',
+  ],
+  [
     'resource-timeline',
     'Resource Timeline',
     'Keep the resource rail aligned with virtual timeline lanes.',
     'view="resourceTimelineWeek"',
   ],
   [
+    'resource-timeline-interactions',
+    'Resource Timeline Movement',
+    'Move events across time and resource lanes with scroll-safe pointer math or Alt+Arrow controls.',
+    'view="resourceTimelineWeek" editable',
+  ],
+  [
+    'resource-reorder',
+    'Resource Row Reorder',
+    'Request pointer or Alt+Arrow resource reordering without mutating controlled resources.',
+    'view="resourceTimelineWeek" resourceEditable',
+  ],
+  [
     'date-grouping',
     'Date Grouping',
     'Compare capacity in date-first layouts.',
     'view="dateWeek" groupByDate',
+  ],
+  [
+    'resource-grouping',
+    'Resource-First Grouping',
+    'Order simultaneous resource lanes before their date columns.',
+    'view="resourceWeek" groupByResource',
+  ],
+  [
+    'resource-aggregate-columns',
+    'Resource Aggregate Columns',
+    'Show parent resource totals beside leaf scheduling lanes when operational comparison needs both.',
+    'view="resourceWeek" resourceAggregateColumns',
   ],
   [
     'adaptive-resources',
@@ -2385,8 +2535,8 @@ const SCHEDULER_FEATURE_EXAMPLE_DEFINITIONS = [
   [
     'appointments',
     'Appointment Booking',
-    'Render availability without committing bookings locally.',
-    'view="day"',
+    'Render actionable availability as an overlay, grid treatment, indicator, or separate lane without committing bookings locally.',
+    'view="day" [appointmentSlots]="slots" [appointmentDisplay]="displayMode"',
   ],
   [
     'capacity',
@@ -2401,10 +2551,16 @@ const SCHEDULER_FEATURE_EXAMPLE_DEFINITIONS = [
     'view="month"',
   ],
   [
+    'resource-template',
+    'Custom Resource Template',
+    'Render resource identity through a typed template while preserving row activation and hierarchy controls.',
+    'view="resourceTimelineWeek"',
+  ],
+  [
     'toolbar',
     'Custom Toolbar',
-    'Replace toolbar regions while retaining named controls.',
-    'view="week"',
+    'Compose independent header and footer toolbars with date, filters, search, print, export, navigation, and view controls.',
+    '[headerToolbar]="headerToolbar" [footerToolbar]="footerToolbar" view="week"',
   ],
   [
     'cells-headers',
@@ -2413,6 +2569,12 @@ const SCHEDULER_FEATURE_EXAMPLE_DEFINITIONS = [
     'view="month"',
   ],
   ['locale', 'Locale', 'Format dates with a BCP 47 locale.', 'locale="en-GB"'],
+  [
+    'alternate-calendar',
+    'Alternate Calendar Display',
+    'Use an Intl-compatible display calendar without changing stored instants.',
+    'calendar="indian"',
+  ],
   [
     'time-format',
     'Time Format',
@@ -2437,12 +2599,54 @@ const SCHEDULER_FEATURE_EXAMPLE_DEFINITIONS = [
     'Parse to a merge preview before the application accepts imported records.',
     'view="agenda"',
   ],
+  [
+    'json-export',
+    'JSON Import/Export',
+    'Preview a versioned JSON document before merge.',
+    'view="agenda"',
+  ],
+  [
+    'ics-export',
+    'ICS Import/Export',
+    'Round-trip common iCalendar fields and recurrence.',
+    'view="agenda"',
+  ],
+  [
+    'excel-pdf',
+    'Excel and PDF Export',
+    'Generate native ZIP-based XLSX and a Scheduler PDF byte stream without commercial dependencies.',
+    'view="agenda"',
+  ],
+  [
+    'remote-range',
+    'Remote Visible Ranges',
+    'Request only the visible range with cancellable adjacent-range prefetch.',
+    'view="week" remoteData remotePrefetch',
+  ],
   ['print', 'Print', 'Print supported standard views without transient controls.', 'view="week"'],
   [
     'controlled',
     'Controlled State',
     'Own date, view, events, resources, filters, and selections in the application.',
     'view="week"',
+  ],
+  [
+    'event-adapter',
+    'Backend Event Adapter',
+    'Render immutable application-specific records through one typed adapter without pre-transforming each data array.',
+    '[eventData]="bookings" [eventAdapter]="bookingAdapter" view="week"',
+  ],
+  [
+    'granular-editing',
+    'Granular Editing Permissions',
+    'Allow creation while independently blocking edits, deletion, drag, resize, and resource transfers.',
+    'view="week" [editableSettings]="{ add: true, edit: false, remove: false, drag: false, resize: false }"',
+  ],
+  [
+    'async-validation',
+    'Async Server Validation',
+    'Keep drag and keyboard move proposals pending until an asynchronous application guard accepts them.',
+    'view="week" editable [eventChangeGuard]="validateMove"',
   ],
   [
     'readonly',
@@ -2461,6 +2665,19 @@ const SCHEDULER_FEATURE_EXAMPLE_DEFINITIONS = [
     'Responsive Scrolling',
     'Let the scheduler own the single interaction scroll surface.',
     'view="week"',
+  ],
+  [
+    'keyboard',
+    'Keyboard Navigation',
+    'Navigate dates, slots, events, clipboard, history, and resizing without a pointer.',
+    'view="week"',
+  ],
+  ['dark', 'Dark Mode', 'Use JRNG semantic Scheduler tokens on dark surfaces.', 'view="week"'],
+  [
+    'multi-month-stack',
+    'Multi-Month Stack',
+    'Stack responsive month blocks while preserving navigation and selection.',
+    'view="multiMonth"',
   ],
   [
     'virtualized',
@@ -2773,6 +2990,7 @@ export const COMPONENT_PREVIEW_IMPORTS = [
   JBottomSheetComponent,
   JCalendarSchedulerComponent,
   JSchedulerComponent,
+  JRecurrenceEditorComponent,
   JCarouselComponent,
   JChartComponent,
   JChipsComponent,

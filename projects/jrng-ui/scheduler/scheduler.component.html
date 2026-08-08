@@ -7,11 +7,27 @@
   [style.height]="rootStyle()"
   [attr.aria-label]="ariaLabel()"
   [attr.aria-disabled]="disabled()"
+  [attr.aria-busy]="validatingChange() || loading()"
+  [attr.tabindex]="disabled() ? -1 : 0"
   [attr.data-view]="view()"
   [attr.dir]="rtl() ? 'rtl' : null"
   data-j-slot="root"
   (contextmenu)="handleContextMenu($event)"
+  (keydown)="handleClipboardKeydown($event)"
+  (dragstart)="handleNativeDragStart($event)"
+  (dragover)="handleNativeDragOver($event)"
+  (drop)="handleNativeDrop($event)"
+  (dragend)="handleNativeDragEnd($event)"
 >
+  <header class="j-scheduler-print-header" aria-hidden="true">
+    <h1>{{ activePrintOptions().title || title() }}</h1>
+    @if (activePrintOptions().showGeneratedAt !== false && printGeneratedAt(); as generated) {
+      <p>Generated {{ generated | date: 'medium' }}</p>
+    }
+    @if (activePrintOptions().showFilters && filters().query) {
+      <p>Search: {{ filters().query }}</p>
+    }
+  </header>
   @if (headerToolbar() !== false) {
     @if (toolbarTemplate) {
       <ng-container [ngTemplateOutlet]="toolbarTemplate" />
@@ -63,7 +79,12 @@
     }
   }
 
-  <div #scrollSurface class="j-scheduler__scroll" data-j-slot="scroll-surface">
+  <div
+    #scrollSurface
+    class="j-scheduler__scroll"
+    data-j-slot="scroll-surface"
+    (scroll)="handleSurfaceScroll($event)"
+  >
     @if (viewDefinition().supportsResources && adaptiveMode() !== 'never') {
       <div class="j-scheduler__adaptive-resource" data-j-slot="adaptive-resource-selector">
         <j-select
@@ -83,28 +104,74 @@
       [attr.aria-label]="viewLabel(view()) + ': ' + title()"
       data-j-slot="view"
     >
-      @if (viewDefinition().timeline || viewDefinition().supportsResources) {
+      @if (loading()) {
+        <div class="j-scheduler__status" role="status" data-j-slot="loading">Loading schedule…</div>
+      }
+      @if (loadError(); as message) {
+        <div
+          class="j-scheduler__status j-scheduler__status--error"
+          role="alert"
+          data-j-slot="error"
+        >
+          <span>{{ message }}</span>
+          <j-button label="Retry" size="sm" [disabled]="disabled()" (onClick)="retryRemoteData()" />
+        </div>
+      }
+      @if (viewDefinition().timeline) {
         <j-scheduler-timeline-renderer
           [view]="view()"
           [range]="visibleRange()"
-          [events]="visibleEvents()"
-          [resources]="selectedResourceId() !== null ? focusedResources() : resources()"
+          [events]="displayedEvents()"
+          [selectedEventIds]="selectedEventIds()"
+          [selectedRange]="selectedRange()"
+          [resources]="
+            viewDefinition().supportsResources
+              ? selectedResourceId() !== null
+                ? focusedResources()
+                : filteredResources()
+              : []
+          "
           [expandedIds]="
             expandedResourceIds().length ? expandedResourceIds() : resourcesInitiallyExpanded()
           "
           [resourceAreaWidth]="resourceAreaWidth()"
           [expandable]="resourcesExpandable()"
-          [slotWidth]="timelineSlotWidth()"
-          [durationMinutes]="snapMinutes()"
-          [virtual]="timelineVirtualScroll()"
+          [slotWidth]="effectiveTimelineSlotWidth()"
+          [durationMinutes]="timelineSlotMinutes()"
+          [headerLevels]="timelineHeaderLevels()"
+          [headerTemplate]="timelineHeaderTemplate"
+          [virtual]="timelineVirtualScroll() && !printing()"
           [virtualThreshold]="timelineVirtualThreshold()"
           [overscan]="timelineVirtualOverscan()"
+          [resourceVirtual]="resourceVirtualScroll() && !printing()"
+          [resourceVirtualThreshold]="resourceVirtualThreshold()"
+          [resourceRowHeight]="resourceRowHeight()"
+          [externalDraggable]="externalDrag()"
+          [resourceDraggable]="resourceEditable() && !readonly()"
+          [draggable]="canDragEvents() && eventStartEditable()"
+          [resizable]="canResizeEvents() && eventDurationEditable()"
+          [resizeFromStart]="canResizeEventsFromStart()"
+          [snapMinutes]="snapMinutes()"
+          [minimumDragDistance]="minimumDragDistance()"
+          [touchLongPressDelay]="touchLongPressDelay()"
+          [rtl]="rtl()"
+          [now]="currentTime()"
+          [showNowIndicator]="nowIndicator()"
+          [eventTemplate]="timelineEventTemplate || eventTemplate"
+          [resourceTemplate]="resourceRowTemplate"
           [locale]="locale()"
           [disabled]="disabled()"
-          (eventActivate)="eventClick.emit($event)"
+          (eventActivate)="handleEventActivate($event)"
           (resourceActivate)="resourceClick.emit($event)"
           (toggle)="handleResourceToggle($event)"
-          (cellActivate)="handleDateActivate($event.date)"
+          (resourceMove)="handleResourceMove($event)"
+          (dragStart)="handleGestureStart($event, false)"
+          (dragProgress)="handleGestureProgress($event, false)"
+          (dragStop)="handleGestureStop($event, false)"
+          (resizeStart)="handleGestureStart($event, true)"
+          (resizeProgress)="handleGestureProgress($event, true)"
+          (resizeStop)="handleGestureStop($event, true)"
+          (cellActivate)="handleTimelineCellActivate($event)"
         />
       } @else {
         @switch (viewDefinition().family) {
@@ -112,38 +179,88 @@
             <j-scheduler-month-renderer
               [activeDate]="date()"
               [range]="visibleRange()"
-              [events]="visibleEvents()"
+              [events]="displayedEvents()"
+              [selectedEventIds]="selectedEventIds()"
+              [selectedRange]="selectedRange()"
               [locale]="locale()"
               [firstDayOfWeek]="firstDayOfWeek()"
               [maxEventsVisible]="maxEventsVisible()"
+              [expandedDateKeys]="expandedMoreDates()"
               [weekNumbers]="weekNumbers()"
               [disabled]="disabled()"
+              [selectable]="effectiveDateSelectionMode() !== 'none' && !readonly()"
+              [draggable]="canDragEvents() && eventStartEditable()"
+              [resizable]="canResizeEvents() && eventDurationEditable()"
+              [resizeFromStart]="canResizeEventsFromStart()"
+              [minimumDragDistance]="minimumDragDistance()"
+              [touchLongPressDelay]="touchLongPressDelay()"
+              [externalDraggable]="externalDrag()"
+              [eventTemplate]="monthEventTemplate || eventTemplate"
+              [cellTemplate]="monthCellTemplate"
+              [dateNumberTemplate]="dateNumberTemplate"
+              [weekdayTemplate]="weekdayHeaderTemplate"
+              [moreTemplate]="moreTriggerTemplate"
               (dateActivate)="handleDateActivate($event)"
+              (navigate)="goToDate($event)"
+              (rangeActivate)="handleDateRangeActivate($event)"
               (eventActivate)="handleEventActivate($event)"
               (moreActivate)="showMore($event)"
+              (dragStart)="handleGestureStart($event, false)"
+              (dragStop)="handleGestureStop($event, false)"
+              (resizeStart)="handleGestureStart($event, true)"
+              (resizeStop)="handleGestureStop($event, true)"
             />
           }
           @case ('timeGrid') {
             <j-scheduler-time-grid-renderer
               [range]="visibleRange()"
-              [events]="visibleEvents()"
-              [daysOfWeek]="daysOfWeek()"
+              [view]="view()"
+              [events]="displayedEvents()"
+              [selectedEventIds]="selectedEventIds()"
+              [selectedRange]="selectedRange()"
+              [daysOfWeek]="visibleDaysOfWeek()"
               [locale]="locale()"
-              [slotDuration]="slotDuration()"
+              [slotDuration]="effectiveSlotDuration()"
+              [slotLabelInterval]="effectiveSlotLabelInterval()"
               [slotMinTime]="slotMinTime()"
               [slotMaxTime]="slotMaxTime()"
               [disabled]="disabled()"
               [blockedIntervals]="blockedIntervals()"
+              [businessHours]="businessHours()"
+              [availability]="availability()"
+              [showBusinessHours]="showBusinessHours()"
               [appointmentSlots]="appointmentSlots()"
+              [appointmentDisplay]="appointmentDisplay()"
+              [selectable]="effectiveDateSelectionMode() !== 'none' && !readonly()"
+              [resources]="
+                viewDefinition().supportsResources && selectedResourceId() === null
+                  ? filteredResources()
+                  : []
+              "
+              [groupBy]="groupByDate() ? 'date' : 'resource'"
+              [resourceAggregateColumns]="resourceAggregateColumns()"
               [rtl]="rtl()"
-              [draggable]="editable() && !readonly() && eventStartEditable()"
-              [resizable]="editable() && !readonly() && eventDurationEditable()"
+              [now]="currentTime()"
+              [showNowIndicator]="nowIndicator()"
+              [draggable]="canDragEvents() && eventStartEditable()"
+              [resizable]="canResizeEvents() && eventDurationEditable()"
+              [resizeFromStart]="canResizeEventsFromStart()"
               [snapMinutes]="snapMinutes()"
               [minimumDragDistance]="minimumDragDistance()"
+              [touchLongPressDelay]="touchLongPressDelay()"
+              [externalDraggable]="externalDrag()"
+              [eventTemplate]="timeGridEventTemplate || eventTemplate"
+              [allDayEventTemplate]="allDayEventTemplate"
+              [slotTemplate]="timeSlotTemplate"
+              [dayHeaderTemplate]="dayHeaderTemplate"
+              [timeLabelTemplate]="timeLabelTemplate"
+              [appointmentTemplate]="appointmentSlotTemplate"
+              [blockedTemplate]="blockedIntervalTemplate"
               (dateActivate)="handleDateActivate($event)"
               (eventActivate)="handleEventActivate($event)"
               (eventDoubleActivate)="handleEventDoubleActivate($event)"
               (slotActivate)="handleSlotActivate($event)"
+              (rangeActivate)="handleDateRangeActivate($event)"
               (appointmentActivate)="handleAppointment($event)"
               (dragStart)="handleGestureStart($event, false)"
               (dragProgress)="handleGestureProgress($event, false)"
@@ -156,20 +273,38 @@
           @case ('agenda') {
             <j-scheduler-agenda-renderer
               [range]="visibleRange()"
-              [events]="visibleEvents()"
+              [view]="view()"
+              [events]="displayedEvents()"
+              [selectedEventIds]="selectedEventIds()"
+              [selectedRange]="selectedRange()"
               [locale]="locale()"
               [disabled]="disabled()"
+              [virtual]="agendaVirtualScroll() && !printing()"
+              [virtualThreshold]="agendaVirtualThreshold()"
+              [rowHeight]="agendaRowHeight()"
+              [overscan]="agendaVirtualOverscan()"
+              [scrollOffset]="surfaceScrollTop()"
+              [viewportHeight]="surfaceViewportHeight()"
+              [eventTemplate]="agendaEventTemplate || eventTemplate"
               (dateActivate)="handleDateActivate($event)"
               (eventActivate)="handleEventActivate($event)"
             />
           }
           @case ('year') {
             <j-scheduler-year-renderer
+              [view]="view()"
               [activeDate]="date()"
-              [events]="visibleEvents()"
+              [events]="displayedEvents()"
+              [selectedRange]="selectedRange()"
               [locale]="locale()"
               [firstDayOfWeek]="firstDayOfWeek()"
+              [startMonth]="view() === 'multiMonth' ? date().getMonth() : null"
+              [monthCount]="multiMonthCount()"
+              [layout]="multiMonthLayout()"
+              [maxColumns]="multiMonthMaxColumns()"
+              [minMonthWidth]="multiMonthMinWidth()"
               [disabled]="disabled()"
+              [cellTemplate]="monthCellTemplate"
               (dateActivate)="handleDateActivate($event)"
             />
           }
@@ -184,7 +319,66 @@
     </div>
   </div>
 
-  <p class="j-scheduler__live" aria-live="polite" aria-atomic="true"></p>
+  @if (footerToolbar() !== false) {
+    @if (footerToolbarTemplate) {
+      <ng-container [ngTemplateOutlet]="footerToolbarTemplate" />
+    } @else {
+      <footer class="j-scheduler-toolbar j-scheduler-toolbar--footer" data-j-slot="footer-toolbar">
+        <div
+          class="j-scheduler-toolbar__area j-scheduler-toolbar__start"
+          data-j-slot="footer-toolbar-start"
+        >
+          @if (footerToolbarStartTemplate) {
+            <ng-container [ngTemplateOutlet]="footerToolbarStartTemplate" />
+          } @else {
+            @for (action of footerToolbarConfig().start; track action) {
+              <ng-container
+                [ngTemplateOutlet]="toolbarAction"
+                [ngTemplateOutletContext]="{ $implicit: action }"
+              />
+            }
+          }
+        </div>
+        <div
+          class="j-scheduler-toolbar__area j-scheduler-toolbar__center"
+          data-j-slot="footer-toolbar-center"
+        >
+          @if (footerToolbarCenterTemplate) {
+            <ng-container [ngTemplateOutlet]="footerToolbarCenterTemplate" />
+          } @else {
+            @for (action of footerToolbarConfig().center; track action) {
+              <ng-container
+                [ngTemplateOutlet]="toolbarAction"
+                [ngTemplateOutletContext]="{ $implicit: action }"
+              />
+            }
+          }
+        </div>
+        <div
+          class="j-scheduler-toolbar__area j-scheduler-toolbar__end"
+          data-j-slot="footer-toolbar-end"
+        >
+          @if (footerToolbarEndTemplate) {
+            <ng-container [ngTemplateOutlet]="footerToolbarEndTemplate" />
+          } @else {
+            @for (action of footerToolbarConfig().end; track action) {
+              <ng-container
+                [ngTemplateOutlet]="toolbarAction"
+                [ngTemplateOutletContext]="{ $implicit: action }"
+              />
+            }
+          }
+        </div>
+      </footer>
+    }
+  }
+
+  <p class="j-scheduler__live" aria-live="polite" aria-atomic="true">
+    {{ liveAnnouncement() }}
+  </p>
+  @if (activePrintOptions().pageNumbers !== false) {
+    <footer class="j-scheduler-print-footer" aria-hidden="true">JRNG Scheduler</footer>
+  }
 
   <j-popover
     #quickInfoPopover
@@ -214,24 +408,37 @@
           @if (event.description) {
             <p>{{ event.description }}</p>
           }
-          @if (!readonly()) {
+          @if (canEditEvents() || canRemoveEvents() || canDragEvents()) {
             <div>
-              <j-button
-                label="Edit"
-                icon="pencil"
-                size="sm"
-                [disabled]="disabled()"
-                (onClick)="requestQuickEdit()"
-              />
-              <j-button
-                label="Delete"
-                icon="trash"
-                severity="danger"
-                variant="outlined"
-                size="sm"
-                [disabled]="disabled()"
-                (onClick)="requestQuickDelete()"
-              />
+              @if (canEditEvents()) {
+                <j-button
+                  label="Edit"
+                  icon="pencil"
+                  size="sm"
+                  [disabled]="disabled()"
+                  (onClick)="requestQuickEdit()"
+                />
+              }
+              @if (canRemoveEvents()) {
+                <j-button
+                  label="Delete"
+                  icon="trash"
+                  severity="danger"
+                  variant="outlined"
+                  size="sm"
+                  [disabled]="disabled()"
+                  (onClick)="requestQuickDelete()"
+                />
+              }
+              @if (canDragEvents()) {
+                <j-button
+                  label="Move"
+                  variant="outlined"
+                  size="sm"
+                  [disabled]="disabled()"
+                  (onClick)="openMoveDialog([event.id])"
+                />
+              }
             </div>
           }
         }
@@ -239,78 +446,286 @@
     }
   </j-popover>
 
-  <j-popover #morePopover ariaLabel="More events">
-    <div class="j-scheduler-more" data-j-slot="more-popover">
+  <ng-template #moreEventsContent>
+    <div class="j-scheduler-more" data-j-slot="more-events-surface">
+      <h3>{{ moreDateLabel() }}</h3>
+      <p>{{ moreEvents().length }} events</p>
       @for (event of moreEvents(); track event.occurrenceId) {
-        <button
-          type="button"
-          [disabled]="disabled() || event.source.disabled"
-          [attr.data-event-id]="event.source.id"
-          (click)="handleEventActivate(event)"
-        >
-          {{ event.source.title }}
-        </button>
+        <div class="j-scheduler-more__event" [attr.data-event-id]="event.source.id">
+          <button
+            type="button"
+            [disabled]="disabled() || event.source.disabled"
+            (click)="activateMoreEvent(event)"
+          >
+            <strong>{{ event.source.title }}</strong>
+            <span>{{ eventTimeLabel(event) }}</span>
+            @if (event.source.resourceId !== null && event.source.resourceId !== undefined) {
+              <small>Resource {{ event.source.resourceId }}</small>
+            }
+            @if (event.source.categoryId !== null && event.source.categoryId !== undefined) {
+              <small>Category {{ event.source.categoryId }}</small>
+            }
+          </button>
+          @if (canEditEvents() && event.source.editable !== false && !event.source.readonly) {
+            <j-button label="Edit" size="sm" variant="text" (onClick)="editMoreEvent(event)" />
+          }
+          @if (canRemoveEvents() && event.source.deletable !== false && !event.source.readonly) {
+            <j-button
+              label="Delete"
+              size="sm"
+              variant="text"
+              severity="danger"
+              (onClick)="deleteMoreEvent(event)"
+            />
+          }
+        </div>
       } @empty {
         <p>No events</p>
       }
     </div>
+  </ng-template>
+
+  <j-popover
+    #morePopover
+    ariaLabel="More events"
+    [visible]="moreEventsMode() === 'popover' && moreDate() !== null"
+    [target]="moreTrigger()"
+    (closed)="handleMoreClosed()"
+  >
+    <ng-container [ngTemplateOutlet]="moreEventsContent" />
   </j-popover>
+
+  <j-dialog
+    [visible]="moreEventsMode() === 'dialog' && moreDate() !== null"
+    header="More events"
+    size="md"
+    width="min(34rem, calc(100vw - 2rem))"
+    (closed)="handleMoreClosed()"
+  >
+    <ng-container [ngTemplateOutlet]="moreEventsContent" />
+  </j-dialog>
+
+  <j-drawer
+    [visible]="moreEventsMode() === 'drawer' && moreDate() !== null"
+    header="More events"
+    position="right"
+    width="min(26rem, calc(100vw - 1rem))"
+    (closed)="handleMoreClosed()"
+  >
+    <ng-container [ngTemplateOutlet]="moreEventsContent" />
+  </j-drawer>
+
+  <j-dialog
+    [visible]="editorVisible()"
+    (visibleChange)="editorVisible.set($event)"
+    [header]="editorEvent() ? 'Edit event' : 'Add event'"
+    size="lg"
+    width="min(52rem, calc(100vw - 2rem))"
+    (closed)="closeEventEditor()"
+  >
+    @if (editorVisible()) {
+      <j-scheduler-event-editor
+        [event]="editorEvent()"
+        [newEventStart]="editorStart()"
+        [resources]="resources()"
+        [categories]="categories()"
+        [timezones]="editorTimezones()"
+        [disabled]="disabled()"
+        [readonly]="readonly()"
+        (saveRequest)="handleEditorSave($event)"
+        (deleteRequest)="handleEditorDelete($event)"
+        (cancel)="closeEventEditor()"
+      />
+    }
+  </j-dialog>
+
+  <j-dialog
+    [visible]="moveDialogVisible()"
+    (visibleChange)="moveDialogVisible.set($event)"
+    header="Move events"
+    size="sm"
+    width="min(30rem, calc(100vw - 2rem))"
+    (closed)="closeMoveDialog()"
+  >
+    @if (moveDialogVisible()) {
+      <div class="j-scheduler-move-dialog" aria-label="Move selected events">
+        <p>{{ moveEventIds().length }} event{{ moveEventIds().length === 1 ? '' : 's' }}</p>
+        <j-date-picker
+          label="Target date"
+          [ngModel]="moveDate()"
+          (ngModelChange)="moveDate.set($event)"
+          [ngModelOptions]="{ standalone: true }"
+          [disabled]="disabled()"
+        />
+        <j-time-picker
+          label="Target time"
+          [ngModel]="moveTime()"
+          (ngModelChange)="moveTime.set($event || '00:00')"
+          [ngModelOptions]="{ standalone: true }"
+          [disabled]="disabled()"
+        />
+        @if (resourceOptions().length) {
+          <j-select
+            label="Target resource"
+            [options]="resourceOptions()"
+            optionLabel="label"
+            optionValue="value"
+            [ngModel]="moveResourceId()"
+            (ngModelChange)="moveResourceId.set($event)"
+            [ngModelOptions]="{ standalone: true }"
+            clearable
+            [disabled]="disabled()"
+          />
+        }
+        <footer>
+          <j-button label="Move events" [disabled]="disabled()" (onClick)="confirmMoveDialog()" />
+          <j-button label="Cancel" variant="outlined" (onClick)="closeMoveDialog()" />
+        </footer>
+      </div>
+    }
+  </j-dialog>
 </section>
 
 <ng-template #toolbarAction let-action>
   @if (isToolbarActionVisible(action)) {
-    @switch (action) {
-      @case ('prev') {
-        <j-button
-          icon="chevron-left"
-          ariaLabel="Previous range"
-          [disabled]="disabled()"
-          jTooltip="Previous range"
-          (onClick)="previous()"
-        />
-      }
-      @case ('next') {
-        <j-button
-          icon="chevron-right"
-          ariaLabel="Next range"
-          [disabled]="disabled()"
-          jTooltip="Next range"
-          (onClick)="next()"
-        />
-      }
-      @case ('today') {
-        <j-button
-          label="Today"
-          variant="outlined"
-          [disabled]="disabled()"
-          jTooltip="Go to today"
-          (onClick)="today()"
-        />
-      }
-      @case ('title') {
-        <h2 class="j-scheduler-toolbar__title" aria-live="polite">{{ title() }}</h2>
-      }
-      @case ('timezone') {
-        <span class="j-scheduler-toolbar__timezone">{{ displayTimezone() }}</span>
-      }
-      @case ('addEvent') {
-        <j-button
-          label="Add event"
-          icon="plus"
-          [disabled]="disabled() || readonly() || !editable()"
-          jTooltip="Add event"
-        />
-      }
-      @default {
-        @if (isViewAction(action)) {
-          <j-button
-            [label]="viewLabel(action)"
-            [variant]="view() === action ? 'solid' : 'outlined'"
-            [disabled]="disabled()"
-            [attr.aria-pressed]="view() === action"
-            [jTooltip]="'Switch to ' + viewLabel(action) + ' view'"
-            (onClick)="changeView(action)"
+    @if (isToolbarButtonGroup(action)) {
+      <div
+        class="j-scheduler-toolbar__button-group"
+        role="group"
+        [attr.aria-label]="action.ariaLabel || action.id"
+        [attr.data-toolbar-group]="action.id"
+      >
+        @for (button of action.buttons; track button.id) {
+          <ng-container
+            [ngTemplateOutlet]="toolbarAction"
+            [ngTemplateOutletContext]="{ $implicit: button }"
           />
+        }
+      </div>
+    } @else if (isToolbarButton(action)) {
+      <j-button
+        [label]="action.label || ''"
+        [icon]="action.icon || ''"
+        [ariaLabel]="action.ariaLabel || action.label || action.id"
+        [disabled]="disabled() || !!action.disabled"
+        [jTooltip]="action.tooltip || action.ariaLabel || action.label || action.id"
+        [attr.data-toolbar-button]="action.id"
+        (onClick)="activateToolbarButton(action)"
+      />
+    } @else {
+      @switch (action) {
+        @case ('prev') {
+          <j-button
+            icon="chevron-left"
+            ariaLabel="Previous range"
+            [disabled]="disabled()"
+            jTooltip="Previous range"
+            (onClick)="previous()"
+          />
+        }
+        @case ('next') {
+          <j-button
+            icon="chevron-right"
+            ariaLabel="Next range"
+            [disabled]="disabled()"
+            jTooltip="Next range"
+            (onClick)="next()"
+          />
+        }
+        @case ('today') {
+          <j-button
+            label="Today"
+            variant="outlined"
+            [disabled]="disabled()"
+            jTooltip="Go to today"
+            (onClick)="today()"
+          />
+        }
+        @case ('title') {
+          <h2 class="j-scheduler-toolbar__title" aria-live="polite">{{ title() }}</h2>
+        }
+        @case ('timezone') {
+          <span class="j-scheduler-toolbar__timezone">{{ displayTimezone() }}</span>
+        }
+        @case ('datePicker') {
+          <j-date-picker
+            label="Date"
+            [disabled]="disabled()"
+            [ngModel]="date()"
+            (ngModelChange)="goToDate($event)"
+          />
+        }
+        @case ('resourceFilter') {
+          <j-select
+            label="Resource filter"
+            placeholder="All resources"
+            [options]="resourceOptions()"
+            optionLabel="label"
+            optionValue="value"
+            clearable
+            [disabled]="disabled()"
+            [ngModel]="filters().resourceIds?.[0] ?? null"
+            (ngModelChange)="setResourceFilter($event)"
+          />
+        }
+        @case ('categoryFilter') {
+          <j-select
+            label="Category filter"
+            placeholder="All categories"
+            [options]="categoryOptions()"
+            optionLabel="label"
+            optionValue="value"
+            clearable
+            [disabled]="disabled()"
+            [ngModel]="filters().categoryIds?.[0] ?? null"
+            (ngModelChange)="setCategoryFilter($event)"
+          />
+        }
+        @case ('search') {
+          <j-input
+            label="Search events"
+            placeholder="Search events"
+            [disabled]="disabled()"
+            [ngModel]="filters().query ?? ''"
+            (ngModelChange)="setSearchQuery($event)"
+          />
+        }
+        @case ('print') {
+          <j-button
+            icon="printer"
+            ariaLabel="Print schedule"
+            [disabled]="disabled()"
+            (onClick)="print()"
+          />
+        }
+        @case ('export') {
+          <j-button
+            icon="download"
+            ariaLabel="Export schedule"
+            [disabled]="disabled()"
+            (onClick)="exportRequest.emit('json')"
+          />
+        }
+        @case ('addEvent') {
+          <j-button
+            label="Add event"
+            icon="plus"
+            [disabled]="!canAddEvents()"
+            jTooltip="Add event"
+            (onClick)="openEventEditor()"
+          />
+        }
+        @default {
+          @if (isViewAction(action)) {
+            <j-button
+              [label]="viewLabel(action)"
+              [variant]="view() === action ? 'solid' : 'outlined'"
+              [disabled]="disabled()"
+              [attr.aria-pressed]="view() === action"
+              [jTooltip]="'Switch to ' + viewLabel(action) + ' view'"
+              (onClick)="changeView(action)"
+            />
+          }
         }
       }
     }

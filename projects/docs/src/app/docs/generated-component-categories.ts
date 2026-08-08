@@ -52,10 +52,12 @@ export const generatedComponentCategories = [
   },
   {
     name: 'Data',
-    count: 17,
+    count: 19,
     selectors: [
       'j-calendar-scheduler',
       'j-scheduler',
+      'j-recurrence-editor',
+      'j-scheduler-event-editor',
       'j-column-filter',
       'j-data-display',
       'j-data-view',
@@ -200,4 +202,4 @@ export const generatedComponentCategories = [
 ] as const;
 
 export const generatedComponentCategoryOrder = generatedComponentCategories.map(({ name }) => name);
-export const generatedActiveComponentTotal = 130;
+export const generatedActiveComponentTotal = 132;

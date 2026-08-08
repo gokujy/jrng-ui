@@ -1,5 +1,6 @@
 import {
   JSchedulerAppointmentSlot,
+  JSchedulerAvailabilityRule,
   JSchedulerBlockedInterval,
   JSchedulerBusinessHours,
   JSchedulerDateRange,
@@ -38,6 +39,37 @@ export function jSchedulerBlockedConflict(
       block.start < range.end &&
       block.end > range.start,
   );
+}
+
+export function jSchedulerIsWithinAvailability(
+  range: JSchedulerDateRange,
+  rules: readonly JSchedulerAvailabilityRule[],
+  resourceId?: JSchedulerId,
+): boolean {
+  if (!rules.length) return true;
+  return rules.some((rule) => {
+    if (
+      rule.resourceId != null &&
+      resourceId != null &&
+      String(rule.resourceId) !== String(resourceId)
+    )
+      return false;
+    if (rule.effectiveStart && range.start < rule.effectiveStart) return false;
+    if (rule.effectiveEnd && range.end > rule.effectiveEnd) return false;
+    if (rule.daysOfWeek?.length && !rule.daysOfWeek.includes(range.start.getDay())) return false;
+    if (
+      rule.excludedDates?.some(
+        (date) =>
+          date.getFullYear() === range.start.getFullYear() &&
+          date.getMonth() === range.start.getMonth() &&
+          date.getDate() === range.start.getDate(),
+      )
+    )
+      return false;
+    return (
+      minutes(range.start) >= parse(rule.startTime) && minutes(range.end) <= parse(rule.endTime)
+    );
+  });
 }
 
 export function jSchedulerAppointmentAvailability(

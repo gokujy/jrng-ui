@@ -49,6 +49,21 @@ describe('scheduler representative performance workloads', () => {
     expect(rows.reduce((sum, row) => sum + row.eventCount, 0)).toBe(2_000);
   });
 
+  it('indexes 20,000 resource-timeline assignments before virtualizing 500 rows', () => {
+    const resources = Array.from({ length: 500 }, (_, index) => ({
+      id: `resource-${index}`,
+      name: `Resource ${index}`,
+    }));
+    const started = performance.now();
+    const rows = jSchedulerFlattenResources(resources, true, events(20_000));
+    const window = jSchedulerVirtualWindow(rows, 52, 52 * 250, 520, 4);
+    const elapsed = performance.now() - started;
+    expect(rows).toHaveLength(500);
+    expect(rows.reduce((sum, row) => sum + row.eventCount, 0)).toBe(20_000);
+    expect(window.items.length).toBeLessThan(25);
+    expect(elapsed).toBeLessThan(2_000);
+  });
+
   it('virtualizes a 10,000-slot timeline to the viewport and overscan', () => {
     const slots = Array.from({ length: 10_000 }, (_, index) => index);
     const window = jSchedulerVirtualWindow(slots, 72, 72 * 5_000, 1_024, 4);

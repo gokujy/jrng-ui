@@ -46,4 +46,16 @@ describe('JRNG scheduler event engine', () => {
       jSchedulerValidateEvent({ id: 'invalid', title: '', start: new Date(2026, 7, 5) }),
     ).toEqual(['Event title is required.', 'Timed events should provide end or duration.']);
   });
+
+  it('normalizes a milestone as a visible point without requiring a duration', () => {
+    const milestone: JSchedulerEvent = {
+      id: 'release',
+      title: 'Release marker',
+      start: new Date(2026, 7, 5, 12),
+      milestone: true,
+    };
+    expect(jSchedulerValidateEvent(milestone)).toEqual([]);
+    expect(jSchedulerEventEnd(milestone).getTime()).toBe(milestone.start.getTime() + 1);
+    expect(jSchedulerNormalizeEvents([milestone], range)).toHaveLength(1);
+  });
 });

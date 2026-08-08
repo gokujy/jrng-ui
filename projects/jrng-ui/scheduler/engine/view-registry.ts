@@ -23,6 +23,24 @@ const STANDARD: readonly JSchedulerViewDefinition[] = [
     timeline: false,
   },
   {
+    view: 'multiMonth',
+    label: 'Multi-month',
+    family: 'year',
+    supportsDrag: false,
+    supportsResize: false,
+    supportsResources: false,
+    timeline: false,
+  },
+  {
+    view: 'multiMonthYear',
+    label: 'Multi-month year',
+    family: 'year',
+    supportsDrag: false,
+    supportsResize: false,
+    supportsResources: false,
+    timeline: false,
+  },
+  {
     view: 'week',
     label: 'Week',
     family: 'timeGrid',
@@ -41,8 +59,26 @@ const STANDARD: readonly JSchedulerViewDefinition[] = [
     timeline: false,
   },
   {
+    view: 'workWeek',
+    label: 'Work week',
+    family: 'timeGrid',
+    supportsDrag: true,
+    supportsResize: true,
+    supportsResources: false,
+    timeline: false,
+  },
+  {
     view: 'agenda',
     label: 'Agenda',
+    family: 'agenda',
+    supportsDrag: false,
+    supportsResize: false,
+    supportsResources: false,
+    timeline: false,
+  },
+  {
+    view: 'monthAgenda',
+    label: 'Month agenda',
     family: 'agenda',
     supportsDrag: false,
     supportsResize: false,
@@ -63,14 +99,18 @@ const STANDARD: readonly JSchedulerViewDefinition[] = [
 const VIEW_NAMES: readonly JSchedulerView[] = [
   'timelineDay',
   'timelineWeek',
+  'timelineWorkWeek',
   'timelineMonth',
+  'timelineQuarter',
   'timelineYear',
   'resourceDay',
   'resourceWeek',
+  'resourceWorkWeek',
   'resourceMonth',
   'resourceTimelineDay',
   'resourceTimelineWeek',
   'resourceTimelineMonth',
+  'resourceTimelineYear',
   'dateDay',
   'dateWeek',
   'dateMonth',
@@ -94,6 +134,18 @@ export const J_SCHEDULER_VIEW_REGISTRY: ReadonlyMap<JSchedulerView, JSchedulerVi
       };
       return [view, definition] as const;
     }),
+    [
+      'custom',
+      {
+        view: 'custom',
+        label: 'Custom',
+        family: 'timeGrid',
+        supportsDrag: true,
+        supportsResize: true,
+        supportsResources: false,
+        timeline: false,
+      },
+    ],
   ]);
 
 export function jSchedulerViewDefinition(view: JSchedulerView): JSchedulerViewDefinition {

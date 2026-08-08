@@ -1,0 +1,45 @@
+:host {
+  display: block;
+}
+.j-recurrence-editor {
+  border: 1px solid var(--j-color-border);
+  border-radius: var(--j-radius-md);
+  display: grid;
+  gap: var(--j-spacing-3);
+  padding: var(--j-spacing-4);
+}
+.j-recurrence-editor label {
+  display: grid;
+  gap: var(--j-spacing-1);
+}
+.j-recurrence-editor input,
+.j-recurrence-editor select {
+  background: var(--j-color-card);
+  border: 1px solid var(--j-color-border);
+  border-radius: var(--j-radius-sm);
+  color: inherit;
+  min-height: 2.5rem;
+  padding: var(--j-spacing-2);
+}
+.j-recurrence-editor__weekdays {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--j-spacing-2);
+}
+.j-recurrence-editor__weekdays label {
+  align-items: center;
+  display: flex;
+}
+.j-recurrence-editor__summary {
+  color: var(--j-color-muted-foreground);
+  margin: 0;
+}
+.j-recurrence-editor__error {
+  color: var(--j-color-danger, #b42318);
+  margin: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .j-recurrence-editor * {
+    scroll-behavior: auto !important;
+  }
+}

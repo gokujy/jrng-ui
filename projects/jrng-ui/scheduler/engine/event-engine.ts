@@ -1,3 +1,4 @@
+import { jSchedulerDurationToMs } from './date-engine';
 import { JSchedulerDateRange, JSchedulerEvent, JSchedulerVisibleEvent } from '../scheduler.models';
 
 export interface JSchedulerNormalizedEvent extends JSchedulerVisibleEvent {
@@ -6,21 +7,25 @@ export interface JSchedulerNormalizedEvent extends JSchedulerVisibleEvent {
 
 export function jSchedulerEventEnd(event: JSchedulerEvent): Date {
   if (event.end instanceof Date) return new Date(event.end.getTime());
-  if (event.duration != null) return new Date(event.start.getTime() + Math.max(0, event.duration));
+  if (event.duration != null)
+    return new Date(event.start.getTime() + jSchedulerDurationToMs(event.duration));
+  if (event.milestone) return new Date(event.start.getTime() + 1);
   return event.allDay
     ? new Date(event.start.getFullYear(), event.start.getMonth(), event.start.getDate() + 1)
     : new Date(event.start.getTime() + 30 * 60_000);
 }
 
 export function jSchedulerEventIntersects(
-  event: Pick<JSchedulerEvent, 'start' | 'end' | 'duration' | 'allDay'>,
+  event: Pick<JSchedulerEvent, 'start' | 'end' | 'duration' | 'allDay' | 'milestone'>,
   range: JSchedulerDateRange,
 ): boolean {
   const end =
     event.end ??
     (event.duration != null
-      ? new Date(event.start.getTime() + event.duration)
-      : new Date(event.start.getTime() + (event.allDay ? 86_400_000 : 30 * 60_000)));
+      ? new Date(event.start.getTime() + jSchedulerDurationToMs(event.duration))
+      : new Date(
+          event.start.getTime() + (event.milestone ? 1 : event.allDay ? 86_400_000 : 30 * 60_000),
+        ));
   return event.start < range.end && end > range.start;
 }
 
@@ -63,7 +68,7 @@ export function jSchedulerValidateEvent(event: JSchedulerEvent): readonly string
   const end = jSchedulerEventEnd(event);
   if (Number.isNaN(end.getTime())) errors.push('Event end must be a valid Date.');
   if (end <= event.start) errors.push('Event end must be after start.');
-  if (event.end == null && event.duration == null && !event.allDay) {
+  if (event.end == null && event.duration == null && !event.allDay && !event.milestone) {
     errors.push('Timed events should provide end or duration.');
   }
   return errors;

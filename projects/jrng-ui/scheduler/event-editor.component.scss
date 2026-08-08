@@ -1,0 +1,28 @@
+:host {
+  display: block;
+}
+.j-scheduler-event-editor {
+  display: grid;
+  gap: var(--j-spacing-4);
+  min-width: min(100%, 32rem);
+}
+.j-scheduler-event-editor__columns {
+  display: grid;
+  gap: var(--j-spacing-3);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.j-scheduler-event-editor footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--j-spacing-2);
+  justify-content: flex-end;
+}
+.j-scheduler-event-editor__error {
+  color: var(--j-color-danger, #b42318);
+  margin: 0;
+}
+@media (max-width: 40rem) {
+  .j-scheduler-event-editor__columns {
+    grid-template-columns: 1fr;
+  }
+}

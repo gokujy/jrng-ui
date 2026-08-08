@@ -5,7 +5,7 @@
 .j-scheduler-timeline {
   display: grid;
   grid-template-columns: var(--j-resource-width) minmax(0, 1fr);
-  grid-template-rows: 3rem auto;
+  grid-template-rows: calc(var(--j-timeline-header-rows, 1) * 2.5rem) auto;
   min-width: 0;
   position: relative;
 }
@@ -33,10 +33,14 @@
 }
 .j-scheduler-timeline__header {
   background: var(--j-scheduler-header-bg, var(--j-color-surface-subtle));
-  height: 3rem;
   position: sticky;
   top: 0;
   z-index: 4;
+}
+.j-scheduler-timeline__header-row {
+  height: 2.5rem;
+  position: absolute;
+  width: 100%;
 }
 .j-scheduler-timeline__header-cell,
 .j-scheduler-timeline__cell {
@@ -47,17 +51,31 @@
   position: absolute;
   top: 0;
 }
+.j-scheduler-timeline__cell--selected {
+  background: color-mix(in srgb, var(--j-color-primary) 16%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--j-color-primary) 50%, transparent);
+}
+.j-scheduler-timeline__now-indicator {
+  border-inline-start: 2px solid var(--j-scheduler-now-color, var(--j-color-danger));
+  inset-block-start: calc(var(--j-timeline-header-rows, 1) * 2.5rem);
+  pointer-events: none;
+  position: absolute;
+  z-index: 8;
+}
 .j-scheduler-timeline__header-cell {
   align-items: center;
   display: flex;
-  height: 3rem;
+  height: 2.5rem;
   justify-content: center;
 }
 .j-scheduler-timeline__lane {
   background: var(--j-scheduler-business-bg, var(--j-color-card));
   border-block-end: 1px solid var(--j-color-border);
-  height: var(--j-scheduler-row-height, 3.25rem);
+  height: var(--j-resource-row-height, 3.25rem);
   position: relative;
+}
+.j-scheduler-timeline__lane--aggregate {
+  background: color-mix(in srgb, var(--j-color-primary) 4%, var(--j-color-card));
 }
 .j-scheduler-timeline__cell {
   background: transparent;
@@ -82,6 +100,55 @@
   white-space: nowrap;
   z-index: 2;
 }
+.j-scheduler-timeline-event--aggregate {
+  border-style: dashed;
+  opacity: 0.72;
+}
+.j-scheduler-event--milestone {
+  border-radius: 0;
+  min-width: 1rem;
+  overflow: visible;
+}
+.j-scheduler-event--milestone::before {
+  background: var(--j-event-color, var(--j-color-primary));
+  block-size: 0.7rem;
+  content: '';
+  inline-size: 0.7rem;
+  inset-block-start: 0.75rem;
+  inset-inline-start: -0.35rem;
+  position: absolute;
+  rotate: 45deg;
+}
+.j-scheduler-timeline-event__resize {
+  bottom: 0;
+  cursor: ew-resize;
+  inset-inline-end: 0;
+  position: absolute;
+  top: 0;
+  width: 0.45rem;
+}
+.j-scheduler-timeline-event__resize::after {
+  background: currentColor;
+  border-radius: 999px;
+  content: '';
+  inset-block: 0.35rem;
+  opacity: 0.55;
+  position: absolute;
+  inset-inline-end: 0.12rem;
+  width: 2px;
+}
+.j-scheduler-timeline-event__resize--start {
+  inset-inline-end: auto;
+  inset-inline-start: 0;
+}
+.j-scheduler-timeline-event__resize--start::after {
+  inset-inline-end: auto;
+  inset-inline-start: 0.12rem;
+}
+.j-scheduler-event-selected {
+  box-shadow: 0 0 0 2px var(--j-color-primary);
+  z-index: 4;
+}
 .j-scheduler-timeline__rail {
   background: var(--j-scheduler-resource-rail-bg, var(--j-color-card));
   grid-column: 1;
@@ -91,13 +158,21 @@
   inset-inline-start: 0;
   z-index: 5;
 }
+.j-scheduler-timeline__rail-window {
+  inset: 0;
+  position: absolute;
+  will-change: transform;
+}
+.j-scheduler-timeline__row-spacer {
+  pointer-events: none;
+}
 .j-scheduler-timeline__resource {
   align-items: center;
   border-block-end: 1px solid var(--j-color-border);
   border-inline-end: 1px solid var(--j-color-border);
   display: flex;
   gap: var(--j-spacing-1);
-  height: var(--j-scheduler-row-height, 3.25rem);
+  height: var(--j-resource-row-height, 3.25rem);
   padding-inline-end: var(--j-spacing-2);
 }
 .j-scheduler-timeline__resource-name {
